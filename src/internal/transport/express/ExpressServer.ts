@@ -19,8 +19,11 @@ import { report } from "../../util/metric";
 import { guid } from "../../util/string";
 import { AutomationEventListener, CommandIncoming, EventIncoming } from "../AutomationEventListener";
 
+import * as _ from "lodash";
 import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
+
+const ApiBase = "/api/v1";
 
 /**
  * Registers an endpoint for every automation and exposes
@@ -46,11 +49,11 @@ export class ExpressServer {
         } else {
             exp.set("views", appRoot + "/node_modules/@atomist/automation-client/views");
         }
-        exp.use("/", passport.authenticate(["basic", "bearer" ], { session: false }));
+
         if (fs.existsSync(appRoot + "/public")) {
-            exp.use("/", express.static(appRoot + "/public"));
+            exp.use(express.static(appRoot + "/public"));
         } else {
-            exp.use("/", express.static(appRoot + "/node_modules/@atomist/automation-client/public"));
+            exp.use(express.static(appRoot + "/node_modules/@atomist/automation-client/public"));
         }
 
         if (this.options.auth && this.options.auth.basic && this.options.auth.basic.enabled) {
@@ -86,56 +89,64 @@ export class ExpressServer {
             ));
         }
 
-        exp.get("/automations.json", (req, res) => {
-            res.setHeader("Content-Type", "application/json");
-            res.setHeader("Access-Control-Allow-Origin", "*");
-            res.send(automations.rugs);
+        // Set up routes
+        exp.get(`${ApiBase}/automations`, passport.authenticate(["basic", "bearer" ], { session: false }),
+            (req, res) => {
+                res.setHeader("Content-Type", "application/json");
+                res.setHeader("Access-Control-Allow-Origin", "*");
+                res.json(automations.rugs);
         });
 
-        exp.get("/metrics.json", (req, res) => {
-            res.setHeader("Content-Type", "application/json");
-            res.setHeader("Access-Control-Allow-Origin", "*");
-            res.send(JSON.stringify(report.summary()));
+        exp.get(`${ApiBase}/metrics`, passport.authenticate(["basic", "bearer" ], { session: false }),
+            (req, res) => {
+                res.setHeader("Content-Type", "application/json");
+                res.setHeader("Access-Control-Allow-Origin", "*");
+                res.json(report.summary());
         });
 
-        exp.get("/events.json", (req, res) => {
-            res.setHeader("Content-Type", "application/json");
-            res.setHeader("Access-Control-Allow-Origin", "*");
-            res.send(JSON.stringify(eventStore.events(req.query.from)));
+        exp.get(`${ApiBase}/events`, passport.authenticate(["basic", "bearer" ], { session: false }),
+            (req, res) => {
+                res.setHeader("Content-Type", "application/json");
+                res.setHeader("Access-Control-Allow-Origin", "*");
+                res.json(eventStore.events(req.query.from));
         });
 
-        exp.get("/commands.json", (req, res) => {
-            res.setHeader("Content-Type", "application/json");
-            res.setHeader("Access-Control-Allow-Origin", "*");
-            res.send(JSON.stringify(eventStore.commands(req.query.from)));
+        exp.get(`${ApiBase}/commands`, passport.authenticate(["basic", "bearer" ], { session: false }),
+            (req, res) => {
+                res.setHeader("Content-Type", "application/json");
+                res.setHeader("Access-Control-Allow-Origin", "*");
+                res.json(eventStore.commands(req.query.from));
         });
 
-        exp.get("/messages.json", (req, res) => {
-            res.setHeader("Content-Type", "application/json");
-            res.setHeader("Access-Control-Allow-Origin", "*");
-            res.send(JSON.stringify(eventStore.messages(req.query.from)));
+        exp.get(`${ApiBase}/messages`, passport.authenticate(["basic", "bearer" ], { session: false }),
+            (req, res) => {
+                res.setHeader("Content-Type", "application/json");
+                res.setHeader("Access-Control-Allow-Origin", "*");
+                res.json(eventStore.messages(req.query.from));
         });
 
-        exp.get("/graphql", (req, res) => {
-            res.render("graphql.html", { token: getJwtToken(), graphQLUrl: DefaultStagingAtomistGraphQLServer });
+        exp.get("/graphql", passport.authenticate("basic", { session: false }),
+            (req, res) => {
+                res.render("graphql.html", { token: getJwtToken(), graphQLUrl: DefaultStagingAtomistGraphQLServer });
         });
 
-        this.exposeIndex(exp, automations);
+        exp.get("/", passport.authenticate("basic", { session: false }),
+            (req, res) => {
+                res.render("index.html");
+        });
 
         automations.rugs.commands.forEach(
             h => {
                 this.exposeCommandHandlerInvocationRoute(exp,
-                    "/command/" + h.name, h,
+                    `${ApiBase}/command/${_.kebabCase(h.name)}`, h,
                     (res, result) => res.send(result));
-                this.exposeCommandHandlerInvocationRoute(exp,
-                    `/command/run-${h.name}.html`, h,
-                    (res, result) => res.render("invoked.html", result));
-                this.exposeHtmlFormRoute(exp, h);
             },
         );
         automations.rugs.ingestors.forEach(
             i => {
-           this.exposeEventInvocationRoute(exp, "/" + i.route, i, (res, result) => res.send(result));
+                this.exposeEventInvocationRoute(exp,
+                    `${ApiBase}/ingest/${i.route.toLowerCase()}`, i,
+                    (res, result) => res.send(result));
         });
 
         exp.listen(this.options.port, () => {
@@ -147,14 +158,16 @@ export class ExpressServer {
                                                 url: string,
                                                 h: CommandHandlerMetadata,
                                                 handle: (res, result) => any) {
-        exp.get(url, (req, res) => {
-            const args = h.parameters.filter(p => {
-                const value = req.query[p.name];
-                return value && value.length > 0;
-            }).map(p => {
-                return {name: p.name, value: req.query[p.name]};
+
+        exp.get(url, passport.authenticate(["basic", "bearer" ], { session: false }),
+            (req, res) => {
+                const args = h.parameters.filter(p => {
+                    const value = req.query[p.name];
+                    return value && value.length > 0;
+                }).map(p => {
+                    return {name: p.name, value: req.query[p.name]};
             });
-            const payload: CommandIncoming = {
+                const payload: CommandIncoming = {
                 atomist_type: "command_handler_request",
                 name: h.name,
                 parameters: args,
@@ -167,9 +180,9 @@ export class ExpressServer {
                     id: this.automations.rugs.team_id,
                 },
             };
-            logger.debug("Incoming payload for command handler '%s'\n%s", h.name, JSON.stringify(payload, null, 2));
+                logger.debug("Incoming payload for command handler '%s'\n%s", h.name, JSON.stringify(payload, null, 2));
 
-            Promise.all(this.listeners.map(l => l.onCommand(payload)))
+                Promise.all(this.listeners.map(l => l.onCommand(payload)))
                 .then(result => {
                     return handle(res, result);
                 })
@@ -199,18 +212,6 @@ export class ExpressServer {
                     return handle(res, result);
                 })
                 .catch(err => res.send(err));
-        });
-    }
-
-    private exposeHtmlFormRoute(exp: Express, h: CommandHandlerMetadata) {
-        exp.get("/command/" + h.name + ".html", (req, res) => {
-            res.render("commandHandler.html", h);
-        });
-    }
-
-    private exposeIndex(exp: Express, automations: AutomationServer) {
-        exp.get("/home", (req, res) => {
-            res.render("home.html", automations.rugs);
         });
     }
 }

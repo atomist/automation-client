@@ -3698,14 +3698,18 @@ var loaded = false;
 
 function init() {
 
+  var kebabCase = function kebabCase(string) {
+    return string.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
+  };
+
   var automations, metrics;
 
   //var host = "http://localhost:2866";
   var host = "";
 
-  $.when($.getJSON(host + "/automations.json", function (data) {
+  $.when($.getJSON(host + "/api/v1/automations", function (data) {
     automations = data;
-  }), $.getJSON(host + "/metrics.json", function (data) {
+  }), $.getJSON(host + "/api/v1/metrics", function (data) {
     metrics = data;
   })).then(function () {
     if (automations && metrics) {
@@ -3751,8 +3755,7 @@ function init() {
               row += "</div>";
             });
           }
-          row += "<input type='submit' class='btn btn-primary' value='Run and view HTML' formaction='/command/run-" + element.name + ".html'>&nbsp;";
-          row += "<input type='submit' class='btn btn-primary' value='Run and view JSON' formaction='/command/" + element.name + "'>";
+          row += "<input type='submit' class='btn btn-primary' value='Run' formaction='/api/v1/command/" + kebabCase(element.name) + "'>";
           row += "</form></div>";
           row += "</td><td>";
           row += "</td>";
