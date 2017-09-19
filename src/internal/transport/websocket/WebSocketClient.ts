@@ -1,4 +1,5 @@
 import axios from "axios";
+import * as ShutdownHook from "shutdown-hook";
 import * as WebSocket from "ws";
 import { HandlerResult } from "../../../HandlerResult";
 import { logger } from "../../util/logger";
@@ -85,6 +86,13 @@ function connect(registrationCallback: () => any, registration: RegistrationInco
                 .then(reg => connect(registrationCallback, reg, options, listeners));
         });
 
+        const shutdownHook = new ShutdownHook();
+        shutdownHook.add(() => {
+            logger.info("Closing WebSocket connection");
+            ws.close();
+            return Promise.resolve(0);
+        });
+        shutdownHook.register();
     });
 }
 

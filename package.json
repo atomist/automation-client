@@ -46,6 +46,7 @@
     "passport-http-bearer": "^1.0.1",
     "properties": "^1.2.1",
     "shelljs": "^0.7.8",
+    "shutdown-hook": "^1.1.1",
     "stream-spigot": "^3.0.6",
     "streaming": "^1.0.3",
     "tmp": "0.0.33",
