@@ -1,0 +1,103 @@
+{
+  "name": "@atomist/automation-client",
+  "version": "0.1.0",
+  "description": "Atomist automation client for running command and event handlers",
+  "author": "Atomist, Inc.",
+  "license": "GPL-3.0",
+  "homepage": "https://github.com/atomist/automation-client#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/atomist/automation-client.git"
+  },
+  "keywords": [
+    "atomist",
+    "automation",
+    "rug"
+  ],
+  "bugs": {
+    "url": "https://github.com/atomist/automation-client/issues"
+  },
+  "dependencies": {
+    "@atomist/microgrammar": "^0.6.1",
+    "@atomist/slack-messages": "^0.11.0",
+    "@types/node": "^8.0.26",
+    "@types/winston": "^2.3.5",
+    "apollo-client": "^1.9.1",
+    "app-root-path": "^2.0.1",
+    "axios": "^0.16.2",
+    "body-parser": "^1.18.1",
+    "child-process-promise": "^2.2.1",
+    "config": "^1.26.2",
+    "express": "^4.15.4",
+    "express-basic-auth": "^1.1.2",
+    "file-system": "^2.2.2",
+    "fs-extra": "^4.0.2",
+    "glob": "^7.1.2",
+    "glob-stream": "^6.1.0",
+    "graphql": "^0.10.5",
+    "html5-websocket": "^2.0.1",
+    "isomorphic-fetch": "^2.2.1",
+    "lru_map": "^0.3.3",
+    "metrics": "^0.1.14",
+    "mustache-express": "^1.2.5",
+    "node": "^8.3.0",
+    "openurl": "^1.1.1",
+    "properties": "^1.2.1",
+    "shelljs": "^0.7.8",
+    "stream-spigot": "^3.0.6",
+    "streaming": "^1.0.3",
+    "tmp": "0.0.33",
+    "winston": "^2.3.1",
+    "ws": "^3.1.0",
+    "yargs": "^8.0.2"
+  },
+  "devDependencies": {
+    "@types/async": "2.0.31",
+    "@types/config": "0.0.32",
+    "@types/fs-extra": "^4.0.2",
+    "@types/git": "0.0.18",
+    "@types/glob": "^5.0.32",
+    "@types/isomorphic-fetch": "0.0.34",
+    "@types/mocha": "^2.2.41",
+    "@types/power-assert": "^1.4.29",
+    "@types/ws": "^3.0.2",
+    "espower-typescript": "^8.0.2",
+    "mocha": "^3.5.3",
+    "power-assert": "^1.4.4",
+    "supervisor": "^0.12.0",
+    "ts-node": "^3.3.0",
+    "tslint": "^5.4.3",
+    "typedoc": "^0.8.0",
+    "typescript": "2.5.2",
+    "typescript-formatter": "^6.0.0"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "autotest": "supervisor -q -n exit -e ts -x npm -- run test",
+    "build": "npm run lint && npm run compile && npm test",
+    "clean": "npm run clean-js ; rm -rf *-v8.log profile.txt build",
+    "clean-js": "find src test -type f -name '*.js' -print0 | xargs -0 rm -f",
+    "compile": "tsc -p . && cp src/graph/schema.cortex.json build/src/graph/schema.cortex.json",
+    "distclean": "npm run clean ; rm -rf node_modules",
+    "fmt": "tsfmt --replace",
+    "lint": "tslint --format verbose --project . --exclude '{build,node_modules}/**' '**/*.ts'",
+    "lint-fix": "npm run lint -- --fix",
+    "test": "mocha --compilers ts:espower-typescript/guess 'test/**/!(*atomist.config).ts'",
+    "testone": "mocha --compilers ts:espower-typescript/guess \"test/**/${TEST:-*.ts}\"",
+    "typedoc": "typedoc --mode modules",
+    "benchmark": "mocha --prof --compilers ts:espower-typescript/guess \"test/**/*Benchmark.ts\"; node --prof-process isolate-* > profile.txt",
+    "client": "npm run compile && node $NODE_DEBUG_OPTION build/src/start.client.js --open=true",
+    "autoclient": "nodemon --inspect -e js build/src/start.client.js",
+    "cli": "npm run compile && node $NODE_DEBUG_OPTION build/src/start.cli.js"
+  },
+  "bin": {
+    "atomist-cli": "./start.cli.js",
+    "atomist-client": "./start.client.js"
+  },
+  "engines": {
+    "node": "8.2.x",
+    "npm": "5.3.x"
+  }
+}

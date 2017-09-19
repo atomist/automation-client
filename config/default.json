@@ -1,0 +1,8 @@
+{
+  "githubWebUrl": "https://api.github.com",
+  "targetOwner": "johnsonr",
+  "visibility": "private",
+  "repo": "foo",
+
+  "githubToken": "foo"
+}

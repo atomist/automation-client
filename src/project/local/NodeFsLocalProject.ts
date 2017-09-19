@@ -1,0 +1,153 @@
+import { File } from "../File";
+import { FileStream, Project } from "../Project";
+
+import * as fs from "fs-extra";
+import * as fpath from "path";
+
+import * as gs from "glob-stream";
+import * as stream from "stream";
+import { deleteFolderRecursive } from "../../internal/util/file";
+import { logger } from "../../internal/util/logger";
+import { InMemoryProject } from "../mem/InMemoryProject";
+import { AbstractProject } from "../support/AbstractProject";
+import { isLocalProject, LocalProject } from "./LocalProject";
+import { NodeFsLocalFile } from "./NodeFsLocalFile";
+
+/**
+ * Implementation of LocalProject based on node file system.
+ * Uses fs-extra vs raw fs.
+ */
+export class NodeFsLocalProject extends AbstractProject implements LocalProject {
+
+    /**
+     * Copy the contents of the other project to this project
+     * @param {Project} other
+     * @param {string} parentDir
+     * @param newName new name of the project. Defaults to name of old project
+     * @returns {LocalProject}
+     */
+    public static copy(other: Project, parentDir: string, newName: string = other.name): Promise<LocalProject> {
+        const baseDir = parentDir + "/" + newName;
+        if (!fs.existsSync(baseDir)) {
+            fs.mkdirSync(baseDir);
+        }
+        if (isLocalProject(other)) {
+            return fs.copy(other.baseDir, baseDir).then(_ =>
+                new NodeFsLocalProject(newName, baseDir));
+        } else {
+            // TODO quick and dirty
+            const p = new NodeFsLocalProject(other.name, baseDir);
+            (other as InMemoryProject).filesSync.forEach(f => {
+                p.addFileSync(f.path, f.getContentSync());
+            });
+            return Promise.resolve(p);
+        }
+    }
+
+    /**
+     * Base directory of the project on the local file system
+     */
+    public readonly baseDir: string;
+
+    constructor(public name: string, baseDir: string) {
+        super();
+        // TODO not sure why app-root-path seems to return something weird and this coercion is necessary
+        this.baseDir = "" + baseDir;
+        if (!fs.statSync(this.baseDir).isDirectory()) {
+            throw new Error(`No such directory: [${baseDir}] when trying to create LocalProject`);
+        }
+    }
+
+    public addFileSync(path: string, content: string): void {
+        const realName = this.baseDir + "/" + path;
+        const dir = fpath.dirname(realName);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirsSync(dir);
+        }
+        fs.writeFileSync(realName, content);
+    }
+
+    public addFile(path: string, content: string): Promise<this> {
+        const realName = this.baseDir + "/" + path;
+        const dir = fpath.dirname(realName);
+        return fs.pathExists(dir).then(exists => exists ? Promise.resolve() : fs.mkdirs(dir))
+            .then(() => fs.writeFile(realName, content)).then(() => this);
+    }
+
+    public deleteDirectory(path: string): Promise<this> {
+        // TODO should not be synch
+        this.deleteDirectorySync(path);
+        return Promise.resolve(this);
+    }
+
+    public deleteDirectorySync(path: string): void {
+        const localPath = this.toRealPath(path);
+        try {
+            deleteFolderRecursive(localPath);
+            fs.unlinkSync(localPath);
+        } catch (e) {
+            logger.warn("Ignoring directory deletion error: " + e);
+        }
+    }
+
+    public deleteFileSync(path: string): void {
+        try {
+            fs.unlinkSync(this.toRealPath(path));
+        } catch (e) {
+            logger.warn("Ignoring file deletion error: " + e);
+        }
+    }
+
+    public deleteFile(path: string): Promise<this> {
+        return fs.unlink(this.toRealPath(path)).then(_ => this);
+    }
+
+    public makeExecutableSync(path: string): void {
+        throw new Error("makeExecutableSync not implemented.");
+    }
+
+    public directoryExistsSync(path: string): boolean {
+        throw new Error("directoryExistsSync not implemented.");
+    }
+
+    public fileExistsSync(path: string): boolean {
+        return fs.existsSync(this.baseDir + "/" + path);
+    }
+
+    public findFileSync(path: string): File {
+        if (!this.fileExistsSync(path)) {
+            return undefined;
+        }
+        return new NodeFsLocalFile(this.baseDir, path);
+    }
+
+    public streamFilesRaw(globPatterns: string[], opts: {}): FileStream {
+        // Fight arrow function "this" issue
+        const baseDir = this.baseDir;
+        const toFileTransform = new stream.Transform({objectMode: true});
+
+        toFileTransform._transform = function(chunk, encoding, done) {
+            const f = new NodeFsLocalFile(baseDir, pathWithinArchive(baseDir, chunk.path));
+            this.push(f);
+            done();
+        };
+
+        const optsToUse = {
+            // We can override this
+            nodir: true,
+            ...opts,
+            cwd: this.baseDir,
+        };
+        return gs(globPatterns, optsToUse)
+            .pipe(toFileTransform);
+    }
+
+    private toRealPath(path: string): string {
+        return this.baseDir + "/" + path;
+    }
+
+}
+
+function pathWithinArchive(baseDir: string, rawPath: string): string {
+    return rawPath.substr(baseDir.length);
+}

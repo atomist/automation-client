@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- These meta tags come first. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Atomist Automation Node</title>
+
+    <!-- Include the CSS -->
+    <link href="dist/toolkit-inverse.min.css" rel="stylesheet">
+    <link href="assets/css/application.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="with-iconav">
+        <nav class="iconav">
+            <a class="iconav-brand" href="#">
+                <span class="iconav-brand-icon">
+                    <img src="assets/imgs/logo.png" width="40px"/>
+                </span>
+            </a>
+            <div class="iconav-slider">
+                <ul class="nav nav-pills iconav-nav flex-md-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/" title="Overview" data-toggle="tooltip" data-placement="right" data-container="body">
+                            <span class="icon icon-home"></span>
+                            <small class="iconav-nav-label hidden-md-up">Overview</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/graphql" title="Explorer" data-toggle="tooltip" data-placement="right" data-container="body">
+                            <span class="icon icon-globe"></span>
+                            <small class="iconav-nav-label hidden-md-up">Repositories</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" title="Event Log" data-toggle="tooltip" data-placement="right" data-container="body">
+                            <span class="icon icon-text-document"></span>
+                            <small class="iconav-nav-label hidden-md-up">Events</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://docs.atomist.com" title="Docs" data-toggle="tooltip" data-placement="right" data-container="body">
+                            <span class="icon icon-list"></span>
+                            <small class="iconav-nav-label hidden-md-up">Docs</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" title="Settings" data-toggle="tooltip" data-placement="right" data-container="body">
+                            <span class="icon icon-sound-mix"></span>
+                            <small class="iconav-nav-label hidden-md-up">Settings</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" title="Signed in as cd" data-toggle="tooltip" data-placement="right" data-container="body">
+                            <img src="https://avatars0.githubusercontent.com/u/206707?v=4&s=460" alt="" class="rounded-circle img-responsive">
+                            <small class="iconav-nav-label hidden-md-up">@cd</small>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="dashhead">
+                <div class="dashhead-titles">
+                    <h6 class="dashhead-subtitle">Dashboards</h6>
+                    <h3 class="dashhead-title">Overview</h3>
+                </div>
+
+                <div class="dashhead-toolbar">
+                    <div class="input-with-icon dashhead-toolbar-item">
+                        <input type="text" placeholder="Select date" class="form-control input-block" data-provide="datepicker" data-date-orientation="top">
+                        <span class="icon icon-calendar"></span>
+                    </div>
+                    <span class="dashhead-toolbar-divider hidden-sm-down"></span>
+                    <div class="btn-group dashhead-toolbar-item btn-group-thirds">
+                        <button type="button" class="btn btn-outline-primary">Day</button>
+                        <button type="button" class="btn btn-outline-primary active">Week</button>
+                        <button type="button" class="btn btn-outline-primary">Month</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hr-divider my-4">
+                <h3 class="hr-divider-content hr-divider-heading">Quick Stats</h3>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="statcard statcard-primary p-4">
+                        <h3 class="statcard-number" id="command-count">
+                          0
+                        </h3>
+                        <span class="statcard-desc">Commands</span>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="statcard statcard-success p-4">
+                        <h3 class="statcard-number" id="event-count">
+                    0
+
+                  </h3>
+                        <span class="statcard-desc">Events</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hr-divider my-4">
+                <h3 class="hr-divider-content hr-divider-heading">Events</h3>
+            </div>
+
+            <!-- table -->
+            <div class="flextable table-actions">
+                <div class="flextable-item flextable-primary">
+                    <div class="btn-toolbar-item input-with-icon">
+                        <input type="text" class="form-control input-block" placeholder="Search handlers">
+                        <span class="icon icon-magnifying-glass"></span>
+                    </div>
+                </div>
+                <div class="flextable-item">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-primary">
+                    <span class="icon icon-cw"></span>
+                  </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table" id="events">
+                    <tbody>
+
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="hr-divider my-4">
+                <h3 class="hr-divider-content hr-divider-heading">Commands</h3>
+            </div>
+
+            <!-- table -->
+            <div class="flextable table-actions">
+                <div class="flextable-item flextable-primary">
+                    <div class="btn-toolbar-item input-with-icon">
+                        <input type="text" class="form-control input-block" placeholder="Search handlers">
+                        <span class="icon icon-magnifying-glass"></span>
+                    </div>
+                </div>
+                <div class="flextable-item">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-primary">
+                    <span class="icon icon-cw"></span>
+                  </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table" id="commands">
+                    <tbody>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="container container-fluid">
+            <p class="text-muted text-center" id="footer"></p>
+        </div>
+    </footer>
+
+    <!-- Include jQuery (required) and the JS -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/tether.min.js"></script>
+    <script src="dist/toolkit.min.js"></script>
+</body>
+
+</html>
