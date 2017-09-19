@@ -2,6 +2,7 @@
 
 import * as openurl from "openurl";
 import * as yargs from "yargs";
+import * as os from "os";
 
 import { automationClient } from "./automationClient";
 import { findConfiguration } from "./configuration";
@@ -26,10 +27,11 @@ if (config.ingestors) {
     });
 }
 
-node.run();
+node.run()
+    .then(() => {
+        if (!!node.httpPort && yargs.argv.open === "true") {
+            openurl.open(`http://${os.hostname()}:${node.httpPort}/`);
+        }
+    });
 
-// TODO really should wait here. Can run() return a promise?
-// TODO should we make the open=true default for now? This will help with discovery
-if (!!node.httpPort && yargs.argv.open === "true") {
-    openurl.open(`http://localhost:${node.httpPort}/`);
-}
+

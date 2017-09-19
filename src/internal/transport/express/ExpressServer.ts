@@ -1,6 +1,7 @@
 import * as bodyParser from "body-parser";
 import * as express from "express";
-import * as basicAuth from "express-basic-auth";
+import * as passport from "passport";
+
 import { AutomationServer } from "../../../server/AutomationServer";
 import { CommandHandlerMetadata, IngestorMetadata } from "../../metadata/metadata";
 
@@ -18,6 +19,9 @@ import { report } from "../../util/metric";
 import { guid } from "../../util/string";
 import { AutomationEventListener, CommandIncoming, EventIncoming } from "../AutomationEventListener";
 
+import * as http from "passport-http";
+import * as bearer from "passport-http-bearer";
+
 /**
  * Registers an endpoint for every automation and exposes
  * metadataFromInstance at root. Responsible for marshalling into the appropriate structure
@@ -25,43 +29,62 @@ import { AutomationEventListener, CommandIncoming, EventIncoming } from "../Auto
 export class ExpressServer {
 
     constructor(private automations: AutomationServer,
-                private options: ExpressServerOptions = { port: 2866, basicAuth: { enabled: true} },
+                private options: ExpressServerOptions,
                 private listeners: AutomationEventListener[] = []) {
 
         const exp = express();
 
         exp.engine("html", mustacheExpress());
         exp.set("view engine", "mustache");
-        // TODO that's probably not the way it should work; but it does work when using this inside a node_module
 
+        exp.use(bodyParser.json());
+        exp.use(passport.initialize());
+
+        // TODO that's probably not the way it should work; but it does work when using this inside a node_module
         if (fs.existsSync(appRoot + "/views")) {
             exp.set("views", appRoot + "/views");
         } else {
             exp.set("views", appRoot + "/node_modules/@atomist/automation-node/views");
         }
+        exp.use("/", passport.authenticate(["basic", "bearer" ], { session: false }));
         if (fs.existsSync(appRoot + "/public")) {
-            exp.use(express.static(appRoot + "/public"));
+            exp.use("/", express.static(appRoot + "/public"));
         } else {
-            exp.use(express.static(appRoot + "/node_modules/@atomist/automation-node/public"));
+            exp.use("/", express.static(appRoot + "/node_modules/@atomist/automation-node/public"));
         }
 
-        exp.use(bodyParser.json());
+        if (this.options.auth && this.options.auth.basic && this.options.auth.basic.enabled) {
+            const user = this.options.auth.basic.username ? this.options.auth.basic.username : "admin";
+            const pwd = this.options.auth.basic.password ? this.options.auth.basic.password : guid();
 
-        if (this.options.basicAuth && this.options.basicAuth.enabled) {
-            const username = this.options.basicAuth.username ? this.options.basicAuth.username : "admin";
-            const password = this.options.basicAuth.password ? this.options.basicAuth.password : guid();
-            const user = {};
-            user[username] = password;
+            passport.use(new http.BasicStrategy(
+                function(username, password, done) {
+                    if (user === username && pwd === password) {
+                        done(null, { user: username });
+                    } else {
+                        done(null, false);
+                    }
+                }
+            ));
 
-            exp.use(basicAuth({
-                users: user,
-                challenge: true,
-            }));
-
-            if (!this.options.basicAuth.password) {
-                logger.info(`Auto-generated password for web endpoints is '${password}'`);
+            if (!this.options.auth.basic.password) {
+                logger.info(`Auto-generated password for web endpoints is '${pwd}'`);
             }
          }
+
+         if (this.options.auth && this.options.auth.bearer && this.options.auth.bearer.enabled) {
+            const tk = this.options.auth.bearer.token;
+
+            passport.use(new bearer.Strategy(
+                function(token, done) {
+                    if (token === tk) {
+                        done(null, {token: token } );
+                    } else {
+                        done(null, false);
+                    }
+                }
+            ));
+        }
 
         exp.get("/automations.json", (req, res) => {
             res.setHeader("Content-Type", "application/json");
@@ -195,9 +218,15 @@ export class ExpressServer {
 export interface ExpressServerOptions {
 
     port: number;
-    basicAuth?: {
-        enabled: boolean;
-        username?: string;
-        password?: string;
+    auth?: {
+        basic: {
+            enabled: boolean;
+            username?: string;
+            password?: string;
+        },
+        bearer: {
+            enabled: boolean;
+            token: string;
+        }
     };
 }

@@ -11,10 +11,16 @@ export interface RunOptions {
     http?: {
         enabled: boolean;
         port?: number;
-        basicAuth?: {
-            enabled: boolean;
-            username?: string;
-            password?: string;
+        auth?: {
+            basic?: {
+                enabled: boolean;
+                username?: string;
+                password?: string;
+            }
+            bearer?: {
+                enabled: boolean;
+                token: string;
+            }
         }
     };
 }
