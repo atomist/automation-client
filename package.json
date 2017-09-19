@@ -89,7 +89,7 @@
     "lint-fix": "npm run lint -- --fix",
     "test": "mocha --compilers ts:espower-typescript/guess 'test/**/!(*atomist.config).ts'",
     "testone": "mocha --compilers ts:espower-typescript/guess \"test/**/${TEST:-*.ts}\"",
-    "typedoc": "typedoc --mode modules",
+    "typedoc": "typedoc --mode modules --excludeExternals",
     "benchmark": "mocha --prof --compilers ts:espower-typescript/guess \"test/**/*Benchmark.ts\"; node --prof-process isolate-* > profile.txt",
     "client": "npm run compile && node $NODE_DEBUG_OPTION build/src/start.client.js --open=true",
     "autoclient": "nodemon --inspect -e js build/src/start.client.js",

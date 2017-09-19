@@ -3,6 +3,8 @@ target/
 node_modules/
 *.js
 npm-debug.log
+*.d.ts
+*.js.map
 
 .idea/
 *.iml
