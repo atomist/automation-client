@@ -33,7 +33,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 users: Array.isArray(userNames) ? userNames as string[] : [ userNames],
                 message_id: options.id,
                 timestamp: this.ts(options),
-                ttl: options.ttl,
+                ttl: options.ttl ? options.ttl.toString() : undefined,
                 post: options.post,
                 actions,
             };
@@ -50,7 +50,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 users: Array.isArray(userNames) ? userNames as string[] : [ userNames],
                 message_id: options.id,
                 timestamp: this.ts(options),
-                ttl: options.ttl,
+                ttl: options.ttl ? options.ttl.toString() : undefined,
                 post: options.post,
             };
             sendMessage(response, this.ws);

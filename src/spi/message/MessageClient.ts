@@ -43,7 +43,7 @@ export interface MessageOptions {
      * existing message with ts is < as a new incoming message
      * with the same id, the message will be re-written.
      */
-    ttl?: string;
+    ttl?: number;
 
     /**
      * Timestamp of the message. The timestamp needs to be
@@ -56,11 +56,6 @@ export interface MessageOptions {
      * if a previous message with the same id exists.
      */
     post?: "update_only" | "always";
-
-    /**
-     * Content-type of the message.
-     */
-    // contentType?: "application/x-atomist-slack+json" | "text/plain";
 }
 
 export class MessageMimeTypes {
