@@ -44,13 +44,13 @@ export class ExpressServer {
         if (fs.existsSync(appRoot + "/views")) {
             exp.set("views", appRoot + "/views");
         } else {
-            exp.set("views", appRoot + "/node_modules/@atomist/automation-node/views");
+            exp.set("views", appRoot + "/node_modules/@atomist/automation-client/views");
         }
         exp.use("/", passport.authenticate(["basic", "bearer" ], { session: false }));
         if (fs.existsSync(appRoot + "/public")) {
             exp.use("/", express.static(appRoot + "/public"));
         } else {
-            exp.use("/", express.static(appRoot + "/node_modules/@atomist/automation-node/public"));
+            exp.use("/", express.static(appRoot + "/node_modules/@atomist/automation-client/public"));
         }
 
         if (this.options.auth && this.options.auth.basic && this.options.auth.basic.enabled) {
