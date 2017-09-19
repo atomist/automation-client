@@ -1,6 +1,6 @@
 # @atomist/automation-client
 
-[![Build Status](https://travis-ci.org/atomist/automation-client.svg?token=qmyCAqLFxgxAWezrxqHX&branch=master)](https://travis-ci.com/atomist/automation-client)
+[![Build Status](https://travis-ci.org/atomist/automation-client-ts.svg?branch=master)](https://travis-ci.org/atomist/automation-client-ts)
 
 [Node][node] module [`@atomist/automation-client`][automation-client] for creating command and event handlers
 using the standalone server.
