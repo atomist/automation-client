@@ -15,9 +15,9 @@ import { logger } from "./internal/util/logger";
 import { AutomationServer } from "./server/AutomationServer";
 
 export const DefaultStagingAtomistServer =
-    "https://ws-staging.atomist.services/node-agent/register";
+    "https://automation-staging.atomist.services/registration";
 export const DefaultStagingAtomistGraphQLServer =
-    "https://ws-staging.atomist.services/graphql";
+    "https://automation-staging.atomist.services/graphql";
 
 export class AutomationClient {
 
