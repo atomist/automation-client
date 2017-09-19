@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import * as openurl from "openurl";
-import * as yargs from "yargs";
 import * as os from "os";
+import * as yargs from "yargs";
 
 import { automationClient } from "./automationClient";
 import { findConfiguration } from "./configuration";
@@ -33,5 +33,3 @@ node.run()
             openurl.open(`http://${os.hostname()}:${node.httpPort}/`);
         }
     });
-
-

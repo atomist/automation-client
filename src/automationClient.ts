@@ -63,7 +63,7 @@ export class AutomationClient {
         return Promise.all([
             Promise.resolve(this.runWs()),
             Promise.resolve(this.runHttp()),
-        ])
+        ]);
     }
 
     private runWs(): void {
@@ -88,8 +88,8 @@ export class AutomationClient {
                 bearer: {
                     enabled: true,
                     token: this.configuration.token,
-                }
-            }
+                },
+            },
         };
 
         if (http && http.enabled) {

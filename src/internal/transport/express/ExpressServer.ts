@@ -58,13 +58,13 @@ export class ExpressServer {
             const pwd = this.options.auth.basic.password ? this.options.auth.basic.password : guid();
 
             passport.use(new http.BasicStrategy(
-                function(username, password, done) {
+                (username, password, done) => {
                     if (user === username && pwd === password) {
                         done(null, { user: username });
                     } else {
                         done(null, false);
                     }
-                }
+                },
             ));
 
             if (!this.options.auth.basic.password) {
@@ -72,17 +72,17 @@ export class ExpressServer {
             }
          }
 
-         if (this.options.auth && this.options.auth.bearer && this.options.auth.bearer.enabled) {
+        if (this.options.auth && this.options.auth.bearer && this.options.auth.bearer.enabled) {
             const tk = this.options.auth.bearer.token;
 
             passport.use(new bearer.Strategy(
-                function(token, done) {
+                (token, done) => {
                     if (token === tk) {
-                        done(null, {token: token } );
+                        done(null, {token } );
                     } else {
                         done(null, false);
                     }
-                }
+                },
             ));
         }
 
@@ -227,6 +227,6 @@ export interface ExpressServerOptions {
         bearer: {
             enabled: boolean;
             token: string;
-        }
+        },
     };
 }
