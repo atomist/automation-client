@@ -110,20 +110,20 @@ export class HelloIssue implements HandleEvent<any> {
 //                                 ^ -- an event handler implements the 'HandleEvent' interface
     
     public handle(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult> {
-//                ^ -- 'EventFired' gives you access to the data that matched the subscription. Since GraphQL queries
-//                      return JSON it is very easy to work with the data in JavaScript/TypeScript  
+//                ^ -- 'EventFired' gives you access to the data that matched the subscription. Since GraphQL 
+//                      queries return JSON it is very easy to work with the data in JavaScript/TypeScript  
 //                                    ^ -- 'HandlerContext' gives access to 'MessageClient' and 'GraphClient'     
         return Promise.all(e.data.Issue.map(i =>
             ctx.messageClient.addressChannels(`Got a new issue \`${i.number}# ${i.title}\``,
 //                            ^ -- besides responding you can address users and channels in Slack by using the
 //                                 respective methods on 'MessageClient'            
                 i.repo.channels.map(c => c.name ))))
-//              ^ -- in our correlated data model repositories can be mapped to channels in a chat team. This will
-//                   effectively send a message into each mapped channel                
+//              ^ -- in our correlated data model repositories can be mapped to channels in a chat team. This 
+//                   will effectively send a message into each mapped channel                
             .then(() => {
                 return Promise.resolve({ code: 0 });
-//                                     ^ -- Event handlers are expected to return a 'HandlerResult'. None 0 code
-//                                          indicate error occurred                 
+//                                     ^ -- Event handlers are expected to return a 'HandlerResult'. None 0 
+//                                          code indicate error occurred                 
             });
     }
 }
