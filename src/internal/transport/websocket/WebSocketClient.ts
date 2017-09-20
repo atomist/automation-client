@@ -34,7 +34,7 @@ function connect(registrationCallback: () => any, registration: RegistrationInco
     }
 
     return new Promise<WebSocket>(resolve => {
-        logger.info(`Opening WebSocket`);
+        logger.info(`Opening WebSocket connection`);
         const ws = new WebSocket(registration.url);
 
         ws.on("open", function open() {
