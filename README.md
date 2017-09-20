@@ -223,8 +223,8 @@ applications:
     SUPPRESS_NO_CONFIG_WARNING: true
 ```
 
-Thare more recommended ways for getting your `GITHUB_TOKEN` imto your automation-client instance. 
-Take a look at [`cfenv`](https://www.npmjs.com/package/cfenv).
+There more recommended ways for getting your `GITHUB_TOKEN` into your automation-client instance. 
+Take a look at [`cfenv`](https://www.npmjs.com/package/cfenv) for example
 
 Next please add an `"engines"` top-level entry to your `package.json`
 like the following:
@@ -298,6 +298,29 @@ $ curl -X GET \
      -H 'content-type: application/json'
 ```
 
+The above endpoints are all HTTP GET and take bearer and basic auth per default. See below for more details about
+authentication.
+
+### Invoking a command handler or ingestor
+
+Command handlers are exposed via HTTP GET like the following:
+
+```
+$ curl -X GET \
+     http://localhost:2866/command/hello-world?name=cd \
+     -H 'authorization: Bearer 34563sdf......................wq455eze"' 
+```
+
+This would invoke the `HelloWorld` command handler from above using `cd` as value of `name`.
+
+Similarly, `Ingestors` can be invoked via: 
+
+```
+curl -X POST \
+  http://localhost:2866/ingest/hello \
+  -H 'content-type: application/json' \
+  -d '{ "name": "cd" }'
+```  
 
 ## Support
 
