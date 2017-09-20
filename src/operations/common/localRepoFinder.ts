@@ -4,7 +4,7 @@ import { DefaultExcludes } from "../../project/FileGlobs";
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
 import { toPromise } from "../../project/util/projectUtils";
 import { RepoFinder } from "./RepoFinder";
-import { RepoId, SimpleRepoId } from "./RepoId";
+import { SimpleRepoId } from "./RepoId";
 
 /**
  * Look for repos under /org/repo format, from current working directory

@@ -17,12 +17,14 @@ export const ExcludeGit = "!.git/**";
  */
 export const ExcludeNodeModules = "!node_modules/**";
 
+export const ExcludeTarget = "!target/**";
+
 /**
  * Default exclusions (git and node modules).
  * Must be combined with a positive glob.
  * @type {[string , string]}
  */
-export const DefaultExcludes = [ ExcludeGit, ExcludeNodeModules ];
+export const DefaultExcludes = [ ExcludeGit, ExcludeNodeModules, ExcludeTarget ];
 
 /**
  * Include all files except with default exclusions (git and node modules)

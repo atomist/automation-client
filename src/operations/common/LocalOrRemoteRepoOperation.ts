@@ -24,10 +24,6 @@ export abstract class LocalOrRemoteRepoOperation extends LocalOrRemote {
     @MappedParameter("atomist://github_token")
     protected githubToken: string;
 
-    constructor(public repoFilter: (r: RepoId) => boolean = r => true) {
-        super();
-    }
-
     protected repoLoader(): RepoLoader {
         return defaultRepoLoader(this.githubToken);
     }

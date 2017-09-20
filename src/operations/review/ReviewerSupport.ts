@@ -1,3 +1,4 @@
+import { Parameter } from "../../decorators";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { raiseIssue } from "../../internal/util/gitHub";
@@ -15,11 +16,15 @@ export abstract class ReviewerSupport<D extends ProjectReview>
     extends LocalOrRemoteRepoOperation
     implements HandleCommand {
 
-    /**
-     * Should we raise issues for review comments?
-     * Can implement as a parameter if necessary
-     */
-    abstract get raiseIssues(): boolean;
+    @Parameter({
+        displayName: "Raise issues",
+        description: "Whether to raise issues for review comments",
+        pattern: /^(?:true|false)$/,
+        validInput: "Boolean",
+        required: false,
+        type: "boolean",
+    })
+    public raiseIssues: boolean = false;
 
     public handle(context: HandlerContext): Promise<ReviewResult<D>> {
         const load = this.repoLoader();
@@ -29,34 +34,37 @@ export abstract class ReviewerSupport<D extends ProjectReview>
         const repoIdPromises: Promise<RepoId[]> = this.repoFinder()(context);
         const projectReviews: Promise<Array<Promise<D>>> = repoIdPromises
             .then(repos => repos.map(id => {
-                if (this.repoFilter(id)) {
-                    logger.info("Attempting to review %s", JSON.stringify(id));
-                    return load(id)
-                        .then(p => {
-                            return projectReviewer(id, p);
-                        })
-                        .then(review => {
-                            // Don't attempt to raise issues when reviewing a local repo
-                            if (!this.local && review && this.raiseIssues &&
-                                review.comments && review.comments.length > 0) {
-                                return raiseIssue(this.githubToken,
-                                    review.repoId, {
-                                        title: "Outdated Spring Boot version",
-                                        body: review.comments.map(c => c.comment).join("\n"),
-                                    })
-                                    .then(_ => review);
-                            }
-                            return review;
-                        });
-                } else {
-                    // We don't care about this project. It's ineligible for review
-                    return undefined;
-                }
+                return this.repoFilter(id)
+                    .then(relevant => {
+                        if (relevant) {
+                            logger.info("Attempting to review %s", JSON.stringify(id));
+                            return load(id)
+                                .then(p => {
+                                    return projectReviewer(id, p);
+                                })
+                                .then(review => {
+                                    // Don't attempt to raise issues when reviewing a local repo
+                                    if (!this.local && review && this.raiseIssues &&
+                                        review.comments && review.comments.length > 0) {
+                                        return raiseIssue(this.githubToken,
+                                            review.repoId, {
+                                                title: "Outdated Spring Boot version",
+                                                body: review.comments.map(c => c.comment).join("\n"),
+                                            })
+                                            .then(_ => review);
+                                    }
+                                    return review;
+                                });
+                        } else {
+                            // We don't care about this project. It's ineligible for review
+                            return undefined;
+                        }
+                    });
             }));
 
         return projectReviews
-            .then(bootVersions =>
-                Promise.all(bootVersions)
+            .then(reviews =>
+                Promise.all(reviews)
                     .then(values => {
                         return {
                             code: 0,

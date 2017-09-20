@@ -22,10 +22,24 @@ export abstract class LocalOrRemote {
     })
     public local: boolean = false;
 
+    @Parameter({
+        displayName: "directory to look for projects in if working locally",
+        displayable: false,
+        description: "Directory to look for repos in. Must follow <org>/<repo> convention",
+        pattern: /^.*$/,
+        validInput: "Valid path for your OS",
+        required: false,
+    })
+    public dir: string;
+
     @MappedParameter("atomist://github_token")
     protected githubToken: string;
 
-    constructor(public repoFilter: (r: RepoId) => boolean = r => true) {
+    /**
+     * Operate on all repos matching this filter.
+     * @param {(r: RepoId) => boolean} repoFilter
+     */
+    constructor(public repoFilter: (r: RepoId) => Promise<boolean> = r => Promise.resolve(true)) {
     }
 
     protected repoFinder(): RepoFinder {
@@ -36,8 +50,8 @@ export abstract class LocalOrRemote {
      * Return the current working directory to use for finding local repos
      * @return {string}
      */
-    protected cwd() {
-        return shell.pwd();
+    protected cwd(): string {
+        return this.dir || shell.pwd();
     }
 
 }

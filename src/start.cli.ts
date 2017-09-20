@@ -74,10 +74,10 @@ function invokeOnConsole(automationServer: AutomationServer, ci: CommandInvocati
     }
     automationServer.invokeCommand(ci, ctx)
         .then(r => {
-            // console.log(`Command succeeded: ${JSON.stringify(r)}`);
+            console.log(`Command succeeded: ${JSON.stringify(r, null, 2)}`);
         })
         .catch(err => {
-            console.log(`Command failed: ${JSON.stringify(err)}`);
+            console.log(`Command failed: ${JSON.stringify(err, null, 2)}`);
             process.exit(1);
         });
 }
