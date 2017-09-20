@@ -45,20 +45,33 @@ Commands are automations that can be invoked via a Chat bot, curl or web interfa
 To create a command take a look at the following example:
 
 ```javascript
-import { CommandHandler, Parameter} from "@atomist/rug/operations/Decorators";
-import { HandleCommand, HandlerContext, HandlerResult } from "@atomist/automation-node/rug/operations/Handlers";
+import { CommandHandler, Parameter} from "@atomist/automation-client/decorators";
+import { HandleCommand, HandlerContext, HandlerResult } from "@atomist/automation-client/Handlers";
 
 @CommandHandler("HelloWorld", "Sends a hello back to the client", "hello world")
+//               ^ -- this defines a command handler               ^ -- defines the command to trigger  
+//                    named "HelloWorld"                                this handler from the bot
 export class HelloWorld implements HandleCommand {
-
-    @Parameter({pattern: "^.*$", required: true})
+//                                 ^ -- a command handler implements the HandleCommand interface
+    @Parameter({ pattern: /^.*$/, required: true })
+//  ^ -- this defines a user-provided parameter named 'name'
+//               ^ -- the parameter can be validated against a RegExp pattern
+//                                ^ -- parameters can be marked required or optional (required is default)
     public name: string;
 
-    public handle(ctx: HandlerContext): Promise<HandlerResult> {
 
+    public handle(ctx: HandlerContext): Promise<HandlerResult> {
+//  ^ -- this method is the body of the handler and where the actual code goes
+//                ^ -- HandlerContext provides access to a 'MessageClient' for sending messages to the bot 
+//                     as well as a 'GraphClient' to query your data using GraphQL
         return ctx.messageClient.respond(`Hello world, ${this.name}`)
+//                               ^ -- Calling 'respond' on the 'MessageClient' will send a message back to
+//                                    wherever that command is invoked from (eg. a DM with @atomist in Slack)             
             .then(() => {
-                return Promise.resolve({code: 0});
+                return Promise.resolve({ code: 0 });
+//                                     ^ -- Command handlers are expected to return a 'Promise' of type
+//                                          'HandlerResult' which just defines a return code. None 0 
+//                                           return codes indicate errors.                
             });
     }
 }
@@ -76,7 +89,7 @@ To create a event handler take a look at the following example:
 
 ```javascript
 import { EventFired, EventHandler, HandleEvent, HandlerContext, HandlerResult }
-    from "@atomist/automation-node/rug/operations/Handlers";
+    from "@atomist/automation-client/Handlers";
 
 @EventHandler("HelloIssue", "Notify channel on new issue", `subscription HelloIssue{
     Issue {
@@ -94,7 +107,7 @@ export class HelloIssue implements HandleEvent<any> {
     public handle(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult> {
 
         return Promise.all(e.data.Issue.map(i =>
-            ctx.messageClient.addressChannels(`Got a new issue  \`${i.number}# ${i.title}\``,
+            ctx.messageClient.addressChannels(`Got a new issue \`${i.number}# ${i.title}\``,
                 i.repo.channels.map(c => c.name ))))
             .then(() => {
                 return Promise.resolve({code: 0});
@@ -113,7 +126,7 @@ In order to register your handlers with the Automation node, please create a fil
 the following contents in:
 
 ```javascript
-import { Configuration } from "@atomist/automation-node/configuration";
+import { Configuration } from "@atomist/automation-client/configuration";
 
 import { HelloWorld } from "./commands/HelloWorld";
 import { HelloIssue } from "./events/HelloIssue";
