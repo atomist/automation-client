@@ -23,4 +23,15 @@ export const configuration: Configuration = {
         () => new HelloIngestor(),
     ],
     token: GitHubToken,
+    http: {
+        enabled: true,
+        auth: {
+            basic: {
+                enabled: false,
+            },
+            bearer: {
+                enabled: false,
+            }
+        }
+    }
 };

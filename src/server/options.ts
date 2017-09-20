@@ -19,7 +19,7 @@ export interface RunOptions {
             }
             bearer?: {
                 enabled: boolean;
-                token: string;
+                token?: string;
             },
         }
     };

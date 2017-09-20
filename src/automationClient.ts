@@ -99,13 +99,16 @@ export class AutomationClient {
                     expressOptions.auth.basic.enabled = true;
                     expressOptions.auth.basic.username = http.auth.basic.username;
                     expressOptions.auth.basic.password = http.auth.basic.password;
+                } else if (http.auth.basic) {
+                    expressOptions.auth.basic.enabled = http.auth.basic.enabled;
                 }
                 if (http.auth.bearer && http.auth.bearer.enabled) {
                     expressOptions.auth.bearer.enabled = http.auth.bearer.enabled;
                     expressOptions.auth.bearer.token = http.auth.bearer.token;
+                } else if (http.auth.bearer) {
+                    expressOptions.auth.bearer.enabled = http.auth.bearer.enabled;
                 }
             }
-
         }
         if (!http || http.enabled) {
             this.httpServer = new ExpressServer(this.automations, expressOptions,

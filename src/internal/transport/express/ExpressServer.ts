@@ -8,7 +8,7 @@ import { CommandHandlerMetadata, IngestorMetadata } from "../../metadata/metadat
 import * as appRoot from "app-root-path";
 import * as mustacheExpress from "mustache-express";
 
-import { Express } from "express";
+import { Express, Handler } from "express";
 import * as fs from "fs";
 import * as os from "os";
 import { DefaultStagingAtomistGraphQLServer } from "../../../automationClient";
@@ -56,81 +56,50 @@ export class ExpressServer {
             exp.use(express.static(appRoot + "/node_modules/@atomist/automation-client/public"));
         }
 
-        if (this.options.auth && this.options.auth.basic && this.options.auth.basic.enabled) {
-            const user = this.options.auth.basic.username ? this.options.auth.basic.username : "admin";
-            const pwd = this.options.auth.basic.password ? this.options.auth.basic.password : guid();
-
-            passport.use(new http.BasicStrategy(
-                (username, password, done) => {
-                    if (user === username && pwd === password) {
-                        done(null, { user: username });
-                    } else {
-                        done(null, false);
-                    }
-                },
-            ));
-
-            if (!this.options.auth.basic.password) {
-                logger.info(`Auto-generated credentials for web endpoints are user '${user}' and password '${pwd}'`);
-            }
-         }
-
-        if (this.options.auth && this.options.auth.bearer && this.options.auth.bearer.enabled) {
-            const tk = this.options.auth.bearer.token;
-
-            passport.use(new bearer.Strategy(
-                (token, done) => {
-                    if (token === tk) {
-                        done(null, {token } );
-                    } else {
-                        done(null, false);
-                    }
-                },
-            ));
-        }
+        this.setupAuthentication();
 
         // Set up routes
-        exp.get(`${ApiBase}/automations`, passport.authenticate(["basic", "bearer" ], { session: false }),
+        exp.get(`${ApiBase}/automations`, this.authenticate("basic", "bearer"),
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(automations.rugs);
         });
 
-        exp.get(`${ApiBase}/metrics`, passport.authenticate(["basic", "bearer" ], { session: false }),
+        exp.get(`${ApiBase}/metrics`, this.authenticate("basic", "bearer"),
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(report.summary());
         });
 
-        exp.get(`${ApiBase}/events`, passport.authenticate(["basic", "bearer" ], { session: false }),
+        exp.get(`${ApiBase}/events`, this.authenticate("basic", "bearer"),
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(eventStore.events(req.query.from));
         });
 
-        exp.get(`${ApiBase}/commands`, passport.authenticate(["basic", "bearer" ], { session: false }),
+        exp.get(`${ApiBase}/commands`, this.authenticate("basic", "bearer"),
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(eventStore.commands(req.query.from));
         });
 
-        exp.get(`${ApiBase}/messages`, passport.authenticate(["basic", "bearer" ], { session: false }),
+        exp.get(`${ApiBase}/messages`, this.authenticate("basic", "bearer"),
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(eventStore.messages(req.query.from));
         });
 
-        exp.get("/graphql", passport.authenticate("basic", { session: false }),
+        exp.get("/graphql", this.authenticate("basic"),
             (req, res) => {
                 res.render("graphql.html", { token: getJwtToken(), graphQLUrl: DefaultStagingAtomistGraphQLServer });
         });
 
-        exp.get("/", passport.authenticate("basic", { session: false }),
+        exp.get("/", this.authenticate("basic"),
             (req, res) => {
                 res.render("index.html");
         });
@@ -159,7 +128,7 @@ export class ExpressServer {
                                                 h: CommandHandlerMetadata,
                                                 handle: (res, result) => any) {
 
-        exp.get(url, passport.authenticate(["basic", "bearer" ], { session: false }),
+        exp.get(url, this.authenticate("basic", "bearer"),
             (req, res) => {
                 const args = h.parameters.filter(p => {
                     const value = req.query[p.name];
@@ -213,6 +182,60 @@ export class ExpressServer {
                 })
                 .catch(err => res.send(err));
         });
+    }
+
+    private setupAuthentication() {
+
+        if (this.options.auth && this.options.auth.basic && this.options.auth.basic.enabled) {
+            const user = this.options.auth.basic.username ? this.options.auth.basic.username : "admin";
+            const pwd = this.options.auth.basic.password ? this.options.auth.basic.password : guid();
+
+            passport.use(new http.BasicStrategy(
+                (username, password, done) => {
+                    if (user === username && pwd === password) {
+                        done(null, { user: username });
+                    } else {
+                        done(null, false);
+                    }
+                },
+            ));
+
+            if (!this.options.auth.basic.password) {
+                logger.info(`Auto-generated credentials for web endpoints are user '${user}' and password '${pwd}'`);
+            }
+        }
+
+        if (this.options.auth && this.options.auth.bearer && this.options.auth.bearer.enabled) {
+            const tk = this.options.auth.bearer.token;
+
+            passport.use(new bearer.Strategy(
+                (token, done) => {
+                    if (token === tk) {
+                        done(null, {token } );
+                    } else {
+                        done(null, false);
+                    }
+                },
+            ));
+        }
+    }
+
+    private authenticate(...strategies: string[]): Handler {
+
+        const actualStrategies = [];
+        if (this.options.auth) {
+            if (this.options.auth.basic.enabled && strategies.indexOf("basic") >= 0) {
+                actualStrategies.push("basic");
+            }
+            if (this.options.auth.bearer.enabled && strategies.indexOf("bearer") >= 0) {
+                actualStrategies.push("bearer");
+            }
+        }
+        if (actualStrategies.length > 0) {
+            return passport.authenticate(actualStrategies, { session: false });    
+        } else {
+            return (req, res, next) => { next(); };
+        }
     }
 }
 
