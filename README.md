@@ -36,6 +36,19 @@ $ npm install @atomist/automation-client --save
 
 You can find reference documentation at https://atomist.github.io/automation-client-ts/ .
 
+## Starting from a Sample
+
+We also provide a working project with some basic automations that you can use to get started quickly. The repository
+is at [atomist/automation-client-samples-ts](https://github.com/atomist/automation-client-samples-ts).
+
+To get started run the following commands:
+
+```
+$ git clone git@github.com:atomist/automation-client-samples-ts.git
+$ cd automation-client-samples-ts
+$ npm install
+```
+
 # Implementing Automations
 
 ## Command Handlers
@@ -166,10 +179,10 @@ export const configuration: Configuration = {
     ],
 //  ^ -- the same for event handlers    
     
-    token: "34563sdf......................wq455eze",
+    token: process.env.GITHUB_TOKEN || "34563sdf......................wq455eze",
 //  ^ -- configure a GitHub personal access token with org:read scope; this is used to authenticate the 
 //       automation-client with Atomist to make sure the client should be granted access to the ingested data
-//       and chat teamx^    
+//       and chat team   
 };
 ```
 
@@ -179,7 +192,7 @@ This file allows you to register your handlers as well as to specify name and ve
 
 There are several ways you can run your automation node and have it connect to Atomist servers.
 
-## Run Locally
+## Running Locally
 
 To start up the node locally and have it listen to incoming events, just run:
 
@@ -188,9 +201,9 @@ $ npm run compile && $(npm bin)/atomist-client
 
 ```
 
-## Push to Cloud Foundry
+## Pushing to Cloud Foundry
 
-To prepare for your automation server to run on any Cloud Foundry
+To prepare for your automation client to run on any Cloud Foundry
 instance, please make sure that you have an account on an instance of
 Cloud Foundry and that you have the Cloud Foundry CLI installed,
 configured and logged in.
@@ -202,12 +215,16 @@ project. Put the following minimum content into the file:
 
 applications:
 - name: YOUR_APP_NAME
-  command: $(npm bin)/atomist-node
+  command: $(npm bin)/atomist-client
   memory: 512M
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack
   env:
-    GITHUB_TOKEN: YOUR_GITHUB_TOKEN
+    GITHUB_TOKEN: <your GITHUB_TOKEN>
+    SUPPRESS_NO_CONFIG_WARNING: true
 ```
+
+Thare more recommended ways for getting your `GITHUB_TOKEN` imto your automation-client instance. 
+Take a look at [`cfenv`](https://www.npmjs.com/package/cfenv).
 
 Next please add an `"engines"` top-level entry to your `package.json`
 like the following:
@@ -225,6 +242,57 @@ Now you're ready to `cf push` your automation server to Cloud Foundry:
 $ cf push
 
 ```
+
+## REST APIs provided by the automation-client
+
+When starting up the `automation-client` exposes a couple of endpoints that can be accessed via HTTP. 
+
+### Authentication
+The endpoints are protected by HTTP Basic Auth or token-based authentication. When starting the client, you'll see 
+a log message of the following format:
+
+```
+2017-09-20T08:22:32.789Z - info	: Auto-generated credentials for web endpoints are user 'admin' and password '4d6390d1-de5c-6764-a078-7308503ddba5'
+```
+
+By default the automation-client auto-generates some credentials for you use. To configure your own credentials, change
+`atomist.config.ts` and put a following section in:
+
+```typescript
+export const configuration: Configuration = {
+    ...
+    http: {
+        enabled: true,
+        auth: {
+            basic: {
+                enabled: true,
+                username: "some user",
+                password: "some password",
+            },
+        },
+    },
+};
+```
+
+### Endpoints
+
+| Path  | Description |
+|-------|-------------|
+| `/metrics` | exposes metrics around command, event handler executions |
+| `/commands` | all incoming request for running command handlers |
+| `/events` | all incoming events for event handlers |
+| `/messages` | all outgoing messages sent by handlers |
+| `/automations` | metadata of all available automations |
+
+As an example, here is an a command to get the current metrics: 
+
+```
+$ curl -X GET \
+     http://localhost:2866/metrics \
+     -H 'authorization: Bearer 34563sdf......................wq455eze"' \
+     -H 'content-type: application/json'
+```
+
 
 ## Support
 
