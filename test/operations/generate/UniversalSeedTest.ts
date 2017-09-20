@@ -39,7 +39,7 @@ describe("UniversalSeed", () => {
         assert(md.parameters.some(p => p.name === "targetRepo"));
         assert(md.parameters.some(p => p.name === "visibility"));
         assert(md.parameters.some(p => p.name === "sourceBranch"));
-        assert(md.mapped_parameters.some(s => s.local_key === "githubToken"));
+        assert(md.secrets.some(s => s.name === "githubToken"));
     }
 
     function validateJavaSeedMetadata(md: CommandHandlerMetadata) {
