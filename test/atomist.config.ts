@@ -31,7 +31,7 @@ export const configuration: Configuration = {
             },
             bearer: {
                 enabled: false,
-            }
-        }
-    }
+            },
+        },
+    },
 };

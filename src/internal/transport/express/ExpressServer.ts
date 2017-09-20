@@ -232,7 +232,7 @@ export class ExpressServer {
             }
         }
         if (actualStrategies.length > 0) {
-            return passport.authenticate(actualStrategies, { session: false });    
+            return passport.authenticate(actualStrategies, { session: false });
         } else {
             return (req, res, next) => { next(); };
         }
