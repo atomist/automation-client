@@ -44,7 +44,7 @@ Commands are automations that can be invoked via a Chat bot, curl or web interfa
 
 To create a command take a look at the following example:
 
-```javascript
+```typescript
 import { CommandHandler, Parameter} from "@atomist/automation-client/decorators";
 import { HandleCommand, HandlerContext, HandlerResult } from "@atomist/automation-client/Handlers";
 
@@ -53,6 +53,7 @@ import { HandleCommand, HandlerContext, HandlerResult } from "@atomist/automatio
 //                    named "HelloWorld"                                this handler from the bot
 export class HelloWorld implements HandleCommand {
 //                                 ^ -- a command handler implements the HandleCommand interface
+    
     @Parameter({ pattern: /^.*$/, required: true })
 //  ^ -- this defines a user-provided parameter named 'name'
 //               ^ -- the parameter can be validated against a RegExp pattern
@@ -64,7 +65,7 @@ export class HelloWorld implements HandleCommand {
 //  ^ -- this method is the body of the handler and where the actual code goes
 //                ^ -- HandlerContext provides access to a 'MessageClient' for sending messages to the bot 
 //                     as well as a 'GraphClient' to query your data using GraphQL
-        return ctx.messageClient.respond(`Hello world, ${this.name}`)
+        return ctx.messageClient.respond(`Hello ${this.name}`)
 //                               ^ -- Calling 'respond' on the 'MessageClient' will send a message back to
 //                                    wherever that command is invoked from (eg. a DM with @atomist in Slack)             
             .then(() => {
@@ -87,11 +88,11 @@ Event handlers are automations that allow handling of events based on registered
 
 To create a event handler take a look at the following example:
 
-```javascript
+```typescript
 import { EventFired, EventHandler, HandleEvent, HandlerContext, HandlerResult }
     from "@atomist/automation-client/Handlers";
 
-@EventHandler("HelloIssue", "Notify channel on new issue", `subscription HelloIssue{
+@EventHandler("HelloIssue", "Notify channel on new issue", `subscription HelloIssue {
     Issue {
       number
       title
@@ -102,15 +103,27 @@ import { EventFired, EventHandler, HandleEvent, HandlerContext, HandlerResult }
       }
      }
 }`)
+//             ^ -- Defines an event handler named          ^ -- This is GraphQL subscription you want to match
+//                  'HelloIssue'                                 to trigger your handler. Queries can also be
+//                                                               externalized
 export class HelloIssue implements HandleEvent<any> {
-
+//                                 ^ -- an event handler implements the 'HandleEvent' interface
+    
     public handle(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult> {
-
+//                ^ -- 'EventFired' gives you access to the data that matched the subscription. Since GraphQL queries
+//                      return JSON it is very easy to work with the data in JavaScript/TypeScript  
+//                                    ^ -- 'HandlerContext' gives access to 'MessageClient' and 'GraphClient'     
         return Promise.all(e.data.Issue.map(i =>
             ctx.messageClient.addressChannels(`Got a new issue \`${i.number}# ${i.title}\``,
+//                            ^ -- besides responding you can address users and channels in Slack by using the
+//                                 respective methods on 'MessageClient'            
                 i.repo.channels.map(c => c.name ))))
+//              ^ -- in our correlated data model repositories can be mapped to channels in a chat team. This will
+//                   effectively send a message into each mapped channel                
             .then(() => {
-                return Promise.resolve({code: 0});
+                return Promise.resolve({ code: 0 });
+//                                     ^ -- Event handlers are expected to return a 'HandlerResult'. None 0 code
+//                                          indicate error occurred                 
             });
     }
 }
@@ -122,26 +135,41 @@ send a simple message back to the associated slack team.
 
 ## Register Handlers
 
-In order to register your handlers with the Automation node, please create a file `atomist.config.ts` and put
-the following contents in:
+In order to register your handlers with the Automation client, please create a file called `atomist.config.ts` and put
+the following contents into it:
 
-```javascript
+```typescript
 import { Configuration } from "@atomist/automation-client/configuration";
 
 import { HelloWorld } from "./commands/HelloWorld";
 import { HelloIssue } from "./events/HelloIssue";
 
 export const configuration: Configuration = {
+//                          ^ -- 'Configuration' defines all possible configuration options    
+    
     name: "your_module_name",
+//  ^ -- each automation-client should have a unique name
+    
     version: "0.0.1",
+//  ^ -- and a semver version    
+    
     teamId: "T1L0VDKJP",
+//  ^ -- the id of your chat team which you can get by running '@atomist pwd'    
+    
     commands: [
+//  ^ -- register all your command handlers        
         () => new HelloWorld(),
     ],
+    
     events: [
         () => new HelloIssue(),
     ],
-    token: "<your github token with read:org scope>",
+//  ^ -- the same for event handlers    
+    
+    token: "34563sdf......................wq455eze",
+//  ^ -- configure a GitHub personal access token with org:read scope; this is used to authenticate the 
+//       automation-client with Atomist to make sure the client should be granted access to the ingested data
+//       and chat teamx^    
 };
 ```
 
