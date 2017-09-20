@@ -34,7 +34,7 @@ by running the following command:
 $ npm install @atomist/automation-client --save
 ```
 
-You can find reference documentation at https://atomist.github.io/automation-client-ts/ .
+You can find reference documentation at https://atomist.github.io/automation-client-ts/.
 
 ## Starting from a Sample
 
@@ -243,7 +243,12 @@ $ cf push
 
 ```
 
-## REST APIs provided by the automation-client
+## Dashboard (experimental)
+
+The `automation-client` serves up a simple dashboard and GraphQL browser to explore data and author queries. When 
+client is running head over to `http://localhost:2866/` or `http://localhost:2866/graphql`.
+
+## REST APIs
 
 When starting up the `automation-client` exposes a couple of endpoints that can be accessed via HTTP. 
 
