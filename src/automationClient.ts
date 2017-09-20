@@ -1,18 +1,16 @@
+import { Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
+import { AutomationEventListener } from "./internal/transport/AutomationEventListener";
 import { ExpressServer, ExpressServerOptions } from "./internal/transport/express/ExpressServer";
-import { WebSocketClient, WebSocketClientOptions } from "./internal/transport/websocket/WebSocketClient";
-import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
-
-import { Configuration } from "./configuration";
-import {
-    DefaultExpressAutomationEventListener,
-} from "./internal/transport/express/DefaultExpressAutomationEventListener";
 import { DefaultWebSocketAutomationEventListener,
 } from "./internal/transport/websocket/DefaultWebSocketAutomationEventListener";
 import { prepareRegistration } from "./internal/transport/websocket/Payloads";
+import { WebSocketAutomationEventListener } from "./internal/transport/websocket/WebSocketAutomationEventListener";
+import { WebSocketClient, WebSocketClientOptions } from "./internal/transport/websocket/WebSocketClient";
 import { logger } from "./internal/util/logger";
 import { AutomationServer } from "./server/AutomationServer";
+import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
 
 export const DefaultStagingAtomistServer =
     "https://automation-staging.atomist.services/registration";
@@ -60,23 +58,33 @@ export class AutomationClient {
 
     public run(): Promise<any> {
         logger.info(`Starting Atomist automation client for ${this.configuration.name}@${this.configuration.version}`);
+        const listeners = this.setupEventListeners();
+        const options: WebSocketClientOptions = {
+            graphUrl: DefaultStagingAtomistGraphQLServer,
+            registrationUrl: DefaultStagingAtomistServer,
+            token: this.configuration.token,
+        };
         return Promise.all([
-            Promise.resolve(this.runWs()),
-            Promise.resolve(this.runHttp()),
+            Promise.resolve(this.runWs(listeners, options)),
+            Promise.resolve(this.runHttp(listeners)),
         ]);
     }
 
-    private runWs(): void {
+    private setupEventListeners(): WebSocketAutomationEventListener[] {
         const webSocketOptions: WebSocketClientOptions = {
             graphUrl: DefaultStagingAtomistGraphQLServer,
             registrationUrl: DefaultStagingAtomistServer,
             token: this.configuration.token,
         };
-        this.webSocketClient = new WebSocketClient(() => prepareRegistration(this.automations.rugs), webSocketOptions,
-            [new DefaultWebSocketAutomationEventListener(this.automations, webSocketOptions)]);
+        return [new DefaultWebSocketAutomationEventListener(this.automations, webSocketOptions)];
     }
 
-    private runHttp(): void {
+    private runWs(listeners: WebSocketAutomationEventListener[], options: WebSocketClientOptions): void {
+        this.webSocketClient = new WebSocketClient(() => prepareRegistration(this.automations.rugs), options,
+            listeners );
+    }
+
+    private runHttp(listeners: AutomationEventListener[]): void {
         const http = this.configuration.http;
         this.httpPort = http && http.port ? http.port : (process.env.PORT ? +process.env.PORT : 2866);
         const expressOptions: ExpressServerOptions = {
@@ -111,8 +119,7 @@ export class AutomationClient {
             }
         }
         if (!http || http.enabled) {
-            this.httpServer = new ExpressServer(this.automations, expressOptions,
-                [new DefaultExpressAutomationEventListener(this.automations)]);
+            this.httpServer = new ExpressServer(this.automations, expressOptions, listeners);
         }
     }
 }

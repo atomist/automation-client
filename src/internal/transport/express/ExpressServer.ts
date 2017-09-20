@@ -143,7 +143,7 @@ export class ExpressServer {
                 rug: {},
                 mapped_parameters: undefined,
                 secrets: undefined,
-                correlation_context: [],
+                correlation_context: {team: { id: this.automations.rugs.team_id }},
                 corrid: guid(),
                 team: {
                     id: this.automations.rugs.team_id,

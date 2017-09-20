@@ -12,9 +12,6 @@ export class HelloWorld implements HandleCommand {
     @Parameter({pattern: /^.*$/})
     public name: string;
 
-    @Secret(Secrets.USER_TOKEN)
-    public userToken: string;
-
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
         logger.info(`Incoming parameter was ${this.name}`);
 
@@ -31,7 +28,7 @@ export class HelloWorld implements HandleCommand {
             }],
         };
 
-        ctx.messageClient.recordAddressUsers(msg, "cd", { id: "new/cd/test" });
+        ctx.messageClient.recordAddressUsers(msg, "cd");
             // .recordRespond(`Hello ${this.name}`)
             // .recordRespond(msg)
             // .recordAddressChannels(msg, "general");
