@@ -1,7 +1,7 @@
 import { Project } from "../../project/Project";
 
 /**
- * Modifies the project, returns information about the modification.
+ * Modifies the given project, returning information about the modification.
  */
 export type ProjectEditor<ER extends EditResult> = (p: Project) => Promise<ER>;
 
