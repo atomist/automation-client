@@ -1,5 +1,5 @@
- import * as GraphQL from "../../graph/graphQL";
- import {
+import * as GraphQL from "../../graph/graphQL";
+import {
     CommandHandlerMetadata,
     EventHandlerMetadata,
     IngestorMetadata,
@@ -16,7 +16,7 @@
  * @param r handler instance
  * @return {any}
  */
- export function metadataFromInstance(r: any): CommandHandlerMetadata | EventHandlerMetadata | IngestorMetadata {
+export function metadataFromInstance(r: any): CommandHandlerMetadata | EventHandlerMetadata | IngestorMetadata {
     if (isEventHandlerMetadata(r)) {
         return addName(r);
     } else if (isIngestorMetadata(r)) {
@@ -36,7 +36,7 @@ function addName(r: CommandHandlerMetadata | EventHandlerMetadata | IngestorMeta
      return r;
 }
 
- function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMetadata | IngestorMetadata {
+function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMetadata | IngestorMetadata {
     switch (r.__kind) {
         case "command-handler" :
             return {
@@ -87,11 +87,11 @@ function addName(r: CommandHandlerMetadata | EventHandlerMetadata | IngestorMeta
     }
 }
 
- function secretsMetadataFromInstance(r: any): SecretDeclaration[] {
+function secretsMetadataFromInstance(r: any): SecretDeclaration[] {
     return r.__secrets ? r.__secrets.map(s => ({name: s.name, path: s.path })) : [];
 }
 
- function mappedParameterMetadataFromInstance(r: any): MappedParameterDeclaration[] {
+function mappedParameterMetadataFromInstance(r: any): MappedParameterDeclaration[] {
     return r.__mappedParameters ? r.__mappedParameters.map(mp =>
         ({local_key: mp.localKey, foreign_key: mp.foreignKey})) : [];
 }

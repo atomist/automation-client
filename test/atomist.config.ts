@@ -1,8 +1,8 @@
 import { Configuration } from "../src/configuration";
 import { HelloWorld } from "./command/HelloWorld";
+import { PlainHelloWorld } from "./command/PlainHelloWorld";
 import { HelloIngestor } from "./event/HelloIngestor";
 import { HelloIssue } from "./event/HelloIssue";
-import { PlainHelloWorld } from "./command/PlainHelloWorld";
 
 export const GitHubToken = process.env.GITHUB_TOKEN;
 
