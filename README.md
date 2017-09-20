@@ -61,9 +61,9 @@ To create a command take a look at the following example:
 import { CommandHandler, Parameter} from "@atomist/automation-client/decorators";
 import { HandleCommand, HandlerContext, HandlerResult } from "@atomist/automation-client/Handlers";
 
-@CommandHandler("HelloWorld", "Sends a hello back to the client", "hello world")
-//               ^ -- this defines a command handler               ^ -- defines the command to trigger  
-//                    named "HelloWorld"                                this handler from the bot
+@CommandHandler("Sends a hello back to the client", "hello world")
+//                                                   ^ -- defines the command to trigger  
+//                      "                                 this handler from the bot
 export class HelloWorld implements HandleCommand {
 //                                 ^ -- a command handler implements the HandleCommand interface
     
@@ -105,7 +105,7 @@ To create a event handler take a look at the following example:
 import { EventFired, EventHandler, HandleEvent, HandlerContext, HandlerResult }
     from "@atomist/automation-client/Handlers";
 
-@EventHandler("HelloIssue", "Notify channel on new issue", `subscription HelloIssue {
+@EventHandler("Notify channel on new issue", `subscription HelloIssue {
     Issue {
       number
       title
@@ -116,9 +116,9 @@ import { EventFired, EventHandler, HandleEvent, HandlerContext, HandlerResult }
       }
      }
 }`)
-//             ^ -- Defines an event handler named          ^ -- This is GraphQL subscription you want to match
-//                  'HelloIssue'                                 to trigger your handler. Queries can also be
-//                                                               externalized
+//                                            ^ -- This is GraphQL subscription you want to match
+//                                                 to trigger your handler. Queries can also be
+//                                                 externalized
 export class HelloIssue implements HandleEvent<any> {
 //                                 ^ -- an event handler implements the 'HandleEvent' interface
     
