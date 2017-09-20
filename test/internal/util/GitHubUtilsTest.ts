@@ -24,7 +24,7 @@ describe("GitHubUtils", () => {
 
     it("check an existing nested file", done => {
         hasFile(GitHubToken, "atomist-seeds", "spring-rest-seed",
-            "/src/main/java/com/atomist/springteam/springrestseed/SpringRestSeedApplication.java")
+            "/src/main/java/com/atomist/spring/SpringRestSeedApplication.java")
             .then(r => {
                 assert(r === true);
                 done();
