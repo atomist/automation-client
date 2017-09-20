@@ -2,9 +2,9 @@ import {
     Action,
     SlackMessage,
 } from "@atomist/slack-messages/SlackMessages";
+import * as _ from "lodash";
 import { guid } from "../../internal/util/string";
 import { ScriptedFlushable } from "../../project/Flushable";
-import * as _ from "lodash";
 
 /**
  * Implemented by classes that can send bot messages, whether to

@@ -1,10 +1,10 @@
 import * as shell from "shelljs";
 
 import { MappedParameter, Parameter, Secret } from "../../decorators";
+import { Secrets } from "../../Handlers";
 import { allReposInOrg } from "../common/AllReposInOrgRepoFinder";
 import { RepoFinder } from "../common/RepoFinder";
 import { RepoId } from "../common/RepoId";
-import { Secrets } from "../../Handlers";
 
 /**
  * Convenient superclass that can handle operating on projects transparently locally or from GitHub.

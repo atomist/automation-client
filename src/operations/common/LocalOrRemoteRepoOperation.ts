@@ -1,8 +1,8 @@
+import { Secret } from "../../decorators";
+import { Secrets } from "../../Handlers";
 import { defaultRepoLoader } from "../common/DefaultRepoLoader";
 import { LocalOrRemote } from "./LocalOrRemote";
 import { RepoLoader } from "./repoLoader";
-import { Secrets } from "../../Handlers";
-import { Secret } from "../../decorators";
 
 /**
  * Convenient superclass that can handle operating on projects transparently locally or from GitHub.
