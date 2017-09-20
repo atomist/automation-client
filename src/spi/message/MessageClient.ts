@@ -1,13 +1,10 @@
 import {
     Action,
-    ButtonSpec,
-    rugButtonFrom,
-    rugMenuFrom,
-    SelectSpec,
     SlackMessage,
 } from "@atomist/slack-messages/SlackMessages";
 import { guid } from "../../internal/util/string";
 import { ScriptedFlushable } from "../../project/Flushable";
+import * as _ from "lodash";
 
 /**
  * Implemented by classes that can send bot messages, whether to
@@ -122,4 +119,87 @@ export function menuForCommand(selectSpec: SelectSpec, commandName: string, para
 
 export function isSlackMessage(object: any): object is SlackMessage {
     return !object.length;
+}
+
+function rugButtonFrom(action: ButtonSpec, command: any): Action {
+    if (!command.id) {
+        throw new Error(`Please provide a valid non-empty command id`);
+    }
+    const button: Action = {
+        text: action.text,
+        type: "button",
+        name: "rug",
+        value: command.id,
+    };
+    _.forOwn(action, (v, k) => {
+        (button as any)[k] = v;
+    });
+    return button;
+}
+
+function rugMenuFrom(action: SelectSpec, command: any): Action {
+
+    if (!command.id) {
+        throw new Error("SelectableIdentifiableInstruction must have id set");
+    }
+
+    if (!command.parameterName) {
+        throw new Error("SelectableIdentifiableInstruction must have parameterName set");
+    }
+
+    const select: Action = {
+        text: action.text,
+        type: "select",
+        name: `rug::${command.id}`,
+    };
+
+    if (typeof action.options === "string") {
+        select.data_source = action.options;
+    } else if (action.options.length > 0) {
+        const first = action.options[0] as any;
+        if (first.value) {
+            // then it's normal options
+            select.options = action.options as SelectOption[];
+        } else {
+            // then it's option groups
+            select.option_groups = action.options as OptionGroup[];
+        }
+    }
+
+    _.forOwn(action, (v, k) => {
+        if (k !== "options") {
+            (select as any)[k] = v;
+        }
+    });
+    return select;
+}
+
+export interface ActionConfirmation {
+    title?: string;
+    text: string;
+    ok_text?: string;
+    dismiss_text?: string;
+}
+
+export interface ButtonSpec {
+    text: string;
+    style?: string;
+    confirm?: ActionConfirmation;
+}
+
+export interface SelectOption {
+    text: string;
+    value: string;
+}
+
+export interface OptionGroup {
+    text: string;
+    options: SelectOption[];
+}
+
+export type DataSource = "static" | "users" | "channels" | "conversations" | "external";
+
+export interface SelectSpec {
+    text: string;
+    options: SelectOption[] | DataSource | OptionGroup[];
 }

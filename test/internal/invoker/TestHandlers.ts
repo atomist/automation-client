@@ -1,8 +1,6 @@
 import { HandleCommand } from "../../../src/HandleCommand";
 import { HandlerContext } from "../../../src/HandlerContext";
 
-import { MappedParameters } from "@atomist/rug/operations/Handlers";
-
 import * as assert from "power-assert";
 import {
     CommandHandler, EventHandler, Ingestor, MappedParameter, Parameter, Secret,
@@ -10,6 +8,7 @@ import {
 } from "../../../src/decorators";
 import { EventFired, HandleEvent } from "../../../src/HandleEvent";
 import { HandlerResult } from "../../../src/HandlerResult";
+import { MappedParameters } from "../../../src/Handlers";
 
 @CommandHandler("AddAtomistSpringAgent", "add the Atomist Spring Boot agent to a Spring Boot project")
 @Tags("atomist", "spring")

@@ -1,10 +1,10 @@
 import * as shell from "shelljs";
 
-import { MappedParameter } from "@atomist/rug/operations/Decorators";
-import { Parameter } from "../../decorators";
+import { MappedParameter, Parameter, Secret } from "../../decorators";
 import { allReposInOrg } from "../common/AllReposInOrgRepoFinder";
 import { RepoFinder } from "../common/RepoFinder";
 import { RepoId } from "../common/RepoId";
+import { Secrets } from "../../Handlers";
 
 /**
  * Convenient superclass that can handle operating on projects transparently locally or from GitHub.
@@ -32,7 +32,7 @@ export abstract class LocalOrRemote {
     })
     public dir: string;
 
-    @MappedParameter("atomist://github_token")
+    @Secret(Secrets.ORG_TOKEN)
     protected githubToken: string;
 
     /**

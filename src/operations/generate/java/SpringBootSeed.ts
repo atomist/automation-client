@@ -1,6 +1,4 @@
-import { Parameter } from "@atomist/rug/operations/Decorators";
-
-import { CommandHandler, Tags } from "../../../decorators";
+import { CommandHandler, Parameter, Tags } from "../../../decorators";
 import { logger } from "../../../internal/util/logger";
 import { Project, ProjectNonBlocking } from "../../../project/Project";
 import { doWithFiles } from "../../../project/util/projectUtils";
@@ -20,8 +18,7 @@ export class SpringBootSeed extends JavaSeed {
     @Parameter({
         displayName: "Class Name",
         description: "name for the service class",
-        // TODO dd please fix
-        pattern: ".*",
+        pattern: /^.*$/,
         validInput: "a valid Java class name, which contains only alphanumeric characters, $ and _" +
         " and does not start with a number",
         minLength: 1,

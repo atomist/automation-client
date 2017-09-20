@@ -1,11 +1,3 @@
-import {
-    ChannelAddress,
-    DirectedMessage,
-    MessageMimeTypes,
-    ResponseMessage,
-    UpdatableMessage,
-    UserAddress,
-} from "@atomist/rug/operations/Handlers";
 import { HandleCommand } from "./HandleCommand";
 import { HandlerContext } from "./HandlerContext";
 import { Failure, HandlerResult, Success } from "./HandlerResult";
@@ -14,7 +6,6 @@ import { CommandHandler, EventHandler, MappedParameter, Parameter, Secret, Tags 
 import { EventFired, HandleEvent } from "./HandleEvent";
 
 export { HandlerResult, HandlerContext, HandleCommand, Success, Failure };
-export { DirectedMessage, ResponseMessage, UpdatableMessage, UserAddress, ChannelAddress, MessageMimeTypes };
 export { HandleEvent, EventFired };
 export { EventHandler, Parameter, CommandHandler, MappedParameter, Secret, Tags };
 
