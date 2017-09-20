@@ -3707,9 +3707,9 @@ function init() {
   //var host = "http://localhost:2866";
   var host = "";
 
-  $.when($.getJSON(host + "/api/v1/automations", function (data) {
+  $.when($.getJSON(host + "/automations", function (data) {
     automations = data;
-  }), $.getJSON(host + "/api/v1/metrics", function (data) {
+  }), $.getJSON(host + "/metrics", function (data) {
     metrics = data;
   })).then(function () {
     if (automations && metrics) {
@@ -3755,7 +3755,7 @@ function init() {
               row += "</div>";
             });
           }
-          row += "<input type='submit' class='btn btn-primary' value='Run' formaction='/api/v1/command/" + kebabCase(element.name) + "'>";
+          row += "<input type='submit' class='btn btn-primary' value='Run' formaction='/command/" + kebabCase(element.name) + "'>";
           row += "</form></div>";
           row += "</td><td>";
           row += "</td>";

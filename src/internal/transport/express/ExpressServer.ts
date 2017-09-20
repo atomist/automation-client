@@ -23,7 +23,7 @@ import * as _ from "lodash";
 import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
 
-const ApiBase = "/api/v1";
+const ApiBase = "";
 
 /**
  * Registers an endpoint for every automation and exposes
