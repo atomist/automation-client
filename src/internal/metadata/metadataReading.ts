@@ -18,14 +18,22 @@
  */
  export function metadataFromInstance(r: any): CommandHandlerMetadata | EventHandlerMetadata | IngestorMetadata {
     if (isEventHandlerMetadata(r)) {
-        return r;
+        return addName(r);
     } else if (isIngestorMetadata(r)) {
-        return r;
+        return addName(r);
     } else if (isCommandHandlerMetadata(r)) {
-        return r;
+        return addName(r);
     } else {
         return metadataFromDecorator(r);
     }
+}
+
+function addName(r: CommandHandlerMetadata | EventHandlerMetadata | IngestorMetadata):
+    CommandHandlerMetadata | EventHandlerMetadata | IngestorMetadata {
+     if (!r.name) {
+         r.name = r.constructor.name;
+     }
+     return r;
 }
 
  function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMetadata | IngestorMetadata {
@@ -75,7 +83,7 @@
                 route: r.__route,
             };
         default :
-            throw new Error(`Unsupported command type '${r.__kind}'`);
+            throw new Error(`Unsupported automation '${r.constructor.name}'`);
     }
 }
 

@@ -31,7 +31,7 @@ export interface AutomationMetadata {
 
     name: string;
     description: string;
-    tags: Tag[];
+    tags?: Tag[];
 }
 
 export interface MappedParameterDeclaration {
@@ -92,13 +92,13 @@ export interface Rugs {
 }
 
 export function isCommandHandlerMetadata(object: any): object is CommandHandlerMetadata {
-    return object.name && object.tags && object.description;
+    return object.intent || object.mapped_parameters;
 }
 
 export function isEventHandlerMetadata(object: any): object is EventHandlerMetadata {
-    return object.subscriptionName && object.subscription && object.name && object.tags && object.description;
+    return object.subscriptionName && object.subscription;
 }
 
 export function isIngestorMetadata(object: any): object is EventHandlerMetadata {
-    return object.route && object.name && object.tags && object.description;
+    return object.route;
 }

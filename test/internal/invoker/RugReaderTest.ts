@@ -102,6 +102,15 @@ describe("RugReader", () => {
         assert(md.subscription === h.subscription);
     });
 
+    it("should handle non-decorator event handler metadata without name", () => {
+        const h = new NoDecoratorEventHandlerWithoutInterface();
+        const md = metadataFromInstance(h) as EventHandlerMetadata;
+        assert(md.name === "NoDecoratorEventHandlerWithoutInterface");
+        assert(md.description === h.description);
+        assert(md.subscriptionName === h.subscriptionName);
+        assert(md.subscription === h.subscription);
+    });
+
     it("should handle non-decorator ingestor metadata", () => {
         const h = new NoDecoratorIngestor();
         const md = metadataFromInstance(h) as IngestorMetadata;
@@ -205,6 +214,7 @@ export class NoDecoratorCommandHandler implements HandleCommand, CommandHandlerM
     public name = "NoDecoratorCommandHandler";
     public description = "Some description";
     public tags = [];
+    public intent = [];
     public parameters = NoDecoratorCommandHandler.params();
 
     public handle(context: HandlerContext): Promise<HandlerResult> {
@@ -231,6 +241,18 @@ export class NoDecoratorCommandHandlerSubClass extends NoDecoratorCommandHandler
 export class NoDecoratorEventHandler implements HandleEvent<any>, EventHandlerMetadata {
 
     public name = "NoDecoratorEventHandler";
+    public description = "Some description";
+    public tags = [];
+    public subscriptionName = "Foo";
+    public subscription = "subscription Foo { Issue { name } }";
+
+    public handle(event: EventFired<any>, context: HandlerContext): Promise<HandlerResult> {
+        throw new Error("not relevant");
+    }
+}
+
+export class NoDecoratorEventHandlerWithoutInterface implements HandleEvent<any> {
+
     public description = "Some description";
     public tags = [];
     public subscriptionName = "Foo";
