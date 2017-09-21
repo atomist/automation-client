@@ -73,7 +73,7 @@ describe("UniversalSeed", () => {
             new InMemoryFile("b", "a"),
             new InMemoryFile("c/d/e.txt", "a"),
         ];
-        const project = InMemoryProject.of("name", files);
+        const project = InMemoryProject.of(...files);
         class SpecialSeed extends UniversalSeed {
 
             protected populateInternal(p: Project): void {

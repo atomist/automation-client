@@ -9,33 +9,33 @@ import { toPromise } from "../../../src/project/util/projectUtils";
 describe("InMemoryProject", () => {
 
     it("findFileSync: existing file", () => {
-        const thisProject = InMemoryProject.of("name", [{path: "package.json", content: "{ node: true }"}]);
+        const thisProject = InMemoryProject.of({path: "package.json", content: "{ node: true }"});
         const f = thisProject.findFileSync("package.json");
         assert(f.getContentSync());
         assert(f.getContentSync().indexOf("node") !== -1);
     });
 
     it("findFileSync: no such file", () => {
-        const thisProject = InMemoryProject.of("name", [{path: "package.json", content: "{ node: true }"}]);
+        const thisProject = InMemoryProject.of({path: "package.json", content: "{ node: true }"});
         const f = thisProject.findFileSync("xxxxpackage.json");
         assert(f === undefined);
     });
 
     it("fileExistsSync: existing file", () => {
-        const thisProject = InMemoryProject.of("name", [{path: "package.json", content: "{ node: true }"}]);
+        const thisProject = InMemoryProject.of({path: "package.json", content: "{ node: true }"});
         assert(thisProject.fileExistsSync("package.json"));
     });
 
     it("fileExistsSync: no such file", () => {
-        const thisProject = InMemoryProject.of("name", [{path: "package.json", content: "{ node: true }"}]);
+        const thisProject = InMemoryProject.of({path: "package.json", content: "{ node: true }"});
         assert(!thisProject.fileExistsSync("xxxxpackage.json"));
     });
 
     it("files returns enough files", done => {
-        const thisProject = InMemoryProject.of("name", [
+        const thisProject = InMemoryProject.of(
             {path: "package.json", content: "{ node: true }"},
             {path: "package-lock.json", content: "{ node: true }"},
-        ]);
+        );
 
         assert(toPromise(thisProject.streamFiles())
             .then(files => {
@@ -46,10 +46,10 @@ describe("InMemoryProject", () => {
 
     it("streamFiles returns enough files", done => {
         let count = 0;
-        const thisProject = InMemoryProject.of("name", [
+        const thisProject = InMemoryProject.of(
             {path: "package.json", content: "{ node: true }"},
             {path: "package-lock.json", content: "{ node: true }"},
-        ]);
+        );
         thisProject.streamFiles()
             .on("data", (f: File) => {
                     // console.log(`File path is [${f.path}]`);
@@ -64,11 +64,11 @@ describe("InMemoryProject", () => {
 
     it("streamFiles excludes glob non-matches", done => {
         let count = 0;
-        const thisProject = InMemoryProject.of("name", [
+        const thisProject = InMemoryProject.of(
             {path: "config/thing.js", content: "{ node: true }"},
             {path: "config/other.ts", content: "{ node: true }"},
             {path: "notconfig/other.ts", content: "{ node: true }"},
-        ]);
+        );
         thisProject.streamFiles("config/**")
             .on("data", (f: File) => {
                     // console.log(`File path is [${f.path}]`);
@@ -82,10 +82,10 @@ describe("InMemoryProject", () => {
     });
 
     it("files returns well-known files", done => {
-        const thisProject = InMemoryProject.of("name", [
+        const thisProject = InMemoryProject.of(
             {path: "package.json", content: "{ node: true }"},
             {path: "package-lock.json", content: "{ node: true }"},
-        ]);
+        );
         toPromise(thisProject.streamFiles())
             .then(files => {
                 assert(files.some(f => f.name === "package.json"));
@@ -94,10 +94,10 @@ describe("InMemoryProject", () => {
     });
 
     it("glob returns well-known file", done => {
-        const thisProject = InMemoryProject.of("name", [
+        const thisProject = InMemoryProject.of(
             {path: "package.json", content: "{ node: true }"},
             {path: "package-lock.json", content: "{ node: true }"},
-        ]);
+        );
         toPromise(thisProject.streamFiles("package.json"))
             .then(files => {
                 assert(files.some(f => f.name === "package.json"));
@@ -106,10 +106,10 @@ describe("InMemoryProject", () => {
     });
 
     it("file count", done => {
-        const thisProject = InMemoryProject.of("name", [
+        const thisProject = InMemoryProject.of(
             {path: "package.json", content: "{ node: true }"},
             {path: "package-lock.json", content: "{ node: true }"},
-        ]);
+        );
         thisProject.totalFileCount().then(num => {
             assert(num > 0);
             done();

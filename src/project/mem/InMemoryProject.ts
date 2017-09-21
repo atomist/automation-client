@@ -11,8 +11,13 @@ import { InMemoryFile } from "./InMemoryFile";
  */
 export class InMemoryProject extends AbstractProject {
 
-    public static of(name: string, files: Array<{ path: string, content: string}>): InMemoryProject {
-        const inp = new InMemoryProject(name);
+    /**
+     * Set name later if you need to. Defaults to
+     * @param files files to include in the project
+     * @return {InMemoryProject}
+     */
+    public static of(...files: Array<{ path: string, content: string}>): InMemoryProject {
+        const inp = new InMemoryProject("in-memory-project");
         files.forEach(f => inp.recordAddFile(f.path, f.content));
         return inp;
     }
