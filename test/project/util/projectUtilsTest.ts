@@ -42,7 +42,7 @@ describe("projectUtils", () => {
             }).catch(done);
     });
 
-    it("withFile: run", done => {
+    it("withFiles: run", done => {
         const t = tempProject();
         t.addFileSync("Thing", "1");
         doWithFiles(t, AllFiles, f => {
@@ -56,7 +56,7 @@ describe("projectUtils", () => {
             }).catch(done);
     });
 
-    it("withFile: defer", done => {
+    it("withFiles: defer", done => {
         const t = tempProject();
         t.addFileSync("Thing", "1");
         doWithFiles(t, AllFiles, f => {
@@ -66,6 +66,20 @@ describe("projectUtils", () => {
 
         t.flush()
             .then(files => {
+                const f = t.findFileSync("Thing");
+                assert(f.getContentSync() === "12");
+                done();
+            }).catch(done);
+    });
+
+    it("withFiles: run with promise", done => {
+        const t = tempProject();
+        t.addFileSync("Thing", "1");
+        doWithFiles(t, AllFiles, f => {
+            return f.setContent(f.getContentSync() + "2");
+        }).run()
+            .then(files => {
+                assert(files.length === 1);
                 const f = t.findFileSync("Thing");
                 assert(f.getContentSync() === "12");
                 done();

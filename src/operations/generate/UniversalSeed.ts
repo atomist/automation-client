@@ -61,9 +61,9 @@ export class UniversalSeed extends SeedDrivenGenerator {
      */
     protected cleanReadMe(project: ProjectNonBlocking, description: string): void {
         doWithFiles(project, "README.md", readMe => {
-            readMe.recordSetContent(readMe.getContentSync().replace("^#[\\s\\S]*?## Development", `# ${project.name}
+            readMe.recordReplace(/^#[\\s\\S]*?## Development/, `# ${project.name}
 This project contains ${description}.
-## Development`));
+## Development`);
         }).defer();
     }
 

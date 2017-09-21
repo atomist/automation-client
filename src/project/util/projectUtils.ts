@@ -1,4 +1,4 @@
-import { File } from "../File";
+import { File, FileNonBlocking } from "../File";
 import { RunOrDefer, runOrDefer, ScriptAction } from "../Flushable";
 import { FileStream, Project, ProjectAsync, ProjectNonBlocking, ProjectScripting } from "../Project";
 
@@ -88,26 +88,29 @@ export function saveFromFilesAsync<T>(project: ProjectAsync,
  * Either run and flush the results, or defer.
  * @param project project to act on
  * @param globPattern glob pattern to match
- * @param op operation to perform on files
+ * @param op operation to perform on files. Can return void or a promise.
  * @return {Promise<T>}
  */
 export function doWithFiles(project: ProjectNonBlocking,
                             globPattern: string,
-                            op: (f: File) => void): RunOrDefer<File[]> {
+                            op: (f: File) => void | Promise<any>): RunOrDefer<File[]> {
     const funrun: ScriptAction<Project, File[]> = p => {
         return new Promise((resolve, reject) => {
-            const changedFiles: File[] = [];
+            const filePromises: Array<Promise<File>> = [];
             p.streamFiles(globPattern)
                 .on("data", f => {
-                    op(f);
-                    if (f.dirty) {
-                        changedFiles.push(f);
+                    const r = op(f);
+                    if (!!r && (r as Promise<any>).then) {
+                        filePromises.push(r as any);
+                    } else {
+                        if (f.dirty) {
+                            filePromises.push(f.flush());
+                        }
                     }
                 })
                 .on("error", reject)
                 .on("end", _ => {
-                    const flushPromises: Array<Promise<File>> = changedFiles.map(f => f.flush());
-                    resolve(Promise.all(flushPromises));
+                    resolve(Promise.all(filePromises));
                 });
         });
     };

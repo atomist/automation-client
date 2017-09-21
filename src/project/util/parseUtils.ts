@@ -2,8 +2,10 @@ import { File } from "../File";
 
 import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { PatternMatch } from "@atomist/microgrammar/PatternMatch";
+import { logger } from "../../internal/util/logger";
+import { RunOrDefer } from "../Flushable";
 import { ProjectNonBlocking, ProjectScripting } from "../Project";
-import { saveFromFiles, saveFromFilesAsync } from "./projectUtils";
+import { doWithFiles, saveFromFiles, saveFromFilesAsync } from "./projectUtils";
 
 export type Match<M> = M & PatternMatch;
 
@@ -29,16 +31,51 @@ export interface FileHits<M> {
  * @param p project
  * @param globPattern file glob pattern
  * @param microgrammar microgrammar to run against each eligible file
- * @return {Promise<T[]>}
+ * @return {Promise<T[]>} hit record for each matching file
  */
 export function findFileMatches<M>(p: ProjectNonBlocking,
                                    globPattern: string,
                                    microgrammar: Microgrammar<M>): Promise<Array<FileHits<M>>> {
     return saveFromFilesAsync(p, globPattern, file => {
-        return file.getContent().then(content => {
-            const matches = microgrammar.findMatches(content);
-            return new UpdatingFileHits(p, file, matches, content);
-        });
+        return file.getContent()
+            .then(content => {
+                const matches = microgrammar.findMatches(content);
+                if (matches.length > 0) {
+                    logger.debug(`${matches.length} matches in [${file.path}]`);
+                    return new UpdatingFileHits(p, file, matches, content);
+                } else {
+                    logger.debug(`No matches in [${file.path}`);
+                    return undefined;
+                }
+            });
+    });
+}
+
+/**
+ * Manipulate each file match containing an actual match. Will automatically match if necessary.
+ * @param {ProjectNonBlocking} p
+ * @param {string} globPattern
+ * @param {Microgrammar<M>} microgrammar
+ * @param {(fh: FileHits<M>) => void} action
+ * @return {RunOrDefer<any>}
+ */
+export function doWithMatches<M>(p: ProjectNonBlocking,
+                                 globPattern: string,
+                                 microgrammar: Microgrammar<M>,
+                                 action: (fh: FileHits<M>) => void): RunOrDefer<any> {
+    return doWithFiles(p, globPattern, file => {
+        return file.getContent()
+            .then(content => {
+                const matches = microgrammar.findMatches(content);
+                if (matches.length > 0) {
+                    logger.debug(`${matches.length} matches in [${file.path}]`);
+                    const fh = new UpdatingFileHits(p, file, matches, content);
+                    action(fh);
+                } else {
+                    logger.debug(`No matches in [${file.path}`);
+                    return undefined;
+                }
+            });
     });
 }
 
