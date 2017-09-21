@@ -77,6 +77,6 @@ export abstract class ReviewerSupport<D extends ProjectReview>
     /**
      * Invoked after parameters have been populated.
      */
-    protected abstract projectReviewer(): ProjectReviewer<D>;
+    public abstract projectReviewer(): ProjectReviewer<D>;
 
 }
