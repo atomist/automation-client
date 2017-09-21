@@ -1,6 +1,6 @@
 import "mocha";
-import * as assert from "power-assert";
 import { fail } from "power-assert";
+import * as assert from "power-assert";
 import * as WebSocket from "ws";
 import { EventFired } from "../../../../src/HandleEvent";
 import { HandlerContext } from "../../../../src/HandlerContext";
@@ -10,9 +10,9 @@ import { CommandHandlerMetadata, Rugs } from "../../../../src/internal/metadata/
 import {
     DefaultWebSocketAutomationEventListener,
 } from "../../../../src/internal/transport/websocket/DefaultWebSocketAutomationEventListener";
-import { AutomationServer } from "../../../../src/server/AutomationServer";
 import { WebSocketEventMessageClient } from "../../../../src/internal/transport/websocket/WebSocketMessageClient";
 import { guid } from "../../../../src/internal/util/string";
+import { AutomationServer } from "../../../../src/server/AutomationServer";
 
 describe("WebSocketMessageClient", () => {
 
@@ -21,7 +21,7 @@ describe("WebSocketMessageClient", () => {
             {
                 data: {},
                 extensions: { team_id: "Txxxxxxx", correlation_id: guid(), operationName: "Foor"},
-                secrets: []
+                secrets: [],
             }, null, null);
         client.respond("Some test message")
             .catch(err => {
