@@ -93,4 +93,37 @@ describe("parseUtils", () => {
         }).catch(done);
     });
 
+    it("updates matches from files using callback and defer", done => {
+        const oldPackage = "com.foo.bar";
+        const t = new InMemoryProject("name");
+        const initialContent = `package ${oldPackage};\npublic class Thing {}`;
+        const f = new InMemoryFile("src/main/java/com/foo/bar/Thing.java", initialContent);
+        t.addFileSync(f.path, f.getContentSync());
+        doWithMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, fh => {
+            assert(fh.file.path === f.path);
+            assert(fh.matches[0].name === oldPackage);
+            fh.makeUpdatable();
+            const m: Match<{ name: string }> = fh.matches[0];
+
+            assert(m.name === oldPackage, `Expected [${oldPackage}] got [${m.name}]`);
+            // Add x to package names. Yes, this makes no sense in Java
+            // but it's not meant to be domain meaningful
+            m.name = m.name + "x";
+            assert(m.name);
+            assert(m.name === oldPackage + "x");
+        }).defer();
+        t.flush().then(_ => {
+            // Check file persistence
+            assert(t.findFileSync(f.path).getContentSync() === initialContent);
+            return t
+                .flush()
+                .then(whatever => {
+                    const updatedFile = t.findFileSync(f.path);
+                    assert(updatedFile.getContentSync() === initialContent.replace(oldPackage, oldPackage + "x"),
+                        `Content is [${updatedFile.getContentSync()}]`);
+                    done();
+                });
+        }).catch(done);
+    });
+
 });
