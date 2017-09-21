@@ -23,13 +23,13 @@ describe("LocalProject", () => {
     });
 
     it("copies other project", done => {
-        const p = InMemoryProject.of(
+        const proj = InMemoryProject.of(
             {path: "package.json", content: "{ node }"},
             {path: "some/nested/thing", content: "{ node }"},
         );
-        p.name = "name";
+        proj.name = "name";
         const baseDir: string = tmp.dirSync().name;
-        NodeFsLocalProject.copy(p, baseDir).then(p => {
+        NodeFsLocalProject.copy(proj, baseDir).then(p => {
             assert(p.baseDir === baseDir + "/name");
             const f = p.findFileSync("package.json");
             assert(f.getContentSync());

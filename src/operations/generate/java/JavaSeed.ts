@@ -73,7 +73,7 @@ export class JavaSeed extends UniversalSeed {
      * @param project  project to tailor
      */
     protected populateInternal(project: ProjectNonBlocking): void {
-        super.populateInternal(project);
+        super.manipulate(project);
         const smartArtifactId = (this.artifactId === "${projectName}") ? project.name : this.artifactId;
 
         updatePom(project as Project, smartArtifactId, this.groupId, this.version, this.description);

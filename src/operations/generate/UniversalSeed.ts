@@ -35,11 +35,6 @@ export class UniversalSeed extends SeedDrivenGenerator {
         super();
     }
 
-    protected push(gp: GitProject): Promise<any> {
-        logger.info(`Pushing local repo at [${gp.baseDir}]`);
-        return gp.push();
-    }
-
     /**
      * Subclasses can extend this to add custom logic to the repo
      * contents from the seed location.  The project is already
@@ -48,9 +43,14 @@ export class UniversalSeed extends SeedDrivenGenerator {
      *
      * @param project raw seed project
      */
-    protected populateInternal(project: ProjectNonBlocking): void {
+    public manipulate(project: ProjectNonBlocking): void {
         this.removeSeedFiles(project);
         this.cleanReadMe(project, this.description);
+    }
+
+    protected push(gp: GitProject): Promise<any> {
+        logger.info(`Pushing local repo at [${gp.baseDir}]`);
+        return gp.push();
     }
 
     /**

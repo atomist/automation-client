@@ -76,12 +76,12 @@ describe("UniversalSeed", () => {
         const project = InMemoryProject.of(...files);
         class SpecialSeed extends UniversalSeed {
 
-            protected populateInternal(p: Project): void {
+            public manipulate(p: Project): void {
                 p.recordAddFile("Thing", "1");
             }
         }
         const seed = new SpecialSeed();
-        seed.populate(project)
+        seed.manipulateAndFlush(project)
             .then(_ => {
                 assert(project.fileCount === files.length + 1,
                     `Expected ${files.length + 1}, got ${ project.fileCount}`);

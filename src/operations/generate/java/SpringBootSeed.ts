@@ -28,7 +28,7 @@ export class SpringBootSeed extends JavaSeed {
     public serviceClassName: string = "RestService";
 
     protected populateInternal(project: Project): void {
-        super.populateInternal(project);
+        super.manipulate(project);
         project.recordAction(p => {
             SpringBootProjectStructure.infer(p).then(structure => {
                 if (structure) {

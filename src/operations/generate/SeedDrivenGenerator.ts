@@ -121,7 +121,7 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
         return this.repoLoader()(new SimpleRepoId(this.sourceOwner, this.sourceRepo, this.sourceBranch))
             .then(project => {
-                const populated: Promise<Project> = this.populate(project);
+                const populated: Promise<Project> = this.manipulateAndFlush(project);
                 return this.local ?
                     populated.then(p => {
                         const parentDir = shell.pwd() + "";
@@ -152,10 +152,25 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
             });
     }
 
-    public populate(project: Project): Promise<Project> {
-        this.populateInternal(project);
+    /**
+     * Manipulate and flush--or manipulate synchronously. Leave the project in a ready state
+     * for storing.
+     * @param {Project} project from seed
+     * @return {Promise<Project>}
+     */
+    public manipulateAndFlush(project: Project): Promise<Project> {
+        this.manipulate(project);
         return project.flush();
     }
+
+    /**
+     * Subclasses can extend this to manipulate the repo
+     * contents from the seed location.  The project is already
+     * populated when this method is called.
+     *
+     * @param project raw seed project
+     */
+    public abstract manipulate(project: ProjectNonBlocking): void;
 
     protected repoLoader(): RepoLoader {
         assert(this.githubToken, "Github token must be set");
@@ -166,15 +181,5 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
         logger.info(`Pushing local repo at [${gp.baseDir}]`);
         return gp.push();
     }
-
-    /**
-     * Subclasses can extend this to add custom logic to the repo
-     * contents from the seed location.  The project is already
-     * populated when this method is called.  This version calls
-     * removeSeedFiles and updates the README.
-     *
-     * @param project raw seed project
-     */
-    protected abstract populateInternal(project: ProjectNonBlocking): void;
 
 }
