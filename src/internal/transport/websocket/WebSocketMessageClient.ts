@@ -87,8 +87,13 @@ export class WebSocketEventMessageClient extends AbstractWebSocketMessageClient 
         super(automations, ws, request.extensions.correlation_id, { team: { id: request.extensions.team_id }});
     }
 
-    public respond(msg: string | SlackMessage, options?: MessageOptions): Promise<any> {
-        throw new Error("Response messages are not supported for event handlers");
+    protected async doSend(msg: string | SlackMessage, userNames: string | string[],
+                           channelNames: string | string[], options: MessageOptions = {}): Promise<any> {
+        if ((!userNames && !channelNames) || (userNames.length === 0 && channelNames.length === 0)) {
+            throw new Error("Response messages are not supported for event handlers");
+        } else {
+            return super.doSend(msg, userNames, channelNames, options);
+        }
     }
 }
 

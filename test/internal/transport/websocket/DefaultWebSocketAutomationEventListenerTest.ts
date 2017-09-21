@@ -12,7 +12,7 @@ import {
 } from "../../../../src/internal/transport/websocket/DefaultWebSocketAutomationEventListener";
 import { AutomationServer } from "../../../../src/server/AutomationServer";
 
-describe("DefaultWebSocketAutomationEventListenerTest", () => {
+describe("DefaultWebSocketAutomationEventListener", () => {
 
     it("check event received and processed", done => {
         class MockAutomationServer implements AutomationServer {
