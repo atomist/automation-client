@@ -44,7 +44,7 @@ export function findFileMatches<M>(p: ProjectNonBlocking,
                     logger.debug(`${matches.length} matches in [${file.path}]`);
                     return new UpdatingFileHits(p, file, matches, content);
                 } else {
-                    logger.debug(`No matches in [${file.path}`);
+                    logger.debug(`No matches in [${file.path}]`);
                     return undefined;
                 }
             });
