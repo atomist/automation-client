@@ -1,3 +1,4 @@
+import * as os from "os";
 import { Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
@@ -11,7 +12,6 @@ import { WebSocketClient, WebSocketClientOptions } from "./internal/transport/we
 import { logger } from "./internal/util/logger";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
-import * as os from "os";
 
 export const DefaultStagingAtomistServer =
     "https://automation-staging.atomist.services/registration";

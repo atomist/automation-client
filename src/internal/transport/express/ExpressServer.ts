@@ -242,7 +242,7 @@ export class ExpressServer {
 export interface ExpressServerOptions {
 
     port: number;
-    host?: string,
+    host?: string;
     auth?: {
         basic: {
             enabled: boolean;
