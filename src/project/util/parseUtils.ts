@@ -33,6 +33,24 @@ export interface FileWithMatches<M> {
  * @param microgrammar microgrammar to run against each eligible file
  * @return {Promise<T[]>} hit record for each matching file
  */
+export function findMatches<M>(p: ProjectNonBlocking,
+                               globPattern: string,
+                               microgrammar: Microgrammar<M>): Promise<Array<Match<M>>> {
+    return findFileMatches(p, globPattern, microgrammar)
+        .then(fileHits => {
+            let matches: Array<Match<M>> = [];
+            fileHits.forEach(fh => matches = matches.concat(fh.matches));
+            return matches;
+        });
+}
+
+/**
+ * Integrate microgrammars with project operations to find all matches
+ * @param p project
+ * @param globPattern file glob pattern
+ * @param microgrammar microgrammar to run against each eligible file
+ * @return {Promise<T[]>} hit record for each matching file
+ */
 export function findFileMatches<M>(p: ProjectNonBlocking,
                                    globPattern: string,
                                    microgrammar: Microgrammar<M>): Promise<Array<FileWithMatches<M>>> {
@@ -64,7 +82,7 @@ export function doWithFileMatches<M>(p: ProjectNonBlocking,
                                      globPattern: string,
                                      microgrammar: Microgrammar<M>,
                                      action: (fh: FileWithMatches<M>) => void,
-                                     opts: { makeUpdatable: boolean } = { makeUpdatable: true}): RunOrDefer<File[]> {
+                                     opts: { makeUpdatable: boolean } = {makeUpdatable: true}): RunOrDefer<File[]> {
     return doWithFiles(p, globPattern, file => {
         return file.getContent()
             .then(content => {

@@ -5,9 +5,25 @@ import { JavaPackageDeclaration } from "../../../src/operations/generate/java/Ja
 import { JavaFiles } from "../../../src/operations/generate/java/javaProjectUtils";
 import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { doWithFileMatches, findFileMatches, Match } from "../../../src/project/util/parseUtils";
+import { doWithFileMatches, findFileMatches, findMatches, Match } from "../../../src/project/util/parseUtils";
 
 describe("parseUtils", () => {
+
+    it("gathers matches without files", done => {
+        const t = new InMemoryProject("name");
+        t.addFileSync("src/main/java/com/foo/bar/Thing.java",
+            "package com.foo.bar;\npublic class Thing {}");
+        t.addFileSync("src/main/java/com/foo/baz/Thing2.java",
+            "package com.foo.baz;\npublic class Thing2 {}");
+        findMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration)
+            .then(matches => {
+                assert(matches.length === 2);
+                matches.forEach(m => {
+                    assert(m.$offset !== undefined);
+                });
+                done();
+            }).catch(done);
+    });
 
     it("gathers matches from files", done => {
         const t = new InMemoryProject("name");
@@ -16,10 +32,10 @@ describe("parseUtils", () => {
         t.addFileSync("src/main/java/com/foo/baz/Thing2.java",
             "package com.foo.baz;\npublic class Thing2 {}");
         findFileMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration)
-            .then(matches => {
-                assert(matches.length === 2);
-                assert.deepEqual(matches.map(m => m.file.path), t.filesSync.map(m => m.path));
-                matches[0].matches.forEach(m => {
+            .then(fileMatches => {
+                assert(fileMatches.length === 2);
+                assert.deepEqual(fileMatches.map(m => m.file.path), t.filesSync.map(m => m.path));
+                fileMatches[0].matches.forEach(m => {
                     assert(m.$offset !== undefined);
                 });
                 done();
