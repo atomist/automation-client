@@ -133,7 +133,7 @@ function mapParameters(data: {}): Parameter[] {
             const value = data[key];
             parameters.push({
                 name: key,
-                value,
+                value: value.toString(),
             });
         }
     }
