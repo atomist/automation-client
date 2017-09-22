@@ -12,7 +12,7 @@ export type Match<M> = M & PatternMatch;
 /**
  * Matches within a particular file
  */
-export interface FileHits<M> {
+export interface FileWithMatches<M> {
 
     file: File;
 
@@ -35,7 +35,7 @@ export interface FileHits<M> {
  */
 export function findFileMatches<M>(p: ProjectNonBlocking,
                                    globPattern: string,
-                                   microgrammar: Microgrammar<M>): Promise<Array<FileHits<M>>> {
+                                   microgrammar: Microgrammar<M>): Promise<Array<FileWithMatches<M>>> {
     return saveFromFilesAsync(p, globPattern, file => {
         return file.getContent()
             .then(content => {
@@ -56,13 +56,15 @@ export function findFileMatches<M>(p: ProjectNonBlocking,
  * @param {ProjectNonBlocking} p
  * @param {string} globPattern
  * @param {Microgrammar<M>} microgrammar
- * @param {(fh: FileHits<M>) => void} action
+ * @param {(fh: FileWithMatches<M>) => void} action
+ * @param opts options
  * @return {RunOrDefer<any>}
  */
-export function doWithMatches<M>(p: ProjectNonBlocking,
-                                 globPattern: string,
-                                 microgrammar: Microgrammar<M>,
-                                 action: (fh: FileHits<M>) => void): RunOrDefer<File[]> {
+export function doWithFileMatches<M>(p: ProjectNonBlocking,
+                                     globPattern: string,
+                                     microgrammar: Microgrammar<M>,
+                                     action: (fh: FileWithMatches<M>) => void,
+                                     opts: { makeUpdatable: boolean } = { makeUpdatable: true}): RunOrDefer<File[]> {
     return doWithFiles(p, globPattern, file => {
         return file.getContent()
             .then(content => {
@@ -70,6 +72,9 @@ export function doWithMatches<M>(p: ProjectNonBlocking,
                 if (matches.length > 0) {
                     logger.debug(`${matches.length} matches in [${file.path}]`);
                     const fh = new UpdatingFileHits(p, file, matches, content);
+                    if (opts.makeUpdatable) {
+                        fh.makeUpdatable();
+                    }
                     action(fh);
                 } else {
                     logger.debug(`No matches in [${file.path}`);
@@ -82,20 +87,30 @@ export function doWithMatches<M>(p: ProjectNonBlocking,
 /**
  * Hits within a file
  */
-class UpdatingFileHits<M> implements FileHits<M> {
+class UpdatingFileHits<M> implements FileWithMatches<M> {
+
+    private updatable = false;
 
     constructor(private project: ProjectScripting, public readonly file: File,
                 public matches: Array<Match<M>>, public content: string) {
     }
 
     public makeUpdatable() {
-        const um = Microgrammar.updatable<M>(this.matches, this.content);
+        if (!this.updatable) {
+            const um = Microgrammar.updatable<M>(this.matches, this.content);
 
-        // TODO this cast is ugly
-        this.matches = um.matches as Array<Match<M>>;
-        this.file.recordAction(f => {
-            return f.setContent(um.updated());
-        });
-        this.project.trackFile(this.file);
+            // TODO this cast is ugly
+            this.matches = um.matches as Array<Match<M>>;
+            this.file.recordAction(f => {
+                return f.getContent().then(content => {
+                    if (content !== um.updated()) {
+                        return f.setContent(um.updated());
+                    }
+                    return f;
+                });
+            });
+            this.project.trackFile(this.file);
+            this.updatable = true;
+        }
     }
 }

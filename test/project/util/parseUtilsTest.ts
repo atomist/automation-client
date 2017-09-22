@@ -5,7 +5,7 @@ import { JavaPackageDeclaration } from "../../../src/operations/generate/java/Ja
 import { JavaFiles } from "../../../src/operations/generate/java/javaProjectUtils";
 import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { doWithMatches, findFileMatches, Match } from "../../../src/project/util/parseUtils";
+import { doWithFileMatches, findFileMatches, Match } from "../../../src/project/util/parseUtils";
 
 describe("parseUtils", () => {
 
@@ -33,12 +33,12 @@ describe("parseUtils", () => {
         const f = new InMemoryFile("src/main/java/com/foo/bar/Thing.java", initialContent);
         t.addFileSync(f.path, f.getContentSync());
         findFileMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration)
-            .then(matches => {
-                assert(matches.length === 1);
-                assert(matches[0].file.path === f.path);
-                assert(matches[0].matches[0].name === oldPackage);
-                matches[0].makeUpdatable();
-                const m: Match<{ name: string }> = matches[0].matches[0];
+            .then(fileMatches => {
+                assert(fileMatches.length === 1);
+                assert(fileMatches[0].file.path === f.path);
+                assert(fileMatches[0].matches[0].name === oldPackage);
+                fileMatches[0].makeUpdatable();
+                const m: Match<{ name: string }> = fileMatches[0].matches[0];
 
                 assert(m.name === oldPackage, `Expected [${oldPackage}] got [${m.name}]`);
                 // Add x to package names. Yes, this makes no sense in Java
@@ -49,7 +49,7 @@ describe("parseUtils", () => {
                 assert(m.name === oldPackage + "x");
 
                 // Check file persistence
-                assert(matches[0].file.getContentSync() === initialContent);
+                assert(fileMatches[0].file.getContentSync() === initialContent);
                 return t
                     .flush()
                     .then(_ => {
@@ -67,10 +67,9 @@ describe("parseUtils", () => {
         const initialContent = `package ${oldPackage};\npublic class Thing {}`;
         const f = new InMemoryFile("src/main/java/com/foo/bar/Thing.java", initialContent);
         t.addFileSync(f.path, f.getContentSync());
-        doWithMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, fh => {
+        doWithFileMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, fh => {
             assert(fh.file.path === f.path);
             assert(fh.matches[0].name === oldPackage);
-            fh.makeUpdatable();
             const m: Match<{ name: string }> = fh.matches[0];
 
             assert(m.name === oldPackage, `Expected [${oldPackage}] got [${m.name}]`);
@@ -96,7 +95,7 @@ describe("parseUtils", () => {
         const f = new InMemoryFile("src/main/java/com/foo/bar/Thing.java", initialContent);
         t.addFileSync(f.path, f.getContentSync());
         assert(!t.dirty);
-        doWithMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, fh => {
+        doWithFileMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, fh => {
             assert(fh.file.path === f.path);
             assert(fh.matches[0].name === oldPackage);
             fh.makeUpdatable();
