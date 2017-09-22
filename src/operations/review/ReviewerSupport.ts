@@ -5,7 +5,7 @@ import { raiseIssue } from "../../internal/util/gitHub";
 import { logger } from "../../internal/util/logger";
 import { LocalOrRemoteRepoOperation } from "../common/LocalOrRemoteRepoOperation";
 import { RepoId } from "../common/RepoId";
-import { ProjectReviewer } from "./ProjectReviewer";
+import { ProjectReviewer } from "./projectReviewer";
 import { ProjectReview, ReviewResult } from "./ReviewResult";
 
 /**

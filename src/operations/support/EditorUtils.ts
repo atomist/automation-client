@@ -19,7 +19,7 @@ export function editUsingPullRequest(token: string,
     console.log("Editing project " + JSON.stringify(repo));
     return GitCommandGitProject.cloned(token, repo.owner, repo.repo)
         .then(gp => {
-            return editor(gp)
+            return editor(repo, gp)
                 .then(edited => edited ? gp : false);
         })
         .then(r => {

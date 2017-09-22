@@ -4,15 +4,15 @@ import { HandlerResult } from "../../HandlerResult";
 import { logger } from "../../internal/util/logger";
 import { LocalOrRemoteRepoOperation } from "../common/LocalOrRemoteRepoOperation";
 import { editUsingPullRequest, PullRequestEdit } from "../support/EditorUtils";
-import { ProjectEditor } from "./ProjectEditor";
+import { ProjectEditor } from "./projectEditor";
 
 /**
- * Edit all in context, which may come either locally or from GitHub.
+ * Support for commands that edit all repos in context,
+ * which may come either locally or from GitHub.
  */
-export abstract class EditorSupport extends LocalOrRemoteRepoOperation implements HandleCommand {
+export abstract class EditorCommandSupport extends LocalOrRemoteRepoOperation implements HandleCommand {
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
-
         const load = this.repoLoader();
         const projectEditor = this.projectEditor();
 
@@ -24,7 +24,7 @@ export abstract class EditorSupport extends LocalOrRemoteRepoOperation implement
                     reposToEdit.map(r => {
                         if (this.local) {
                             return load(r)
-                                .then(p => projectEditor(p));
+                                .then(p => projectEditor(r, p));
                         } else {
                             return editUsingPullRequest(this.githubToken, r, projectEditor,
                                 // TODO customize PR config
@@ -45,6 +45,6 @@ export abstract class EditorSupport extends LocalOrRemoteRepoOperation implement
     /**
      * Invoked after parameters have been populated.
      */
-    protected abstract projectEditor(): ProjectEditor<any>;
+    public abstract projectEditor(): ProjectEditor<any>;
 
 }
