@@ -1,5 +1,6 @@
 import "mocha";
 
+import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import * as assert from "power-assert";
 import { JavaPackageDeclaration } from "../../../src/operations/generate/java/JavaGrammars";
 import { JavaFiles } from "../../../src/operations/generate/java/javaProjectUtils";
@@ -21,6 +22,28 @@ describe("parseUtils", () => {
                 matches.forEach(m => {
                     assert(m.$offset !== undefined);
                 });
+                done();
+            }).catch(done);
+    });
+
+    it("gathers no matches without files", done => {
+        const t = new InMemoryProject("name");
+        findMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration)
+            .then(matches => {
+                assert(matches.length === 0);
+                done();
+            }).catch(done);
+    });
+
+    it("gathers no matches without matches in files", done => {
+        const t = new InMemoryProject("name");
+        t.addFileSync("src/main/java/com/foo/bar/Thing.java",
+            "package com.foo.bar;\npublic class Thing {}");
+        t.addFileSync("src/main/java/com/foo/baz/Thing2.java",
+            "package com.foo.baz;\npublic class Thing2 {}");
+        findMatches<{ name: string }>(t, JavaFiles, Microgrammar.fromString("this won't match"))
+            .then(matches => {
+                assert(matches.length === 0);
                 done();
             }).catch(done);
     });

@@ -79,7 +79,7 @@ export function saveFromFilesAsync<T>(project: ProjectAsync,
             })
             .on("error", reject)
             .on("end", _ => {
-                resolve(Promise.all(gathered));
+                resolve(Promise.all(gathered).then(ts => ts.filter(t => !!t)));
             });
     });
 }
