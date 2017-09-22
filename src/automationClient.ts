@@ -58,8 +58,9 @@ export class AutomationClient {
 
     public run(): Promise<any> {
 
-        process.on('uncaughtException', (err) => {
-            logger.error("Error occurred\n%1", err);
+        // Ideally we wouldn't need this, but I'm still adding proper error handling
+        process.on("uncaughtException", err => {
+            logger.error("Error occurred\n%s", err);
         });
 
         logger.info(`Starting Atomist automation client for ${this.configuration.name}@${this.configuration.version}`);
