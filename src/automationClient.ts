@@ -57,6 +57,11 @@ export class AutomationClient {
     }
 
     public run(): Promise<any> {
+
+        process.on('uncaughtException', (err) => {
+            logger.error("Error occurred\n%1", err);
+        });
+
         logger.info(`Starting Atomist automation client for ${this.configuration.name}@${this.configuration.version}`);
         const listeners = this.setupEventListeners();
         const options: WebSocketClientOptions = {
