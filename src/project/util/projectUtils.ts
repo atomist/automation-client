@@ -1,4 +1,5 @@
 import { RunOrDefer, runOrDefer, ScriptAction } from "../../internal/common/Flushable";
+import { isPromise } from "../../internal/util/async";
 import { File, FileNonBlocking } from "../File";
 import { FileStream, Project, ProjectAsync, ProjectNonBlocking, ProjectScripting } from "../Project";
 
@@ -100,8 +101,8 @@ export function doWithFiles(project: ProjectNonBlocking,
             p.streamFiles(globPattern)
                 .on("data", f => {
                     const r = op(f);
-                    if (!!r && (r as Promise<any>).then) {
-                        filePromises.push(r as any);
+                    if (isPromise(r)) {
+                        filePromises.push(r.then(_ => f.flush()));
                     } else {
                         if (f.dirty) {
                             filePromises.push(f.flush());

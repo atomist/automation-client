@@ -5,7 +5,7 @@ import { PatternMatch } from "@atomist/microgrammar/PatternMatch";
 import { RunOrDefer } from "../../internal/common/Flushable";
 import { logger } from "../../internal/util/logger";
 import { ProjectNonBlocking, ProjectScripting } from "../Project";
-import { doWithFiles, saveFromFiles, saveFromFilesAsync } from "./projectUtils";
+import { doWithFiles, saveFromFilesAsync } from "./projectUtils";
 
 export type Match<M> = M & PatternMatch;
 
@@ -89,16 +89,13 @@ class UpdatingFileHits<M> implements FileHits<M> {
     }
 
     public makeUpdatable() {
-        console.log("Makeupdatable for " + this.file.path);
         const um = Microgrammar.updatable<M>(this.matches, this.content);
 
         // TODO this cast is ugly
         this.matches = um.matches as Array<Match<M>>;
-        console.log("Recording action in ufh");
         this.file.recordAction(f => {
-            console.log("Executing action: Updating " + f.path);
             return f.setContent(um.updated());
         });
-       // this.project.trackFile(this.file);
+        this.project.trackFile(this.file);
     }
 }

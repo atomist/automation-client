@@ -1,4 +1,5 @@
 import { AbstractScriptedFlushable } from "../../internal/common/AbstractScriptedFlushable";
+import { logger } from "../../internal/util/logger";
 import { File, FileNonBlocking } from "../File";
 import { DefaultExcludes, DefaultFiles } from "../FileGlobs";
 import { FileStream, Project } from "../Project";
@@ -30,9 +31,8 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
     }
 
     public trackFile(f: FileNonBlocking): this {
-        console.log(`Project is tracking [${f.path}]`);
+        logger.debug(`Project is tracking [${f.path}]`);
         return this.recordAction(p => {
-            console.log(`Project is tracking firing for [${f.path}]`);
             return f.flush().then(_ => p);
         });
     }

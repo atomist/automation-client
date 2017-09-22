@@ -5,7 +5,7 @@ import * as assert from "power-assert";
 import { AllFiles } from "../../../src/project/FileGlobs";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { deleteFiles, doWithFiles, fileExists, saveFromFiles } from "../../../src/project/util/projectUtils";
-import { tempProject } from "../Utils";
+import { tempProject } from "../utils";
 
 describe("projectUtils", () => {
 

@@ -12,7 +12,7 @@ import { AllFiles, ExcludeNodeModules } from "../../../src/project/FileGlobs";
 import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProject";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { toPromise } from "../../../src/project/util/projectUtils";
-import { tempProject } from "../Utils";
+import { tempProject } from "../utils";
 
 describe("LocalProject", () => {
 
