@@ -63,9 +63,10 @@ describe("projectUtils", () => {
             f.recordSetContent(f.getContentSync() + "2");
         }).defer();
         assert(t.findFileSync("Thing").getContentSync() === "1");
-
+        assert(t.dirty);
         t.flush()
             .then(files => {
+                assert(!t.dirty);
                 const f = t.findFileSync("Thing");
                 assert(f.getContentSync() === "12");
                 done();

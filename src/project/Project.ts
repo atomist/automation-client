@@ -1,6 +1,6 @@
 import { Stream } from "stream";
+import { ScriptedFlushable } from "../internal/common/Flushable";
 import { File, FileNonBlocking } from "./File";
-import { ScriptedFlushable } from "./Flushable";
 
 /**
  * Project operations common to all projects

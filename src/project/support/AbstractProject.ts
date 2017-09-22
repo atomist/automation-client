@@ -1,7 +1,7 @@
+import { AbstractScriptedFlushable } from "../../internal/common/AbstractScriptedFlushable";
 import { File, FileNonBlocking } from "../File";
 import { DefaultExcludes, DefaultFiles } from "../FileGlobs";
 import { FileStream, Project } from "../Project";
-import { AbstractScriptedFlushable } from "./AbstractScriptedFlushable";
 
 /**
  * Support for implementations of Project interface

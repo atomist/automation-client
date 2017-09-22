@@ -43,7 +43,7 @@ export class InMemoryFile extends AbstractFile {
     }
 
     get dirty(): boolean {
-        return this.initialContent !== this.getContentSync() || this.initialPath !== this.path;
+        return this.initialContent !== this.getContentSync() || this.initialPath !== this.path || super.dirty;
     }
 
 }

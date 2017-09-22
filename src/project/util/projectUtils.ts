@@ -1,5 +1,5 @@
+import { RunOrDefer, runOrDefer, ScriptAction } from "../../internal/common/Flushable";
 import { File, FileNonBlocking } from "../File";
-import { RunOrDefer, runOrDefer, ScriptAction } from "../Flushable";
 import { FileStream, Project, ProjectAsync, ProjectNonBlocking, ProjectScripting } from "../Project";
 
 /**

@@ -1,5 +1,5 @@
+import { AbstractScriptedFlushable } from "../../internal/common/AbstractScriptedFlushable";
 import { File } from "../File";
-import { AbstractScriptedFlushable } from "./AbstractScriptedFlushable";
 
 /**
  * Convenient support for all File implementations

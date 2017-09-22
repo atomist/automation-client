@@ -1,4 +1,4 @@
-import { ScriptedFlushable } from "./Flushable";
+import { ScriptedFlushable } from "../internal/common/Flushable";
 
 /**
  * Operations common to all File interfaces

@@ -1,5 +1,5 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
-import { AbstractScriptedFlushable } from "../../project/support/AbstractScriptedFlushable";
+import { AbstractScriptedFlushable } from "../../internal/common/AbstractScriptedFlushable";
 import { MessageClient, MessageOptions } from "./MessageClient";
 
 export abstract class MessageClientSupport extends AbstractScriptedFlushable<MessageClient>

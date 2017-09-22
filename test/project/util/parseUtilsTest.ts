@@ -99,6 +99,7 @@ describe("parseUtils", () => {
         const initialContent = `package ${oldPackage};\npublic class Thing {}`;
         const f = new InMemoryFile("src/main/java/com/foo/bar/Thing.java", initialContent);
         t.addFileSync(f.path, f.getContentSync());
+        assert(!t.dirty);
         doWithMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, fh => {
             assert(fh.file.path === f.path);
             assert(fh.matches[0].name === oldPackage);
@@ -111,18 +112,20 @@ describe("parseUtils", () => {
             m.name = m.name + "x";
             assert(m.name);
             assert(m.name === oldPackage + "x");
+            assert(fh.file.dirty, "File should be dirty");
+            console.log("Completed op block");
         }).defer();
+        console.log("actions were " + (t as any).actions.map(a => a.toString()).join(","));
+        assert(t.dirty);
         t.flush().then(_ => {
             // Check file persistence
+            assert(!t.dirty, "Unexpected actions were " + (t as any).actions.map(a => a.toString()).join(","));
             assert(t.findFileSync(f.path).getContentSync() === initialContent);
-            return t
-                .flush()
-                .then(whatever => {
-                    const updatedFile = t.findFileSync(f.path);
-                    assert(updatedFile.getContentSync() === initialContent.replace(oldPackage, oldPackage + "x"),
-                        `Content is [${updatedFile.getContentSync()}]`);
-                    done();
-                });
+
+            const updatedFile = t.findFileSync(f.path);
+            assert(updatedFile.getContentSync() === initialContent.replace(oldPackage, oldPackage + "x"),
+                `Content is [${updatedFile.getContentSync()}]`);
+            done();
         }).catch(done);
     });
 

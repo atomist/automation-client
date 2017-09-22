@@ -1,5 +1,5 @@
 
-import { ScriptAction, ScriptedFlushable } from "../Flushable";
+import { ScriptAction, ScriptedFlushable } from "./Flushable";
 
 /**
  * Support for ScriptedFlushable operations
