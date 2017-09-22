@@ -1,4 +1,3 @@
-
 import { ScriptAction, ScriptedFlushable } from "./Flushable";
 
 /**
@@ -18,14 +17,21 @@ export abstract class AbstractScriptedFlushable<T> implements ScriptedFlushable<
     }
 
     public flush(): Promise<this> {
+        // Save actions, as they may be built up again
+        const actionsToExecute = this.actions;
+        this.actions = [];
+
         let me: Promise<any> = Promise.resolve(this);
-        for (const a of this.actions) {
+        for (const a of actionsToExecute) {
             me = me.then(p => {
                 return a(p).then(_ => p);
             });
         }
-        this.actions = [];
-        return me as Promise<this>;
+
+        // If there were more actions built up while we went
+        return (this.actions.length > 0) ?
+            me.then(r => r.flush()) :
+            me as Promise<this>;
     }
 
 }

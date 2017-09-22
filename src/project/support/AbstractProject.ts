@@ -13,7 +13,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
     public abstract findFileSync(path: string): File;
 
     public streamFiles(...globPatterns: string[]): FileStream {
-        const globsToUse = globPatterns.length > 0  ? globPatterns.concat(DefaultExcludes) : DefaultFiles;
+        const globsToUse = globPatterns.length > 0 ? globPatterns.concat(DefaultExcludes) : DefaultFiles;
         return this.streamFilesRaw(globsToUse, {});
     }
 
@@ -30,9 +30,11 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
     }
 
     public trackFile(f: FileNonBlocking): this {
-        return this.recordAction(p =>
-            f.flush().then(_ => p),
-        );
+        console.log(`Project is tracking [${f.path}]`);
+        return this.recordAction(p => {
+            console.log(`Project is tracking firing for [${f.path}]`);
+            return f.flush().then(_ => p);
+        });
     }
 
     public recordAddFile(path: string, content: string): this {

@@ -62,7 +62,7 @@ export function findFileMatches<M>(p: ProjectNonBlocking,
 export function doWithMatches<M>(p: ProjectNonBlocking,
                                  globPattern: string,
                                  microgrammar: Microgrammar<M>,
-                                 action: (fh: FileHits<M>) => void): RunOrDefer<any> {
+                                 action: (fh: FileHits<M>) => void): RunOrDefer<File[]> {
     return doWithFiles(p, globPattern, file => {
         return file.getContent()
             .then(content => {
@@ -99,6 +99,6 @@ class UpdatingFileHits<M> implements FileHits<M> {
             console.log("Executing action: Updating " + f.path);
             return f.setContent(um.updated());
         });
-        this.project.trackFile(this.file);
+       // this.project.trackFile(this.file);
     }
 }

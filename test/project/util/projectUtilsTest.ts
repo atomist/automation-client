@@ -73,6 +73,23 @@ describe("projectUtils", () => {
             }).catch(done);
     });
 
+    it("withFiles: defer use of script", done => {
+        const t = tempProject();
+        t.addFileSync("Thing", "1");
+        doWithFiles(t, AllFiles, f => {
+            return Promise.resolve(f.recordSetContent(f.getContentSync() + "2"));
+        }).defer();
+        assert(t.findFileSync("Thing").getContentSync() === "1");
+        assert(t.dirty);
+        t.flush()
+            .then(files => {
+                assert(!t.dirty);
+                const f = t.findFileSync("Thing");
+                assert(f.getContentSync() === "12");
+                done();
+            }).catch(done);
+    });
+
     it("withFiles: run with promise", done => {
         const t = tempProject();
         t.addFileSync("Thing", "1");
@@ -81,6 +98,22 @@ describe("projectUtils", () => {
         }).run()
             .then(files => {
                 assert(files.length === 1);
+                const f = t.findFileSync("Thing");
+                assert(f.getContentSync() === "12");
+                done();
+            }).catch(done);
+    });
+
+    it("withFiles: defer with promise", done => {
+        const t = tempProject();
+        t.addFileSync("Thing", "1");
+        doWithFiles(t, AllFiles, f => {
+            return f.setContent(f.getContentSync() + "2");
+        }).defer();
+        assert(t.dirty);
+        t.flush()
+            .then(files => {
+                assert(!t.dirty);
                 const f = t.findFileSync("Thing");
                 assert(f.getContentSync() === "12");
                 done();

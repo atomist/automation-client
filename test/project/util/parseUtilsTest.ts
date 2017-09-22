@@ -103,8 +103,13 @@ describe("parseUtils", () => {
         doWithMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, fh => {
             assert(fh.file.path === f.path);
             assert(fh.matches[0].name === oldPackage);
+
+            console.log("1. actions were " + (t as any).actions.map(a => a.toString()).join(","));
+
             fh.makeUpdatable();
             const m: Match<{ name: string }> = fh.matches[0];
+
+            console.log("2. actions were " + (t as any).actions.map(a => a.toString()).join(","));
 
             assert(m.name === oldPackage, `Expected [${oldPackage}] got [${m.name}]`);
             // Add x to package names. Yes, this makes no sense in Java
@@ -113,9 +118,9 @@ describe("parseUtils", () => {
             assert(m.name);
             assert(m.name === oldPackage + "x");
             assert(fh.file.dirty, "File should be dirty");
-            console.log("Completed op block");
+            console.log("3. completed op block. actions were " + (t as any).actions.map(a => a.toString()).join(","));
         }).defer();
-        console.log("actions were " + (t as any).actions.map(a => a.toString()).join(","));
+        console.log("4. actions were " + (t as any).actions.map(a => a.toString()).join(","));
         assert(t.dirty);
         t.flush().then(_ => {
             // Check file persistence
