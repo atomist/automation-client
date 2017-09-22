@@ -2,7 +2,7 @@ import "mocha";
 
 import * as assert from "power-assert";
 import { movePackage } from "../../../../src/operations/generate/java/javaProjectUtils";
-import { tempProject } from "../../../project/Utils";
+import { tempProject } from "../../../project/utils";
 
 describe("javaProjectUtils", () => {
 

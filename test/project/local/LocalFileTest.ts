@@ -6,7 +6,7 @@ import { LocalFile } from "../../../src/project/local/LocalFile";
 
 import * as assert from "power-assert";
 import { NodeFsLocalFile } from "../../../src/project/local/NodeFsLocalFile";
-import { tempProject } from "../Utils";
+import { tempProject } from "../utils";
 
 describe("LocalFile", () => {
 

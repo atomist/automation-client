@@ -2,7 +2,7 @@ import * as fs from "fs";
 import "mocha";
 import * as assert from "power-assert";
 import { EditResult, ProjectEditor } from "../../../src/operations/edit/ProjectEditor";
-import { tempProject } from "../../project/Utils";
+import { tempProject } from "../../project/utils";
 
 describe("Local editing", () => {
 

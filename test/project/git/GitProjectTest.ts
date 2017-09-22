@@ -2,10 +2,9 @@ import axios from "axios";
 import "mocha";
 
 import * as assert from "power-assert";
-import { tempProject } from "../Utils";
+import { tempProject } from "../utils";
 
 import * as exec from "child_process";
-import { Git } from "git";
 import { cloneEditAndPush, GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { clone } from "../../../src/project/git/GitLoader";
 import {GitHubBase, GitProject } from "../../../src/project/git/GitProject";
