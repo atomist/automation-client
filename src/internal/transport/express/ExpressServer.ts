@@ -119,7 +119,7 @@ export class ExpressServer {
         });
 
         exp.listen(this.options.port, () => {
-            logger.info(`Atomist automation dashboard running at 'http://${os.hostname()}:${this.options.port}'`);
+            logger.info(`Atomist automation dashboard running at 'http://${this.options.host}:${this.options.port}'`);
         });
     }
 
@@ -242,6 +242,7 @@ export class ExpressServer {
 export interface ExpressServerOptions {
 
     port: number;
+    host?: string,
     auth?: {
         basic: {
             enabled: boolean;

@@ -11,6 +11,7 @@ import { WebSocketClient, WebSocketClientOptions } from "./internal/transport/we
 import { logger } from "./internal/util/logger";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
+import * as os from "os";
 
 export const DefaultStagingAtomistServer =
     "https://automation-staging.atomist.services/registration";
@@ -93,8 +94,10 @@ export class AutomationClient {
     private runHttp(listeners: AutomationEventListener[]): void {
         const http = this.configuration.http;
         this.httpPort = http && http.port ? http.port : (process.env.PORT ? +process.env.PORT : 2866);
+        const host = http && http.host ? http.host : os.hostname();
         const expressOptions: ExpressServerOptions = {
             port: this.httpPort,
+            host,
             auth: {
                 basic: {
                     enabled: true,

@@ -11,6 +11,7 @@ export interface RunOptions {
     http?: {
         enabled: boolean;
         port?: number;
+        host?: string;
         auth?: {
             basic?: {
                 enabled: boolean;
