@@ -87,7 +87,7 @@ export function doWithFileMatches<M>(p: ProjectNonBlocking,
         return file.getContent()
             .then(content => {
                 const matches = microgrammar.findMatches(content);
-                if (matches.length > 0) {
+                if (matches && matches.length > 0) {
                     logger.debug(`${matches.length} matches in [${file.path}]`);
                     const fh = new UpdatingFileHits(p, file, matches, content);
                     if (opts.makeUpdatable) {
@@ -95,7 +95,7 @@ export function doWithFileMatches<M>(p: ProjectNonBlocking,
                     }
                     action(fh);
                 } else {
-                    logger.debug(`No matches in [${file.path}`);
+                    logger.debug(`No matches in [${file.path}]`);
                     return undefined;
                 }
             });

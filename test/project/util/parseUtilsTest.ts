@@ -1,6 +1,7 @@
 import "mocha";
 
 import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
+import { Integer } from "@atomist/microgrammar/Primitives";
 import * as assert from "power-assert";
 import { JavaPackageDeclaration } from "../../../src/operations/generate/java/JavaGrammars";
 import { JavaFiles } from "../../../src/operations/generate/java/javaProjectUtils";
@@ -159,4 +160,49 @@ describe("parseUtils", () => {
         }).catch(done);
     });
 
+    it("updates nested matches from files using callback", done => {
+        const t = new InMemoryProject("name");
+        const initialContent = `tom:61 alice:27`;
+        const f = new InMemoryFile("People", initialContent);
+        t.addFileSync(f.path, f.getContentSync());
+        doWithFileMatches<Entry>(t, "People", nestedGrammar, fh => {
+            assert(fh.file.path === f.path);
+            assert(fh.matches.length === 2);
+            const m = fh.matches[0];
+            assert(m.person.name === "tom");
+            assert(m.person.age === 61);
+            // Add x to package names. Yes, this makes no sense in Java
+            // but it's not meant to be domain meaningful
+            m.person.name = "teriko";
+            assert(m.person.name);
+            assert(m.person.name === "teriko");
+            fh.matches[1].person.name = "andy";
+        }).run()
+            .then(_ => {
+                // Check file persistence
+                const updatedFile = t.findFileSync(f.path);
+                assert(updatedFile.getContentSync() ===
+                    initialContent
+                        .replace("tom", "teriko")
+                        .replace("alice", "andy"),
+                    `Content is [${updatedFile.getContentSync()}]`);
+                done();
+            }).catch(done);
+    });
+
 });
+
+const nestedGrammar = Microgrammar.fromDefinitions<Entry>({
+    person: {
+        name: /[a-z]+/,
+        _colon: ":",
+        age: Integer,
+    },
+});
+
+interface Entry {
+    person: {
+        name: string;
+        age: number;
+    };
+}
