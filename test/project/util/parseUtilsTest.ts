@@ -7,7 +7,10 @@ import { JavaPackageDeclaration } from "../../../src/operations/generate/java/Ja
 import { JavaFiles } from "../../../src/operations/generate/java/javaProjectUtils";
 import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { doWithFileMatches, findFileMatches, findMatches, Match } from "../../../src/project/util/parseUtils";
+import {
+    doWithFileMatches, doWithUniqueMatch, findFileMatches, findMatches,
+    Match,
+} from "../../../src/project/util/parseUtils";
 
 describe("parseUtils", () => {
 
@@ -126,6 +129,66 @@ describe("parseUtils", () => {
                     `Content is [${updatedFile.getContentSync()}]`);
                 done();
             }).catch(done);
+    });
+
+    it("updates unique match from files using callback", done => {
+        const oldPackage = "com.foo.bar";
+        const t = new InMemoryProject("name");
+        const initialContent = `package ${oldPackage};\npublic class Thing {}`;
+        const f = new InMemoryFile("src/main/java/com/foo/bar/Thing.java", initialContent);
+        t.addFileSync(f.path, f.getContentSync());
+        doWithUniqueMatch<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, m => {
+            assert(m.name === oldPackage, `Expected [${oldPackage}] got [${m.name}]`);
+            // Add x to package names. Yes, this makes no sense in Java
+            // but it's not meant to be domain meaningful
+            m.name = m.name + "x";
+            assert(m.name);
+            assert(m.name === oldPackage + "x");
+        }).run()
+            .then(_ => {
+                // Check file persistence
+                const updatedFile = t.findFileSync(f.path);
+                assert(updatedFile.getContentSync() === initialContent.replace(oldPackage, oldPackage + "x"),
+                    `Content is [${updatedFile.getContentSync()}]`);
+                done();
+            }).catch(done);
+    });
+
+    it("updates unique match from files using callback: fail with zero", done => {
+        const t = new InMemoryProject("name");
+        const initialContent = `public class Thing {}`;
+        const f = new InMemoryFile("src/main/java/Thing.java", initialContent);
+        t.addFileSync(f.path, f.getContentSync());
+        doWithUniqueMatch<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, m => {
+            throw new Error("Should not be invoked");
+        }).run()
+            .catch(err => {
+                // Check file persistence
+                const updatedFile = t.findFileSync(f.path);
+                assert(updatedFile.getContentSync() === initialContent);
+                done();
+            });
+    });
+
+    it("updates unique match from files using callback: fail with 2", done => {
+        const t = new InMemoryProject("name");
+        const initialContent1 = `package com.foo.bar;\npublic class Thing1 {}`;
+        const initialContent2 = `package com.foo.bar;\npublic class Thing2 {}`;
+        const f1 = new InMemoryFile("src/main/java/com/foo/bar/Thing1.java", initialContent1);
+        const f2 = new InMemoryFile("src/main/java/com/foo/bar/Thing2.java", initialContent2);
+
+        t.addFileSync(f1.path, f1.getContentSync());
+        t.addFileSync(f2.path, f2.getContentSync());
+        doWithUniqueMatch<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, m => {
+            // Doesn't matter
+        }).run()
+            .catch(err => {
+                // Check file persistence
+                console.log(err);
+                const updatedFile = t.findFileSync(f1.path);
+                assert(updatedFile.getContentSync() === initialContent1);
+                done();
+            });
     });
 
     it("updates matches from files using callback and defer", done => {

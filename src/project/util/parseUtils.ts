@@ -103,6 +103,69 @@ export function doWithFileMatches<M>(p: ProjectNonBlocking,
 }
 
 /**
+ * Convenience function to operate on the sole match in the project.
+ * Fail if zero or more than one.
+ * @param {ProjectNonBlocking} p
+ * @param {string} globPattern
+ * @param {Microgrammar<M>} microgrammar
+ * @param {(m: M) => void} action
+ * @param {{makeUpdatable: boolean}} opts
+ * @return {RunOrDefer<File[]>}
+ */
+export function doWithUniqueMatch<M>(p: ProjectNonBlocking,
+                                     globPattern: string,
+                                     microgrammar: Microgrammar<M>,
+                                     action: (m: M) => void,
+                                     opts: { makeUpdatable: boolean } = {makeUpdatable: true}): RunOrDefer<File[]> {
+    let count = 0;
+    const guardedAction = (fh: FileWithMatches<M>) => {
+        if (fh.matches.length !== 1) {
+            throw new Error(`Expected 1 match, not ${fh.matches.length}`);
+        }
+        if (count++ !== 0) {
+            throw new Error("More than one match found in project");
+        }
+        const m0 = fh.matches[0];
+        action(m0);
+    };
+    return doWithFileMatches(p, globPattern, microgrammar, guardedAction, opts)
+        .transform(files => {
+            if (count++ === 0) {
+                throw new Error("No unique match found in project");
+            }
+            return files;
+        });
+}
+
+/**
+ * Similar to doWithUniqueMatch, but accepts zero matches without error
+ * @param {ProjectNonBlocking} p
+ * @param {string} globPattern
+ * @param {Microgrammar<M>} microgrammar
+ * @param {(m: M) => void} action
+ * @param {{makeUpdatable: boolean}} opts
+ * @return {RunOrDefer<File[]>}
+ */
+export function doWithAtMostOneMatch<M>(p: ProjectNonBlocking,
+                                        globPattern: string,
+                                        microgrammar: Microgrammar<M>,
+                                        action: (m: M) => void,
+                                        opts: { makeUpdatable: boolean } = {makeUpdatable: true}): RunOrDefer<File[]> {
+    let count = 0;
+    const guardedAction = (fh: FileWithMatches<M>) => {
+        if (fh.matches.length !== 1) {
+            throw new Error(`Expected at most 1 match, not ${fh.matches.length}`);
+        }
+        if (count++ !== 0) {
+            throw new Error("More than one match found in project");
+        }
+        const m0 = fh.matches[0];
+        action(m0);
+    };
+    return doWithFileMatches(p, globPattern, microgrammar, guardedAction, opts);
+}
+
+/**
  * Hits within a file
  */
 class UpdatingFileHits<M> implements FileWithMatches<M> {

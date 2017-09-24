@@ -53,6 +53,13 @@ export interface RunOrDefer<T> {
      * Schedule this operation to run later, when flush() is called on the ScriptedFlushable
      */
     defer(): void;
+
+    /**
+     * Transform the result of the potentially deferred promise.
+     * Similar to Promise chaining
+     * @param {(r: Promise<T>) => (Promise<T> | T)} trans
+     */
+    transform<R>(trans: (t: T) => R | Promise<R>): RunOrDefer<R>;
 }
 
 /**
@@ -68,6 +75,9 @@ export function runOrDefer<T extends ScriptedFlushable<T>, R>(t: T, funrun: Scri
         },
         run() {
             return funrun(t);
+        },
+        transform(trans) {
+            return runOrDefer(t, t1 => funrun(t1).then(r => trans(r)));
         },
     };
 }
