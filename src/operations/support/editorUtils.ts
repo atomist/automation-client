@@ -1,8 +1,7 @@
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
-import { Project } from "../../project/Project";
 import { RepoId } from "../common/RepoId";
-import { ProjectEditor } from "../edit/ProjectEditor";
+import { ProjectEditor } from "../edit/projectEditor";
 
 /**
  * Edit a GitHub project using a PR

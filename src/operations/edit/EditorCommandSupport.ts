@@ -3,7 +3,7 @@ import { HandlerContext } from "../../HandlerContext";
 import { HandlerResult } from "../../HandlerResult";
 import { logger } from "../../internal/util/logger";
 import { LocalOrRemoteRepoOperation } from "../common/LocalOrRemoteRepoOperation";
-import { editUsingPullRequest, PullRequestEdit } from "../support/EditorUtils";
+import { editUsingPullRequest, PullRequestEdit } from "../support/editorUtils";
 import { ProjectEditor } from "./projectEditor";
 
 /**
