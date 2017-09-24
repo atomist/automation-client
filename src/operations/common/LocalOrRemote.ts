@@ -1,8 +1,8 @@
 import * as shell from "shelljs";
 
-import { MappedParameter, Parameter, Secret } from "../../decorators";
+import { Parameter, Secret } from "../../decorators";
 import { Secrets } from "../../Handlers";
-import { allReposInOrg } from "../common/AllReposInOrgRepoFinder";
+import { allReposInTeam } from "./allReposInTeamRepoFinder";
 import { RepoFinder } from "../common/RepoFinder";
 import { RepoId } from "../common/RepoId";
 
@@ -43,7 +43,7 @@ export abstract class LocalOrRemote {
     }
 
     protected repoFinder(): RepoFinder {
-        return this.local ? allReposInOrg(this.cwd()) : allReposInOrg();
+        return this.local ? allReposInTeam(this.cwd()) : allReposInTeam();
     }
 
     /**

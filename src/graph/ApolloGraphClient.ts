@@ -62,7 +62,7 @@ export class ApolloGraphClient implements GraphClient {
                 variables,
             })
             .then(response => {
-                logger.debug("Query returned data\n%s", JSON.stringify(response.data, null, 2));
+                // logger.debug("Query returned data\n%s", JSON.stringify(response.data, null, 2));
                 return response.data; });
     }
 
