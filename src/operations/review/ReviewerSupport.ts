@@ -40,7 +40,7 @@ export abstract class ReviewerSupport<D extends ProjectReview>
                             logger.info("Attempting to review %s", JSON.stringify(id));
                             return load(id)
                                 .then(p => {
-                                    return projectReviewer(id, p);
+                                    return projectReviewer(id, p, context);
                                 })
                                 .then(review => {
                                     // Don't attempt to raise issues when reviewing a local repo

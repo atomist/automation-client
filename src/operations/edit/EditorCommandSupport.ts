@@ -12,11 +12,11 @@ import { ProjectEditor } from "./projectEditor";
  */
 export abstract class EditorCommandSupport extends LocalOrRemoteRepoOperation implements HandleCommand {
 
-    public handle(ctx: HandlerContext): Promise<HandlerResult> {
+    public handle(context: HandlerContext): Promise<HandlerResult> {
         const load = this.repoLoader();
         const projectEditor = this.projectEditor();
 
-        return this.repoFinder()(ctx)
+        return this.repoFinder()(context)
             .then(repoIds => {
                 const reposToEdit = repoIds.filter(this.repoFilter);
                 logger.info("Repos to edit are " + reposToEdit.map(r => r.repo).join(","));
@@ -24,9 +24,9 @@ export abstract class EditorCommandSupport extends LocalOrRemoteRepoOperation im
                     reposToEdit.map(r => {
                         if (this.local) {
                             return load(r)
-                                .then(p => projectEditor(r, p));
+                                .then(p => projectEditor(r, p, context));
                         } else {
-                            return editUsingPullRequest(this.githubToken, r, projectEditor,
+                            return editUsingPullRequest(this.githubToken, context, r, projectEditor,
                                 // TODO customize PR config
                                 new PullRequestEdit("add-license", "Added license"));
                         }
