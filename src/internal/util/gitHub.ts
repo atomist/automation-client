@@ -26,7 +26,7 @@ export function hasFile(token: string, user: string, repo: string, path: string)
     return axios.get(url, config)
         .then(d => true)
         .catch(err => {
-            logger.info("Axios error getting file: Probably not there", err);
+            logger.info("Axios error getting file: Probably not there", err.toString());
             return false;
         });
 }
