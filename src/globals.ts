@@ -12,13 +12,6 @@ export function setJwtToken(token: string) {
 export function jwtToken() {
     return jwtT;
 }
-////////////////////////////////////////////////////////
-const sdh = new ShutdownHook();
-sdh.register();
-
-export function shutdownHook() {
-    return sdh;
-}
 
 ////////////////////////////////////////////////////////
 let es: EventStore = new InMemoryEventStore();
