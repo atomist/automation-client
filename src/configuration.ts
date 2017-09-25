@@ -4,11 +4,13 @@ import { HandleEvent } from "./HandleEvent";
 import { logger } from "./internal/util/logger";
 import { hideString } from "./internal/util/string";
 import { RunOptions } from "./server/options";
+import { AutomationEventListener } from "./server/AutomationEventListener";
 
 export interface Configuration extends RunOptions {
     commands?: Array<() => HandleCommand>;
     events?: Array<() => HandleEvent<any>>;
     ingestors?: Array<() => HandleEvent<any>>;
+    listeners?: Array<AutomationEventListener>;
 }
 
 const AtomistConfigFile = "atomist.config.js";
