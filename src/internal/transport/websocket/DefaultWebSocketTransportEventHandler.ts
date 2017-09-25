@@ -1,30 +1,31 @@
 import * as WebSocket from "ws";
 import { setJwtToken } from "../../../globals";
 import { ApolloGraphClient } from "../../../graph/ApolloGraphClient";
-import { HandlerResult } from "../../../HandlerResult";
+import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
 import { MessageClient } from "../../../spi/message/MessageClient";
 import { logger } from "../../util/logger";
-import { AbstractMetricEnabledAutomationEventListener } from "../AbstractMetricEnabledAutomationEventListener";
-import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../AutomationEventListener";
-import { RegistrationIncoming, WebSocketAutomationEventListener } from "./WebSocketAutomationEventListener";
+import { AbstractEventStoringTransportEventHandler } from "../AbstractEventStoringTransportEventHandler";
+import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../TransportEventHandler";
 import { WebSocketClientOptions } from "./WebSocketClient";
 import {
-    HandlerResponse,
-    sendMessage, StatusMessage, WebSocketCommandMessageClient,
+    sendMessage,
+    WebSocketCommandMessageClient,
     WebSocketEventMessageClient,
 } from "./WebSocketMessageClient";
+import { RegistrationIncoming, WebSocketTransportEventHandler } from "./WebSocketTransportEventHandler";
 
-export class DefaultWebSocketAutomationEventListener extends AbstractMetricEnabledAutomationEventListener
-    implements WebSocketAutomationEventListener {
+export class DefaultWebSocketTransportEventHandler extends AbstractEventStoringTransportEventHandler
+    implements WebSocketTransportEventHandler {
 
     private registration: RegistrationIncoming;
     private webSocket: WebSocket;
     private graphClient: GraphClient;
 
-    constructor(protected automations: AutomationServer, private options: WebSocketClientOptions) {
-        super(automations);
+    constructor(protected automations: AutomationServer, private options: WebSocketClientOptions,
+                protected listeners: AutomationEventListener[] = []) {
+        super(automations, listeners);
     }
 
     public onRegistration(registration: RegistrationIncoming) {

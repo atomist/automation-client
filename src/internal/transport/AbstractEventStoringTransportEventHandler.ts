@@ -1,17 +1,18 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import { HandlerResult } from "../../HandlerResult";
+import { AutomationEventListener } from "../../server/AutomationEventListener";
 import { AutomationServer } from "../../server/AutomationServer";
 import { MessageClient, MessageOptions } from "../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../spi/message/MessageClientSupport";
 import { eventStore } from "../event/InMemoryEventStore";
 import { guid } from "../util/string";
-import { AbstractAutomationEventListener } from "./AbstractAutomationEventListener";
-import { CommandIncoming, EventIncoming } from "./AutomationEventListener";
+import { AbstractTransportEventHandler } from "./AbstractTransportEventHandler";
+import { CommandIncoming, EventIncoming } from "./TransportEventHandler";
 
-export abstract class AbstractEventStoringAutomationEventListener extends AbstractAutomationEventListener {
+export abstract class AbstractEventStoringTransportEventHandler extends AbstractTransportEventHandler {
 
-    constructor(protected automations: AutomationServer) {
-        super(automations);
+    constructor(protected automations: AutomationServer, protected listeners: AutomationEventListener[] = []) {
+        super(automations, listeners);
     }
 
     public onCommand(command: CommandIncoming): Promise<HandlerResult> {

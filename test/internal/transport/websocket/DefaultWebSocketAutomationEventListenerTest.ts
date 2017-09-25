@@ -8,11 +8,11 @@ import { HandlerResult } from "../../../../src/HandlerResult";
 import { CommandInvocation } from "../../../../src/internal/invoker/Payload";
 import { CommandHandlerMetadata, Rugs } from "../../../../src/internal/metadata/metadata";
 import {
-    DefaultWebSocketAutomationEventListener,
-} from "../../../../src/internal/transport/websocket/DefaultWebSocketAutomationEventListener";
+    DefaultWebSocketTransportEventHandler,
+} from "../../../../src/internal/transport/websocket/DefaultWebSocketTransportEventHandler";
 import { AutomationServer } from "../../../../src/server/AutomationServer";
 
-describe("DefaultWebSocketAutomationEventListener", () => {
+describe("DefaultWebSocketTransportEventHandler", () => {
 
     it("check event received and processed", done => {
         class MockAutomationServer implements AutomationServer {
@@ -46,7 +46,7 @@ describe("DefaultWebSocketAutomationEventListener", () => {
             }
         }
         const automations = new MockAutomationServer();
-        const listener = new DefaultWebSocketAutomationEventListener(automations,
+        const listener = new DefaultWebSocketTransportEventHandler(automations,
             { token: "xxx" , registrationUrl: "http://foo.com", graphUrl: "http://bar.com"});
         listener.onRegistration({url: "http://bla.com", jwt: "123456789" });
         listener.onConnection((new MockWebSocket() as any) as WebSocket);
@@ -121,7 +121,7 @@ function verifyCommandHandler(code: number): Promise<HandlerResult> {
         }
     }
     const automations = new MockAutomationServer();
-    const listener = new DefaultWebSocketAutomationEventListener(automations,
+    const listener = new DefaultWebSocketTransportEventHandler(automations,
         { token: "xxx" , registrationUrl: "http://foo.com", graphUrl: "http://bar.com"});
     listener.onRegistration({url: "http://bla.com", jwt: "123456789" });
     listener.onConnection((new MockWebSocket() as any) as WebSocket);

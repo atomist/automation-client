@@ -1,9 +1,9 @@
 import { HandlerResult } from "../../HandlerResult";
 
 /**
- * EventListener to retrieve notications on incoming cortex events and command handler invocations.
+ * EventListener to retrieve notifications on incoming cortex events and command handler invocations.
  */
-export interface AutomationEventListener {
+export interface TransportEventHandler {
 
     /**
      * A new commnad handler request haa been received.

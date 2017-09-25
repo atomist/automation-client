@@ -2,13 +2,14 @@ import * as os from "os";
 import { Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
-import { AutomationEventListener } from "./internal/transport/AutomationEventListener";
 import { ExpressServer, ExpressServerOptions } from "./internal/transport/express/ExpressServer";
-import { DefaultWebSocketAutomationEventListener,
-} from "./internal/transport/websocket/DefaultWebSocketAutomationEventListener";
+import { MetricEnabledAutomationEventListener } from "./internal/transport/MetricEnabledAutomationEventListener";
+import { TransportEventHandler } from "./internal/transport/TransportEventHandler";
+import { DefaultWebSocketTransportEventHandler,
+} from "./internal/transport/websocket/DefaultWebSocketTransportEventHandler";
 import { prepareRegistration } from "./internal/transport/websocket/Payloads";
-import { WebSocketAutomationEventListener } from "./internal/transport/websocket/WebSocketAutomationEventListener";
 import { WebSocketClient, WebSocketClientOptions } from "./internal/transport/websocket/WebSocketClient";
+import { WebSocketTransportEventHandler } from "./internal/transport/websocket/WebSocketTransportEventHandler";
 import { logger } from "./internal/util/logger";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
@@ -58,40 +59,35 @@ export class AutomationClient {
     }
 
     public run(): Promise<any> {
-
-        // Ideally we wouldn't need this, but I'm still adding proper error handling
-        process.on("uncaughtException", err => {
-            logger.error("Error occurred\n%s", err);
-        });
-
         logger.info(`Starting Atomist automation client for ${this.configuration.name}@${this.configuration.version}`);
-        const listeners = this.setupEventListeners();
+        const handler = this.setupEventHandler();
         const options: WebSocketClientOptions = {
             graphUrl: DefaultStagingAtomistGraphQLServer,
             registrationUrl: DefaultStagingAtomistServer,
             token: this.configuration.token,
         };
         return Promise.all([
-            Promise.resolve(this.runWs(listeners, options)),
-            Promise.resolve(this.runHttp(listeners)),
+            Promise.resolve(this.runWs(handler, options)),
+            Promise.resolve(this.runHttp(handler)),
         ]);
     }
 
-    private setupEventListeners(): WebSocketAutomationEventListener[] {
+    private setupEventHandler(): WebSocketTransportEventHandler {
         const webSocketOptions: WebSocketClientOptions = {
             graphUrl: DefaultStagingAtomistGraphQLServer,
             registrationUrl: DefaultStagingAtomistServer,
             token: this.configuration.token,
         };
-        return [new DefaultWebSocketAutomationEventListener(this.automations, webSocketOptions)];
+        return new DefaultWebSocketTransportEventHandler(this.automations, webSocketOptions,
+            [ new MetricEnabledAutomationEventListener() ]);
     }
 
-    private runWs(listeners: WebSocketAutomationEventListener[], options: WebSocketClientOptions): void {
+    private runWs(handler: WebSocketTransportEventHandler, options: WebSocketClientOptions): void {
         this.webSocketClient = new WebSocketClient(() => prepareRegistration(this.automations.rugs), options,
-            listeners );
+            handler );
     }
 
-    private runHttp(listeners: AutomationEventListener[]): void {
+    private runHttp(handler: TransportEventHandler): void {
         const http = this.configuration.http;
         this.httpPort = http && http.port ? http.port : (process.env.PORT ? +process.env.PORT : 2866);
         const host = http && http.host ? http.host : os.hostname();
@@ -128,7 +124,7 @@ export class AutomationClient {
             }
         }
         if (!http || http.enabled) {
-            this.httpServer = new ExpressServer(this.automations, expressOptions, listeners);
+            this.httpServer = new ExpressServer(this.automations, expressOptions, handler);
         }
     }
 }

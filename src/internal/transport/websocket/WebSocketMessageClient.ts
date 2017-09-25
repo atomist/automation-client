@@ -9,7 +9,7 @@ import {
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { logger } from "../../util/logger";
-import { CommandIncoming, EventIncoming } from "../AutomationEventListener";
+import { CommandIncoming, EventIncoming } from "../TransportEventHandler";
 
 export abstract class AbstractWebSocketMessageClient extends MessageClientSupport {
 
@@ -131,10 +131,14 @@ function mapParameters(data: {}): Parameter[] {
     for (const key in data) {
         if (data.hasOwnProperty(key)) {
             const value = data[key];
-            parameters.push({
-                name: key,
-                value: value.toString(),
-            });
+            if (value) {
+                parameters.push({
+                    name: key,
+                    value: value.toString(),
+                });
+            } else {
+                // logger.debug(`Parameter value for '${key}' is null`);
+            }
         }
     }
     return parameters;

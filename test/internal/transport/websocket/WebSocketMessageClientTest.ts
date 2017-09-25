@@ -8,8 +8,8 @@ import { HandlerResult } from "../../../../src/HandlerResult";
 import { CommandInvocation } from "../../../../src/internal/invoker/Payload";
 import { CommandHandlerMetadata, Rugs } from "../../../../src/internal/metadata/metadata";
 import {
-    DefaultWebSocketAutomationEventListener,
-} from "../../../../src/internal/transport/websocket/DefaultWebSocketAutomationEventListener";
+    DefaultWebSocketTransportEventHandler,
+} from "../../../../src/internal/transport/websocket/DefaultWebSocketTransportEventHandler";
 import { WebSocketEventMessageClient } from "../../../../src/internal/transport/websocket/WebSocketMessageClient";
 import { guid } from "../../../../src/internal/util/string";
 import { AutomationServer } from "../../../../src/server/AutomationServer";

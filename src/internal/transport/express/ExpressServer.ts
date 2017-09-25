@@ -17,7 +17,7 @@ import { eventStore } from "../../event/InMemoryEventStore";
 import { logger } from "../../util/logger";
 import { report } from "../../util/metric";
 import { guid } from "../../util/string";
-import { AutomationEventListener, CommandIncoming, EventIncoming } from "../AutomationEventListener";
+import { CommandIncoming, EventIncoming, TransportEventHandler } from "../TransportEventHandler";
 
 import * as _ from "lodash";
 import * as http from "passport-http";
@@ -33,7 +33,7 @@ export class ExpressServer {
 
     constructor(private automations: AutomationServer,
                 private options: ExpressServerOptions,
-                private listeners: AutomationEventListener[] = []) {
+                private handler: TransportEventHandler) {
 
         const exp = express();
 
@@ -151,7 +151,7 @@ export class ExpressServer {
             };
                 logger.debug("Incoming payload for command handler '%s'\n%s", h.name, JSON.stringify(payload, null, 2));
 
-                Promise.all(this.listeners.map(l => l.onCommand(payload)))
+                this.handler.onCommand(payload)
                 .then(result => {
                     return handle(res, result);
                 })
@@ -176,7 +176,7 @@ export class ExpressServer {
             };
             logger.debug("Incoming payload for ingestor '%s'\n%s", h.name, JSON.stringify(payload, null, 2));
 
-            Promise.all(this.listeners.map(l => l.onEvent(payload)))
+            this.handler.onEvent(payload)
                 .then(result => {
                     return handle(res, result);
                 })

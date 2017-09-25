@@ -1,5 +1,3 @@
-import { logger } from "../../src/internal/util/logger";
-
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import { CommandHandler, Parameter, Secret } from "../../src/decorators";
 import { HandleCommand, HandlerContext, HandlerResult, Secrets } from "../../src/Handlers";
@@ -13,7 +11,7 @@ export class HelloWorld implements HandleCommand {
     public name: string;
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
-        logger.info(`Incoming parameter was ${this.name}`);
+        console.log(`Incoming parameter was ${this.name}`);
 
         const msg: SlackMessage = {
             text: `Send hello again, @${this.name}?`,

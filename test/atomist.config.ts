@@ -12,7 +12,7 @@ export const configuration: Configuration = {
     teamId: "T1L0VDKJP",
     commands: [
         () => new HelloWorld(),
-        () => new PlainHelloWorld(),
+        // () => new PlainHelloWorld(),
         // () => new UniversalSeed(),
         // () => new JavaSeed(),
         // () => new SpringBootSeed(),

@@ -1,17 +1,19 @@
 import { DefaultStagingAtomistGraphQLServer } from "../../../automationClient";
 import { getJwtToken } from "../../../globals";
 import { ApolloGraphClient } from "../../../graph/ApolloGraphClient";
+import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
 import { MessageClient } from "../../../spi/message/MessageClient";
 import { debugMessageClient } from "../../message/DebugMessageClient";
-import { AbstractMetricEnabledAutomationEventListener } from "../AbstractMetricEnabledAutomationEventListener";
-import { CommandIncoming, EventIncoming} from "../AutomationEventListener";
+import { AbstractEventStoringTransportEventHandler } from "../AbstractEventStoringTransportEventHandler";
+import { MetricEnabledAutomationEventListener } from "../MetricEnabledAutomationEventListener";
+import { CommandIncoming, EventIncoming} from "../TransportEventHandler";
 
-export class DefaultExpressAutomationEventListener extends AbstractMetricEnabledAutomationEventListener {
+export class DefaultExpressTransportEventHandler extends AbstractEventStoringTransportEventHandler {
 
-    constructor(automations: AutomationServer) {
-        super(automations);
+    constructor(automations: AutomationServer, protected listeners: AutomationEventListener[] = []) {
+        super(automations, listeners);
     }
 
     protected sendMessage(payload: any) {

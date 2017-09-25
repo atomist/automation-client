@@ -1,36 +1,38 @@
 import axios from "axios";
+import * as _ from "lodash";
 import * as ShutdownHook from "shutdown-hook";
 import * as WebSocket from "ws";
 import { HandlerResult } from "../../../HandlerResult";
+import * as namespace from "../../util/cls";
 import { logger } from "../../util/logger";
 import { hideString } from "../../util/string";
-import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../AutomationEventListener";
-import { RegistrationIncoming, WebSocketAutomationEventListener } from "./WebSocketAutomationEventListener";
+import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../TransportEventHandler";
 import { sendMessage } from "./WebSocketMessageClient";
+import { RegistrationIncoming, WebSocketTransportEventHandler } from "./WebSocketTransportEventHandler";
 
 export class WebSocketClient {
 
     constructor(private registrationCallback: () => any,
                 private options: WebSocketClientOptions,
-                private listeners: WebSocketAutomationEventListener[] = []) {
-        register(this.registrationCallback, options, listeners)
+                private handler: WebSocketTransportEventHandler) {
+        register(this.registrationCallback, options, handler)
             .then(registration =>
-                connect(this.registrationCallback, registration, this.options, this.listeners));
+                connect(this.registrationCallback, registration, this.options, this.handler));
     }
 }
 
 function connect(registrationCallback: () => any, registration: RegistrationIncoming,
-                 options: WebSocketClientOptions, listeners: WebSocketAutomationEventListener[]): Promise<WebSocket> {
+                 options: WebSocketClientOptions, handler: WebSocketTransportEventHandler): Promise<WebSocket> {
 
     // Functions are inline to avoid "this" peculiarities
     function invokeCommandHandler(chr: CommandIncoming):
-        Promise<HandlerResult[]> {
-        return Promise.all(listeners.map(l => l.onCommand(chr)));
+        Promise<HandlerResult> {
+        return handler.onCommand(chr);
     }
 
     function invokeEventHandler(e: EventIncoming):
-        Promise<HandlerResult[][]> {
-        return Promise.all(listeners.map(l => l.onEvent(e)));
+        Promise<HandlerResult[]> {
+        return handler.onEvent(e);
     }
 
     return new Promise<WebSocket>(resolve => {
@@ -38,41 +40,50 @@ function connect(registrationCallback: () => any, registration: RegistrationInco
         const ws = new WebSocket(registration.url);
 
         ws.on("open", function open() {
-            listeners.forEach(l => l.onConnection(this));
+            handler.onConnection(this);
             resolve(ws);
         });
 
         ws.on("message", function incoming(data: WebSocket.Data) {
             const request = JSON.parse(data as string);
-            logger.debug("Incoming message\n%s", JSON.stringify(request, function replacer(key, value) {
-                if (key === "secrets") {
-                    return value.map(v => ({ name: v.name, value: hideString(v.value) }));
-                } else {
-                    return value;
-                }
-            }, 2));
 
-            if (isPing(request)) {
-                logger.debug("Received ping message");
-                sendMessage({ pong: request.ping }, this);
-            } else if (isCommandIncoming(request)) {
-                return invokeCommandHandler(request)
-                    .then(() => {
-                        logger.debug(`Finished invocation of command handler '%s'`, request.name);
-                    }).catch(hr => {
-                        logger.warn(`Failed invocation of command handler '%s' with '%s'`, request.name, hr);
-                    });
-            } else if (isEventIncoming(request)) {
-                return invokeEventHandler(request)
-                    .then(() => {
-                        logger.debug(`Finished invocation of event handler '%s'`, request.extensions.operationName);
-                    }).catch(er => {
-                        logger.warn(`Failed invocation of command handler '%s' with '%s'`,
-                            request.extensions.operationName, er);
-                    });
-            } else {
-                throw new Error(`Don't know how to handle '${data}'`);
-            }
+            // setup context
+            const ses = namespace.init();
+
+            ses.run(() => {
+
+                setupNamespace(request);
+
+                logger.debug("Incoming message\n%s", JSON.stringify(request, function replacer(key, value) {
+                    if (key === "secrets") {
+                        return value.map(v => ({ name: v.name, value: hideString(v.value) }));
+                    } else {
+                        return value;
+                    }
+                }, 2));
+
+                if (isPing(request)) {
+                    logger.debug("Received ping message");
+                    sendMessage({ pong: request.ping }, this);
+                } else if (isCommandIncoming(request)) {
+                    invokeCommandHandler(request)
+                        .then(() => {
+                            logger.debug(`Finished invocation of command handler '%s'`, request.name);
+                        }).catch(hr => {
+                            logger.warn(`Failed invocation of command handler '%s' with '%s'`, request.name, hr);
+                        });
+                } else if (isEventIncoming(request)) {
+                    invokeEventHandler(request)
+                        .then(() => {
+                            logger.debug(`Finished invocation of event handler '%s'`, request.extensions.operationName);
+                        }).catch(er => {
+                            logger.warn(`Failed invocation of command handler '%s' with '%s'`,
+                                request.extensions.operationName, er);
+                        });
+                } else {
+                    throw new Error(`Don't know how to handle '${data}'`);
+                }
+            });
         });
 
         // On close this websocket is meant to reconnect
@@ -82,8 +93,8 @@ function connect(registrationCallback: () => any, registration: RegistrationInco
             } else {
                 logger.warn(`WebSocket connection closed`);
             }
-            register(registrationCallback, options, listeners)
-                .then(reg => connect(registrationCallback, reg, options, listeners));
+            register(registrationCallback, options, handler)
+                .then(reg => connect(registrationCallback, reg, options, handler));
         });
 
         const shutdownHook = new ShutdownHook();
@@ -97,7 +108,7 @@ function connect(registrationCallback: () => any, registration: RegistrationInco
 }
 
 function register(registrationCallback: () => any, options: WebSocketClientOptions,
-                  listeners: WebSocketAutomationEventListener[]): Promise<RegistrationIncoming> {
+                  handler: WebSocketTransportEventHandler): Promise<RegistrationIncoming> {
     const registrationPayload = registrationCallback();
 
     logger.info(`Registering ${registrationPayload.name}@${registrationPayload.version} ` +
@@ -108,7 +119,7 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
         { headers: { Authorization: `token ${options.token}` } })
         .then(result => {
             const registration = result.data as RegistrationIncoming;
-            listeners.forEach(l => l.onRegistration(registration));
+            handler.onRegistration(registration);
             return registration;
         })
         .catch(error => {
@@ -126,6 +137,14 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
             process.exit(1);
             throw error;
         });
+}
+
+function setupNamespace(request: any) {
+    namespace.set({
+        correlationId:  _.get(request, "corrid") || _.get(request, "extensions.correlation_id"),
+        teamId: _.get(request, "correlation_context.team.id") || _.get(request, "extensions.team_id"),
+        operation: _.get(request, "name") || _.get(request, "extensions.operationName"),
+    });
 }
 
 export interface WebSocketClientOptions {

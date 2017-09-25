@@ -1,7 +1,7 @@
 /**
  * Implementations of {EventStore} can be used to store and retrieve automation node releated events.
  */
-import { CommandIncoming, EventIncoming } from "../../internal/transport/AutomationEventListener";
+import { CommandIncoming, EventIncoming } from "../../internal/transport/TransportEventHandler";
 
 export interface EventStore {
 

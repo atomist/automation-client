@@ -1,6 +1,6 @@
 import { LRUMap } from "lru_map";
 import { EventStore } from "../../spi/event/EventStore";
-import { CommandIncoming, EventIncoming } from "../transport/AutomationEventListener";
+import { CommandIncoming, EventIncoming } from "../transport/TransportEventHandler";
 import { guid, hideString } from "../util/string";
 
 /**

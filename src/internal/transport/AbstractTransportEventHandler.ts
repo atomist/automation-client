@@ -1,19 +1,19 @@
 import { HandlerContext } from "../../HandlerContext";
 import { HandlerResult } from "../../HandlerResult";
 import { EventFired } from "../../Handlers";
+import { AutomationEventListener } from "../../server/AutomationEventListener";
 import { AutomationServer } from "../../server/AutomationServer";
 import { GraphClient } from "../../spi/graph/GraphClient";
 import { MessageClient } from "../../spi/message/MessageClient";
 import { CommandInvocation } from "../invoker/Payload";
-import { AutomationEventListener, CommandIncoming, EventIncoming } from "./AutomationEventListener";
+import { CommandIncoming, EventIncoming, TransportEventHandler } from "./TransportEventHandler";
 import { HandlerResponse, StatusMessage } from "./websocket/WebSocketMessageClient";
 
-export abstract class AbstractAutomationEventListener implements AutomationEventListener {
+export abstract class AbstractTransportEventHandler implements TransportEventHandler {
 
-    constructor(protected automations: AutomationServer) {}
+    constructor(protected automations: AutomationServer, protected listeners: AutomationEventListener[] = []) {}
 
     public onCommand(command: CommandIncoming): Promise<HandlerResult> {
-
         const ci: CommandInvocation = {
             name: command.name,
             args: command.parameters,
@@ -26,11 +26,16 @@ export abstract class AbstractAutomationEventListener implements AutomationEvent
             messageClient: this.createMessageClient(command),
             graphClient: this.createGraphClient(command),
         };
+
+        this.listeners.forEach(l => l.commandStarting(ci, ctx));
+
         return this.automations.invokeCommand(ci, ctx)
             .then(result => {
+                this.listeners.forEach(l => l.commandSuccessful(ci, ctx, result));
                 this.sendStatus(result.code === 0 ? true : false, result, command);
                 return result;
             }).catch( error => {
+                this.listeners.forEach(l => l.commandFailed(ci, ctx, error));
                 this.sendStatus(false, { code: 1 } , command);
                 return error;
             });
@@ -50,7 +55,18 @@ export abstract class AbstractAutomationEventListener implements AutomationEvent
             messageClient: this.createMessageClient(event),
             graphClient: this.createGraphClient(event),
         };
-        return this.automations.onEvent(ef, ctx);
+
+        this.listeners.forEach(l => l.eventStarting(ef, ctx));
+
+        return this.automations.onEvent(ef, ctx)
+            .then(result => {
+                this.listeners.forEach(l => l.eventSuccessful(ef, ctx, result));
+                return result;
+            })
+            .catch( error => {
+                this.listeners.forEach(l => l.eventFailed(ef, ctx, error));
+                return error;
+            });
     }
 
     public sendStatus(success: boolean, hr: HandlerResult, request: CommandIncoming) {
