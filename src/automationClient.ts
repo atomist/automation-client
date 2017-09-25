@@ -64,7 +64,7 @@ export class AutomationClient {
         const options: WebSocketClientOptions = {
             graphUrl: DefaultStagingAtomistGraphQLServer,
             registrationUrl: DefaultStagingAtomistServer,
-            token: this.configuration.token,
+            token: this.configuration.token
         };
         return Promise.all([
             Promise.resolve(this.runWs(handler, options)),
