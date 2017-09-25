@@ -11,6 +11,7 @@ import { prepareRegistration } from "./internal/transport/websocket/Payloads";
 import { WebSocketClient, WebSocketClientOptions } from "./internal/transport/websocket/WebSocketClient";
 import { WebSocketTransportEventHandler } from "./internal/transport/websocket/WebSocketTransportEventHandler";
 import { logger } from "./internal/util/logger";
+import { AutomationEventListener } from "./server/AutomationEventListener";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
 
@@ -27,7 +28,7 @@ export class AutomationClient {
     private webSocketClient: WebSocketClient;
     private httpServer: ExpressServer;
 
-    constructor(private configuration: Configuration) {
+    constructor(private configuration: Configuration, private listeners: AutomationEventListener[] = []) {
         this.automations = new BuildableAutomationServer(
             {
                 name: configuration.name,
@@ -79,7 +80,7 @@ export class AutomationClient {
             token: this.configuration.token,
         };
         return new DefaultWebSocketTransportEventHandler(this.automations, webSocketOptions,
-            [ new MetricEnabledAutomationEventListener() ]);
+            [ new MetricEnabledAutomationEventListener(), ...this.listeners]);
     }
 
     private runWs(handler: WebSocketTransportEventHandler, options: WebSocketClientOptions): void {
@@ -129,6 +130,7 @@ export class AutomationClient {
     }
 }
 
-export function automationClient(configuration: Configuration): AutomationClient {
-    return new AutomationClient(configuration);
+export function automationClient(configuration: Configuration, listeners: AutomationEventListener[] = []):
+    AutomationClient {
+    return new AutomationClient(configuration, listeners);
 }

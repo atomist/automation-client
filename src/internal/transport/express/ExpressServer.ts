@@ -1,6 +1,7 @@
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as passport from "passport";
+import * as namespace from "../../util/cls";
 
 import { AutomationServer } from "../../../server/AutomationServer";
 import { CommandHandlerMetadata, IngestorMetadata } from "../../metadata/metadata";
@@ -134,27 +135,33 @@ export class ExpressServer {
                     return value && value.length > 0;
                 }).map(p => {
                     return {name: p.name, value: req.query[p.name]};
-            });
+                });
                 const payload: CommandIncoming = {
-                atomist_type: "command_handler_request",
-                name: h.name,
-                parameters: args,
-                rug: {},
-                mapped_parameters: undefined,
-                secrets: undefined,
-                correlation_context: {team: { id: this.automations.rugs.team_id }},
-                corrid: guid(),
-                team: {
-                    id: this.automations.rugs.team_id,
-                },
-            };
+                    atomist_type: "command_handler_request",
+                    name: h.name,
+                    parameters: args,
+                    rug: {},
+                    mapped_parameters: undefined,
+                    secrets: undefined,
+                    correlation_context: {team: { id: this.automations.rugs.team_id }},
+                    corrid: guid(),
+                    team: {
+                        id: this.automations.rugs.team_id,
+                    },
+                };
                 logger.debug("Incoming payload for command handler '%s'\n%s", h.name, JSON.stringify(payload, null, 2));
 
-                this.handler.onCommand(payload)
-                .then(result => {
-                    return handle(res, result);
-                })
-                .catch(err => res.send(err));
+                // setup context
+                const ses = namespace.init();
+
+                ses.run(() => {
+                    setupNamespace(payload, this.automations);
+                    this.handler.onCommand(payload)
+                        .then(result => {
+                            return handle(res, result);
+                        })
+                        .catch(err => res.send(err));
+                });
         });
     }
 
@@ -175,11 +182,17 @@ export class ExpressServer {
             };
             logger.debug("Incoming payload for ingestor '%s'\n%s", h.name, JSON.stringify(payload, null, 2));
 
-            this.handler.onEvent(payload)
-                .then(result => {
-                    return handle(res, result);
-                })
-                .catch(err => res.send(err));
+            // setup context
+            const ses = namespace.init();
+
+            ses.run(() => {
+                setupNamespace(payload, this.automations);
+                this.handler.onEvent(payload)
+                    .then(result => {
+                        return handle(res, result);
+                    })
+                    .catch(err => res.send(err));
+            });
         });
     }
 
@@ -253,4 +266,14 @@ export interface ExpressServerOptions {
             token: string;
         },
     };
+}
+
+function setupNamespace(request: any, automations: AutomationServer) {
+    namespace.set({
+        correlationId:  _.get(request, "corrid") || _.get(request, "extensions.correlation_id"),
+        teamId: _.get(request, "correlation_context.team.id") || _.get(request, "extensions.team_id"),
+        operation: _.get(request, "name") || _.get(request, "extensions.operationName"),
+        name: automations.rugs.name,
+        version: automations.rugs.version,
+    });
 }
