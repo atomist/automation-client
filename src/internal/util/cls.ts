@@ -16,7 +16,10 @@ export function get(): AutomationContext {
 }
 
 export interface AutomationContext {
+
     correlationId: string;
     teamId: string;
     operation: string;
+    name: string;
+    version: string;
 }

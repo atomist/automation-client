@@ -22,7 +22,7 @@ export interface EventStore {
 let EventStore: EventStore = new InMemoryEventStore();
 
 /**
- * Globally available instance of {EventStore} to be use across the automation node.
+ * Globally available instance of {EventStore} to be use across the automation client.
  * @type {InMemoryEventStore}
  */
 export function eventStore() {

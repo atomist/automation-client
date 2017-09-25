@@ -14,12 +14,12 @@ import {
     WebSocketCommandMessageClient,
     WebSocketEventMessageClient,
 } from "./WebSocketMessageClient";
-import { RegistrationIncoming, WebSocketTransportEventHandler } from "./WebSocketTransportEventHandler";
+import { RegistrationConfirmation, WebSocketTransportEventHandler } from "./WebSocketTransportEventHandler";
 
 export class DefaultWebSocketTransportEventHandler extends AbstractEventStoringTransportEventHandler
     implements WebSocketTransportEventHandler {
 
-    private registration: RegistrationIncoming;
+    private registration: RegistrationConfirmation;
     private webSocket: WebSocket;
     private graphClient: GraphClient;
 
@@ -28,7 +28,7 @@ export class DefaultWebSocketTransportEventHandler extends AbstractEventStoringT
         super(automations, listeners);
     }
 
-    public onRegistration(registration: RegistrationIncoming) {
+    public onRegistration(registration: RegistrationConfirmation) {
         logger.info(`Registration successful`);
         logger.debug(`\n${JSON.stringify(registration, null, 2)}`);
 

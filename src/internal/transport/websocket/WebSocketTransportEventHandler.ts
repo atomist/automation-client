@@ -3,13 +3,15 @@ import { TransportEventHandler } from "../TransportEventHandler";
 
 export interface WebSocketTransportEventHandler extends TransportEventHandler {
 
-    onRegistration(registration: RegistrationIncoming);
+    onRegistration(registration: RegistrationConfirmation);
 
     onConnection(ws: WebSocket);
 }
 
-export interface RegistrationIncoming {
+export interface RegistrationConfirmation {
 
     url: string;
     jwt: string;
+    name: string;
+    version: string;
 }

@@ -8,7 +8,7 @@ import { logger } from "../../util/logger";
 import { hideString } from "../../util/string";
 import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../TransportEventHandler";
 import { sendMessage } from "./WebSocketMessageClient";
-import { RegistrationIncoming, WebSocketTransportEventHandler } from "./WebSocketTransportEventHandler";
+import { RegistrationConfirmation, WebSocketTransportEventHandler } from "./WebSocketTransportEventHandler";
 
 export class WebSocketClient {
 
@@ -21,7 +21,7 @@ export class WebSocketClient {
     }
 }
 
-function connect(registrationCallback: () => any, registration: RegistrationIncoming,
+function connect(registrationCallback: () => any, registration: RegistrationConfirmation,
                  options: WebSocketClientOptions, handler: WebSocketTransportEventHandler): Promise<WebSocket> {
 
     // Functions are inline to avoid "this" peculiarities
@@ -52,7 +52,7 @@ function connect(registrationCallback: () => any, registration: RegistrationInco
 
             ses.run(() => {
 
-                setupNamespace(request);
+                setupNamespace(request, registration);
 
                 logger.debug("Incoming message\n%s", JSON.stringify(request, function replacer(key, value) {
                     if (key === "secrets") {
@@ -108,7 +108,7 @@ function connect(registrationCallback: () => any, registration: RegistrationInco
 }
 
 function register(registrationCallback: () => any, options: WebSocketClientOptions,
-                  handler: WebSocketTransportEventHandler): Promise<RegistrationIncoming> {
+                  handler: WebSocketTransportEventHandler): Promise<RegistrationConfirmation> {
     const registrationPayload = registrationCallback();
 
     logger.info(`Registering ${registrationPayload.name}@${registrationPayload.version} ` +
@@ -118,7 +118,11 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
     return axios.post(options.registrationUrl, registrationPayload,
         { headers: { Authorization: `token ${options.token}` } })
         .then(result => {
-            const registration = result.data as RegistrationIncoming;
+            const registration = result.data as RegistrationConfirmation;
+
+            registration.name = registrationPayload.name;
+            registration.version = registrationPayload.version;
+
             handler.onRegistration(registration);
             return registration;
         })
@@ -139,11 +143,13 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
         });
 }
 
-function setupNamespace(request: any) {
+function setupNamespace(request: any, registration: RegistrationConfirmation) {
     namespace.set({
         correlationId:  _.get(request, "corrid") || _.get(request, "extensions.correlation_id"),
         teamId: _.get(request, "correlation_context.team.id") || _.get(request, "extensions.team_id"),
         operation: _.get(request, "name") || _.get(request, "extensions.operationName"),
+        name: registration.name,
+        version: registration.version,
     });
 }
 
