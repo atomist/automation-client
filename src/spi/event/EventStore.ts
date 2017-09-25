@@ -1,8 +1,8 @@
 /**
  * Implementations of {EventStore} can be used to store and retrieve automation node releated events.
  */
-import { CommandIncoming, EventIncoming } from "../../internal/transport/TransportEventHandler";
 import { InMemoryEventStore } from "../../internal/event/InMemoryEventStore";
+import { CommandIncoming, EventIncoming } from "../../internal/transport/TransportEventHandler";
 
 export interface EventStore {
 
@@ -19,16 +19,16 @@ export interface EventStore {
     messages(from?: number): any[];
 }
 
-let _eventStore: EventStore = new InMemoryEventStore();
+let EventStore: EventStore = new InMemoryEventStore();
 
 /**
  * Globally available instance of {EventStore} to be use across the automation node.
  * @type {InMemoryEventStore}
  */
 export function eventStore() {
-    return _eventStore;
+    return EventStore;
 }
 
 export function setEventStore(es: EventStore) {
-    _eventStore = es;
+    EventStore = es;
 }

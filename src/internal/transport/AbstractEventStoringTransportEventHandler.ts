@@ -2,12 +2,12 @@ import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import { HandlerResult } from "../../HandlerResult";
 import { AutomationEventListener } from "../../server/AutomationEventListener";
 import { AutomationServer } from "../../server/AutomationServer";
+import { eventStore } from "../../spi/event/EventStore";
 import { MessageClient, MessageOptions } from "../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../spi/message/MessageClientSupport";
 import { guid } from "../util/string";
 import { AbstractTransportEventHandler } from "./AbstractTransportEventHandler";
 import { CommandIncoming, EventIncoming } from "./TransportEventHandler";
-import { eventStore } from "../../spi/event/EventStore";
 
 export abstract class AbstractEventStoringTransportEventHandler extends AbstractTransportEventHandler {
 
