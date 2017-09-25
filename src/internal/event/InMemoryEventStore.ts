@@ -64,9 +64,3 @@ interface CacheKey {
     guid: string;
     ts: number;
 }
-
-/**
- * Globally available instance of {EventStore} to be use across the automation node.
- * @type {InMemoryEventStore}
- */
-export const eventStore = new InMemoryEventStore();

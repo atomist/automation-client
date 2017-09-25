@@ -4,10 +4,10 @@ import { AutomationEventListener } from "../../server/AutomationEventListener";
 import { AutomationServer } from "../../server/AutomationServer";
 import { MessageClient, MessageOptions } from "../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../spi/message/MessageClientSupport";
-import { eventStore } from "../event/InMemoryEventStore";
 import { guid } from "../util/string";
 import { AbstractTransportEventHandler } from "./AbstractTransportEventHandler";
 import { CommandIncoming, EventIncoming } from "./TransportEventHandler";
+import { eventStore } from "../../spi/event/EventStore";
 
 export abstract class AbstractEventStoringTransportEventHandler extends AbstractTransportEventHandler {
 
@@ -16,12 +16,12 @@ export abstract class AbstractEventStoringTransportEventHandler extends Abstract
     }
 
     public onCommand(command: CommandIncoming): Promise<HandlerResult> {
-        eventStore.recordCommand(command);
+        eventStore().recordCommand(command);
         return super.onCommand(command);
     }
 
     public onEvent(event: EventIncoming): Promise<HandlerResult[]> {
-        eventStore.recordEvent(event);
+        eventStore().recordEvent(event);
         return super.onEvent(event);
     }
 
@@ -43,13 +43,13 @@ class WrappingMessageClient extends MessageClientSupport {
         if (userNames && userNames.length > 0) {
             return this.messageClient.addressUsers(message, userNames, options)
                 .then(msg => {
-                    eventStore.recordMessage(guid(), msg);
+                    eventStore().recordMessage(guid(), msg);
                     return msg;
                 });
         } else {
             return this.messageClient.addressChannels(message, channelNames, options)
                 .then(msg => {
-                    eventStore.recordMessage(guid(), msg);
+                    eventStore().recordMessage(guid(), msg);
                     return msg;
                 });
         }

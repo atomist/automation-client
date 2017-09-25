@@ -10,10 +10,8 @@ import * as mustacheExpress from "mustache-express";
 
 import { Express, Handler } from "express";
 import * as fs from "fs";
-import * as os from "os";
 import { DefaultStagingAtomistGraphQLServer } from "../../../automationClient";
 import { getJwtToken } from "../../../globals";
-import { eventStore } from "../../event/InMemoryEventStore";
 import { logger } from "../../util/logger";
 import { report } from "../../util/metric";
 import { guid } from "../../util/string";
@@ -22,6 +20,7 @@ import { CommandIncoming, EventIncoming, TransportEventHandler } from "../Transp
 import * as _ from "lodash";
 import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
+import { eventStore } from "../../../spi/event/EventStore";
 
 const ApiBase = "";
 
@@ -77,21 +76,21 @@ export class ExpressServer {
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
-                res.json(eventStore.events(req.query.from));
+                res.json(eventStore().events(req.query.from));
         });
 
         exp.get(`${ApiBase}/commands`, this.authenticate("basic", "bearer"),
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
-                res.json(eventStore.commands(req.query.from));
+                res.json(eventStore().commands(req.query.from));
         });
 
         exp.get(`${ApiBase}/messages`, this.authenticate("basic", "bearer"),
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
-                res.json(eventStore.messages(req.query.from));
+                res.json(eventStore().messages(req.query.from));
         });
 
         exp.get("/graphql", this.authenticate("basic"),
