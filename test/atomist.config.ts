@@ -1,4 +1,5 @@
 import { Configuration } from "../src/configuration";
+import { shutdownHook } from "../src/globals";
 import { HelloWorld } from "./command/HelloWorld";
 import { PlainHelloWorld } from "./command/PlainHelloWorld";
 import { HelloIngestor } from "./event/HelloIngestor";

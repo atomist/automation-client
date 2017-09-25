@@ -1,8 +1,8 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
+import { eventStore } from "../../globals";
 import { HandlerResult } from "../../HandlerResult";
 import { AutomationEventListener } from "../../server/AutomationEventListener";
 import { AutomationServer } from "../../server/AutomationServer";
-import { eventStore } from "../../spi/event/EventStore";
 import { MessageClient, MessageOptions } from "../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../spi/message/MessageClientSupport";
 import { guid } from "../util/string";

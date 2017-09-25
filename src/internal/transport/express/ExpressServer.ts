@@ -12,7 +12,7 @@ import * as mustacheExpress from "mustache-express";
 import { Express, Handler } from "express";
 import * as fs from "fs";
 import { DefaultStagingAtomistGraphQLServer } from "../../../automationClient";
-import { getJwtToken } from "../../../globals";
+import { eventStore, jwtToken } from "../../../globals";
 import { logger } from "../../util/logger";
 import { report } from "../../util/metric";
 import { guid } from "../../util/string";
@@ -21,7 +21,6 @@ import { CommandIncoming, EventIncoming, TransportEventHandler } from "../Transp
 import * as _ from "lodash";
 import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
-import { eventStore } from "../../../spi/event/EventStore";
 
 const ApiBase = "";
 
@@ -96,7 +95,7 @@ export class ExpressServer {
 
         exp.get("/graphql", this.authenticate("basic"),
             (req, res) => {
-                res.render("graphql.html", { token: getJwtToken(), graphQLUrl: DefaultStagingAtomistGraphQLServer });
+                res.render("graphql.html", { token: jwtToken(), graphQLUrl: DefaultStagingAtomistGraphQLServer });
         });
 
         exp.get("/", this.authenticate("basic"),
