@@ -1,4 +1,3 @@
-import * as ShutdownHook from "shutdown-hook";
 import { InMemoryEventStore } from "./internal/event/InMemoryEventStore";
 import { EventStore } from "./spi/event/EventStore";
 
