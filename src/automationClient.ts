@@ -83,7 +83,7 @@ export class AutomationClient {
                 [ new MetricEnabledAutomationEventListener(), ...this.configuration.listeners]);
         } else {
             return new DefaultWebSocketTransportEventHandler(this.automations, webSocketOptions,
-                [ new MetricEnabledAutomationEventListener() pm ]);
+                [ new MetricEnabledAutomationEventListener() ]);
         }
     }
 
