@@ -3,14 +3,14 @@ import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { logger } from "./internal/util/logger";
 import { hideString } from "./internal/util/string";
-import { RunOptions } from "./server/options";
 import { AutomationEventListener } from "./server/AutomationEventListener";
+import { RunOptions } from "./server/options";
 
 export interface Configuration extends RunOptions {
     commands?: Array<() => HandleCommand>;
     events?: Array<() => HandleEvent<any>>;
     ingestors?: Array<() => HandleEvent<any>>;
-    listeners?: Array<AutomationEventListener>;
+    listeners?: AutomationEventListener[];
 }
 
 const AtomistConfigFile = "atomist.config.js";
