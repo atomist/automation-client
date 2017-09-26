@@ -3,6 +3,7 @@ import { isLocalProject } from "../local/LocalProject";
 import { Project } from "../Project";
 
 import axios from "axios";
+import { CommandResult, runCommand } from "../../internal/util/commandLine";
 import { logger } from "../../internal/util/logger";
 import { hideString } from "../../internal/util/string";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
@@ -59,9 +60,16 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     public init(): Promise<any> {
         this.newRepo = true;
         this.newBranch = "master";
-        return this.runCommand("git init").then(c => {
+        return this.runCommandInCwd("git init").then(c => {
             return c;
         });
+    }
+
+    public clean(): Promise<boolean> {
+        return this.runCommandInCwd("git status --porcelain")
+            .then(c => {
+                return c.stdout !== undefined && c.stdout === "";
+            });
     }
 
     /**
@@ -71,7 +79,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      */
     public setRemote(remote: string): Promise<any> {
         this.remote = remote;
-        return this.runCommand(`git remote add origin ${remote}`)
+        return this.runCommandInCwd(`git remote add origin ${remote}`)
             .then(c => {
                 return c;
             });
@@ -137,8 +145,8 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             });
     }
 
-    public commit(message: string): Promise<any> {
-        return this.runCommand(`git add .; git commit -a -m "${message}"`);
+    public commit(message: string): Promise<CommandResult> {
+        return this.runCommandInCwd(`git add .; git commit -a -m "${message}"`);
     }
 
     /**
@@ -147,28 +155,27 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @param sha
      * @return {any}
      */
-    public checkout(sha: string): Promise<any> {
-        return this.runCommand(`git checkout ${sha}`);
+    public checkout(sha: string): Promise<CommandResult> {
+        return this.runCommandInCwd(`git checkout ${sha}`);
     }
 
     public push(): Promise<any> {
         if (this.newBranch && this.remote) {
             // We need to set the remote
-            return this.runCommand(`git push ${this.remote} ${this.newBranch}`)
+            return this.runCommandInCwd(`git push ${this.remote} ${this.newBranch}`)
                 .catch(err => logger.error("Unable to push: " + err));
         }
-        return this.runCommand(`git push --set-upstream origin ${this.newBranch}`)
+        return this.runCommandInCwd(`git push --set-upstream origin ${this.newBranch}`)
             .catch(err => logger.error("Unable to push: " + err));
     }
 
-    public createBranch(name: string): Promise<any> {
+    public createBranch(name: string): Promise<CommandResult> {
         this.newBranch = name;
-        return this.runCommand(`git branch ${name}; git checkout ${name}`);
+        return this.runCommandInCwd(`git branch ${name}; git checkout ${name}`);
     }
 
-    private runCommand(cmd: string): Promise<any> {
-        // logger.info(">" + cmd);
-        return exec(cmd, {cwd: this.baseDir});
+    private runCommandInCwd(cmd: string): Promise<CommandResult> {
+        return runCommand(cmd, {cwd: this.baseDir});
     }
 
 }

@@ -7,7 +7,7 @@ import { tempProject } from "../utils";
 import * as exec from "child_process";
 import { cloneEditAndPush, GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { clone } from "../../../src/project/git/GitLoader";
-import {GitHubBase, GitProject } from "../../../src/project/git/GitProject";
+import { GitHubBase, GitProject } from "../../../src/project/git/GitProject";
 import { LocalProject } from "../../../src/project/local/LocalProject";
 import { Project } from "../../../src/project/Project";
 import { GitHubToken } from "../../atomist.config";
@@ -89,6 +89,33 @@ describe("GitProject", () => {
             .catch(done);
     });
 
+    it("commit then add has uncommitted", done => {
+        const p = tempProject();
+        p.addFileSync("Thing", "1");
+        const gp: GitProject = GitCommandGitProject.fromProject(p, GitHubToken);
+        gp.init()
+            .then(() => gp.clean())
+            .then(clean => {
+                assert(!clean);
+                done();
+            })
+            .catch(done);
+    });
+
+    it("add a file, check doesn't have uncommitted", done => {
+        const p = tempProject();
+        p.addFileSync("Thing", "1");
+        const gp: GitProject = GitCommandGitProject.fromProject(p, GitHubToken);
+        gp.init()
+            .then(() => gp.commit("Added a Thing"))
+            .then(() => gp.clean())
+            .then(clean => {
+                assert(clean);
+                done();
+            })
+            .catch(done);
+    });
+
     it("add a file, init and commit, then push to new remote repo", function(done) {
         this.retries(5);
 
@@ -165,4 +192,5 @@ describe("GitProject", () => {
             }).catch(done);
     }).timeout(5000);
 
-});
+})
+;
