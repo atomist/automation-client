@@ -3,7 +3,7 @@ import { logger } from "../../internal/util/logger";
 import { DefaultExcludes } from "../../project/FileGlobs";
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
 import { toPromise } from "../../project/util/projectUtils";
-import { RepoFinder } from "./RepoFinder";
+import { RepoFinder } from "./repoFinder";
 import { SimpleRepoId } from "./RepoId";
 
 /**

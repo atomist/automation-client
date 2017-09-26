@@ -2,7 +2,7 @@ import * as shell from "shelljs";
 
 import { Parameter, Secret } from "../../decorators";
 import { Secrets } from "../../Handlers";
-import { RepoFinder } from "../common/RepoFinder";
+import { RepoFinder } from "./repoFinder";
 import { RepoId } from "../common/RepoId";
 import { allReposInTeam } from "./allReposInTeamRepoFinder";
 

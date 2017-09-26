@@ -1,7 +1,7 @@
 import { HandlerContext } from "../../HandlerContext";
 import { ReposQuery, ReposQueryVariables } from "../../schema/schema";
 import { twoTierDirectoryRepoFinder } from "./localRepoFinder";
-import { RepoFinder } from "./RepoFinder";
+import { RepoFinder } from "./repoFinder";
 import { RepoId, SimpleRepoId } from "./RepoId";
 
 // Hard-coded limit in GraphQL queries. Not sure why we can't pass this
