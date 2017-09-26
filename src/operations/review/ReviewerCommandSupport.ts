@@ -12,7 +12,7 @@ import { ProjectReview, ReviewResult } from "./ReviewResult";
  * Support for reviewing multiple projects
  * Subclasses should have @CommandHandler annotation
  */
-export abstract class ReviewerCommandSupport<D extends ProjectReview>
+export abstract class ReviewerCommandSupport<RR extends ReviewResult<PR>, PR extends ProjectReview>
     extends LocalOrRemoteRepoOperation
     implements HandleCommand {
 
@@ -26,13 +26,13 @@ export abstract class ReviewerCommandSupport<D extends ProjectReview>
     })
     public raiseIssues: boolean = false;
 
-    public handle(context: HandlerContext): Promise<ReviewResult<D>> {
+    public handle(context: HandlerContext): Promise<RR> {
         const load = this.repoLoader();
         // Save us from "this"
-        const projectReviewer: ProjectReviewer<D> = this.projectReviewer();
+        const projectReviewer: ProjectReviewer<PR> = this.projectReviewer();
 
         const repoIdPromises: Promise<RepoId[]> = this.repoFinder()(context);
-        const projectReviews: Promise<Array<Promise<D>>> = repoIdPromises
+        const projectReviews: Promise<Array<Promise<PR>>> = repoIdPromises
             .then(repos => repos.map(id => {
                 return this.repoFilter(id)
                     .then(relevant => {
@@ -66,17 +66,27 @@ export abstract class ReviewerCommandSupport<D extends ProjectReview>
             .then(reviews =>
                 Promise.all(reviews)
                     .then(values => {
-                        return {
+                        const rr = {
                             code: 0,
                             projectsReviewed: values.length,
                             projectReviews: values.filter(v => !!v),
                         };
+                        return this.enrich(rr);
                     }));
     }
 
     /**
      * Invoked after parameters have been populated.
      */
-    public abstract projectReviewer(): ProjectReviewer<D>;
+    public abstract projectReviewer(): ProjectReviewer<PR>;
+
+    /**
+     * Subclasses can override this method to enrich the returned ReviewResult:
+     * For example to add aggregate calculations
+     * @param {ReviewResult<D extends ProjectReview>} reviewResult
+     */
+    protected enrich(reviewResult: ReviewResult<PR>): RR {
+        return reviewResult as RR;
+    }
 
 }
