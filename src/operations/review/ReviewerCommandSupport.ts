@@ -66,11 +66,13 @@ export abstract class ReviewerCommandSupport<D extends ProjectReview>
             .then(reviews =>
                 Promise.all(reviews)
                     .then(values => {
-                        return {
+                        const rr = {
                             code: 0,
                             projectsReviewed: values.length,
                             projectReviews: values.filter(v => !!v),
                         };
+                        this.enrich(rr);
+                        return rr;
                     }));
     }
 
@@ -78,5 +80,14 @@ export abstract class ReviewerCommandSupport<D extends ProjectReview>
      * Invoked after parameters have been populated.
      */
     public abstract projectReviewer(): ProjectReviewer<D>;
+
+    /**
+     * Subclasses can override this method to enrich the returned ReviewResult:
+     * For example to add aggregate calculations
+     * @param {ReviewResult<D extends ProjectReview>} reviewResult
+     */
+    protected enrich(reviewResult: ReviewResult<D>): void {
+        // Do nothing
+    }
 
 }
