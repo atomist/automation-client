@@ -21,6 +21,8 @@ export class WebSocketClient {
     }
 }
 
+let reconnect = true;
+
 function connect(registrationCallback: () => any, registration: RegistrationConfirmation,
                  options: WebSocketClientOptions, handler: WebSocketTransportEventHandler): Promise<WebSocket> {
 
@@ -93,11 +95,15 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
             } else {
                 logger.warn(`WebSocket connection closed`);
             }
-            register(registrationCallback, options, handler)
-                .then(reg => connect(registrationCallback, reg, options, handler));
+            // Only attempt to reconnect if we aren't shutting down
+            if (reconnect) {
+                register(registrationCallback, options, handler)
+                    .then(reg => connect(registrationCallback, reg, options, handler));
+            }
         });
 
         exitHook(() => {
+            reconnect = false;
             ws.close();
             logger.info("Closing WebSocket connection");
         });
