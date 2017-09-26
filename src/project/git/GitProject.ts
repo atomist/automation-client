@@ -1,4 +1,3 @@
-import { exec } from "child-process-promise";
 import { LocalProject } from "../local/LocalProject";
 
 export const GitHubBase = "https://api.github.com";
@@ -35,6 +34,12 @@ export interface GitProject extends LocalProject {
     setRemote(remote: string): Promise<any>;
 
     setGitHubRemote(owner: string, repo: string): Promise<any>;
+
+    /**
+     * Does the project have uncommitted changes in Git?
+     * @return {Promise<boolean>}
+     */
+    clean(): Promise<boolean>;
 
     /**
      * Create a remote repository and set this repository's remote to it.
