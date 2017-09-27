@@ -6,7 +6,6 @@ import { tempProject } from "../utils";
 
 import * as exec from "child_process";
 import { cloneEditAndPush, GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
-import { clone } from "../../../src/project/git/gitLoader";
 import { GitHubBase, GitProject } from "../../../src/project/git/GitProject";
 import { LocalProject } from "../../../src/project/local/LocalProject";
 import { Project } from "../../../src/project/Project";
@@ -167,8 +166,7 @@ describe("GitProject", () => {
 
     it("check out commit", done => {
         const sha = "590ed8f7a2430d45127ea04cc5bdf736fe698712";
-
-        clone(GitHubToken, "atomist", "microgrammar", sha)
+        GitCommandGitProject.cloned(GitHubToken, "atomist", "microgrammar", sha)
             .then(p => {
                 checkProject(p);
                 const gp: GitProject = GitCommandGitProject.fromProject(p, GitHubToken);

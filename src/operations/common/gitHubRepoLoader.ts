@@ -1,4 +1,4 @@
-import { clone } from "../../project/git/GitLoader";
+import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { RepoId } from "./RepoId";
 import { RepoLoader } from "./repoLoader";
 
@@ -10,6 +10,6 @@ import { RepoLoader } from "./repoLoader";
  */
 export function gitHubRepoLoader(token: string): RepoLoader {
     return (repoId: RepoId) => {
-        return clone(token, repoId.owner, repoId.repo);
+        return GitCommandGitProject.cloned(token, repoId.owner, repoId.repo);
     };
 }

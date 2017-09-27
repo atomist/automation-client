@@ -1,13 +1,17 @@
 import { exec } from "child-process-promise";
+import * as fs from "fs";
+
 import { isLocalProject } from "../local/LocalProject";
 import { Project } from "../Project";
+
+import * as tmp from "tmp";
+import { promisify } from "util";
 
 import axios from "axios";
 import { CommandResult, runCommand } from "../../internal/util/commandLine";
 import { logger } from "../../internal/util/logger";
 import { hideString } from "../../internal/util/string";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
-import { clone } from "./gitLoader";
 import { GitProject, PullRequestInfo } from "./GitProject";
 
 export const GitHubBase = "https://api.github.com";
@@ -213,4 +217,36 @@ export function cloneEditAndPush(token: string,
         logger.error(`Error cloning, editing and pushing repo: ${err}`);
         return Promise.reject(err);
     });
+}
+
+/**
+ * Clone the given repo from GitHub
+ * @param token
+ * @param user
+ * @param repo
+ * @param branch
+ * @return {Promise<TResult2|LocalProject>|PromiseLike<TResult2|LocalProject>}
+ */
+function clone(token: string,
+               user: string,
+               repo: string,
+               branch: string = "master"): Promise<GitProject> {
+    const tmpDir = promisify(tmp.dir);
+    return tmpDir()
+        .then(parentDir => {
+            const repoDir = `${parentDir}/${repo}`;
+            const command = (branch === "master") ?
+                `git clone --depth 1 https://${token}@github.com/${user}/${repo}.git` :
+                `git clone https://${token}@github.com/${user}/${repo}.git; cd ${repo}; git checkout ${branch}`;
+
+            const url = `https://github.com/${user}/${repo}`;
+            logger.info(`Cloning repo [${url}] to [${parentDir}]`);
+            return exec(command, {cwd: parentDir})
+                .then(_ => {
+                    logger.debug(`Clone succeeded with URL [${url}]`);
+                    fs.chmodSync(repoDir, "0777");
+                    const p = new NodeFsLocalProject(repo, repoDir);
+                    return p;
+                });
+        });
 }
