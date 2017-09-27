@@ -4,7 +4,7 @@ import { HandlerResult } from "../../HandlerResult";
 import { isPromise } from "../../internal/util/async";
 import { logger } from "../../internal/util/logger";
 import { LocalOrRemoteRepoOperation } from "../common/LocalOrRemoteRepoOperation";
-import { editUsingPullRequest, PullRequestEdit } from "../support/editorUtils";
+import { editUsingPullRequest, PullRequestInfo } from "../support/editorUtils";
 import { ProjectEditor } from "./projectEditor";
 
 /**
@@ -31,7 +31,7 @@ export abstract class EditorCommandSupport extends LocalOrRemoteRepoOperation im
                             } else {
                                 return editUsingPullRequest(this.githubToken, context, r, projectEditor,
                                     // TODO customize PR config
-                                    new PullRequestEdit("add-license", "Added license"));
+                                    new PullRequestInfo("add-license", "Added license"));
                             }
                         });
                     return Promise.all(editOps)
