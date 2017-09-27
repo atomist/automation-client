@@ -89,7 +89,6 @@ export class HelloWorld implements HandleCommand {
             });
     }
 }
-
 ```
 
 The above declares a simple bot command that can be invoked via `@atomist hello world`. The command takes one
@@ -140,7 +139,6 @@ export class HelloIssue implements HandleEvent<any> {
             });
     }
 }
-
 ```
 
 This event handler registers a GraphQL subscription on the `Issue` type. On `Issue` events the handler will
@@ -198,7 +196,6 @@ To start up the node locally and have it listen to incoming events, just run:
 
 ```
 $ npm run compile && $(npm bin)/atomist-client
-
 ```
 
 ## Pushing to Cloud Foundry
@@ -240,7 +237,6 @@ Now you're ready to `cf push` your automation server to Cloud Foundry:
 
 ```
 $ cf push
-
 ```
 
 ## Dashboard (experimental)
