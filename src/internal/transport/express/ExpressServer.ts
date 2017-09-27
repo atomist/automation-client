@@ -96,7 +96,7 @@ export class ExpressServer {
         exp.get("/graphql", this.authenticate("basic"),
             (req, res) => {
                 res.render("graphql.html", { token: jwtToken(),
-                    graphQLUrl: `${DefaultGraphQLServer}/${this.automations.rugs.team_id}` });
+                    graphQLUrl: `${this.options.endpoint.graphql}/team/${this.automations.rugs.team_id}` });
         });
 
         exp.get("/", this.authenticate("basic"),
@@ -265,6 +265,9 @@ export interface ExpressServerOptions {
             enabled: boolean;
             token: string;
         },
+    };
+    endpoint: {
+        graphql: string;
     };
 }
 

@@ -6,12 +6,13 @@ import { HelloIssue } from "./event/HelloIssue";
 
 export const GitHubToken = process.env.GITHUB_TOKEN;
 
+// const host = "https://automation.atomist.com";
 const host = "https://automation-staging.atomist.services";
 
 export const configuration: Configuration = {
     name: "@atomist/automation-node-tests",
     version: "0.0.4",
-    teamId: "T095SFFBK",
+    teamId: "T1L0VDKJP",
     commands: [
         () => new HelloWorld(),
         // () => new PlainHelloWorld(),

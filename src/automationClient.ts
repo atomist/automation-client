@@ -112,6 +112,10 @@ export class AutomationClient {
                     token: this.configuration.token,
                 },
             },
+            endpoint: {
+                graphql: _.get(this.configuration, "endpoints.graphql")
+                    ? _.get(this.configuration, "endpoints.graphql") : DefaultGraphQLServer,
+            },
         };
 
         if (http && http.enabled) {
