@@ -114,6 +114,14 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         return fs.existsSync(this.baseDir + "/" + path);
     }
 
+    public findFile(path: string): Promise<File> {
+        return fs.pathExists(this.baseDir + "/" + path)
+            .then(exists => exists ?
+                Promise.resolve(new NodeFsLocalFile(this.baseDir, path)) :
+                Promise.reject(`File not found at ${path}`),
+            );
+    }
+
     public findFileSync(path: string): File {
         if (!this.fileExistsSync(path)) {
             return undefined;

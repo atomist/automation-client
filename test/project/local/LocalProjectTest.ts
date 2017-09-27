@@ -50,6 +50,22 @@ describe("LocalProject", () => {
         assert(f === undefined);
     });
 
+    it("findFile: no such file", done => {
+        thisProject.findFile("xxxxpackage.json")
+            .catch(err => {
+                done();
+            });
+    });
+
+    it("findFile: existing file", done => {
+        thisProject.findFile("package.json")
+            .then(f => {
+                assert(f.path === "package.json");
+                done();
+            })
+            .catch(done);
+    });
+
     it("fileExistsSync: existing file", () => {
         assert(thisProject.fileExistsSync("package.json"));
     });

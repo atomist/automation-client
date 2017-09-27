@@ -116,6 +116,7 @@ export interface ProjectAsync extends ProjectCore {
      * Stream file with full control over globs.
      * At least one glob must be provided. No default exclusions will be used.
      * @param {string[]} globPatterns
+     * @param opts for glob handling
      * @return {FileStream}
      */
     streamFilesRaw(globPatterns: string[], opts: {}): FileStream;
@@ -126,6 +127,13 @@ export interface ProjectAsync extends ProjectCore {
      * @property {number} totalFileCount
      */
     totalFileCount(): Promise<number>;
+
+    /**
+     * Use then or catch, dependending on whether the file exists
+     * @param {string} path
+     * @return {Promise<File>}
+     */
+    findFile(path: string): Promise<File>;
 
     addFile(path: string, content: string): Promise<this>;
 
