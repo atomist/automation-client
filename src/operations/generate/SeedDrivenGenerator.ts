@@ -11,7 +11,7 @@ import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
 import { Project, ProjectNonBlocking } from "../../project/Project";
-import { defaultRepoLoader } from "../common/DefaultRepoLoader";
+import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { LocalOrRemote } from "../common/LocalOrRemote";
 import { SimpleRepoId } from "../common/RepoId";
 import { RepoLoader } from "../common/repoLoader";
