@@ -55,7 +55,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                 private fallbackSecretResolver: SecretResolver = new NodeConfigSecretResolver()) {
         super();
         // logger.debug("Starting BuildableAutomationServer with options:\n%s", JSON.stringify(opts, null, 2));
-        if (opts.endpoints.graphql) {
+        if (opts.endpoints && opts.endpoints.graphql) {
             if (opts.token) {
                 this.graphClient = new ApolloGraphClient(opts.endpoints.graphql,
                     { Authorization: `Basic ${opts.token}` });
