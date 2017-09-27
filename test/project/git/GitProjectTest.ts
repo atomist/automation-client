@@ -6,7 +6,7 @@ import { tempProject } from "../utils";
 
 import * as exec from "child_process";
 import { cloneEditAndPush, GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
-import { clone } from "../../../src/project/git/GitLoader";
+import { clone } from "../../../src/project/git/gitLoader";
 import { GitHubBase, GitProject } from "../../../src/project/git/GitProject";
 import { LocalProject } from "../../../src/project/local/LocalProject";
 import { Project } from "../../../src/project/Project";
@@ -192,5 +192,4 @@ describe("GitProject", () => {
             }).catch(done);
     }).timeout(5000);
 
-})
-;
+});

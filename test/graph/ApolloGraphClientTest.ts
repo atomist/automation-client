@@ -2,7 +2,7 @@ import "mocha";
 import { ApolloGraphClient } from "../../src/graph/ApolloGraphClient";
 
 import * as assert from "power-assert";
-import { clone } from "../../src/project/git/GitLoader";
+import { clone } from "../../src/project/git/gitLoader";
 import { ReposQuery, ReposQueryVariables } from "../../src/schema/schema";
 import { GitHubToken } from "../atomist.config";
 

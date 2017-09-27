@@ -7,7 +7,7 @@ import { CommandResult, runCommand } from "../../internal/util/commandLine";
 import { logger } from "../../internal/util/logger";
 import { hideString } from "../../internal/util/string";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
-import { clone } from "./GitLoader";
+import { clone } from "./gitLoader";
 import { GitProject, PullRequestInfo } from "./GitProject";
 
 export const GitHubBase = "https://api.github.com";
