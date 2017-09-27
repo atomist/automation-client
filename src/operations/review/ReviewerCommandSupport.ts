@@ -29,7 +29,7 @@ export abstract class ReviewerCommandSupport<RR extends ReviewResult<PR>, PR ext
     public handle(context: HandlerContext): Promise<RR> {
         const load = this.repoLoader();
         // Save us from "this"
-        const projectReviewer: ProjectReviewer<PR> = this.projectReviewer();
+        const projectReviewer: ProjectReviewer<PR> = this.projectReviewer(context);
 
         const repoIdPromises: Promise<RepoId[]> = this.repoFinder()(context);
         const projectReviews: Promise<Array<Promise<PR>>> = repoIdPromises
@@ -71,21 +71,22 @@ export abstract class ReviewerCommandSupport<RR extends ReviewResult<PR>, PR ext
                             projectsReviewed: values.length,
                             projectReviews: values.filter(v => !!v),
                         };
-                        return this.enrich(rr);
+                        return this.enrich(rr, context);
                     }));
     }
 
     /**
-     * Invoked after parameters have been populated.
+     * Invoked after parameters have been populated in the context of
+     * a particular operation.
      */
-    public abstract projectReviewer(): ProjectReviewer<PR>;
+    public abstract projectReviewer(context: HandlerContext): ProjectReviewer<PR>;
 
     /**
      * Subclasses can override this method to enrich the returned ReviewResult:
      * For example to add aggregate calculations
      * @param {ReviewResult<D extends ProjectReview>} reviewResult
      */
-    protected enrich(reviewResult: ReviewResult<PR>): RR {
+    protected enrich(reviewResult: ReviewResult<PR>, context: HandlerContext): RR {
         return reviewResult as RR;
     }
 
