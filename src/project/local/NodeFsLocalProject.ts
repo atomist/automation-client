@@ -133,9 +133,11 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         };
 
         const optsToUse = {
-            // We can override this
+            // We can override these defaults...
             nodir: true,
+            allowEmpty: true,
             ...opts,
+            // ...but we force this one
             cwd: this.baseDir,
         };
         return gs(globPatterns, optsToUse)
