@@ -20,22 +20,33 @@ export function editUsingPullRequest(token: string,
                                      pr: PullRequestEdit): Promise<any> {
     console.log("Editing project " + JSON.stringify(repo));
     return GitCommandGitProject.cloned(token, repo.owner, repo.repo)
-        .then(gp => {
-            return editor(repo, gp, context)
-                .then(edited => edited ? gp : false);
-        })
-        .then(r => {
-            if (r === false) {
-                return Promise.resolve(false);
-            } else {
-                const gp = r as GitProject;
-                return gp.createBranch(pr.branch)
-                    .then(x => gp.commit(pr.commitMessage))
-                    .then(x => gp.push())
-                    .then(x => {
-                        return gp.raisePullRequest(pr.title, pr.body);
-                    });
-            }
+        .then(gp => editProjectUsingPullRequest(context, repo, gp, editor, pr));
+}
+
+export function editProjectUsingPullRequest(context: HandlerContext,
+                                            repo: RepoId,
+                                            gp: GitProject,
+                                            editor: ProjectEditor<any>,
+                                            pr: PullRequestEdit): Promise<any> {
+
+    return editor(repo, gp, context)
+        .then(r => r.edited ?
+            raisePr(gp, pr) :
+            Promise.resolve(false));
+}
+
+/**
+ * Raise a PR from the current state of the project
+ * @param {GitProject} gp
+ * @param {PullRequestEdit} pr
+ * @return {Promise<any>}
+ */
+export function raisePr(gp: GitProject, pr: PullRequestEdit): Promise<any> {
+    return gp.createBranch(pr.branch)
+        .then(x => gp.commit(pr.commitMessage))
+        .then(x => gp.push())
+        .then(x => {
+            return gp.raisePullRequest(pr.title, pr.body);
         });
 }
 

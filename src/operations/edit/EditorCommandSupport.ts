@@ -1,11 +1,11 @@
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { HandlerResult } from "../../HandlerResult";
+import { isPromise } from "../../internal/util/async";
 import { logger } from "../../internal/util/logger";
 import { LocalOrRemoteRepoOperation } from "../common/LocalOrRemoteRepoOperation";
 import { editUsingPullRequest, PullRequestEdit } from "../support/editorUtils";
 import { ProjectEditor } from "./projectEditor";
-import { isPromise } from "../../internal/util/async";
 
 /**
  * Support for commands that edit all repos in context,
