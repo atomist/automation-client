@@ -21,7 +21,7 @@ export class DefaultWebSocketTransportEventHandler extends AbstractEventStoringT
 
     private registration: RegistrationConfirmation;
     private webSocket: WebSocket;
-    private graphClient: GraphClient;
+    private graphClients: Map<string, GraphClient> = new Map<string, GraphClient>();
 
     constructor(protected automations: AutomationServer, private options: WebSocketClientOptions,
                 protected listeners: AutomationEventListener[] = []) {
@@ -34,8 +34,6 @@ export class DefaultWebSocketTransportEventHandler extends AbstractEventStoringT
 
         setJwtToken(registration.jwt);
         this.registration = registration;
-        this.graphClient = new ApolloGraphClient(this.options.graphUrl,
-            { Authorization: `Bearer ${this.registration.jwt}`});
     }
 
     public onConnection(ws: WebSocket) {
@@ -49,7 +47,21 @@ export class DefaultWebSocketTransportEventHandler extends AbstractEventStoringT
     }
 
     protected createGraphClient(event: CommandIncoming | EventIncoming): GraphClient {
-        return this.graphClient;
+        let teamId;
+        if (isCommandIncoming(event)) {
+            teamId = event.team.id;
+        } else if (isEventIncoming(event)) {
+            teamId = event.extensions.team_id;
+        }
+
+        if (this.graphClients.has(teamId)) {
+            return this.graphClients.get(teamId);
+        } else {
+            const graphClient = new ApolloGraphClient(`${this.options.graphUrl}/${teamId}`,
+                { Authorization: `Bearer ${this.registration.jwt}`});
+
+            return graphClient;
+        }
     }
 
     protected doCreateMessageClient(event: CommandIncoming | EventIncoming): MessageClient {

@@ -1,4 +1,4 @@
-import { DefaultStagingAtomistGraphQLServer } from "../../../automationClient";
+import { DefaultGraphQLServer } from "../../../automationClient";
 import { jwtToken } from "../../../globals";
 import { ApolloGraphClient } from "../../../graph/ApolloGraphClient";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
@@ -20,7 +20,7 @@ export class DefaultExpressTransportEventHandler extends AbstractEventStoringTra
     }
 
     protected createGraphClient(event: CommandIncoming | EventIncoming): GraphClient {
-        return new ApolloGraphClient(DefaultStagingAtomistGraphQLServer,
+        return new ApolloGraphClient(DefaultGraphQLServer,
             { Authorization: `Bearer ${jwtToken()}`});
     }
 

@@ -13,11 +13,12 @@ import { WebSocketTransportEventHandler } from "./internal/transport/websocket/W
 import { logger } from "./internal/util/logger";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
+import * as _ from "lodash";
 
-export const DefaultStagingAtomistServer =
-    "https://automation-staging.atomist.services/registration";
-export const DefaultStagingAtomistGraphQLServer =
-    "https://automation-staging.atomist.services/graphql";
+export const DefaultApiServer =
+    "https://automation.atomist.com/registration";
+export const DefaultGraphQLServer =
+    "https://automation.atomist.com/graphql/team";
 
 export class AutomationClient {
 
@@ -35,7 +36,12 @@ export class AutomationClient {
                 teamId: configuration.teamId,
                 keywords: [],
                 token: process.env.GITHUB_TOKEN,
-                graphqlEndpoint: DefaultStagingAtomistGraphQLServer,
+                endpoints: {
+                    graphql: _.get(this.configuration, "endpoints.graphql")
+                        ? _.get(this.configuration, "endpoints.graphql") : DefaultGraphQLServer,
+                    api: _.get(this.configuration, "endpoints.api")
+                        ? _.get(this.configuration, "endpoints.api") : DefaultApiServer,
+                },
             });
     }
 
@@ -60,24 +66,22 @@ export class AutomationClient {
 
     public run(): Promise<any> {
         logger.info(`Starting Atomist automation client for ${this.configuration.name}@${this.configuration.version}`);
-        const handler = this.setupEventHandler();
-        const options: WebSocketClientOptions = {
-            graphUrl: DefaultStagingAtomistGraphQLServer,
-            registrationUrl: DefaultStagingAtomistServer,
+        const webSocketOptions: WebSocketClientOptions = {
+            graphUrl: _.get(this.configuration, "endpoints.graphql")
+                ? _.get(this.configuration, "endpoints.graphql") : DefaultGraphQLServer,
+            registrationUrl: _.get(this.configuration, "endpoints.api")
+                ? _.get(this.configuration, "endpoints.api") : DefaultApiServer,
             token: this.configuration.token,
         };
+        const handler = this.setupEventHandler(webSocketOptions);
         return Promise.all([
-            Promise.resolve(this.runWs(handler, options)),
+            Promise.resolve(this.runWs(handler, webSocketOptions)),
             Promise.resolve(this.runHttp(handler)),
         ]);
     }
 
-    private setupEventHandler(): WebSocketTransportEventHandler {
-        const webSocketOptions: WebSocketClientOptions = {
-            graphUrl: DefaultStagingAtomistGraphQLServer,
-            registrationUrl: DefaultStagingAtomistServer,
-            token: this.configuration.token,
-        };
+    private setupEventHandler(webSocketOptions: WebSocketClientOptions): WebSocketTransportEventHandler {
+
         if (this.configuration.listeners) {
             return new DefaultWebSocketTransportEventHandler(this.automations, webSocketOptions,
                 [ new MetricEnabledAutomationEventListener(), ...this.configuration.listeners]);

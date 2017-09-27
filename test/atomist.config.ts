@@ -6,10 +6,12 @@ import { HelloIssue } from "./event/HelloIssue";
 
 export const GitHubToken = process.env.GITHUB_TOKEN;
 
+const host = "https://automation-staging.atomist.services";
+
 export const configuration: Configuration = {
     name: "@atomist/automation-node-tests",
     version: "0.0.4",
-    teamId: "T1L0VDKJP",
+    teamId: "T095SFFBK",
     commands: [
         () => new HelloWorld(),
         // () => new PlainHelloWorld(),
@@ -36,4 +38,8 @@ export const configuration: Configuration = {
             },
         },
     },
+    endpoints: {
+        graphql: `${host}/graphql`,
+        api: `${host}/registration`,
+    }
 };

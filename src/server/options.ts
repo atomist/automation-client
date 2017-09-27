@@ -24,10 +24,13 @@ export interface RunOptions {
             },
         }
     };
+    endpoints?: {
+        graphql?: string,
+        api?: string,
+    }
 }
 
 export interface AutomationServerOptions extends RunOptions {
 
     keywords: string[];
-    graphqlEndpoint?: string;
 }
