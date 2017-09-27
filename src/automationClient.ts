@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import * as os from "os";
 import { Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
@@ -13,7 +14,6 @@ import { WebSocketTransportEventHandler } from "./internal/transport/websocket/W
 import { logger } from "./internal/util/logger";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
-import * as _ from "lodash";
 
 export const DefaultApiServer =
     "https://automation.atomist.com/registration";
