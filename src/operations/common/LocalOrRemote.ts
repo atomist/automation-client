@@ -2,9 +2,10 @@ import * as shell from "shelljs";
 
 import { Parameter, Secret } from "../../decorators";
 import { Secrets } from "../../Handlers";
-import { RepoId } from "../common/RepoId";
 import { allReposInTeam } from "./allReposInTeamRepoFinder";
 import { RepoFinder } from "./repoFinder";
+
+import { AllRepos, RepoFilter } from "./repoFilter";
 
 /**
  * Convenient superclass that can handle operating on projects transparently locally or from GitHub.
@@ -39,7 +40,7 @@ export abstract class LocalOrRemote {
      * Operate on all repos matching this filter.
      * @param {(r: RepoId) => boolean} repoFilter
      */
-    constructor(public repoFilter: (r: RepoId) => Promise<boolean> = r => Promise.resolve(true)) {
+    constructor(public repoFilter: RepoFilter = AllRepos) {
     }
 
     protected repoFinder(): RepoFinder {
