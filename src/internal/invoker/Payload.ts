@@ -5,6 +5,7 @@ export interface Contextual {
 
     teamId: string;
     correlationId: string;
+    invocationId?: string;
 }
 
 export interface Invocation {

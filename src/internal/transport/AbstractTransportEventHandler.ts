@@ -6,6 +6,7 @@ import { AutomationServer } from "../../server/AutomationServer";
 import { GraphClient } from "../../spi/graph/GraphClient";
 import { MessageClient } from "../../spi/message/MessageClient";
 import { CommandInvocation } from "../invoker/Payload";
+import * as namespace from "../util/cls";
 import { CommandIncoming, EventIncoming, TransportEventHandler } from "./TransportEventHandler";
 import { HandlerResponse, StatusMessage } from "./websocket/WebSocketMessageClient";
 
@@ -14,6 +15,7 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
     constructor(protected automations: AutomationServer, protected listeners: AutomationEventListener[] = []) {}
 
     public onCommand(command: CommandIncoming): Promise<HandlerResult> {
+        const np = namespace.get();
         const ci: CommandInvocation = {
             name: command.name,
             args: command.parameters,
@@ -23,6 +25,7 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
         const ctx: HandlerContext = {
             teamId: command.team.id,
             correlationId: command.corrid,
+            invocationId: np ? np.invocationId : undefined,
             messageClient: this.createMessageClient(command),
             graphClient: this.createGraphClient(command),
         };
@@ -42,6 +45,7 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
     }
 
     public onEvent(event: EventIncoming): Promise<HandlerResult[]> {
+        const np = namespace.get();
         const ef: EventFired<any> = {
             data: event.data,
             extensions: {
@@ -52,6 +56,7 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
         const ctx: HandlerContext = {
             teamId: event.extensions.team_id,
             correlationId: event.extensions.correlation_id,
+            invocationId: np ? np.invocationId : undefined,
             messageClient: this.createMessageClient(event),
             graphClient: this.createGraphClient(event),
         };
