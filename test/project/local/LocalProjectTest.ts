@@ -198,4 +198,31 @@ describe("LocalProject", () => {
             }).catch(done);
     });
 
+    it("deletes non-empty directory", done => {
+        const p = tempProject();
+        p.addFileSync("dir/thing", "1");
+        assert(p.findFileSync("dir/thing"));
+        p.deleteDirectory("dir")
+            .then(_ => {
+                const f2 = p.findFileSync("dir/thing");
+                assert(!f2);
+                done();
+            }).catch(done);
+    });
+
+    it("deletes directory with subdirectories", done => {
+        const p = tempProject();
+        p.addFileSync("dir/thing", "1");
+        p.addFileSync("dir/this/that", "2");
+        assert(p.findFileSync("dir/this/that"));
+        p.deleteDirectory("dir")
+            .then(_ => {
+                const f2 = p.findFileSync("dir/thing");
+                assert(!f2);
+                const f3 = p.findFileSync("dir/this/that");
+                assert(!f3);
+                done();
+            }).catch(done);
+    });
+
 });

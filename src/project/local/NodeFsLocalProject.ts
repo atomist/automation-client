@@ -75,9 +75,12 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
     }
 
     public deleteDirectory(path: string): Promise<this> {
-        return fs.unlink(path)
+        return fs.remove(this.toRealPath(path))
             .then(_ => this)
-            .catch(err => this);
+            .catch(err => {
+                logger.warn("Unable to delete directory [%s]: %s", path, err);
+                return this;
+            });
     }
 
     public deleteDirectorySync(path: string): void {
