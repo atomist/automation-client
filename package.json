@@ -1,6 +1,6 @@
 {
   "name": "@atomist/automation-client",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "description": "Atomist automation client for running command and event handlers",
   "author": "Atomist, Inc.",
   "license": "GPL-3.0",
@@ -27,6 +27,7 @@
     "async-exit-hook": "^2.0.1",
     "axios": "^0.16.2",
     "body-parser": "^1.18.2",
+    "chalk": "^2.1.0",
     "child-process-promise": "^2.2.1",
     "config": "^1.26.2",
     "continuation-local-storage": "^3.2.0",
@@ -58,6 +59,7 @@
   },
   "devDependencies": {
     "@types/async": "2.0.43",
+    "@types/chalk": "^0.4.31",
     "@types/config": "0.0.33",
     "@types/fs-extra": "^4.0.2",
     "@types/git": "0.0.18",
