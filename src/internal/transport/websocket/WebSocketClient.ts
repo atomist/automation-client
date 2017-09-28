@@ -72,34 +72,37 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
 
                 setupNamespace(request, registration);
 
-                logger.debug("Incoming message\n%s", JSON.stringify(request, function replacer(key, value) {
-                    if (key === "secrets") {
-                        return value.map(v => ({ name: v.name, value: hideString(v.value) }));
-                    } else {
-                        return value;
-                    }
-                }, 2));
-
                 if (isPing(request)) {
-                    logger.debug("Received ping message");
-                    sendMessage({ pong: request.ping }, this);
-                } else if (isCommandIncoming(request)) {
-                    invokeCommandHandler(request)
-                        .then(() => {
-                            logger.debug(`Finished invocation of command handler '%s'`, request.name);
-                        }).catch(hr => {
-                            logger.warn(`Failed invocation of command handler '%s' with '%s'`, request.name, hr);
-                        });
-                } else if (isEventIncoming(request)) {
-                    invokeEventHandler(request)
-                        .then(() => {
-                            logger.debug(`Finished invocation of event handler '%s'`, request.extensions.operationName);
-                        }).catch(er => {
-                            logger.warn(`Failed invocation of command handler '%s' with '%s'`,
-                                request.extensions.operationName, er);
-                        });
+                    sendMessage({ pong: request.ping }, this, false);
                 } else {
-                    throw new Error(`Don't know how to handle '${data}'`);
+
+                    logger.debug("Incoming message: %s", JSON.stringify(request, function replacer(key, value) {
+                        if (key === "secrets") {
+                            return value.map(v => ({ name: v.name, value: hideString(v.value) }));
+                        } else {
+                            return value;
+                        }
+                    }));
+
+                    if (isCommandIncoming(request)) {
+                        invokeCommandHandler(request)
+                            .then(() => {
+                                logger.debug(`Finished invocation of command handler '%s'`, request.name);
+                            }).catch(hr => {
+                                logger.warn(`Failed invocation of command handler '%s' with '%s'`, request.name, hr);
+                            });
+                    } else if (isEventIncoming(request)) {
+                        invokeEventHandler(request)
+                            .then(() => {
+                                logger.debug(`Finished invocation of event handler '%s'`,
+                                    request.extensions.operationName);
+                            }).catch(er => {
+                                logger.warn(`Failed invocation of command handler '%s' with '%s'`,
+                                    request.extensions.operationName, er);
+                            });
+                    } else {
+                        throw new Error(`Don't know how to handle '${data}'`);
+                    }
                 }
             });
         });
@@ -131,8 +134,7 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
     const registrationPayload = registrationCallback();
 
     logger.info(`Registering ${registrationPayload.name}@${registrationPayload.version} ` +
-        `with Atomist at ${options.registrationUrl}`);
-    logger.debug(`\n${JSON.stringify(registrationPayload, null, 2)}`);
+        `with Atomist at '${options.registrationUrl}': ${JSON.stringify(registrationPayload)}`);
 
     return axios.post(options.registrationUrl, registrationPayload,
         { headers: { Authorization: `token ${options.token}` } })

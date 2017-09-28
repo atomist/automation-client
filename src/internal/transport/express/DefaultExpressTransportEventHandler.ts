@@ -16,7 +16,7 @@ export class DefaultExpressTransportEventHandler extends AbstractEventStoringTra
     }
 
     protected sendMessage(payload: any) {
-        debugMessageClient.respond(JSON.stringify(payload, null, 2));
+        debugMessageClient.respond(JSON.stringify(payload));
     }
 
     protected createGraphClient(event: CommandIncoming | EventIncoming): GraphClient {

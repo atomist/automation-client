@@ -7,7 +7,9 @@
       "mutationType": {
         "name": "MutationType"
       },
-      "subscriptionType": null,
+      "subscriptionType": {
+        "name": "QueryType"
+      },
       "types": [
         {
           "kind": "OBJECT",

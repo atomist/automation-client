@@ -15,7 +15,7 @@ export function prepareRegistration(metadata: Rugs): any {
         } else {
             return value;
         }
-    }, 2);
+    });
 
     const registration = JSON.parse(payload) as any;
     registration.events = metadata.events.map(e =>

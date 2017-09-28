@@ -27,11 +27,9 @@ export function findConfiguration(): Configuration {
         throw new Error(`More than one '${AtomistConfigFile}' file found in project: ${files.join(", ")}`);
     } else {
         const file = files[0];
-        logger.info("Using configuration from '%s'", file);
-
         // This part is tricky but essentially brings in the user's handlers.
         const config = require(`${appRoot}/${file}`).configuration as Configuration;
-        logger.debug("\n%s", JSON.stringify(config, cleanUp, 2));
+        logger.debug("Using configuration from '%s': %s", file, JSON.stringify(config, cleanUp));
 
         validateConfiguration(config, file);
         return config;

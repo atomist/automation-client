@@ -148,7 +148,7 @@ export class ExpressServer {
                         id: this.automations.rugs.team_id,
                     },
                 };
-                logger.debug("Incoming payload for command handler '%s'\n%s", h.name, JSON.stringify(payload, null, 2));
+                logger.debug("Incoming payload for command handler '%s': %s", h.name, JSON.stringify(payload));
 
                 // setup context
                 const ses = namespace.init();
@@ -179,7 +179,7 @@ export class ExpressServer {
                 },
                 secrets: [],
             };
-            logger.debug("Incoming payload for ingestor '%s'\n%s", h.name, JSON.stringify(payload, null, 2));
+            logger.debug("Incoming payload for ingestor '%s': %s", h.name, JSON.stringify(payload));
 
             // setup context
             const ses = namespace.init();

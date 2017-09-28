@@ -33,7 +33,6 @@ export class ApolloGraphClient implements GraphClient {
                 if (!req.options.headers) {
                     req.options.headers = {};  // Create the header object if needed.
                 }
-                logger.debug("Applying middleware");
                 req.options.headers = {
                     ...req.options.headers,
                     ...headers,
@@ -53,7 +52,7 @@ export class ApolloGraphClient implements GraphClient {
     }
 
     public executeQuery<T, Q>(graphql: string, variables?: Q): Promise<T> {
-        logger.debug(`Querying '%s' with variables '%s' and query '%s'`,
+        logger.debug(`Querying '%s' with variables '%s' and query: %s`,
             this.endpoint, JSON.stringify(variables), inlineQuery(graphql));
 
         const Query = gql(graphql);
@@ -63,7 +62,7 @@ export class ApolloGraphClient implements GraphClient {
             })
             .then(response => {
                 // The following statement is needed for debugging; we can always disable that later
-                logger.debug("Query returned data\n%s", JSON.stringify(response.data, null, 2));
+                logger.debug("Query returned data: %s", JSON.stringify(response.data));
                 return response.data; });
     }
 

@@ -29,16 +29,14 @@ export class DefaultWebSocketTransportEventHandler extends AbstractEventStoringT
     }
 
     public onRegistration(registration: RegistrationConfirmation) {
-        logger.info(`Registration successful`);
-        logger.debug(`\n${JSON.stringify(registration, null, 2)}`);
+        logger.info("Registration successful: %s", JSON.stringify(registration));
 
         setJwtToken(registration.jwt);
         this.registration = registration;
     }
 
     public onConnection(ws: WebSocket) {
-        logger.info("WebSocket connection established");
-        logger.info("Listening for incoming events");
+        logger.info("WebSocket connection established. Listening for incoming messages");
         this.webSocket = ws;
     }
 

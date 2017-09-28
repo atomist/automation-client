@@ -23,7 +23,7 @@ export function formatter(options: any): string {
 
     const formatted = (options.timestamp ? new Date().toISOString() : "") + (ctx ? " [" + ctx + "]" : "")
         + " [" + level + "] " + (options.message ? options.message : "") +
-        (options.meta && Object.keys(options.meta).length ? "\n" + JSON.stringify(options.meta, null, 2) : "");
+        (options.meta && Object.keys(options.meta).length ? "\n" + JSON.stringify(options.meta) : "");
 
     return formatted;
 }

@@ -144,9 +144,11 @@ function mapParameters(data: {}): Parameter[] {
     return parameters;
 }
 
-export function sendMessage(message: any, ws: WebSocket) {
-    const payload = JSON.stringify(message, null, 2);
-    logger.debug(`Sending message\n${payload}`);
+export function sendMessage(message: any, ws: WebSocket, log: boolean = true) {
+    const payload = JSON.stringify(message);
+    if (log) {
+        logger.debug(`Sending message: ${payload}`);
+    }
     ws.send(payload);
 }
 
