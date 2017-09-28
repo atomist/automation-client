@@ -22,4 +22,5 @@ export interface AutomationContext {
     operation: string;
     name: string;
     version: string;
+    invocationId: string;
 }

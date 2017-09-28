@@ -5,7 +5,7 @@ import * as WebSocket from "ws";
 import { HandlerResult } from "../../../HandlerResult";
 import * as namespace from "../../util/cls";
 import { logger } from "../../util/logger";
-import { hideString } from "../../util/string";
+import { guid, hideString } from "../../util/string";
 import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../TransportEventHandler";
 import { sendMessage } from "./WebSocketMessageClient";
 import { RegistrationConfirmation, WebSocketTransportEventHandler } from "./WebSocketTransportEventHandler";
@@ -153,6 +153,7 @@ function setupNamespace(request: any, registration: RegistrationConfirmation) {
         operation: _.get(request, "name") || _.get(request, "extensions.operationName"),
         name: registration.name,
         version: registration.version,
+        invocationId: guid(),
     });
 }
 

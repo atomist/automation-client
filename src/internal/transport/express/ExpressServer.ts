@@ -277,5 +277,6 @@ function setupNamespace(request: any, automations: AutomationServer) {
         operation: _.get(request, "name") || _.get(request, "extensions.operationName"),
         name: automations.rugs.name,
         version: automations.rugs.version,
+        invocationId: guid(),
     });
 }
