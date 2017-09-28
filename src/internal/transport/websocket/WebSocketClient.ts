@@ -9,15 +9,31 @@ import { guid, hideString } from "../../util/string";
 import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../TransportEventHandler";
 import { sendMessage } from "./WebSocketMessageClient";
 import { RegistrationConfirmation, WebSocketTransportEventHandler } from "./WebSocketTransportEventHandler";
+const promiseRetry = require('promise-retry');
 
 export class WebSocketClient {
 
     constructor(private registrationCallback: () => any,
                 private options: WebSocketClientOptions,
                 private handler: WebSocketTransportEventHandler) {
-        register(this.registrationCallback, options, handler)
-            .then(registration =>
-                connect(this.registrationCallback, registration, this.options, this.handler));
+
+        const retryOptions = {
+            retries: 5,
+            factor: 3,
+            minTimeout: 1 * 1000,
+            maxTimeout: 60 * 1000,
+            randomize: true,
+        };
+
+        promiseRetry((retry, number) => {
+            if (number > 1) {
+                logger.warn("Retrying registration due to previous error");
+            }
+            return register(this.registrationCallback, options, handler)
+                .then(registration =>
+                    connect(this.registrationCallback, registration, this.options, this.handler))
+                .catch(retry);
+        })
     }
 }
 
@@ -133,7 +149,6 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
             if (error.response && error.response.status === 409) {
                 logger.error(`Registration failed because a session for ${registrationPayload.name}` +
                     `@${registrationPayload.version} is already active`);
-                process.exit(1);
             } else if (error.response && error.response.status === 400) {
                 logger.error(`Registration payload for for ${registrationPayload.name}` +
                     `@${registrationPayload.version} was invalid`);
@@ -141,7 +156,6 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
             } else {
                 logger.error("Registration failed with '%s'", error);
             }
-            process.exit(1);
             throw error;
         });
 }

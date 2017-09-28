@@ -46,6 +46,7 @@
     "passport": "^0.4.0",
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",
+    "promise-retry": "^1.1.1",
     "properties": "^1.2.1",
     "shelljs": "^0.7.8",
     "stream-spigot": "^3.0.6",
@@ -93,7 +94,7 @@
     "testone": "mocha --compilers ts:espower-typescript/guess \"test/**/${TEST:-*.ts}\"",
     "typedoc": "typedoc --mode modules --excludeExternals",
     "benchmark": "mocha --prof --compilers ts:espower-typescript/guess \"test/**/*Benchmark.ts\"; node --prof-process isolate-* > profile.txt",
-    "client": "npm run compile && node $NODE_DEBUG_OPTION build/src/start.client.js --open=true",
+    "client": "npm run compile && node $NODE_DEBUG_OPTION --trace-warnings build/src/start.client.js --open=true",
     "autoclient": "nodemon --inspect -e js build/src/start.client.js",
     "cli": "npm run compile && node $NODE_DEBUG_OPTION build/src/start.cli.js"
   },
