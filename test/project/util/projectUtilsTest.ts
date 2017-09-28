@@ -37,7 +37,7 @@ describe("projectUtils", () => {
         })
             .then(gathered => {
                 assert(gathered.length === 1);
-                assert(gathered[0] === "/Thing");
+                assert(gathered[0] === "Thing");
                 done();
             }).catch(done);
     });

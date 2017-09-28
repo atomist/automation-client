@@ -185,6 +185,7 @@ class UpdatingFileHits<M> implements FileWithMatches<M> {
             this.file.recordAction(f => {
                 return f.getContent().then(content => {
                     if (content !== um.updated()) {
+                        console.log(`Updating content of [${f.path}] to [${um.updated()}]`);
                         return f.setContent(um.updated());
                     }
                     return f;

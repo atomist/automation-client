@@ -20,10 +20,6 @@ export class InMemoryFile extends AbstractFile {
         throw new Error("permissions not implemented");
     }
 
-    public recordSetContent(newContent: string): this {
-        return this.setContentSync(newContent);
-    }
-
     public getContentSync(): string {
         return this.content;
     }
@@ -33,13 +29,17 @@ export class InMemoryFile extends AbstractFile {
         return this;
     }
 
+    public setContent(content: string): Promise<this> {
+        return Promise.resolve(this.setContentSync(content));
+    }
+
     public getContent(): Promise<string> {
         return Promise.resolve(this.getContentSync());
     }
 
-    public recordSetPath(path: string): this {
+    public setPath(path: string): Promise<this> {
         this.path = path;
-        return this;
+        return Promise.resolve(this);
     }
 
     get dirty(): boolean {

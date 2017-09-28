@@ -7,10 +7,12 @@ import { JavaPackageDeclaration } from "../../../src/operations/generate/java/Ja
 import { JavaFiles } from "../../../src/operations/generate/java/javaProjectUtils";
 import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
+import { Project } from "../../../src/project/Project";
 import {
     doWithFileMatches, doWithUniqueMatch, findFileMatches, findMatches,
     Match,
 } from "../../../src/project/util/parseUtils";
+import { tempProject } from "../utils";
 
 describe("parseUtils", () => {
 
@@ -69,13 +71,20 @@ describe("parseUtils", () => {
             }).catch(done);
     });
 
-    it("updates matches from files", done => {
+    it("updates matches from files: in memory", done => {
+        updateMatchesFromFiles(new InMemoryProject(""), done);
+    });
+
+    it("updates matches from files: on disk", done => {
+        updateMatchesFromFiles(tempProject(), done);
+    });
+
+    function updateMatchesFromFiles(p: Project, done) {
         const oldPackage = "com.foo.bar";
-        const t = new InMemoryProject("name");
         const initialContent = `package ${oldPackage};\npublic class Thing {}`;
         const f = new InMemoryFile("src/main/java/com/foo/bar/Thing.java", initialContent);
-        t.addFileSync(f.path, f.getContentSync());
-        findFileMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration)
+        p.addFileSync(f.path, f.getContentSync());
+        findFileMatches<{ name: string }>(p, JavaFiles, JavaPackageDeclaration)
             .then(fileMatches => {
                 assert(fileMatches.length === 1);
                 assert(fileMatches[0].file.path === f.path);
@@ -88,25 +97,24 @@ describe("parseUtils", () => {
                 // but it's not meant to be domain meaningful
                 m.name = m.name + "x";
                 assert(m.name);
-
                 assert(m.name === oldPackage + "x");
 
                 // Check file persistence
                 assert(fileMatches[0].file.getContentSync() === initialContent);
-                return t
+                return p
                     .flush()
                     .then(_ => {
-                        const updatedFile = t.findFileSync(f.path);
+                        const updatedFile = p.findFileSync(f.path);
                         assert(updatedFile.getContentSync() === initialContent.replace(oldPackage, oldPackage + "x"),
                             `Content is [${updatedFile.getContentSync()}]`);
                         done();
                     });
             }).catch(done);
-    });
+    }
 
     it("updates matches from files using callback", done => {
         const oldPackage = "com.foo.bar";
-        const t = new InMemoryProject("name");
+        const t = tempProject();
         const initialContent = `package ${oldPackage};\npublic class Thing {}`;
         const f = new InMemoryFile("src/main/java/com/foo/bar/Thing.java", initialContent);
         t.addFileSync(f.path, f.getContentSync());
@@ -131,13 +139,12 @@ describe("parseUtils", () => {
             }).catch(done);
     });
 
-    it("updates unique match from files using callback", done => {
+    function updateUniqueMatchFromFilesUsingCallback(p: Project, done) {
         const oldPackage = "com.foo.bar";
-        const t = new InMemoryProject("name");
         const initialContent = `package ${oldPackage};\npublic class Thing {}`;
         const f = new InMemoryFile("src/main/java/com/foo/bar/Thing.java", initialContent);
-        t.addFileSync(f.path, f.getContentSync());
-        doWithUniqueMatch<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, m => {
+        p.addFileSync(f.path, f.getContentSync());
+        doWithUniqueMatch<{ name: string }>(p, JavaFiles, JavaPackageDeclaration, m => {
             assert(m.name === oldPackage, `Expected [${oldPackage}] got [${m.name}]`);
             // Add x to package names. Yes, this makes no sense in Java
             // but it's not meant to be domain meaningful
@@ -147,12 +154,20 @@ describe("parseUtils", () => {
         }).run()
             .then(_ => {
                 // Check file persistence
-                const updatedFile = t.findFileSync(f.path);
+                const updatedFile = p.findFileSync(f.path);
                 assert(updatedFile.getContentSync() === initialContent.replace(oldPackage, oldPackage + "x"),
                     `Content is [${updatedFile.getContentSync()}]`);
                 done();
             }).catch(done);
-    });
+    }
+
+    it("updates unique match from files using callback: in memory", done =>
+        updateUniqueMatchFromFilesUsingCallback(new InMemoryProject(""), done),
+    );
+
+    it("updates unique match from files using callback: on disk", done =>
+        updateUniqueMatchFromFilesUsingCallback(tempProject(), done),
+    );
 
     it("updates unique match from files using callback: fail with zero", done => {
         const t = new InMemoryProject("name");
@@ -171,7 +186,7 @@ describe("parseUtils", () => {
     });
 
     it("updates unique match from files using callback: fail with 2", done => {
-        const t = new InMemoryProject("name");
+        const t = tempProject();
         const initialContent1 = `package com.foo.bar;\npublic class Thing1 {}`;
         const initialContent2 = `package com.foo.bar;\npublic class Thing2 {}`;
         const f1 = new InMemoryFile("src/main/java/com/foo/bar/Thing1.java", initialContent1);

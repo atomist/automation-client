@@ -20,18 +20,21 @@ export abstract class AbstractFile extends AbstractScriptedFlushable<File> imple
 
     public abstract getContent(): Promise<string>;
 
-    public abstract recordSetContent(newContent: string): this;
+    public abstract setContent(content: string): Promise<this>;
 
-    public setContent(content: string): Promise<this> {
-        this.recordSetContent(content);
-        return this.flush();
+    public recordSetContent(newContent: string): this {
+        return this.recordAction(f => f.setContent(newContent));
     }
 
     public recordRename(name: string): this {
         return this.recordSetPath(this.path.replace(new RegExp(`${this.name}$`), name));
     }
 
-    public abstract recordSetPath(name: string): this;
+    public abstract setPath(path: string): Promise<this>;
+
+    public recordSetPath(path: string): this {
+        return this.recordAction(f => f.setPath(path));
+    }
 
     public recordReplace(re: RegExp, replacement: string): this {
         // TODO
