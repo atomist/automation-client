@@ -7,9 +7,7 @@
       "mutationType": {
         "name": "MutationType"
       },
-      "subscriptionType": {
-        "name": "QueryType"
-      },
+      "subscriptionType": null,
       "types": [
         {
           "kind": "OBJECT",
@@ -45,7 +43,7 @@
                   "description": "number of Issue",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Long",
+                    "name": "Float",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -176,7 +174,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Long",
+                      "name": "Float",
                       "ofType": null
                     }
                   },
@@ -1499,6 +1497,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "buildId",
+                  "description": "buildId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "name",
                   "description": "name of Build",
                   "type": {
@@ -1621,6 +1629,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "buildIds",
+                  "description": "buildIds is list variant of buildId of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -2067,6 +2089,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "userId",
+                  "description": "userId of ChatId",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "provider",
                   "description": "provider of ChatId",
                   "type": {
@@ -2167,6 +2199,20 @@
                 {
                   "name": "screenNames",
                   "description": "screenNames is list variant of screenName of ChatId",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "userIds",
+                  "description": "userIds is list variant of userId of ChatId",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -2402,6 +2448,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "channelId",
+                  "description": "channelId of ChatChannel",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "isDefault",
                   "description": "isDefault of ChatChannel",
                   "type": {
@@ -2480,6 +2536,20 @@
                 {
                   "name": "normalizedNames",
                   "description": "normalizedNames is list variant of normalizedName of ChatChannel",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "channelIds",
+                  "description": "channelIds is list variant of channelId of ChatChannel",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -5505,6 +5575,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "timestamp",
+                  "description": "timestamp of Status",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "atmTeamIds",
                   "description": "atmTeamIds is list variant of atmTeamId of Status",
                   "type": {
@@ -5577,6 +5657,20 @@
                 {
                   "name": "contexts",
                   "description": "contexts is list variant of context of Status",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "timestamps",
+                  "description": "timestamps is list variant of timestamp of Status",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -7035,6 +7129,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "providerId",
+                  "description": "providerId of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "apiUrl",
                   "description": "apiUrl of GitHubProvider",
                   "type": {
@@ -7085,6 +7189,20 @@
                 {
                   "name": "urls",
                   "description": "urls is list variant of url of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerIds",
+                  "description": "providerIds is list variant of providerId of GitHubProvider",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -8011,7 +8129,7 @@
         {
           "kind": "OBJECT",
           "name": "Issue",
-          "description": "a GitHub Issue",
+          "description": "An issue in GitHub",
           "fields": [
             {
               "name": "_id",
@@ -8051,11 +8169,11 @@
             },
             {
               "name": "number",
-              "description": "Issue number, as a number",
+              "description": "Issue number as number",
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Long",
+                "name": "Float",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -8063,7 +8181,7 @@
             },
             {
               "name": "name",
-              "description": "Issue number, as a string",
+              "description": "Issue number as string",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -8075,7 +8193,7 @@
             },
             {
               "name": "title",
-              "description": "Issue title",
+              "description": "title of  Issue",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -9530,6 +9648,16 @@
           "possibleTypes": null
         },
         {
+          "kind": "SCALAR",
+          "name": "Float",
+          "description": "Built-in Float",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "ENUM",
           "name": "IssueState",
           "description": "Enum for IssueState",
@@ -9915,6 +10043,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "channelId",
+                  "description": "channelId of ChatChannel",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "isDefault",
                   "description": "isDefault of ChatChannel",
                   "type": {
@@ -9993,6 +10131,20 @@
                 {
                   "name": "normalizedNames",
                   "description": "normalizedNames is list variant of normalizedName of ChatChannel",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "channelIds",
+                  "description": "channelIds is list variant of channelId of ChatChannel",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -10231,7 +10383,7 @@
                   "description": "number of Issue",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Long",
+                    "name": "Float",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -10362,7 +10514,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Long",
+                      "name": "Float",
                       "ofType": null
                     }
                   },
@@ -11576,6 +11728,18 @@
               "deprecationReason": null
             },
             {
+              "name": "channelId",
+              "description": "channelId of  ChatChannel",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "isDefault",
               "description": "isDefault of  ChatChannel",
               "args": [],
@@ -11626,6 +11790,16 @@
                 {
                   "name": "screenName",
                   "description": "screenName of ChatId",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "userId",
+                  "description": "userId of ChatId",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -11734,6 +11908,20 @@
                 {
                   "name": "screenNames",
                   "description": "screenNames is list variant of screenName of ChatId",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "userIds",
+                  "description": "userIds is list variant of userId of ChatId",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -12291,6 +12479,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "userId",
+                  "description": "userId of ChatId",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "provider",
                   "description": "provider of ChatId",
                   "type": {
@@ -12391,6 +12589,20 @@
                 {
                   "name": "screenNames",
                   "description": "screenNames is list variant of screenName of ChatId",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "userIds",
+                  "description": "userIds is list variant of userId of ChatId",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -12826,6 +13038,18 @@
               "deprecationReason": null
             },
             {
+              "name": "userId",
+              "description": "userId of  ChatId",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "provider",
               "description": "provider of  ChatId",
               "args": [],
@@ -12964,6 +13188,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "channelId",
+                  "description": "channelId of ChatChannel",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "isDefault",
                   "description": "isDefault of ChatChannel",
                   "type": {
@@ -13042,6 +13276,20 @@
                 {
                   "name": "normalizedNames",
                   "description": "normalizedNames is list variant of normalizedName of ChatChannel",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "channelIds",
+                  "description": "channelIds is list variant of channelId of ChatChannel",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -13648,6 +13896,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "channelId",
+                  "description": "channelId of ChatChannel",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "isDefault",
                   "description": "isDefault of ChatChannel",
                   "type": {
@@ -13726,6 +13984,20 @@
                 {
                   "name": "normalizedNames",
                   "description": "normalizedNames is list variant of normalizedName of ChatChannel",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "channelIds",
+                  "description": "channelIds is list variant of channelId of ChatChannel",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -14034,6 +14306,18 @@
               "deprecationReason": null
             },
             {
+              "name": "channelId_asc",
+              "description": "Ascending sort for channelId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "channelId_desc",
+              "description": "Descending sort for channelId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "isDefault_asc",
               "description": "Ascending sort for isDefault",
               "isDeprecated": false,
@@ -14235,6 +14519,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "userId",
+                  "description": "userId of ChatId",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "provider",
                   "description": "provider of ChatId",
                   "type": {
@@ -14335,6 +14629,20 @@
                 {
                   "name": "screenNames",
                   "description": "screenNames is list variant of screenName of ChatId",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "userIds",
+                  "description": "userIds is list variant of userId of ChatId",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -14684,6 +14992,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "providerId",
+                  "description": "providerId of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "apiUrl",
                   "description": "apiUrl of GitHubProvider",
                   "type": {
@@ -14734,6 +15052,20 @@
                 {
                   "name": "urls",
                   "description": "urls is list variant of url of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerIds",
+                  "description": "providerIds is list variant of providerId of GitHubProvider",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -15150,6 +15482,18 @@
               "deprecationReason": null
             },
             {
+              "name": "providerId",
+              "description": "providerId of  GitHubProvider",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "apiUrl",
               "description": "apiUrl of  GitHubProvider",
               "args": [],
@@ -15220,6 +15564,18 @@
             {
               "name": "url_desc",
               "description": "Descending sort for url",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "providerId_asc",
+              "description": "Ascending sort for providerId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "providerId_desc",
+              "description": "Descending sort for providerId",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -15484,6 +15840,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "userId",
+                  "description": "userId of ChatId",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "provider",
                   "description": "provider of ChatId",
                   "type": {
@@ -15584,6 +15950,20 @@
                 {
                   "name": "screenNames",
                   "description": "screenNames is list variant of screenName of ChatId",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "userIds",
+                  "description": "userIds is list variant of userId of ChatId",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -15933,6 +16313,18 @@
             {
               "name": "screenName_desc",
               "description": "Descending sort for screenName",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "userId_asc",
+              "description": "Ascending sort for userId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "userId_desc",
+              "description": "Descending sort for userId",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -16365,6 +16757,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "providerId",
+                  "description": "providerId of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "apiUrl",
                   "description": "apiUrl of GitHubProvider",
                   "type": {
@@ -16415,6 +16817,20 @@
                 {
                   "name": "urls",
                   "description": "urls is list variant of url of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerIds",
+                  "description": "providerIds is list variant of providerId of GitHubProvider",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -16580,6 +16996,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "channelId",
+                  "description": "channelId of ChatChannel",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "isDefault",
                   "description": "isDefault of ChatChannel",
                   "type": {
@@ -16658,6 +17084,20 @@
                 {
                   "name": "normalizedNames",
                   "description": "normalizedNames is list variant of normalizedName of ChatChannel",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "channelIds",
+                  "description": "channelIds is list variant of channelId of ChatChannel",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -16803,6 +17243,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "userId",
+                  "description": "userId of ChatId",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "provider",
                   "description": "provider of ChatId",
                   "type": {
@@ -16903,6 +17353,20 @@
                 {
                   "name": "screenNames",
                   "description": "screenNames is list variant of screenName of ChatId",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "userIds",
+                  "description": "userIds is list variant of userId of ChatId",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -17090,16 +17554,6 @@
           "possibleTypes": null
         },
         {
-          "kind": "SCALAR",
-          "name": "Float",
-          "description": "Built-in Float",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
           "kind": "OBJECT",
           "name": "Org",
           "description": "Org-Node",
@@ -17187,6 +17641,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "providerId",
+                  "description": "providerId of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "apiUrl",
                   "description": "apiUrl of GitHubProvider",
                   "type": {
@@ -17237,6 +17701,20 @@
                 {
                   "name": "urls",
                   "description": "urls is list variant of url of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerIds",
+                  "description": "providerIds is list variant of providerId of GitHubProvider",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -18468,6 +18946,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "userId",
+                  "description": "userId of ChatId",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "provider",
                   "description": "provider of ChatId",
                   "type": {
@@ -18568,6 +19056,20 @@
                 {
                   "name": "screenNames",
                   "description": "screenNames is list variant of screenName of ChatId",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "userIds",
+                  "description": "userIds is list variant of userId of ChatId",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -18861,6 +19363,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "channelId",
+                  "description": "channelId of ChatChannel",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "isDefault",
                   "description": "isDefault of ChatChannel",
                   "type": {
@@ -18939,6 +19451,20 @@
                 {
                   "name": "normalizedNames",
                   "description": "normalizedNames is list variant of normalizedName of ChatChannel",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "channelIds",
+                  "description": "channelIds is list variant of channelId of ChatChannel",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -21864,6 +22390,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "buildId",
+                  "description": "buildId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "name",
                   "description": "name of Build",
                   "type": {
@@ -21986,6 +22522,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "buildIds",
+                  "description": "buildIds is list variant of buildId of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -22298,6 +22848,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "buildId",
+                  "description": "buildId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "name",
                   "description": "name of Build",
                   "type": {
@@ -22420,6 +22980,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "buildIds",
+                  "description": "buildIds is list variant of buildId of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -23301,7 +23875,7 @@
                   "description": "number of Issue",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Long",
+                    "name": "Float",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -23432,7 +24006,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Long",
+                      "name": "Float",
                       "ofType": null
                     }
                   },
@@ -23700,6 +24274,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "timestamp",
+                  "description": "timestamp of Status",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "atmTeamIds",
                   "description": "atmTeamIds is list variant of atmTeamId of Status",
                   "type": {
@@ -23772,6 +24356,20 @@
                 {
                   "name": "contexts",
                   "description": "contexts is list variant of context of Status",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "timestamps",
+                  "description": "timestamps is list variant of timestamp of Status",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -25282,6 +25880,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "buildId",
+              "description": "buildId of  Build",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -27274,6 +27884,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "buildId",
+                  "description": "buildId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "name",
                   "description": "name of Build",
                   "type": {
@@ -27396,6 +28016,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "buildIds",
+                  "description": "buildIds is list variant of buildId of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -27706,6 +28340,18 @@
             {
               "name": "id_desc",
               "description": "Descending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "buildId_asc",
+              "description": "Ascending sort for buildId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "buildId_desc",
+              "description": "Descending sort for buildId",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -28343,6 +28989,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "buildId",
+                  "description": "buildId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "name",
                   "description": "name of Build",
                   "type": {
@@ -28465,6 +29121,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "buildIds",
+                  "description": "buildIds is list variant of buildId of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -32431,6 +33101,18 @@
               "deprecationReason": null
             },
             {
+              "name": "timestamp",
+              "description": "timestamp of  Status",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "commit",
               "description": "Status commit Commit",
               "args": [
@@ -32671,6 +33353,18 @@
             {
               "name": "context_desc",
               "description": "Descending sort for context",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "timestamp_asc",
+              "description": "Ascending sort for timestamp",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "timestamp_desc",
+              "description": "Descending sort for timestamp",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -36281,7 +36975,7 @@
                   "description": "number of Issue",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Long",
+                    "name": "Float",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -36412,7 +37106,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Long",
+                      "name": "Float",
                       "ofType": null
                     }
                   },
@@ -38449,6 +39143,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "userId",
+                  "description": "userId of ChatId",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "provider",
                   "description": "provider of ChatId",
                   "type": {
@@ -38549,6 +39253,20 @@
                 {
                   "name": "screenNames",
                   "description": "screenNames is list variant of screenName of ChatId",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "userIds",
+                  "description": "userIds is list variant of userId of ChatId",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -38736,6 +39454,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "channelId",
+                  "description": "channelId of ChatChannel",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "isDefault",
                   "description": "isDefault of ChatChannel",
                   "type": {
@@ -38814,6 +39542,20 @@
                 {
                   "name": "normalizedNames",
                   "description": "normalizedNames is list variant of normalizedName of ChatChannel",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "channelIds",
+                  "description": "channelIds is list variant of channelId of ChatChannel",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -38951,7 +39693,7 @@
                   "description": null,
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Long",
+                    "name": "Float",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -39084,7 +39826,7 @@
                   "description": null,
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Long",
+                    "name": "Float",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -40005,6 +40747,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "buildId",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "name",
                   "description": null,
                   "type": {
@@ -40129,6 +40881,16 @@
                 },
                 {
                   "name": "atmTeamId",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "buildId",
                   "description": null,
                   "type": {
                     "kind": "SCALAR",
@@ -40453,6 +41215,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "userId",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "provider",
                   "description": null,
                   "type": {
@@ -40557,6 +41329,16 @@
                 },
                 {
                   "name": "screenName",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "userId",
                   "description": null,
                   "type": {
                     "kind": "SCALAR",
@@ -40722,6 +41504,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "channelId",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "isDefault",
                   "description": null,
                   "type": {
@@ -40796,6 +41588,16 @@
                 },
                 {
                   "name": "normalizedName",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "channelId",
                   "description": null,
                   "type": {
                     "kind": "SCALAR",
@@ -42563,6 +43365,16 @@
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "timestamp",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
                 }
               ],
               "type": {
@@ -42629,6 +43441,16 @@
                 },
                 {
                   "name": "context",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "timestamp",
                   "description": null,
                   "type": {
                     "kind": "SCALAR",
@@ -43479,6 +44301,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "providerId",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "apiUrl",
                   "description": null,
                   "type": {
@@ -43533,6 +44365,16 @@
                 },
                 {
                   "name": "url",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerId",
                   "description": null,
                   "type": {
                     "kind": "SCALAR",
