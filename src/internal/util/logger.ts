@@ -8,7 +8,7 @@ export function formatter(options: any): string {
     let ctx;
     if (executionContext) {
         if (executionContext.correlationId) {
-            ctx += executionContext.correlationId;
+            ctx = executionContext.correlationId;
         }
         if (executionContext.teamId) {
             ctx += ":" + executionContext.teamId;
