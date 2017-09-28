@@ -1,6 +1,7 @@
 import * as exitHook from "async-exit-hook";
 import axios from "axios";
 import * as _ from "lodash";
+import * as promiseRetry from "promise-retry";
 import * as WebSocket from "ws";
 import { HandlerResult } from "../../../HandlerResult";
 import * as namespace from "../../util/cls";
@@ -9,7 +10,6 @@ import { guid, hideString } from "../../util/string";
 import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../TransportEventHandler";
 import { sendMessage } from "./WebSocketMessageClient";
 import { RegistrationConfirmation, WebSocketTransportEventHandler } from "./WebSocketTransportEventHandler";
-const promiseRetry = require('promise-retry');
 
 export class WebSocketClient {
 
@@ -25,15 +25,15 @@ export class WebSocketClient {
             randomize: true,
         };
 
-        promiseRetry((retry, number) => {
-            if (number > 1) {
+        promiseRetry(retryOptions, (retry, retryCount) => {
+            if (retryCount > 1) {
                 logger.warn("Retrying registration due to previous error");
             }
             return register(this.registrationCallback, options, handler)
                 .then(registration =>
                     connect(this.registrationCallback, registration, this.options, this.handler))
                 .catch(retry);
-        })
+        });
     }
 }
 
