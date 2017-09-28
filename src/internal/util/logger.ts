@@ -9,13 +9,13 @@ export function formatter(options: any): string {
     let ctx;
     if (executionContext) {
         if (executionContext.correlationId) {
-            ctx = options.colorize ? chalk.cyan(executionContext.correlationId) : executionContext.correlationId;
+            ctx = options.colorize ? chalk.green(executionContext.correlationId) : executionContext.correlationId;
         }
         if (executionContext.teamId) {
-            ctx += ":" + (options.colorize ? chalk.cyan(executionContext.teamId) : executionContext.teamId);
+            ctx += ":" + (options.colorize ? chalk.green(executionContext.teamId) : executionContext.teamId);
         }
         if (executionContext.operation) {
-            ctx += ":" + (options.colorize ? chalk.cyan(executionContext.operation) : executionContext.operation);
+            ctx += ":" + (options.colorize ? chalk.green(executionContext.operation) : executionContext.operation);
         }
     }
 

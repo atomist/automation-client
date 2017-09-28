@@ -179,6 +179,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         const context: HandlerContext = {
             teamId: ctx.teamId,
             correlationId: ctx.correlationId,
+            invocationId: ctx.invocationId,
             messageClient: ctx.messageClient,
             graphClient: ctx.graphClient ? ctx.graphClient : this.graphClient,
         };
