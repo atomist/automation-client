@@ -2,11 +2,21 @@ import * as _ from "lodash";
 import * as winston from "winston";
 import * as context from "./cls";
 
-function formatter(options: any): string {
+export function formatter(options: any): string {
     const executionContext = context.get();
 
-    const ctx = (executionContext && executionContext.correlationId ? executionContext.correlationId + ":" : "") +
-        (executionContext && executionContext.teamId ? executionContext.teamId : "");
+    let ctx;
+    if (executionContext) {
+        if (executionContext.correlationId) {
+            ctx += executionContext.correlationId;
+        }
+        if (executionContext.teamId) {
+            ctx += ":" + executionContext.teamId;
+        }
+        if (executionContext.operation) {
+            ctx += ":" + executionContext.operation;
+        }
+    }
 
     const level = options.colorize ? winston.config.colorize(options.level, _.padEnd(options.level, 5)) :
         _.padEnd(options.level, 5);

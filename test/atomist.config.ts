@@ -40,7 +40,7 @@ export const configuration: Configuration = {
         },
     },
     endpoints: {
-        graphql: `${host}/graphql`,
+        graphql: `${host}/graphql/team`,
         api: `${host}/registration`,
     },
 };

@@ -11,7 +11,6 @@ import * as mustacheExpress from "mustache-express";
 
 import { Express, Handler } from "express";
 import * as fs from "fs";
-import { DefaultGraphQLServer } from "../../../automationClient";
 import { eventStore, jwtToken } from "../../../globals";
 import { logger } from "../../util/logger";
 import { report } from "../../util/metric";
@@ -96,7 +95,7 @@ export class ExpressServer {
         exp.get("/graphql", this.authenticate("basic"),
             (req, res) => {
                 res.render("graphql.html", { token: jwtToken(),
-                    graphQLUrl: `${this.options.endpoint.graphql}/team/${this.automations.rugs.team_id}` });
+                    graphQLUrl: `${this.options.endpoint.graphql}/${this.automations.rugs.team_id}` });
         });
 
         exp.get("/", this.authenticate("basic"),
