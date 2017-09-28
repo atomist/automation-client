@@ -75,9 +75,9 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
     }
 
     public deleteDirectory(path: string): Promise<this> {
-        // TODO should not be synch
-        this.deleteDirectorySync(path);
-        return Promise.resolve(this);
+        return fs.unlink(path)
+            .then(_ => this)
+            .catch(err => this);
     }
 
     public deleteDirectorySync(path: string): void {

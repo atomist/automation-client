@@ -23,6 +23,6 @@ export interface CommandResult {
  * @return {Promise<CommandResult>}
  */
 export function runCommand(cmd: string, opts: ExecOptions): Promise<CommandResult> {
-    logger.debug(">" + cmd);
+    logger.debug((opts.cwd ? opts.cwd : "") + " ==> " + cmd);
     return exec(cmd, opts);
 }

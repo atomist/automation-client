@@ -139,6 +139,11 @@ export interface ProjectAsync extends ProjectCore {
 
     deleteFile(path: string): Promise<this>;
 
+    /**
+     * Delete a directory. Do not throw an error if it doesn't exist
+     * @param {string} path
+     * @return {Promise<this>}
+     */
     deleteDirectory(path: string): Promise<this>;
 
 }
