@@ -1,4 +1,3 @@
-import * as chalk from "chalk";
 import * as _ from "lodash";
 import * as winston from "winston";
 import * as context from "./cls";
@@ -9,13 +8,16 @@ export function formatter(options: any): string {
     let ctx;
     if (executionContext) {
         if (executionContext.correlationId) {
-            ctx = options.colorize ? chalk.green(executionContext.correlationId) : executionContext.correlationId;
+            ctx = options.colorize ? winston.config.colorize(options.level, executionContext.correlationId)
+                : executionContext.correlationId;
         }
         if (executionContext.teamId) {
-            ctx += ":" + (options.colorize ? chalk.green(executionContext.teamId) : executionContext.teamId);
+            ctx += ":" + (options.colorize ? winston.config.colorize(options.level, executionContext.teamId)
+                : executionContext.teamId);
         }
         if (executionContext.operation) {
-            ctx += ":" + (options.colorize ? chalk.green(executionContext.operation) : executionContext.operation);
+            ctx += ":" + (options.colorize ? winston.config.colorize(options.level, executionContext.operation)
+                : executionContext.operation);
         }
     }
 
