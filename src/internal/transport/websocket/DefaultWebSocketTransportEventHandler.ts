@@ -38,6 +38,7 @@ export class DefaultWebSocketTransportEventHandler extends AbstractEventStoringT
     public onConnection(ws: WebSocket) {
         logger.info("WebSocket connection established. Listening for incoming messages");
         this.webSocket = ws;
+        this.listeners.forEach(l => l.registrationSuccessful(this));
     }
 
     protected sendMessage(payload: any) {

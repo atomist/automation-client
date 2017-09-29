@@ -127,6 +127,27 @@ export class ExpressServer {
                                                 h: CommandHandlerMetadata,
                                                 handle: (res, result) => any) {
 
+        exp.post(url, this.authenticate("basic", "bearer"), (req, res) => {
+
+            const payload: CommandIncoming = {
+                atomist_type: "command_handler_request",
+                name: h.name,
+                rug: {},
+                correlation_context: {team: { id: this.automations.rugs.team_id }},
+                corrid: guid(),
+                team: {
+                    id: this.automations.rugs.team_id,
+                },
+                ...req.body,
+            };
+
+            this.handler.onCommand(payload, result => {
+                handle(res, result);
+            }, error => {
+                res.send(error);
+            });
+        });
+
         exp.get(url, this.authenticate("basic", "bearer"),
             (req, res) => {
                 const args = h.parameters.filter(p => {
@@ -148,18 +169,10 @@ export class ExpressServer {
                         id: this.automations.rugs.team_id,
                     },
                 };
-                logger.debug("Incoming payload for command handler '%s': %s", h.name, JSON.stringify(payload));
-
-                // setup context
-                const ses = namespace.init();
-
-                ses.run(() => {
-                    setupNamespace(payload, this.automations);
-                    this.handler.onCommand(payload)
-                        .then(result => {
-                            return handle(res, result);
-                        })
-                        .catch(err => res.send(err));
+                this.handler.onCommand(payload, result => {
+                    handle(res, result);
+                }, error => {
+                    res.send(error);
                 });
         });
     }
@@ -169,7 +182,6 @@ export class ExpressServer {
                                        h: IngestorMetadata,
                                        handle: (res, result) => any) {
         exp.post(url, (req, res) => {
-
             const payload: EventIncoming = {
                 data: req.body,
                 extensions: {
@@ -179,18 +191,10 @@ export class ExpressServer {
                 },
                 secrets: [],
             };
-            logger.debug("Incoming payload for ingestor '%s': %s", h.name, JSON.stringify(payload));
-
-            // setup context
-            const ses = namespace.init();
-
-            ses.run(() => {
-                setupNamespace(payload, this.automations);
-                this.handler.onEvent(payload)
-                    .then(result => {
-                        return handle(res, result);
-                    })
-                    .catch(err => res.send(err));
+            this.handler.onEvent(payload, result => {
+                handle(res, result);
+            }, error => {
+                res.send(error);
             });
         });
     }
@@ -268,15 +272,4 @@ export interface ExpressServerOptions {
     endpoint: {
         graphql: string;
     };
-}
-
-function setupNamespace(request: any, automations: AutomationServer) {
-    namespace.set({
-        correlationId:  _.get(request, "corrid") || _.get(request, "extensions.correlation_id"),
-        teamId: _.get(request, "correlation_context.team.id") || _.get(request, "extensions.team_id"),
-        operation: _.get(request, "name") || _.get(request, "extensions.operationName"),
-        name: automations.rugs.name,
-        version: automations.rugs.version,
-        invocationId: guid(),
-    });
 }

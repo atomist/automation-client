@@ -17,7 +17,15 @@ describe("DefaultWebSocketTransportEventHandler", () => {
     it("check event received and processed", done => {
         class MockAutomationServer implements AutomationServer {
 
-            public rugs: Rugs;
+            public rugs: Rugs = {
+                name: "boo",
+                version: "1.0.0",
+                keywords: [],
+                events: [],
+                commands: [],
+                ingestors: [],
+                team_id: "xxx",
+            };
 
             public validateCommandInvocation(payload: CommandInvocation): CommandHandlerMetadata {
                 throw new Error("Method not implemented.");
@@ -61,26 +69,21 @@ describe("DefaultWebSocketTransportEventHandler", () => {
                 operationName: "FooOp",
                 team_id: "x-team",
                 correlation_id: "555",
-            }}).then(_ => done());
+            }}, () => done());
 
     }).timeout(5000);
 
     it("check successful command received and processed", done => {
-        verifyCommandHandler(0)
-            .then(_ => done())
-            .catch(err => console.log(err));
+        verifyCommandHandler(0, () => done());
 
     }).timeout(5000);
 
     it("check unsuccessful command received and processed", done => {
-        verifyCommandHandler(1)
-            .then(_ => done())
-            .catch(err => console.log(err));
-
+        verifyCommandHandler(1, () => done());
     }).timeout(5000);
 });
 
-function verifyCommandHandler(code: number): Promise<HandlerResult> {
+function verifyCommandHandler(code: number, callback: (result) => void) {
     class MockAutomationServer implements AutomationServer {
 
         public rugs: Rugs = {
@@ -125,7 +128,7 @@ function verifyCommandHandler(code: number): Promise<HandlerResult> {
         { token: "xxx" , registrationUrl: "http://foo.com", graphUrl: "http://bar.com"});
     listener.onRegistration({url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
     listener.onConnection((new MockWebSocket() as any) as WebSocket);
-    return listener.onCommand({
+    listener.onCommand({
         secrets: [],
         mapped_parameters: [],
         name: "FooOp",
@@ -147,6 +150,6 @@ function verifyCommandHandler(code: number): Promise<HandlerResult> {
             },
         },
         atomist_type: "command_handler_request",
-    });
+    }, callback);
 
 }

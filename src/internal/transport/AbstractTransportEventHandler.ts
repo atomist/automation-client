@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import { HandlerContext } from "../../HandlerContext";
 import { HandlerResult } from "../../HandlerResult";
 import { EventFired } from "../../Handlers";
@@ -7,6 +8,8 @@ import { GraphClient } from "../../spi/graph/GraphClient";
 import { MessageClient } from "../../spi/message/MessageClient";
 import { CommandInvocation } from "../invoker/Payload";
 import * as namespace from "../util/cls";
+import { logger } from "../util/logger";
+import { guid, hideString } from "../util/string";
 import { CommandIncoming, EventIncoming, TransportEventHandler } from "./TransportEventHandler";
 import { HandlerResponse, StatusMessage } from "./websocket/WebSocketMessageClient";
 
@@ -14,64 +17,92 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
 
     constructor(protected automations: AutomationServer, protected listeners: AutomationEventListener[] = []) {}
 
-    public onCommand(command: CommandIncoming): Promise<HandlerResult> {
-        const np = namespace.get();
-        const ci: CommandInvocation = {
-            name: command.name,
-            args: command.parameters,
-            mappedParameters: command.mapped_parameters,
-            secrets: command.secrets,
-        };
-        const ctx: HandlerContext = {
-            teamId: command.team.id,
-            correlationId: command.corrid,
-            invocationId: np ? np.invocationId : undefined,
-            messageClient: this.createMessageClient(command),
-            graphClient: this.createGraphClient(command),
-        };
+    // tslint:disable-next-line:no-empty
+    public onCommand(command: CommandIncoming, success: (results: HandlerResult) => void = () => {},
+                     // tslint:disable-next-line:no-empty
+                     error: (error: any) => void = () => {}) {
+        // setup context
+        const ses = namespace.init();
+        ses.run(() => {
+            setupNamespace(command, this.automations);
 
-        this.listeners.forEach(l => l.commandStarting(ci, ctx));
+            logger.debug("Incoming command: %s", JSON.stringify(command, replacer));
 
-        return this.automations.invokeCommand(ci, ctx)
-            .then(result => {
-                this.listeners.forEach(l => l.commandSuccessful(ci, ctx, result));
-                this.sendStatus(result.code === 0 ? true : false, result, command);
-                return result;
-            }).catch( error => {
-                this.listeners.forEach(l => l.commandFailed(ci, ctx, error));
-                this.sendStatus(false, { code: 1 } , command);
-                return error;
-            });
+            const np = namespace.get();
+            const ci: CommandInvocation = {
+                name: command.name,
+                args: command.parameters,
+                mappedParameters: command.mapped_parameters,
+                secrets: command.secrets,
+            };
+            const ctx: HandlerContext = {
+                teamId: command.team.id,
+                correlationId: command.corrid,
+                invocationId: np ? np.invocationId : undefined,
+                messageClient: this.createMessageClient(command),
+                graphClient: this.createGraphClient(command),
+            };
+
+            this.listeners.forEach(l => l.commandStarting(ci, ctx));
+
+            return this.automations.invokeCommand(ci, ctx)
+                .then(result => {
+                    this.listeners.forEach(l => l.commandSuccessful(ci, ctx, result));
+                    this.sendStatus(result.code === 0 ? true : false, result, command);
+                    success(result);
+                    logger.debug(`Finished invocation of command handler '%s'`, command.name);
+                }).catch(err => {
+                    this.listeners.forEach(l => l.commandFailed(ci, ctx, err));
+                    this.sendStatus(false, {code: 1}, command);
+                    error(err);
+                    logger.warn(`Failed invocation of command handler '%s' with '%s'`, command.name, err);
+                });
+        });
     }
 
-    public onEvent(event: EventIncoming): Promise<HandlerResult[]> {
-        const np = namespace.get();
-        const ef: EventFired<any> = {
-            data: event.data,
-            extensions: {
-                operationName: event.extensions.operationName,
-            },
-            secrets: event.secrets,
-        };
-        const ctx: HandlerContext = {
-            teamId: event.extensions.team_id,
-            correlationId: event.extensions.correlation_id,
-            invocationId: np ? np.invocationId : undefined,
-            messageClient: this.createMessageClient(event),
-            graphClient: this.createGraphClient(event),
-        };
+    // tslint:disable-next-line:no-empty
+    public onEvent(event: EventIncoming, success: (results: HandlerResult[]) => void = () => {},
+                   // tslint:disable-next-line:no-empty
+                   error: (error: any) => void = () => {}) {
+        // setup context
+        const ses = namespace.init();
+        ses.run(() => {
+            setupNamespace(event, this.automations);
 
-        this.listeners.forEach(l => l.eventStarting(ef, ctx));
+            logger.debug("Incoming event: %s", JSON.stringify(event, replacer));
 
-        return this.automations.onEvent(ef, ctx)
-            .then(result => {
-                this.listeners.forEach(l => l.eventSuccessful(ef, ctx, result));
-                return result;
-            })
-            .catch( error => {
-                this.listeners.forEach(l => l.eventFailed(ef, ctx, error));
-                return error;
-            });
+            const np = namespace.get();
+            const ef: EventFired<any> = {
+                data: event.data,
+                extensions: {
+                    operationName: event.extensions.operationName,
+                },
+                secrets: event.secrets,
+            };
+            const ctx: HandlerContext = {
+                teamId: event.extensions.team_id,
+                correlationId: event.extensions.correlation_id,
+                invocationId: np ? np.invocationId : undefined,
+                messageClient: this.createMessageClient(event),
+                graphClient: this.createGraphClient(event),
+            };
+
+            this.listeners.forEach(l => l.eventStarting(ef, ctx));
+
+            return this.automations.onEvent(ef, ctx)
+                .then(result => {
+                    this.listeners.forEach(l => l.eventSuccessful(ef, ctx, result));
+                    success(result);
+                    logger.debug(`Finished invocation of event handler '%s'`,
+                        event.extensions.operationName);
+                })
+                .catch(err => {
+                    this.listeners.forEach(l => l.eventFailed(ef, ctx, err));
+                    error(err);
+                    logger.warn(`Failed invocation of command handler '%s' with '%s'`,
+                        event.extensions.operationName, err);
+                });
+        });
     }
 
     public sendStatus(success: boolean, hr: HandlerResult, request: CommandIncoming) {
@@ -98,4 +129,23 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
 
     protected abstract createMessageClient(event: EventIncoming | CommandIncoming): MessageClient;
 
+}
+
+function setupNamespace(request: any, automations: AutomationServer) {
+    namespace.set({
+        correlationId:  _.get(request, "corrid") || _.get(request, "extensions.correlation_id"),
+        teamId: _.get(request, "correlation_context.team.id") || _.get(request, "extensions.team_id"),
+        operation: _.get(request, "name") || _.get(request, "extensions.operationName"),
+        name: automations.rugs.name,
+        version: automations.rugs.version,
+        invocationId: guid(),
+    });
+}
+
+function replacer(key, value) {
+    if (key === "secrets" && value) {
+        return value.map(v => ({ name: v.name, value: hideString(v.value) }));
+    } else {
+        return value;
+    }
 }

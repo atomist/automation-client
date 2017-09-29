@@ -1,11 +1,12 @@
 import { HandlerResult } from "../../HandlerResult";
 import { EventFired, HandlerContext } from "../../Handlers";
-import { AutomationEventListener } from "../../server/AutomationEventListener";
+import { AutomationEventListener, AutomationEventListenerSupport } from "../../server/AutomationEventListener";
 import { CommandInvocation } from "../invoker/Payload";
 import * as namespace from "../util/cls";
 import { duration } from "../util/metric";
 
-export class MetricEnabledAutomationEventListener implements AutomationEventListener {
+export class MetricEnabledAutomationEventListener
+    extends AutomationEventListenerSupport implements AutomationEventListener {
 
     public commandStarting(payload: CommandInvocation, ctx: HandlerContext) {
         namespace.init().set("metric.start", new Date().getTime());

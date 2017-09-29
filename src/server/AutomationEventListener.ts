@@ -1,8 +1,11 @@
 import { EventFired } from "../HandleEvent";
 import { HandlerContext, HandlerResult } from "../Handlers";
 import { CommandInvocation } from "../internal/invoker/Payload";
+import { TransportEventHandler } from "../internal/transport/TransportEventHandler";
 
 export interface AutomationEventListener {
+
+    registrationSuccessful(handler: TransportEventHandler);
 
     commandStarting(payload: CommandInvocation, ctx: HandlerContext);
     commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult);
@@ -15,6 +18,10 @@ export interface AutomationEventListener {
 }
 
 export class AutomationEventListenerSupport implements AutomationEventListener {
+
+    public registrationSuccessful(handler: TransportEventHandler) {
+        // This is intentionally left empty
+    }
 
     public commandStarting(payload: CommandInvocation, ctx: HandlerContext) {
         // This is intentionally left empty
@@ -39,5 +46,4 @@ export class AutomationEventListenerSupport implements AutomationEventListener {
     public  eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any) {
         // This is intentionally left empty
     }
-
 }

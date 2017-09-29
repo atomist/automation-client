@@ -15,14 +15,18 @@ export abstract class AbstractEventStoringTransportEventHandler extends Abstract
         super(automations, listeners);
     }
 
-    public onCommand(command: CommandIncoming): Promise<HandlerResult> {
+    public onCommand(command: CommandIncoming, success?: (results: HandlerResult) => void,
+                     // tslint:disable-next-line:no-empty
+                     error: (error: any) => void = () => {}) {
         eventStore().recordCommand(command);
-        return super.onCommand(command);
+        super.onCommand(command, success, error);
     }
 
-    public onEvent(event: EventIncoming): Promise<HandlerResult[]> {
+    public onEvent(event: EventIncoming, success?: (results: HandlerResult[]) => void,
+                   // tslint:disable-next-line:no-empty
+                   error: (error: any) => void = () => {}) {
         eventStore().recordEvent(event);
-        return super.onEvent(event);
+        super.onEvent(event, success, error);
     }
 
     public createMessageClient(event: EventIncoming | CommandIncoming): MessageClient {

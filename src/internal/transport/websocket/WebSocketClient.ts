@@ -1,12 +1,9 @@
 import * as exitHook from "async-exit-hook";
 import axios from "axios";
-import * as _ from "lodash";
 import * as promiseRetry from "promise-retry";
 import * as WebSocket from "ws";
 import { HandlerResult } from "../../../HandlerResult";
-import * as namespace from "../../util/cls";
 import { logger } from "../../util/logger";
-import { guid, hideString } from "../../util/string";
 import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../TransportEventHandler";
 import { sendMessage } from "./WebSocketMessageClient";
 import { RegistrationConfirmation, WebSocketTransportEventHandler } from "./WebSocketTransportEventHandler";
@@ -65,46 +62,18 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
         ws.on("message", function incoming(data: WebSocket.Data) {
             const request = JSON.parse(data as string);
 
-            // setup context
-            const ses = namespace.init();
+            if (isPing(request)) {
+                sendMessage({ pong: request.ping }, this, false);
+            } else {
 
-            ses.run(() => {
-
-                setupNamespace(request, registration);
-
-                if (isPing(request)) {
-                    sendMessage({ pong: request.ping }, this, false);
+                if (isCommandIncoming(request)) {
+                    return invokeCommandHandler(request);
+                } else if (isEventIncoming(request)) {
+                    return invokeEventHandler(request);
                 } else {
-
-                    logger.debug("Incoming message: %s", JSON.stringify(request, function replacer(key, value) {
-                        if (key === "secrets") {
-                            return value.map(v => ({ name: v.name, value: hideString(v.value) }));
-                        } else {
-                            return value;
-                        }
-                    }));
-
-                    if (isCommandIncoming(request)) {
-                        invokeCommandHandler(request)
-                            .then(() => {
-                                logger.debug(`Finished invocation of command handler '%s'`, request.name);
-                            }).catch(hr => {
-                                logger.warn(`Failed invocation of command handler '%s' with '%s'`, request.name, hr);
-                            });
-                    } else if (isEventIncoming(request)) {
-                        invokeEventHandler(request)
-                            .then(() => {
-                                logger.debug(`Finished invocation of event handler '%s'`,
-                                    request.extensions.operationName);
-                            }).catch(er => {
-                                logger.warn(`Failed invocation of command handler '%s' with '%s'`,
-                                    request.extensions.operationName, er);
-                            });
-                    } else {
-                        throw new Error(`Don't know how to handle '${data}'`);
-                    }
+                    throw new Error(`Don't know how to handle '${data}'`);
                 }
-            });
+            }
         });
 
         // On close this websocket is meant to reconnect
@@ -160,17 +129,6 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
             }
             throw error;
         });
-}
-
-function setupNamespace(request: any, registration: RegistrationConfirmation) {
-    namespace.set({
-        correlationId:  _.get(request, "corrid") || _.get(request, "extensions.correlation_id"),
-        teamId: _.get(request, "correlation_context.team.id") || _.get(request, "extensions.team_id"),
-        operation: _.get(request, "name") || _.get(request, "extensions.operationName"),
-        name: registration.name,
-        version: registration.version,
-        invocationId: guid(),
-    });
 }
 
 export interface WebSocketClientOptions {

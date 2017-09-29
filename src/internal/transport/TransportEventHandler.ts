@@ -1,23 +1,26 @@
-import { HandlerResult } from "../../HandlerResult";
-
 /**
  * EventListener to retrieve notifications on incoming cortex events and command handler invocations.
  */
+import { HandlerResult } from "../../HandlerResult";
+
+// TODO CD I don't like this name here; it doesn't reflect what it does. Thinking ....
 export interface TransportEventHandler {
 
     /**
      * A new commnad handler request haa been received.
      * @param {CommandIncoming} event
-     * @returns {Promise<HandlerResult>}
+     * @param {(result: HandlerResult) => void} success
+     * @param {(error: any) => void} error
      */
-    onCommand(event: CommandIncoming): Promise<HandlerResult>;
+    onCommand(event: CommandIncoming, success?: (result: HandlerResult) => void, error?: (error: any) => void);
 
     /**
      * A new cortex event has been received.
      * @param {EventIncoming} command
-     * @returns {Promise<HandlerResult[]>}
+     * @param {(results: HandlerResult[]) => void} success
+     * @param {(error: any) => void} error
      */
-    onEvent(command: EventIncoming): Promise<HandlerResult[]>;
+    onEvent(command: EventIncoming, success?: (results: HandlerResult[]) => void, error?: (error: any) => void);
 }
 
 export function isCommandIncoming(event: any): event is CommandIncoming {
