@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import * as openurl from "openurl";
-import * as os from "os";
 import * as yargs from "yargs";
 
 import { automationClient } from "./automationClient";
@@ -30,6 +29,6 @@ if (config.ingestors) {
 node.run()
     .then(() => {
         if (!!node.httpPort && yargs.argv.open === "true") {
-            openurl.open(`http://${os.hostname()}:${node.httpPort}/`);
+            openurl.open(`http://localhost:${node.httpPort}/`);
         }
     });
