@@ -1,9 +1,10 @@
-import { CommandHandler, Parameter, Tags } from "../../decorators";
+import { CommandHandler, MappedParameter, Parameter, Tags } from "../../decorators";
 import { logger } from "../../internal/util/logger";
 import { GitProject } from "../../project/git/GitProject";
 import { ProjectNonBlocking } from "../../project/Project";
 import { deleteFiles, doWithFiles } from "../../project/util/projectUtils";
 import { SeedDrivenGenerator } from "./SeedDrivenGenerator";
+import { MappedParameters } from "../../Handlers";
 
 /**
  * Generic seed generator. Use when we don't know specifics about the seed.
@@ -11,12 +12,13 @@ import { SeedDrivenGenerator } from "./SeedDrivenGenerator";
  *
  * Defines common parameters.
  */
-@CommandHandler("Project generator for any seed", ["universal", "generator"])
+@CommandHandler("Project generator for any seed", ["universal generator"])
 @Tags("universal", "generator")
 export class UniversalSeed extends SeedDrivenGenerator {
 
     public static Name = "UniversalSeed";
 
+    @MappedParameter(MappedParameters.GITHUB_OWNER)
     public targetOwner: string;
 
     // TODO removing this breaks parameter inheritance. Why?
