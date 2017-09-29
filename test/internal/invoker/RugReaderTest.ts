@@ -119,6 +119,12 @@ describe("RugReader", () => {
         assert(md.route === h.route);
     });
 
+    it("should not have null intent array", () => {
+        const h = new HasNumberParam();
+        const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        assert(!md.intent);
+    });
+
 });
 
 export class Superclass implements HandleCommand {

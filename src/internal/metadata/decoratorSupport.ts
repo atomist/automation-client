@@ -147,7 +147,7 @@ export function declareCommandHandler(obj: any, description: string, intent?: st
     declareRug(obj, "command-handler", description);
     if (isArray(intent)) {
         declareIntent(obj, intent);
-    } else {
+    } else if (intent) {
         declareIntent(obj, [ intent ]);
     }
     return obj;
