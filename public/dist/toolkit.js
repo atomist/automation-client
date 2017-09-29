@@ -3714,7 +3714,7 @@ function init() {
   })).then(function () {
     if (automations && metrics) {
       $("#footer").text(automations.name + "@" + automations.version + " connected to team " + automations.team_id);
-      document.title = automations.name + "@" + automations.version + " - Atomist Automation Server";
+      document.title = automations.name + "@" + automations.version + " - Atomist Automation Client";
 
       if (!loaded) {
         $('#commands tbody').remove();
