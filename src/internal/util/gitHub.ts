@@ -1,8 +1,9 @@
-import axios from "axios";
+import axios, { AxiosPromise } from "axios";
 import { logger } from "./logger";
 
 import { RepoId } from "../../operations/common/RepoId";
 import { GitHubBase } from "../../project/git/GitProject";
+import { decode } from "./base64";
 
 /**
  * Check whether the given file, including path, exists
@@ -14,21 +15,43 @@ import { GitHubBase } from "../../project/git/GitProject";
  * @return {Promise<boolean|T>}
  */
 export function hasFile(token: string, user: string, repo: string, path: string): Promise<boolean> {
+    // We only care if it returns 200. Otherwise it isn't there
+    return filePromise(token, user, repo, path)
+        .then(d => true)
+        .catch(err => {
+            logger.info("Axiosr error getting file: Probably not there", err.toString());
+            return false;
+        });
+}
+
+/**
+ * Return file content, or undefined if it's not found
+ * @param {string} token
+ * @param {string} user
+ * @param {string} repo
+ * @param {string} path
+ * @return {Promise<string>}
+ */
+export function fileContent(token: string, user: string, repo: string, path: string): Promise<string | undefined> {
+    return filePromise(token, user, repo, path)
+        .then(d => decode(d.data.content))
+        .catch(err => {
+            logger.info("Axios error getting file: Probably not there", err.toString());
+            return undefined;
+        });
+}
+
+function filePromise(token: string, user: string, repo: string, path: string): AxiosPromise {
     const config = token ? {
-        headers: {
-            Authorization: `token ${token}`,
-        },
-    }
+            headers: {
+                Authorization: `token ${token}`,
+            },
+        }
         : {};
     const url = `${GitHubBase}/repos/${user}/${repo}/contents/${path}`;
     logger.debug(`Request to [${url}] to check for file existence]`);
     // We only care if it returns 200. Otherwise it isn't there
-    return axios.get(url, config)
-        .then(d => true)
-        .catch(err => {
-            logger.info("Axios error getting file: Probably not there", err.toString());
-            return false;
-        });
+    return axios.get(url, config);
 }
 
 export interface Issue {
