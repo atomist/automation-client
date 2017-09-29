@@ -31,7 +31,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 corrid: this.correlationId,
                 correlation_context: this.correlationContext,
                 content_type: MessageMimeTypes.SLACK_JSON,
-                message: render(msg, true),
+                message: render(msg, false),
                 channels: Array.isArray(channelNames) ? channelNames as string[] : [ channelNames ],
                 users: Array.isArray(userNames) ? userNames as string[] : [ userNames],
                 message_id: options.id,
