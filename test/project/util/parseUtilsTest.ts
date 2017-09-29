@@ -5,10 +5,12 @@ import { Integer } from "@atomist/microgrammar/Primitives";
 import * as assert from "power-assert";
 import { JavaPackageDeclaration } from "../../../src/operations/generate/java/JavaGrammars";
 import { JavaFiles } from "../../../src/operations/generate/java/javaProjectUtils";
+import { AllFiles } from "../../../src/project/FileGlobs";
 import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../src/project/Project";
 import {
+    DefaultOpts,
     doWithFileMatches, doWithUniqueMatch, findFileMatches, findMatches,
     Match,
 } from "../../../src/project/util/parseUtils";
@@ -67,6 +69,28 @@ describe("parseUtils", () => {
                 fileMatches[0].matches.forEach(m => {
                     assert(m.$offset !== undefined);
                 });
+                done();
+            }).catch(done);
+    });
+
+    it("gathers matches from files with transform", done => {
+        interface Person { name: string; age: number; }
+        const mg = Microgrammar.fromString <Person>(
+            "${name}:${age}",
+            {
+                name: /[a-z]+/,
+                age: Integer,
+            });
+        const t = InMemoryProject.of(
+            {path: "thing", content: "tony:50"});
+        findFileMatches<Person>(t, AllFiles, mg, {
+            ...DefaultOpts,
+            contentTransformer: content => content.replace("tony", "gordon"),
+        })
+            .then(fileMatches => {
+                assert(fileMatches.length === 1);
+                assert(fileMatches[0].matches[0].name === "gordon");
+                assert(fileMatches[0].matches[0].age === 50);
                 done();
             }).catch(done);
     });

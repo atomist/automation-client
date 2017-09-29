@@ -27,16 +27,42 @@ export interface FileWithMatches<M> {
 }
 
 /**
+ * Options for microgrammar matching
+ */
+export interface Opts {
+
+    /**
+     * Should we make the results updatable?
+     */
+    makeUpdatable?: boolean;
+
+    /**
+     * If specified, transforms content of each file matched
+     * by the glob before running the microgrammar.
+     * Used to remove comments etc.
+     * @param {string} content
+     * @return {string}
+     */
+    contentTransformer?: (content: string) => string;
+}
+
+export const DefaultOpts: Opts = {
+    makeUpdatable: true,
+};
+
+/**
  * Integrate microgrammars with project operations to find all matches
  * @param p project
  * @param globPattern file glob pattern
  * @param microgrammar microgrammar to run against each eligible file
+ * @param opts options
  * @return {Promise<T[]>} hit record for each matching file
  */
 export function findMatches<M>(p: ProjectNonBlocking,
                                globPattern: string,
-                               microgrammar: Microgrammar<M>): Promise<Array<Match<M>>> {
-    return findFileMatches(p, globPattern, microgrammar)
+                               microgrammar: Microgrammar<M>,
+                               opts: Opts = DefaultOpts): Promise<Array<Match<M>>> {
+    return findFileMatches(p, globPattern, microgrammar, opts)
         .then(fileHits => {
             let matches: Array<Match<M>> = [];
             fileHits.forEach(fh => matches = matches.concat(fh.matches));
@@ -49,15 +75,17 @@ export function findMatches<M>(p: ProjectNonBlocking,
  * @param p project
  * @param globPattern file glob pattern
  * @param microgrammar microgrammar to run against each eligible file
+ * @param opts options
  * @return {Promise<T[]>} hit record for each matching file
  */
 export function findFileMatches<M>(p: ProjectNonBlocking,
                                    globPattern: string,
-                                   microgrammar: Microgrammar<M>): Promise<Array<FileWithMatches<M>>> {
+                                   microgrammar: Microgrammar<M>,
+                                   opts: Opts = DefaultOpts): Promise<Array<FileWithMatches<M>>> {
     return saveFromFilesAsync(p, globPattern, file => {
         return file.getContent()
             .then(content => {
-                const matches = microgrammar.findMatches(content);
+                const matches = microgrammar.findMatches(transformIfNecessary(content, opts));
                 if (matches.length > 0) {
                     logger.debug(`${matches.length} matches in [${file.path}]`);
                     return new UpdatingFileHits(p, file, matches, content);
@@ -82,15 +110,15 @@ export function doWithFileMatches<M>(p: ProjectNonBlocking,
                                      globPattern: string,
                                      microgrammar: Microgrammar<M>,
                                      action: (fh: FileWithMatches<M>) => void,
-                                     opts: { makeUpdatable: boolean } = {makeUpdatable: true}): RunOrDefer<File[]> {
+                                     opts: Opts = DefaultOpts): RunOrDefer<File[]> {
     return doWithFiles(p, globPattern, file => {
         return file.getContent()
             .then(content => {
-                const matches = microgrammar.findMatches(content);
+                const matches = microgrammar.findMatches(transformIfNecessary(content, opts));
                 if (matches && matches.length > 0) {
                     logger.debug(`${matches.length} matches in [${file.path}]`);
                     const fh = new UpdatingFileHits(p, file, matches, content);
-                    if (opts.makeUpdatable) {
+                    if (opts.makeUpdatable === true) {
                         fh.makeUpdatable();
                     }
                     action(fh);
@@ -116,7 +144,7 @@ export function doWithUniqueMatch<M>(p: ProjectNonBlocking,
                                      globPattern: string,
                                      microgrammar: Microgrammar<M>,
                                      action: (m: M) => void,
-                                     opts: { makeUpdatable: boolean } = {makeUpdatable: true}): RunOrDefer<File[]> {
+                                     opts: Opts = DefaultOpts): RunOrDefer<File[]> {
     let count = 0;
     const guardedAction = (fh: FileWithMatches<M>) => {
         if (fh.matches.length !== 1) {
@@ -150,7 +178,7 @@ export function doWithAtMostOneMatch<M>(p: ProjectNonBlocking,
                                         globPattern: string,
                                         microgrammar: Microgrammar<M>,
                                         action: (m: M) => void,
-                                        opts: { makeUpdatable: boolean } = {makeUpdatable: true}): RunOrDefer<File[]> {
+                                        opts: Opts = DefaultOpts): RunOrDefer<File[]> {
     let count = 0;
     const guardedAction = (fh: FileWithMatches<M>) => {
         if (fh.matches.length !== 1) {
@@ -185,7 +213,6 @@ class UpdatingFileHits<M> implements FileWithMatches<M> {
             this.file.recordAction(f => {
                 return f.getContent().then(content => {
                     if (content !== um.updated()) {
-                        console.log(`Updating content of [${f.path}] to [${um.updated()}]`);
                         return f.setContent(um.updated());
                     }
                     return f;
@@ -195,4 +222,10 @@ class UpdatingFileHits<M> implements FileWithMatches<M> {
             this.updatable = true;
         }
     }
+}
+
+function transformIfNecessary(rawContent: string, opts: Opts): string {
+    return !!opts && !!opts.contentTransformer ?
+        opts.contentTransformer(rawContent) :
+        rawContent;
 }
