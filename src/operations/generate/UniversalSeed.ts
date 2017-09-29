@@ -1,10 +1,10 @@
 import { CommandHandler, MappedParameter, Parameter, Tags } from "../../decorators";
+import { MappedParameters } from "../../Handlers";
 import { logger } from "../../internal/util/logger";
 import { GitProject } from "../../project/git/GitProject";
 import { ProjectNonBlocking } from "../../project/Project";
 import { deleteFiles, doWithFiles } from "../../project/util/projectUtils";
 import { SeedDrivenGenerator } from "./SeedDrivenGenerator";
-import { MappedParameters } from "../../Handlers";
 
 /**
  * Generic seed generator. Use when we don't know specifics about the seed.
