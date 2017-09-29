@@ -52,7 +52,7 @@ export const logger = new winston.Logger({
     ],
 });
 
-// Redirect console lgging methods to our logging setup
+// Redirect console logging methods to our logging setup
 console.error = (message?: any, ...optionalParams: any[]) => {
     logger.error(message, ...optionalParams);
 };

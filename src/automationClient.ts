@@ -1,12 +1,12 @@
 import * as _ from "lodash";
-import * as os from "os";
 import { Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { ExpressServer, ExpressServerOptions } from "./internal/transport/express/ExpressServer";
 import { MetricEnabledAutomationEventListener } from "./internal/transport/MetricEnabledAutomationEventListener";
 import { TransportEventHandler } from "./internal/transport/TransportEventHandler";
-import { DefaultWebSocketTransportEventHandler,
+import {
+    DefaultWebSocketTransportEventHandler,
 } from "./internal/transport/websocket/DefaultWebSocketTransportEventHandler";
 import { prepareRegistration } from "./internal/transport/websocket/Payloads";
 import { WebSocketClient, WebSocketClientOptions } from "./internal/transport/websocket/WebSocketClient";
@@ -99,7 +99,7 @@ export class AutomationClient {
     private runHttp(handler: TransportEventHandler): void {
         const http = this.configuration.http;
         this.httpPort = http && http.port ? http.port : (process.env.PORT ? +process.env.PORT : 2866);
-        const host = http && http.host ? http.host : os.hostname();
+        const host = http && http.host ? http.host : "localhost";
         const expressOptions: ExpressServerOptions = {
             port: this.httpPort,
             host,
