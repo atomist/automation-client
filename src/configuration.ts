@@ -52,7 +52,7 @@ function validateConfiguration(configuration: Configuration, path: string) {
 }
 
 function cleanUp(key, value) {
-    if (key === "token") {
+    if (key === "token" || key === "password") {
         return hideString(value);
     } else if (key === "commands") {
         return undefined;
