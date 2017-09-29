@@ -1,7 +1,7 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import { consoleMessageClient } from "../../../src/internal/message/ConsoleMessageSender";
+import { consoleMessageClient } from "../../../src/internal/message/ConsoleMessageClient";
 import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
 import { HelloIssue } from "../../event/HelloIssue";
 import { AddAtomistSpringAgent, AlwaysOkEventHandler, FooBarEventHandler, FooBarIngestor } from "./TestHandlers";

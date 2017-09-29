@@ -5,7 +5,7 @@ import { automationClient } from "./automationClient";
 import { findConfiguration } from "./configuration";
 import { HandlerContext } from "./HandlerContext";
 import { Arg, CommandInvocation } from "./internal/invoker/Payload";
-import { consoleMessageClient } from "./internal/message/ConsoleMessageSender";
+import { consoleMessageClient } from "./internal/message/ConsoleMessageClient";
 import { guid } from "./internal/util/string";
 import { AutomationServer } from "./server/AutomationServer";
 
