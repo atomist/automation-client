@@ -125,9 +125,13 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
         this.sendMessage(response);
     }
 
-    protected onCommandWithContext(command: CommandIncoming) {};
+    protected onCommandWithContext(command: CommandIncoming) {
+        // this is intentionally left empty; sub classes can hook in some logic
+    }
 
-    protected onEventWithContext(event: EventIncoming) {};
+    protected onEventWithContext(event: EventIncoming) {
+        // this is intentionally left empty; sub classes can hook in some logic
+    }
 
     protected abstract sendMessage(payload: any);
 
