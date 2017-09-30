@@ -63,7 +63,8 @@ export class ApolloGraphClient implements GraphClient {
             .then(response => {
                 // The following statement is needed for debugging; we can always disable that later
                 logger.debug("Query returned data: %s", JSON.stringify(response.data));
-                return response.data; });
+                return response.data;
+            });
     }
 
 }
