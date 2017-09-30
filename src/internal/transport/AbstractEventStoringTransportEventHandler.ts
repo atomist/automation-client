@@ -1,6 +1,5 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import { eventStore } from "../../globals";
-import { HandlerResult } from "../../HandlerResult";
 import { AutomationEventListener } from "../../server/AutomationEventListener";
 import { AutomationServer } from "../../server/AutomationServer";
 import { MessageClient, MessageOptions } from "../../spi/message/MessageClient";
@@ -15,22 +14,16 @@ export abstract class AbstractEventStoringTransportEventHandler extends Abstract
         super(automations, listeners);
     }
 
-    public onCommand(command: CommandIncoming, success?: (results: HandlerResult) => void,
-                     // tslint:disable-next-line:no-empty
-                     error: (error: any) => void = () => {}) {
-        eventStore().recordCommand(command);
-        super.onCommand(command, success, error);
-    }
-
-    public onEvent(event: EventIncoming, success?: (results: HandlerResult[]) => void,
-                   // tslint:disable-next-line:no-empty
-                   error: (error: any) => void = () => {}) {
-        eventStore().recordEvent(event);
-        super.onEvent(event, success, error);
-    }
-
     public createMessageClient(event: EventIncoming | CommandIncoming): MessageClient {
         return new WrappingMessageClient(this.doCreateMessageClient(event));
+    }
+
+    protected onCommandWithContext(command: CommandIncoming) {
+        eventStore().recordCommand(command);
+    }
+
+    protected onEventWithContext(event: EventIncoming) {
+        eventStore().recordEvent(event);
     }
 
     protected abstract doCreateMessageClient(event: EventIncoming | CommandIncoming): MessageClient;

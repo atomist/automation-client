@@ -43,6 +43,7 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
                 graphClient: this.createGraphClient(command),
             };
 
+            this.onCommandWithContext(command);
             this.listeners.forEach(l => l.commandStarting(ci, ctx));
 
             return this.automations.invokeCommand(ci, ctx)
@@ -87,6 +88,7 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
                 graphClient: this.createGraphClient(event),
             };
 
+            this.onEventWithContext(event);
             this.listeners.forEach(l => l.eventStarting(ef, ctx));
 
             return this.automations.onEvent(ef, ctx)
@@ -122,6 +124,10 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
         };
         this.sendMessage(response);
     }
+
+    protected onCommandWithContext(command: CommandIncoming) {};
+
+    protected onEventWithContext(event: EventIncoming) {};
 
     protected abstract sendMessage(payload: any);
 
