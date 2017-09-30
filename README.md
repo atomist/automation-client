@@ -146,7 +146,7 @@ send a simple message back to the associated slack team.
 
 ## Register Handlers
 
-In order to register your handlers with the Automation client, please create a file called `atomist.config.ts` and put
+In order to register your handlers with the automation-client, please create a file called `atomist.config.ts` and put
 the following contents into it:
 
 ```typescript
@@ -184,15 +184,15 @@ export const configuration: Configuration = {
 };
 ```
 
-This file allows you to register your handlers as well as to specify name and version for your automation server.
+This file allows you to register your handlers as well as to specify name and version for your automation-client.
 
-# Running the Automation node
+# Running the Automation-Client
 
-There are several ways you can run your automation node and have it connect to Atomist servers.
+There are several ways you can run your automation-client and have it connect to Atomist API.
 
 ## Running Locally
 
-To start up the node locally and have it listen to incoming events, just run:
+To start up the client locally and have it listen to incoming events, just run:
 
 ```
 $ npm run compile && $(npm bin)/atomist-client
@@ -200,7 +200,7 @@ $ npm run compile && $(npm bin)/atomist-client
 
 ## Pushing to Cloud Foundry
 
-To prepare for your automation client to run on any Cloud Foundry
+To prepare for your automation-client to run on any Cloud Foundry
 instance, please make sure that you have an account on an instance of
 Cloud Foundry and that you have the Cloud Foundry CLI installed,
 configured and logged in.
@@ -213,7 +213,7 @@ project. Put the following minimum content into the file:
 applications:
 - name: YOUR_APP_NAME
   command: $(npm bin)/atomist-client
-  memory: 512M
+  memory: 128M
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack
   env:
     GITHUB_TOKEN: <your GITHUB_TOKEN>
@@ -246,7 +246,7 @@ client is running head over to `http://localhost:2866/` or `http://localhost:286
 
 ## REST APIs
 
-When starting up the `automation-client` exposes a couple of endpoints that can be accessed via HTTP. 
+When starting up, the `automation-client` exposes a couple of endpoints that can be accessed via HTTP. 
 
 ### Authentication
 The endpoints are protected by HTTP Basic Auth or token-based authentication. When starting the client, you'll see 
@@ -277,6 +277,8 @@ export const configuration: Configuration = {
 
 ### Endpoints
 
+#### GET Management Endpoints
+
 | Path  | Description |
 |-------|-------------|
 | `/metrics` | exposes metrics around command, event handler executions |
@@ -297,7 +299,7 @@ $ curl -X GET \
 The above endpoints are all HTTP GET and take bearer and basic auth per default. See below for more details about
 authentication.
 
-### Invoking a command handler or ingestor
+#### Invoking a command handler or ingestor
 
 Command handlers are exposed via HTTP GET like the following:
 
@@ -308,6 +310,23 @@ $ curl -X GET \
 ```
 
 This would invoke the `HelloWorld` command handler from above using `cd` as value of `name`.
+
+You can also post the following payload to your command handler:
+
+```
+$ curl -X POST \
+    http://localhost:2866/command/hello-world \
+    -H 'content-type: application/json' \
+    -H 'authorization: Bearer 34563sdf......................wq455eze"'
+    -d '{
+    "parameters": [{
+      "name": "name", "value": "cd"
+    }],
+    "mapped_parameters": [{
+      "name": "slackUser", "value": "U095T3BPF"
+    }]
+  }'
+```
 
 Similarly, `Ingestors` can be invoked via: 
 
