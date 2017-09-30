@@ -58,7 +58,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     private constructor(public name: string, public baseDir: string, private token: string) {
         super(name, baseDir);
-        logger.info(`Created GitProject with token=[${hideString(this.token)}]`);
+        logger.info(`Created GitProject with token '${hideString(this.token)}'`);
     }
 
     public init(): Promise<any> {
@@ -95,28 +95,24 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         return this.setRemote(`https://${this.token}@github.com/${owner}/${repo}.git`);
     }
 
-    public createAndSetGitHubRemote(owner: string, name: string, description: string = name): Promise<any> {
+    public createAndSetGitHubRemote(owner: string, name: string, description: string = name,
+                                    visibility: "private" | "public" = "private"): Promise<any> {
         const config = {
             headers: {
                 Authorization: `token ${this.token}`,
             },
         };
-        const url = `${GitHubBase}/user/repos`;
-        const payload = {
-            name,
-            description,
-            private: true,
-        };
-        logger.debug(`Request to [${url}] with [${JSON.stringify(payload)}] ` +
-            `and auth token [${hideString(this.token)}]`);
-        return axios.post(url, payload, config)
-        // .catch(err => {
-        //     logger.error("Error: " + err);
-        //     return err;
-        // })
-            .then(res => {
-                logger.debug(`Repo created ok: ${res.statusText}`);
-                return this.setRemote(`https://${this.token}@github.com/${owner}/${name}.git`);
+
+        return axios.get(`${GitHubBase}/orgs/${owner}`, config)
+            .then(result => {
+                // We now know the owner is an org
+                const url = `${GitHubBase}/orgs/${owner}/repos`;
+                return this.createRepo(owner, url, name, description, visibility);
+            })
+            .catch( error => {
+                // We now know the owner is an user
+                const url = `${GitHubBase}/user/repos`;
+                return this.createRepo(owner, url, name, description, visibility);
             });
     }
 
@@ -182,6 +178,27 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         return runCommand(cmd, {cwd: this.baseDir});
     }
 
+    private createRepo(owner: string, url: string, name: string, description: string = name,
+                       visibility: "private" | "public" = "private"): Promise<any> {
+        const config = {
+            headers: {
+                Authorization: `token ${this.token}`,
+            },
+        };
+
+        const payload = {
+            name,
+            description,
+            private: visibility === "private" ? true : false,
+        };
+        logger.debug(`Request to '${url}' with '${JSON.stringify(payload)}' ` +
+            `and auth token '${hideString(this.token)}'`);
+        return axios.post(url, payload, config)
+            .then(res => {
+                logger.debug(`Repo created ok: ${res.statusText}`);
+                return this.setRemote(`https://${this.token}@github.com/${owner}/${name}.git`);
+            });
+    }
 }
 
 /**
@@ -240,10 +257,10 @@ function clone(token: string,
                 `git clone https://${token}@github.com/${user}/${repo}.git; cd ${repo}; git checkout ${branch}`;
 
             const url = `https://github.com/${user}/${repo}`;
-            logger.info(`Cloning repo [${url}] to [${parentDir}]`);
+            logger.info(`Cloning repo '${url}' to '${parentDir}'`);
             return exec(command, {cwd: parentDir})
                 .then(_ => {
-                    logger.debug(`Clone succeeded with URL [${url}]`);
+                    logger.debug(`Clone succeeded with URL '${url}'`);
                     fs.chmodSync(repoDir, "0777");
                     const p = new NodeFsLocalProject(repo, repoDir);
                     return p;

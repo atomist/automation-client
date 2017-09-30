@@ -138,7 +138,8 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
                         return gp.init()
                             .then(_ => {
                                 logger.info(`Creating new repo ${this.targetOwner}/${this.targetRepo}`);
-                                return gp.createAndSetGitHubRemote(this.targetOwner, this.targetRepo, this.targetRepo);
+                                return gp.createAndSetGitHubRemote(this.targetOwner, this.targetRepo,
+                                    this.targetRepo, this.visibility);
                             })
                             .then(_ => {
                                 logger.info(`Committing to local repo at [${gp.baseDir}]`);

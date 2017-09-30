@@ -46,9 +46,11 @@ export interface GitProject extends LocalProject {
      * @param {string} owner
      * @param {string} name
      * @param {string} description
-     * @return {Promise<any>}
+     * @param {"private" | "public"} visibility
+     * @returns {Promise<any>}
      */
-    createAndSetGitHubRemote(owner: string, name: string, description: string): Promise<any>;
+    createAndSetGitHubRemote(owner: string, name: string, description: string, visibility?: "private" | "public"):
+        Promise<any>;
 
     /**
      * Raise a PR after a push to this branch
