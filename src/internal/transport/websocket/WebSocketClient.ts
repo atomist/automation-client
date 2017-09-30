@@ -60,18 +60,35 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
         });
 
         ws.on("message", function incoming(data: WebSocket.Data) {
-            const request = JSON.parse(data as string);
+            let request;
+            try {
+                request = JSON.parse(data as string);
+            } catch (err) {
+                logger.error(`Failed to parse incoming message: %s`, data);
+            }
 
             if (isPing(request)) {
                 sendMessage({ pong: request.ping }, this, false);
             } else {
 
                 if (isCommandIncoming(request)) {
-                    return invokeCommandHandler(request);
+                    invokeCommandHandler(request)
+                        .then(() => {
+                            // The success case has already been logged
+                        })
+                        .catch(err => {
+                            logger.error("Error occurred running command: %s", err);
+                        });
                 } else if (isEventIncoming(request)) {
-                    return invokeEventHandler(request);
+                    invokeEventHandler(request)
+                        .then(() => {
+                            // The success case has already been logged
+                        })
+                        .catch(err => {
+                            logger.error("Error occurred running event: %s", err);
+                        });
                 } else {
-                    throw new Error(`Don't know how to handle '${data}'`);
+                    logger.error(`Unknown message payload received: '${data}'`);
                 }
             }
         });
