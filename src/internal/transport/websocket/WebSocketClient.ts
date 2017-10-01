@@ -40,14 +40,12 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
                  options: WebSocketClientOptions, handler: WebSocketTransportEventHandler): Promise<WebSocket> {
 
     // Functions are inline to avoid "this" peculiarities
-    function invokeCommandHandler(chr: CommandIncoming):
-        Promise<HandlerResult> {
-        return handler.onCommand(chr);
+    function invokeCommandHandler(chr: CommandIncoming) {
+        handler.onCommand(chr);
     }
 
-    function invokeEventHandler(e: EventIncoming):
-        Promise<HandlerResult[]> {
-        return handler.onEvent(e);
+    function invokeEventHandler(e: EventIncoming) {
+        handler.onEvent(e);
     }
 
     return new Promise<WebSocket>(resolve => {
@@ -65,31 +63,23 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
                 request = JSON.parse(data as string);
             } catch (err) {
                 logger.error(`Failed to parse incoming message: %s`, data);
+                return;
             }
-
-            if (isPing(request)) {
-                sendMessage({ pong: request.ping }, this, false);
-            } else {
-
-                if (isCommandIncoming(request)) {
-                    invokeCommandHandler(request)
-                        .then(() => {
-                            // The success case has already been logged
-                        })
-                        .catch(err => {
-                            logger.error("Error occurred running command: %s", err);
-                        });
-                } else if (isEventIncoming(request)) {
-                    invokeEventHandler(request)
-                        .then(() => {
-                            // The success case has already been logged
-                        })
-                        .catch(err => {
-                            logger.error("Error occurred running event: %s", err);
-                        });
+            try {
+                if (isPing(request)) {
+                    sendMessage({ pong: request.ping }, this, false);
                 } else {
-                    logger.error(`Unknown message payload received: '${data}'`);
+                    if (isCommandIncoming(request)) {
+                        invokeCommandHandler(request);
+                    } else if (isEventIncoming(request)) {
+                        invokeEventHandler(request);
+                    } else {
+                        logger.error(`Unknown message payload received: ${data}`);
+                    }
                 }
+            }
+            catch (err) {
+                console.error("Failed processing of message payload wth: %s", err);
             }
         });
 

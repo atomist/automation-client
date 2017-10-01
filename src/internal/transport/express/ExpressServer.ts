@@ -144,7 +144,7 @@ export class ExpressServer {
             this.handler.onCommand(payload, result => {
                 handle(res, result);
             }, error => {
-                res.send(error);
+                res.status(500).send({ message: error.toString()});
             });
         });
 
@@ -172,7 +172,7 @@ export class ExpressServer {
                 this.handler.onCommand(payload, result => {
                     handle(res, result);
                 }, error => {
-                    res.send(error);
+                    res.status(500).send({ message: error.toString()});
                 });
         });
     }
@@ -194,7 +194,7 @@ export class ExpressServer {
             this.handler.onEvent(payload, result => {
                 handle(res, result);
             }, error => {
-                res.send(error);
+                res.status(500).send({ message: error.toString()});
             });
         });
     }

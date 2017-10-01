@@ -26,7 +26,8 @@ export function formatter(options: any): string {
 
     const formatted = (options.timestamp ? new Date().toISOString() : "") + (ctx ? " [" + ctx + "]" : "")
         + " [" + level + "] " + (options.message ? options.message : "") +
-        (options.meta && Object.keys(options.meta).length ? "\n" + JSON.stringify(options.meta) : "");
+        (options.meta && Object.keys(options.meta).length ?
+            (options.message ? ": " : "") + JSON.stringify(options.meta) : "");
 
     return formatted;
 }

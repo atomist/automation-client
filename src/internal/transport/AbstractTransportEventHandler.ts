@@ -46,18 +46,28 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
             this.onCommandWithContext(command);
             this.listeners.forEach(l => l.commandStarting(ci, ctx));
 
-            return this.automations.invokeCommand(ci, ctx)
-                .then(result => {
-                    this.listeners.forEach(l => l.commandSuccessful(ci, ctx, result));
-                    this.sendStatus(result.code === 0 ? true : false, result, command);
-                    success(result);
-                    logger.debug(`Finished invocation of command handler '%s'`, command.name);
-                }).catch(err => {
-                    this.listeners.forEach(l => l.commandFailed(ci, ctx, err));
-                    this.sendStatus(false, {code: 1}, command);
+            function errorHandler(err) {
+                this.listeners.forEach(l => l.commandFailed(ci, ctx, err));
+                this.sendStatus(false, {code: 1}, command);
+                if (error){
                     error(err);
-                    logger.warn(`Failed invocation of command handler '%s' with '%s'`, command.name, err);
-                });
+                }
+                logger.error(`Failed invocation of command handler '%s'`, command.name, err);
+            };
+
+            try {
+                this.automations.invokeCommand(ci, ctx)
+                    .then(result => {
+                        this.listeners.forEach(l => l.commandSuccessful(ci, ctx, result));
+                        this.sendStatus(result.code === 0 ? true : false, result, command);
+                        success(result);
+                        logger.debug(`Finished invocation of command handler '%s'`, command.name);
+                    }).catch(err => {
+                        errorHandler.bind(this)(err);
+                    });
+            } catch (err) {
+                errorHandler.bind(this)(err);
+            }
         });
     }
 
@@ -91,19 +101,29 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
             this.onEventWithContext(event);
             this.listeners.forEach(l => l.eventStarting(ef, ctx));
 
-            return this.automations.onEvent(ef, ctx)
-                .then(result => {
-                    this.listeners.forEach(l => l.eventSuccessful(ef, ctx, result));
-                    success(result);
-                    logger.debug(`Finished invocation of event handler '%s'`,
-                        event.extensions.operationName);
-                })
-                .catch(err => {
-                    this.listeners.forEach(l => l.eventFailed(ef, ctx, err));
+            function errorHandler(err) {
+                this.listeners.forEach(l => l.eventFailed(ef, ctx, err));
+                if (error) {
                     error(err);
-                    logger.warn(`Failed invocation of command handler '%s' with '%s'`,
-                        event.extensions.operationName, err);
-                });
+                }
+                logger.error(`Failed invocation of command handler '%s'`,
+                    event.extensions.operationName, err);
+            };
+
+            try {
+                this.automations.onEvent(ef, ctx)
+                    .then(result => {
+                        this.listeners.forEach(l => l.eventSuccessful(ef, ctx, result));
+                        success(result);
+                        logger.debug(`Finished invocation of event handler '%s'`,
+                            event.extensions.operationName);
+                    })
+                    .catch(err => {
+                        errorHandler.bind(this)(err);
+                    });
+            } catch (err) {
+                errorHandler.bind(this)(err);
+            }
         });
     }
 
