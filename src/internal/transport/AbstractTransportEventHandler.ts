@@ -49,11 +49,11 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
             function errorHandler(err) {
                 this.listeners.forEach(l => l.commandFailed(ci, ctx, err));
                 this.sendStatus(false, {code: 1}, command);
-                if (error){
+                if (error) {
                     error(err);
                 }
                 logger.error(`Failed invocation of command handler '%s'`, command.name, err);
-            };
+            }
 
             try {
                 this.automations.invokeCommand(ci, ctx)
@@ -108,7 +108,7 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
                 }
                 logger.error(`Failed invocation of command handler '%s'`,
                     event.extensions.operationName, err);
-            };
+            }
 
             try {
                 this.automations.onEvent(ef, ctx)

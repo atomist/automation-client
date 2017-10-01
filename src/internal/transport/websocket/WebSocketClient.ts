@@ -77,8 +77,7 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
                         logger.error(`Unknown message payload received: ${data}`);
                     }
                 }
-            }
-            catch (err) {
+            } catch (err) {
                 console.error("Failed processing of message payload wth: %s", err);
             }
         });
