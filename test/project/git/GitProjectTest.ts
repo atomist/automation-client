@@ -130,7 +130,7 @@ describe("GitProject", () => {
                 done();
             })
             .catch(done);
-    });
+    }).timeout(6000);
 
     it("add a file, then PR push to remote repo", function(done) {
         this.retries(5);

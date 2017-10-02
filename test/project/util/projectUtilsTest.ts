@@ -181,4 +181,26 @@ describe("projectUtils", () => {
             }).catch(done);
     });
 
+    it("replaces literals across project", () => {
+        const p = tempProject();
+        p.addFileSync("Thing", "A");
+        p.addFileSync("config/Thing", "B");
+        doWithFiles(p, "**/Thing", f => f.replaceAll("A", "alpha"))
+            .run()
+            .then(_ => {
+                assert(p.findFileSync("Thing").getContentSync() === "alpha");
+            });
+    });
+
+    it("replaces regex across project", () => {
+        const p = tempProject();
+        p.addFileSync("Thing", "A");
+        p.addFileSync("config/Thing", "B");
+        doWithFiles(p, "**/Thing", f => f.replace(/A-Z/, "alpha"))
+            .run()
+            .then(_ => {
+                assert(p.findFileSync("Thing").getContentSync() === "alpha");
+            });
+    });
+
 });

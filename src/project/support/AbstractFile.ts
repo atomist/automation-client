@@ -36,8 +36,22 @@ export abstract class AbstractFile extends AbstractScriptedFlushable<File> imple
         return this.recordAction(f => f.setPath(path));
     }
 
+    public replace(re: RegExp, replacement: string): Promise<this> {
+        return this.getContent()
+            .then(content =>
+                this.setContent(content.replace(re, replacement)),
+            );
+    }
+
+    public replaceAll(oldLiteral: string, newLiteral: string): Promise<this> {
+        return this.getContent()
+            .then(content =>
+                this.setContent(content.split(oldLiteral).join(newLiteral)),
+            );
+    }
+
     public recordReplace(re: RegExp, replacement: string): this {
-        // TODO
+        // TODO use replace
         return this.recordSetContent(this.getContentSync().replace(re, replacement));
     }
 
