@@ -12,30 +12,41 @@ import { findLine } from "../internal/util/string";
 // tslint:disable-next-line:no-var-requires
 const schema = require("./schema.cortex.json");
 
+/**
+ * Read a subscription from a file relative to the root of the module
+ * @param {string} path
+ * @returns {string}
+ */
 export function subscriptionFromFile(path: string): string {
-    if (!path.endsWith(".graphql")) {
-        path = `${path}.graphql`;
-    }
-    if (!path.startsWith("/")) {
-        path = `${appRoot}/${path}`;
-    }
-    if (fs.existsSync(path)) {
-        return fs.readFileSync(path).toString();
-    } else {
-        throw new Error(`GraphQL file '${path}' does not exist`);
-    }
+    // TODO cd add validation that we only read subscriptions here
+    return resolveAndReadFileSync(path);
 }
 
+/**
+ * Extract operationName from the provided query or subscription
+ * @param {string} query
+ * @returns {string}
+ */
 export function operationName(query: string): string {
     const graphql = parse(query);
     // TODO add some validation here
     return (graphql.definitions[0] as any).name.value;
 }
 
+/**
+ * Inline the given query. Mainly useful for nicer log messages
+ * @param {string} query
+ * @returns {string}
+ */
 export function inlineQuery(query: string): string {
     return query.replace(/[\n\r]/g, "").replace(/\s\s+/g, " ");
 }
 
+/**
+ * Validate a query against our GraphQL schema
+ * @param {string} query
+ * @returns {GraphQLError[]}
+ */
 export function validateQuery(query: string): GraphQLError[] {
     const graphql = parse(query);
     const clientSchema = buildClientSchema(schema.data as IntrospectionQuery);
@@ -53,4 +64,23 @@ export function prettyPrintErrors(errors: GraphQLError[], query?: string): strin
         }
         return msg;
     }).join("\n\n");
+}
+
+/**
+ * Resolve and read the contents of a GrapqQL query or subscription file
+ * @param {string} path
+ * @returns {string}
+ */
+export function resolveAndReadFileSync(path: string): string {
+    if (!path.endsWith(".graphql")) {
+        path = `${path}.graphql`;
+    }
+    if (!path.startsWith("/")) {
+        path = `${appRoot}/${path}`;
+    }
+    if (fs.existsSync(path)) {
+        return fs.readFileSync(path).toString();
+    } else {
+        throw new Error(`GraphQL file '${path}' does not exist`);
+    }
 }

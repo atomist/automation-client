@@ -22,6 +22,19 @@ export function allReposInTeam(cwd?: string): RepoFinder {
     };
 }
 
+const RepoQuery = `
+query Repos($teamId: ID!, $offset: Int!) {
+    ChatTeam(id: $teamId) {
+        orgs {
+            repo(first: 100, offset: $offset) {
+                owner
+                name
+            }
+        }
+    }
+}
+`;
+
 /**
  * Recursively query for repos from the present offset
  * @param {HandlerContext} context
@@ -29,8 +42,8 @@ export function allReposInTeam(cwd?: string): RepoFinder {
  * @return {Promise<RepoId[]>}
  */
 function queryForPage(context: HandlerContext, offset: number): Promise<RepoId[]> {
-    return context.graphClient.executeFile<ReposQuery, ReposQueryVariables>(
-        "repos",
+    return context.graphClient.executeQuery<ReposQuery, ReposQueryVariables>(
+        RepoQuery,
         {teamId: context.teamId, offset})
         .then(result => {
             const org = result.ChatTeam[0].orgs[0];

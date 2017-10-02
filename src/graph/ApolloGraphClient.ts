@@ -1,13 +1,9 @@
-import "isomorphic-fetch";
-
-import * as appRoot from "app-root-path";
-
 import ApolloClient, { createNetworkInterface } from "apollo-client";
-import * as fs from "fs";
 import gql from "graphql-tag";
+import "isomorphic-fetch";
 import { logger } from "../internal/util/logger";
 import { GraphClient } from "../spi/graph/GraphClient";
-import { inlineQuery } from "./graphQL";
+import { inlineQuery, resolveAndReadFileSync } from "./graphQL";
 
 /**
  * Implementation of GraphClient using Apollo Client.
@@ -47,7 +43,7 @@ export class ApolloGraphClient implements GraphClient {
     }
 
     public executeFile<T, Q>(queryFile: string, variables?: Q): Promise<T> {
-        const graphql = fs.readFileSync(`${appRoot}/graphql/${queryFile}.graphql`).toLocaleString();
+        const graphql = resolveAndReadFileSync(queryFile);
         return this.executeQuery<T, Q>(graphql, variables);
     }
 
