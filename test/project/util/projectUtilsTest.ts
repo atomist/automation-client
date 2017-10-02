@@ -2,7 +2,7 @@ import "mocha";
 
 import * as assert from "power-assert";
 
-import { AllFiles } from "../../../src/project/FileGlobs";
+import { AllFiles } from "../../../src/project/fileGlobs";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { deleteFiles, doWithFiles, fileExists, saveFromFiles } from "../../../src/project/util/projectUtils";
 import { tempProject } from "../utils";

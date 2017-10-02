@@ -5,7 +5,7 @@ import { Integer } from "@atomist/microgrammar/Primitives";
 import * as assert from "power-assert";
 import { JavaPackageDeclaration } from "../../../src/operations/generate/java/JavaGrammars";
 import { JavaFiles } from "../../../src/operations/generate/java/javaProjectUtils";
-import { AllFiles } from "../../../src/project/FileGlobs";
+import { AllFiles } from "../../../src/project/fileGlobs";
 import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../src/project/Project";

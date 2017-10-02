@@ -8,7 +8,7 @@ import { LocalProject } from "../../../src/project/local/LocalProject";
 
 import { File } from "../../../src/project/File";
 
-import { AllFiles, ExcludeNodeModules } from "../../../src/project/FileGlobs";
+import { AllFiles, ExcludeNodeModules } from "../../../src/project/fileGlobs";
 import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProject";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { toPromise } from "../../../src/project/util/projectUtils";

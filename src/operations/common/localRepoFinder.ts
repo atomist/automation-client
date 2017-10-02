@@ -1,6 +1,6 @@
 import { HandlerContext } from "../../HandlerContext";
 import { logger } from "../../internal/util/logger";
-import { DefaultExcludes } from "../../project/FileGlobs";
+import { DefaultExcludes } from "../../project/fileGlobs";
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
 import { toPromise } from "../../project/util/projectUtils";
 import { RepoFinder } from "./repoFinder";
