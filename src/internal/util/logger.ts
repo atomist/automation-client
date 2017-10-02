@@ -1,3 +1,4 @@
+import * as  stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as winston from "winston";
 import * as context from "./cls";
@@ -27,7 +28,7 @@ export function formatter(options: any): string {
     const formatted = (options.timestamp ? new Date().toISOString() : "") + (ctx ? " [" + ctx + "]" : "")
         + " [" + level + "] " + (options.message ? options.message : "") +
         (options.meta && Object.keys(options.meta).length ?
-            (options.message ? ": " : "") + JSON.stringify(options.meta) : "");
+            (options.message ? ": " : "") + stringify(options.meta) : "");
 
     return formatted;
 }
