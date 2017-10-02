@@ -11,13 +11,29 @@ You will get assistance for writing your queries, and see the shape of the resul
 
 Once you're happy with your query, add it beginning with `subscription` to the `/graphql` directory of your project.
 
+
+Based on your query it is possible to generate TypeScript types that you can use in your handler code.
+In order to allow type generation you need to set up your project in the following way:
+
+```
+$ npm install --save-deb graphql-code-generator
+```
+
+And add the following to the script section of your `package.json`:
+
+```
+$ ql-gen --file node_modules/@atomist/automation-client/graph/schema.cortex.json \
+    --template typescript -m --out ./src/typings/ \"./graphql/**/*.graphql\"",
+``` 
+
 Next, generate TypeScript types for your query returns and variables:
 
 ```
-npm run gql-gen
+$ npm run gql:gen
 ```
 
 You can rerun this command at any time, if you add or change queries.
+
 
 Now import the generated types in your event handlers.
 
@@ -34,7 +50,7 @@ export class SetUpstreamStatusOnBuildCompletion implements HandleEvent<graphql.B
 
     public handle(root: EventFired<graphql.BuildCompleted.Subscription>,
                   ctx: HandlerContext): Promise<HandlerResult> {
-                  ... implementation
+                  // ... implementation
 
 ```
 
