@@ -6,7 +6,7 @@ Atomist enables powerful development automation.
 
 This starts with the **Atomist Cortex**: a rich, interconnected model of the things that matter to your team, such as your projects, their source code, builds, deploys and the communication channels around them. The Atomist service keeps the Cortex up to date as events occur. 
 
-Atomist enables you to write code to react to events affecting the model--with access to the full context--and write commands informed by it. It also manages secrets to ensure that automations always have access to the correct credentials, whichever user invoked them.
+Atomist enables you to write **[event handlers](EventHandlers.md)** to react to events affecting the model--with access to the full context--and write commands informed by it (**[command handlers](CommandHandlers.md)**). It also manages [secrets](Secrets.md) to ensure that automations always have access to the correct credentials, whichever user invoked them.
 
 ## Changing the World
 Atomist enables three key ways of interacting with the world:
