@@ -12,7 +12,7 @@ client. GraphiQL is a great choice.
 You will get assistance for writing your queries, and see the shape of
 the resulting data.
 
-![GraphiQL browser](images/graphiql.png "GraphiQL")
+![GraphiQL browser](images/graphiql.png)
 
 Once you're happy with your query, add it beginning with
 `subscription` to the `/graphql` directory of your project.
