@@ -25,6 +25,8 @@ allows sophisticated parsing and updates with clean diffs.
 The project and file interfaces represent a project (usually backed by
 a whole repository) and a file (a single artifact within a project).
 
+### Fine Grained Interfaces
+
 The two interfaces follow the same pattern, in being composed from
 finer-grained interfaces with different purposes.
 
@@ -47,18 +49,62 @@ Let's examine these interfaces in turn, starting with the simplest:
     end with a `Sync` suffix. They should be avoided in production
     code, although they can be very handy during tests.
 -   `ProjectAsync`: Functions that return TypeScript/ES6 promises or
-    `node` streams.
+    `node` streams. As they are the default choice in most cases, their names do not have any distinguishing prefix or suffix.
 -   `ProjectScripting`: Non-blocking operations that queue up a script
-    of actions to execute.
+    of actions to execute. These operation names normally have a `record` prefix. This interface is conceptually more complex than the `ProjectAsync` methods (which follow normal JavaScript conventions), but can be useful for avoiding long promise chains if you need to perform many operations on a project. For example, many generators make many small, unrelated changes to a seed project, which are ideally suited to this approach.
+    
+### Scripting interfaces in detail
 
-When `ProjectScripting` operations are used, it's necessary to call
+Important points to consider:
+
+- After using `ProjectScripting` or `FileScripting` operations, it's necessary to call
 `flush` on the `Project` or `File` to effect the changes. This takes
-what might be many promises and puts them into one
+what might be many promises and puts them into a single promise. In generator support (`SeedDrivenGenerator` and subclasses, discussed below) this is done automatically.
+-  Until `flush` is called, changes made by scripting operations are not visible to subsequent scripting operations. However, `flush` can be called at any time to flush intermediate working, and repeated calls to `flush` are safe.
+-  Deferred scripting operations will ultimately be executed in the order in which they were queued.
+-  **Do not** mix scripting operations with synchronous or promise-returning operations without first calling `flush`, as non-scripting operations will not see changes made by scripting operations.
 
-In general, use the `ProjectAsync` operations by preference. If
-promise chaining becomes an issue--which it can do with multiple
-operations--use `ProjectScripting` operations, remembering to call
-flush.
+`XXXXScripting` operations typically begin with a `record` prefix. For example, these two code snippets are equivalent:
+
+```
+const f: File = ...
+f.replaceAll("foo", "bar") // Returns a promise
+	.then(f => ...
+```
+
+```
+const f: File = ...
+f.recordReplaceAll("foo", "bar")
+	.flush()	          // Returns a promise
+	.then(f => ...
+```
+
+In this case, it would probably be simpler to use `replaceAll`. However, if many operations must be performed, the record and flush style can be simpler than promise chaining.
+
+Many utility methods on projects return a `RunOrDefer` type that exposes two methods, offering a choice of promise or scripting functionality:
+
+- `run`: Immediately executing, returning a promise
+- `defer`: Add the change(s) as a script.
+
+Two examples of using the `doWithFiles` method from `parseUtils`. Obtaining a promise:
+
+```typescript
+doWithFiles(p, "**/**.java", 
+	f => f.replaceAll("OldAbsquatulator", "NewAbsquatulator"))
+    .run()
+    .then(_ => {
+        // Work with the promise
+    });
+```
+Deferring for execution on `flush`: 
+
+```typescript
+doWithFiles(p, "**/**.java", 
+	f => f.replaceAll("OldAbsquatulator", "NewAbsquatulator"))
+    .defer();
+```
+`defer` returns void, so you can queue other operations without promise chaining.
+
 
 ## Files
 
