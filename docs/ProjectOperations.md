@@ -66,13 +66,13 @@ what might be many promises and puts them into a single promise. In generator su
 
 `XXXXScripting` operations typically begin with a `record` prefix. For example, these two code snippets are equivalent:
 
-```
+```typescript
 const f: File = ...
 f.replaceAll("foo", "bar") // Returns a promise
 	.then(f => ...
 ```
 
-```
+```typescript
 const f: File = ...
 f.recordReplaceAll("foo", "bar")
 	.flush()	          // Returns a promise
