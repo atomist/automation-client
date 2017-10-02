@@ -1,15 +1,16 @@
 # Handler Concepts
-The two core automations Atomist provides are 
+The two core automations Atomist provides are: 
 
-- **Command handlers**: Automations that are typically invoked by a human, and may gather parameters before execution
-- **Event handlers**: Automations that are invoked as a result of an event in the Cortex data model.
+- **[Command handlers](CommandHandlers.md)**: Automations that are typically invoked by a human, and may gather parameters before execution
+- **[Event handlers](EventHandlers.md)**: Automations that are invoked as a result of an event in the Cortex data model.
 
-Both types of automations have the following in common:
+Both types of automation have the following in common:
 
-- Configuration via decorators
+- Configuration via [decorators](Decorators.md)
+- Lifecycle where a fresh instance is used for each invocation, after being populated with the appropriate instance data
 - Access to a handler context
-- Ability to work with secrets managed by Atomist
+- Ability to work with [secrets](Secrets.md) managed by Atomist
 - Ability to query the Atomist Cortex, in the context of the current team
 - Ability to work with project contents, using [project operations](ProjectOperations.md).
-- Returning a `HandlerResult`
+- Returning a Promise of a `HandlerResult`.
 

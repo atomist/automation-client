@@ -85,13 +85,78 @@ doWithFiles(p, "**/Thing", f => f.replace(/A-Z/, "alpha"))
 
 ## Reviewers
 
-CONVENIENCE CLASs
+`ReviewerCommandSupport` is a convenience superclass for writing command handlers that review (look at the contents of and possible comment on) multiple projects.
 
-Local or remote
+It works with the `ProjectReviewer` type, and takes care of cloning repos:
+
+```
+export type ProjectReviewer<RR extends ProjectReview> =
+    (id: RepoId, p: Project, context: HandlerContext) => Promise<RR>;
+```
+
+`ProjectReview` contains repo identification and comments:
+
+```
+export interface ProjectReview {
+
+    repoId: RepoId;
+
+    comments: ReviewComment[];
+}
+```
+
+`ReviewerCommandSupport` implements the `handle` method and takes care of cloning all repos within an org. Subclasses need to implement only one method to return a `ProjectReviewer` function that will review individual projects:
+
+```
+projectReviewer(context: HandlerContext): ProjectReviewer<PR>;
+```
+
+Like the editor convenience class, `ReviewCommandSupport` can run either locally or remotely, depending on the provision of a `local` flag.
 
 ## Editors
 
-convenience class
+`EditorSupport` is a convenience superclass for editing (modifying) projects. It is designed to make it easy to implement command handlers that work with a `ProjectEditor` function type, taking care of git cloning and updates.
+
+```
+export type ProjectEditor<ER extends EditResult> =
+    (id: RepoId, p: Project, context: HandlerContext) => Promise<ER>;
+
+export interface EditResult {
+
+    /**
+     * Whether or not this project was edited
+     */
+    edited: boolean;
+}
+```
+
+`ProjectEditor` functions can be reused.
+
+An example of a simple editor command extending the `EditorCommandSupport` superclass:
+
+```
+@CommandHandler("Upgrade versions of Spring Boot across an org", "upgrade spring boot version")
+@Tags("atomist", "spring")
+export class SpringBootVersionUpgrade extends EditorCommandSupport {
+
+    @Parameter({
+        displayName: "Desired Spring Boot version",
+        description: "The desired Spring Boot version across these repos",
+        pattern: /^.+$/,
+        validInput: "Semantic version",
+        required: false,
+    })
+    public desiredBootVersion: string = "1.5.6.RELEASE";
+
+    public projectEditor(): ProjectEditor<EditResult> {
+    	// Construct the actual editor
+        return setSpringBootVersionEditor(this.desiredBootVersion);
+    }
+}
+```
+This will act on all repos associated with the current team. A filter can be specified in the constructor.
+
+The `ProjectEditor` function uses the `Project` and `File` interfaces to change each project it is invoked on.
 
 ## Generators
 Generators are commands that create projects. A [seed repo](https://the-composition.com/no-more-copy-paste-bf6c7f96e445) is an important Atomist concept in which content is sourced from a given repo and transformed to create a new project, based on parameters supplied by the user.

@@ -3,10 +3,9 @@ Command handlers act on the world, based on the content of the Atomist Cortex da
 
 Command handlers may take parameters. Like event handlers, they return a `HandlerResult`. 
 
-
 ## Parameters
 
-Command handlers may take any number of **parameters**, which will be injected into a fresh instance at runtime.
+Command handlers may take any number of **parameters**, which will be injected into a fresh instance at runtime. Parameters are specified using [decorators](Decorators.md).
 
 For example:
 
@@ -26,4 +25,7 @@ The decorated variable names the parameter. If you assign a value to the variabl
 ## Response Messages
 Another unique feature of command handlers is the ability to respond to the invoking user in Slack, in the channel where the command was issued.
 
-SCREENSHOT
+-- TODO example --
+
+## Queries
+Command handlers can issue GraphQL queries, using the `GraphClient` on the `HandlerContext` argument to their `handler` function. These queries execute against the current team.

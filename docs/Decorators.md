@@ -1,5 +1,5 @@
 # Decorators
-Both event handlers and command handlers work with [TypeScript decorators](https://www.typescriptlang.org/docs/handbook/decorators.html). These identify values that will be injected into a fresh instance each time the handler runs. If you're familiar with Spring, this will be particularly intuitive.
+Both [event handlers](EventHandlers.md) and [command handlers](CommandHandlers.md) work with [TypeScript decorators](https://www.typescriptlang.org/docs/handbook/decorators.html). These identify values that will be injected into a fresh instance each time the handler runs. If you're familiar with Spring, this will be particularly intuitive.
 
 Consider the following code within a command handler:
 
