@@ -2,21 +2,36 @@
 
 [![Build Status](https://travis-ci.org/atomist/automation-client-ts.svg?branch=master)](https://travis-ci.org/atomist/automation-client-ts)
 
-[Node][node] module [`@atomist/automation-client`][automation-client] for creating command and event handlers
-using the standalone server.
+[Node][node] module [`@atomist/automation-client`][automation-client]
+for creating Atomist development automations.  Development automations take the following forms:
 
-[node]: https://nodejs.org/en/
+-   Bot commands - create bot commands using _command handlers_
+-   Respond to DevOps events - use _event handlers_ to automatically
+    take action when events, like someone commenting on an issue,
+    happen
+-   Ingestors - define your own, custom events that you can then take
+    action on
+
+The automation-client provide the ability to run a client that
+connects to the Atomist API so it can receive and act on commands and
+events.
+
+[node]: https://nodejs.org/ (Node.js)
 [automation-client]: https://www.npmjs.com/package/@atomist/automation-client
 
-# Getting Started
+## Concepts
 
-## Prerequisites
+Atomist is a service and API that enables development automation. The
+Atomist service builds and maintains a model of the things that matter
+to your development team. You can then use out of the box automations
+or build your own automations acting on this model.
 
-### Node.js
+For more information, please read [Concepts](docs/Concepts.md).
 
-Please install Node.js from https://nodejs.org/en/download/ .
+## Getting Started
 
-To verify that the right versions are installed, please run:
+Please install [Node.js][node].  To verify that the right versions are
+installed, please run:
 
 ```
 $ node -v
@@ -25,7 +40,7 @@ $ npm -v
 5.4.1
 ```
 
-## Using the `automation-client` module from your project
+### Using the `automation-client` module from your project
 
 To start using this module in your Node.js application, you have to add a dependency to it to your `package.json`
 by running the following command:
@@ -36,7 +51,7 @@ $ npm install @atomist/automation-client --save
 
 You can find reference documentation at https://atomist.github.io/automation-client-ts/.
 
-## Starting from a Sample
+### Starting from a Sample
 
 We also provide a working project with some basic automations that you can use to get started quickly. The repository
 is at [atomist/automation-client-samples-ts](https://github.com/atomist/automation-client-samples-ts).
@@ -49,9 +64,9 @@ $ cd automation-client-samples-ts
 $ npm install
 ```
 
-# Implementing Automations
+## Implementing Automations
 
-## Command Handlers
+### Command Handlers
 
 Commands are automations that can be invoked via a Chat bot, curl or web interface.
 
@@ -62,11 +77,11 @@ import { CommandHandler, Parameter} from "@atomist/automation-client/decorators"
 import { HandleCommand, HandlerContext, HandlerResult } from "@atomist/automation-client/Handlers";
 
 @CommandHandler("Sends a hello back to the client", "hello world")
-//                                                   ^ -- defines the command to trigger  
+//                                                   ^ -- defines the command to trigger
 //                      "                                 this handler from the bot
 export class HelloWorld implements HandleCommand {
 //                                 ^ -- a command handler implements the HandleCommand interface
-    
+
     @Parameter({ pattern: /^.*$/, required: true })
 //  ^ -- this defines a user-provided parameter named 'name'
 //               ^ -- the parameter can be validated against a RegExp pattern
@@ -76,16 +91,16 @@ export class HelloWorld implements HandleCommand {
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
 //  ^ -- this method is the body of the handler and where the actual code goes
-//                ^ -- HandlerContext provides access to a 'MessageClient' for sending messages to the bot 
+//                ^ -- HandlerContext provides access to a 'MessageClient' for sending messages to the bot
 //                     as well as a 'GraphClient' to query your data using GraphQL
         return ctx.messageClient.respond(`Hello ${this.name}`)
 //                               ^ -- Calling 'respond' on the 'MessageClient' will send a message back to
-//                                    wherever that command is invoked from (eg. a DM with @atomist in Slack)             
+//                                    wherever that command is invoked from (eg. a DM with @atomist in Slack)
             .then(() => {
                 return Promise.resolve({ code: 0 });
 //                                     ^ -- Command handlers are expected to return a 'Promise' of type
-//                                          'HandlerResult' which just defines a return code. None 0 
-//                                           return codes indicate errors.                
+//                                          'HandlerResult' which just defines a return code. None 0
+//                                           return codes indicate errors.
             });
     }
 }
@@ -94,7 +109,9 @@ export class HelloWorld implements HandleCommand {
 The above declares a simple bot command that can be invoked via `@atomist hello world`. The command takes one
 parameter called `name`. The handler will respond with a simple greeting message.
 
-## Event Handlers
+For more information, please see [Command Handlers](docs/CommandHandlers.md).
+
+### Event Handlers
 
 Event handlers are automations that allow handling of events based on registered GraphQL subscriptions.
 
@@ -120,22 +137,22 @@ import { EventFired, EventHandler, HandleEvent, HandlerContext, HandlerResult }
 //                                                 externalized
 export class HelloIssue implements HandleEvent<any> {
 //                                 ^ -- an event handler implements the 'HandleEvent' interface
-    
+
     public handle(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult> {
-//                ^ -- 'EventFired' gives you access to the data that matched the subscription. Since GraphQL 
-//                      queries return JSON it is very easy to work with the data in JavaScript/TypeScript  
-//                                    ^ -- 'HandlerContext' gives access to 'MessageClient' and 'GraphClient'     
+//                ^ -- 'EventFired' gives you access to the data that matched the subscription. Since GraphQL
+//                      queries return JSON it is very easy to work with the data in JavaScript/TypeScript
+//                                    ^ -- 'HandlerContext' gives access to 'MessageClient' and 'GraphClient'
         return Promise.all(e.data.Issue.map(i =>
             ctx.messageClient.addressChannels(`Got a new issue \`${i.number}# ${i.title}\``,
 //                            ^ -- besides responding you can address users and channels in Slack by using the
-//                                 respective methods on 'MessageClient'            
+//                                 respective methods on 'MessageClient'
                 i.repo.channels.map(c => c.name ))))
-//              ^ -- in our correlated data model repositories can be mapped to channels in a chat team. This 
-//                   will effectively send a message into each mapped channel                
+//              ^ -- in our correlated data model repositories can be mapped to channels in a chat team. This
+//                   will effectively send a message into each mapped channel
             .then(() => {
                 return Promise.resolve({ code: 0 });
-//                                     ^ -- Event handlers are expected to return a 'HandlerResult'. None 0 
-//                                          code indicate error occurred                 
+//                                     ^ -- Event handlers are expected to return a 'HandlerResult'. None 0
+//                                          code indicate error occurred
             });
     }
 }
@@ -144,7 +161,9 @@ export class HelloIssue implements HandleEvent<any> {
 This event handler registers a GraphQL subscription on the `Issue` type. On `Issue` events the handler will
 send a simple message back to the associated slack team.
 
-## Register Handlers
+For more information, please see [Event Handlers](docs/EventHandlers.md).
+
+### Register Handlers
 
 In order to register your handlers with the automation-client, please create a file called `atomist.config.ts` and put
 the following contents into it:
@@ -156,41 +175,41 @@ import { HelloWorld } from "./commands/HelloWorld";
 import { HelloIssue } from "./events/HelloIssue";
 
 export const configuration: Configuration = {
-//                          ^ -- 'Configuration' defines all possible configuration options    
-    
+//                          ^ -- 'Configuration' defines all possible configuration options
+
     name: "your_module_name",
 //  ^ -- each automation-client should have a unique name
-    
+
     version: "0.0.1",
-//  ^ -- and a semver version    
-    
+//  ^ -- and a semver version
+
     teamId: "T1L0VDKJP",
-//  ^ -- the id of your chat team which you can get by running '@atomist pwd'    
-    
+//  ^ -- the id of your chat team which you can get by running '@atomist pwd'
+
     commands: [
-//  ^ -- register all your command handlers        
+//  ^ -- register all your command handlers
         () => new HelloWorld(),
     ],
-    
+
     events: [
         () => new HelloIssue(),
     ],
-//  ^ -- the same for event handlers    
-    
+//  ^ -- the same for event handlers
+
     token: process.env.GITHUB_TOKEN || "34563sdf......................wq455eze",
-//  ^ -- configure a GitHub personal access token with org:read scope; this is used to authenticate the 
+//  ^ -- configure a GitHub personal access token with org:read scope; this is used to authenticate the
 //       automation-client with Atomist to make sure the client should be granted access to the ingested data
-//       and chat team   
+//       and chat team
 };
 ```
 
 This file allows you to register your handlers as well as to specify name and version for your automation-client.
 
-# Running the Automation-Client
+## Running the Automation-Client
 
 There are several ways you can run your automation-client and have it connect to Atomist API.
 
-## Running Locally
+### Running Locally
 
 To start up the client locally and have it listen to incoming events, just run:
 
@@ -198,7 +217,7 @@ To start up the client locally and have it listen to incoming events, just run:
 $ npm run compile && $(npm bin)/atomist-client
 ```
 
-## Pushing to Cloud Foundry
+### Pushing to Cloud Foundry
 
 To prepare for your automation-client to run on any Cloud Foundry
 instance, please make sure that you have an account on an instance of
@@ -220,7 +239,7 @@ applications:
     SUPPRESS_NO_CONFIG_WARNING: true
 ```
 
-There more recommended ways for getting your `GITHUB_TOKEN` into your automation-client instance. 
+There more recommended ways for getting your `GITHUB_TOKEN` into your automation-client instance.
 Take a look at [`cfenv`](https://www.npmjs.com/package/cfenv) for example
 
 Next please add an `"engines"` top-level entry to your `package.json`
@@ -241,15 +260,15 @@ $ cf push
 
 ## Dashboard (experimental)
 
-The `automation-client` serves up a simple dashboard and GraphQL browser to explore data and author queries. When 
+The `automation-client` serves up a simple dashboard and GraphQL browser to explore data and author queries. When
 client is running head over to `http://localhost:2866/` or `http://localhost:2866/graphql`.
 
 ## REST APIs
 
-When starting up, the `automation-client` exposes a couple of endpoints that can be accessed via HTTP. 
+When starting up, the `automation-client` exposes a couple of endpoints that can be accessed via HTTP.
 
 ### Authentication
-The endpoints are protected by HTTP Basic Auth or token-based authentication. When starting the client, you'll see 
+The endpoints are protected by HTTP Basic Auth or token-based authentication. When starting the client, you'll see
 a log message of the following format:
 
 ```
@@ -287,7 +306,7 @@ export const configuration: Configuration = {
 | `/messages` | all outgoing messages sent by handlers |
 | `/automations` | metadata of all available automations |
 
-As an example, here is an a command to get the current metrics: 
+As an example, here is an a command to get the current metrics:
 
 ```
 $ curl -X GET \
@@ -306,7 +325,7 @@ Command handlers are exposed via HTTP GET like the following:
 ```
 $ curl -X GET \
      http://localhost:2866/command/hello-world?name=cd \
-     -H 'authorization: Bearer 34563sdf......................wq455eze"' 
+     -H 'authorization: Bearer 34563sdf......................wq455eze"'
 ```
 
 This would invoke the `HelloWorld` command handler from above using `cd` as value of `name`.
@@ -328,14 +347,14 @@ $ curl -X POST \
   }'
 ```
 
-Similarly, `Ingestors` can be invoked via: 
+Similarly, `Ingestors` can be invoked via:
 
 ```
 curl -X POST \
   http://localhost:2866/ingest/hello \
   -H 'content-type: application/json' \
   -d '{ "name": "cd" }'
-```  
+```
 
 ## Support
 
@@ -388,4 +407,3 @@ Need Help?  [Join our Slack team][slack].
 
 [atomist]: https://www.atomist.com/
 [slack]: https://join.atomist.com
-
