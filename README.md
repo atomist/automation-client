@@ -3,10 +3,15 @@
 [![Build Status](https://travis-ci.org/atomist/automation-client-ts.svg?branch=master)](https://travis-ci.org/atomist/automation-client-ts)
 
 [Node][node] module [`@atomist/automation-client`][automation-client] for creating command and event handlers
-using the standalone server.
+run aning on the standalone server and connecting to the Atomist API.
 
 [node]: https://nodejs.org/en/
 [automation-client]: https://www.npmjs.com/package/@atomist/automation-client
+
+# Concepts
+Atomist is a service and API that enables development automation. The Atomist service builds and maintains a model of the things that matter to your development team. You can then use out of the box automations or build your own automations acting on this model. 
+
+For more information, please read [Concepts](docs/Concepts.md).
 
 # Getting Started
 
@@ -59,7 +64,7 @@ To create a command take a look at the following example:
 
 ```typescript
 import { CommandHandler, Parameter} from "@atomist/automation-client/decorators";
-import { HandleCommand, HandlerContext, HandlerResult } from "@atomist/automation-client/Handlers";
+import { HandleCommand, HandlerContext, HandlerResult } from "@atomist/automation-client/Handlers"; 
 
 @CommandHandler("Sends a hello back to the client", "hello world")
 //                                                   ^ -- defines the command to trigger  
@@ -93,6 +98,8 @@ export class HelloWorld implements HandleCommand {
 
 The above declares a simple bot command that can be invoked via `@atomist hello world`. The command takes one
 parameter called `name`. The handler will respond with a simple greeting message.
+
+For more information, please see [Command Handlers](docs/CommandHandlers.md).
 
 ## Event Handlers
 
@@ -143,6 +150,8 @@ export class HelloIssue implements HandleEvent<any> {
 
 This event handler registers a GraphQL subscription on the `Issue` type. On `Issue` events the handler will
 send a simple message back to the associated slack team.
+
+For more information, please see [Event Handlers](docs/EventHandlers.md).
 
 ## Register Handlers
 
