@@ -99,7 +99,7 @@ export class HelloWorld implements HandleCommand {
             .then(() => {
                 return Promise.resolve({ code: 0 });
 //                                     ^ -- Command handlers are expected to return a 'Promise' of type
-//                                          'HandlerResult' which just defines a return code. None 0
+//                                          'HandlerResult' which just defines a return code. Nonzero
 //                                           return codes indicate errors.
             });
     }
@@ -144,14 +144,14 @@ export class HelloIssue implements HandleEvent<any> {
 //                                    ^ -- 'HandlerContext' gives access to 'MessageClient' and 'GraphClient'
         return Promise.all(e.data.Issue.map(i =>
             ctx.messageClient.addressChannels(`Got a new issue \`${i.number}# ${i.title}\``,
-//                            ^ -- besides responding you can address users and channels in Slack by using the
+//                            ^ -- besides responding, you can address users and channels in Slack by using the
 //                                 respective methods on 'MessageClient'
                 i.repo.channels.map(c => c.name ))))
-//              ^ -- in our correlated data model repositories can be mapped to channels in a chat team. This
+//              ^ -- in our correlated data model, repositories can be mapped to channels in a chat team. This
 //                   will effectively send a message into each mapped channel
             .then(() => {
                 return Promise.resolve({ code: 0 });
-//                                     ^ -- Event handlers are expected to return a 'HandlerResult'. None 0
+//                                     ^ -- Event handlers are expected to return a 'HandlerResult'. Nonzero
 //                                          code indicate error occurred
             });
     }
