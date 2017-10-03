@@ -1,20 +1,25 @@
+dist: trusty
+sudo: false
 language: node_js
 node_js:
 - 8.4.0
 branches:
   except:
-  - "/\\+travis\\d+$/"
+  - "/\\+travis\\.\\d+$/"
 env:
   global:
+  - NPM_REGISTRY=https://atomist.jfrog.io/atomist/api/npm/npm-dev-local
   - secure: zChPmwXwJPWS3W9T+IL2NWtJVOL/CZQjj799ArFGAaNINVu1vkXPjgD/slJWxl5JN4wU05S6XMc2RpkaK9clI2O4V3/bcBhO/EoMGX1oR46kHN4bvOJ5Th0pA3QO/iL3FSOPOo0jXO5ukCjPItyE2IYI24BBkyy7Z5wp8PPE66zCPEmtR9+ng7ZXw/XxecASEw808wkro+ze4nUqM259WnprbZIDGD4xCPkmf1/I6KOeALsG6wFAl8BAi06ajYjOdXunQFpQeOQ4l2qHrNLMoKjWkOYh5GoMMEwm+xRMNF4AvvpkV+gCgV614oNzNkRIW6y+Q6Q6VypxQEVLX2hvNolYID+39Z8l+nJ9q5E7/sTw02R1dmUhx2eyDQQDVaayWIIZHfzR59rnPrWR+LxvmumW7HN9f5JUneDEwVni7Q4OmEAc2I9m8O3D7QdgjZ1bkRJ2fJ9pIuXbKW2Sc9ChXWOHedRi4xEvntvCT63I3TCB/Dx44g7k7Oth9wgqEoTA5X9U6qjbV5wfQbNSxDL4KUXtOc8WEWiKl33DCyqTI/+2aYDWfvZHGDWkSmvJPH7gWcmWkcqM3cBOQlvpyOWOmlfMbeczidiPL94INDhckkp1e83v1WnuLCn23xniDVSrnuQS9jkKWCEXIrMiEUgDJq6mTzKIpjm55MFDOhXls0w=
-  - secure: AigZlNntig1bJuxNWnnIRZkK17KRnNK4IeoczrN9K4Szflw1ZFNT1SNVIDq0tYMtA6jvyKF+S/pjzbJNb1ML99Ukp9DqqBFvtH9wziP1oCVV73O+fMRfwvthcB4O4mC5sFR1o08IKd9vvHwmoIi8SR7Ytl236DpE1oSgBX3CDVbYf/rrTgkmrTlScyPVeSG6IC6hMreUlmFVzeCduuZWF45Myyi6SPasIC0FFS110csDUyFD1ykkKZpQh/dZFJd2MDBvFqQsXzYwwKxQFxiy/ctRRe8hUcCzqMATxVBRSrEKOJiGhi94h2/4kK6lWEEUiWzPCkbfuY6QzBVp5dNM5KvXlo8Z5xBjr4IGHxPnCZHSahO//JW4z94gKbz8XHcw8CLUf77uwGYlhPiyTJRqrVrKSoVKSri71K9v2b+Da2WHar3Vl/p5U32qOwc9Leu8N32epl1P9hsYmAlhzi0CJZ2WfY6ToTNTg4QnqFZh6xkKYYb7RAb3HaOO3Zpa/VPFCU79OjkdvmXAwmjgc4F+FN3vEOdNsbwmKUVh/l40F3mn63WMGzXFDARtAaVvPq95riBkHi1LPtAmWuN2lmUkzUtspWfTg7Ub+YmfFyHEP9YUU7zUd40yYDkVXMye684u7Nc/x5yaRA8FR9nVEDQnRQMX/piQ2Df9Hm+GBkPSZo0=
   - secure: nCC/KjFH1eCctUcF8ppMcE/0CgI13BBH6pCjfzvp962UkcRFasDzPKH/AD7YbDBLM8CxAHVliy+BXJCMIcxAz+RadH52x5FZEbp/8CnRvVlMrkNN0Vfi/yiU1m5BnzMMsEoWcRzI/gvtzav8W+LhJy5SU+qcNaUxar+JDbFk9eWWl440F5QU3d3vbIHfe4/eo7TE9ol9pmqNk0FmloN5YFYeTDLLbs+91T7up66k3MmePFW/Jw+ow2PwUCKTJYgUthTsL2QgA9a+dDLyiuZxODpPUEXjoIwDaYogsdt2h4uALLJ4T93pHn1/RIJpuplPfUtwk+xnbgLMUTxQFnnHl27f2QQuOykJsCTMypR5ZjH+K96XmY2HoPAZL+9ZMF+bGr24ZDwtOMzo9NEY5gFWDoIsQvDsUgunxaRwdUW/iLndRnYZb32ndDV3EoNitYVB682kdIXfQvNXK5L5hvTK5GY4bBUAm5JpWgM0OY7eQVgpZDIS+0j68i1Q/3V6i9fqta5h3Pz5j/6jQfdJCZBbzjSqTYGRl0iRZI4Ya7LZPF7tH9GWnXvMV4Mvg/dsSr4anYijqQKrVdSeGXfuz+9+4OGVK4pOY/bPetaj41a3KJaPcDiTahzEYri9as4YdgVNgxZlBDveCfuuBehdCp5h8iBCERuWC/rc8n+Y0uvCvms=
+before_install:
+- openssl aes-256-cbc -K $encrypted_e466dd0f1e03_key -iv $encrypted_e466dd0f1e03_iv
+  -in scripts/.npmrc.enc -out $HOME/.npmrc -d
 script: bash scripts/travis-build.bash
 notifications:
   email: false
   webhooks:
     urls:
-    - https://webhook.atomist.com/travis
+    - https://webhook.atomist.com/atomist/travis
     on_success: always
     on_failure: always
     on_start: always
@@ -31,5 +36,4 @@ deploy:
     tags: true
     condition: "$TRAVIS_TAG =~ ^[0-9]+\\.[0-9]+\\.[0-9]+(-(m|rc)\\.[0-9]+)?$"
 after_deploy:
-- bash scripts/npm-publish.bash --access public
 - bash scripts/gh-publish.bash $TRAVIS_REPO_SLUG
