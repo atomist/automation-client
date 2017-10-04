@@ -1,5 +1,6 @@
 import * as  stringify from "json-stringify-safe";
 import * as _ from "lodash";
+import * as serializeError from "serialize-error";
 import * as winston from "winston";
 import * as context from "./cls";
 
@@ -73,5 +74,5 @@ console.warn = (message?: any, ...optionalParams: any[]) => {
 
 // Ideally we wouldn't need this, but I'm still adding proper error handling
 process.on("uncaughtException", err => {
-    console.error(err);
+    console.error(serializeError(err));
 });

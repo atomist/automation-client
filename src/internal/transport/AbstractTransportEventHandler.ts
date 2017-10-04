@@ -1,5 +1,6 @@
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
+import * as serializeError from "serialize-error";
 import { HandlerContext } from "../../HandlerContext";
 import { HandlerResult } from "../../HandlerResult";
 import { EventFired } from "../../Handlers";
@@ -149,7 +150,7 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
         if (error) {
             error(err);
         }
-        logger.error(`Failed invocation of command handler '%s'`, command.name, stringify(err));
+        logger.error(`Failed invocation of command handler '%s'`, command.name, serializeError(err));
     }
 
     private handleEventError(err: any, event: EventIncoming, ef: EventFired<any>,
@@ -159,7 +160,7 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
             error(err);
         }
         logger.error(`Failed invocation of command handler '%s'`,
-            event.extensions.operationName, stringify(err));
+            event.extensions.operationName, serializeError(err));
     }
 }
 
