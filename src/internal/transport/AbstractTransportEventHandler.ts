@@ -1,4 +1,3 @@
-import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as serializeError from "serialize-error";
 import { HandlerContext } from "../../HandlerContext";
