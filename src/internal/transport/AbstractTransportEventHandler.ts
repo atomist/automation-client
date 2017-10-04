@@ -1,3 +1,4 @@
+import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import { HandlerContext } from "../../HandlerContext";
 import { HandlerResult } from "../../HandlerResult";
@@ -18,7 +19,7 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
     constructor(protected automations: AutomationServer, protected listeners: AutomationEventListener[] = []) {}
 
     // tslint:disable-next-line:no-empty
-    public onCommand(command: CommandIncoming, success: (results: HandlerResult) => void = () => {},
+    public onCommand(command: CommandIncoming, success: (result: HandlerResult) => void = () => {},
                      // tslint:disable-next-line:no-empty
                      error: (error: any) => void = () => {}) {
         // setup context
@@ -46,15 +47,6 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
             this.onCommandWithContext(command);
             this.listeners.forEach(l => l.commandStarting(ci, ctx));
 
-            function errorHandler(err) {
-                this.listeners.forEach(l => l.commandFailed(ci, ctx, err));
-                this.sendStatus(false, {code: 1}, command);
-                if (error) {
-                    error(err);
-                }
-                logger.error(`Failed invocation of command handler '%s'`, command.name, err);
-            }
-
             try {
                 this.automations.invokeCommand(ci, ctx)
                     .then(result => {
@@ -63,10 +55,10 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
                         success(result);
                         logger.debug(`Finished invocation of command handler '%s'`, command.name);
                     }).catch(err => {
-                        errorHandler.bind(this)(err);
-                    });
+                    this.handleCommandError(err, command, ci, ctx, error);
+                });
             } catch (err) {
-                errorHandler.bind(this)(err);
+                this.handleCommandError(err, command, ci, ctx, error);
             }
         });
     }
@@ -101,15 +93,6 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
             this.onEventWithContext(event);
             this.listeners.forEach(l => l.eventStarting(ef, ctx));
 
-            function errorHandler(err) {
-                this.listeners.forEach(l => l.eventFailed(ef, ctx, err));
-                if (error) {
-                    error(err);
-                }
-                logger.error(`Failed invocation of command handler '%s'`,
-                    event.extensions.operationName, err);
-            }
-
             try {
                 this.automations.onEvent(ef, ctx)
                     .then(result => {
@@ -119,10 +102,10 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
                             event.extensions.operationName);
                     })
                     .catch(err => {
-                        errorHandler.bind(this)(err);
+                        this.handleEventError(err, event, ef, ctx, error);
                     });
             } catch (err) {
-                errorHandler.bind(this)(err);
+                this.handleEventError(err, event, ef, ctx, error);
             }
         });
     }
@@ -153,12 +136,31 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
         // this is intentionally left empty; sub classes can hook in some logic
     }
 
-    protected abstract sendMessage(payload: any);
+    protected abstract sendMessage(payload: any): void;
 
     protected abstract createGraphClient(event: EventIncoming | CommandIncoming): GraphClient;
 
     protected abstract createMessageClient(event: EventIncoming | CommandIncoming): MessageClient;
 
+    private handleCommandError(err: any, command: CommandIncoming, ci: CommandInvocation,
+                               ctx: HandlerContext, error: (error: any) => void) {
+        this.listeners.forEach(l => l.commandFailed(ci, ctx, err));
+        this.sendStatus(false, {code: 1}, command);
+        if (error) {
+            error(err);
+        }
+        logger.error(`Failed invocation of command handler '%s'`, command.name, stringify(err));
+    }
+
+    private handleEventError(err: any, event: EventIncoming, ef: EventFired<any>,
+                             ctx: HandlerContext, error: (error: any) => void) {
+        this.listeners.forEach(l => l.eventFailed(ef, ctx, err));
+        if (error) {
+            error(err);
+        }
+        logger.error(`Failed invocation of command handler '%s'`,
+            event.extensions.operationName, stringify(err));
+    }
 }
 
 function setupNamespace(request: any, automations: AutomationServer) {
@@ -172,7 +174,7 @@ function setupNamespace(request: any, automations: AutomationServer) {
     });
 }
 
-function replacer(key, value) {
+function replacer(key: string, value: any) {
     if (key === "secrets" && value) {
         return value.map(v => ({ name: v.name, value: hideString(v.value) }));
     } else {
