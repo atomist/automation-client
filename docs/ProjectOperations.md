@@ -10,7 +10,7 @@ builds, issues and deploys.
 The `Project` and `File` interfaces allow you to work with project
 content, regardless of where it's sourced from (e.g. GitHub, a local
 project, or in memory). The `GitProject` interface extends `Project`
-to add support fo cloning projects and creating commits, branches and
+to add support for cloning projects and creating commits, branches and
 pull requests. Atomist secret management makes it easy to obtain the
 necessary tokens, respecting the role of the current user, in the
 event of a command handler.
@@ -176,7 +176,7 @@ doWithFiles(p, "**/Thing", f => f.replace(/A-Z/, "alpha"))
 ## Reviewers
 
 `ReviewerCommandSupport` is a convenience superclass for writing
-command handlers that review (look at the contents of and possible
+command handlers that review (look at the contents of and possibly
 comment on) multiple projects.
 
 It works with the `ProjectReviewer` type, and takes care of cloning repos:
