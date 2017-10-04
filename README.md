@@ -183,8 +183,8 @@ export const configuration: Configuration = {
     version: "0.0.1",
 //  ^ -- and a semver version
 
-    teamId: "T1L0VDKJP",
-//  ^ -- the id of your chat team which you can get by running '@atomist pwd'
+    teamIds: "T1L0VDKJP",
+//  ^ -- the ids of your chat teams which you can get by running '@atomist pwd'
 
     commands: [
 //  ^ -- register all your command handlers
