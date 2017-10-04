@@ -24,7 +24,7 @@ describe("DefaultWebSocketTransportEventHandler", () => {
                 events: [],
                 commands: [],
                 ingestors: [],
-                team_id: "xxx",
+                team_ids: ["xxx"],
             };
 
             public validateCommandInvocation(payload: CommandInvocation): CommandHandlerMetadata {
@@ -92,7 +92,7 @@ function verifyCommandHandler(code: number, callback: (result) => void) {
             events: [],
             commands: [],
             ingestors: [],
-            team_id: "x-team",
+            team_ids: ["x-team"],
             keywords: [],
         };
 

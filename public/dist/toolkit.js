@@ -3704,7 +3704,7 @@ function init() {
 
   var automations, metrics;
 
-  //var host = "http://localhost:2866";
+  // var host = "http://localhost:2866";
   var host = "";
 
   $.when($.getJSON(host + "/automations", function (data) {
@@ -3713,8 +3713,19 @@ function init() {
     metrics = data;
   })).then(function () {
     if (automations && metrics) {
-      $("#footer").text(automations.name + "@" + automations.version + " connected to team " + automations.team_id);
       document.title = automations.name + "@" + automations.version + " - Atomist Automation Client";
+      var teamIds = automations.team_ids;
+      if (teamIds.length > 0) {
+        var dd = "<form action='" + window.location.href + "' method='GET'>";
+        dd += "<div class='form-row align-items-center' style='vertical-align: middle'>";
+        dd += "<label class='sr- only' for='teamId'>" + automations.name + "@" + automations.version + " connected to team </label>&nbsp;";
+        dd += "<select  class='custom-select mb-2 mr-sm-2 mb-sm-0' name='teamId' id='teamId' onchange='this.form.submit(); '>";
+        teamIds.forEach(function (id) {
+          dd += "<option value='" + id + "' " + (window.location.href.indexOf(id) >= 0 ? "selected='selected'" : "") + ">" + id + "</option>";
+        });
+        dd += "</select></div></form>";
+        $("#footer").html(dd);
+      }
 
       if (!loaded) {
         $('#commands tbody').remove();

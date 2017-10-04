@@ -54,7 +54,6 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
     constructor(public opts: AutomationServerOptions,
                 private fallbackSecretResolver: SecretResolver = new NodeConfigSecretResolver()) {
         super();
-        // logger.debug("Starting BuildableAutomationServer with options:\n%s", JSON.stringify(opts, null, 2));
         if (opts.endpoints && opts.endpoints.graphql) {
             if (opts.token) {
                 this.graphClient = new ApolloGraphClient(opts.endpoints.graphql,
@@ -67,7 +66,8 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         }
     }
 
-    public withCommandHandler(h: CommandHandlerMetadata, handler: (CommandInvocation) => Promise<HandlerResult>): this {
+    public withCommandHandler(h: CommandHandlerMetadata,
+                              handler: (command: CommandInvocation) => Promise<HandlerResult>): this {
         this.commandHandlers.push({
             metadata: h,
             invoke: handler,
@@ -238,10 +238,13 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
     }
 
     get rugs(): Rugs {
+        // tslint:disable-next-line:variable-name
+        const team_ids = Array.isArray(this.opts.teamIds)
+            ? this.opts.teamIds as string[] : [this.opts.teamIds as string];
         return {
             name: this.opts.name,
             version: this.opts.version,
-            team_id: this.opts.teamId,
+            team_ids,
             keywords: this.opts.keywords,
             commands: this.commandHandlers.map(e => e.metadata),
             events: this.eventHandlers.map(e => e.metadata),

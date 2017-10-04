@@ -2,14 +2,20 @@ import * as _ from "lodash";
 import { Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
-import { ExpressServer, ExpressServerOptions } from "./internal/transport/express/ExpressServer";
+import {
+    ExpressServer,
+    ExpressServerOptions,
+} from "./internal/transport/express/ExpressServer";
 import { MetricEnabledAutomationEventListener } from "./internal/transport/MetricEnabledAutomationEventListener";
 import { TransportEventHandler } from "./internal/transport/TransportEventHandler";
 import {
     DefaultWebSocketTransportEventHandler,
 } from "./internal/transport/websocket/DefaultWebSocketTransportEventHandler";
 import { prepareRegistration } from "./internal/transport/websocket/Payloads";
-import { WebSocketClient, WebSocketClientOptions } from "./internal/transport/websocket/WebSocketClient";
+import {
+    WebSocketClient,
+    WebSocketClientOptions,
+} from "./internal/transport/websocket/WebSocketClient";
 import { WebSocketTransportEventHandler } from "./internal/transport/websocket/WebSocketTransportEventHandler";
 import { logger } from "./internal/util/logger";
 import { AutomationServer } from "./server/AutomationServer";
@@ -33,7 +39,7 @@ export class AutomationClient {
             {
                 name: configuration.name,
                 version: configuration.version,
-                teamId: configuration.teamId,
+                teamIds: configuration.teamIds,
                 keywords: [],
                 token: process.env.GITHUB_TOKEN,
                 endpoints: {

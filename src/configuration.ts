@@ -51,7 +51,7 @@ function validateConfiguration(configuration: Configuration, path: string) {
     }
 }
 
-function cleanUp(key, value) {
+function cleanUp(key: string, value: any) {
     if (key === "token" || key === "password") {
         return hideString(value);
     } else if (key === "commands") {

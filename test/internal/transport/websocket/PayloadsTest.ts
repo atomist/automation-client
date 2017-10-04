@@ -32,7 +32,7 @@ describe("Payloads", () => {
                 description: "Some description",
                 route: "foo",
             }],
-            team_id: "x-team",
+            team_ids: ["x-team"],
             keywords: ["some keyword"],
         };
 
@@ -47,7 +47,7 @@ describe("Payloads", () => {
 
         assert(payload.name === "foo");
         assert(payload.version === "1.0.0");
-        assert(payload.team_id === "x-team");
+        assert(payload.team_ids[0] === "x-team");
         assert(!payload.keywords);
         assert(!payload.ingestors);
     });

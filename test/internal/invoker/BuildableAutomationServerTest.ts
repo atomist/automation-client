@@ -11,13 +11,13 @@ const messageClient = consoleMessageClient;
 describe("BuildableAutomationServer", () => {
 
     it("should start with no rugs", () => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamId: "bar", keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         assert(s.rugs.commands.length === 0);
         assert(s.rugs.events.length === 0);
     });
 
     it("should register one no-arg handler and return its metadataFromInstance", () => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamId: "bar", keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         s.withCommandHandler(
             {name: "foo", description: "foo", parameters: [], tags: [], intent: [], mapped_parameters: []},
             ch => Promise.resolve({
@@ -30,7 +30,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should register one single arg handler and return its metadataFromInstance", () => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamId: "bar", keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         s.withCommandHandler(
             {
                 name: "foo", description: "foo", parameters: [{
@@ -48,7 +48,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should register one single arg handler and complain on invocation without parameter", () => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamId: "bar", keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         s.withCommandHandler(
             {
                 name: "foo", description: "foo", parameters: [{
@@ -72,7 +72,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should register one single arg handler and invoke with valid parameter", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamId: "bar", keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         let paramVal: string;
         s.withCommandHandler(
             {
@@ -102,7 +102,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should register one command handler instance and invoke with valid parameter", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamId: "bar", keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         s.fromCommandHandlerInstance(() => new AddAtomistSpringAgent());
         s.invokeCommand({
             name: "AddAtomistSpringAgent",
@@ -117,7 +117,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should register one event handler instance and invoke with valid parameter", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamId: "bar", keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         s.fromEventHandlerInstance(() => new AlwaysOkEventHandler());
         s.onEvent({
             extensions: {
@@ -139,7 +139,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should register two event handler instances and invoke with valid parameter", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamId: "bar", keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         s.fromEventHandlerInstance(() => new AlwaysOkEventHandler());
         s.fromEventHandlerInstance(() => new FooBarEventHandler());
         s.onEvent({
@@ -163,7 +163,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should register one ingestor instance and invoke with valid payload", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamId: "bar", keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         s.fromIngestorInstance(() => new FooBarIngestor());
         s.onEvent({
             extensions: {
@@ -183,7 +183,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should register two ingestor instances and invoke with valid payload", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamId: "bar", keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         s.fromIngestorInstance(() => new FooBarIngestor());
         s.fromIngestorInstance(() => new HelloIssue());
         s.onEvent({

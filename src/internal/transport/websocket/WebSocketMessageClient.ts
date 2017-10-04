@@ -16,9 +16,6 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
     constructor(private automations: AutomationServer, private ws: WebSocket, private correlationId: string,
                 private correlationContext: any, private rug: any = {}) {
         super();
-        if (!correlationContext) {
-            this.correlationContext = { team: { id: automations.rugs.team_id }};
-        }
     }
 
     protected async doSend(msg: string | SlackMessage, userNames: string | string[],

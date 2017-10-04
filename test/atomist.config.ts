@@ -21,7 +21,7 @@ class StartUpListener extends AutomationEventListenerSupport {
         transport.onCommand({
             name: "SendStartupMessage",
             atomist_type: "command_handler_request",
-            correlation_context: {team: { id: "T1L0VDKJP" }},
+            correlation_context: { team: { id: "T1L0VDKJP" }},
             corrid: guid(),
             parameters: [{
                 name: "owner",
@@ -43,8 +43,8 @@ class StartUpListener extends AutomationEventListenerSupport {
 
 export const configuration: Configuration = {
     name: "@atomist/automation-node-tests",
-    version: "0.0.4",
-    teamId: "T1L0VDKJP",
+    version: "0.0.6",
+    teamIds: ["T1L0VDKJP", "T74GV0HDK"],
     commands: [
         () => new HelloWorld(),
         () => new SendStartupMessage(),

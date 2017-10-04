@@ -4,7 +4,8 @@
  */
 export interface RunOptions {
 
-    teamId: string;
+    teamIds?: string | string[];
+    groups?: string;
     name: string;
     version: string;
     token?: string;

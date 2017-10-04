@@ -1,25 +1,30 @@
+import * as appRoot from "app-root-path";
 import * as bodyParser from "body-parser";
 import * as express from "express";
-import * as passport from "passport";
-import * as namespace from "../../util/cls";
-
-import { AutomationServer } from "../../../server/AutomationServer";
-import { CommandHandlerMetadata, IngestorMetadata } from "../../metadata/metadata";
-
-import * as appRoot from "app-root-path";
-import * as mustacheExpress from "mustache-express";
-
 import { Express, Handler } from "express";
 import * as fs from "fs";
-import { eventStore, jwtToken } from "../../../globals";
+import * as _ from "lodash";
+import * as mustacheExpress from "mustache-express";
+import * as passport from "passport";
+import * as http from "passport-http";
+import * as bearer from "passport-http-bearer";
+import {
+    eventStore,
+    jwtToken,
+} from "../../../globals";
+import { AutomationServer } from "../../../server/AutomationServer";
+import {
+    CommandHandlerMetadata,
+    IngestorMetadata,
+} from "../../metadata/metadata";
 import { logger } from "../../util/logger";
 import { report } from "../../util/metric";
 import { guid } from "../../util/string";
-import { CommandIncoming, EventIncoming, TransportEventHandler } from "../TransportEventHandler";
-
-import * as _ from "lodash";
-import * as http from "passport-http";
-import * as bearer from "passport-http-bearer";
+import {
+    CommandIncoming,
+    EventIncoming,
+    TransportEventHandler,
+} from "../TransportEventHandler";
 
 const ApiBase = "";
 
@@ -94,8 +99,10 @@ export class ExpressServer {
 
         exp.get("/graphql", this.authenticate("basic"),
             (req, res) => {
+                const teamId = req.query.teamId ? req.query.teamId : this.automations.rugs.team_ids[0];
                 res.render("graphql.html", { token: jwtToken(),
-                    graphQLUrl: `${this.options.endpoint.graphql}/${this.automations.rugs.team_id}` });
+                    graphQLUrl: `${this.options.endpoint.graphql}/${teamId}`,
+                    teamIds: this.automations.rugs.team_ids});
         });
 
         exp.get("/", this.authenticate("basic"),
@@ -133,10 +140,10 @@ export class ExpressServer {
                 atomist_type: "command_handler_request",
                 name: h.name,
                 rug: {},
-                correlation_context: {team: { id: this.automations.rugs.team_id }},
+                correlation_context: {team: { id: this.automations.rugs.team_ids[0] }},
                 corrid: guid(),
                 team: {
-                    id: this.automations.rugs.team_id,
+                    id: this.automations.rugs.team_ids[0],
                 },
                 ...req.body,
             };
@@ -163,10 +170,10 @@ export class ExpressServer {
                     rug: {},
                     mapped_parameters: undefined,
                     secrets: undefined,
-                    correlation_context: {team: { id: this.automations.rugs.team_id }},
+                    correlation_context: {team: { id: this.automations.rugs.team_ids[0] }},
                     corrid: guid(),
                     team: {
-                        id: this.automations.rugs.team_id,
+                        id: this.automations.rugs.team_ids[0],
                     },
                 };
                 this.handler.onCommand(payload, result => {
@@ -187,7 +194,7 @@ export class ExpressServer {
                 extensions: {
                     operationName: h.route,
                     correlation_id: guid(),
-                    team_id: this.automations.rugs.team_id,
+                    team_id: this.automations.rugs.team_ids[0],
                 },
                 secrets: [],
             };
@@ -202,8 +209,8 @@ export class ExpressServer {
     private setupAuthentication() {
 
         if (this.options.auth && this.options.auth.basic && this.options.auth.basic.enabled) {
-            const user = this.options.auth.basic.username ? this.options.auth.basic.username : "admin";
-            const pwd = this.options.auth.basic.password ? this.options.auth.basic.password : guid();
+            const user: string = this.options.auth.basic.username ? this.options.auth.basic.username : "admin";
+            const pwd: string = this.options.auth.basic.password ? this.options.auth.basic.password : guid();
 
             passport.use(new http.BasicStrategy(
                 (username, password, done) => {

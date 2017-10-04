@@ -51,7 +51,7 @@ yargs.completion("completion")
 
 function createHandlerContext(): HandlerContext {
     return {
-        teamId: config.teamId,
+        teamId: config.teamIds[0],
         correlationId: guid(),
         messageClient: consoleMessageClient,
     };

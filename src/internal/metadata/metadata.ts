@@ -80,7 +80,7 @@ export interface Rugs {
 
     name: string;
     version: string;
-    team_id: string;
+    team_ids: string[];
 
     commands: CommandHandlerMetadata[];
 
