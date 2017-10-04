@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client/compare/0.1.37...HEAD
 
+### Changed
+
+-   Updated @atomist/microgrammar to 0.7.0
+
 ### Added
 
 -   Publish master and PR builds as pre-release versions to Atomist
