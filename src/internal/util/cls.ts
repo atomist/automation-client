@@ -19,7 +19,7 @@ export interface AutomationContext {
 
     correlationId: string;
     teamId: string;
-    teamName: string,
+    teamName: string;
     operation: string;
     name: string;
     version: string;
