@@ -4,6 +4,7 @@
 import { HandlerResult } from "../../HandlerResult";
 
 // TODO CD I don't like this name here; it doesn't reflect what it does. Thinking ....
+// I agree, it confused me because it is not an EventHandler. How about Responder? - jess
 export interface TransportEventHandler {
 
     /**

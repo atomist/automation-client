@@ -8,6 +8,7 @@ import { guid } from "../util/string";
 import { AbstractTransportEventHandler } from "./AbstractTransportEventHandler";
 import { CommandIncoming, EventIncoming } from "./TransportEventHandler";
 
+// why is this in the class hierarchy instead of a listener?
 export abstract class AbstractEventStoringTransportEventHandler extends AbstractTransportEventHandler {
 
     constructor(protected automations: AutomationServer, protected listeners: AutomationEventListener[] = []) {

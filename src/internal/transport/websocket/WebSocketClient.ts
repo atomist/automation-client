@@ -36,15 +36,15 @@ export class WebSocketClient {
 let reconnect = true;
 
 function connect(registrationCallback: () => any, registration: RegistrationConfirmation,
-                 options: WebSocketClientOptions, handler: WebSocketTransportEventHandler): Promise<WebSocket> {
+                 options: WebSocketClientOptions, responder: WebSocketTransportEventHandler): Promise<WebSocket> {
 
     // Functions are inline to avoid "this" peculiarities
     function invokeCommandHandler(chr: CommandIncoming) {
-        handler.onCommand(chr);
+        responder.onCommand(chr);
     }
 
     function invokeEventHandler(e: EventIncoming) {
-        handler.onEvent(e);
+        responder.onEvent(e);
     }
 
     return new Promise<WebSocket>(resolve => {
@@ -52,7 +52,7 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
         const ws = new WebSocket(registration.url);
 
         ws.on("open", function open() {
-            handler.onConnection(this);
+            responder.onConnection(this);
             resolve(ws);
         });
 
@@ -90,8 +90,8 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
             }
             // Only attempt to reconnect if we aren't shutting down
             if (reconnect) {
-                register(registrationCallback, options, handler)
-                    .then(reg => connect(registrationCallback, reg, options, handler));
+                register(registrationCallback, options, responder)
+                    .then(reg => connect(registrationCallback, reg, options, responder));
             }
         });
 

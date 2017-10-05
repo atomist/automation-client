@@ -19,7 +19,7 @@ import { RegistrationConfirmation, WebSocketTransportEventHandler } from "./WebS
 export class DefaultWebSocketTransportEventHandler extends AbstractEventStoringTransportEventHandler
     implements WebSocketTransportEventHandler {
 
-    private registration: RegistrationConfirmation;
+    private registration: RegistrationConfirmation | undefined;
     private webSocket: WebSocket;
     private graphClients: Map<string, GraphClient> = new Map<string, GraphClient>();
 
@@ -30,8 +30,7 @@ export class DefaultWebSocketTransportEventHandler extends AbstractEventStoringT
 
     public onRegistration(registration: RegistrationConfirmation) {
         logger.info("Registration successful: %s", JSON.stringify(registration));
-
-        setJwtToken(registration.jwt);
+        setJwtToken(registration.jwt); // global
         this.registration = registration;
     }
 
@@ -57,7 +56,7 @@ export class DefaultWebSocketTransportEventHandler extends AbstractEventStoringT
             return this.graphClients.get(teamId);
         } else {
             const graphClient = new ApolloGraphClient(`${this.options.graphUrl}/${teamId}`,
-                { Authorization: `Bearer ${this.registration.jwt}`});
+                { Authorization: `Bearer ${this.registration.jwt}` });
 
             return graphClient;
         }
