@@ -16,12 +16,12 @@ import { HandlerResponse, StatusMessage } from "./websocket/WebSocketMessageClie
 
 export abstract class AbstractTransportEventHandler implements TransportEventHandler {
 
-    constructor(protected automations: AutomationServer, protected listeners: AutomationEventListener[] = []) {}
+    constructor(protected automations: AutomationServer, protected listeners: AutomationEventListener[] = []) { }
 
     // tslint:disable-next-line:no-empty
-    public onCommand(command: CommandIncoming, success: (result: HandlerResult) => void = () => {},
-                     // tslint:disable-next-line:no-empty
-                     error: (error: any) => void = () => {}) {
+    public onCommand(command: CommandIncoming, success: (result: HandlerResult) => void = () => { },
+        // tslint:disable-next-line:no-empty
+                     error: (error: any) => void = () => { }) {
         // setup context
         const ses = namespace.init();
         ses.run(() => {
@@ -55,8 +55,8 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
                         success(result);
                         logger.debug(`Finished invocation of command handler '%s'`, command.name);
                     }).catch(err => {
-                    this.handleCommandError(err, command, ci, ctx, error);
-                });
+                        this.handleCommandError(err, command, ci, ctx, error);
+                    });
             } catch (err) {
                 this.handleCommandError(err, command, ci, ctx, error);
             }
@@ -64,9 +64,9 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
     }
 
     // tslint:disable-next-line:no-empty
-    public onEvent(event: EventIncoming, success: (results: HandlerResult[]) => void = () => {},
-                   // tslint:disable-next-line:no-empty
-                   error: (error: any) => void = () => {}) {
+    public onEvent(event: EventIncoming, success: (results: HandlerResult[]) => void = () => { },
+        // tslint:disable-next-line:no-empty
+                   error: (error: any) => void = () => { }) {
         // setup context
         const ses = namespace.init();
         ses.run(() => {
@@ -145,7 +145,7 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
     private handleCommandError(err: any, command: CommandIncoming, ci: CommandInvocation,
                                ctx: HandlerContext, error: (error: any) => void) {
         this.listeners.forEach(l => l.commandFailed(ci, ctx, err));
-        this.sendStatus(false, {code: 1}, command);
+        this.sendStatus(false, { code: 1 }, command);
         if (error) {
             error(err);
         }
@@ -165,7 +165,7 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
 
 function setupNamespace(request: any, automations: AutomationServer) {
     namespace.set({
-        correlationId:  _.get(request, "corrid") || _.get(request, "extensions.correlation_id"),
+        correlationId: _.get(request, "corrid") || _.get(request, "extensions.correlation_id"),
         teamId: _.get(request, "team.id") || _.get(request, "extensions.team_id"),
         teamName: _.get(request, "team.name") || _.get(request, "extensions.team_name"),
         operation: _.get(request, "name") || _.get(request, "extensions.operationName"),

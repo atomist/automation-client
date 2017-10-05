@@ -66,6 +66,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         }
     }
 
+    // this one is used for testing
     public withCommandHandler(h: CommandHandlerMetadata,
                               handler: (command: CommandInvocation) => Promise<HandlerResult>): this {
         this.commandHandlers.push({
@@ -160,6 +161,8 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         this.populateSecrets(h, e.secrets);
         return h.handle(e, this.enrichContext(ctx))
             .catch(err => {
+                // these do not fire when the handler fails.
+                // perhaps only in the case of unexpected errors?
                 logger.error("Rejecting promise on " + err);
                 return Promise.reject(err);
             });
@@ -200,6 +203,10 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                 throw new Error(`Cannot resolve mapped parameter '${key}'`);
             }
         }
+        // if the bot sends any of them, then only use those?
+        // it does not fallback for each parameter; all or nothing.
+        // this is probably by design ... is there a test/dev circumstance where
+        // mappedParameters is not populated?
         const secretResolver = invocation.mappedParameters ?
             new InvocationSecretResolver(invocation.mappedParameters) :
             this.fallbackSecretResolver;
@@ -212,7 +219,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         });
     }
 
-    private populateSecrets(h: {}, invocationSecrets: Arg[]) {
+    private populateSecrets(h: {}, invocationSecrets: Arg[] | undefined) {
         // Resolve from the invocation, otherwise from our fallback
         class InvocationSecretResolver implements SecretResolver {
             constructor(private sec: Arg[]) {
@@ -230,6 +237,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
             this.fallbackSecretResolver;
         logger.debug("Applying secrets");
         const target = h as any;
+        // why do we not get these from the metadata? ... because we don't pass it in, i guess
         const secrets: any[] =
             target.__secrets ? target.__secrets : [];
         secrets.forEach(s => {

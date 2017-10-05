@@ -26,6 +26,7 @@ export const DefaultApiServer =
 export const DefaultGraphQLServer =
     "https://automation.atomist.com/graphql/team";
 
+// question: when should TS files start with upper vs lower case?
 export class AutomationClient {
 
     public httpPort: number;
@@ -41,12 +42,10 @@ export class AutomationClient {
                 version: configuration.version,
                 teamIds: configuration.teamIds,
                 keywords: [],
-                token: process.env.GITHUB_TOKEN,
+                token: process.env.GITHUB_TOKEN, // ?? Why not from the configuration?
                 endpoints: {
-                    graphql: _.get(this.configuration, "endpoints.graphql")
-                        ? _.get(this.configuration, "endpoints.graphql") : DefaultGraphQLServer,
-                    api: _.get(this.configuration, "endpoints.api")
-                        ? _.get(this.configuration, "endpoints.api") : DefaultApiServer,
+                    graphql: _.get(this.configuration, "endpoints.graphql", DefaultGraphQLServer),
+                    api: _.get(this.configuration, "endpoints.api", DefaultApiServer),
                 },
             });
     }
@@ -72,11 +71,10 @@ export class AutomationClient {
 
     public run(): Promise<any> {
         logger.info(`Starting Atomist automation client for ${this.configuration.name}@${this.configuration.version}`);
+        // why are these pulled out twice?
         const webSocketOptions: WebSocketClientOptions = {
-            graphUrl: _.get(this.configuration, "endpoints.graphql")
-                ? _.get(this.configuration, "endpoints.graphql") : DefaultGraphQLServer,
-            registrationUrl: _.get(this.configuration, "endpoints.api")
-                ? _.get(this.configuration, "endpoints.api") : DefaultApiServer,
+            graphUrl: _.get(this.configuration, "endpoints.graphql", DefaultGraphQLServer),
+            registrationUrl: _.get(this.configuration, "endpoints.api", DefaultApiServer),
             token: this.configuration.token,
         };
         const handler = this.setupEventHandler(webSocketOptions);
@@ -90,21 +88,25 @@ export class AutomationClient {
 
         if (this.configuration.listeners) {
             return new DefaultWebSocketTransportEventHandler(this.automations, webSocketOptions,
-                [ new MetricEnabledAutomationEventListener(), ...this.configuration.listeners]);
+                [new MetricEnabledAutomationEventListener(), ...this.configuration.listeners]);
         } else {
             return new DefaultWebSocketTransportEventHandler(this.automations, webSocketOptions,
-                [ new MetricEnabledAutomationEventListener() ]);
+                [new MetricEnabledAutomationEventListener()]);
         }
     }
 
     private runWs(handler: WebSocketTransportEventHandler, options: WebSocketClientOptions): void {
-        this.webSocketClient = new WebSocketClient(() => prepareRegistration(this.automations.rugs), options,
-            handler );
+        // why pass a function here, to return the payload?
+        // is it possible for the rugs to change while it's retrying?
+        this.webSocketClient = new WebSocketClient(() => prepareRegistration(this.automations.rugs),
+            options,
+            handler);
     }
 
     private runHttp(handler: TransportEventHandler): void {
         const http = this.configuration.http;
-        this.httpPort = http && http.port ? http.port : (process.env.PORT ? +process.env.PORT : 2866);
+        this.httpPort = http && http.port ? http.port :
+            (process.env.PORT ? +process.env.PORT : 2866); // what does the plus do???
         const host = http && http.host ? http.host : "localhost";
         const expressOptions: ExpressServerOptions = {
             port: this.httpPort,
