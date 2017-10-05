@@ -1,7 +1,7 @@
 import * as WebSocket from "ws";
-import { TransportEventHandler } from "../TransportEventHandler";
+import { RequestProcessor } from "../RequestProcessor";
 
-export interface WebSocketTransportEventHandler extends TransportEventHandler {
+export interface WebSocketRequestProcessor extends RequestProcessor {
 
     onRegistration(registration: RegistrationConfirmation);
 

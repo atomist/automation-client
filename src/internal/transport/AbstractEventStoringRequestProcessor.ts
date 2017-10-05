@@ -5,10 +5,10 @@ import { AutomationServer } from "../../server/AutomationServer";
 import { MessageClient, MessageOptions } from "../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../spi/message/MessageClientSupport";
 import { guid } from "../util/string";
-import { AbstractTransportEventHandler } from "./AbstractTransportEventHandler";
-import { CommandIncoming, EventIncoming } from "./TransportEventHandler";
+import { AbstractRequestProcessor } from "./AbstractRequestProcessor";
+import { CommandIncoming, EventIncoming } from "./RequestProcessor";
 
-export abstract class AbstractEventStoringTransportEventHandler extends AbstractTransportEventHandler {
+export abstract class AbstractEventStoringRequestProcessor extends AbstractRequestProcessor {
 
     constructor(protected automations: AutomationServer, protected listeners: AutomationEventListener[] = []) {
         super(automations, listeners);
@@ -18,11 +18,11 @@ export abstract class AbstractEventStoringTransportEventHandler extends Abstract
         return new WrappingMessageClient(this.doCreateMessageClient(event));
     }
 
-    protected onCommandWithContext(command: CommandIncoming) {
+    protected onCommandWithNamespace(command: CommandIncoming) {
         eventStore().recordCommand(command);
     }
 
-    protected onEventWithContext(event: EventIncoming) {
+    protected onEventWithNamespace(event: EventIncoming) {
         eventStore().recordEvent(event);
     }
 

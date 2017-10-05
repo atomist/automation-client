@@ -8,11 +8,11 @@ import { HandlerResult } from "../../../../src/HandlerResult";
 import { CommandInvocation } from "../../../../src/internal/invoker/Payload";
 import { CommandHandlerMetadata, Rugs } from "../../../../src/internal/metadata/metadata";
 import {
-    DefaultWebSocketTransportEventHandler,
-} from "../../../../src/internal/transport/websocket/DefaultWebSocketTransportEventHandler";
+    DefaultWebSocketRequestProcessor,
+} from "../../../../src/internal/transport/websocket/DefaultWebSocketRequestProcessor";
 import { AutomationServer } from "../../../../src/server/AutomationServer";
 
-describe("DefaultWebSocketTransportEventHandler", () => {
+describe("DefaultWebSocketRequestProcessor", () => {
 
     it("check event received and processed", done => {
         class MockAutomationServer implements AutomationServer {
@@ -54,11 +54,11 @@ describe("DefaultWebSocketTransportEventHandler", () => {
             }
         }
         const automations = new MockAutomationServer();
-        const listener = new DefaultWebSocketTransportEventHandler(automations,
+        const listener = new DefaultWebSocketRequestProcessor(automations,
             { token: "xxx" , registrationUrl: "http://foo.com", graphUrl: "http://bar.com"});
         listener.onRegistration({url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
         listener.onConnection((new MockWebSocket() as any) as WebSocket);
-        listener.onEvent({
+        listener.processEvent({
             data: {
                 Foo: {
                     bar: 27,
@@ -124,11 +124,11 @@ function verifyCommandHandler(code: number, callback: (result) => void) {
         }
     }
     const automations = new MockAutomationServer();
-    const listener = new DefaultWebSocketTransportEventHandler(automations,
+    const listener = new DefaultWebSocketRequestProcessor(automations,
         { token: "xxx" , registrationUrl: "http://foo.com", graphUrl: "http://bar.com"});
     listener.onRegistration({url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
     listener.onConnection((new MockWebSocket() as any) as WebSocket);
-    listener.onCommand({
+    listener.processCommand({
         secrets: [],
         mapped_parameters: [],
         name: "FooOp",
