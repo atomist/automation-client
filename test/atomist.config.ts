@@ -1,5 +1,5 @@
 import { Configuration } from "../src/configuration";
-import { TransportEventHandler } from "../src/internal/transport/TransportEventHandler";
+import { RequestProcessor } from "../src/internal/transport/RequestProcessor";
 import { guid } from "../src/internal/util/string";
 import { AutomationEventListenerSupport } from "../src/server/AutomationEventListener";
 import { HelloWorld } from "./command/HelloWorld";
@@ -15,11 +15,11 @@ const host = "https://automation-staging.atomist.services";
 
 class StartUpListener extends AutomationEventListenerSupport {
 
-    public registrationSuccessful(transport: TransportEventHandler) {
+    public registrationSuccessful(transport: RequestProcessor) {
 
         // TODO CD this way of declaring an incoming command isn't nice.
         // We'll fix it with the general polish of API messages.
-        transport.onCommand({
+        transport.processCommand({
             name: "SendStartupMessage",
             atomist_type: "command_handler_request",
             correlation_context: { team: { id: "T1L0VDKJP" } },

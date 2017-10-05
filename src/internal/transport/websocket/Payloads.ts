@@ -1,11 +1,6 @@
 import { CommandHandlerMetadata, EventHandlerMetadata, Rugs } from "../../metadata/metadata";
-import { SecretDeclaration } from "./../../metadata/metadata";
 
 export function prepareRegistration(metadata: Rugs): any {
-    // we write it to a string, in a custom way, and then parse it back.
-    // is this a way of copying the object with a few modifications?
-
-    // May I rewrite this like this?
     return convertRegExpValuesToString({
         name: metadata.name,
         version: metadata.version,
@@ -29,13 +24,13 @@ function convertRegExpValuesToString(data: any): any {
 function prepareCommandRegistration(c: CommandHandlerMetadata) {
     return {
         ...c,
-        secrets: c.secrets ? c.secrets.map(s => s.path) : undefined,
-        // do I need to preserve the handling-undefined behavior?
+        secrets: c.secrets ? c.secrets.map(s => s.path) : [],
     };
 }
+
 function prepareEventRegistration(e: EventHandlerMetadata) {
     return {
         subscription: e.subscription,
-        secrets: e.secrets.map(s => s.path),
+        secrets: e.secrets ? e.secrets.map(s => s.path) : [],
     };
 }

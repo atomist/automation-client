@@ -23,8 +23,8 @@ import { guid } from "../../util/string";
 import {
     CommandIncoming,
     EventIncoming,
-    TransportEventHandler,
-} from "../TransportEventHandler";
+    RequestProcessor,
+} from "../RequestProcessor";
 
 const ApiBase = "";
 
@@ -36,7 +36,7 @@ export class ExpressServer {
 
     constructor(private automations: AutomationServer,
                 private options: ExpressServerOptions,
-                private handler: TransportEventHandler) {
+                private handler: RequestProcessor) {
 
         const exp = express();
 
@@ -148,7 +148,7 @@ export class ExpressServer {
                 ...req.body,
             };
 
-            this.handler.onCommand(payload, result => {
+            this.handler.processCommand(payload, result => {
                 handle(res, result);
             }, error => {
                 res.status(500).send({ message: error.toString()});
@@ -176,7 +176,7 @@ export class ExpressServer {
                         id: this.automations.rugs.team_ids[0],
                     },
                 };
-                this.handler.onCommand(payload, result => {
+                this.handler.processCommand(payload, result => {
                     handle(res, result);
                 }, error => {
                     res.status(500).send({ message: error.toString()});
@@ -198,7 +198,7 @@ export class ExpressServer {
                 },
                 secrets: [],
             };
-            this.handler.onEvent(payload, result => {
+            this.handler.processEvent(payload, result => {
                 handle(res, result);
             }, error => {
                 res.status(500).send({ message: error.toString()});

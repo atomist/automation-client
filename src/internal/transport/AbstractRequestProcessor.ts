@@ -11,17 +11,17 @@ import { CommandInvocation } from "../invoker/Payload";
 import * as namespace from "../util/cls";
 import { logger } from "../util/logger";
 import { guid, hideString } from "../util/string";
-import { CommandIncoming, EventIncoming, TransportEventHandler } from "./TransportEventHandler";
+import { CommandIncoming, EventIncoming, RequestProcessor } from "./RequestProcessor";
 import { HandlerResponse, StatusMessage } from "./websocket/WebSocketMessageClient";
 
-export abstract class AbstractTransportEventHandler implements TransportEventHandler {
+export abstract class AbstractRequestProcessor implements RequestProcessor {
 
     constructor(protected automations: AutomationServer, protected listeners: AutomationEventListener[] = []) { }
 
     // tslint:disable-next-line:no-empty
-    public onCommand(command: CommandIncoming, success: (result: HandlerResult) => void = () => { },
-        // tslint:disable-next-line:no-empty
-                     error: (error: any) => void = () => { }) {
+    public processCommand(command: CommandIncoming, success: (result: HandlerResult) => void = () => { },
+                          // tslint:disable-next-line:no-empty
+                          error: (error: any) => void = () => { }) {
         // setup context
         const ses = namespace.init();
         ses.run(() => {
@@ -44,7 +44,7 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
                 graphClient: this.createGraphClient(command),
             };
 
-            this.onCommandWithContext(command);
+            this.onCommandWithNamespace(command);
             this.listeners.forEach(l => l.commandStarting(ci, ctx));
 
             try {
@@ -64,9 +64,9 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
     }
 
     // tslint:disable-next-line:no-empty
-    public onEvent(event: EventIncoming, success: (results: HandlerResult[]) => void = () => { },
-        // tslint:disable-next-line:no-empty
-                   error: (error: any) => void = () => { }) {
+    public processEvent(event: EventIncoming, success: (results: HandlerResult[]) => void = () => { },
+                        // tslint:disable-next-line:no-empty
+                        error: (error: any) => void = () => { }) {
         // setup context
         const ses = namespace.init();
         ses.run(() => {
@@ -90,7 +90,7 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
                 graphClient: this.createGraphClient(event),
             };
 
-            this.onEventWithContext(event);
+            this.onEventWithNamespace(event);
             this.listeners.forEach(l => l.eventStarting(ef, ctx));
 
             try {
@@ -128,11 +128,11 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
         this.sendMessage(response);
     }
 
-    protected onCommandWithContext(command: CommandIncoming) {
+    protected onCommandWithNamespace(command: CommandIncoming) {
         // this is intentionally left empty; sub classes can hook in some logic
     }
 
-    protected onEventWithContext(event: EventIncoming) {
+    protected onEventWithNamespace(event: EventIncoming) {
         // this is intentionally left empty; sub classes can hook in some logic
     }
 

@@ -9,7 +9,7 @@ import {
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { logger } from "../../util/logger";
-import { CommandIncoming, EventIncoming } from "../TransportEventHandler";
+import { CommandIncoming, EventIncoming } from "../RequestProcessor";
 
 export abstract class AbstractWebSocketMessageClient extends MessageClientSupport {
 

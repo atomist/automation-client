@@ -1,49 +1,49 @@
 import { EventFired } from "../HandleEvent";
 import { HandlerContext, HandlerResult } from "../Handlers";
 import { CommandInvocation } from "../internal/invoker/Payload";
-import { TransportEventHandler } from "../internal/transport/TransportEventHandler";
+import { RequestProcessor } from "../internal/transport/RequestProcessor";
 
 export interface AutomationEventListener {
 
-    registrationSuccessful(handler: TransportEventHandler);
+    registrationSuccessful(handler: RequestProcessor): void;
 
-    commandStarting(payload: CommandInvocation, ctx: HandlerContext);
-    commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult);
-    commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any);
+    commandStarting(payload: CommandInvocation, ctx: HandlerContext): void;
+    commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): void;
+    commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): void;
 
-    eventStarting(payload: EventFired<any>, ctx: HandlerContext);
-    eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]);
-    eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any);
+    eventStarting(payload: EventFired<any>, ctx: HandlerContext): void;
+    eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): void;
+    eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): void;
 
 }
 
 export class AutomationEventListenerSupport implements AutomationEventListener {
 
-    public registrationSuccessful(handler: TransportEventHandler) {
+    public registrationSuccessful(handler: RequestProcessor): void {
         // This is intentionally left empty
     }
 
-    public commandStarting(payload: CommandInvocation, ctx: HandlerContext) {
+    public commandStarting(payload: CommandInvocation, ctx: HandlerContext): void {
         // This is intentionally left empty
     }
 
-    public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult) {
+    public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): void {
         // This is intentionally left empty
     }
 
-    public commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any) {
+    public commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): void {
         // This is intentionally left empty
     }
 
-    public eventStarting(payload: EventFired<any>, ctx: HandlerContext) {
+    public eventStarting(payload: EventFired<any>, ctx: HandlerContext): void {
         // This is intentionally left empty
     }
 
-    public eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]) {
+    public eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): void {
         // This is intentionally left empty
     }
 
-    public  eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any) {
+    public eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): void {
         // This is intentionally left empty
     }
 }

@@ -5,7 +5,7 @@ import { HandlerResult } from "../../HandlerResult";
 
 // TODO CD I don't like this name here; it doesn't reflect what it does. Thinking ....
 // I agree, it confused me because it is not an EventHandler. How about Responder? - jess
-export interface TransportEventHandler {
+export interface RequestProcessor {
 
     /**
      * A new commnad handler request haa been received.
@@ -13,7 +13,7 @@ export interface TransportEventHandler {
      * @param {(result: HandlerResult) => void} success
      * @param {(error: any) => void} error
      */
-    onCommand(event: CommandIncoming, success?: (result: HandlerResult) => void, error?: (error: any) => void);
+    processCommand(command: CommandIncoming, success?: (result: HandlerResult) => void, error?: (error: any) => void);
 
     /**
      * A new cortex event has been received.
@@ -21,7 +21,7 @@ export interface TransportEventHandler {
      * @param {(results: HandlerResult[]) => void} success
      * @param {(error: any) => void} error
      */
-    onEvent(command: EventIncoming, success?: (results: HandlerResult[]) => void, error?: (error: any) => void);
+    processEvent(event: EventIncoming, success?: (results: HandlerResult[]) => void, error?: (error: any) => void);
 }
 
 export function isCommandIncoming(event: any): event is CommandIncoming {
