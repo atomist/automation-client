@@ -41,6 +41,7 @@ export interface EventIncoming {
 export interface Extensions {
 
     team_id: string;
+    team_name?: string;
     operationName: string;
     correlation_id: string;
 }

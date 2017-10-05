@@ -166,7 +166,8 @@ export abstract class AbstractTransportEventHandler implements TransportEventHan
 function setupNamespace(request: any, automations: AutomationServer) {
     namespace.set({
         correlationId:  _.get(request, "corrid") || _.get(request, "extensions.correlation_id"),
-        teamId: _.get(request, "correlation_context.team.id") || _.get(request, "extensions.team_id"),
+        teamId: _.get(request, "team.id") || _.get(request, "extensions.team_id"),
+        teamName: _.get(request, "team.name") || _.get(request, "extensions.team_name"),
         operation: _.get(request, "name") || _.get(request, "extensions.operationName"),
         name: automations.rugs.name,
         version: automations.rugs.version,

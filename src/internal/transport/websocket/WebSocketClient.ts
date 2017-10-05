@@ -2,7 +2,6 @@ import * as exitHook from "async-exit-hook";
 import axios from "axios";
 import * as promiseRetry from "promise-retry";
 import * as WebSocket from "ws";
-import { HandlerResult } from "../../../HandlerResult";
 import { logger } from "../../util/logger";
 import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../TransportEventHandler";
 import { sendMessage } from "./WebSocketMessageClient";
