@@ -1,26 +1,26 @@
 import * as WebSocket from "ws";
-import { setJwtToken } from "../../../globals";
+import * as global from "../../../globals";
 import { ApolloGraphClient } from "../../../graph/ApolloGraphClient";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
 import { MessageClient } from "../../../spi/message/MessageClient";
 import { logger } from "../../util/logger";
-import { AbstractEventStoringTransportEventHandler } from "../AbstractEventStoringTransportEventHandler";
-import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../TransportEventHandler";
+import { AbstractEventStoringRequestProcessor } from "../AbstractEventStoringRequestProcessor";
+import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../RequestProcessor";
 import { WebSocketClientOptions } from "./WebSocketClient";
 import {
     sendMessage,
     WebSocketCommandMessageClient,
     WebSocketEventMessageClient,
 } from "./WebSocketMessageClient";
-import { RegistrationConfirmation, WebSocketTransportEventHandler } from "./WebSocketTransportEventHandler";
+import { RegistrationConfirmation, WebSocketRequestProcessor } from "./WebSocketRequestProcessor";
 
-export class DefaultWebSocketTransportEventHandler extends AbstractEventStoringTransportEventHandler
-    implements WebSocketTransportEventHandler {
+export class DefaultWebSocketRequestProcessor extends AbstractEventStoringRequestProcessor
+    implements WebSocketRequestProcessor {
 
-    private registration: RegistrationConfirmation;
-    private webSocket: WebSocket;
+    private registration?: RegistrationConfirmation;
+    private webSocket?: WebSocket;
     private graphClients: Map<string, GraphClient> = new Map<string, GraphClient>();
 
     constructor(protected automations: AutomationServer, private options: WebSocketClientOptions,
@@ -30,8 +30,7 @@ export class DefaultWebSocketTransportEventHandler extends AbstractEventStoringT
 
     public onRegistration(registration: RegistrationConfirmation) {
         logger.info("Registration successful: %s", JSON.stringify(registration));
-
-        setJwtToken(registration.jwt);
+        global.setJwtToken(registration.jwt);
         this.registration = registration;
     }
 
@@ -57,7 +56,7 @@ export class DefaultWebSocketTransportEventHandler extends AbstractEventStoringT
             return this.graphClients.get(teamId);
         } else {
             const graphClient = new ApolloGraphClient(`${this.options.graphUrl}/${teamId}`,
-                { Authorization: `Bearer ${this.registration.jwt}`});
+                { Authorization: `Bearer ${this.registration.jwt}` });
 
             return graphClient;
         }

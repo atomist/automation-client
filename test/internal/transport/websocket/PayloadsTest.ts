@@ -12,19 +12,19 @@ describe("Payloads", () => {
             events: [{
                 name: "Foo",
                 description: "Some event description",
-                tags: [{name: "bar", description: "bar" }],
-                secrets: [{name: "secret", path: "atomist://secret2"}],
+                tags: [{ name: "bar", description: "bar" }],
+                secrets: [{ name: "secret", path: "atomist://secret2" }],
                 subscription: "subscription FooSub{}",
                 subscriptionName: "FooSub",
             }],
             commands: [{
                 name: "Bar",
-                tags: [{name: "bar", description: "bar" }],
+                tags: [{ name: "bar", description: "bar" }],
                 intent: ["intent1"],
-                secrets: [{ name: "secret", path: "atomist://secret1"}],
+                secrets: [{ name: "secret", path: "atomist://secret1" }],
                 description: "Some command description",
                 parameters: [{ name: "name", required: true }],
-                mapped_parameters: [{ foreign_key: "atomist://repo", local_key: "repo"}],
+                mapped_parameters: [{ foreign_key: "atomist://repo", local_key: "repo" }],
             }],
             ingestors: [{
                 name: "Foo",
@@ -37,17 +37,21 @@ describe("Payloads", () => {
         };
 
         const payload = prepareRegistration(rugs);
-        assert(!payload.events[0].subscriptionName);
-        assert(!payload.events[0].name);
-        assert(!payload.events[0].description);
-        assert(!payload.events[0].tags);
-        assert(payload.events[0].subscription === "subscription FooSub{}");
-        assert(payload.events[0].secrets[0] === "atomist://secret2");
-        assert(payload.commands[0].secrets[0] === "atomist://secret1");
+        assert(payload.events, "there are events");
+        assert(!payload.events[0].subscriptionName, "event does not have subscription name");
+        assert(!payload.events[0].name, "event does not have name");
+        assert(!payload.events[0].description, "event does not have description");
+        assert(!payload.events[0].tags, "event does not have tags");
+        assert(payload.events[0].subscription === "subscription FooSub{}", "event has subscription");
+        assert(payload.events[0].secrets, "events have secrets");
+        assert(payload.events[0].secrets[0] === "atomist://secret2", "event has a secret");
+        assert(payload.commands[0].secrets, "commands have secrets");
+        assert(payload.commands[0].secrets[0] === "atomist://secret1", "command has a secret");
 
         assert(payload.name === "foo");
         assert(payload.version === "1.0.0");
-        assert(payload.team_ids[0] === "x-team");
+        assert(payload.team_ids, "there are team ids");
+        assert(payload.team_ids[0] === "x-team", "has a team id");
         assert(!payload.keywords);
         assert(!payload.ingestors);
     });

@@ -7,16 +7,16 @@ import {
     ExpressServerOptions,
 } from "./internal/transport/express/ExpressServer";
 import { MetricEnabledAutomationEventListener } from "./internal/transport/MetricEnabledAutomationEventListener";
-import { TransportEventHandler } from "./internal/transport/TransportEventHandler";
+import { RequestProcessor } from "./internal/transport/RequestProcessor";
 import {
-    DefaultWebSocketTransportEventHandler,
-} from "./internal/transport/websocket/DefaultWebSocketTransportEventHandler";
+    DefaultWebSocketRequestProcessor,
+} from "./internal/transport/websocket/DefaultWebSocketRequestProcessor";
 import { prepareRegistration } from "./internal/transport/websocket/Payloads";
 import {
     WebSocketClient,
     WebSocketClientOptions,
 } from "./internal/transport/websocket/WebSocketClient";
-import { WebSocketTransportEventHandler } from "./internal/transport/websocket/WebSocketTransportEventHandler";
+import { WebSocketRequestProcessor } from "./internal/transport/websocket/WebSocketRequestProcessor";
 import { logger } from "./internal/util/logger";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
@@ -41,12 +41,12 @@ export class AutomationClient {
                 version: configuration.version,
                 teamIds: configuration.teamIds,
                 keywords: [],
-                token: process.env.GITHUB_TOKEN,
+                // We need remove the graph client stuff from the automationServer
+                // This is only here to support the CLI
+                token: configuration.token,
                 endpoints: {
-                    graphql: _.get(this.configuration, "endpoints.graphql")
-                        ? _.get(this.configuration, "endpoints.graphql") : DefaultGraphQLServer,
-                    api: _.get(this.configuration, "endpoints.api")
-                        ? _.get(this.configuration, "endpoints.api") : DefaultApiServer,
+                    graphql: _.get(this.configuration, "endpoints.graphql", DefaultGraphQLServer),
+                    api: _.get(this.configuration, "endpoints.api", DefaultApiServer),
                 },
             });
     }
@@ -73,10 +73,8 @@ export class AutomationClient {
     public run(): Promise<any> {
         logger.info(`Starting Atomist automation client for ${this.configuration.name}@${this.configuration.version}`);
         const webSocketOptions: WebSocketClientOptions = {
-            graphUrl: _.get(this.configuration, "endpoints.graphql")
-                ? _.get(this.configuration, "endpoints.graphql") : DefaultGraphQLServer,
-            registrationUrl: _.get(this.configuration, "endpoints.api")
-                ? _.get(this.configuration, "endpoints.api") : DefaultApiServer,
+            graphUrl: _.get(this.configuration, "endpoints.graphql", DefaultGraphQLServer),
+            registrationUrl: _.get(this.configuration, "endpoints.api", DefaultApiServer),
             token: this.configuration.token,
         };
         const handler = this.setupEventHandler(webSocketOptions);
@@ -86,25 +84,26 @@ export class AutomationClient {
         ]);
     }
 
-    private setupEventHandler(webSocketOptions: WebSocketClientOptions): WebSocketTransportEventHandler {
+    private setupEventHandler(webSocketOptions: WebSocketClientOptions): WebSocketRequestProcessor {
 
         if (this.configuration.listeners) {
-            return new DefaultWebSocketTransportEventHandler(this.automations, webSocketOptions,
-                [ new MetricEnabledAutomationEventListener(), ...this.configuration.listeners]);
+            return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
+                [new MetricEnabledAutomationEventListener(), ...this.configuration.listeners]);
         } else {
-            return new DefaultWebSocketTransportEventHandler(this.automations, webSocketOptions,
-                [ new MetricEnabledAutomationEventListener() ]);
+            return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
+                [new MetricEnabledAutomationEventListener()]);
         }
     }
 
-    private runWs(handler: WebSocketTransportEventHandler, options: WebSocketClientOptions): void {
-        this.webSocketClient = new WebSocketClient(() => prepareRegistration(this.automations.rugs), options,
-            handler );
+    private runWs(handler: WebSocketRequestProcessor, options: WebSocketClientOptions): void {
+        this.webSocketClient = new WebSocketClient(() => prepareRegistration(this.automations.rugs),
+            options, handler);
     }
 
-    private runHttp(handler: TransportEventHandler): void {
+    private runHttp(handler: RequestProcessor): void {
         const http = this.configuration.http;
-        this.httpPort = http && http.port ? http.port : (process.env.PORT ? +process.env.PORT : 2866);
+        this.httpPort = http && http.port ? http.port :
+            (process.env.PORT ? +process.env.PORT : 2866);
         const host = http && http.host ? http.host : "localhost";
         const expressOptions: ExpressServerOptions = {
             port: this.httpPort,

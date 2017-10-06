@@ -1,8 +1,9 @@
 import { Configuration } from "../src/configuration";
-import { TransportEventHandler } from "../src/internal/transport/TransportEventHandler";
+import { RequestProcessor } from "../src/internal/transport/RequestProcessor";
 import { guid } from "../src/internal/util/string";
 import { AutomationEventListenerSupport } from "../src/server/AutomationEventListener";
 import { HelloWorld } from "./command/HelloWorld";
+import { PlainHelloWorld } from "./command/PlainHelloWorld";
 import { SendStartupMessage } from "./command/SendStartupMessage";
 import { HelloIngestor } from "./event/HelloIngestor";
 import { HelloIssue } from "./event/HelloIssue";
@@ -14,14 +15,14 @@ const host = "https://automation-staging.atomist.services";
 
 class StartUpListener extends AutomationEventListenerSupport {
 
-    public registrationSuccessful(transport: TransportEventHandler) {
+    public registrationSuccessful(transport: RequestProcessor) {
 
         // TODO CD this way of declaring an incoming command isn't nice.
         // We'll fix it with the general polish of API messages.
-        transport.onCommand({
+        transport.processCommand({
             name: "SendStartupMessage",
             atomist_type: "command_handler_request",
-            correlation_context: { team: { id: "T1L0VDKJP" }},
+            correlation_context: { team: { id: "T1L0VDKJP" } },
             corrid: guid(),
             parameters: [{
                 name: "owner",
@@ -35,7 +36,7 @@ class StartUpListener extends AutomationEventListenerSupport {
             }],
             mapped_parameters: [],
             secrets: [],
-            team: { id: "T1L0VDKJP"},
+            team: { id: "T1L0VDKJP" },
             rug: {},
         });
     }
@@ -48,7 +49,7 @@ export const configuration: Configuration = {
     commands: [
         () => new HelloWorld(),
         () => new SendStartupMessage(),
-        // () => new PlainHelloWorld(),
+        () => new PlainHelloWorld(),
         // () => new UniversalSeed(),
         // () => new JavaSeed(),
         // () => new SpringBootSeed(),

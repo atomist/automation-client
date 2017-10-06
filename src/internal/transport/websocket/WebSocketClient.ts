@@ -3,15 +3,15 @@ import axios from "axios";
 import * as promiseRetry from "promise-retry";
 import * as WebSocket from "ws";
 import { logger } from "../../util/logger";
-import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../TransportEventHandler";
+import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../RequestProcessor";
 import { sendMessage } from "./WebSocketMessageClient";
-import { RegistrationConfirmation, WebSocketTransportEventHandler } from "./WebSocketTransportEventHandler";
+import { RegistrationConfirmation, WebSocketRequestProcessor } from "./WebSocketRequestProcessor";
 
 export class WebSocketClient {
 
     constructor(private registrationCallback: () => any,
                 private options: WebSocketClientOptions,
-                private handler: WebSocketTransportEventHandler) {
+                private requestProcessor: WebSocketRequestProcessor) {
 
         const retryOptions = {
             retries: 5,
@@ -25,9 +25,9 @@ export class WebSocketClient {
             if (retryCount > 1) {
                 logger.warn("Retrying registration due to previous error");
             }
-            return register(this.registrationCallback, options, handler)
+            return register(this.registrationCallback, options, requestProcessor)
                 .then(registration =>
-                    connect(this.registrationCallback, registration, this.options, this.handler))
+                    connect(this.registrationCallback, registration, options, requestProcessor))
                 .catch(retry);
         });
     }
@@ -36,15 +36,15 @@ export class WebSocketClient {
 let reconnect = true;
 
 function connect(registrationCallback: () => any, registration: RegistrationConfirmation,
-                 options: WebSocketClientOptions, handler: WebSocketTransportEventHandler): Promise<WebSocket> {
+                 options: WebSocketClientOptions, requestProcessor: WebSocketRequestProcessor): Promise<WebSocket> {
 
     // Functions are inline to avoid "this" peculiarities
     function invokeCommandHandler(chr: CommandIncoming) {
-        handler.onCommand(chr);
+        requestProcessor.processCommand(chr);
     }
 
     function invokeEventHandler(e: EventIncoming) {
-        handler.onEvent(e);
+        requestProcessor.processEvent(e);
     }
 
     return new Promise<WebSocket>(resolve => {
@@ -52,7 +52,7 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
         const ws = new WebSocket(registration.url);
 
         ws.on("open", function open() {
-            handler.onConnection(this);
+            requestProcessor.onConnection(this);
             resolve(ws);
         });
 
@@ -90,8 +90,8 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
             }
             // Only attempt to reconnect if we aren't shutting down
             if (reconnect) {
-                register(registrationCallback, options, handler)
-                    .then(reg => connect(registrationCallback, reg, options, handler));
+                register(registrationCallback, options, requestProcessor)
+                    .then(reg => connect(registrationCallback, reg, options, requestProcessor));
             }
         });
 
@@ -104,7 +104,7 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
 }
 
 function register(registrationCallback: () => any, options: WebSocketClientOptions,
-                  handler: WebSocketTransportEventHandler): Promise<RegistrationConfirmation> {
+                  handler: WebSocketRequestProcessor): Promise<RegistrationConfirmation> {
     const registrationPayload = registrationCallback();
 
     logger.info(`Registering ${registrationPayload.name}@${registrationPayload.version} ` +
