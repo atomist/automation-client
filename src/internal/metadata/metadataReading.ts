@@ -51,6 +51,10 @@ function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMet
                     // Make this optional parameter explicit
                     p.displayable = p.displayable !== false;
                     p.default_value = r[p.name];
+                    if (p.default_value) {
+                        // right now the bot only supports string parameter values
+                        p.default_value = p.default_value.toString();
+                    }
                     return p;
                 }) : [],
                 mapped_parameters: mappedParameterMetadataFromInstance(r),
