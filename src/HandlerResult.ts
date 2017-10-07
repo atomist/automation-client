@@ -3,11 +3,24 @@
  * command-specific, data
  */
 export interface HandlerResult {
-
     /**
      * 0 is success
      */
     code: number;
+
+    /**
+     * The simple text message describing the result
+     */
+    message?: string;
+}
+
+export interface HandlerError extends HandlerResult {
+
+    /**
+     * The stack trace of the error
+     */
+    stack?: any;
+
 }
 
 export const Success: HandlerResult = {
@@ -17,3 +30,7 @@ export const Success: HandlerResult = {
 export const Failure: HandlerResult = {
     code: 1,
 };
+
+export function failure(err: Error): HandlerError {
+    return { code: 1, message: err.message, stack: err.stack };
+}

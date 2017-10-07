@@ -162,7 +162,7 @@ class Subclass extends Superclass {
     })
     public subclassParam: string;
 
-    @MappedParameter(MappedParameters.GITHUB_REPOSITORY)
+    @MappedParameter(MappedParameters.GitHubRepository)
     public repo: string;
 
     @Secret("atomist://some_secret")

@@ -76,7 +76,7 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
     })
     public sourceBranch: string = "master";
 
-    @MappedParameter(MappedParameters.GITHUB_OWNER)
+    @MappedParameter(MappedParameters.GitHubOwner)
     public targetOwner: string;
 
     @Parameter({

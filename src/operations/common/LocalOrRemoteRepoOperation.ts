@@ -9,7 +9,7 @@ import { RepoLoader } from "./repoLoader";
  */
 export abstract class LocalOrRemoteRepoOperation extends LocalOrRemote {
 
-    @Secret(Secrets.ORG_TOKEN)
+    @Secret(Secrets.OrgToken)
     protected githubToken: string;
 
     protected repoLoader(): RepoLoader {

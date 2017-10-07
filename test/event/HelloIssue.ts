@@ -29,7 +29,7 @@ import {
 }`)
 export class HelloIssue implements HandleEvent<any> {
 
-    @Secret(Secrets.ORG_TOKEN)
+    @Secret(Secrets.OrgToken)
     public githubToken: string;
 
     public handle(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult> {

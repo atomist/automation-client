@@ -26,7 +26,7 @@ export class AddAtomistSpringAgent implements HandleCommand {
     @MappedParameter("atomist://github_url")
     public githubWebUrl: string;
 
-    @MappedParameter(MappedParameters.GITHUB_REPOSITORY)
+    @MappedParameter(MappedParameters.GitHubRepository)
     public repo: string;
 
     @Secret("atomist://some_secret")

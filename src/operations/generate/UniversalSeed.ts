@@ -18,7 +18,7 @@ export class UniversalSeed extends SeedDrivenGenerator {
 
     public static Name = "UniversalSeed";
 
-    @MappedParameter(MappedParameters.GITHUB_OWNER)
+    @MappedParameter(MappedParameters.GitHubOwner)
     public targetOwner: string;
 
     // TODO removing this breaks parameter inheritance. Why?
