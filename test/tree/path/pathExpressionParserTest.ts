@@ -17,7 +17,6 @@ describe("pathExpressionParser", () => {
 
     it("should parse all descendants", () => {
         const expr = "//*";
-
         const parsed = parsePathExpression(expr);
         assert(parsed.locationSteps.length === 1);
         assert(parsed.locationSteps[0].axis === "descendant");
@@ -26,7 +25,6 @@ describe("pathExpressionParser", () => {
 
     it("should parse all descendants with name", () => {
         const expr = "//thing";
-
         const parsed = parsePathExpression(expr);
         assert(parsed.locationSteps.length === 1);
         assert(parsed.locationSteps[0].axis === "descendant");
@@ -36,7 +34,6 @@ describe("pathExpressionParser", () => {
 
     it("should parse named children", () => {
         const expr = "/foo";
-
         const parsed = parsePathExpression(expr);
         assert(parsed.locationSteps.length === 1);
         assert(parsed.locationSteps[0].axis === "child");
@@ -57,7 +54,6 @@ describe("pathExpressionParser", () => {
 
     it("should parse named child then named descendants", () => {
         const expr = "/fizz//foo";
-
         const parsed = parsePathExpression(expr);
         assert(parsed.locationSteps.length === 2);
         assert(parsed.locationSteps[0].axis === "child");
@@ -70,7 +66,6 @@ describe("pathExpressionParser", () => {
 
     it("should parse named children with attribute", () => {
         const expr = "/foo[@value='bar']";
-
         const parsed = parsePathExpression(expr);
         assert(parsed.locationSteps.length === 1);
         assert(parsed.locationSteps[0].axis === "child");
@@ -83,7 +78,6 @@ describe("pathExpressionParser", () => {
 
     it("should parse nested path expression predicate", () => {
         const expr = "/foo[/bar/baz]";
-
         const parsed = parsePathExpression(expr);
         assert(parsed.locationSteps.length === 1);
         assert(parsed.locationSteps[0].axis === "child");
@@ -96,7 +90,6 @@ describe("pathExpressionParser", () => {
 
     it("should parse multiple nested path expression predicates", () => {
         const expr = "/foo[/bar/baz][/dog/cat]";
-
         const parsed = parsePathExpression(expr);
         assert(parsed.locationSteps.length === 1);
         assert(parsed.locationSteps[0].axis === "child");
@@ -111,7 +104,6 @@ describe("pathExpressionParser", () => {
 
     it("should parse nested nested path expression", () => {
         const expr = "/foo[/bar/baz[/dog/cat]]";
-
         const parsed = parsePathExpression(expr);
         assert(parsed.locationSteps.length === 1);
         assert(parsed.locationSteps[0].axis === "child");
