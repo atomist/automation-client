@@ -79,4 +79,30 @@ describe("microgrammar integration and path expression", () => {
             }).catch(done);
     });
 
+    it("should get into AST and update single non-terminal", done => {
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
+            age: Integer,
+        });
+        const fpr = new DefaultFileParserRegistry().addParser(
+            new MicrogrammarBasedFileParser("people", "person", mg));
+        // new MicrogrammarBasedFileParser("people", "person", mg)
+        const firstPerson = "Tom:16";
+        const content = firstPerson + " Mary:25";
+        const p = InMemoryProject.of(
+            {path: "Thing", content });
+        findMatches(p, AllFiles, fpr, "/people/person")
+            .then(matches => {
+                assert(matches.length === 2);
+                assert(matches[0].$value === firstPerson, `[${matches[0].$value}]`);
+                const secondPerson = "Abigail:44";
+                matches[0].$value = secondPerson;
+                p.flush()
+                    .then(_ => {
+                        const f = p.findFileSync("Thing");
+                        assert(f.getContentSync() === content.replace(firstPerson, secondPerson));
+                        done();
+                    });
+            }).catch(done);
+    });
+
 });

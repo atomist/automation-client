@@ -11,7 +11,10 @@ export interface TreeNode {
     $children?: TreeNode[];
 
     /**
-     * Value, if this is a terminal node
+     * Value. If this is a terminal node, its own value, which will always be available.
+     * If it's a non-terminal, the value is not guaranteed to be available.
+     * If it is, it will be the text from the offset to the end of the
+     * last token. This preserves white space between non-terminals.
      */
     $value?: string;
 

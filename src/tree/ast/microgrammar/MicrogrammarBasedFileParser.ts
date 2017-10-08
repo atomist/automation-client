@@ -1,10 +1,11 @@
+
 import { TreeNode } from "../../TreeNode";
 import { FileParser } from "../FileParser";
 
 import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { isTreePatternMatch, PatternMatch } from "@atomist/microgrammar/PatternMatch";
 import { File } from "../../../project/File";
-import { defineDynamicProperties } from "../../enrichment";
+import { defineDynamicProperties, fillInEmptyNonTerminalValues } from "../../enrichment";
 
 /**
  * Allow path expressions against results from a single microgrammar
@@ -17,18 +18,23 @@ export class MicrogrammarBasedFileParser implements FileParser {
     }
 
     public toAst(f: File): Promise<TreeNode> {
-        return f.getContent().then(content => {
-            const matches = this.grammar.findMatches(content);
-            const root = {
-                $name: this.rootName,
-                $children: matches.map(m => new MicrogrammarBackedTreeNode(this.matchName, m)),
-            };
-            defineDynamicProperties(root);
-            return root;
-        });
+        return f.getContent()
+            .then(content => {
+                const matches = this.grammar.findMatches(content);
+                const root = {
+                    $name: this.rootName,
+                    $children: matches.map(m => new MicrogrammarBackedTreeNode(this.matchName, m)),
+                };
+                defineDynamicProperties(root);
+                fillInEmptyNonTerminalValues(root, content);
+                return root;
+            });
     }
 }
 
+/**
+ * TreeNode implementation backed by a microgrammar match
+ */
 class MicrogrammarBackedTreeNode implements TreeNode {
 
     public readonly $children: TreeNode[];
@@ -48,7 +54,7 @@ class MicrogrammarBackedTreeNode implements TreeNode {
                     return new MicrogrammarBackedTreeNode(prop, sub);
                 });
         } else {
-            console.log("Exposing terminal %s as [%s]: value=[%s]", $name,  JSON.stringify(m), m.$matched);
+            console.log("Exposing terminal %s as [%s]: value=[%s]", $name, JSON.stringify(m), m.$matched);
             this.$value = String(m.$value);
         }
     }
