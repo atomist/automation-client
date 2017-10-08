@@ -17,8 +17,10 @@ event of a command handler.
 
 Three higher-level concepts: **reviewers**, **editors** and
 **generators**, make it easier to work with project content,
-performing cloning and git updates automatically. Microgrammar support
-allows sophisticated parsing and updates with clean diffs.
+performing cloning and git updates automatically. 
+
+Microgrammar support
+allows sophisticated parsing and updates with clean diffs. [Path expression](PathExpressions.md) support makes it possible to drill into the structure of files within projects in a consistent way, using a variety of grammars.
 
 ## Project and File Interface Concepts: Sync, Async and Scripting
 
