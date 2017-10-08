@@ -1,6 +1,5 @@
 import * as assert from "power-assert";
 import * as shell from "shelljs";
-
 import { MappedParameter, Parameter } from "../../decorators";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
@@ -125,7 +124,7 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
                 return this.local ?
                     populated.then(p => {
                         const parentDir = shell.pwd() + "";
-                        logger.info(`Creating local project using cwd=[${parentDir}]: Other name = ${p.name}`);
+                        logger.info(`Creating local project using cwd '${parentDir}': Other name '${p.name}'`);
                         return NodeFsLocalProject.copy(p, parentDir, this.targetRepo);
                     }).then(p => {
                         return {code: 0, baseDir: p.baseDir };
@@ -136,13 +135,14 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
                         p.deleteDirectorySync(".git");
                         const gp: GitProject = GitCommandGitProject.fromProject(p, this.githubToken);
                         return gp.init()
+                            .then(() => gp.setGitHubUserConfig())
                             .then(_ => {
-                                logger.info(`Creating new repo ${this.targetOwner}/${this.targetRepo}`);
+                                logger.info(`Creating new repo '${this.targetOwner}/${this.targetRepo}'`);
                                 return gp.createAndSetGitHubRemote(this.targetOwner, this.targetRepo,
                                     this.targetRepo, this.visibility);
                             })
                             .then(_ => {
-                                logger.info(`Committing to local repo at [${gp.baseDir}]`);
+                                logger.info(`Committing to local repo at '${gp.baseDir}'`);
                                 return gp.commit("Initial commit from Atomist");
                             })
                             .then(_ => this.push(gp))
@@ -182,5 +182,4 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
         logger.info(`Pushing local repo at [${gp.baseDir}]`);
         return gp.push();
     }
-
 }

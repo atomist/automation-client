@@ -95,6 +95,27 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         return this.setRemote(`https://${this.token}@github.com/${owner}/${repo}.git`);
     }
 
+    public setUserConfig(user: string, email: string): Promise<any> {
+        return this.runCommandInCwd(`git config user.name "${user}"`)
+            .then(() => this.runCommandInCwd(`git config user.email "${email}"`));
+    }
+
+    public setGitHubUserConfig(): Promise<any> {
+        const config = {
+            headers: {
+                Authorization: `token ${this.token}`,
+            },
+        };
+
+        return axios.get(`${GitHubBase}/user`, config)
+            .then(result => {
+                if (result.data.name && result.data.email) {
+                    return this.setUserConfig(result.data.name, result.data.email);
+                } else {
+                    return Promise.resolve();
+                }});
+    }
+
     public createAndSetGitHubRemote(owner: string, name: string, description: string = name,
                                     visibility: "private" | "public" = "private"): Promise<any> {
         const config = {

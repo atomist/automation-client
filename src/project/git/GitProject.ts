@@ -36,6 +36,21 @@ export interface GitProject extends LocalProject {
     setGitHubRemote(owner: string, repo: string): Promise<any>;
 
     /**
+     * Sets the given user and email as the running git commands
+     * @param {string} user
+     * @param {string} email
+     * @returns {Promise<any>}
+     */
+    setUserConfig(user: string, email: string): Promise<any>;
+
+    /**
+     * Sets the user config by using GitHub user information. Make sure to use a token that
+     * has user scope.
+     * @returns {Promise<any>}
+     */
+    setGitHubUserConfig(): Promise<any>;
+
+    /**
      * Does the project have uncommitted changes in Git?
      * @return {Promise<boolean>}
      */

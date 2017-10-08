@@ -33,7 +33,7 @@ export abstract class LocalOrRemote {
     })
     public dir: string;
 
-    @Secret(Secrets.userToken(["repo"]))
+    @Secret(Secrets.userToken(["repo", "user"]))
     protected githubToken: string;
 
     /**
