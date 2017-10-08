@@ -2,7 +2,7 @@ import "mocha";
 
 import * as assert from "power-assert";
 import { evaluateExpression } from "../../../src/tree/path/expressionEngine";
-import { AllNodeTest } from "../../../src/tree/path/nodeTests";
+import { AllNodeTest, NamedNodeTest } from "../../../src/tree/path/nodeTests";
 import { LocationStep } from "../../../src/tree/path/pathExpression";
 import { TreeNode } from "../../../src/tree/TreeNode";
 
@@ -32,6 +32,36 @@ describe("expressionEngine", () => {
         assert.deepEqual(result, [ thing1, thing2]);
     });
 
+    it("should find children matching on name", () => {
+        const thing1 = {$name: "Thing"};
+        const thing2 = {$name: "Thing"};
+        const tn: TreeNode = {
+            $name: "foo", $children: [
+                thing1, thing2,
+            ],
+        };
+        const pe = {
+            locationSteps: [new LocationStep("child", new NamedNodeTest("Thing"), [])],
+        };
+        const result = evaluateExpression(tn, pe);
+        assert.deepEqual(result, [ thing1, thing2]);
+    });
+
+    it("should not find children excluding on name", () => {
+        const thing1 = {$name: "Thing"};
+        const thing2 = {$name: "Thing"};
+        const tn: TreeNode = {
+            $name: "foo", $children: [
+                thing1, thing2,
+            ],
+        };
+        const pe = {
+            locationSteps: [new LocationStep("child", new NamedNodeTest("Thingxxx"), [])],
+        };
+        const result = evaluateExpression(tn, pe);
+        assert(result.length === 0);
+    });
+
     it("should find grandchildren", () => {
         const grandkid1 = {$name: "Grandkid1"};
         const grandkid2 = {$name: "Grandkid2"};
@@ -49,5 +79,4 @@ describe("expressionEngine", () => {
         assert.deepEqual(result, [ thing1, thing2, grandkid1, grandkid2 ]);
     });
 
-})
-;
+});
