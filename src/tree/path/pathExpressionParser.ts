@@ -1,10 +1,10 @@
-
 import { Concat } from "@atomist/microgrammar/matchers/Concat";
 import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { firstOf, optional } from "@atomist/microgrammar/Ops";
 import { isPatternMatch } from "@atomist/microgrammar/PatternMatch";
 import { Rep1Sep, zeroOrMore } from "@atomist/microgrammar/Rep";
 import { logger } from "../../internal/util/logger";
+import { ChildAxisSpecifier, DescendantOrSelfAxisSpecifier, SelfAxisSpecifier } from "./axisSpecifiers";
 import { AllNodeTest, NamedNodeTest } from "./nodeTests";
 import { LocationStep, PathExpression, Predicate, stringify } from "./pathExpression";
 import { NestedPathExpressionPredicate, ValuePredicate } from "./predicates";
@@ -67,11 +67,11 @@ const LocationStepGrammar = Microgrammar.fromDefinitions<LocationStep>({
     axis: ctx => {
         switch (ctx._axis) {
             case undefined :
-                return "child";
+                return ChildAxisSpecifier;
             case "/" :
-                return "descendant";
+                return DescendantOrSelfAxisSpecifier;
             case "." :
-                return "self";
+                return SelfAxisSpecifier;
             default:
                 throw new Error(`Unsupported axis specifier [${ctx._axis}]`);
         }

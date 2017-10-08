@@ -5,7 +5,12 @@ import { ExpressionEngine } from "./expressionEngine";
  * One of the three core elements of a LocationStep. Borrowed from XPath.
  * Determines the kind of navigation.
  */
-export type AxisSpecifier = "self" | "child" | "descendant";
+export interface AxisSpecifier {
+
+    type: string;
+
+    follow(tn: TreeNode): TreeNode[];
+}
 
 export type FailureResult = string;
 
@@ -26,15 +31,13 @@ export function isSuccessResult(a: any): a is SuccessResult {
 export interface NodeTest {
 
     /**
-     * Follow the given axis specifier to obtain nodes. Test them.
+     * Test nodes returned from navigating an AxisSpecifier.
      * @param {TreeNode} tn
-     * @param {AxisSpecifier} axis
      * @param {ExpressionEngine} ee
      * @return {SuccessResult}
      */
-    follow(tn: TreeNode,
-           axis: AxisSpecifier,
-           ee: ExpressionEngine): SuccessResult;
+    test(tn: TreeNode,
+         ee: ExpressionEngine): boolean;
 }
 
 /**
@@ -68,14 +71,17 @@ export class LocationStep {
     }
 
     public follow(tn: TreeNode, ee: ExpressionEngine): ExecutionResult {
-        return  this.test.follow(tn, this.axis, ee);
+        const allNodes = this.axis.follow(tn)
+            .filter(n => this.test.test(n, ee));
+        return allNodes.filter(n =>
+            !this.predicates.some(pred => !pred.evaluate(n, allNodes, ee)));
     }
 
     public toString() {
         const preds = this.predicates.length > 0 ?
             this.predicates.map(p => `[${p}]`).join("") :
             "";
-        return `${this.axis}::${this.test}${preds}`;
+        return `${this.axis.type}::${this.test}${preds}`;
     }
 
 }

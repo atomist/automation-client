@@ -1,6 +1,4 @@
-/**
- * Evaluates path expressions, whether as raw strings or parsed.
- */
+
 import { TreeNode } from "../TreeNode";
 import { ExecutionResult, isSuccessResult, PathExpression } from "./pathExpression";
 

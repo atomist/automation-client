@@ -1,7 +1,7 @@
 
 import { TreeNode } from "../TreeNode";
 import { ExpressionEngine } from "./expressionEngine";
-import { PathExpression, Predicate, stringify } from "./pathExpression";
+import { isSuccessResult, PathExpression, Predicate, stringify } from "./pathExpression";
 
 export class ValuePredicate implements Predicate {
 
@@ -21,7 +21,8 @@ export class NestedPathExpressionPredicate implements Predicate {
     constructor(public pathExpression: PathExpression) {}
 
     public evaluate(nodeToTest: TreeNode, returnedNodes: TreeNode[],  ee: ExpressionEngine): boolean {
-        throw new Error("not yet implemented");
+        const r = ee(nodeToTest, this.pathExpression);
+        return isSuccessResult(r) && r.length > 0;
     }
 
     public toString() {
