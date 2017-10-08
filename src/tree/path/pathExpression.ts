@@ -9,7 +9,13 @@ export interface AxisSpecifier {
 
     type: string;
 
-    follow(tn: TreeNode): TreeNode[];
+    /**
+     * Follow the given axis.
+     * @param {TreeNode} tn node we're navigating from
+     * @param {TreeNode} root root of document. Necessary to handle parent etc.
+     * @return {TreeNode[]}
+     */
+    follow(tn: TreeNode, root: TreeNode): TreeNode[];
 }
 
 export type FailureResult = string;
@@ -70,8 +76,8 @@ export class LocationStep {
                 public predicates: Predicate[]) {
     }
 
-    public follow(tn: TreeNode, ee: ExpressionEngine): ExecutionResult {
-        const allNodes = this.axis.follow(tn)
+    public follow(tn: TreeNode, root: TreeNode, ee: ExpressionEngine): ExecutionResult {
+        const allNodes = this.axis.follow(tn, root)
             .filter(n => this.test.test(n, ee));
         return allNodes.filter(n =>
             !this.predicates.some(pred => !pred.evaluate(n, allNodes, ee)));

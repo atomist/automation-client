@@ -1,7 +1,7 @@
 import "mocha";
 
 import * as assert from "power-assert";
-import { ChildAxisSpecifier, DescendantAxisSpecifier } from "../../../src/tree/path/axisSpecifiers";
+import { ChildAxisSpecifier, DescendantOrSelfAxisSpecifier } from "../../../src/tree/path/axisSpecifiers";
 import { AllNodeTest, NamedNodeTest } from "../../../src/tree/path/nodeTests";
 import { parsePathExpression } from "../../../src/tree/path/pathExpressionParser";
 import { NestedPathExpressionPredicate, ValuePredicate } from "../../../src/tree/path/predicates";
@@ -20,7 +20,7 @@ describe("pathExpressionParser", () => {
         const expr = "//*";
         const parsed = parsePathExpression(expr);
         assert(parsed.locationSteps.length === 1);
-        assert(parsed.locationSteps[0].axis === DescendantAxisSpecifier);
+        assert(parsed.locationSteps[0].axis === DescendantOrSelfAxisSpecifier);
         assert(parsed.locationSteps[0].test === AllNodeTest);
     });
 
@@ -28,7 +28,7 @@ describe("pathExpressionParser", () => {
         const expr = "//thing";
         const parsed = parsePathExpression(expr);
         assert(parsed.locationSteps.length === 1);
-        assert(parsed.locationSteps[0].axis === DescendantAxisSpecifier);
+        assert(parsed.locationSteps[0].axis === DescendantOrSelfAxisSpecifier);
         const nt = parsed.locationSteps[0].test as NamedNodeTest;
         assert(nt.name === "thing");
     });
@@ -46,7 +46,7 @@ describe("pathExpressionParser", () => {
         const expr = "//foo";
         const parsed = parsePathExpression(expr);
         assert(parsed.locationSteps.length === 1);
-        assert(parsed.locationSteps[0].axis === DescendantAxisSpecifier);
+        assert(parsed.locationSteps[0].axis === DescendantOrSelfAxisSpecifier);
         const nnt = parsed.locationSteps[0].test as NamedNodeTest;
         assert(nnt.name === "foo");
         assert(parsed.locationSteps[0].predicates.length === 0);
@@ -59,7 +59,7 @@ describe("pathExpressionParser", () => {
         assert(parsed.locationSteps[0].axis === ChildAxisSpecifier);
         const nnt1 = parsed.locationSteps[0].test as NamedNodeTest;
         assert(nnt1.name === "fizz");
-        assert(parsed.locationSteps[1].axis === DescendantAxisSpecifier);
+        assert(parsed.locationSteps[1].axis === DescendantOrSelfAxisSpecifier);
         const nnt2 = parsed.locationSteps[1].test as NamedNodeTest;
         assert(nnt2.name === "foo");
     });
