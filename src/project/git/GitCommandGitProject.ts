@@ -112,7 +112,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                 if (result.data.name && result.data.email) {
                     return this.setUserConfig(result.data.name, result.data.email);
                 } else {
-                    return Promise.resolve();
+                    return this.setUserConfig("Atomist Bot", "bot@atomist.com");
                 }});
     }
 
