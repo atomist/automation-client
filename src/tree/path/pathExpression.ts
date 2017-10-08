@@ -25,7 +25,15 @@ export function isSuccessResult(a: any): a is SuccessResult {
  */
 export interface NodeTest {
 
-    follow(tn: TreeNode, axis: AxisSpecifier,
+    /**
+     * Follow the given axis specifier to obtain nodes. Test them.
+     * @param {TreeNode} tn
+     * @param {AxisSpecifier} axis
+     * @param {ExpressionEngine} ee
+     * @return {SuccessResult}
+     */
+    follow(tn: TreeNode,
+           axis: AxisSpecifier,
            ee: ExpressionEngine): SuccessResult;
 }
 
@@ -65,7 +73,7 @@ export class LocationStep {
 
     public toString() {
         const preds = this.predicates.length > 0 ?
-            `[${this.predicates.map(p => `[${p}]`).join("")}]` :
+            this.predicates.map(p => `[${p}]`).join("") :
             "";
         return `${this.axis}::${this.test}${preds}`;
     }

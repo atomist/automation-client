@@ -5,6 +5,7 @@ import { evaluateExpression } from "../../../src/tree/path/expressionEngine";
 import { AllNodeTest, NamedNodeTest } from "../../../src/tree/path/nodeTests";
 import { LocationStep } from "../../../src/tree/path/pathExpression";
 import { TreeNode } from "../../../src/tree/TreeNode";
+import { ValuePredicate } from "../../../src/tree/path/predicates";
 
 describe("expressionEngine", () => {
 
@@ -62,6 +63,36 @@ describe("expressionEngine", () => {
         assert(result.length === 0);
     });
 
+    it("should find children matching on value", () => {
+        const thing1 = {$name: "Thing1", $value: "x" };
+        const thing2 = {$name: "Thing2", $value: "x" };
+        const tn: TreeNode = {
+            $name: "foo", $children: [
+                thing1, thing2,
+            ],
+        };
+        const pe = {
+            locationSteps: [new LocationStep("child", AllNodeTest, [ new ValuePredicate("x" )])],
+        };
+        const result = evaluateExpression(tn, pe);
+        assert.deepEqual(result, [ thing1, thing2]);
+    });
+
+    it("should not find children excluding on value", () => {
+        const thing1 = {$name: "Thing1", $value: "x" };
+        const thing2 = {$name: "Thing2", $value: "x" };
+        const tn: TreeNode = {
+            $name: "foo", $children: [
+                thing1, thing2,
+            ],
+        };
+        const pe = {
+            locationSteps: [new LocationStep("child", AllNodeTest, [ new ValuePredicate("x" )])],
+        };
+        const result = evaluateExpression(tn, pe);
+        assert(result.length === 0);
+    });
+
     it("should find grandchildren", () => {
         const grandkid1 = {$name: "Grandkid1"};
         const grandkid2 = {$name: "Grandkid2"};
@@ -78,5 +109,7 @@ describe("expressionEngine", () => {
         const result = evaluateExpression(tn, pe);
         assert.deepEqual(result, [ thing1, thing2, grandkid1, grandkid2 ]);
     });
+
+    it("should execute nested predicate");
 
 });
