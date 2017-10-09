@@ -14,9 +14,9 @@ import {
     IngestorMetadata,
 } from "../../../src/internal/metadata/metadata";
 import { populateParameters } from "../../../src/operations/support/parameterPopulation";
-import { AddAtomistSpringAgent, FooBarIngestor } from "./TestHandlers";
+import { AddAtomistSpringAgent, FooBarIngestor } from "../invoker/TestHandlers";
 
-describe("RugReader", () => {
+describe("metadataReading", () => {
 
     it("should extract metadataFromInstance from command handler", () => {
         const h = new AddAtomistSpringAgent();
@@ -119,12 +119,17 @@ describe("RugReader", () => {
         assert(md.route === h.route);
     });
 
-    it("should not have null intent array", () => {
+    it("should not have empty intent array", () => {
         const h = new HasNumberParam();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
-        assert(!md.intent);
+        assert(md.intent.length === 0);
     });
 
+    it("should not have empty tag array", () => {
+        const h = new HasNumberParam();
+        const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        assert(md.tags.length === 0);
+    });
 });
 
 export class Superclass implements HandleCommand {

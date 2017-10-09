@@ -42,8 +42,8 @@ function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMet
             return {
                 name: r.__name,
                 description: r.__description,
-                tags: r.__tags,
-                intent: r.__intent,
+                tags: r.__tags ? r.__tags : [],
+                intent: r.__intent ? r.__intent : [],
                 parameters: r.__parameters ? r.__parameters.map(p => {
                     if (!p.display_name) {
                         p.display_name = p.name;
@@ -74,7 +74,7 @@ function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMet
             return {
                 name: r.__name,
                 description: r.__description,
-                tags: r.__tags,
+                tags: r.__tags ? r.__tags : [],
                 subscription,
                 subscriptionName,
                 secrets: secretsMetadataFromInstance(r),
