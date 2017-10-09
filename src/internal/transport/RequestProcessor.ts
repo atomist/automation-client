@@ -10,18 +10,18 @@ export interface RequestProcessor {
     /**
      * A new commnad handler request haa been received.
      * @param {CommandIncoming} event
-     * @param {(result: HandlerResult) => void} success
+     * @param {(result: HandlerResult) => void} callback
      * @param {(error: any) => void} error
      */
-    processCommand(command: CommandIncoming, success?: (result: HandlerResult) => void, error?: (error: any) => void);
+    processCommand(command: CommandIncoming, callback?: (result: HandlerResult) => void, error?: (error: any) => void);
 
     /**
      * A new cortex event has been received.
      * @param {EventIncoming} command
-     * @param {(results: HandlerResult[]) => void} success
+     * @param {(results: HandlerResult[]) => void} callback
      * @param {(error: any) => void} error
      */
-    processEvent(event: EventIncoming, success?: (results: HandlerResult[]) => void, error?: (error: any) => void);
+    processEvent(event: EventIncoming, callback?: (results: HandlerResult[]) => void, error?: (error: any) => void);
 }
 
 export function isCommandIncoming(event: any): event is CommandIncoming {

@@ -19,7 +19,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
     constructor(protected automations: AutomationServer, protected listeners: AutomationEventListener[] = []) { }
 
     // tslint:disable-next-line:no-empty
-    public processCommand(command: CommandIncoming, success: (result: HandlerResult) => void = () => { },
+    public processCommand(command: CommandIncoming, callback: (result: HandlerResult) => void = () => { },
                           // tslint:disable-next-line:no-empty
                           error: (error: any) => void = () => { }) {
         // setup context
@@ -50,9 +50,13 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             try {
                 this.automations.invokeCommand(ci, ctx)
                     .then(result => {
-                        this.listeners.forEach(l => l.commandSuccessful(ci, ctx, result));
+                        if (result.code === 0) {
+                            this.listeners.forEach(l => l.commandSuccessful(ci, ctx, result));
+                        } else {
+                            this.listeners.forEach(l => l.commandFailed(ci, ctx, result));
+                        }
                         this.sendStatus(result.code === 0 ? true : false, result, command);
-                        success(result);
+                        callback(result);
                         logger.debug(`Finished invocation of command handler '%s': %s`,
                             command.name, JSON.stringify(result));
                     }).catch(err => {
@@ -65,7 +69,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
     }
 
     // tslint:disable-next-line:no-empty
-    public processEvent(event: EventIncoming, success: (results: HandlerResult[]) => void = () => { },
+    public processEvent(event: EventIncoming, callback: (results: HandlerResult[]) => void = () => { },
                         // tslint:disable-next-line:no-empty
                         error: (error: any) => void = () => { }) {
         // setup context
@@ -97,8 +101,12 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             try {
                 this.automations.onEvent(ef, ctx)
                     .then(result => {
-                        this.listeners.forEach(l => l.eventSuccessful(ef, ctx, result));
-                        success(result);
+                        if (!result.some(r => r.code !== 0)) {
+                            this.listeners.forEach(l => l.eventSuccessful(ef, ctx, result));
+                        } else {
+                            this.listeners.forEach(l => l.eventFailed(ef, ctx, result));
+                        }
+                        callback(result);
                         logger.debug(`Finished invocation of event handler '%s': %s`,
                             event.extensions.operationName, JSON.stringify(result));
                     })
