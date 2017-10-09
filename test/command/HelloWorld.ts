@@ -1,15 +1,15 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import { CommandHandler, MappedParameter, Parameter, Secret } from "../../src/decorators";
+import { Failure } from "../../src/HandlerResult";
 import { HandleCommand, HandlerContext, HandlerResult, MappedParameters, Secrets } from "../../src/Handlers";
 import { sendMessages } from "../../src/operations/support/contextUtils";
 import { buttonForCommand, menuForCommand } from "../../src/spi/message/MessageClient";
-import { Failure } from "../../src/HandlerResult";
 
 @CommandHandler("Sends a hello back to the client", "hello cd")
 export class HelloWorld implements HandleCommand {
 
     @Parameter({pattern: /^.*$/})
-    public name: string
+    public name: string;
 
     @Secret(Secrets.userToken(["repo"]))
     public userToken: string;
