@@ -25,7 +25,7 @@ function addChildProperty(n: TreeNode, key: string, value: TreeNode): void {
         n[pluralName(key)] = [];
     }
     n[pluralName(key)].push(valueToUse);
-    logger.debug("Adding property %s to node name %s", key, n.$name);
+    // logger.debug("Adding property %s to node name %s", key, n.$name);
     if (!n[key]) {
         Object.defineProperty(n, key, {
             get() {

@@ -3,16 +3,16 @@ import { TreeNode } from "../TreeNode";
 import { ExpressionEngine } from "./expressionEngine";
 import { isSuccessResult, PathExpression, Predicate, stringify } from "./pathExpression";
 
-export class ValuePredicate implements Predicate {
+export class AttributeEqualityPredicate implements Predicate {
 
-    constructor(public $value: string) {}
+    constructor(public readonly name: string, public readonly value: string) {}
 
     public evaluate(nodeToTest: TreeNode, returnedNodes: TreeNode[]): boolean {
-        return nodeToTest.$value === this.$value;
+        return nodeToTest.$value === this.value;
     }
 
     public toString() {
-        return `@value='${this.$value}'`;
+        return `@${this.name}='${this.value}'`;
     }
 }
 

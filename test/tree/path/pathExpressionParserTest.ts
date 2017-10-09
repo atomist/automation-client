@@ -4,7 +4,7 @@ import * as assert from "power-assert";
 import { ChildAxisSpecifier, DescendantOrSelfAxisSpecifier } from "../../../src/tree/path/axisSpecifiers";
 import { AllNodeTest, NamedNodeTest } from "../../../src/tree/path/nodeTests";
 import { parsePathExpression } from "../../../src/tree/path/pathExpressionParser";
-import { NestedPathExpressionPredicate, ValuePredicate } from "../../../src/tree/path/predicates";
+import { NestedPathExpressionPredicate, AttributeEqualityPredicate } from "../../../src/tree/path/predicates";
 
 describe("pathExpressionParser", () => {
 
@@ -72,8 +72,21 @@ describe("pathExpressionParser", () => {
         const nnt = parsed.locationSteps[0].test as NamedNodeTest;
         assert(nnt.name === "foo");
         assert(parsed.locationSteps[0].predicates.length === 1);
-        const pred = parsed.locationSteps[0].predicates[0] as ValuePredicate;
-        assert(pred.$value === "bar");
+        const pred = parsed.locationSteps[0].predicates[0] as AttributeEqualityPredicate;
+        assert(pred.value === "bar");
+    });
+
+    it("should parse children with custom attribute", () => {
+        const expr = "/foo[@smeg='smog']";
+        const parsed = parsePathExpression(expr);
+        assert(parsed.locationSteps.length === 1);
+        assert(parsed.locationSteps[0].axis === ChildAxisSpecifier);
+        const nnt = parsed.locationSteps[0].test as NamedNodeTest;
+        assert(nnt.name === "foo");
+        assert(parsed.locationSteps[0].predicates.length === 1);
+        const pred = parsed.locationSteps[0].predicates[0] as AttributeEqualityPredicate;
+        assert(pred.name === "smeg");
+        assert(pred.value === "smog");
     });
 
     it("should parse nested path expression predicate", () => {

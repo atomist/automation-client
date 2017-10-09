@@ -7,7 +7,7 @@ import { logger } from "../../internal/util/logger";
 import { ChildAxisSpecifier, DescendantOrSelfAxisSpecifier, SelfAxisSpecifier } from "./axisSpecifiers";
 import { AllNodeTest, NamedNodeTest } from "./nodeTests";
 import { LocationStep, PathExpression, Predicate, stringify } from "./pathExpression";
-import { NestedPathExpressionPredicate, ValuePredicate } from "./predicates";
+import { NestedPathExpressionPredicate, AttributeEqualityPredicate } from "./predicates";
 
 /**
  * Parse the given string to path expression. Throw an error in the event of failure.
@@ -19,12 +19,12 @@ export function parsePathExpression(expr: string): PathExpression {
     // TODO the _initialized property is being added to microgrammar LazyMatcher
     // to avoid the need for adding a property here
     if (!pg._initialized) {
-        pg._term = firstOf(ValuePredicateGrammar, AbsolutePathExpressionGrammar);
+        pg._term = firstOf(ValuePredicateGrammar, PathExpressionGrammar);
         pg._initialized = true;
         PredicateGrammar._init();
     }
 
-    const m = AbsolutePathExpressionGrammar.exactMatch(expr);
+    const m = PathExpressionGrammar.exactMatch(expr);
     if (isPatternMatch(m)) {
         logger.debug("Successfully parsed path expression [%s]: %s", expr, stringify(m));
         return m;
@@ -45,7 +45,7 @@ const PredicateGrammarDefs = {
     _term: null, // Will be set later to avoid circularity
     term: ctx => {
         if (!!ctx._term.name && !!ctx._term.value) {
-            return new ValuePredicate(ctx._term.value);
+            return new AttributeEqualityPredicate(ctx._term.name, ctx._term.value);
         } else if (!!ctx._term.locationSteps) {
             return new NestedPathExpressionPredicate(ctx._term as PathExpression);
         }
@@ -81,12 +81,13 @@ const LocationStepGrammar = Microgrammar.fromDefinitions<LocationStep>({
     predicates: ctx => ctx._predicates.map(p => p.term),
 });
 
-const RelativePathExpressionGrammar = {
+const RelativePathExpressionDefs = {
     _locationSteps: new Rep1Sep(LocationStepGrammar, "/"),
     locationSteps: ctx => ctx._locationSteps.map(l => new LocationStep(l.axis, l.test, l.predicates)),
 };
 
-const AbsolutePathExpressionGrammar = Microgrammar.fromDefinitions<PathExpression>({
-    _slash: "/",
-    ...RelativePathExpressionGrammar,
+const PathExpressionGrammar = Microgrammar.fromDefinitions<PathExpression>({
+    _slash: optional("/"),
+    absolute: ctx => !!ctx._slash,
+    ...RelativePathExpressionDefs,
 });

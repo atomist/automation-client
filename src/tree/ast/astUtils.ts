@@ -89,14 +89,18 @@ export function findFileMatches(p: ProjectNonBlocking,
     }
     return saveFromFilesAsync<FileHit>(p, globPattern, file => {
         return parser.toAst(file)
-            .then(root => {
+            .then(topLevelProduction => {
                 logger.debug("Successfully parsed file [%s] to AST with root node named [%s]. Will execute [%s]",
-                    file.path, root.$name, pathExpression);
-                defineDynamicProperties(root);
+                    file.path, topLevelProduction.$name, pathExpression);
+                defineDynamicProperties(topLevelProduction);
                 // logger.debug(JSON.stringify(root, null, 1));
-                // Put in an artificial container: The root
-                const container: TreeNode = { $name: file.name, $children: [ root ] };
-                const r = evaluateExpression(container, parsed);
+                const fileNode = {
+                    path: file.path,
+                    name: file.name,
+                    $name: file.name,
+                    $children: [ topLevelProduction ],
+                };
+                const r = evaluateExpression(fileNode, parsed);
                 if (isSuccessResult(r)) {
                     logger.debug("%d matches in file [%s]", r.length, file.path);
                     return new FileHit(p, file, r);

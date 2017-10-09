@@ -3,13 +3,13 @@ import "mocha";
 import * as assert from "power-assert";
 import {
     ChildAxisSpecifier, DescendantAxisSpecifier,
-    DescendantOrSelfAxisSpecifier,
+    DescendantOrSelfAxisSpecifier, SelfAxisSpecifier,
 } from "../../../src/tree/path/axisSpecifiers";
 import { evaluateExpression } from "../../../src/tree/path/expressionEngine";
 import { AllNodeTest, NamedNodeTest } from "../../../src/tree/path/nodeTests";
 import { LocationStep } from "../../../src/tree/path/pathExpression";
 import { parsePathExpression } from "../../../src/tree/path/pathExpressionParser";
-import { NestedPathExpressionPredicate, ValuePredicate } from "../../../src/tree/path/predicates";
+import { NestedPathExpressionPredicate, AttributeEqualityPredicate } from "../../../src/tree/path/predicates";
 import { TreeNode } from "../../../src/tree/TreeNode";
 
 describe("expressionEngine", () => {
@@ -18,6 +18,33 @@ describe("expressionEngine", () => {
         const tn: TreeNode = {$name: "foo"};
         const pe = {
             locationSteps: [new LocationStep(ChildAxisSpecifier, AllNodeTest, [])],
+        };
+        const result = evaluateExpression(tn, pe);
+        assert.deepEqual(result, []);
+    });
+
+    it("should return self", () => {
+        const tn = {$name: "Thing1"};
+        const pe = {
+            locationSteps: [new LocationStep(SelfAxisSpecifier, AllNodeTest, [])],
+        };
+        const result = evaluateExpression(tn, pe);
+        assert.deepEqual(result, [tn]);
+    });
+
+    it("should return self passing test", () => {
+        const tn = {$name: "Thing1"};
+        const pe = {
+            locationSteps: [new LocationStep(SelfAxisSpecifier, AllNodeTest, [ { evaluate: () => true } ])],
+        };
+        const result = evaluateExpression(tn, pe);
+        assert.deepEqual(result, [tn]);
+    });
+
+    it("should not return self failing test", () => {
+        const tn = {$name: "Thing1"};
+        const pe = {
+            locationSteps: [new LocationStep(SelfAxisSpecifier, AllNodeTest, [ { evaluate: () => false } ])],
         };
         const result = evaluateExpression(tn, pe);
         assert.deepEqual(result, []);
@@ -77,7 +104,8 @@ describe("expressionEngine", () => {
             ],
         };
         const pe = {
-            locationSteps: [new LocationStep(ChildAxisSpecifier, AllNodeTest, [new ValuePredicate("x")])],
+            locationSteps: [new LocationStep(ChildAxisSpecifier, AllNodeTest,
+                [new AttributeEqualityPredicate("$value", "x")])],
         };
         const result = evaluateExpression(tn, pe);
         assert.deepEqual(result, [thing1, thing2]);
@@ -92,7 +120,8 @@ describe("expressionEngine", () => {
             ],
         };
         const pe = {
-            locationSteps: [new LocationStep(ChildAxisSpecifier, AllNodeTest, [new ValuePredicate("xyz")])],
+            locationSteps: [new LocationStep(ChildAxisSpecifier, AllNodeTest,
+                [new AttributeEqualityPredicate("$value", "xyz")])],
         };
         const result = evaluateExpression(tn, pe);
         assert(result.length === 0);
