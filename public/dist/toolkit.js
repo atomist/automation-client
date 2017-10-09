@@ -3759,10 +3759,27 @@ function init() {
           row += "<td style='width: 10%'>&nbsp</td>";
           row += "<td colspan='4'>";
           row += "<div class='card-inverse'><div class='card-header'>Invoke</div><div class='card-block'><h4 class='card-title'>" + element.name + "</h4><form method='get'>";
-          if (element.parameters) {
+          if (element.parameters && element.parameters.length > 0) {
+            row += "<h5 class='card-title'>Parameters</h5>";
             element.parameters.forEach(function (param) {
               row += "<div class='form-group'><label for='" + param.name + "'>" + param.display_name + "</label><input type='text' class='form-control form-control-sm' id='" + param.name + "' name='" + param.name + "' placeholder='" + (param.default_value ? param.default_value : "") + "' aria-describedby='" + param.name + "-help'>";
               row += "<p id='" + param.name + "-help' class='form-text text-muted'>" + (param.description ? param.description : "") + "</p>";
+              row += "</div>";
+            });
+          }
+          if (element.mapped_parameters && element.mapped_parameters.length > 0) {
+            row += "<h5 class='card-title'>Mapped Parameters</h5>";
+            element.mapped_parameters.forEach(function (param) {
+              row += "<div class='form-group'><label for='mp_" + param.local_key + "'>" + param.local_key + "</label><input type='text' class='form-control form-control-sm' id='mp_" + param.local_key + "' name='mp_" + param.local_key + "' aria-describedby='mp_" + param.local_key + "-help'>";
+              row += "<p id='mp_" + param.local_key + "-help' class='form-text text-muted'>" + (param.foreign_key ? param.foreign_key : "") + "</p>";
+              row += "</div>";
+            });
+          }
+          if (element.secrets && element.secrets.length > 0) {
+            row += "<h5 class='card-title'>Secrets</h5>";
+            element.secrets.forEach(function (param) {
+              row += "<div class='form-group'><label for='s_" + param.path + "'>" + param.path + "</label><input type='text' class='form-control form-control-sm' id='s_" + param.path + "' name='s_" + param.path + "' aria-describedby='s_" + param.path + "-help'>";
+              row += "<p id='s_" + param.path + "-help' class='form-text text-muted'>" + (param.name ? param.name : "") + "</p>";
               row += "</div>";
             });
           }
@@ -3810,7 +3827,7 @@ function init() {
             succesCount = val.success.duration.count;
             successMean = val.success.duration.mean;
           }
-          if (val.error) {
+          if (val.failure) {
             errorCount = val.failure.duration.count;
             errorMean = val.failure.duration.mean;
           }

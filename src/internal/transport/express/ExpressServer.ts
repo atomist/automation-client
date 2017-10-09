@@ -157,19 +157,32 @@ export class ExpressServer {
 
         exp.get(url, this.authenticate("basic", "bearer"),
             (req, res) => {
-                const args = h.parameters.filter(p => {
+                const parameters = h.parameters.filter(p => {
                     const value = req.query[p.name];
                     return value && value.length > 0;
                 }).map(p => {
                     return {name: p.name, value: req.query[p.name]};
                 });
+                const mappedParameters = h.mapped_parameters.filter(p => {
+                    const value = req.query[`mp_${p.local_key}`];
+                    return value && value.length > 0;
+                }).map(p => {
+                    return {name: p.local_key, value: req.query[`mp_${p.local_key}`]};
+                });
+                const secrets = h.secrets.filter(p => {
+                    const value = req.query[`s_${p.path}`];
+                    return value && value.length > 0;
+                }).map(p => {
+                    return {name: p.path, value: req.query[`s_${p.path}`]};
+                });
+
                 const payload: CommandIncoming = {
                     atomist_type: "command_handler_request",
                     name: h.name,
-                    parameters: args,
+                    parameters,
                     rug: {},
-                    mapped_parameters: undefined,
-                    secrets: undefined,
+                    mapped_parameters: mappedParameters,
+                    secrets,
                     correlation_context: {team: { id: this.automations.rugs.team_ids[0] }},
                     corrid: guid(),
                     team: {
