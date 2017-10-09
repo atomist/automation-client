@@ -101,6 +101,56 @@ describe("microgrammar integration and path expression", () => {
             }).catch(done);
     });
 
+    it("should get into AST and add content after non-terminal", done => {
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
+            age: Integer,
+        });
+        const fpr = new DefaultFileParserRegistry().addParser(
+            new MicrogrammarBasedFileParser("people", "person", mg));
+        const firstPerson = "Tom:16";
+        const content = firstPerson + " Mary:25";
+        const p = InMemoryProject.of(
+            {path: "Thing", content});
+        findMatches(p, fpr, AllFiles, "/people/person")
+            .then(matches => {
+                assert(matches.length === 2);
+                assert(matches[0].$value === firstPerson, `[${matches[0].$value}]`);
+                const newContent = "this is junk";
+                matches[0].append(newContent);
+                p.flush()
+                    .then(_ => {
+                        const f = p.findFileSync("Thing");
+                        assert(f.getContentSync() === content.replace(firstPerson, firstPerson + newContent));
+                        done();
+                    });
+            }).catch(done);
+    });
+
+    it("should get into AST and add content before non-terminal", done => {
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
+            age: Integer,
+        });
+        const fpr = new DefaultFileParserRegistry().addParser(
+            new MicrogrammarBasedFileParser("people", "person", mg));
+        const firstPerson = "Tom:16";
+        const secondPerson = "Mary:25";
+        const content = firstPerson +  " " + secondPerson;
+        const p = InMemoryProject.of(
+            {path: "Thing", content});
+        findMatches(p, fpr, AllFiles, "/people/person")
+            .then(matches => {
+                assert(matches.length === 2);
+                const newContent = "this is junk";
+                matches[1].prepend(newContent);
+                p.flush()
+                    .then(_ => {
+                        const f = p.findFileSync("Thing");
+                        assert(f.getContentSync() === firstPerson + " " + newContent + secondPerson);
+                        done();
+                    });
+            }).catch(done);
+    });
+
     it("should allow predicate on file", done => {
         const mg = Microgrammar.fromString<Person>("${name}:${age}", {
             age: Integer,
@@ -119,6 +169,8 @@ describe("microgrammar integration and path expression", () => {
                 done();
             }).catch(done);
     });
+
+    it("handles multiple updates to same property");
 
     it("execute unified expression and update single terminal", done => {
         const mg = Microgrammar.fromString<Person>("${name}:${age}", {
