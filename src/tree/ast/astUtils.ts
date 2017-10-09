@@ -4,6 +4,7 @@ import * as _ from "lodash";
 
 import { logger } from "../../internal/util/logger";
 
+import { AllFiles } from "../../project/fileGlobs";
 import { ProjectNonBlocking, ProjectScripting } from "../../project/Project";
 import { saveFromFilesAsync } from "../../project/util/projectUtils";
 import { defineDynamicProperties } from "../enrichment";
@@ -63,6 +64,36 @@ export class FileHit {
 }
 
 /**
+ * Separates glob patterns from path expressions in unified expression syntax
+ * @type {string}
+ */
+export const ExpressionSeparator = "::";
+
+/**
+ * Integrate path expressions with project operations to find all matches
+ * using a unified string expression format of the form
+ * <glob pattern>-><path expression>
+ * This can be useful to foster reuse
+ * @param p project
+ * @param unifiedExpression file glob pattern + path expression to execute
+ * @param parserOrRegistry parser for files
+ * @return {Promise<TreeNode[]>} hit record for each matching file
+ */
+export function findByExpression(p: ProjectNonBlocking,
+                                 parserOrRegistry: FileParser | FileParserRegistry,
+                                 unifiedExpression: string): Promise<TreeNode[]> {
+    const split = unifiedExpression.split(ExpressionSeparator);
+    if (split.length !== 2) {
+        throw new Error(`Invalid unified expression syntax [${unifiedExpression}]: ` +
+            `Format is <glob pattern>${ExpressionSeparator}<path expr>`);
+    }
+    const globPattern = split[0];
+    const pathExpression = _.drop(split, 1).join("");
+    logger.info("Glob is [%s], path expression [%s] from [%s]", globPattern, pathExpression, unifiedExpression);
+    return findMatches(p, parserOrRegistry, globPattern, pathExpression);
+}
+
+/**
  * Integrate path expressions with project operations to find all matches
  * @param p project
  * @param globPattern file glob pattern
@@ -71,16 +102,16 @@ export class FileHit {
  * @return {Promise<TreeNode[]>} hit record for each matching file
  */
 export function findMatches(p: ProjectNonBlocking,
-                            globPattern: string,
                             parserOrRegistry: FileParser | FileParserRegistry,
+                            globPattern: string,
                             pathExpression: string | PathExpression): Promise<TreeNode[]> {
-    return findFileMatches(p, globPattern, parserOrRegistry, pathExpression)
+    return findFileMatches(p, parserOrRegistry, globPattern, pathExpression)
         .then(fileHits => _.flatten(fileHits.map(f => f.matches)));
 }
 
 export function findFileMatches(p: ProjectNonBlocking,
-                                globPattern: string,
                                 parserOrRegistry: FileParser | FileParserRegistry,
+                                globPattern: string,
                                 pathExpression: string | PathExpression): Promise<FileHit[]> {
     const parsed: PathExpression = toPathExpression(pathExpression);
     const parser = findParser(parsed, parserOrRegistry);
@@ -98,7 +129,7 @@ export function findFileMatches(p: ProjectNonBlocking,
                     path: file.path,
                     name: file.name,
                     $name: file.name,
-                    $children: [ topLevelProduction ],
+                    $children: [topLevelProduction],
                 };
                 const r = evaluateExpression(fileNode, parsed);
                 if (isSuccessResult(r)) {

@@ -4,7 +4,7 @@ import * as assert from "power-assert";
 import { ChildAxisSpecifier, DescendantOrSelfAxisSpecifier } from "../../../src/tree/path/axisSpecifiers";
 import { AllNodeTest, NamedNodeTest } from "../../../src/tree/path/nodeTests";
 import { parsePathExpression } from "../../../src/tree/path/pathExpressionParser";
-import { NestedPathExpressionPredicate, AttributeEqualityPredicate } from "../../../src/tree/path/predicates";
+import { AttributeEqualityPredicate, NestedPathExpressionPredicate } from "../../../src/tree/path/predicates";
 
 describe("pathExpressionParser", () => {
 

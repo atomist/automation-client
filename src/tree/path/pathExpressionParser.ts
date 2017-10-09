@@ -7,7 +7,7 @@ import { logger } from "../../internal/util/logger";
 import { ChildAxisSpecifier, DescendantOrSelfAxisSpecifier, SelfAxisSpecifier } from "./axisSpecifiers";
 import { AllNodeTest, NamedNodeTest } from "./nodeTests";
 import { LocationStep, PathExpression, Predicate, stringify } from "./pathExpression";
-import { NestedPathExpressionPredicate, AttributeEqualityPredicate } from "./predicates";
+import { AttributeEqualityPredicate, NestedPathExpressionPredicate } from "./predicates";
 
 /**
  * Parse the given string to path expression. Throw an error in the event of failure.
@@ -29,7 +29,7 @@ export function parsePathExpression(expr: string): PathExpression {
         logger.debug("Successfully parsed path expression [%s]: %s", expr, stringify(m));
         return m;
     } else {
-        logger.info("Error parsing path expression [%s]: %s", expr, m);
+        logger.info("Error parsing path expression [%s]: %s", expr, JSON.stringify(m));
         throw new Error("Failure: " + JSON.stringify(m));
     }
 }

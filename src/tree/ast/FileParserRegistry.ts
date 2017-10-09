@@ -1,9 +1,9 @@
 import { Dictionary } from "lodash";
+import { SelfAxisSpecifier } from "../path/axisSpecifiers";
 import { isNamedNodeTest } from "../path/nodeTests";
 import { PathExpression } from "../path/pathExpression";
 import { toPathExpression } from "./astUtils";
 import { FileParser } from "./FileParser";
-import { SelfAxisSpecifier } from "../path/axisSpecifiers";
 
 /**
  * Registry of FileParsers. Allows resolution of the appropriate parser

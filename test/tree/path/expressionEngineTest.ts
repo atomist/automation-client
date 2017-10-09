@@ -9,7 +9,7 @@ import { evaluateExpression } from "../../../src/tree/path/expressionEngine";
 import { AllNodeTest, NamedNodeTest } from "../../../src/tree/path/nodeTests";
 import { LocationStep } from "../../../src/tree/path/pathExpression";
 import { parsePathExpression } from "../../../src/tree/path/pathExpressionParser";
-import { NestedPathExpressionPredicate, AttributeEqualityPredicate } from "../../../src/tree/path/predicates";
+import { AttributeEqualityPredicate, NestedPathExpressionPredicate } from "../../../src/tree/path/predicates";
 import { TreeNode } from "../../../src/tree/TreeNode";
 
 describe("expressionEngine", () => {

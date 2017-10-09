@@ -5,7 +5,7 @@ import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { Integer } from "@atomist/microgrammar/Primitives";
 import { AllFiles } from "../../../../src/project/fileGlobs";
 import { InMemoryProject } from "../../../../src/project/mem/InMemoryProject";
-import { findMatches } from "../../../../src/tree/ast/astUtils";
+import { findByExpression, findMatches } from "../../../../src/tree/ast/astUtils";
 import { DefaultFileParserRegistry } from "../../../../src/tree/ast/FileParserRegistry";
 import { MicrogrammarBasedFileParser } from "../../../../src/tree/ast/microgrammar/MicrogrammarBasedFileParser";
 
@@ -24,7 +24,7 @@ describe("microgrammar integration and path expression", () => {
             new MicrogrammarBasedFileParser("people", "person", mg));
         const p = InMemoryProject.of(
             {path: "Thing", content: "Tom:16 Mary:25"});
-        findMatches(p, AllFiles, fpr, "/people/person/name")
+        findMatches(p, fpr, AllFiles, "/people/person/name")
             .then(matches => {
                 assert(matches.length === 2);
                 assert(matches[0].$value === "Tom");
@@ -41,7 +41,7 @@ describe("microgrammar integration and path expression", () => {
             new MicrogrammarBasedFileParser("people", "person", mg));
         const p = InMemoryProject.of(
             {path: "Thing", content: "Tom:16 Mary:25"});
-        findMatches(p, AllFiles, fpr, "/people/person/name")
+        findMatches(p, fpr, AllFiles, "/people/person/name")
             .then(matches => {
                 assert(matches.length === 2);
                 assert(matches[0].$value === "Tom");
@@ -62,7 +62,7 @@ describe("microgrammar integration and path expression", () => {
             new MicrogrammarBasedFileParser("people", "person", mg));
         const p = InMemoryProject.of(
             {path: "Thing", content: "Tom:16 Mary:25"});
-        findMatches(p, AllFiles, fpr, "/people/person/name")
+        findMatches(p, fpr, AllFiles, "/people/person/name")
             .then(matches => {
                 assert(matches.length === 2);
                 assert(matches[0].$value === "Tom");
@@ -86,7 +86,7 @@ describe("microgrammar integration and path expression", () => {
         const content = firstPerson + " Mary:25";
         const p = InMemoryProject.of(
             {path: "Thing", content});
-        findMatches(p, AllFiles, fpr, "/people/person")
+        findMatches(p, fpr, AllFiles, "/people/person")
             .then(matches => {
                 assert(matches.length === 2);
                 assert(matches[0].$value === firstPerson, `[${matches[0].$value}]`);
@@ -111,12 +111,34 @@ describe("microgrammar integration and path expression", () => {
             {path: "Thing1", content: "Tom:16 Mary:25"},
             {path: "Thing2", content: "George:16 Kathy:25"},
         );
-        findMatches(p, AllFiles, fpr, ".Thing1/people/person/name")
+        findMatches(p, fpr, AllFiles, ".Thing1/people/person/name")
             .then(matches => {
                 assert(matches.length === 2);
                 assert(matches[0].$value === "Tom");
                 assert(matches[1].$value === "Mary");
                 done();
+            }).catch(done);
+    });
+
+    it("execute unified expression and update single terminal", done => {
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
+            age: Integer,
+        });
+        const fpr = new DefaultFileParserRegistry().addParser(
+            new MicrogrammarBasedFileParser("people", "person", mg));
+        const p = InMemoryProject.of(
+            {path: "Thing1", content: "Tom:16 Mary:25"},
+            {path: "Thing2", content: "George:16 Kathy:25"});
+        findByExpression(p, fpr, "Thing1::/people/person/name")
+            .then(matches => {
+                assert(matches.length === 2);
+                assert(matches[0].$value === "Tom");
+                matches[1].$value = "Mark";
+                p.flush()
+                    .then(_ => {
+                        assert(p.findFileSync("Thing1").getContentSync() === "Tom:16 Mark:25");
+                        done();
+                    });
             }).catch(done);
     });
 
