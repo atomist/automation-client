@@ -4,7 +4,6 @@ import {
 } from "@atomist/slack-messages/SlackMessages";
 import * as _ from "lodash";
 import { ScriptedFlushable } from "../../internal/common/Flushable";
-import { guid } from "../../internal/util/string";
 
 /**
  * Implemented by classes that can send bot messages, whether to
@@ -94,7 +93,7 @@ export interface CommandReference {
 }
 
 export function buttonForCommand(buttonSpec: ButtonSpec, commandName: string, parameters: {} = {}): Action {
-    const id = `${commandName.toLocaleLowerCase()}-${guid()}`;
+    const id = commandName.toLocaleLowerCase();
     const action = rugButtonFrom(buttonSpec, { id }) as CommandReferencingAction;
     action.command = {
         id,
@@ -106,7 +105,7 @@ export function buttonForCommand(buttonSpec: ButtonSpec, commandName: string, pa
 
 export function menuForCommand(selectSpec: SelectSpec, commandName: string, parameterName: string,
                                parameters?: {}): Action {
-    const id = `${commandName.toLocaleLowerCase()}-${guid()}`;
+    const id = commandName.toLocaleLowerCase();
     const action = rugMenuFrom(selectSpec, { id, parameterName }) as CommandReferencingAction;
     action.command = {
         id,

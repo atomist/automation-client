@@ -10,6 +10,7 @@ import {
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { logger } from "../../util/logger";
 import { CommandIncoming, EventIncoming } from "../RequestProcessor";
+import { guid } from "../../util/string";
 
 export abstract class AbstractWebSocketMessageClient extends MessageClientSupport {
 
@@ -96,11 +97,23 @@ export class WebSocketEventMessageClient extends AbstractWebSocketMessageClient 
 
 function mapActions(msg: SlackMessage, automations: AutomationServer): Action[] {
     const actions: Action[] = [];
+
+    let counter = 0;
+
     if (msg.attachments) {
         msg.attachments.filter(attachment => attachment.actions).forEach(attachment => {
             attachment.actions.forEach(a => {
                 if ((a as CommandReferencingAction).command) {
                     const cra = a as CommandReferencingAction;
+
+                    const id = counter++;
+                    cra.command.id = `${cra.command.id}-${id}`;
+                    if (cra.command.parameterName) {
+                        a.name = `${a.name}-${id}`;
+                    } else {
+                        a.value = `${a.value}-${id}`;
+                    }
+
                     const action: Action = {
                         id: cra.command.id,
                         parameter_name: cra.command.parameterName,
@@ -113,6 +126,7 @@ function mapActions(msg: SlackMessage, automations: AutomationServer): Action[] 
                             name: cra.command.name,
                         },
                     };
+
                     actions.push(action);
                     // Lastly we need to delete our extension from the slack action
                     cra.command = undefined;
