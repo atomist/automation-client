@@ -80,4 +80,7 @@ export const configuration: Configuration = {
         graphql: `${host}/graphql/team`,
         api: `${host}/registration`,
     },
+    applicationEvents: {
+        enabled: true,
+    },
 };

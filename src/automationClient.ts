@@ -2,6 +2,7 @@ import * as _ from "lodash";
 import { Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
+import { registerApplicationEvents } from "./internal/env/applicationEvent";
 import {
     ExpressServer,
     ExpressServerOptions,
@@ -34,12 +35,16 @@ export class AutomationClient {
     private webSocketClient: WebSocketClient;
     private httpServer: ExpressServer;
 
+    private teamIds: string[];
+
     constructor(private configuration: Configuration) {
+        this.teamIds = Array.isArray(this.configuration.teamIds)
+            ? this.configuration.teamIds as string[] : [this.configuration.teamIds as string];
         this.automations = new BuildableAutomationServer(
             {
                 name: configuration.name,
                 version: configuration.version,
-                teamIds: configuration.teamIds,
+                teamIds: this.teamIds,
                 keywords: [],
                 // We need remove the graph client stuff from the automationServer
                 // This is only here to support the CLI
@@ -81,17 +86,29 @@ export class AutomationClient {
         return Promise.all([
             Promise.resolve(this.runWs(handler, webSocketOptions)),
             Promise.resolve(this.runHttp(handler)),
+            this.setupApplicationEvents(),
         ]);
     }
 
     private setupEventHandler(webSocketOptions: WebSocketClientOptions): WebSocketRequestProcessor {
-
         if (this.configuration.listeners) {
             return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
                 [new MetricEnabledAutomationEventListener(), ...this.configuration.listeners]);
         } else {
             return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
                 [new MetricEnabledAutomationEventListener()]);
+        }
+    }
+
+    private setupApplicationEvents(): Promise<any> {
+        if (this.configuration.applicationEvents
+            && this.configuration.applicationEvents.enabled
+            && this.configuration.applicationEvents.enabled === true) {
+            const teamId = this.configuration.applicationEvents.teamId
+                ? this.configuration.applicationEvents.teamId : this.teamIds[0];
+            return registerApplicationEvents(teamId);
+        } else {
+            return Promise.resolve();
         }
     }
 

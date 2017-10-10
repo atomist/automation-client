@@ -11,6 +11,11 @@ export interface Configuration extends RunOptions {
     events?: Array<() => HandleEvent<any>>;
     ingestors?: Array<() => HandleEvent<any>>;
     listeners?: AutomationEventListener[];
+
+    applicationEvents?: {
+        enabled: boolean;
+        teamId?: string;
+    };
 }
 
 const AtomistConfigFile = "atomist.config.js";
@@ -28,7 +33,7 @@ export function findConfiguration(): Configuration {
     } else {
         const file = files[0];
         // This part is tricky but essentially brings in the user's handlers.
-        const config = require(`${appRoot}/${file}`).configuration as Configuration;
+        const config = require(`${appRoot.path}/${file}`).configuration as Configuration;
         logger.debug("Using configuration from '%s': %s", file, JSON.stringify(config, cleanUp));
 
         validateConfiguration(config, file);
