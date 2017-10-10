@@ -12,8 +12,8 @@ export class InMemoryEventStore implements EventStore {
     private commandCache: LRUMap<CacheKey, CommandIncoming>;
     private messageCache: LRUMap<CacheKey, any>;
 
-    private _eventSeries = new RRD(30, 240);
-    private _commandSeries = new RRD(30, 240);
+    private eventSer = new RRD(30, 240 * 6);
+    private commandSer = new RRD(30, 240 * 6);
 
     constructor() {
         this.eventCache = new LRUMap<CacheKey, EventIncoming>(100);
@@ -24,14 +24,14 @@ export class InMemoryEventStore implements EventStore {
     public recordEvent(event: EventIncoming) {
         const id = event.extensions.correlation_id ? event.extensions.correlation_id : guid();
         this.eventCache.set({guid: id, ts: new Date().getTime() }, event);
-        this._eventSeries.update(1);
+        this.eventSer.update(1);
         return id;
     }
 
     public recordCommand(command: CommandIncoming) {
         const id = command.corrid ? command.corrid : guid();
         this.commandCache.set({guid: id, ts: new Date().getTime() }, command);
-        this._commandSeries.update(1);
+        this.commandSer.update(1);
         return id;
     }
 
@@ -47,7 +47,7 @@ export class InMemoryEventStore implements EventStore {
     }
 
     public eventSeries(): [number[], number[]] {
-        const buckets = this._eventSeries.fetch().filter(b => b.ts);
+        const buckets = this.eventSer.fetch().filter(b => b.ts);
         return [buckets.map(b => b.value), buckets.map(b => b.ts)];
     }
 
@@ -58,7 +58,7 @@ export class InMemoryEventStore implements EventStore {
     }
 
     public commandSeries(): [number[], number[]] {
-        const buckets = this._commandSeries.fetch().filter(b => b.ts);
+        const buckets = this.commandSer.fetch().filter(b => b.ts);
         return [buckets.map(b => b.value), buckets.map(b => b.ts)];
     }
 
