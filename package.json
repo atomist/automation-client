@@ -86,6 +86,7 @@
   },
   "scripts": {
     "autotest": "supervisor -q -n exit -e ts -x npm -- run test",
+    "git:info": "npm run compile && node $NODE_DEBUG_OPTION --trace-warnings build/src/git.info.js",
     "build": "npm run lint && npm run compile && npm test",
     "clean": "npm run clean-js ; rm -rf *-v8.log profile.txt build",
     "clean-js": "find src test -type f -name '*.js' -print0 | xargs -0 rm -f",
@@ -103,6 +104,7 @@
     "cli": "npm run compile && node $NODE_DEBUG_OPTION build/src/start.cli.js"
   },
   "bin": {
+    "git-info": "./git.info.js",
     "atomist-cli": "./start.cli.js",
     "atomist-client": "./start.client.js"
   },

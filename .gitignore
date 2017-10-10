@@ -11,3 +11,4 @@ npm-debug.log
 .idea/workspace.xml
 /release
 graphql.config.json
+git-info.json
