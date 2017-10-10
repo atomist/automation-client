@@ -12,8 +12,8 @@ export class InMemoryEventStore implements EventStore {
     private commandCache: LRUMap<CacheKey, CommandIncoming>;
     private messageCache: LRUMap<CacheKey, any>;
 
-    private eventSer = new RRD(30, 240 * 6);
-    private commandSer = new RRD(30, 240 * 6);
+    private eventSer = new RRD(30, 120 * 6);
+    private commandSer = new RRD(30, 120 * 6);
 
     constructor() {
         this.eventCache = new LRUMap<CacheKey, EventIncoming>(100);
