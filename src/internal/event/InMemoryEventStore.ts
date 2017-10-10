@@ -12,6 +12,9 @@ export class InMemoryEventStore implements EventStore {
     private commandCache: LRUMap<CacheKey, CommandIncoming>;
     private messageCache: LRUMap<CacheKey, any>;
 
+    private _eventSeries = new RRD(30, 240);
+    private _commandSeries = new RRD(30, 240);
+
     constructor() {
         this.eventCache = new LRUMap<CacheKey, EventIncoming>(100);
         this.commandCache = new LRUMap<CacheKey, CommandIncoming>(100);
@@ -21,12 +24,14 @@ export class InMemoryEventStore implements EventStore {
     public recordEvent(event: EventIncoming) {
         const id = event.extensions.correlation_id ? event.extensions.correlation_id : guid();
         this.eventCache.set({guid: id, ts: new Date().getTime() }, event);
+        this._eventSeries.update(1);
         return id;
     }
 
     public recordCommand(command: CommandIncoming) {
         const id = command.corrid ? command.corrid : guid();
         this.commandCache.set({guid: id, ts: new Date().getTime() }, command);
+        this._commandSeries.update(1);
         return id;
     }
 
@@ -41,10 +46,20 @@ export class InMemoryEventStore implements EventStore {
         return entries;
     }
 
+    public eventSeries(): [number[], number[]] {
+        const buckets = this._eventSeries.fetch().filter(b => b.ts);
+        return [buckets.map(b => b.value), buckets.map(b => b.ts)];
+    }
+
     public commands(from: number = -1): any[] {
         const entries: any[] = [];
         this.commandCache.forEach((v, k) => k.ts > from ? entries.push({key: k, value: hideSecrets(v)}) : null);
         return entries;
+    }
+
+    public commandSeries(): [number[], number[]] {
+        const buckets = this._commandSeries.fetch().filter(b => b.ts);
+        return [buckets.map(b => b.value), buckets.map(b => b.ts)];
     }
 
     public messages(from: number = -1): any[] {
@@ -63,4 +78,53 @@ function hideSecrets(event: EventIncoming | CommandIncoming) {
 interface CacheKey {
     guid: string;
     ts: number;
+}
+
+class Count {
+
+    private value: number = 0;
+
+    public update(data: number) {
+        this.value++;
+    }
+
+    public result() {
+        const value = this.value;
+        this.value = 0;
+        return value;
+    }
+}
+
+class RRD {
+
+    private buckets: any[];
+    private interval: any;
+    private index: number;
+    private iid: any;
+    private dataFunc = new Count();
+
+    constructor(interval, count) {
+        this.buckets = new Array(count).fill(0);
+        this.interval = interval * 1000;
+        this.index = 0;
+        this.iid = setInterval( this.increment.bind( this ), this.interval );
+    }
+
+    public increment() {
+        if ( this.index < this.buckets.length ) {
+            this.buckets[ this.index ] = { ts: Math.floor( Date.now() / 1000 ), value: this.dataFunc.result() };
+            this.index += 1;
+        } else {
+            this.buckets.push( { ts: Math.floor( Date.now() / 1000 ), value: this.dataFunc.result() } );
+            this.buckets.shift();
+        }
+    }
+
+    public update(data: any) {
+        this.dataFunc.update( data );
+    }
+
+    public fetch(): any[] {
+        return this.buckets;
+    }
 }

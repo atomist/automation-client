@@ -76,26 +76,40 @@ export class ExpressServer {
                 res.json(report.summary());
         });
 
-        exp.get(`${ApiBase}/events`, this.authenticate("basic", "bearer"),
+        exp.get(`${ApiBase}/log/events`, this.authenticate("basic", "bearer"),
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(eventStore().events(req.query.from));
         });
 
-        exp.get(`${ApiBase}/commands`, this.authenticate("basic", "bearer"),
+        exp.get(`${ApiBase}/log/commands`, this.authenticate("basic", "bearer"),
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(eventStore().commands(req.query.from));
         });
 
-        exp.get(`${ApiBase}/messages`, this.authenticate("basic", "bearer"),
+        exp.get(`${ApiBase}/log/messages`, this.authenticate("basic", "bearer"),
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(eventStore().messages(req.query.from));
         });
+
+        exp.get(`${ApiBase}/series/events`, this.authenticate("basic", "bearer"),
+            (req, res) => {
+                res.setHeader("Content-Type", "application/json");
+                res.setHeader("Access-Control-Allow-Origin", "*");
+                res.json(eventStore().eventSeries());
+            });
+
+        exp.get(`${ApiBase}/series/commands`, this.authenticate("basic", "bearer"),
+            (req, res) => {
+                res.setHeader("Content-Type", "application/json");
+                res.setHeader("Access-Control-Allow-Origin", "*");
+                res.json(eventStore().commandSeries());
+            });
 
         exp.get("/graphql", this.authenticate("basic"),
             (req, res) => {

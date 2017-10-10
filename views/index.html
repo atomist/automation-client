@@ -91,20 +91,37 @@
 
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="statcard statcard-primary p-4">
-                        <h3 class="statcard-number" id="command-count">
-                          0
-                        </h3>
-                        <span class="statcard-desc">Commands</span>
+                    <div class="statcard statcard-primary   ">
+                        <div class="p-4">
+                            <h3 class="statcard-number" id="command-count">
+                              0
+                            </h3>
+                            <span class="statcard-desc">Commands</span>
+                            <hr class="statcard-hr mb-0" />
+                        </div>
+                        <canvas id="sl-commands" class="sparkline"
+                                data-chart="spark-line"
+                                data-dataset="[[]]"
+                                data-labels="[]"
+                                style="width: 343px; height: 40px; margin: 0px; padding-bottom: 0">
+                        </canvas>
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <div class="statcard statcard-success p-4">
-                        <h3 class="statcard-number" id="event-count">
-                    0
-
-                  </h3>
-                        <span class="statcard-desc">Events</span>
+                    <div class="statcard statcard-success">
+                        <div class="p-4">
+                            <h3 class="statcard-number" id="event-count">
+                            0
+                            </h3>
+                            <span class="statcard-desc">Events</span>
+                            <hr class="statcard-hr mb-0" />
+                        </div>
+                        <canvas id="sl-events" class="sparkline"
+                                data-chart="spark-line"
+                                data-dataset="[[]]"
+                                data-labels="[]"
+                                style="width: 343px; height: 40px; margin: 0px; padding-bottom: 0">
+                        </canvas>
                     </div>
                 </div>
             </div>
@@ -179,7 +196,112 @@
     <!-- Include jQuery (required) and the JS -->
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/tether.min.js"></script>
+    <script src="assets/js/chart.js"></script>
     <script src="dist/toolkit.min.js"></script>
+
+    <script>
+        // Hello…
+        // This is a backport of our old chart-js data api plugin
+        // We no longer provide this as a supported plugin because of changes
+        // to the chart.js option api. However, for contrived examples (like the ones
+        // found in our theme examples, it makes our lives a bit easier.)
+        // if you're reading this, we *HIGHLY* recommend you don't use this in
+        // production, but rather implement your charts using the chart.js docs-top
+        // themselves, directly: www.chartjs.org/docs/
+        $(function () {
+
+            var Charts = {
+
+                _HYPHY_REGEX: /-([a-z])/g,
+
+                _cleanAttr: function (obj) {
+                    delete obj["chart"]
+                    delete obj["datasets"]
+                    delete obj["datasetsOptions"]
+                    delete obj["labels"]
+                    delete obj["options"]
+                },
+
+                'spark-line': function (element) {
+                    var attrData = $.extend({}, $(element).data())
+
+                    var data = attrData.dataset ? eval(attrData.dataset) : []
+                    var datasetOptions = attrData.datasetOptions ? eval(attrData.datasetOptions) : []
+                    var labels = attrData.labels ? eval(attrData.labels) : {}
+                    var options = attrData.options ? eval('(' + attrData.options + ')') : {}
+
+                    var data = {
+                        labels: labels,
+                        datasets: data.map(function (set, i) {
+                            return $.extend({
+                                data: set,
+                                fill: true,
+                                backgroundColor: 'rgba(255,255,255,.3)',
+                                borderWidth: 2,
+                                borderColor: '#fff',
+                                pointBorderColor: '#fff',
+                                lineTension: 0.25,
+                                pointRadius: 1
+                            }, datasetOptions[i])
+                        })
+                    }
+
+                    Charts._cleanAttr(attrData)
+
+                    var options = $.extend({
+                        animation: {
+                            duration: 1000
+                        },
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            xAxes: [{
+                                display: false
+                            }],
+                            yAxes: [{
+                                display: false
+                            }]
+                        },
+                        tooltips: {
+                            enabled: false
+                        }
+                    }, options)
+
+                    const chart = new Chart(element.getContext('2d'), {
+                        type: 'line',
+                        data: data,
+                        options: options
+                    });
+
+                    setInterval(function() {
+                        $.getJSON("/series/" + element.id.slice(3), function (data) {
+                            console.log(data);
+                            const labels = data[1];
+                            const dataset = data[0];
+                            chart.data.labels = labels;
+                            chart.data.datasets.forEach(function(ds) {
+                                ds.data = dataset;
+                            });
+                            chart.update();
+                        });
+                    }, 5000);
+                }
+            }
+
+            $(document)
+                .on('redraw.bs.charts', function () {
+                    $('[data-chart]').each(function () {
+                        if ($(this).is(':visible') && !$(this).hasClass('js-chart-drawn')) {
+                            Charts[$(this).attr('data-chart')](this)
+                            $(this).addClass('js-chart-drawn')
+                        }
+                    })
+                })
+                .trigger('redraw.bs.charts')
+        });
+
+    </script>
 </body>
 
 </html>

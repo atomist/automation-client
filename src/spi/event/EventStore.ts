@@ -13,7 +13,11 @@ export interface EventStore {
 
     events(from?: number): any[];
 
+    eventSeries(): [number[], number[]];
+
     commands(from?: number): any[];
+
+    commandSeries(): [number[], number[]];
 
     messages(from?: number): any[];
 }
