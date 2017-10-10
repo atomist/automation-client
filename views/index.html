@@ -276,7 +276,6 @@
 
                     setInterval(function() {
                         $.getJSON("/series/" + element.id.slice(3), function (data) {
-                            console.log(data);
                             const labels = data[1];
                             const dataset = data[0];
                             chart.data.labels = labels;
