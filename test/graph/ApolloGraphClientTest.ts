@@ -11,7 +11,7 @@ describe("ApolloGraphClient", () => {
     it("should run repos query", done => {
         const agc = new ApolloGraphClient("https://db-f4cw1abeowdgtpe5etpy.graphenedb.com:24780/graphql/"
             , {Authorization: `Basic ${process.env.CORTEX_TOKEN}`});
-        agc.executeFile<ReposQuery, ReposQueryVariables>("graphql/repos",
+        agc.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
             {teamId: "T1L0VDKJP", offset: 0})
             .then(result => {
                 // console.log(`Repos were ${JSON.stringify(result)}`);
@@ -29,7 +29,7 @@ describe("ApolloGraphClient", () => {
     it.skip("should run repos query and clone repo", done => {
         const agc = new ApolloGraphClient("https://db-f4cw1abeowdgtpe5etpy.graphenedb.com:24780/graphql/"
             , {Authorization: `Basic ${process.env.CORTEX_TOKEN}`});
-        agc.executeFile<ReposQuery, ReposQueryVariables>("graphql/repos",
+        agc.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
             {teamId: "T1L0VDKJP", offset: 0})
             .then(result => {
                 // console.log(`Repos were ${JSON.stringify(result)}`);
@@ -46,4 +46,5 @@ describe("ApolloGraphClient", () => {
             })
             .catch(done);
     });
+
 });
