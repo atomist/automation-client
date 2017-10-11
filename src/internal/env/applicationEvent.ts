@@ -5,59 +5,66 @@ import * as os from "os";
 import { logger } from "../util/logger";
 import { guid } from "../util/string";
 
-// tslint:disable-next-line:no-var-requires
-const git = require(`${appRoot.path}/git-info.json`);
+const Url = "https://webhook.atomist.com/atomist/application/teams";
 
-const sha = git.sha;
-const branch = git.branch;
-const repo = git.repository;
-const url = "https://webhook.atomist.com/atomist/application/teams";
-
-const env = process.env.VCAP_APPLICATION ? JSON.parse(process.env.VCAP_APPLICATION) : undefined;
-
-const payload: any = {
-    git: {
-        sha,
-        branch,
-        repo,
-    },
-    domain: env ? env.space_name : "local",
-    pod: env ? env.instance_id : os.hostname(),
-    host: env ? env.instance_id : os.hostname(),
-    id: env ? env.instance_id : guid(),
-};
-
-if (env) {
-    payload.data = JSON.stringify({
-        cloudfoundry: process.env.VCAP_APPLICATION,
-    });
+function started(teamId: string, event: ApplicationEvent): Promise<any> {
+    return sendEvent("started", teamId, event);
 }
 
-function started(teamId: string): Promise<any> {
-    return sendEvent("started", teamId);
+function stopping(teamId: string, event: ApplicationEvent): Promise<any> {
+    return sendEvent("stopping", teamId, event);
 }
 
-function stopping(teamId: string): Promise<any> {
-    return sendEvent("stopping", teamId);
-}
+function sendEvent(state: "stopping" | "started", teamId: string, event: ApplicationEvent): Promise<any> {
+    event.state = state;
+    event.ts = new Date().getTime();
 
-function sendEvent(state: "stopping" | "started", teamId: string): Promise<any> {
-    payload.state = state;
-    payload.ts = new Date().getTime();
+    logger.info("Sending application event:", JSON.stringify(event));
 
-    logger.info("Sending application event:", JSON.stringify(payload));
-
-    return axios.post(`${url}/${teamId}`, payload)
+    return axios.post(`${Url}/${teamId}`, event)
         .catch(err => {
             console.error(err);
         });
 }
 
+/**
+ * Register the automation client to send application events to Atomist.
+ * This is useful to show starting and stopping automation clients as part of their general lifecycle in eg Slack.
+ * @param {string} teamId
+ * @returns {Promise<any>}
+ */
 export function registerApplicationEvents(teamId: string): Promise<any> {
+
+    // tslint:disable-next-line:no-var-requires
+    const git = require(`${appRoot.path}/git-info.json`);
+    const sha = git.sha;
+    const branch = git.branch;
+    const repo = git.repository;
+
+    const env = process.env.VCAP_APPLICATION ? JSON.parse(process.env.VCAP_APPLICATION) : undefined;
+
+    const event: ApplicationEvent = {
+        git: {
+            sha,
+            branch,
+            repo,
+        },
+        domain: env ? env.space_name : "local",
+        pod: env ? env.instance_id : os.hostname(),
+        host: env ? env.instance_id : os.hostname(),
+        id: env ? env.instance_id : guid(),
+    };
+
+    if (env) {
+        event.data = JSON.stringify({
+            cloudfoundry: process.env.VCAP_APPLICATION,
+        });
+    }
+
     // register shutdown hook
     exitHook(callback => {
         setTimeout(() => {
-            stopping(teamId)
+            stopping(teamId, event)
                 .then(() => {
                     callback();
                 })
@@ -68,5 +75,20 @@ export function registerApplicationEvents(teamId: string): Promise<any> {
     });
 
     // trigger application started event
-    return started(teamId);
+    return started(teamId, event);
+}
+
+interface ApplicationEvent {
+    git: {
+        sha: string;
+        branch: string;
+        repo: string;
+    };
+    domain: string;
+    pod: string;
+    host: string;
+    id: string;
+    data?: any;
+    state?: string;
+    ts?: number;
 }
