@@ -9,8 +9,8 @@ import { GitHubToken } from "../atomist.config";
 describe("ApolloGraphClient", () => {
 
     it("should run repos query", done => {
-        const agc = new ApolloGraphClient("https://db-f4cw1abeowdgtpe5etpy.graphenedb.com:24780/graphql/"
-            , {Authorization: `Basic ${process.env.CORTEX_TOKEN}`});
+        const agc = new ApolloGraphClient("https://automation-staging.atomist.services/graphql/team/T1L0VDKJP"
+            , {Authorization: `token ${process.env.GITHUB_TOKEN}`});
         agc.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
             {teamId: "T1L0VDKJP", offset: 0})
             .then(result => {
@@ -46,5 +46,20 @@ describe("ApolloGraphClient", () => {
             })
             .catch(done);
     });
+
+    it("should mutate preferences", done => {
+        const agc = new ApolloGraphClient("https://automation-staging.atomist.services/graphql/team/T1L0VDKJP"
+            , {Authorization: `token ${process.env.GITHUB_TOKEN}`});
+        agc.executeMutationFromFile("graphql/setUserPreference",
+            {
+                userId: "U1L22E3SA",
+                name: "dm",
+                value: "{\"disable_for_build\":true}",
+            })
+            .then(result => {
+                done();
+            })
+            .catch(done);
+    }).timeout(5000);
 
 });

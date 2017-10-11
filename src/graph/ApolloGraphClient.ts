@@ -39,6 +39,8 @@ export class ApolloGraphClient implements GraphClient {
 
         this.client = new ApolloClient({
             networkInterface,
+            // for now we disable the addition of the typenames
+            addTypename: false,
         });
     }
 
