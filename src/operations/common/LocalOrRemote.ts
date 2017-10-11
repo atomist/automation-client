@@ -33,6 +33,10 @@ export abstract class LocalOrRemote {
     })
     public dir: string;
 
+    /**
+     * To use this in an event handler rather than a command handler,
+     * please override this to be decorated with @Secret(Secrets.OrgToken)
+     */
     @Secret(Secrets.userToken(["repo", "user"]))
     protected githubToken: string;
 
