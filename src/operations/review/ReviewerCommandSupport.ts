@@ -12,7 +12,9 @@ import { ProjectReview, ReviewResult } from "./ReviewResult";
  * Support for reviewing multiple projects
  * Subclasses should have @CommandHandler annotation
  */
-export abstract class ReviewerCommandSupport<RR extends ReviewResult<PR>, PR extends ProjectReview>
+export abstract class ReviewerCommandSupport<
+        RR extends ReviewResult<PR> = ReviewResult<PR>,
+        PR extends ProjectReview = ProjectReview>
     extends LocalOrRemoteRepoOperation
     implements HandleCommand {
 

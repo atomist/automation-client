@@ -6,5 +6,5 @@ import { ProjectReview } from "./ReviewResult";
 /**
  * Function that can review a project
  */
-export type ProjectReviewer<RR extends ProjectReview> =
+export type ProjectReviewer<RR extends ProjectReview = ProjectReview> =
     (id: RepoId, p: Project, context: HandlerContext) => Promise<RR>;

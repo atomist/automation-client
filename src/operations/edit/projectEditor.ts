@@ -5,7 +5,7 @@ import { RepoId } from "../common/RepoId";
 /**
  * Modifies the given project, returning information about the modification.
  */
-export type ProjectEditor<ER extends EditResult> =
+export type ProjectEditor<ER extends EditResult = EditResult> =
     (id: RepoId, p: Project, context: HandlerContext) => Promise<ER>;
 
 /**
