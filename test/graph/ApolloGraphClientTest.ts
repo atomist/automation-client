@@ -59,7 +59,7 @@ describe("ApolloGraphClient", () => {
             .then(result => {
                 done();
             })
-            .catch(done);
+            .catch(done());
     }).timeout(5000);
 
 });
