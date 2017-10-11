@@ -1,11 +1,11 @@
 
-import { TreeNode } from "../../TreeNode";
+import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { FileParser } from "../FileParser";
 
 import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { isTreePatternMatch, PatternMatch } from "@atomist/microgrammar/PatternMatch";
+import { defineDynamicProperties, fillInEmptyNonTerminalValues } from "@atomist/tree-path/manipulation/enrichment";
 import { File } from "../../../project/File";
-import { defineDynamicProperties, fillInEmptyNonTerminalValues } from "../../enrichment";
 
 /**
  * Allow path expressions against results from a single microgrammar

@@ -1,13 +1,13 @@
 import * as _ from "lodash";
 
+import { defineDynamicProperties } from "@atomist/tree-path/manipulation/enrichment";
+import { evaluateExpression } from "@atomist/tree-path/path/expressionEngine";
+import { isSuccessResult, PathExpression } from "@atomist/tree-path/path/pathExpression";
+import { parsePathExpression } from "@atomist/tree-path/path/pathExpressionParser";
+import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { logger } from "../../internal/util/logger";
 import { ProjectNonBlocking } from "../../project/Project";
 import { saveFromFilesAsync } from "../../project/util/projectUtils";
-import { defineDynamicProperties } from "../enrichment";
-import { evaluateExpression } from "../path/expressionEngine";
-import { isSuccessResult, PathExpression } from "../path/pathExpression";
-import { parsePathExpression } from "../path/pathExpressionParser";
-import { TreeNode } from "../TreeNode";
 import { FileHit, MatchResult } from "./FileHits";
 import { FileParser, isFileParser } from "./FileParser";
 import { FileParserRegistry } from "./FileParserRegistry";

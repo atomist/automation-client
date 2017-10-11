@@ -1,6 +1,6 @@
 
+import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { File } from "../../project/File";
-import { TreeNode } from "../TreeNode";
 
 /**
  * Implemented by objects that can parse a file into an AST using a single grammar

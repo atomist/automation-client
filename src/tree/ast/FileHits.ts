@@ -1,8 +1,8 @@
 import { logger } from "../../internal/util/logger";
 
+import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { File } from "../../project/File";
 import { ProjectScripting } from "../../project/Project";
-import { TreeNode } from "../TreeNode";
 
 /**
  * Extension of TreeNode that allows convenient addition before
