@@ -53,13 +53,15 @@ describe("ApolloGraphClient", () => {
         agc.executeMutationFromFile("graphql/setUserPreference",
             {
                 userId: "U1L22E3SA",
-                name: "dm",
-                value: "{\"disable_for_build\":true}",
+                name: "test",
+                value:  `{"disable_for_test":true}`,
             })
             .then(result => {
+                assert((result as any).setUserPreference[0].name === "test");
+                assert((result as any).setUserPreference[0].value === `{"disable_for_test":true}`);
                 done();
             })
-            .catch(done());
+            .catch(done);
     }).timeout(5000);
 
 });
