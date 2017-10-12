@@ -12,8 +12,9 @@ export class InMemoryEventStore implements EventStore {
     private commandCache: LRUMap<CacheKey, CommandIncoming>;
     private messageCache: LRUMap<CacheKey, any>;
 
-    private eventSer = new RRD(30, 120 * 6);
-    private commandSer = new RRD(30, 120 * 6);
+    //                         5 mins for 3 hours
+    private eventSer = new RRD(60 * 5, 12 * 3);
+    private commandSer = new RRD(60 * 5, 12 * 3);
 
     constructor() {
         this.eventCache = new LRUMap<CacheKey, EventIncoming>(100);
@@ -84,8 +85,9 @@ class Count {
 
     private value: number = 0;
 
-    public update(data: number) {
+    public update(data: number): number {
         this.value++;
+        return this.value;
     }
 
     public result() {
@@ -121,7 +123,7 @@ class RRD {
     }
 
     public update(data: any) {
-        this.dataFunc.update( data );
+        this.buckets[ this.index ] = { ts: Math.floor( Date.now() / 1000 ), value: this.dataFunc.update(data) };
     }
 
     public fetch(): any[] {
