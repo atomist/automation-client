@@ -77,7 +77,7 @@ function hideSecrets(event: EventIncoming | CommandIncoming) {
 }
 
 interface CacheKey {
-    guid: string;   
+    guid: string;
     ts: number;
 }
 

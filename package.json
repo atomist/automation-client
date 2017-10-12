@@ -1,6 +1,6 @@
 {
   "name": "@atomist/automation-client",
-  "version": "0.1.43",
+  "version": "0.1.44",
   "description": "Atomist automation client for running command and event handlers",
   "author": "Atomist, Inc.",
   "license": "GPL-3.0",
@@ -87,14 +87,13 @@
   },
   "scripts": {
     "autotest": "supervisor -q -n exit -e ts -x npm -- run test",
-    "git:info": "npm run compile && node $NODE_DEBUG_OPTION --trace-warnings build/src/git.info.js",
+    "git:info": "$(npm bin)/git-info",
     "build": "npm run lint && npm run compile && npm test",
     "clean": "npm run clean:js ; rm -rf *-v8.log profile.txt build",
     "clean:js": "find src test -type f -name '*.js' -print0 | xargs -0 rm -f",
     "compile": "tsc -p . && cp src/graph/schema.cortex.json build/src/graph/schema.cortex.json",
     "distclean": "npm run clean ; rm -rf node_modules",
     "fmt": "tsfmt --replace",
-    "git:info": "$(npm bin)/git-info",
     "lint": "tslint --format verbose --project . --exclude '{build,node_modules}/**' '**/*.ts'",
     "lint:fix": "npm run lint -- --fix",
     "test": "mocha --require espower-typescript/guess 'test/**/!(*atomist.config).ts' --exit",
