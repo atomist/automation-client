@@ -77,7 +77,7 @@ function hideSecrets(event: EventIncoming | CommandIncoming) {
 }
 
 interface CacheKey {
-    guid: string;
+    guid: string;   
     ts: number;
 }
 
@@ -107,8 +107,9 @@ class RRD {
 
     constructor(interval, count) {
         this.buckets = new Array(count).fill(0);
+        this.buckets[0] = { ts: Math.floor( Date.now() / 1000 ), value: 0 };
+        this.index = 1;
         this.interval = interval * 1000;
-        this.index = 0;
         this.iid = setInterval( this.increment.bind( this ), this.interval );
     }
 
