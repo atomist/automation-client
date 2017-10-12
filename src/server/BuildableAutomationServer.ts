@@ -57,7 +57,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         if (opts.endpoints && opts.endpoints.graphql) {
             if (opts.token) {
                 this.graphClient = new ApolloGraphClient(opts.endpoints.graphql,
-                    { Authorization: `Basic ${opts.token}` });
+                    { Authorization: `token ${opts.token}` });
             } else {
                 logger.warn("Cannot create graph client due to missing token");
             }

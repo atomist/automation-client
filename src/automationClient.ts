@@ -46,8 +46,6 @@ export class AutomationClient {
                 version: configuration.version,
                 teamIds: this.teamIds,
                 keywords: [],
-                // We need remove the graph client stuff from the automationServer
-                // This is only here to support the CLI
                 token: configuration.token,
                 endpoints: {
                     graphql: _.get(this.configuration, "endpoints.graphql", DefaultGraphQLServer),
