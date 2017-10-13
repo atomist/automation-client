@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Updated @atomist/microgrammar to 0.7.0
+-   Cleaned up dependencies
 
 ### Added
 
