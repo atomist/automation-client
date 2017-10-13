@@ -47,7 +47,8 @@ export class ExpressServer {
         exp.set("view engine", "mustache");
 
         exp.use(bodyParser.json());
-        exp.use(require("express-session")({ secret: "this is really secret", cookie: { maxAge: 60000 },
+        exp.use(require("express-session")({ secret: "Careful Man, there's beverage here!",
+            cookie: { maxAge: 172800000 }, // two days
             resave: true, saveUninitialized: true }));
         exp.use(require("connect-flash")());
 
