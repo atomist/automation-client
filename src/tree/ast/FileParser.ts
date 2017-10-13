@@ -1,4 +1,5 @@
 
+import { PathExpression } from "@atomist/tree-path/path/pathExpression";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { File } from "../../project/File";
 
@@ -18,6 +19,13 @@ export interface FileParser {
      * @return {TreeNode} root tree node
      */
     toAst(f: File): Promise<TreeNode>;
+
+    /**
+     * Can this path expression possibly be valid using this parser?
+     * If not, throw an Error
+     * @param {PathExpression} pex
+     */
+    validate?(pex: PathExpression): void;
 }
 
 export function isFileParser(a: any): a is FileParser {

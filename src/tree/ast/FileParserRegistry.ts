@@ -14,6 +14,8 @@ export interface FileParserRegistry {
     /**
      * Find a parser for the given path expression.
      * It's first location step must start with a node name.
+     * If the FileParser supports validation, validate that it
+     * can execute the path expression and throw an exception if not.
      * @param {string | PathExpression} pex
      * @return {FileParser}
      */
@@ -38,6 +40,9 @@ export class DefaultFileParserRegistry implements FileParserRegistry {
         if (!!determiningStep && isNamedNodeTest(determiningStep.test)) {
             const parser = this.parserRegistry[determiningStep.test.name];
             if (!!parser) {
+                if (parser.validate) {
+                    parser.validate(parsed);
+                }
                 return parser;
             }
         }
