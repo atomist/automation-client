@@ -206,9 +206,19 @@ export class ExpressServer {
                 });
                 const secrets = h.secrets.filter(p => {
                     const value = req.query[`s_${p.path}`];
-                    return value && value.length > 0;
+                    if (value && value.length > 0) {
+                        return true;
+                    } else if (p.path.startsWith("github://") && req.user && req.user.accessToken) {
+                        return true;
+                    }
+                    return false;
                 }).map(p => {
-                    return {name: p.path, value: req.query[`s_${p.path}`]};
+                    const value = req.query[`s_${p.path}`];
+                    if (value) {
+                        return {name: p.path, value };
+                    } else {
+                        return {name: p.path, value: req.user.accessToken };
+                    }
                 });
 
                 const payload: CommandIncoming = {
@@ -280,14 +290,10 @@ export class ExpressServer {
                         // check org membership
                         axios.get(`https://api.github.com/orgs/${org}/members/${profile.username}`,
                             { headers: { Authorization: `token ${accessToken}` }})
-                            .then(() => {
-                                globals.setGitHubToken(accessToken);
-                                return cb(null, profile);
-                            })
+                            .then(() => cb(null, { ...profile, accessToken } ))
                             .catch(err => cb(err));
                     } else {
-                        globals.setGitHubToken(accessToken);
-                        return cb(null, profile);
+                        return cb(null, { ...profile, accessToken });
                     }
                 },
             ));

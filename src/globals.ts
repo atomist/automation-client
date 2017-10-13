@@ -13,17 +13,6 @@ export function jwtToken() {
 }
 
 ////////////////////////////////////////////////////////
-let gitHubT: string = "";
-
-export function setGitHubToken(token: string) {
-    gitHubT = token;
-}
-
-export function gitHubToken() {
-    return gitHubT;
-}
-
-////////////////////////////////////////////////////////
 let es: EventStore = new InMemoryEventStore();
 
 /**
