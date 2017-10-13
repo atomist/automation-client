@@ -17,6 +17,8 @@ import { logger } from "../internal/util/logger";
 import { populateParameters } from "../operations/support/parameterPopulation";
 import { AutomationServerOptions } from "./options";
 
+import * as globals from "../globals";
+
 interface CommandHandlerRegistration {
 
     metadata: CommandHandlerMetadata;
@@ -229,6 +231,10 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                 const value = this.sec.find(a => a.name === key);
                 if (value) {
                     return value.value;
+                }
+                // Use a GitHub token from the current session
+                if (key.startsWith("github://") && globals.gitHubToken()) {
+                    return globals.gitHubToken();
                 }
                 throw new Error(`Cannot resolve secret '${key}'`);
             }

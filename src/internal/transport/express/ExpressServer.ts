@@ -2,7 +2,7 @@ import * as appRoot from "app-root-path";
 import axios from "axios";
 import * as bodyParser from "body-parser";
 import * as express from "express";
-import { Express, Handler } from "express";
+import { Express } from "express";
 import * as fs from "fs";
 import * as _ from "lodash";
 import * as mustacheExpress from "mustache-express";
@@ -10,10 +10,7 @@ import * as passport from "passport";
 import * as github from "passport-github";
 import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
-import {
-    eventStore,
-    jwtToken,
-} from "../../../globals";
+import * as globals from "../../../globals";
 import { AutomationServer } from "../../../server/AutomationServer";
 import {
     CommandHandlerMetadata,
@@ -29,6 +26,10 @@ import {
 } from "../RequestProcessor";
 
 const ApiBase = "";
+
+let Basic = false;
+let Bearer = false;
+let GitHub = false;
 
 /**
  * Registers an endpoint for every automation and exposes
@@ -46,7 +47,7 @@ export class ExpressServer {
         exp.set("view engine", "mustache");
 
         exp.use(bodyParser.json());
-        exp.use(require("express-session")({ secret: "keyboard cat", resave: true, saveUninitialized: true }));
+        exp.use(require("express-session")({ secret: "this is really secret", resave: true, saveUninitialized: true }));
 
         exp.use(passport.initialize());
         exp.use(passport.session());
@@ -76,65 +77,65 @@ export class ExpressServer {
         }
 
         // Set up routes
-        exp.get(`${ApiBase}/automations`, this.authenticate("bearer"),
+        exp.get(`${ApiBase}/automations`, authenticate,
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(automations.rugs);
         });
 
-        exp.get(`${ApiBase}/metrics`, this.authenticate( "bearer"),
+        exp.get(`${ApiBase}/metrics`, authenticate,
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(report.summary());
         });
 
-        exp.get(`${ApiBase}/log/events`, this.authenticate("bearer"),
+        exp.get(`${ApiBase}/log/events`, authenticate,
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
-                res.json(eventStore().events(req.query.from));
+                res.json(globals.eventStore().events(req.query.from));
         });
 
-        exp.get(`${ApiBase}/log/commands`, this.authenticate("bearer"),
+        exp.get(`${ApiBase}/log/commands`, authenticate,
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
-                res.json(eventStore().commands(req.query.from));
+                res.json(globals.eventStore().commands(req.query.from));
         });
 
-        exp.get(`${ApiBase}/log/messages`, this.authenticate("bearer"),
+        exp.get(`${ApiBase}/log/messages`, authenticate,
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
-                res.json(eventStore().messages(req.query.from));
+                res.json(globals.eventStore().messages(req.query.from));
         });
 
-        exp.get(`${ApiBase}/series/events`, this.authenticate("bearer"),
+        exp.get(`${ApiBase}/series/events`, authenticate,
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
-                res.json(eventStore().eventSeries());
+                res.json(globals.eventStore().eventSeries());
             });
 
-        exp.get(`${ApiBase}/series/commands`, this.authenticate("bearer"),
+        exp.get(`${ApiBase}/series/commands`, authenticate,
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
-                res.json(eventStore().commandSeries());
+                res.json(globals.eventStore().commandSeries());
             });
 
-        exp.get("/graphql", this.authenticate("github", "basic"),
+        exp.get("/graphql", authenticate,
             (req, res) => {
                 const teamId = req.query.teamId ? req.query.teamId : this.automations.rugs.team_ids[0];
-                res.render("graphql.html", { token: jwtToken(),
+                res.render("graphql.html", { token: globals.jwtToken(),
                     graphQLUrl: `${this.options.endpoint.graphql}/${teamId}`,
                     teamIds: this.automations.rugs.team_ids,
                     user: req.user });
         });
 
-        exp.get("/", this.authenticate("github", "basic"),
+        exp.get("/", authenticate,
             (req, res) => {
                 res.render("index.html", { user: req.user });
         });
@@ -168,7 +169,7 @@ export class ExpressServer {
                                                 h: CommandHandlerMetadata,
                                                 handle: (res, result) => any) {
 
-        exp.post(url, this.authenticate("basic", "bearer"), (req, res) => {
+        exp.post(url, authenticate, (req, res) => {
 
             const payload: CommandIncoming = {
                 atomist_type: "command_handler_request",
@@ -189,7 +190,7 @@ export class ExpressServer {
             });
         });
 
-        exp.get(url, this.authenticate("basic", "bearer"),
+        exp.get(url, authenticate,
             (req, res) => {
                 const parameters = h.parameters.filter(p => {
                     const value = req.query[p.name];
@@ -276,15 +277,22 @@ export class ExpressServer {
                         // check org membership
                         axios.get(`https://api.github.com/orgs/${org}/members/${profile.username}`,
                             { headers: { Authorization: `token ${accessToken}` }})
-                            .then(() => cb(null, {...profile, accessToken }))
+                            .then(() => {
+                                globals.setGitHubToken(accessToken);
+                                return cb(null, profile);
+                            })
                             .catch(err => cb(err));
                     } else {
-                        return cb(null, {...profile, accessToken });
+                        globals.setGitHubToken(accessToken);
+                        return cb(null, profile);
                     }
                 },
             ));
 
-        } else if (this.options.auth && this.options.auth.basic && this.options.auth.basic.enabled) {
+            GitHub = true;
+        }
+
+        if (this.options.auth && this.options.auth.basic && this.options.auth.basic.enabled) {
             const user: string = this.options.auth.basic.username ? this.options.auth.basic.username : "admin";
             const pwd: string = this.options.auth.basic.password ? this.options.auth.basic.password : guid();
 
@@ -301,7 +309,10 @@ export class ExpressServer {
             if (!this.options.auth.basic.password) {
                 logger.info(`Auto-generated credentials for web endpoints are user '${user}' and password '${pwd}'`);
             }
+
+            Basic = true;
         }
+
 
         if (this.options.auth && this.options.auth.bearer && this.options.auth.bearer.enabled) {
             const tk = this.options.auth.bearer.token;
@@ -315,28 +326,26 @@ export class ExpressServer {
                     }
                 },
             ));
+
+            Bearer = true;
         }
     }
+}
 
-    private authenticate(...strategies: string[]): Handler {
-
-        const actualStrategies = [];
-        if (this.options.auth) {
-            if (this.options.auth.github.enabled && strategies.indexOf("github") >= 0) {
-                return require("connect-ensure-login").ensureLoggedIn();
-            }
-            if (this.options.auth.basic.enabled && strategies.indexOf("basic") >= 0) {
-                actualStrategies.push("basic");
-            }
-            if (this.options.auth.bearer.enabled && strategies.indexOf("bearer") >= 0) {
-                actualStrategies.push("bearer");
-            }
+function authenticate(req, res, next): any {
+    // Check for Auth headers first
+    if (req.headers.authorization || req.headers.Authorization) {
+        if (Bearer && Basic) {
+            passport.authenticate(["basic", "bearer"])(req, res, next);
+        } else if (Bearer) {
+            passport.authenticate(["bearer"])(req, res, next);
+        } else if (Basic) {
+            passport.authenticate(["basic"])(req, res, next);
         }
-        if (actualStrategies.length > 0) {
-            return passport.authenticate(actualStrategies, { session: true });
-        } else {
-            return (req, res, next) => { next(); };
-        }
+    } else if (Basic && !GitHub) {
+        passport.authenticate(["basic"])(req, res, next);
+    } else {
+        require("connect-ensure-login").ensureLoggedIn()(req, res, next);
     }
 }
 
