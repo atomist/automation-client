@@ -166,6 +166,9 @@ export class AutomationClient {
                     expressOptions.auth.github.clientSecret = http.auth.github.clientSecret;
                     expressOptions.auth.github.callbackUrl = http.auth.github.callbackUrl;
                     expressOptions.auth.github.org = http.auth.github.org;
+                    expressOptions.auth.github.scopes = Array.isArray(http.auth.github.scopes)
+                        ? http.auth.github.scopes as string[] :
+                        (http.auth.github.scopes ? [http.auth.github.scopes] : undefined);
                 }
             }
         }

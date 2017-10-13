@@ -29,6 +29,7 @@ export interface RunOptions {
                 clientSecret: string;
                 callbackUrl: string;
                 org?: string;
+                scopes?: string | string[];
             },
         }
     };

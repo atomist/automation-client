@@ -265,13 +265,16 @@ export class ExpressServer {
         });
 
         if (this.options.auth && this.options.auth.github.enabled) {
+            const scopes = this.options.auth.github.scopes
+                ? this.options.auth.github.scopes : ["user", "repo", "read:org"];
+
             const org = this.options.auth.github.org;
             passport.use(new github.Strategy({
                     clientID: this.options.auth.github.clientId,
                     clientSecret: this.options.auth.github.clientSecret,
                     callbackURL: `${this.options.auth.github.callbackUrl}/auth/github/callback`,
                     userAgent: `${this.automations.rugs.name}/${this.automations.rugs.version}`,
-                    scope: ["user", "repo", "read:org"],
+                    scope: scopes,
                 }, (accessToken, refreshToken, profile, cb) => {
                     if (org) {
                         // check org membership
@@ -312,7 +315,6 @@ export class ExpressServer {
 
             Basic = true;
         }
-
 
         if (this.options.auth && this.options.auth.bearer && this.options.auth.bearer.enabled) {
             const tk = this.options.auth.bearer.token;
@@ -369,6 +371,7 @@ export interface ExpressServerOptions {
             clientSecret: string,
             callbackUrl: string,
             org?: string,
+            scopes?: string[];
         },
     };
     endpoint: {
