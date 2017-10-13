@@ -34,7 +34,7 @@ export function formatter(options: any): string {
     return formatted;
 }
 
-export const logger = new winston.Logger({
+const winstonLogger = new winston.Logger({
     level: "debug",
     // handleExceptions: true,
     // humanReadableUnhandledException: true,
@@ -55,24 +55,50 @@ export const logger = new winston.Logger({
     ],
 });
 
+export const logger: Logger = winstonLogger;
+
 // Redirect console logging methods to our logging setup
 console.error = (message?: any, ...optionalParams: any[]) => {
-    logger.error(message, ...optionalParams);
+    winstonLogger.error(message, ...optionalParams);
 };
 console.info = (message?: any, ...optionalParams: any[]) => {
-    logger.info(message, ...optionalParams);
+    winstonLogger.info(message, ...optionalParams);
 };
 console.log = (message?: any, ...optionalParams: any[]) => {
-    logger.info(message, ...optionalParams);
+    winstonLogger.info(message, ...optionalParams);
 };
 console.trace = (message?: any, ...optionalParams: any[]) => {
-    logger.debug(message, ...optionalParams);
+    winstonLogger.debug(message, ...optionalParams);
 };
 console.warn = (message?: any, ...optionalParams: any[]) => {
-    logger.warn(message, ...optionalParams);
+    winstonLogger.warn(message, ...optionalParams);
 };
 
 // Ideally we wouldn't need this, but I'm still adding proper error handling
 process.on("uncaughtException", err => {
     console.error(serializeError(err));
 });
+
+export interface Logger {
+    log: LogMethod;
+
+    error: LeveledLogMethod;
+    warn: LeveledLogMethod;
+    info: LeveledLogMethod;
+    debug: LeveledLogMethod;
+    verbose: LeveledLogMethod;
+}
+
+export interface LogMethod {
+    (level: string, msg: string, callback: LogCallback): Logger;
+    (level: string, msg: string, meta: any, callback: LogCallback): Logger;
+    (level: string, msg: string, ...meta: any[]): Logger;
+}
+
+export interface LeveledLogMethod {
+    (msg: string, callback: LogCallback): Logger;
+    (msg: string, meta: any, callback: LogCallback): Logger;
+    (msg: string, ...meta: any[]): Logger;
+}
+
+export type LogCallback = (error?: any, level?: string, msg?: string, meta?: any) => void;
