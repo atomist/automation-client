@@ -4,8 +4,7 @@ import * as fs from "fs";
 import { isLocalProject } from "../local/LocalProject";
 import { Project } from "../Project";
 
-import * as tmp from "tmp";
-import { promisify } from "util";
+import * as tmp from "tmp-promise";
 
 import axios from "axios";
 import { CommandResult, runCommand } from "../../internal/util/commandLine";
@@ -266,24 +265,21 @@ export function cloneEditAndPush(token: string,
  * @param branch
  * @return {Promise<TResult2|LocalProject>|PromiseLike<TResult2|LocalProject>}
  */
-function clone(
-    token: string,
-    user: string,
-    repo: string,
-    branch: string = "master",
-): Promise<GitProject> {
+function clone(token: string,
+               user: string,
+               repo: string,
+               branch: string = "master"): Promise<GitProject> {
 
-    const tmpDir = promisify(tmp.dir);
-    return tmpDir()
+    return tmp.dir()
         .then(parentDir => {
-            const repoDir = `${parentDir}/${repo}`;
+            const repoDir = `${parentDir.path}/${repo}`;
             const command = (branch === "master") ?
                 `git clone --depth 1 https://${token}@github.com/${user}/${repo}.git` :
                 `git clone https://${token}@github.com/${user}/${repo}.git; cd ${repo}; git checkout ${branch}`;
 
             const url = `https://github.com/${user}/${repo}`;
-            logger.info(`Cloning repo '${url}' to '${parentDir}'`);
-            return exec(command, { cwd: parentDir })
+            logger.info(`Cloning repo '${url}' to '${parentDir.path}'`);
+            return exec(command, { cwd: parentDir.path })
                 .then(_ => {
                     logger.debug(`Clone succeeded with URL '${url}'`);
                     fs.chmodSync(repoDir, "0777");

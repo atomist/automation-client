@@ -8,6 +8,7 @@ import { Arg, CommandInvocation } from "./internal/invoker/Payload";
 import { consoleMessageClient } from "./internal/message/ConsoleMessageClient";
 import { guid } from "./internal/util/string";
 import { AutomationServer } from "./server/AutomationServer";
+import { Argv } from "yargs";
 
 const config = findConfiguration();
 const node = automationClient(config);
@@ -29,17 +30,13 @@ if (config.ingestors) {
     });
 }
 
-const argv = yargs.argv;
-
 // tslint:disable-next-line:no-unused-expression
 yargs.completion("completion")
     .command("run", "Run a command", ya => {
-        const subArgv = ya
-            .option("command", {
+        return ya.option("command", {
                 describe: "Command name",
-            })
-            .argv;
-
+            });
+    }, argv => {
         const args = extractArgs(argv);
         const ci: CommandInvocation = {
             name: argv.command,

@@ -2,7 +2,7 @@ import "mocha";
 import * as assert from "power-assert";
 
 import * as shell from "shelljs";
-import * as tmp from "tmp";
+import * as tmp from "tmp-promise";
 
 import axios from "axios";
 

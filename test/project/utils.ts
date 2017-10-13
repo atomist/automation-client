@@ -1,6 +1,6 @@
 import { LocalProject } from "../../src/project/local/LocalProject";
 
-import * as tmp from "tmp";
+import * as tmp from "tmp-promise";
 import { NodeFsLocalProject } from "../../src/project/local/NodeFsLocalProject";
 
 export function tempProject(): LocalProject {
