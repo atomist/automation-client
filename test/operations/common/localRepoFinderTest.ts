@@ -4,7 +4,7 @@ import * as fs from "fs";
 import * as assert from "power-assert";
 import { LocalRepoLoader } from "../../../src/operations/common/localRepoLoader";
 
-import * as tmp from "tmp";
+import * as tmp from "tmp-promise";
 import { twoTierDirectoryRepoFinder } from "../../../src/operations/common/localRepoFinder";
 
 describe("twoTierRepoFinder & LocalRepoLoader", () => {

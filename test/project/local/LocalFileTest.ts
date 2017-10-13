@@ -1,5 +1,4 @@
 import "mocha";
-import "tmp";
 
 import * as appRoot from "app-root-path";
 import { LocalFile } from "../../../src/project/local/LocalFile";
