@@ -16,7 +16,7 @@ import { tempProject } from "../utils";
 
 describe("LocalProject", () => {
 
-    const thisProject: LocalProject = new NodeFsLocalProject("test", appRoot);
+    const thisProject: LocalProject = new NodeFsLocalProject("test", appRoot.path);
 
     it("rejects no such directory", () => {
         assert.throws(() => new NodeFsLocalProject("name", "This/is/complete/nonsense"), err => true);
@@ -24,8 +24,8 @@ describe("LocalProject", () => {
 
     it("copies other project", done => {
         const proj = InMemoryProject.of(
-            {path: "package.json", content: "{ node }"},
-            {path: "some/nested/thing", content: "{ node }"},
+            { path: "package.json", content: "{ node }" },
+            { path: "some/nested/thing", content: "{ node }" },
         );
         proj.name = "name";
         const baseDir: string = tmp.dirSync().name;
@@ -86,11 +86,11 @@ describe("LocalProject", () => {
         let count = 0;
         thisProject.streamFiles(AllFiles, ExcludeNodeModules)
             .on("data", (f: File) => {
-                    assert(f.name.length > 0);
-                    assert(f.getContentSync() !== undefined);
-                    count++;
-                },
-            )
+                assert(f.name.length > 0);
+                assert(f.getContentSync() !== undefined);
+                count++;
+            },
+        )
             .on("end", () => {
                 assert(count > 0);
                 done();
@@ -100,18 +100,18 @@ describe("LocalProject", () => {
     it("streamFiles excludes glob non-matches", done => {
         let count = 0;
         const files = [
-            {path: "config/thing.js", content: "{ node: true }"},
-            {path: "config/other.ts", content: "{ node: true }"},
-            {path: "notconfig/other.ts", content: "{ node: true }"},
+            { path: "config/thing.js", content: "{ node: true }" },
+            { path: "config/other.ts", content: "{ node: true }" },
+            { path: "notconfig/other.ts", content: "{ node: true }" },
         ];
         const p = tempProject();
         files.forEach(f => p.addFileSync(f.path, f.content));
         p.streamFiles("config/**")
             .on("data", (f: File) => {
-                    assert(f.name);
-                    count++;
-                },
-            ).on("end", () => {
+                assert(f.name);
+                count++;
+            },
+        ).on("end", () => {
             assert(count === 2, "Found " + count);
             done();
         });

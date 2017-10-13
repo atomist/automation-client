@@ -113,7 +113,8 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                     return this.setUserConfig(result.data.name, result.data.email);
                 } else {
                     return this.setUserConfig("Atomist Bot", "bot@atomist.com");
-                }});
+                }
+            });
     }
 
     public createAndSetGitHubRemote(owner: string, name: string, description: string = name,
@@ -130,7 +131,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                 const url = `${GitHubBase}/orgs/${owner}/repos`;
                 return this.createRepo(owner, url, name, description, visibility);
             })
-            .catch( error => {
+            .catch(error => {
                 // We now know the owner is an user
                 const url = `${GitHubBase}/user/repos`;
                 return this.createRepo(owner, url, name, description, visibility);
@@ -196,7 +197,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     private runCommandInCwd(cmd: string): Promise<CommandResult> {
-        return runCommand(cmd, {cwd: this.baseDir});
+        return runCommand(cmd, { cwd: this.baseDir });
     }
 
     private createRepo(owner: string, url: string, name: string, description: string = name,
@@ -265,10 +266,13 @@ export function cloneEditAndPush(token: string,
  * @param branch
  * @return {Promise<TResult2|LocalProject>|PromiseLike<TResult2|LocalProject>}
  */
-function clone(token: string,
-               user: string,
-               repo: string,
-               branch: string = "master"): Promise<GitProject> {
+function clone(
+    token: string,
+    user: string,
+    repo: string,
+    branch: string = "master",
+): Promise<GitProject> {
+
     const tmpDir = promisify(tmp.dir);
     return tmpDir()
         .then(parentDir => {
@@ -279,7 +283,7 @@ function clone(token: string,
 
             const url = `https://github.com/${user}/${repo}`;
             logger.info(`Cloning repo '${url}' to '${parentDir}'`);
-            return exec(command, {cwd: parentDir})
+            return exec(command, { cwd: parentDir })
                 .then(_ => {
                     logger.debug(`Clone succeeded with URL '${url}'`);
                     fs.chmodSync(repoDir, "0777");

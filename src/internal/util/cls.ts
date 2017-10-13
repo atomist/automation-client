@@ -1,9 +1,9 @@
-import { createNamespace, getNamespace } from "continuation-local-storage";
+import { createNamespace, getNamespace, Namespace } from "continuation-local-storage";
 
 // create the local storage namespace
 createNamespace("automation-client");
 
-export function init() {
+export function init(): Namespace {
     return getNamespace("automation-client");
 }
 
