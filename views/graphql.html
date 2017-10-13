@@ -93,9 +93,9 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#" title="Signed in as cd" data-toggle="tooltip" data-placement="right" data-container="body">
-              <img src="https://avatars0.githubusercontent.com/u/206707?v=4&s=460" alt="" class="rounded-circle img-responsive">
-              <small class="iconav-nav-label hidden-md-up">@cd</small>
+            <a class="nav-link" href="{{user.profileUrl}}" title="Signed in as @{{user.username}}" data-toggle="tooltip" data-placement="right" data-container="body">
+              <img src="{{user._json.avatar_url}}" alt="" class="rounded-circle img-responsive">
+              <small class="iconav-nav-label hidden-md-up">@{{user.username}}</small>
             </a>
           </li>
         </ul>

@@ -1,4 +1,5 @@
 import * as appRoot from "app-root-path";
+import axios from "axios";
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import { Express, Handler } from "express";
@@ -6,6 +7,7 @@ import * as fs from "fs";
 import * as _ from "lodash";
 import * as mustacheExpress from "mustache-express";
 import * as passport from "passport";
+import * as github from "passport-github";
 import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
 import {
@@ -44,7 +46,10 @@ export class ExpressServer {
         exp.set("view engine", "mustache");
 
         exp.use(bodyParser.json());
+        exp.use(require("express-session")({ secret: "keyboard cat", resave: true, saveUninitialized: true }));
+
         exp.use(passport.initialize());
+        exp.use(passport.session());
 
         // TODO that's probably not the way it should work; but it does work when using this inside a node_module
         if (fs.existsSync(appRoot + "/views")) {
@@ -61,68 +66,83 @@ export class ExpressServer {
 
         this.setupAuthentication();
 
+        if (this.options.auth && this.options.auth.github.enabled) {
+            exp.get("/auth/github", passport.authenticate("github"));
+            exp.get("/auth/github/callback", passport.authenticate("github", { failureRedirect: "/login" }),
+                (req, res) => {
+                    // Successful authentication, redirect home.
+                    res.redirect("/");
+                });
+        }
+
         // Set up routes
-        exp.get(`${ApiBase}/automations`, this.authenticate("basic", "bearer"),
+        exp.get(`${ApiBase}/automations`, this.authenticate("bearer"),
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(automations.rugs);
         });
 
-        exp.get(`${ApiBase}/metrics`, this.authenticate("basic", "bearer"),
+        exp.get(`${ApiBase}/metrics`, this.authenticate( "bearer"),
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(report.summary());
         });
 
-        exp.get(`${ApiBase}/log/events`, this.authenticate("basic", "bearer"),
+        exp.get(`${ApiBase}/log/events`, this.authenticate("bearer"),
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(eventStore().events(req.query.from));
         });
 
-        exp.get(`${ApiBase}/log/commands`, this.authenticate("basic", "bearer"),
+        exp.get(`${ApiBase}/log/commands`, this.authenticate("bearer"),
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(eventStore().commands(req.query.from));
         });
 
-        exp.get(`${ApiBase}/log/messages`, this.authenticate("basic", "bearer"),
+        exp.get(`${ApiBase}/log/messages`, this.authenticate("bearer"),
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(eventStore().messages(req.query.from));
         });
 
-        exp.get(`${ApiBase}/series/events`, this.authenticate("basic", "bearer"),
+        exp.get(`${ApiBase}/series/events`, this.authenticate("bearer"),
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(eventStore().eventSeries());
             });
 
-        exp.get(`${ApiBase}/series/commands`, this.authenticate("basic", "bearer"),
+        exp.get(`${ApiBase}/series/commands`, this.authenticate("bearer"),
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(eventStore().commandSeries());
             });
 
-        exp.get("/graphql", this.authenticate("basic"),
+        exp.get("/graphql", this.authenticate("github", "basic"),
             (req, res) => {
                 const teamId = req.query.teamId ? req.query.teamId : this.automations.rugs.team_ids[0];
                 res.render("graphql.html", { token: jwtToken(),
                     graphQLUrl: `${this.options.endpoint.graphql}/${teamId}`,
-                    teamIds: this.automations.rugs.team_ids});
+                    teamIds: this.automations.rugs.team_ids,
+                    user: req.user });
         });
 
-        exp.get("/", this.authenticate("basic"),
+        exp.get("/", this.authenticate("github", "basic"),
             (req, res) => {
-                res.render("index.html");
+                res.render("index.html", { user: req.user });
         });
+
+        exp.get("/login",
+            (req, res) => {
+                res.render("login.html", { user: req.user });
+            });
 
         automations.rugs.commands.forEach(
             h => {
@@ -235,7 +255,36 @@ export class ExpressServer {
 
     private setupAuthentication() {
 
-        if (this.options.auth && this.options.auth.basic && this.options.auth.basic.enabled) {
+        passport.serializeUser((user, cb) => {
+            cb(null, user);
+        });
+
+        passport.deserializeUser((obj, cb) => {
+            cb(null, obj);
+        });
+
+        if (this.options.auth && this.options.auth.github.enabled) {
+            const org = this.options.auth.github.org;
+            passport.use(new github.Strategy({
+                    clientID: this.options.auth.github.clientId,
+                    clientSecret: this.options.auth.github.clientSecret,
+                    callbackURL: `${this.options.auth.github.callbackUrl}/auth/github/callback`,
+                    userAgent: `${this.automations.rugs.name}/${this.automations.rugs.version}`,
+                    scope: ["user", "repo", "read:org"],
+                }, (accessToken, refreshToken, profile, cb) => {
+                    if (org) {
+                        // check org membership
+                        axios.get(`https://api.github.com/orgs/${org}/members/${profile.username}`,
+                            { headers: { Authorization: `token ${accessToken}` }})
+                            .then(() => cb(null, {...profile, accessToken }))
+                            .catch(err => cb(err));
+                    } else {
+                        return cb(null, {...profile, accessToken });
+                    }
+                },
+            ));
+
+        } else if (this.options.auth && this.options.auth.basic && this.options.auth.basic.enabled) {
             const user: string = this.options.auth.basic.username ? this.options.auth.basic.username : "admin";
             const pwd: string = this.options.auth.basic.password ? this.options.auth.basic.password : guid();
 
@@ -260,7 +309,7 @@ export class ExpressServer {
             passport.use(new bearer.Strategy(
                 (token, done) => {
                     if (token === tk) {
-                        done(null, {token } );
+                        done(null, { token } );
                     } else {
                         done(null, false);
                     }
@@ -273,6 +322,9 @@ export class ExpressServer {
 
         const actualStrategies = [];
         if (this.options.auth) {
+            if (this.options.auth.github.enabled && strategies.indexOf("github") >= 0) {
+                return require("connect-ensure-login").ensureLoggedIn();
+            }
             if (this.options.auth.basic.enabled && strategies.indexOf("basic") >= 0) {
                 actualStrategies.push("basic");
             }
@@ -281,7 +333,7 @@ export class ExpressServer {
             }
         }
         if (actualStrategies.length > 0) {
-            return passport.authenticate(actualStrategies, { session: false });
+            return passport.authenticate(actualStrategies, { session: true });
         } else {
             return (req, res, next) => { next(); };
         }
@@ -301,6 +353,13 @@ export interface ExpressServerOptions {
         bearer: {
             enabled: boolean;
             token: string;
+        },
+        github: {
+            enabled: boolean;
+            clientId: string,
+            clientSecret: string,
+            callbackUrl: string,
+            org?: string,
         },
     };
     endpoint: {

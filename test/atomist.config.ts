@@ -67,6 +67,8 @@ export const configuration: Configuration = {
         auth: {
             basic: {
                 enabled: false,
+                username: "test",
+                password: "test",
             },
             bearer: {
                 enabled: false,

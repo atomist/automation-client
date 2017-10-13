@@ -23,6 +23,13 @@ export interface RunOptions {
                 enabled: boolean;
                 token?: string;
             },
+            github?: {
+                enabled: boolean;
+                clientId?: string;
+                clientSecret: string;
+                callbackUrl: string;
+                org?: string;
+            },
         }
     };
     endpoints?: {
