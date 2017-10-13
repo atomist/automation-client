@@ -260,12 +260,15 @@
                                 display: false
                             }],
                             yAxes: [{
-                                display: false
+                                display: false,
+                                ticks: {
+                                    beginAtZero: true
+                                },
                             }]
                         },
                         tooltips: {
                             enabled: false
-                        }
+                        },
                     }, options)
 
                     const chart = new Chart(element.getContext('2d'), {
