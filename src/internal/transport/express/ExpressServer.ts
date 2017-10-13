@@ -47,7 +47,9 @@ export class ExpressServer {
         exp.set("view engine", "mustache");
 
         exp.use(bodyParser.json());
-        exp.use(require("express-session")({ secret: "this is really secret", resave: true, saveUninitialized: true }));
+        exp.use(require("express-session")({ secret: "this is really secret", cookie: { maxAge: 60000 },
+            resave: true, saveUninitialized: true }));
+        exp.use(require("connect-flash")());
 
         exp.use(passport.initialize());
         exp.use(passport.session());
@@ -69,11 +71,17 @@ export class ExpressServer {
 
         if (this.options.auth && this.options.auth.github.enabled) {
             exp.get("/auth/github", passport.authenticate("github"));
-            exp.get("/auth/github/callback", passport.authenticate("github", { failureRedirect: "/login" }),
+            exp.get("/auth/github/callback", passport.authenticate("github",
+                { failureRedirect: "/error", failureFlash: true }),
                 (req, res) => {
                     // Successful authentication, redirect home.
                     res.redirect("/");
                 });
+
+            exp.get("/error", (req, res) => {
+                req.flash("error", "Authentication failed");
+                res.redirect("/login");
+            });
         }
 
         // Set up routes
@@ -142,7 +150,7 @@ export class ExpressServer {
 
         exp.get("/login",
             (req, res) => {
-                res.render("login.html", { user: req.user });
+                res.render("login.html", { user: req.user, message: req.flash("error") });
             });
 
         automations.rugs.commands.forEach(
@@ -291,7 +299,7 @@ export class ExpressServer {
                         axios.get(`https://api.github.com/orgs/${org}/members/${profile.username}`,
                             { headers: { Authorization: `token ${accessToken}` }})
                             .then(() => cb(null, { ...profile, accessToken } ))
-                            .catch(err => cb(err));
+                            .catch(err => cb(null, false));
                     } else {
                         return cb(null, { ...profile, accessToken });
                     }
