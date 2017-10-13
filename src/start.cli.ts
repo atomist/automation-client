@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import * as yargs from "yargs";
+import { Argv } from "yargs";
 import { automationClient } from "./automationClient";
 import { findConfiguration } from "./configuration";
 import { HandlerContext } from "./HandlerContext";
@@ -29,17 +30,13 @@ if (config.ingestors) {
     });
 }
 
-const argv = yargs.argv;
-
 // tslint:disable-next-line:no-unused-expression
 yargs.completion("completion")
     .command("run", "Run a command", ya => {
-        const subArgv = ya
-            .option("command", {
+        return ya.option("command", {
                 describe: "Command name",
-            })
-            .argv;
-
+            });
+    }, argv => {
         const args = extractArgs(argv);
         const ci: CommandInvocation = {
             name: argv.command,
