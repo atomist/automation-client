@@ -11,13 +11,13 @@ import { tempProject } from "../utils";
 describe("LocalFile", () => {
 
     it("should read file and check content sync", () => {
-        const f = new NodeFsLocalFile(appRoot, "package.json");
+        const f = new NodeFsLocalFile(appRoot.path, "package.json");
         assert(f.getContentSync());
         assert(f.getContentSync().indexOf("node") !== -1);
     });
 
     it("should read file and check content async", () => {
-        const f = new NodeFsLocalFile(appRoot, "package.json");
+        const f = new NodeFsLocalFile(appRoot.path, "package.json");
         f.getContent().then(content => {
             assert(content);
             assert(content.indexOf("node") !== -1);
@@ -25,13 +25,13 @@ describe("LocalFile", () => {
     });
 
     it("should read file and check name and path in root", () => {
-        const f = new NodeFsLocalFile(appRoot, "package.json");
+        const f = new NodeFsLocalFile(appRoot.path, "package.json");
         assert(f.path === "package.json");
         assert(f.name === "package.json");
     });
 
     it("should read file and check name in child package", () => {
-        const f = new NodeFsLocalFile(appRoot, "config/default.json");
+        const f = new NodeFsLocalFile(appRoot.path, "config/default.json");
         assert(f.path === "config/default.json");
         assert(f.name === "default.json");
     });
@@ -85,10 +85,10 @@ describe("LocalFile", () => {
         f.recordSetContent("The slow brown")
             .flush()
             .then(() => {
-                    assert(f.getContentSync() === "The slow brown");
-                    done();
-                },
-            );
+                assert(f.getContentSync() === "The slow brown");
+                done();
+            },
+        );
     });
 
     it("should set content and read back from disk", done => {
@@ -98,10 +98,10 @@ describe("LocalFile", () => {
         assert(f.getContentSync() === "The quick brown");
         f.setContent("The slow brown")
             .then(() => {
-                    assert(f.getContentSync() === "The slow brown");
-                    done();
-                },
-            );
+                assert(f.getContentSync() === "The slow brown");
+                done();
+            },
+        );
     });
 
     it("should recordReplace content and read back", done => {
@@ -126,10 +126,10 @@ describe("LocalFile", () => {
         f.recordReplace(/(The )([a-z]+)( brown)/, "$1slow$3")
             .flush()
             .then(() => {
-                    assert(f.getContentSync() === "The slow brown");
-                    done();
-                },
-            ).catch(done);
+                assert(f.getContentSync() === "The slow brown");
+                done();
+            },
+        ).catch(done);
     });
 
     it("should recordReplaceAll and read back from disk", done => {
@@ -140,10 +140,10 @@ describe("LocalFile", () => {
         f.recordReplaceAll("e", "z")
             .flush()
             .then(() => {
-                    assert(f.getContentSync() === "Onz two thrzz");
-                    done();
-                },
-            ).catch(done);
+                assert(f.getContentSync() === "Onz two thrzz");
+                done();
+            },
+        ).catch(done);
     });
 
     it("should set path and read back", done => {

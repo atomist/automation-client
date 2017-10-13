@@ -1,4 +1,3 @@
-import { isArray, isUndefined } from "util";
 import { ParameterType } from "./metadata";
 
 export interface BaseParameter {
@@ -62,7 +61,7 @@ export function declareParameter(target: any, propertyKey: string, details: Base
     }
     const copy: any = { ...details };
     // Make required = true the default
-    copy.required = !isUndefined(copy.required) ? copy.required : true;
+    copy.required = (copy.required !== undefined) ? copy.required : true;
     copy.name = propertyKey;
     params.push(copy);
 
@@ -145,10 +144,10 @@ export function declareSecret(target: any, name: string, path: string) {
 
 export function declareCommandHandler(obj: any, description: string, intent?: string[] | string) {
     declareRug(obj, "command-handler", description);
-    if (isArray(intent)) {
+    if (Array.isArray(intent)) {
         declareIntent(obj, intent);
     } else if (intent) {
-        declareIntent(obj, [ intent ]);
+        declareIntent(obj, [intent]);
     }
     return obj;
 }
