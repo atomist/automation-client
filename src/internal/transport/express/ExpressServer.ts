@@ -42,14 +42,23 @@ export class ExpressServer {
 
         const exp = express();
 
-        exp.engine("html", mustacheExpress());
         exp.set("view engine", "mustache");
+        exp.engine("html", mustacheExpress());
 
         exp.use(bodyParser.json());
-        exp.use(require("express-session")({ secret: "Careful Man, there's beverage here!",
-            cookie: { maxAge: 172800000 }, // two days
-            resave: true, saveUninitialized: true }));
         exp.use(require("connect-flash")());
+
+        const session = require("express-session");
+        const MemoryStore = require("memorystore")(session);
+        exp.use(session({
+                store: new MemoryStore({
+                    checkPeriod: 86400000, // prune expired entries every 24h
+                }),
+                secret: "Careful Man, there's beverage here!",
+                cookie: { maxAge: 172800000 }, // two days
+                resave: true,
+                saveUninitialized: true,
+            }));
 
         if (this.options.forceSecure === true) {
             exp.set("forceSSLOptions", {
