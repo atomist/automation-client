@@ -13,6 +13,7 @@ export interface RunOptions {
         enabled: boolean;
         port?: number;
         host?: string;
+        forceSecure?: boolean;
         auth?: {
             basic?: {
                 enabled: boolean;

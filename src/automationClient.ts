@@ -145,6 +145,7 @@ export class AutomationClient {
         };
 
         if (http && http.enabled) {
+            expressOptions.forceSecure = http.forceSecure;
             // Set up auth options
             if (http.auth) {
                 if (http.auth.basic && http.auth.basic.enabled) {

@@ -2,7 +2,6 @@ import * as appRoot from "app-root-path";
 import axios from "axios";
 import * as bodyParser from "body-parser";
 import * as express from "express";
-import { Express } from "express";
 import * as fs from "fs";
 import * as _ from "lodash";
 import * as mustacheExpress from "mustache-express";
@@ -51,6 +50,15 @@ export class ExpressServer {
             cookie: { maxAge: 172800000 }, // two days
             resave: true, saveUninitialized: true }));
         exp.use(require("connect-flash")());
+
+        if (this.options.forceSecure === true) {
+            exp.set("forceSSLOptions", {
+                enable301Redirects: true,
+                trustXFPHeader: true,
+                httpsPort: 443,
+            });
+            exp.use(require("express-force-ssl"));
+        }
 
         exp.use(passport.initialize());
         exp.use(passport.session());
@@ -173,7 +181,7 @@ export class ExpressServer {
         });
     }
 
-    private exposeCommandHandlerInvocationRoute(exp: Express,
+    private exposeCommandHandlerInvocationRoute(exp: express.Express,
                                                 url: string,
                                                 h: CommandHandlerMetadata,
                                                 handle: (res, result) => any) {
@@ -251,7 +259,7 @@ export class ExpressServer {
         });
     }
 
-    private exposeEventInvocationRoute(exp: Express,
+    private exposeEventInvocationRoute(exp: express.Express,
                                        url: string,
                                        h: IngestorMetadata,
                                        handle: (res, result) => any) {
@@ -370,6 +378,7 @@ export interface ExpressServerOptions {
 
     port: number;
     host?: string;
+    forceSecure?: boolean;
     auth?: {
         basic: {
             enabled: boolean;

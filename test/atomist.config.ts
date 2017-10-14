@@ -64,6 +64,7 @@ export const configuration: Configuration = {
     token: GitHubToken,
     http: {
         enabled: true,
+        forceSecure: false,
         auth: {
             basic: {
                 enabled: false,
