@@ -15,6 +15,15 @@ import { GitProject, PullRequestInfo } from "./GitProject";
 
 export const GitHubBase = "https://api.github.com";
 
+export interface CloneOptions {
+
+    keep?: boolean;
+}
+
+const DefaultCloneOptions: CloneOptions = {
+    keep: false,
+};
+
 /**
  * Implements GitProject interface using the Git binary from the command line.
  * Works only if git is installed.
@@ -32,8 +41,9 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         return new GitCommandGitProject(name, baseDir, token);
     }
 
-    public static cloned(token: string, user: string, repo: string, branch: string = "master"): Promise<GitProject> {
-        return clone(token, user, repo, branch)
+    public static cloned(token: string, user: string, repo: string, branch: string = "master",
+                         opts: CloneOptions = DefaultCloneOptions): Promise<GitProject> {
+        return clone(token, user, repo, branch, opts)
             .then(p => {
                 const gp = GitCommandGitProject.fromBaseDir(repo, p.baseDir, token);
                 gp.repoName = repo;
@@ -196,7 +206,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     private runCommandInCwd(cmd: string): Promise<CommandResult> {
-        return runCommand(cmd, { cwd: this.baseDir });
+        return runCommand(cmd, {cwd: this.baseDir});
     }
 
     private createRepo(owner: string, url: string, name: string, description: string = name,
@@ -268,9 +278,10 @@ export function cloneEditAndPush(token: string,
 function clone(token: string,
                user: string,
                repo: string,
-               branch: string = "master"): Promise<GitProject> {
+               branch: string = "master",
+               opts: CloneOptions): Promise<GitProject> {
 
-    return tmp.dir()
+    return tmp.dir({ keep: opts.keep })
         .then(parentDir => {
             const repoDir = `${parentDir.path}/${repo}`;
             const command = (branch === "master") ?
@@ -279,7 +290,7 @@ function clone(token: string,
 
             const url = `https://github.com/${user}/${repo}`;
             logger.info(`Cloning repo '${url}' to '${parentDir.path}'`);
-            return exec(command, { cwd: parentDir.path })
+            return exec(command, {cwd: parentDir.path})
                 .then(_ => {
                     logger.debug(`Clone succeeded with URL '${url}'`);
                     fs.chmodSync(repoDir, "0777");
