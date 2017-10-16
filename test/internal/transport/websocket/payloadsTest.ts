@@ -1,9 +1,9 @@
 import "mocha";
 import * as assert from "power-assert";
 import { Rugs } from "../../../../src/internal/metadata/metadata";
-import { prepareRegistration } from "../../../../src/internal/transport/websocket/Payloads";
+import { prepareRegistration } from "../../../../src/internal/transport/websocket/payloads";
 
-describe("Payloads", () => {
+describe("payloads", () => {
 
     it("check registration payload is valid", () => {
         const rugs: Rugs = {
@@ -54,5 +54,21 @@ describe("Payloads", () => {
         assert(payload.team_ids[0] === "x-team", "has a team id");
         assert(!payload.keywords);
         assert(!payload.ingestors);
+    });
+
+    it("check registration for group = all is valid", () => {
+        const rugs: Rugs = {
+            name: "foo",
+            version: "1.0.0",
+            team_ids: [],
+            commands: [],
+            events: [],
+            ingestors: [],
+            keywords: [],
+        };
+
+        const payload = prepareRegistration(rugs);
+        assert(!payload.team_ids);
+        assert(payload.groups[0] = "all");
     });
 });

@@ -45,7 +45,7 @@ class StartUpListener extends AutomationEventListenerSupport {
 export const configuration: Configuration = {
     name: "@atomist/automation-node-tests",
     version: "0.0.6",
-    teamIds: ["T1L0VDKJP", "T74GV0HDK"],
+    teamIds: [],
     commands: [
         () => new HelloWorld(),
         () => new SendStartupMessage(),

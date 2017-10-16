@@ -12,7 +12,7 @@ import { RequestProcessor } from "./internal/transport/RequestProcessor";
 import {
     DefaultWebSocketRequestProcessor,
 } from "./internal/transport/websocket/DefaultWebSocketRequestProcessor";
-import { prepareRegistration } from "./internal/transport/websocket/Payloads";
+import { prepareRegistration } from "./internal/transport/websocket/payloads";
 import {
     WebSocketClient,
     WebSocketClientOptions,
