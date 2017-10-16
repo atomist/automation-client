@@ -378,6 +378,8 @@ function authenticate(req, res, next): any {
         }
     } else if (Basic && !GitHub) {
         passport.authenticate(["basic"])(req, res, next);
+    } else if (!Basic && !Bearer && !GitHub) {
+        next();
     } else {
         require("connect-ensure-login").ensureLoggedIn()(req, res, next);
     }
