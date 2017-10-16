@@ -175,14 +175,14 @@ export class ExpressServer {
             h => {
                 this.exposeCommandHandlerInvocationRoute(exp,
                     `${ApiBase}/command/${_.kebabCase(h.name)}`, h,
-                    (res, result) => res.send(result));
+                    (res, result) => res.json(result.code === 0 ? 200 : 500, result));
             },
         );
         automations.rugs.ingestors.forEach(
             i => {
                 this.exposeEventInvocationRoute(exp,
                     `${ApiBase}/ingest/${i.route.toLowerCase()}`, i,
-                    (res, result) => res.send(result));
+                    (res, result) => res.json(result.code === 0 ? 200 : 500, result));
         });
 
         exp.listen(this.options.port, () => {
@@ -211,8 +211,6 @@ export class ExpressServer {
 
             this.handler.processCommand(payload, result => {
                 handle(res, result);
-            }, error => {
-                res.status(500).send({ message: error.toString()});
             });
         });
 
@@ -262,8 +260,6 @@ export class ExpressServer {
                 };
                 this.handler.processCommand(payload, result => {
                     handle(res, result);
-                }, error => {
-                    res.status(500).send({ message: error.toString()});
                 });
         });
     }
@@ -284,8 +280,6 @@ export class ExpressServer {
             };
             this.handler.processEvent(payload, result => {
                 handle(res, result);
-            }, error => {
-                res.status(500).send({ message: error.toString()});
             });
         });
     }

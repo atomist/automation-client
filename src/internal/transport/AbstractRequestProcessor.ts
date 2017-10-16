@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as serializeError from "serialize-error";
 import { HandlerContext } from "../../HandlerContext";
-import { HandlerResult } from "../../HandlerResult";
+import { failure, HandlerResult } from "../../HandlerResult";
 import { EventFired } from "../../Handlers";
 import { AutomationEventListener } from "../../server/AutomationEventListener";
 import { AutomationServer } from "../../server/AutomationServer";
@@ -19,9 +19,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
     constructor(protected automations: AutomationServer, protected listeners: AutomationEventListener[] = []) { }
 
     // tslint:disable-next-line:no-empty
-    public processCommand(command: CommandIncoming, callback: (result: HandlerResult) => void = () => { },
-                          // tslint:disable-next-line:no-empty
-                          error: (error: any) => void = () => { }) {
+    public processCommand(command: CommandIncoming, callback: (result: HandlerResult) => void = () => { }) {
         // setup context
         const ses = namespace.init();
         ses.run(() => {
@@ -52,26 +50,32 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                     .then(result => {
                         if (result.code === 0) {
                             this.listeners.forEach(l => l.commandSuccessful(ci, ctx, result));
+                            result = {
+                                ...defaultResult(),
+                                ...result,
+                            };
                         } else {
                             this.listeners.forEach(l => l.commandFailed(ci, ctx, result));
+                            result = {
+                                ...defaultErrorResult(),
+                                ...result,
+                            };
                         }
                         this.sendStatus(result.code === 0 ? true : false, result, command);
                         callback(result);
                         logger.debug(`Finished invocation of command handler '%s': %s`,
                             command.name, JSON.stringify(result));
                     }).catch(err => {
-                        this.handleCommandError(err, command, ci, ctx, error);
+                        this.handleCommandError(err, command, ci, ctx, callback);
                     });
             } catch (err) {
-                this.handleCommandError(err, command, ci, ctx, error);
+                this.handleCommandError(err, command, ci, ctx, callback);
             }
         });
     }
 
     // tslint:disable-next-line:no-empty
-    public processEvent(event: EventIncoming, callback: (results: HandlerResult[]) => void = () => { },
-                        // tslint:disable-next-line:no-empty
-                        error: (error: any) => void = () => { }) {
+    public processEvent(event: EventIncoming, callback: (results: HandlerResult[]) => void = () => { }) {
         // setup context
         const ses = namespace.init();
         ses.run(() => {
@@ -111,10 +115,10 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                             event.extensions.operationName, JSON.stringify(result));
                     })
                     .catch(err => {
-                        this.handleEventError(err, event, ef, ctx, error);
+                        this.handleEventError(err, event, ef, ctx, callback);
                     });
             } catch (err) {
-                this.handleEventError(err, event, ef, ctx, error);
+                this.handleEventError(err, event, ef, ctx, callback);
             }
         });
     }
@@ -152,24 +156,53 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
     protected abstract createMessageClient(event: EventIncoming | CommandIncoming): MessageClient;
 
     private handleCommandError(err: any, command: CommandIncoming, ci: CommandInvocation,
-                               ctx: HandlerContext, error: (error: any) => void) {
+                               ctx: HandlerContext, callback: (error: any) => void) {
+        const result = {
+            ...defaultErrorResult(),
+            ...failure(err),
+        };
+
         this.listeners.forEach(l => l.commandFailed(ci, ctx, err));
-        this.sendStatus(false, { code: 1 }, command);
-        if (error) {
-            error(err);
+        this.sendStatus(false, result as HandlerResult, command);
+        if (callback) {
+            callback(result);
         }
         logger.error(`Failed invocation of command handler '%s'`, command.name, serializeError(err));
     }
 
     private handleEventError(err: any, event: EventIncoming, ef: EventFired<any>,
-                             ctx: HandlerContext, error: (error: any) => void) {
+                             ctx: HandlerContext, callback: (error: any) => void) {
+        const result = {
+            ...defaultErrorResult(),
+            ...failure(err),
+        };
+
         this.listeners.forEach(l => l.eventFailed(ef, ctx, err));
-        if (error) {
-            error(err);
+        if (callback) {
+            callback(result);
         }
         logger.error(`Failed invocation of command handler '%s'`,
             event.extensions.operationName, serializeError(err));
     }
+}
+
+function defaultResult(): HandlerResult {
+    const result = {
+        code: 0,
+        message: `Command '${namespace.get().operation}' completed successfully`,
+        correlation_id: namespace.get().correlationId,
+        invocation_id: namespace.get().invocationId,
+    };
+    return result as HandlerResult;
+}
+
+function defaultErrorResult(): HandlerResult {
+    const result = {
+        ...defaultResult(),
+        code: 1,
+        message: `Command '${namespace.get().operation}' failed`,
+    };
+    return result as HandlerResult;
 }
 
 function setupNamespace(request: any, automations: AutomationServer) {

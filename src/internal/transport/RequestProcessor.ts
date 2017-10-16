@@ -3,8 +3,6 @@
  */
 import { HandlerResult } from "../../HandlerResult";
 
-// TODO CD I don't like this name here; it doesn't reflect what it does. Thinking ....
-// I agree, it confused me because it is not an EventHandler. How about Responder? - jess
 export interface RequestProcessor {
 
     /**
@@ -13,7 +11,7 @@ export interface RequestProcessor {
      * @param {(result: HandlerResult) => void} callback
      * @param {(error: any) => void} error
      */
-    processCommand(command: CommandIncoming, callback?: (result: HandlerResult) => void, error?: (error: any) => void);
+    processCommand(command: CommandIncoming, callback?: (result: HandlerResult) => void);
 
     /**
      * A new cortex event has been received.
@@ -21,7 +19,7 @@ export interface RequestProcessor {
      * @param {(results: HandlerResult[]) => void} callback
      * @param {(error: any) => void} error
      */
-    processEvent(event: EventIncoming, callback?: (results: HandlerResult[]) => void, error?: (error: any) => void);
+    processEvent(event: EventIncoming, callback?: (results: HandlerResult[]) => void);
 }
 
 export function isCommandIncoming(event: any): event is CommandIncoming {
