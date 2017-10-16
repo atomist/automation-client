@@ -1,4 +1,5 @@
 import { render, SlackMessage } from "@atomist/slack-messages/SlackMessages";
+import { addTypenameToDocument } from "apollo-client";
 import * as WebSocket from "ws";
 import { AutomationServer } from "../../../server/AutomationServer";
 import {
@@ -30,8 +31,8 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 correlation_context: this.correlationContext,
                 content_type: MessageMimeTypes.SLACK_JSON,
                 message: render(msg, false),
-                channels: Array.isArray(channelNames) ? channelNames as string[] : [ channelNames ],
-                users: Array.isArray(userNames) ? userNames as string[] : [ userNames],
+                channels: this.addresses(channelNames),
+                users: this.addresses(userNames),
                 message_id: options.id,
                 timestamp: this.ts(options),
                 ttl: options.ttl ? options.ttl.toString() : undefined,
@@ -47,8 +48,8 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 correlation_context: this.correlationContext,
                 content_type: MessageMimeTypes.PLAIN_TEXT,
                 message: msg as string,
-                channels: Array.isArray(channelNames) ? channelNames as string[] : [ channelNames ],
-                users: Array.isArray(userNames) ? userNames as string[] : [ userNames],
+                channels: this.addresses(channelNames),
+                users: this.addresses(userNames),
                 message_id: options.id,
                 timestamp: this.ts(options),
                 ttl: options.ttl ? options.ttl.toString() : undefined,
@@ -69,6 +70,17 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
         } else {
             return undefined;
         }
+    }
+
+    private addresses(addresses: string[] | string): string[] {
+        if (addresses) {
+            if (Array.isArray(addresses)) {
+                return addresses as string[];
+            } else {
+                return [ addresses ];
+            }
+        }
+        return [];
     }
 }
 
