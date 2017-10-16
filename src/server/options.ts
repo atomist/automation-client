@@ -27,8 +27,8 @@ export interface RunOptions {
             github?: {
                 enabled: boolean;
                 clientId?: string;
-                clientSecret: string;
-                callbackUrl: string;
+                clientSecret?: string;
+                callbackUrl?: string;
                 org?: string;
                 scopes?: string | string[];
             },

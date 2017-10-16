@@ -12,6 +12,11 @@
     <!-- Include the CSS -->
     <link href="dist/toolkit-inverse.min.css" rel="stylesheet">
     <link href="assets/css/application.css" rel="stylesheet">
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github-gist.min.css">
 </head>
 
 <body>
@@ -88,10 +93,9 @@
             <div class="hr-divider my-4">
                 <h3 class="hr-divider-content hr-divider-heading">Quick Stats</h3>
             </div>
-
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="statcard statcard-primary   ">
+                    <div class="statcard statcard-primary">
                         <div class="p-4">
                             <h3 class="statcard-number" id="command-count">
                               0
@@ -134,7 +138,7 @@
             <div class="flextable table-actions">
                 <div class="flextable-item flextable-primary">
                     <div class="btn-toolbar-item input-with-icon">
-                        <input type="text" class="form-control input-block" placeholder="Search handlers">
+                        <input type="text" class="form-control input-block" id="events-search" placeholder="Search events">
                         <span class="icon icon-magnifying-glass"></span>
                     </div>
                 </div>
@@ -164,7 +168,7 @@
             <div class="flextable table-actions">
                 <div class="flextable-item flextable-primary">
                     <div class="btn-toolbar-item input-with-icon">
-                        <input type="text" class="form-control input-block" placeholder="Search handlers">
+                        <input type="text" class="form-control input-block" id="commands-search" placeholder="Search commands">
                         <span class="icon icon-magnifying-glass"></span>
                     </div>
                 </div>
@@ -187,6 +191,28 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="modal-result" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-result-title">Result</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-result-body">
+                    <i class="fa fa-spinner fa-spin fa-1x fa-fw"></i>
+                        <span class="sr-only">Loading...</span>
+                        loading
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="footer">
         <div class="container container-fluid">
             <p class="text-muted text-center" id="footer"></p>
@@ -197,113 +223,11 @@
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/tether.min.js"></script>
     <script src="assets/js/chart.js"></script>
-    <script src="dist/toolkit.min.js"></script>
-
-    <script>
-        // Hello…
-        // This is a backport of our old chart-js data api plugin
-        // We no longer provide this as a supported plugin because of changes
-        // to the chart.js option api. However, for contrived examples (like the ones
-        // found in our theme examples, it makes our lives a bit easier.)
-        // if you're reading this, we *HIGHLY* recommend you don't use this in
-        // production, but rather implement your charts using the chart.js docs-top
-        // themselves, directly: www.chartjs.org/docs/
-        $(function () {
-
-            var Charts = {
-
-                _HYPHY_REGEX: /-([a-z])/g,
-
-                _cleanAttr: function (obj) {
-                    delete obj["chart"]
-                    delete obj["datasets"]
-                    delete obj["datasetsOptions"]
-                    delete obj["labels"]
-                    delete obj["options"]
-                },
-
-                'spark-line': function (element) {
-                    var attrData = $.extend({}, $(element).data())
-
-                    var data = attrData.dataset ? eval(attrData.dataset) : []
-                    var datasetOptions = attrData.datasetOptions ? eval(attrData.datasetOptions) : []
-                    var labels = attrData.labels ? eval(attrData.labels) : {}
-                    var options = attrData.options ? eval('(' + attrData.options + ')') : {}
-
-                    var data = {
-                        labels: labels,
-                        datasets: data.map(function (set, i) {
-                            return $.extend({
-                                data: set,
-                                fill: true,
-                                backgroundColor: 'rgba(255,255,255,.3)',
-                                borderWidth: 2,
-                                borderColor: '#fff',
-                                pointBorderColor: '#fff',
-                                lineTension: 0.25,
-                                pointRadius: 0,
-                            }, datasetOptions[i])
-                        })
-                    }
-
-                    Charts._cleanAttr(attrData)
-
-                    var options = $.extend({
-                        animation: {
-                            duration: 1000
-                        },
-                        legend: {
-                            display: false
-                        },
-                        scales: {
-                            xAxes: [{
-                                display: false
-                            }],
-                            yAxes: [{
-                                display: false,
-                                ticks: {
-                                    beginAtZero: true
-                                },
-                            }]
-                        },
-                        tooltips: {
-                            enabled: false
-                        },
-                    }, options)
-
-                    const chart = new Chart(element.getContext('2d'), {
-                        type: 'line',
-                        data: data,
-                        options: options
-                    });
-
-                    setInterval(function() {
-                        $.getJSON("/series/" + element.id.slice(3), function (data) {
-                            const labels = data[1];
-                            const dataset = data[0];
-                            chart.data.labels = labels;
-                            chart.data.datasets.forEach(function(ds) {
-                                ds.data = dataset;
-                            });
-                            chart.update();
-                        });
-                    }, 5000);
-                }
-            }
-
-            $(document)
-                .on('redraw.bs.charts', function () {
-                    $('[data-chart]').each(function () {
-                        if ($(this).is(':visible') && !$(this).hasClass('js-chart-drawn')) {
-                            Charts[$(this).attr('data-chart')](this)
-                            $(this).addClass('js-chart-drawn')
-                        }
-                    })
-                })
-                .trigger('redraw.bs.charts')
-        });
-
-    </script>
+    <script src="dist/toolkit.js"></script>
+    <script src="assets/js/automation.client.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/json.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 </body>
 
 </html>
