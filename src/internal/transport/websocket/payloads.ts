@@ -4,7 +4,7 @@ export function prepareRegistration(metadata: Rugs): any {
     return convertRegExpValuesToString({
         name: metadata.name,
         version: metadata.version,
-        team_ids: metadata.team_ids && metadata.team_ids.length > 0 ? metadata.team_ids: undefined,
+        team_ids: metadata.team_ids && metadata.team_ids.length > 0 ? metadata.team_ids : undefined,
         groups: !metadata.team_ids || metadata.team_ids.length === 0 ? ["all"] : undefined,
         commands: metadata.commands.map(prepareCommandRegistration),
         events: metadata.events.map(prepareEventRegistration),
