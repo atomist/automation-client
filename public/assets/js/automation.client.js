@@ -35,6 +35,8 @@ function init() {
                 });
                 dd += "</select></div></form>";
                 $("#footer").html(dd);
+            } else {
+                $("#footer").html(automations.name + "@" + automations.version + " active for all teams");
             }
 
             if (!loaded) {
