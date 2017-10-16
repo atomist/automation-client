@@ -54,12 +54,13 @@ export class DefaultWebSocketRequestProcessor extends AbstractEventStoringReques
 
         if (this.graphClients.has(teamId)) {
             return this.graphClients.get(teamId);
-        } else {
+        } else if (this.registration) {
             const graphClient = new ApolloGraphClient(`${this.options.graphUrl}/${teamId}`,
                 { Authorization: `Bearer ${this.registration.jwt}` });
 
             return graphClient;
         }
+        return null;
     }
 
     protected doCreateMessageClient(event: CommandIncoming | EventIncoming): MessageClient {
