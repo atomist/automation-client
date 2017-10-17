@@ -63,7 +63,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         }
                         this.sendStatus(result.code === 0 ? true : false, result, command);
                         callback(result);
-                        logger.debug(`Finished invocation of command handler '%s': %s`,
+                        logger.info(`Finished invocation of command handler '%s': %s`,
                             command.name, JSON.stringify(result));
                     }).catch(err => {
                         this.handleCommandError(err, command, ci, ctx, callback);
@@ -111,7 +111,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                             this.listeners.forEach(l => l.eventFailed(ef, ctx, result));
                         }
                         callback(result);
-                        logger.debug(`Finished invocation of event handler '%s': %s`,
+                        logger.info(`Finished invocation of event handler '%s': %s`,
                             event.extensions.operationName, JSON.stringify(result));
                     })
                     .catch(err => {

@@ -118,21 +118,21 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
     protected invokeCommandHandler(invocation: CommandInvocation, h: CommandHandlerMetadata,
                                    ctx: HandlerContext): Promise<HandlerResult> {
         const handler = this.commandHandlers.find(a => a.metadata.name === invocation.name);
-        logger.debug("Invoking command handler '%s'", h.name);
+        logger.info("Invoking command handler '%s'", h.name);
         return handler.invoke(invocation, ctx);
     }
 
     protected invokeEventHandler(e: EventFired<any>, h: EventHandlerMetadata,
                                  ctx: HandlerContext): Promise<HandlerResult> {
         const handler = this.eventHandlers.find(a => a.metadata.name === h.name);
-        logger.debug("Invoking event handler '%s'", h.name);
+        logger.info("Invoking event handler '%s'", h.name);
         return handler.invoke(e, ctx);
     }
 
     protected invokeIngestor(e: EventFired<any>, h: IngestorMetadata,
                              ctx: HandlerContext): Promise<HandlerResult> {
         const handler = this.ingestors.find(a => a.metadata.name === h.name);
-        logger.debug("Invoking ingestor '%s'", h.name);
+        logger.info("Invoking ingestor '%s'", h.name);
         return handler.invoke(e, ctx);
     }
 
