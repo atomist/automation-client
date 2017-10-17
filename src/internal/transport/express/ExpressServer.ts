@@ -175,14 +175,14 @@ export class ExpressServer {
             h => {
                 this.exposeCommandHandlerInvocationRoute(exp,
                     `${ApiBase}/command/${_.kebabCase(h.name)}`, h,
-                    (res, result) => res.json(result.code === 0 ? 200 : 500, result));
+                    (res, result) => res.status(result.code === 0 ? 200 : 500).json(result));
             },
         );
         automations.rugs.ingestors.forEach(
             i => {
                 this.exposeEventInvocationRoute(exp,
                     `${ApiBase}/ingest/${i.route.toLowerCase()}`, i,
-                    (res, result) => res.json(result.code === 0 ? 200 : 500, result));
+                    (res, result) => res.status(result.code === 0 ? 200 : 500).json(result));
         });
 
         exp.listen(this.options.port, () => {
