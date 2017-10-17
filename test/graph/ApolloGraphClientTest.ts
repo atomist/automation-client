@@ -25,10 +25,9 @@ describe("ApolloGraphClient", () => {
             .catch(done);
     }).timeout(5000);
 
-    // TODO this fails due to dirty data in staging: repos in DB that aren't present in github
-    it.skip("should run repos query and clone repo", done => {
-        const agc = new ApolloGraphClient("https://db-f4cw1abeowdgtpe5etpy.graphenedb.com:24780/graphql/"
-            , {Authorization: `Basic ${process.env.CORTEX_TOKEN}`});
+    it("should run repos query and clone repo", done => {
+        const agc = new ApolloGraphClient("https://automation-staging.atomist.services/graphql/team/T1L0VDKJP"
+            , {Authorization: `token ${process.env.GITHUB_TOKEN}`});
         agc.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
             {teamId: "T1L0VDKJP", offset: 0})
             .then(result => {
