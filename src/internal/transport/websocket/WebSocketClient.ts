@@ -3,19 +3,25 @@ import axios from "axios";
 import * as promiseRetry from "promise-retry";
 import * as WebSocket from "ws";
 import { logger } from "../../util/logger";
+import { hideString } from "../../util/string";
 import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../RequestProcessor";
 import { sendMessage } from "./WebSocketMessageClient";
 import { RegistrationConfirmation, WebSocketRequestProcessor } from "./WebSocketRequestProcessor";
 
 export class WebSocketClient {
 
-    constructor(private registrationCallback: () => any,
-                private options: WebSocketClientOptions,
-                private requestProcessor: WebSocketRequestProcessor) {
+    public constructor(private registrationCallback: () => any,
+                       private options: WebSocketClientOptions,
+                       private requestProcessor: WebSocketRequestProcessor) {
+    }
 
-        register(this.registrationCallback, options, requestProcessor)
+    public start(): Promise<void> {
+        const connection = register(this.registrationCallback, this.options, this.requestProcessor)
             .then(registration =>
-                connect(this.registrationCallback, registration, options, requestProcessor));
+                connect(this.registrationCallback, registration, this.options, this.requestProcessor));
+        return connection.then(_ => {
+            return;
+        });
     }
 }
 
@@ -111,7 +117,7 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
         }
 
         return axios.post(options.registrationUrl, registrationPayload,
-            {headers: {Authorization: `token ${options.token}`}})
+            { headers: { Authorization: `token ${options.token}` } })
             .then(result => {
                 const registration = result.data as RegistrationConfirmation;
 
@@ -122,18 +128,30 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
                 return registration;
             })
             .catch(error => {
+                const nameVersion = `${registrationPayload.name}@${registrationPayload.version}`;
                 if (error.response && error.response.status === 409) {
-                    logger.error(`Registration failed because a session for ${registrationPayload.name}` +
-                        `@${registrationPayload.version} is already active`);
+                    logger.error(`Registration failed because a session for ${nameVersion} is already active`);
                     retry();
                 } else if (error.response && error.response.status === 400) {
-                    logger.error(`Registration payload for ${registrationPayload.name}` +
-                        `@${registrationPayload.version} was invalid`);
+                    logger.error(`Registration payload for ${nameVersion} was invalid`);
                     process.exit(1);
                 } else if (error.response
-                    && (error.response.status === 401 || error.response.status === 403)) {
-                    logger.error(`Authentication failed for ${registrationPayload.name}` +
-                        `@${registrationPayload.version}`);
+                    && (error.response.status === 401)) {
+                    const furtherInfo = error.response.data ? `\nFurther information: ${error.response.data}` : "";
+                    logger.error(
+                        `Authentication failed for ${nameVersion} in teams ${registrationPayload.team_ids}` +
+                        furtherInfo);
+                    process.exit(1);
+                } else if (error.response
+                    && (error.response.status === 403)) {
+                    const furtherInfo = error.response.data ? `\nFurther information: ${error.response.data}` : "";
+                    logger.error(
+                        `Authorization failed for ${nameVersion} in teams ${registrationPayload.team_ids}.
+This could be caused by:
+- The Atomist app has not been authorized in the Slack team
+- You are not a member of each GitHub organization associated with the Slack team
+- Your GitHub token doesn't provide org:read permissions` +
+                        furtherInfo);
                     process.exit(1);
                 } else {
                     logger.error("Registration failed with '%s'", error);
