@@ -1,17 +1,19 @@
+import { RunOrDefer } from "../../../internal/common/Flushable";
 import { logger } from "../../../internal/util/logger";
+import { File } from "../../../project/File";
 import { ProjectNonBlocking } from "../../../project/Project";
 import { doWithFiles } from "../../../project/util/projectUtils";
 
 export const JavaFiles = "**/*.java";
 
 /**
- * Move files from one Java package to another.
+ * Move files from one Java package to another. Return run or defer.
  *
  * @param project      project whose files should be moved
  * @param oldPackage   name of package to move from
  * @param newPackage   name of package to move to
  */
-export function movePackage(project: ProjectNonBlocking, oldPackage: string, newPackage: string): void {
+export function movePackage(project: ProjectNonBlocking, oldPackage: string, newPackage: string): RunOrDefer<File[]> {
     const pathToReplace = packageToPath(oldPackage);
     const newPath = packageToPath(newPackage);
     logger.info("Replacing path [%s] with [%s], package [%s] with [%s]",
@@ -19,7 +21,7 @@ export function movePackage(project: ProjectNonBlocking, oldPackage: string, new
     return doWithFiles(project, "**/*.java", f => {
         f.recordReplaceAll(oldPackage, newPackage)
             .recordSetPath(f.path.replace(pathToReplace, newPath));
-    }).defer();
+    });
 
 }
 

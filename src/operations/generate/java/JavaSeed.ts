@@ -76,17 +76,13 @@ export class JavaSeed extends UniversalSeed {
         super.manipulate(project);
         const smartArtifactId = (this.artifactId === "${projectName}") ? project.name : this.artifactId;
 
-        updatePom(project as Project, smartArtifactId, this.groupId, this.version, this.description);
-        project.recordAction(p => {
-            JavaProjectStructure.infer(p).then(structure => {
-                if (structure) {
-                    movePackage(p, structure.applicationPackage, this.rootPackage);
-                } else {
-                    logger.warn("Java project structure not found");
-                }
-            });
-            return Promise.resolve(p);
-        });
+        updatePom(project as Project, smartArtifactId, this.groupId, this.version, this.description).defer();
+        project.recordAction(p =>
+            JavaProjectStructure.infer(p).then(structure =>
+                (structure) ?
+                    movePackage(p, structure.applicationPackage, this.rootPackage).run().then(files => p) :
+                    p),
+        );
     }
 
     /**

@@ -51,12 +51,11 @@ export abstract class AbstractFile extends AbstractScriptedFlushable<File> imple
     }
 
     public recordReplace(re: RegExp, replacement: string): this {
-        // TODO use replace
-        return this.recordSetContent(this.getContentSync().replace(re, replacement));
+        return this.recordAction(f => f.replace(re, replacement));
     }
 
     public recordReplaceAll(oldLiteral: string, newLiteral: string): this {
-        return this.recordSetContent(this.getContentSync().split(oldLiteral).join(newLiteral));
+        return this.recordAction(f => f.replaceAll(oldLiteral, newLiteral));
     }
 
 }
