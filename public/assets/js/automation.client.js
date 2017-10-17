@@ -25,7 +25,7 @@ function init() {
         if (automations && metrics) {
             document.title = automations.name + "@" + automations.version + " - Atomist Automation Client";
             var teamIds = automations.team_ids;
-            if (teamIds.length > 0) {
+            if (teamIds && teamIds.length > 0) {
                 var dd = "<form action='" + window.location.href + "' method='GET' id='teamd-ids'>";
                 dd += "<div class='form-row align-items-center' style='vertical-align: middle'>";
                 dd += "<label class='sr- only' for='teamId'>" + automations.name + "@" + automations.version + " connected to team </label>&nbsp;";
