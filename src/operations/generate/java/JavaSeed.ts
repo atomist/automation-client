@@ -1,7 +1,7 @@
 import { CommandHandler, Parameter } from "../../../decorators";
 import { defer } from "../../../internal/common/Flushable";
 import { logger } from "../../../internal/util/logger";
-import { Project, ProjectNonBlocking } from "../../../project/Project";
+import { Project, ProjectAsync } from "../../../project/Project";
 import { deleteFiles } from "../../../project/util/projectUtils";
 import { UniversalSeed } from "../UniversalSeed";
 import { JavaProjectStructure } from "./JavaProjectStructure";
@@ -73,7 +73,7 @@ export class JavaSeed extends UniversalSeed {
      *
      * @param project  project to tailor
      */
-    public manipulate(project: ProjectNonBlocking): void {
+    public manipulate(project: ProjectAsync): void {
         super.manipulate(project);
         const smartArtifactId = (this.artifactId === "${projectName}") ? project.name : this.artifactId;
 
@@ -93,7 +93,7 @@ export class JavaSeed extends UniversalSeed {
      *
      * @param project  Project to remove seed files from.
      */
-    protected removeSeedFiles(project: ProjectNonBlocking): void {
+    protected removeSeedFiles(project: ProjectAsync): void {
         super.removeSeedFiles(project);
         const filesToDelete: string[] = [
             "src/main/scripts/travis-build.bash",

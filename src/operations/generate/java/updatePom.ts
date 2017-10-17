@@ -1,5 +1,5 @@
 import { File } from "../../../project/File";
-import { Project, ProjectNonBlocking } from "../../../project/Project";
+import { Project, ProjectAsync } from "../../../project/Project";
 
 import { doWithFiles } from "../../../project/util/projectUtils";
 
@@ -11,7 +11,7 @@ import { doWithFiles } from "../../../project/util/projectUtils";
  * @param {string} version
  * @param {string} description
  */
-export function updatePom(project: ProjectNonBlocking,
+export function updatePom(project: ProjectAsync,
                           artifactId: string,
                           groupId: string,
                           version: string,

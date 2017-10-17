@@ -1,7 +1,7 @@
-import { defer, ScriptAction } from "../../internal/common/Flushable";
+import { defer } from "../../internal/common/Flushable";
 import { isPromise } from "../../internal/util/async";
-import { File, FileNonBlocking } from "../File";
-import { FileStream, Project, ProjectAsync, ProjectNonBlocking, ProjectScripting } from "../Project";
+import { File } from "../File";
+import { FileStream, ProjectAsync } from "../Project";
 
 /**
  * Promise of an array of files. Usually sourced from Project.streamFiles
@@ -92,7 +92,7 @@ export function saveFromFilesAsync<T>(project: ProjectAsync,
  * @param op operation to perform on files. Can return void or a promise.
  * @return {Promise<T>}
  */
-export function doWithFiles(project: ProjectNonBlocking,
+export function doWithFiles(project: ProjectAsync,
                             globPattern: string,
                             op: (f: File) => void | Promise<any>): Promise<File[]> {
     return new Promise((resolve, reject) => {
@@ -122,7 +122,7 @@ export function doWithFiles(project: ProjectNonBlocking,
  * @param test additional, optional test for files to be deleted
  * @return {RunOrDefer<number>}
  */
-export function deleteFiles<T>(project: ProjectNonBlocking,
+export function deleteFiles<T>(project: ProjectAsync,
                                globPattern: string,
                                test: (f: File) => boolean = f => true): Promise<number> {
         return new Promise((resolve, reject) => {
@@ -131,7 +131,7 @@ export function deleteFiles<T>(project: ProjectNonBlocking,
                 .on("data", f => {
                     if (test(f)) {
                         ++deleted;
-                        project.recordDeleteFile(f.path);
+                        defer(project, project.deleteFile(f.path));
                     }
                 })
                 .on("error", reject)

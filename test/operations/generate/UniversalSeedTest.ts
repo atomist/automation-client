@@ -1,6 +1,7 @@
 import "mocha";
 
 import * as assert from "power-assert";
+import { defer } from "../../../src/internal/common/Flushable";
 import { CommandHandlerMetadata } from "../../../src/internal/metadata/metadata";
 import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
 import { JavaSeed } from "../../../src/operations/generate/java/JavaSeed";
@@ -77,7 +78,7 @@ describe("UniversalSeed", () => {
         class SpecialSeed extends UniversalSeed {
 
             public manipulate(p: Project): void {
-                p.recordAddFile("Thing", "1");
+                defer(p, p.addFile("Thing", "1"));
             }
         }
         const seed = new SpecialSeed();

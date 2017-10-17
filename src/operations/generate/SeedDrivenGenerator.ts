@@ -9,7 +9,7 @@ import { logger } from "../../internal/util/logger";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
-import { Project, ProjectNonBlocking } from "../../project/Project";
+import { Project, ProjectAsync } from "../../project/Project";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { LocalOrRemote } from "../common/LocalOrRemote";
 import { SimpleRepoId } from "../common/RepoId";
@@ -171,7 +171,7 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
      *
      * @param project raw seed project
      */
-    public abstract manipulate(project: ProjectNonBlocking): void;
+    public abstract manipulate(project: ProjectAsync): void;
 
     protected repoLoader(): RepoLoader {
         assert(this.githubToken, "Github token must be set");

@@ -1,6 +1,6 @@
 import { logger } from "../../../internal/util/logger";
 import { File } from "../../../project/File";
-import { ProjectNonBlocking } from "../../../project/Project";
+import { ProjectAsync } from "../../../project/Project";
 import { doWithFiles } from "../../../project/util/projectUtils";
 
 export const JavaFiles = "**/*.java";
@@ -12,7 +12,7 @@ export const JavaFiles = "**/*.java";
  * @param oldPackage   name of package to move from
  * @param newPackage   name of package to move to
  */
-export function movePackage(project: ProjectNonBlocking, oldPackage: string, newPackage: string): Promise<File[]> {
+export function movePackage(project: ProjectAsync, oldPackage: string, newPackage: string): Promise<File[]> {
     const pathToReplace = packageToPath(oldPackage);
     const newPath = packageToPath(newPackage);
     logger.info("Replacing path [%s] with [%s], package [%s] with [%s]",
