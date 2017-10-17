@@ -3,21 +3,25 @@ import axios from "axios";
 import * as promiseRetry from "promise-retry";
 import * as WebSocket from "ws";
 import { logger } from "../../util/logger";
+import { hideString } from "../../util/string";
 import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../RequestProcessor";
 import { sendMessage } from "./WebSocketMessageClient";
 import { RegistrationConfirmation, WebSocketRequestProcessor } from "./WebSocketRequestProcessor";
-import { hideString } from "../../util/string";
 
 export class WebSocketClient {
 
-    constructor(private registrationCallback: () => any,
-                private options: WebSocketClientOptions,
-                private requestProcessor: WebSocketRequestProcessor) {
-
-        register(this.registrationCallback, options, requestProcessor)
+    public static initialize( registrationCallback: () => any,
+                              options: WebSocketClientOptions,
+                              requestProcessor: WebSocketRequestProcessor): Promise<WebSocketClient> {
+        const wsc = new WebSocketClient(registrationCallback, options, requestProcessor);
+        return register(wsc.registrationCallback, options, requestProcessor)
             .then(registration =>
-                connect(this.registrationCallback, registration, options, requestProcessor));
+                connect(wsc.registrationCallback, registration, options, requestProcessor)).then(_ => wsc);
     }
+
+    private constructor(private registrationCallback: () => any,
+                        private options: WebSocketClientOptions,
+                        private requestProcessor: WebSocketRequestProcessor) {}
 }
 
 let reconnect = true;
