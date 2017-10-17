@@ -214,6 +214,7 @@ function setupNamespace(request: any, automations: AutomationServer) {
         name: automations.rugs.name,
         version: automations.rugs.version,
         invocationId: guid(),
+        ts: new Date().getTime(),
     });
 }
 

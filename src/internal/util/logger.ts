@@ -24,6 +24,11 @@ export function formatter(options: any): string {
             ctx += ":" + (options.colorize ? winston.config.colorize(options.level, executionContext.operation)
                 : executionContext.operation);
         }
+        if (executionContext.ts) {
+            const duration = _.padStart((new Date().getTime() - executionContext.ts).toString(), 3, " ");
+            ctx += ":" + (options.colorize ? winston.config.colorize(options.level, duration)
+                : duration);
+        }
     }
 
     const level = options.colorize ? winston.config.colorize(options.level, _.padEnd(options.level, 5)) :
