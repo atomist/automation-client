@@ -22,7 +22,19 @@ export class FileHit {
 
     public readonly matches: MatchResult[];
 
-    constructor(private project: ProjectScripting, public file: File, public readonly nodes: TreeNode[]) {
+    /**
+     * Represents the hits within a file within a project
+     * @param {ProjectScripting} project
+     * @param {File} file file within the project
+     * @param {TreeNode} fileNode node structure including AST, so
+     * that if we want to dig into it or run further path expressions
+     * we don't need to reparse the file.
+     * @param {TreeNode[]} nodes
+     */
+    constructor(private project: ProjectScripting,
+                public file: File,
+                public fileNode: TreeNode,
+                public readonly nodes: TreeNode[]) {
         interface Update {
             initialValue: string;
             currentValue: string;

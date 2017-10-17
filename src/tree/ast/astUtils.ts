@@ -83,7 +83,7 @@ export function findFileMatches(p: ProjectNonBlocking,
                 const r = evaluateExpression(fileNode, parsed);
                 if (isSuccessResult(r)) {
                     logger.debug("%d matches in file [%s]", r.length, file.path);
-                    return new FileHit(p, file, r);
+                    return new FileHit(p, file, fileNode, r);
                 } else {
                     logger.debug("No matches in file [%s]", file.path);
                     return undefined;

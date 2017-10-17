@@ -5,7 +5,7 @@ import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { Integer } from "@atomist/microgrammar/Primitives";
 import { AllFiles } from "../../../../src/project/fileGlobs";
 import { InMemoryProject } from "../../../../src/project/mem/InMemoryProject";
-import { findByExpression, findMatches } from "../../../../src/tree/ast/astUtils";
+import { findByExpression, findFileMatches, findMatches } from "../../../../src/tree/ast/astUtils";
 import { DefaultFileParserRegistry } from "../../../../src/tree/ast/FileParserRegistry";
 import { MicrogrammarBasedFileParser } from "../../../../src/tree/ast/microgrammar/MicrogrammarBasedFileParser";
 
@@ -29,6 +29,26 @@ describe("microgrammar integration and path expression", () => {
                 assert(matches.length === 2);
                 assert(matches[0].$value === "Tom");
                 assert(matches[1].$value === "Mary");
+                done();
+            }).catch(done);
+    });
+
+    it("retains AST in file matches", done => {
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
+            age: Integer,
+        });
+        const fpr = new DefaultFileParserRegistry().addParser(
+            new MicrogrammarBasedFileParser("people", "person", mg));
+        const p = InMemoryProject.of(
+            {path: "Thing", content: "Tom:16 Mary:25"});
+        findFileMatches(p, fpr, AllFiles, "/people/person/name")
+            .then(matches => {
+                assert(matches.length === 1);
+                assert(matches[0].file.path === "Thing");
+                assert(matches[0].matches[0].$value === "Tom");
+                assert(matches[0].matches[1].$value === "Mary");
+                assert(matches[0].fileNode.$children.length === 1);
+                assert(matches[0].fileNode.$children[0].$name === "people");
                 done();
             }).catch(done);
     });
