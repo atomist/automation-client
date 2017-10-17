@@ -9,9 +9,9 @@ export function formatter(options: any): string {
 
     let ctx;
     if (executionContext) {
-        if (executionContext.correlationId) {
-            ctx = options.colorize ? winston.config.colorize(options.level, executionContext.correlationId)
-                : executionContext.correlationId;
+        if (executionContext.invocationId) {
+            ctx = options.colorize ? winston.config.colorize(options.level, executionContext.invocationId)
+                : executionContext.invocationId;
         }
         if (executionContext.teamName) {
             ctx += ":" + (options.colorize ? winston.config.colorize(options.level, executionContext.teamName)
