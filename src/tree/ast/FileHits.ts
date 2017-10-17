@@ -2,7 +2,7 @@ import { logger } from "../../internal/util/logger";
 
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { File } from "../../project/File";
-import { ProjectScripting } from "../../project/Project";
+import { ProjectAsync } from "../../project/Project";
 
 /**
  * Extension of TreeNode that allows convenient addition before
@@ -31,7 +31,7 @@ export class FileHit {
      * we don't need to reparse the file.
      * @param {TreeNode[]} nodes
      */
-    constructor(private project: ProjectScripting,
+    constructor(private project: ProjectAsync,
                 public file: File,
                 public fileNode: TreeNode,
                 public readonly nodes: TreeNode[]) {

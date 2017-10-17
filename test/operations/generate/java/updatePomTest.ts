@@ -23,7 +23,6 @@ describe("updatePom", () => {
         const p = InMemoryProject.of({path: "pom.xml", content: SimplePom});
         p.addFileSync("src/main/java/Foo.java", "public class Foo {}");
         updatePom(p, "art", "group", "version", "desc")
-            .run()
             .then(_ => {
                 const found = p.findFileSync("pom.xml");
                 const newPom = found.getContentSync();

@@ -8,6 +8,7 @@ import { LocalProject } from "../../../src/project/local/LocalProject";
 
 import { File } from "../../../src/project/File";
 
+import { defer } from "../../../src/internal/common/Flushable";
 import { AllFiles, ExcludeNodeModules } from "../../../src/project/fileGlobs";
 import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProject";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
@@ -148,7 +149,7 @@ describe("LocalProject", () => {
 
     it("adds file", done => {
         const p = tempProject();
-        p.recordAddFile("thing", "1");
+        defer(p, p.addFile("thing", "1"));
         assert(p.dirty);
         p.flush()
             .then(_ => {
@@ -160,7 +161,7 @@ describe("LocalProject", () => {
 
     it("adds nested file", done => {
         const p = tempProject();
-        p.recordAddFile("config/thing", "1");
+        defer(p, p.addFile("config/thing", "1"));
         assert(p.dirty);
         p.flush()
             .then(_ => {
@@ -172,7 +173,7 @@ describe("LocalProject", () => {
 
     it("adds deeply nested file", done => {
         const p = tempProject();
-        p.recordAddFile("config/and/more/thing", "1");
+        defer(p, p.addFile("config/and/more/thing", "1"));
         assert(p.dirty);
         p.flush()
             .then(_ => {
@@ -188,7 +189,7 @@ describe("LocalProject", () => {
         const f1 = p.findFileSync("thing");
         assert(f1.getContentSync() === "1");
         assert(!p.dirty);
-        p.recordDeleteFile("thing");
+        defer(p, p.deleteFile("thing"));
         assert(p.dirty);
         p.flush()
             .then(_ => {

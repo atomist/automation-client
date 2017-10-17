@@ -6,7 +6,7 @@ import { isSuccessResult, PathExpression } from "@atomist/tree-path/path/pathExp
 import { parsePathExpression } from "@atomist/tree-path/path/pathExpressionParser";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { logger } from "../../internal/util/logger";
-import { ProjectNonBlocking } from "../../project/Project";
+import { ProjectAsync } from "../../project/Project";
 import { saveFromFilesAsync } from "../../project/util/projectUtils";
 import { FileHit, MatchResult } from "./FileHits";
 import { FileParser, isFileParser } from "./FileParser";
@@ -28,7 +28,7 @@ export const ExpressionSeparator = "::";
  * @param parserOrRegistry parser for files
  * @return {Promise<TreeNode[]>} hit record for each matching file
  */
-export function findByExpression(p: ProjectNonBlocking,
+export function findByExpression(p: ProjectAsync,
                                  parserOrRegistry: FileParser | FileParserRegistry,
                                  unifiedExpression: string): Promise<MatchResult[]> {
     const split = unifiedExpression.split(ExpressionSeparator);
@@ -50,7 +50,7 @@ export function findByExpression(p: ProjectNonBlocking,
  * @param pathExpression path expression string or parsed
  * @return {Promise<TreeNode[]>} hit record for each matching file
  */
-export function findMatches(p: ProjectNonBlocking,
+export function findMatches(p: ProjectAsync,
                             parserOrRegistry: FileParser | FileParserRegistry,
                             globPattern: string,
                             pathExpression: string | PathExpression): Promise<MatchResult[]> {
@@ -58,7 +58,7 @@ export function findMatches(p: ProjectNonBlocking,
         .then(fileHits => _.flatten(fileHits.map(f => f.matches)));
 }
 
-export function findFileMatches(p: ProjectNonBlocking,
+export function findFileMatches(p: ProjectAsync,
                                 parserOrRegistry: FileParser | FileParserRegistry,
                                 globPattern: string,
                                 pathExpression: string | PathExpression): Promise<FileHit[]> {

@@ -9,7 +9,7 @@ import { logger } from "../../internal/util/logger";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
-import { Project, ProjectNonBlocking } from "../../project/Project";
+import { Project, ProjectAsync } from "../../project/Project";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { LocalOrRemote } from "../common/LocalOrRemote";
 import { SimpleRepoId } from "../common/RepoId";
@@ -120,7 +120,7 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
         return this.repoLoader()(new SimpleRepoId(this.sourceOwner, this.sourceRepo, this.sourceBranch))
             .then(project => {
-                const populated: Promise<Project> = this.manipulateAndFlush(project);
+                const populated: Promise<Project> = this.manipulate(project);
                 return this.local ?
                     populated.then(p => {
                         const parentDir = shell.pwd() + "";
@@ -154,24 +154,13 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
     }
 
     /**
+     * Do the work of the generator.
      * Manipulate and flush--or manipulate synchronously. Leave the project in a ready state
      * for storing.
      * @param {Project} project from seed
      * @return {Promise<Project>}
      */
-    public manipulateAndFlush(project: Project): Promise<Project> {
-        this.manipulate(project);
-        return project.flush();
-    }
-
-    /**
-     * Subclasses can extend this to manipulate the repo
-     * contents from the seed location.  The project is already
-     * populated when this method is called.
-     *
-     * @param project raw seed project
-     */
-    public abstract manipulate(project: ProjectNonBlocking): void;
+    public abstract manipulate(project: Project): Promise<Project>;
 
     protected repoLoader(): RepoLoader {
         assert(this.githubToken, "Github token must be set");

@@ -1,6 +1,7 @@
 import "mocha";
 
 import * as assert from "power-assert";
+import { defer } from "../../../src/internal/common/Flushable";
 import { CommandHandlerMetadata } from "../../../src/internal/metadata/metadata";
 import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
 import { JavaSeed } from "../../../src/operations/generate/java/JavaSeed";
@@ -76,12 +77,12 @@ describe("UniversalSeed", () => {
         const project = InMemoryProject.of(...files);
         class SpecialSeed extends UniversalSeed {
 
-            public manipulate(p: Project): void {
-                p.recordAddFile("Thing", "1");
+            public manipulate(p: Project): Promise<Project> {
+                return p.addFile("Thing", "1");
             }
         }
         const seed = new SpecialSeed();
-        seed.manipulateAndFlush(project)
+        seed.manipulate(project)
             .then(_ => {
                 assert(project.fileCount === files.length + 1,
                     `Expected ${files.length + 1}, got ${ project.fileCount}`);
