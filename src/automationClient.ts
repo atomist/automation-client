@@ -87,7 +87,7 @@ export class AutomationClient {
         };
         const handler = this.setupEventHandler(webSocketOptions);
         return Promise.all([
-            Promise.resolve(this.runWs(handler, webSocketOptions)),
+            this.runWs(handler, webSocketOptions),
             Promise.resolve(this.runHttp(handler)),
             this.setupApplicationEvents(),
         ]);
@@ -115,9 +115,9 @@ export class AutomationClient {
         }
     }
 
-    private runWs(handler: WebSocketRequestProcessor, options: WebSocketClientOptions): void {
-        this.webSocketClient = new WebSocketClient(() => prepareRegistration(this.automations.rugs),
-            options, handler);
+    private runWs(handler: WebSocketRequestProcessor, options: WebSocketClientOptions): Promise<any> {
+        return WebSocketClient.initialize(() => prepareRegistration(this.automations.rugs),
+            options, handler).then( wsc => this.webSocketClient = wsc);
     }
 
     private runHttp(handler: RequestProcessor): void {
