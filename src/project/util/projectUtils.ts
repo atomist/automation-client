@@ -1,7 +1,7 @@
-import { RunOrDefer, runOrDefer, ScriptAction } from "../../internal/common/Flushable";
+import { defer } from "../../internal/common/Flushable";
 import { isPromise } from "../../internal/util/async";
-import { File, FileNonBlocking } from "../File";
-import { FileStream, Project, ProjectAsync, ProjectNonBlocking, ProjectScripting } from "../Project";
+import { File } from "../File";
+import { FileStream, ProjectAsync } from "../Project";
 
 /**
  * Promise of an array of files. Usually sourced from Project.streamFiles
@@ -90,15 +90,14 @@ export function saveFromFilesAsync<T>(project: ProjectAsync,
  * @param project project to act on
  * @param globPattern glob pattern to match
  * @param op operation to perform on files. Can return void or a promise.
- * @return {Promise<T>}
  */
-export function doWithFiles(project: ProjectNonBlocking,
-                            globPattern: string,
-                            op: (f: File) => void | Promise<any>): RunOrDefer<File[]> {
-    const funrun: ScriptAction<Project, File[]> = p => {
-        return new Promise((resolve, reject) => {
+export function doWithFiles<P extends ProjectAsync>(project: P,
+                                                    globPattern: string,
+                                                    op: (f: File) => void | Promise<any>): Promise<P> {
+    return new Promise(
+        (resolve, reject) => {
             const filePromises: Array<Promise<File>> = [];
-            p.streamFiles(globPattern)
+            return project.streamFiles(globPattern)
                 .on("data", f => {
                     const r = op(f);
                     if (isPromise(r)) {
@@ -113,9 +112,7 @@ export function doWithFiles(project: ProjectNonBlocking,
                 .on("end", _ => {
                     resolve(Promise.all(filePromises));
                 });
-        });
-    };
-    return runOrDefer<ProjectScripting, File[]>(project, funrun);
+        }).then(files => project);
 }
 
 /**
@@ -125,25 +122,22 @@ export function doWithFiles(project: ProjectNonBlocking,
  * @param test additional, optional test for files to be deleted
  * @return {RunOrDefer<number>}
  */
-export function deleteFiles<T>(project: ProjectNonBlocking,
+export function deleteFiles<T>(project: ProjectAsync,
                                globPattern: string,
-                               test: (f: File) => boolean = f => true): RunOrDefer<number> {
-    const funrun: ScriptAction<Project, number> = p => {
-        return new Promise((resolve, reject) => {
-            let deleted = 0;
-            p.streamFiles(globPattern)
-                .on("data", f => {
-                    if (test(f)) {
-                        ++deleted;
-                        p.recordDeleteFile(f.path);
-                    }
-                })
-                .on("error", reject)
-                .on("end", () => {
-                    resolve(p.flush()
-                        .then(() => deleted));
-                });
-        });
-    };
-    return runOrDefer<ProjectScripting, number>(project, funrun);
+                               test: (f: File) => boolean = f => true): Promise<number> {
+    return new Promise((resolve, reject) => {
+        let deleted = 0;
+        project.streamFiles(globPattern)
+            .on("data", f => {
+                if (test(f)) {
+                    ++deleted;
+                    defer(project, project.deleteFile(f.path));
+                }
+            })
+            .on("error", reject)
+            .on("end", () => {
+                resolve(project.flush()
+                    .then(() => deleted));
+            });
+    });
 }

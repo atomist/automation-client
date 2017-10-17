@@ -21,6 +21,9 @@ export interface FileCore {
 
 }
 
+/**
+ * Convenient way to defer File operations with fluent API
+ */
 export interface FileScripting extends ScriptedFlushable<File> {
 
     /**
@@ -48,6 +51,8 @@ export interface FileScripting extends ScriptedFlushable<File> {
 export interface FileAsync extends FileCore {
 
     setContent(content: string): Promise<this>;
+
+    rename(name: string): Promise<this>;
 
     getContent(): Promise<string>;
 

@@ -2,9 +2,8 @@ import { File } from "../File";
 
 import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { PatternMatch } from "@atomist/microgrammar/PatternMatch";
-import { RunOrDefer } from "../../internal/common/Flushable";
 import { logger } from "../../internal/util/logger";
-import { ProjectNonBlocking, ProjectScripting } from "../Project";
+import { ProjectAsync } from "../Project";
 import { doWithFiles, saveFromFilesAsync } from "./projectUtils";
 
 export type Match<M> = M & PatternMatch;
@@ -58,7 +57,7 @@ export const DefaultOpts: Opts = {
  * @param opts options
  * @return {Promise<T[]>} hit record for each matching file
  */
-export function findMatches<M>(p: ProjectNonBlocking,
+export function findMatches<M>(p: ProjectAsync,
                                globPattern: string,
                                microgrammar: Microgrammar<M>,
                                opts: Opts = DefaultOpts): Promise<Array<Match<M>>> {
@@ -78,7 +77,7 @@ export function findMatches<M>(p: ProjectNonBlocking,
  * @param opts options
  * @return {Promise<T[]>} hit record for each matching file
  */
-export function findFileMatches<M>(p: ProjectNonBlocking,
+export function findFileMatches<M>(p: ProjectAsync,
                                    globPattern: string,
                                    microgrammar: Microgrammar<M>,
                                    opts: Opts = DefaultOpts): Promise<Array<FileWithMatches<M>>> {
@@ -106,11 +105,11 @@ export function findFileMatches<M>(p: ProjectNonBlocking,
  * @param opts options
  * @return {RunOrDefer<any>}
  */
-export function doWithFileMatches<M>(p: ProjectNonBlocking,
-                                     globPattern: string,
-                                     microgrammar: Microgrammar<M>,
-                                     action: (fh: FileWithMatches<M>) => void,
-                                     opts: Opts = DefaultOpts): RunOrDefer<File[]> {
+export function doWithFileMatches<M, P extends ProjectAsync = ProjectAsync>(p: P,
+                                                                            globPattern: string,
+                                                                            microgrammar: Microgrammar<M>,
+                                                                            action: (fh: FileWithMatches<M>) => void,
+                                                                            opts: Opts = DefaultOpts): Promise<P> {
     return doWithFiles(p, globPattern, file => {
         return file.getContent()
             .then(content => {
@@ -140,11 +139,11 @@ export function doWithFileMatches<M>(p: ProjectNonBlocking,
  * @param {{makeUpdatable: boolean}} opts
  * @return {RunOrDefer<File[]>}
  */
-export function doWithUniqueMatch<M>(p: ProjectNonBlocking,
-                                     globPattern: string,
-                                     microgrammar: Microgrammar<M>,
-                                     action: (m: M) => void,
-                                     opts: Opts = DefaultOpts): RunOrDefer<File[]> {
+export function doWithUniqueMatch<M, P extends ProjectAsync = ProjectAsync>(p: P,
+                                                                            globPattern: string,
+                                                                            microgrammar: Microgrammar<M>,
+                                                                            action: (m: M) => void,
+                                                                            opts: Opts = DefaultOpts): Promise<P> {
     let count = 0;
     const guardedAction = (fh: FileWithMatches<M>) => {
         if (fh.matches.length !== 1) {
@@ -157,7 +156,7 @@ export function doWithUniqueMatch<M>(p: ProjectNonBlocking,
         action(m0);
     };
     return doWithFileMatches(p, globPattern, microgrammar, guardedAction, opts)
-        .transform(files => {
+        .then(files => {
             if (count++ === 0) {
                 throw new Error("No unique match found in project");
             }
@@ -172,13 +171,12 @@ export function doWithUniqueMatch<M>(p: ProjectNonBlocking,
  * @param {Microgrammar<M>} microgrammar
  * @param {(m: M) => void} action
  * @param {{makeUpdatable: boolean}} opts
- * @return {RunOrDefer<File[]>}
  */
-export function doWithAtMostOneMatch<M>(p: ProjectNonBlocking,
-                                        globPattern: string,
-                                        microgrammar: Microgrammar<M>,
-                                        action: (m: M) => void,
-                                        opts: Opts = DefaultOpts): RunOrDefer<File[]> {
+export function doWithAtMostOneMatch<M, P extends ProjectAsync = ProjectAsync>(p: P,
+                                                                               globPattern: string,
+                                                                               microgrammar: Microgrammar<M>,
+                                                                               action: (m: M) => void,
+                                                                               opts: Opts = DefaultOpts): Promise<P> {
     let count = 0;
     const guardedAction = (fh: FileWithMatches<M>) => {
         if (fh.matches.length !== 1) {
@@ -200,7 +198,7 @@ class UpdatingFileHits<M> implements FileWithMatches<M> {
 
     private updatable = false;
 
-    constructor(private project: ProjectScripting, public readonly file: File,
+    constructor(private project: ProjectAsync, public readonly file: File,
                 public matches: Array<Match<M>>, public content: string) {
     }
 
@@ -218,7 +216,8 @@ class UpdatingFileHits<M> implements FileWithMatches<M> {
                     return f;
                 });
             });
-            this.project.trackFile(this.file);
+            // Track the file
+            this.project.recordAction(p => this.file.flush());
             this.updatable = true;
         }
     }

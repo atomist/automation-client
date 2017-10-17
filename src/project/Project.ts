@@ -1,6 +1,6 @@
 import { Stream } from "stream";
 import { ScriptedFlushable } from "../internal/common/Flushable";
-import { File, FileNonBlocking } from "./File";
+import { File } from "./File";
 
 /**
  * Project operations common to all projects
@@ -8,32 +8,6 @@ import { File, FileNonBlocking } from "./File";
 export interface ProjectCore {
 
     readonly name: string;
-
-}
-
-/**
- * Deferrable project operations, which are recorded for later execution in
- * the flush() function.
- */
-export interface ProjectScripting extends ProjectCore, ScriptedFlushable<Project> {
-
-    /**
-     * Add the given file to the project. Flush afterwards
-     *
-     * @param path {string} The path to use
-     * @param content {string} The content to be placed in the new file
-     */
-    recordAddFile(path: string, content: string): this;
-
-    recordDeleteFile(path: string): this;
-
-    recordDeleteDirectory(path: string): this;
-
-    /**
-     * Track changes to the given file, flushing it when this
-     * project flushes
-     */
-    trackFile(f: FileNonBlocking): this;
 
 }
 
@@ -101,7 +75,7 @@ export interface ProjectSync extends ProjectCore {
 /**
  * Asynchronous Project operations, returning promises or node streams.
  */
-export interface ProjectAsync extends ProjectCore {
+export interface ProjectAsync extends ProjectCore, ScriptedFlushable<Project> {
 
     /**
      * Return a node stream of the files in the project meeting
@@ -149,20 +123,13 @@ export interface ProjectAsync extends ProjectCore {
 }
 
 /**
- * All non blocking project operations.
- */
-export interface ProjectNonBlocking extends ProjectScripting, ProjectAsync {
-
-}
-
-/**
  * Interface representing a project, allowing transparent operations
  * whether it is sourced from a GitHub or other repository, from local disk
  * or in memory. Allows both read and write operations. The three
  * interfaces it extends allow different styles of operation: scripting (deferred),
  * asynchronous (with promises) or synchronous.
  */
-export interface Project extends ProjectScripting, ProjectAsync, ProjectSync {
+export interface Project extends ProjectAsync, ProjectSync {
 
 }
 

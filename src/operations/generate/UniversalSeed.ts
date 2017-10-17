@@ -1,8 +1,9 @@
 import { CommandHandler, MappedParameter, Parameter, Tags } from "../../decorators";
 import { MappedParameters } from "../../Handlers";
+import { defer } from "../../internal/common/Flushable";
 import { logger } from "../../internal/util/logger";
 import { GitProject } from "../../project/git/GitProject";
-import { ProjectNonBlocking } from "../../project/Project";
+import { Project, ProjectAsync } from "../../project/Project";
 import { deleteFiles, doWithFiles } from "../../project/util/projectUtils";
 import { SeedDrivenGenerator } from "./SeedDrivenGenerator";
 
@@ -45,9 +46,10 @@ export class UniversalSeed extends SeedDrivenGenerator {
      *
      * @param project raw seed project
      */
-    public manipulate(project: ProjectNonBlocking): void {
+    public manipulate(project: Project): Promise<Project> {
         this.removeSeedFiles(project);
         this.cleanReadMe(project, this.description);
+        return project.flush();
     }
 
     protected push(gp: GitProject): Promise<any> {
@@ -61,19 +63,19 @@ export class UniversalSeed extends SeedDrivenGenerator {
      * @param project      project whose README should be cleaned
      * @param description  brief description of newly created project
      */
-    protected cleanReadMe(project: ProjectNonBlocking, description: string): void {
-        doWithFiles(project, "README.md", readMe => {
+    protected cleanReadMe(project: ProjectAsync, description: string): void {
+        defer(project, doWithFiles(project, "README.md", readMe => {
             readMe.recordReplace(/^#[\\s\\S]*?## Development/, `# ${project.name}
 This project contains ${description}.
 ## Development`);
-        }).defer();
+        }));
     }
 
     /**
      * Remove files in seed that are not useful, valid, or appropriate
      * for a generated project.
      */
-    protected removeSeedFiles(project: ProjectNonBlocking): void {
+    protected removeSeedFiles(project: ProjectAsync): void {
         const filesToDelete: string[] = [
             ".travis.yml",
             "LICENSE",
@@ -81,12 +83,11 @@ This project contains ${description}.
             "CODE_OF_CONDUCT.md",
             "CONTRIBUTING.md",
         ];
-        deleteFiles(project, "/*", f => filesToDelete.includes(f.path))
-            .defer();
+        defer(project, deleteFiles(project, "/*", f => filesToDelete.includes(f.path)));
         const deleteDirs: string[] = [
             ".travis",
         ];
-        deleteDirs.forEach(d => project.recordDeleteDirectory(d));
+        deleteDirs.forEach(d => defer(project, project.deleteDirectory(d)));
     }
 
 }
