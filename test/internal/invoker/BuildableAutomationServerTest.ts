@@ -71,6 +71,32 @@ describe("BuildableAutomationServer", () => {
         });
     });
 
+    it("should register one single arg handler and not complain on invocation without defaulted parameter", (done) => {
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        s.withCommandHandler(
+            {
+                name: "foo", description: "foo", parameters: [{
+                name: "one", description: "a thing", pattern: ".*", required: true, default_value: "banana"
+            },
+            ], tags: [], intent: [], mapped_parameters: [],
+            },
+            ch => Promise.resolve({
+                code: 0,
+            }));
+            s.invokeCommand({
+                name: "foo",
+                args: [],
+            }, {
+                teamId: "T666",
+                correlationId: "555",
+                messageClient,
+            }).then(res => {
+                assert(res.code === 0);
+                done();
+            });
+        });
+    });
+
     it("should register one single arg handler and invoke with valid parameter", done => {
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         let paramVal: string;
