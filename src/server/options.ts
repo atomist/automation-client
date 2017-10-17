@@ -5,7 +5,6 @@
 export interface RunOptions {
 
     teamIds?: string | string[];
-    groups?: string;
     name: string;
     version: string;
     token?: string;

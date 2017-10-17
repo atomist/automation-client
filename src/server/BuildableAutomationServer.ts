@@ -14,6 +14,7 @@ import { HandlerResult } from "../HandlerResult";
 import { GraphClient } from "../spi/graph/GraphClient";
 
 import { logger } from "../internal/util/logger";
+import { toStringArray } from "../internal/util/string";
 import { populateParameters } from "../operations/support/parameterPopulation";
 import { AutomationServerOptions } from "./options";
 
@@ -246,13 +247,11 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
     }
 
     get rugs(): Rugs {
-        // tslint:disable-next-line:variable-name
-        const team_ids = Array.isArray(this.opts.teamIds)
-            ? this.opts.teamIds as string[] : [this.opts.teamIds as string];
         return {
             name: this.opts.name,
             version: this.opts.version,
-            team_ids,
+            team_ids: toStringArray(this.opts.teamIds),
+            groups: toStringArray(this.opts["groups"]),
             keywords: this.opts.keywords,
             commands: this.commandHandlers.map(e => e.metadata),
             events: this.eventHandlers.map(e => e.metadata),

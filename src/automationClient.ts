@@ -19,8 +19,10 @@ import {
 } from "./internal/transport/websocket/WebSocketClient";
 import { WebSocketRequestProcessor } from "./internal/transport/websocket/WebSocketRequestProcessor";
 import { logger } from "./internal/util/logger";
+import { toStringArray } from "./internal/util/string";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
+import { AutomationServerOptions } from "./server/options";
 
 export const DefaultApiServer =
     "https://automation.atomist.com/registration";
@@ -36,22 +38,25 @@ export class AutomationClient {
     private httpServer: ExpressServer;
 
     private teamIds: string[];
+    private groups: string[];
 
     constructor(private configuration: Configuration) {
-        this.teamIds = Array.isArray(this.configuration.teamIds)
-            ? this.configuration.teamIds as string[] : [this.configuration.teamIds as string];
+        this.teamIds = toStringArray(this.configuration.teamIds);
+        this.groups = toStringArray(this.configuration["groups"]);
+
         this.automations = new BuildableAutomationServer(
             {
                 name: configuration.name,
                 version: configuration.version,
                 teamIds: this.teamIds,
+                groups: this.groups,
                 keywords: [],
                 token: configuration.token,
                 endpoints: {
                     graphql: _.get(this.configuration, "endpoints.graphql", DefaultGraphQLServer),
                     api: _.get(this.configuration, "endpoints.api", DefaultApiServer),
                 },
-            });
+            } as AutomationServerOptions);
     }
 
     get automationServer(): AutomationServer {
@@ -167,9 +172,7 @@ export class AutomationClient {
                     expressOptions.auth.github.clientSecret = http.auth.github.clientSecret;
                     expressOptions.auth.github.callbackUrl = http.auth.github.callbackUrl;
                     expressOptions.auth.github.org = http.auth.github.org;
-                    expressOptions.auth.github.scopes = Array.isArray(http.auth.github.scopes)
-                        ? http.auth.github.scopes as string[] :
-                        (http.auth.github.scopes ? [http.auth.github.scopes] : undefined);
+                    expressOptions.auth.github.scopes = toStringArray(http.auth.github.scopes);
                 }
             }
         }

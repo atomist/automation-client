@@ -81,6 +81,7 @@ export interface Rugs {
     name: string;
     version: string;
     team_ids: string[];
+    groups?: string[];
 
     commands: CommandHandlerMetadata[];
 

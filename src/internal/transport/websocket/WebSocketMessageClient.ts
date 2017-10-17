@@ -10,7 +10,7 @@ import {
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { logger } from "../../util/logger";
-import { guid } from "../../util/string";
+import { guid, toStringArray } from "../../util/string";
 import { CommandIncoming, EventIncoming } from "../RequestProcessor";
 
 export abstract class AbstractWebSocketMessageClient extends MessageClientSupport {
@@ -31,8 +31,8 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 correlation_context: this.correlationContext,
                 content_type: MessageMimeTypes.SLACK_JSON,
                 message: render(msg, false),
-                channels: this.addresses(channelNames),
-                users: this.addresses(userNames),
+                channels: channelNames as string[],
+                users: userNames as string[],
                 message_id: options.id,
                 timestamp: this.ts(options),
                 ttl: options.ttl ? options.ttl.toString() : undefined,
@@ -48,8 +48,8 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 correlation_context: this.correlationContext,
                 content_type: MessageMimeTypes.PLAIN_TEXT,
                 message: msg as string,
-                channels: this.addresses(channelNames),
-                users: this.addresses(userNames),
+                channels: channelNames as string[],
+                users: userNames as string[],
                 message_id: options.id,
                 timestamp: this.ts(options),
                 ttl: options.ttl ? options.ttl.toString() : undefined,
@@ -71,23 +71,20 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             return undefined;
         }
     }
-
-    private addresses(addresses: string[] | string): string[] {
-        if (addresses) {
-            if (Array.isArray(addresses)) {
-                return addresses as string[];
-            } else {
-                return [ addresses ];
-            }
-        }
-        return [];
-    }
 }
 
 export class WebSocketCommandMessageClient extends AbstractWebSocketMessageClient {
 
     constructor(request: CommandIncoming, automations: AutomationServer, ws: WebSocket) {
         super(automations, ws, request.corrid, request.correlation_context, request.rug);
+    }
+
+    protected async doSend(msg: string | SlackMessage, userNames: string | string[],
+                           channelNames: string | string[], options: MessageOptions = {}): Promise<any> {
+        const channels = clean(channelNames);
+        const users = clean(userNames);
+
+        return super.doSend(msg, users, channels, options);
     }
 }
 
@@ -99,7 +96,10 @@ export class WebSocketEventMessageClient extends AbstractWebSocketMessageClient 
 
     protected async doSend(msg: string | SlackMessage, userNames: string | string[],
                            channelNames: string | string[], options: MessageOptions = {}): Promise<any> {
-        if ((!userNames && !channelNames) || (userNames.length === 0 && channelNames.length === 0)) {
+        const channels = clean(channelNames);
+        const users = clean(userNames);
+
+        if (users.length === 0 && channels.length === 0) {
             throw new Error("Response messages are not supported for event handlers");
         } else {
             return super.doSend(msg, userNames, channelNames, options);
@@ -173,6 +173,15 @@ export function sendMessage(message: any, ws: WebSocket, log: boolean = true) {
         logger.debug(`Sending message: ${payload}`);
     }
     ws.send(payload);
+}
+
+function clean(addresses: string[] | string): string[] {
+    let na: string[] = toStringArray(addresses);
+    if (na) {
+        // Filter out any null addresses
+        na = na.filter(nad => nad !== null && nad.length > 0);
+    }
+    return na;
 }
 
 export interface HandlerResponse {

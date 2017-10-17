@@ -54,6 +54,7 @@ describe("payloads", () => {
         assert(payload.team_ids[0] === "x-team", "has a team id");
         assert(!payload.keywords);
         assert(!payload.ingestors);
+        assert(!payload.groups);
     });
 
     it("check registration for group = all is valid", () => {
@@ -61,6 +62,7 @@ describe("payloads", () => {
             name: "foo",
             version: "1.0.0",
             team_ids: [],
+            groups: ["all"],
             commands: [],
             events: [],
             ingestors: [],
