@@ -42,7 +42,7 @@ export class AutomationClient {
 
     constructor(private configuration: Configuration) {
         this.teamIds = toStringArray(this.configuration.teamIds);
-        this.groups = toStringArray(this.configuration.groups);
+        this.groups = toStringArray((this.configuration as any).groups);
 
         this.automations = new BuildableAutomationServer(
             {
