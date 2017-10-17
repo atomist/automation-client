@@ -2,7 +2,6 @@ import { File } from "../File";
 
 import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { PatternMatch } from "@atomist/microgrammar/PatternMatch";
-import { RunOrDefer } from "../../internal/common/Flushable";
 import { logger } from "../../internal/util/logger";
 import { ProjectNonBlocking, ProjectScripting } from "../Project";
 import { doWithFiles, saveFromFilesAsync } from "./projectUtils";
@@ -110,7 +109,7 @@ export function doWithFileMatches<M>(p: ProjectNonBlocking,
                                      globPattern: string,
                                      microgrammar: Microgrammar<M>,
                                      action: (fh: FileWithMatches<M>) => void,
-                                     opts: Opts = DefaultOpts): RunOrDefer<File[]> {
+                                     opts: Opts = DefaultOpts): Promise<File[]> {
     return doWithFiles(p, globPattern, file => {
         return file.getContent()
             .then(content => {
@@ -144,7 +143,7 @@ export function doWithUniqueMatch<M>(p: ProjectNonBlocking,
                                      globPattern: string,
                                      microgrammar: Microgrammar<M>,
                                      action: (m: M) => void,
-                                     opts: Opts = DefaultOpts): RunOrDefer<File[]> {
+                                     opts: Opts = DefaultOpts): Promise<File[]> {
     let count = 0;
     const guardedAction = (fh: FileWithMatches<M>) => {
         if (fh.matches.length !== 1) {
@@ -157,7 +156,7 @@ export function doWithUniqueMatch<M>(p: ProjectNonBlocking,
         action(m0);
     };
     return doWithFileMatches(p, globPattern, microgrammar, guardedAction, opts)
-        .transform(files => {
+        .then(files => {
             if (count++ === 0) {
                 throw new Error("No unique match found in project");
             }
@@ -172,13 +171,12 @@ export function doWithUniqueMatch<M>(p: ProjectNonBlocking,
  * @param {Microgrammar<M>} microgrammar
  * @param {(m: M) => void} action
  * @param {{makeUpdatable: boolean}} opts
- * @return {RunOrDefer<File[]>}
  */
 export function doWithAtMostOneMatch<M>(p: ProjectNonBlocking,
                                         globPattern: string,
                                         microgrammar: Microgrammar<M>,
                                         action: (m: M) => void,
-                                        opts: Opts = DefaultOpts): RunOrDefer<File[]> {
+                                        opts: Opts = DefaultOpts): Promise<File[]> {
     let count = 0;
     const guardedAction = (fh: FileWithMatches<M>) => {
         if (fh.matches.length !== 1) {

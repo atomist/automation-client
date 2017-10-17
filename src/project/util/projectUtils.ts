@@ -1,4 +1,4 @@
-import { RunOrDefer, runOrDefer, ScriptAction } from "../../internal/common/Flushable";
+import { defer, ScriptAction } from "../../internal/common/Flushable";
 import { isPromise } from "../../internal/util/async";
 import { File, FileNonBlocking } from "../File";
 import { FileStream, Project, ProjectAsync, ProjectNonBlocking, ProjectScripting } from "../Project";
@@ -94,28 +94,25 @@ export function saveFromFilesAsync<T>(project: ProjectAsync,
  */
 export function doWithFiles(project: ProjectNonBlocking,
                             globPattern: string,
-                            op: (f: File) => void | Promise<any>): RunOrDefer<File[]> {
-    const funrun: ScriptAction<Project, File[]> = p => {
-        return new Promise((resolve, reject) => {
-            const filePromises: Array<Promise<File>> = [];
-            p.streamFiles(globPattern)
-                .on("data", f => {
-                    const r = op(f);
-                    if (isPromise(r)) {
-                        filePromises.push(r.then(_ => f.flush()));
-                    } else {
-                        if (f.dirty) {
-                            filePromises.push(f.flush());
-                        }
+                            op: (f: File) => void | Promise<any>): Promise<File[]> {
+    return new Promise((resolve, reject) => {
+        const filePromises: Array<Promise<File>> = [];
+        return project.streamFiles(globPattern)
+            .on("data", f => {
+                const r = op(f);
+                if (isPromise(r)) {
+                    filePromises.push(r.then(_ => f.flush()));
+                } else {
+                    if (f.dirty) {
+                        filePromises.push(f.flush());
                     }
-                })
-                .on("error", reject)
-                .on("end", _ => {
-                    resolve(Promise.all(filePromises));
-                });
-        });
-    };
-    return runOrDefer<ProjectScripting, File[]>(project, funrun);
+                }
+            })
+            .on("error", reject)
+            .on("end", _ => {
+                resolve(Promise.all(filePromises));
+            });
+    });
 }
 
 /**
@@ -127,23 +124,20 @@ export function doWithFiles(project: ProjectNonBlocking,
  */
 export function deleteFiles<T>(project: ProjectNonBlocking,
                                globPattern: string,
-                               test: (f: File) => boolean = f => true): RunOrDefer<number> {
-    const funrun: ScriptAction<Project, number> = p => {
+                               test: (f: File) => boolean = f => true): Promise<number> {
         return new Promise((resolve, reject) => {
             let deleted = 0;
-            p.streamFiles(globPattern)
+            project.streamFiles(globPattern)
                 .on("data", f => {
                     if (test(f)) {
                         ++deleted;
-                        p.recordDeleteFile(f.path);
+                        project.recordDeleteFile(f.path);
                     }
                 })
                 .on("error", reject)
                 .on("end", () => {
-                    resolve(p.flush()
+                    resolve(project.flush()
                         .then(() => deleted));
                 });
         });
-    };
-    return runOrDefer<ProjectScripting, number>(project, funrun);
 }

@@ -36,48 +36,10 @@ export interface ScriptedFlushable<T> extends Flushable {
 }
 
 /**
- * Return type of operations on ScriptedFlushable.
- * Provide a choice of running the operation now on the ScriptedFlushable implementation,
- * or deferring it to run in that object's flush() function.
- * The latter choice is only useful if the operation's result isn't required by the calling logic.
+ * Defer the given action until the relevant ScriptableFlushable is flushable
+ * @param {ScriptedFlushable<T>} flushable
+ * @param {ScriptAction<T, R>} promise
  */
-export interface RunOrDefer<T> {
-
-    /**
-     * Run the operation now and return a promise
-     * @returns {Promise<T>}
-     */
-    run(): Promise<T>;
-
-    /**
-     * Schedule this operation to run later, when flush() is called on the ScriptedFlushable
-     */
-    defer(): void;
-
-    /**
-     * Transform the result of the potentially deferred promise.
-     * Similar to Promise chaining
-     * @param {(r: Promise<T>) => (Promise<T> | T)} trans
-     */
-    transform<R>(trans: (t: T) => R | Promise<R>): RunOrDefer<R>;
-}
-
-/**
- * Convert a ScriptAction function into a RunOrDefer instance
- * @param {T} t
- * @param {ScriptAction<T extends ScriptedFlushable<T>, R>} funrun
- * @returns {RunOrDefer<R>}
- */
-export function runOrDefer<T extends ScriptedFlushable<T>, R>(t: T, funrun: ScriptAction<T, R>): RunOrDefer<R> {
-    return {
-        defer() {
-            t.recordAction(funrun);
-        },
-        run() {
-            return funrun(t);
-        },
-        transform(trans) {
-            return runOrDefer(t, t1 => funrun(t1).then(r => trans(r)));
-        },
-    };
+export function defer<T, R>(flushable: ScriptedFlushable<T>, promise: Promise<R>): void {
+    flushable.recordAction(() => promise);
 }

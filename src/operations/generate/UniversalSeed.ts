@@ -1,5 +1,6 @@
 import { CommandHandler, MappedParameter, Parameter, Tags } from "../../decorators";
 import { MappedParameters } from "../../Handlers";
+import { defer } from "../../internal/common/Flushable";
 import { logger } from "../../internal/util/logger";
 import { GitProject } from "../../project/git/GitProject";
 import { ProjectNonBlocking } from "../../project/Project";
@@ -62,11 +63,11 @@ export class UniversalSeed extends SeedDrivenGenerator {
      * @param description  brief description of newly created project
      */
     protected cleanReadMe(project: ProjectNonBlocking, description: string): void {
-        doWithFiles(project, "README.md", readMe => {
+        defer(project, doWithFiles(project, "README.md", readMe => {
             readMe.recordReplace(/^#[\\s\\S]*?## Development/, `# ${project.name}
 This project contains ${description}.
 ## Development`);
-        }).defer();
+        }));
     }
 
     /**
@@ -81,8 +82,7 @@ This project contains ${description}.
             "CODE_OF_CONDUCT.md",
             "CONTRIBUTING.md",
         ];
-        deleteFiles(project, "/*", f => filesToDelete.includes(f.path))
-            .defer();
+        defer(project, deleteFiles(project, "/*", f => filesToDelete.includes(f.path)));
         const deleteDirs: string[] = [
             ".travis",
         ];

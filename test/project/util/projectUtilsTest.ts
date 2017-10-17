@@ -2,6 +2,7 @@ import "mocha";
 
 import * as assert from "power-assert";
 
+import { defer } from "../../../src/internal/common/Flushable";
 import { AllFiles } from "../../../src/project/fileGlobs";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { deleteFiles, doWithFiles, fileExists, saveFromFiles } from "../../../src/project/util/projectUtils";
@@ -47,7 +48,7 @@ describe("projectUtils", () => {
         t.addFileSync("Thing", "1");
         doWithFiles(t, AllFiles, f => {
             f.recordSetContent(f.getContentSync() + "2");
-        }).run()
+        })
             .then(files => {
                 assert(files.length === 1);
                 const f = t.findFileSync("Thing");
@@ -59,9 +60,9 @@ describe("projectUtils", () => {
     it("withFiles: defer", done => {
         const t = tempProject();
         t.addFileSync("Thing", "1");
-        doWithFiles(t, AllFiles, f => {
+        defer(t, doWithFiles(t, AllFiles, f => {
             f.recordSetContent(f.getContentSync() + "2");
-        }).defer();
+        }));
         assert(t.findFileSync("Thing").getContentSync() === "1");
         assert(t.dirty);
         t.flush()
@@ -76,9 +77,9 @@ describe("projectUtils", () => {
     it("withFiles: defer use of script", done => {
         const t = tempProject();
         t.addFileSync("Thing", "1");
-        doWithFiles(t, AllFiles, f => {
+        defer(t, doWithFiles(t, AllFiles, f => {
             return Promise.resolve(f.recordSetContent(f.getContentSync() + "2"));
-        }).defer();
+        }));
         assert(t.findFileSync("Thing").getContentSync() === "1");
         assert(t.dirty);
         t.flush()
@@ -95,7 +96,7 @@ describe("projectUtils", () => {
         t.addFileSync("Thing", "1");
         doWithFiles(t, AllFiles, f => {
             return f.setContent(f.getContentSync() + "2");
-        }).run()
+        })
             .then(files => {
                 assert(files.length === 1);
                 const f = t.findFileSync("Thing");
@@ -107,9 +108,9 @@ describe("projectUtils", () => {
     it("withFiles: defer with promise", done => {
         const t = tempProject();
         t.addFileSync("Thing", "1");
-        doWithFiles(t, AllFiles, f => {
+        defer(t, doWithFiles(t, AllFiles, f => {
             return f.setContent(f.getContentSync() + "2");
-        }).defer();
+        }));
         assert(t.dirty);
         t.flush()
             .then(files => {
@@ -124,7 +125,6 @@ describe("projectUtils", () => {
         const t = tempProject();
         t.addFileSync("Thing", "1");
         deleteFiles(t, AllFiles, f => false)
-            .run()
             .then(count => {
                 assert(count === 0);
                 done();
@@ -136,7 +136,6 @@ describe("projectUtils", () => {
         t.addFileSync("Thing", "1");
         t.addFileSync("config/Thing", "1");
         deleteFiles(t, "**/Thing", f => true)
-            .run()
             .then(count => {
                 assert(count === 2, `Only deleted ${count}`);
                 done();
@@ -147,7 +146,7 @@ describe("projectUtils", () => {
         const t = new InMemoryProject("name");
         t.addFileSync("Thing", "1");
         t.addFileSync("config/Thing", "1");
-        deleteFiles(t, "**/Thing", f => true).defer();
+        defer(t, deleteFiles(t, "**/Thing", f => true));
         assert(t.fileCount === 2);
         t.flush()
             .then(count => {
@@ -161,7 +160,6 @@ describe("projectUtils", () => {
         t.addFileSync("Thing", "1");
         t.addFileSync("config/Thing", "1");
         deleteFiles(t, "**/Thing", f => f.path.includes("config"))
-            .run()
             .then(count => {
                 assert(count === 1, `Only deleted ${count}`);
                 done();
@@ -172,7 +170,7 @@ describe("projectUtils", () => {
         const t = new InMemoryProject("name");
         t.addFileSync("Thing", "1");
         t.addFileSync("config/Thing", "1");
-        deleteFiles(t, "**/Thing", f => f.path.includes("config")).defer();
+        defer(t, deleteFiles(t, "**/Thing", f => f.path.includes("config")));
         assert(t.fileCount === 2);
         t.flush()
             .then(_ => {
@@ -186,7 +184,6 @@ describe("projectUtils", () => {
         p.addFileSync("Thing", "A");
         p.addFileSync("config/Thing", "B");
         doWithFiles(p, "**/Thing", f => f.replaceAll("A", "alpha"))
-            .run()
             .then(_ => {
                 assert(p.findFileSync("Thing").getContentSync() === "alpha");
             });
@@ -197,7 +194,6 @@ describe("projectUtils", () => {
         p.addFileSync("Thing", "A");
         p.addFileSync("config/Thing", "B");
         doWithFiles(p, "**/Thing", f => f.replace(/A-Z/, "alpha"))
-            .run()
             .then(_ => {
                 assert(p.findFileSync("Thing").getContentSync() === "alpha");
             });

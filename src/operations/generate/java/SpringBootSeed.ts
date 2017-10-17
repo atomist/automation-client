@@ -1,4 +1,5 @@
 import { CommandHandler, Parameter, Tags } from "../../../decorators";
+import { defer } from "../../../internal/common/Flushable";
 import { logger } from "../../../internal/util/logger";
 import { Project, ProjectNonBlocking } from "../../../project/Project";
 import { doWithFiles } from "../../../project/util/projectUtils";
@@ -50,14 +51,15 @@ export class SpringBootSeed extends JavaSeed {
      * @param oldClass   name of class to move from
      * @param newClass   name of class to move to
      */
-    protected renameClassStem(project: ProjectNonBlocking, oldClass: string, newClass: string): void {
+    protected renameClassStem(project: ProjectNonBlocking,
+                              oldClass: string, newClass: string): Promise<ProjectNonBlocking> {
         logger.info("Replacing old class stem [%s] with [%s]", oldClass, newClass);
-        doWithFiles(project, JavaFiles, f => {
+        return doWithFiles(project, JavaFiles, f => {
             if (f.name.includes(oldClass)) {
                 f.recordRename(f.name.replace(oldClass, newClass));
                 f.recordReplaceAll(oldClass, newClass);
             }
-        }).defer();
+        }).then(files => project);
     }
 
 }

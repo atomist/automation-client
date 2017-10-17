@@ -1,4 +1,5 @@
 import { CommandHandler, Parameter } from "../../../decorators";
+import { defer } from "../../../internal/common/Flushable";
 import { logger } from "../../../internal/util/logger";
 import { Project, ProjectNonBlocking } from "../../../project/Project";
 import { deleteFiles } from "../../../project/util/projectUtils";
@@ -76,11 +77,11 @@ export class JavaSeed extends UniversalSeed {
         super.manipulate(project);
         const smartArtifactId = (this.artifactId === "${projectName}") ? project.name : this.artifactId;
 
-        updatePom(project as Project, smartArtifactId, this.groupId, this.version, this.description).defer();
+        defer(project, updatePom(project as Project, smartArtifactId, this.groupId, this.version, this.description));
         project.recordAction(p =>
             JavaProjectStructure.infer(p).then(structure =>
                 (structure) ?
-                    movePackage(p, structure.applicationPackage, this.rootPackage).run().then(files => p) :
+                    movePackage(p, structure.applicationPackage, this.rootPackage).then(files => p) :
                     p),
         );
     }
@@ -97,7 +98,7 @@ export class JavaSeed extends UniversalSeed {
         const filesToDelete: string[] = [
             "src/main/scripts/travis-build.bash",
         ];
-        deleteFiles(project, "src/main/scripts/**", f => filesToDelete.includes(f.path)).defer();
+        defer(project, deleteFiles(project, "src/main/scripts/**", f => filesToDelete.includes(f.path)));
     }
 
 }
