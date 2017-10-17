@@ -64,7 +64,9 @@ describe("GitProject", () => {
             description,
             private: true,
             auto_init: true,
-        }, config);
+        }, config).catch(error => {
+            throw new Error("Could not create repo: " + error.message);
+        });
     }
 
     it("add a file, init and commit", done => {
@@ -72,7 +74,7 @@ describe("GitProject", () => {
         p.addFileSync("Thing", "1");
         const gp: GitProject = GitCommandGitProject.fromProject(p, GitHubToken);
         gp.init().then(() => gp.commit("Added a Thing").then(c => {
-            exec.exec("git status; git log", {cwd: p.baseDir}, (err, stdout, stderr) => {
+            exec.exec("git status; git log", { cwd: p.baseDir }, (err, stdout, stderr) => {
                 if (err) {
                     // node couldn't execute the command
                     console.error(`Node err on dir [${p.baseDir}]: ${err}`);
@@ -136,7 +138,7 @@ describe("GitProject", () => {
         this.retries(5);
 
         newRepo().then(_ => {
-            GitCommandGitProject.cloned(GitHubToken, TargetOwner, TargetRepo).then(gp => {
+            return GitCommandGitProject.cloned(GitHubToken, TargetOwner, TargetRepo).then(gp => {
                 gp.addFileSync("Cat", "hat");
                 const branch = "thing2";
                 gp.createBranch(branch)
@@ -146,22 +148,20 @@ describe("GitProject", () => {
                         return gp.raisePullRequest("Thing2", "Adds another character");
                     })
                     .then(x => done());
-            })
-                .catch(done);
-        });
+            });
+        }).catch(done);
     }).timeout(20000);
 
     it("add a file, then PR push to remote repo using convenience function", function(done) {
         this.retries(5);
 
         newRepo().then(_ => {
-            cloneEditAndPush(GitHubToken, TargetOwner, TargetRepo, p => p.addFileSync("Cat", "hat"), "thing2", {
+            return cloneEditAndPush(GitHubToken, TargetOwner, TargetRepo, p => p.addFileSync("Cat", "hat"), "thing2", {
                 title: "Thing2",
                 body: "Adds another character now",
             })
-                .then(() => done())
-                .catch(done);
-        });
+                .then(() => done());
+        }).catch(done);
     }).timeout(20000);
 
     it("check out commit", done => {
@@ -174,7 +174,7 @@ describe("GitProject", () => {
 
                 gp.checkout(sha)
                     .then(_ => {
-                        exec.exec("git status", {cwd: baseDir}, (err, stdout, stderr) => {
+                        exec.exec("git status", { cwd: baseDir }, (err, stdout, stderr) => {
                             if (err) {
                                 // node couldn't execute the command
                                 console.error(`Node err on dir [${baseDir}]: ${err}`);

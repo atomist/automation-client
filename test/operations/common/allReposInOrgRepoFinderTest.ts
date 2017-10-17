@@ -9,8 +9,8 @@ describe("allReposInOrgRepoFinder", () => {
 
     const teamId = "T1L0VDKJP";
 
-    const graphClient = new ApolloGraphClient("https://db-f4cw1abeowdgtpe5etpy.graphenedb.com:24780/graphql/",
-        {Authorization: `Basic ${process.env.CORTEX_TOKEN}`});
+    const graphClient = new ApolloGraphClient(`https://automation-staging.atomist.services/graphql/team/${teamId}`
+        , {Authorization: `token ${process.env.GITHUB_TOKEN}`});
 
     it("finds over 100 repos in org", done => {
         allReposInTeam()({graphClient, teamId} as any)
