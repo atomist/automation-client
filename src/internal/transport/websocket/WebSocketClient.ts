@@ -127,26 +127,25 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
                 return registration;
             })
             .catch(error => {
-
+                const nameVersion = `${registrationPayload.name}@${registrationPayload.version}`;
                 if (error.response && error.response.status === 409) {
-                    logger.error(`Registration failed because a session for ${registrationPayload.name}` +
-                        `@${registrationPayload.version} is already active`);
+                    logger.error(`Registration failed because a session for ${nameVersion} is already active`);
                     retry();
                 } else if (error.response && error.response.status === 400) {
-                    logger.error(`Registration payload for ${registrationPayload.name}` +
-                        `@${registrationPayload.version} was invalid`);
+                    logger.error(`Registration payload for ${nameVersion} was invalid`);
                     process.exit(1);
                 } else if (error.response
                     && (error.response.status === 401)) {
                     const furtherInfo = error.response.data ? `\nFurther information: ${error.response.data}` : "";
                     logger.error(
-                        `Authorization failed for ${registrationPayload.name}@${registrationPayload.version} in teams ${registrationPayload.team_ids}` +
+                        `Authorization failed for ${nameVersion} in teams ${registrationPayload.team_ids}` +
                     furtherInfo);
                     process.exit(1);
                 } else if (error.response
                     && (error.response.status === 403)) {
                     const furtherInfo = error.response.data ? `\nFurther information: ${error.response.data}` : "";
-                    logger.error(`Authentication failed for ${registrationPayload.name}@${registrationPayload.version} in teams ${registrationPayload.team_ids}.` +
+                    logger.error(
+                        `Authentication failed for ${nameVersion} in teams ${registrationPayload.team_ids}.` +
                         furtherInfo);
                     process.exit(1);
                 } else {
