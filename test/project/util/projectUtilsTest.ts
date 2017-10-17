@@ -49,8 +49,7 @@ describe("projectUtils", () => {
         doWithFiles(t, AllFiles, f => {
             f.recordSetContent(f.getContentSync() + "2");
         })
-            .then(files => {
-                assert(files.length === 1);
+            .then(p => {
                 const f = t.findFileSync("Thing");
                 assert(f.getContentSync() === "12");
                 done();
@@ -97,8 +96,8 @@ describe("projectUtils", () => {
         doWithFiles(t, AllFiles, f => {
             return f.setContent(f.getContentSync() + "2");
         })
-            .then(files => {
-                assert(files.length === 1);
+            .then(p => {
+                assert(!!p);
                 const f = t.findFileSync("Thing");
                 assert(f.getContentSync() === "12");
                 done();

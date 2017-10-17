@@ -1,4 +1,4 @@
-import { Project, ProjectAsync } from "../../../project/Project";
+import { ProjectAsync } from "../../../project/Project";
 
 import { doWithFiles } from "../../../project/util/projectUtils";
 
@@ -20,6 +20,5 @@ export function updatePom<P extends ProjectAsync>(project: P,
             .recordReplace(/(<groupId>)([a-zA-Z_.0-9\-]+)(<\/groupId>)/, "$1" + groupId + "$3")
             .recordReplace(/(<version>)([a-zA-Z_.0-9\-]+)(<\/version>)/, "$1" + version + "$3")
             .recordReplace(/(<description>)([a-zA-Z_.0-9\-]+)(<\/description>)/, "$1" + description + "$3");
-    })
-        .then(files => project);
+    });
 }

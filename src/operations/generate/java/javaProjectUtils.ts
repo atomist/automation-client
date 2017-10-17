@@ -1,6 +1,5 @@
 import { logger } from "../../../internal/util/logger";
-import { File } from "../../../project/File";
-import { Project, ProjectAsync } from "../../../project/Project";
+import { ProjectAsync } from "../../../project/Project";
 import { doWithFiles } from "../../../project/util/projectUtils";
 
 export const JavaFiles = "**/*.java";
@@ -20,9 +19,7 @@ export function movePackage<P extends ProjectAsync>(project: P, oldPackage: stri
     return doWithFiles(project, "**/*.java", f => {
         f.recordReplaceAll(oldPackage, newPackage)
             .recordSetPath(f.path.replace(pathToReplace, newPath));
-    })
-        .then(files => project);
-
+    });
 }
 
 /**

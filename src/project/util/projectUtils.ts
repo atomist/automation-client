@@ -90,29 +90,29 @@ export function saveFromFilesAsync<T>(project: ProjectAsync,
  * @param project project to act on
  * @param globPattern glob pattern to match
  * @param op operation to perform on files. Can return void or a promise.
- * @return {Promise<T>}
  */
-export function doWithFiles(project: ProjectAsync,
-                            globPattern: string,
-                            op: (f: File) => void | Promise<any>): Promise<File[]> {
-    return new Promise((resolve, reject) => {
-        const filePromises: Array<Promise<File>> = [];
-        return project.streamFiles(globPattern)
-            .on("data", f => {
-                const r = op(f);
-                if (isPromise(r)) {
-                    filePromises.push(r.then(_ => f.flush()));
-                } else {
-                    if (f.dirty) {
-                        filePromises.push(f.flush());
+export function doWithFiles<P extends ProjectAsync>(project: P,
+                                                    globPattern: string,
+                                                    op: (f: File) => void | Promise<any>): Promise<P> {
+    return new Promise(
+        (resolve, reject) => {
+            const filePromises: Array<Promise<File>> = [];
+            return project.streamFiles(globPattern)
+                .on("data", f => {
+                    const r = op(f);
+                    if (isPromise(r)) {
+                        filePromises.push(r.then(_ => f.flush()));
+                    } else {
+                        if (f.dirty) {
+                            filePromises.push(f.flush());
+                        }
                     }
-                }
-            })
-            .on("error", reject)
-            .on("end", _ => {
-                resolve(Promise.all(filePromises));
-            });
-    });
+                })
+                .on("error", reject)
+                .on("end", _ => {
+                    resolve(Promise.all(filePromises));
+                });
+        }).then(files => project);
 }
 
 /**
@@ -125,19 +125,19 @@ export function doWithFiles(project: ProjectAsync,
 export function deleteFiles<T>(project: ProjectAsync,
                                globPattern: string,
                                test: (f: File) => boolean = f => true): Promise<number> {
-        return new Promise((resolve, reject) => {
-            let deleted = 0;
-            project.streamFiles(globPattern)
-                .on("data", f => {
-                    if (test(f)) {
-                        ++deleted;
-                        defer(project, project.deleteFile(f.path));
-                    }
-                })
-                .on("error", reject)
-                .on("end", () => {
-                    resolve(project.flush()
-                        .then(() => deleted));
-                });
-        });
+    return new Promise((resolve, reject) => {
+        let deleted = 0;
+        project.streamFiles(globPattern)
+            .on("data", f => {
+                if (test(f)) {
+                    ++deleted;
+                    defer(project, project.deleteFile(f.path));
+                }
+            })
+            .on("error", reject)
+            .on("end", () => {
+                resolve(project.flush()
+                    .then(() => deleted));
+            });
+    });
 }

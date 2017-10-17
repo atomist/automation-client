@@ -105,11 +105,11 @@ export function findFileMatches<M>(p: ProjectAsync,
  * @param opts options
  * @return {RunOrDefer<any>}
  */
-export function doWithFileMatches<M>(p: ProjectAsync,
-                                     globPattern: string,
-                                     microgrammar: Microgrammar<M>,
-                                     action: (fh: FileWithMatches<M>) => void,
-                                     opts: Opts = DefaultOpts): Promise<File[]> {
+export function doWithFileMatches<M, P extends ProjectAsync = ProjectAsync>(p: P,
+                                                                            globPattern: string,
+                                                                            microgrammar: Microgrammar<M>,
+                                                                            action: (fh: FileWithMatches<M>) => void,
+                                                                            opts: Opts = DefaultOpts): Promise<P> {
     return doWithFiles(p, globPattern, file => {
         return file.getContent()
             .then(content => {
@@ -139,11 +139,11 @@ export function doWithFileMatches<M>(p: ProjectAsync,
  * @param {{makeUpdatable: boolean}} opts
  * @return {RunOrDefer<File[]>}
  */
-export function doWithUniqueMatch<M>(p: ProjectAsync,
-                                     globPattern: string,
-                                     microgrammar: Microgrammar<M>,
-                                     action: (m: M) => void,
-                                     opts: Opts = DefaultOpts): Promise<File[]> {
+export function doWithUniqueMatch<M, P extends ProjectAsync = ProjectAsync>(p: P,
+                                                                            globPattern: string,
+                                                                            microgrammar: Microgrammar<M>,
+                                                                            action: (m: M) => void,
+                                                                            opts: Opts = DefaultOpts): Promise<P> {
     let count = 0;
     const guardedAction = (fh: FileWithMatches<M>) => {
         if (fh.matches.length !== 1) {
@@ -172,11 +172,11 @@ export function doWithUniqueMatch<M>(p: ProjectAsync,
  * @param {(m: M) => void} action
  * @param {{makeUpdatable: boolean}} opts
  */
-export function doWithAtMostOneMatch<M>(p: ProjectAsync,
-                                        globPattern: string,
-                                        microgrammar: Microgrammar<M>,
-                                        action: (m: M) => void,
-                                        opts: Opts = DefaultOpts): Promise<File[]> {
+export function doWithAtMostOneMatch<M, P extends ProjectAsync = ProjectAsync>(p: P,
+                                                                               globPattern: string,
+                                                                               microgrammar: Microgrammar<M>,
+                                                                               action: (m: M) => void,
+                                                                               opts: Opts = DefaultOpts): Promise<P> {
     let count = 0;
     const guardedAction = (fh: FileWithMatches<M>) => {
         if (fh.matches.length !== 1) {
