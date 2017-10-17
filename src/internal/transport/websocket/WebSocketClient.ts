@@ -10,18 +10,19 @@ import { RegistrationConfirmation, WebSocketRequestProcessor } from "./WebSocket
 
 export class WebSocketClient {
 
-    public static initialize( registrationCallback: () => any,
-                              options: WebSocketClientOptions,
-                              requestProcessor: WebSocketRequestProcessor): Promise<WebSocketClient> {
-        const wsc = new WebSocketClient(registrationCallback, options, requestProcessor);
-        return register(wsc.registrationCallback, options, requestProcessor)
-            .then(registration =>
-                connect(wsc.registrationCallback, registration, options, requestProcessor)).then(_ => wsc);
+    public constructor(private registrationCallback: () => any,
+                       private options: WebSocketClientOptions,
+                       private requestProcessor: WebSocketRequestProcessor) {
     }
 
-    private constructor(private registrationCallback: () => any,
-                        private options: WebSocketClientOptions,
-                        private requestProcessor: WebSocketRequestProcessor) {}
+    public start(): Promise<void> {
+        const connection = register(this.registrationCallback, this.options, this.requestProcessor)
+            .then(registration =>
+                connect(this.registrationCallback, registration, this.options, this.requestProcessor));
+        return connection.then(_ => {
+            return;
+        });
+    }
 }
 
 let reconnect = true;
@@ -139,7 +140,7 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
                     const furtherInfo = error.response.data ? `\nFurther information: ${error.response.data}` : "";
                     logger.error(
                         `Authorization failed for ${nameVersion} in teams ${registrationPayload.team_ids}` +
-                    furtherInfo);
+                        furtherInfo);
                     process.exit(1);
                 } else if (error.response
                     && (error.response.status === 403)) {

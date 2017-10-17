@@ -115,9 +115,10 @@ export class AutomationClient {
         }
     }
 
-    private runWs(handler: WebSocketRequestProcessor, options: WebSocketClientOptions): Promise<any> {
-        return WebSocketClient.initialize(() => prepareRegistration(this.automations.rugs),
-            options, handler).then( wsc => this.webSocketClient = wsc);
+    private runWs(handler: WebSocketRequestProcessor, options: WebSocketClientOptions): Promise<void> {
+        this.webSocketClient = new WebSocketClient(() => prepareRegistration(this.automations.rugs),
+            options, handler);
+        return this.webSocketClient.start();
     }
 
     private runHttp(handler: RequestProcessor): void {
