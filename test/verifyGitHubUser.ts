@@ -1,7 +1,7 @@
 import axios from "axios";
+import { exit } from "shelljs";
 import { GitHubBase } from "../src/project/git/GitProject";
 import { GitHubToken } from "./atomist.config";
-import { exit } from "shelljs";
 
 const GitHubUserWhoCanRunTheTests = "atomist-travisorg";
 
