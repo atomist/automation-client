@@ -6,6 +6,7 @@ import { logger } from "../../util/logger";
 import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../RequestProcessor";
 import { sendMessage } from "./WebSocketMessageClient";
 import { RegistrationConfirmation, WebSocketRequestProcessor } from "./WebSocketRequestProcessor";
+import { hideString } from "../../util/string";
 
 export class WebSocketClient {
 
@@ -111,7 +112,7 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
         }
 
         return axios.post(options.registrationUrl, registrationPayload,
-            {headers: {Authorization: `token ${options.token}`}})
+            { headers: { Authorization: `token ${options.token}` } })
             .then(result => {
                 const registration = result.data as RegistrationConfirmation;
 
@@ -122,6 +123,7 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
                 return registration;
             })
             .catch(error => {
+
                 if (error.response && error.response.status === 409) {
                     logger.error(`Registration failed because a session for ${registrationPayload.name}` +
                         `@${registrationPayload.version} is already active`);
@@ -131,9 +133,17 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
                         `@${registrationPayload.version} was invalid`);
                     process.exit(1);
                 } else if (error.response
-                    && (error.response.status === 401 || error.response.status === 403)) {
-                    logger.error(`Authentication failed for ${registrationPayload.name}` +
-                        `@${registrationPayload.version}`);
+                    && (error.response.status === 401)) {
+                    const furtherInfo = error.response.data ? `\nFurther information: ${error.response.data}` : "";
+                    logger.error(
+                        `Authorization failed for ${registrationPayload.name}@${registrationPayload.version} in teams ${registrationPayload.team_ids}` +
+                    furtherInfo);
+                    process.exit(1);
+                } else if (error.response
+                    && (error.response.status === 403)) {
+                    const furtherInfo = error.response.data ? `\nFurther information: ${error.response.data}` : "";
+                    logger.error(`Authentication failed for ${registrationPayload.name}@${registrationPayload.version} in teams ${registrationPayload.team_ids}.` +
+                        furtherInfo);
                     process.exit(1);
                 } else {
                     logger.error("Registration failed with '%s'", error);
