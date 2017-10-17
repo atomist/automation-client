@@ -3,7 +3,7 @@ import { MappedParameters } from "../../Handlers";
 import { defer } from "../../internal/common/Flushable";
 import { logger } from "../../internal/util/logger";
 import { GitProject } from "../../project/git/GitProject";
-import { ProjectAsync } from "../../project/Project";
+import { Project, ProjectAsync } from "../../project/Project";
 import { deleteFiles, doWithFiles } from "../../project/util/projectUtils";
 import { SeedDrivenGenerator } from "./SeedDrivenGenerator";
 
@@ -46,9 +46,10 @@ export class UniversalSeed extends SeedDrivenGenerator {
      *
      * @param project raw seed project
      */
-    public manipulate(project: ProjectAsync): void {
+    public manipulate(project: Project): Promise<Project> {
         this.removeSeedFiles(project);
         this.cleanReadMe(project, this.description);
+        return project.flush();
     }
 
     protected push(gp: GitProject): Promise<any> {

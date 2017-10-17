@@ -1,6 +1,6 @@
 import { logger } from "../../../internal/util/logger";
 import { File } from "../../../project/File";
-import { ProjectAsync } from "../../../project/Project";
+import { Project, ProjectAsync } from "../../../project/Project";
 import { doWithFiles } from "../../../project/util/projectUtils";
 
 export const JavaFiles = "**/*.java";
@@ -12,7 +12,7 @@ export const JavaFiles = "**/*.java";
  * @param oldPackage   name of package to move from
  * @param newPackage   name of package to move to
  */
-export function movePackage(project: ProjectAsync, oldPackage: string, newPackage: string): Promise<File[]> {
+export function movePackage<P extends ProjectAsync>(project: P, oldPackage: string, newPackage: string): Promise<P> {
     const pathToReplace = packageToPath(oldPackage);
     const newPath = packageToPath(newPackage);
     logger.info("Replacing path [%s] with [%s], package [%s] with [%s]",
@@ -20,7 +20,8 @@ export function movePackage(project: ProjectAsync, oldPackage: string, newPackag
     return doWithFiles(project, "**/*.java", f => {
         f.recordReplaceAll(oldPackage, newPackage)
             .recordSetPath(f.path.replace(pathToReplace, newPath));
-    });
+    })
+        .then(files => project);
 
 }
 
