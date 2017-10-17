@@ -139,14 +139,14 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
                     && (error.response.status === 401)) {
                     const furtherInfo = error.response.data ? `\nFurther information: ${error.response.data}` : "";
                     logger.error(
-                        `Authorization failed for ${nameVersion} in teams ${registrationPayload.team_ids}` +
+                        `Authentication failed for ${nameVersion} in teams ${registrationPayload.team_ids}` +
                         furtherInfo);
                     process.exit(1);
                 } else if (error.response
                     && (error.response.status === 403)) {
                     const furtherInfo = error.response.data ? `\nFurther information: ${error.response.data}` : "";
                     logger.error(
-                        `Authentication failed for ${nameVersion} in teams ${registrationPayload.team_ids}.
+                        `Authorization failed for ${nameVersion} in teams ${registrationPayload.team_ids}.
 This could be caused by:
 - The Atomist app has not been authorized in the Slack team
 - You are not a member of each GitHub organization associated with the Slack team
