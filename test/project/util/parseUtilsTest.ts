@@ -3,6 +3,7 @@ import "mocha";
 import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { Integer } from "@atomist/microgrammar/Primitives";
 import * as assert from "power-assert";
+import { defer } from "../../../src/internal/common/Flushable";
 import { JavaPackageDeclaration } from "../../../src/operations/generate/java/JavaGrammars";
 import { JavaFiles } from "../../../src/operations/generate/java/javaProjectUtils";
 import { AllFiles } from "../../../src/project/fileGlobs";
@@ -74,7 +75,11 @@ describe("parseUtils", () => {
     });
 
     it("gathers matches from files with transform", done => {
-        interface Person { name: string; age: number; }
+        interface Person {
+            name: string;
+            age: number;
+        }
+
         const mg = Microgrammar.fromString <Person>(
             "${name}:${age}",
             {
@@ -153,7 +158,7 @@ describe("parseUtils", () => {
             m.name = m.name + "x";
             assert(m.name);
             assert(m.name === oldPackage + "x");
-        }).run()
+        })
             .then(_ => {
                 // Check file persistence
                 const updatedFile = t.findFileSync(f.path);
@@ -175,7 +180,7 @@ describe("parseUtils", () => {
             m.name = m.name + "x";
             assert(m.name);
             assert(m.name === oldPackage + "x");
-        }).run()
+        })
             .then(_ => {
                 // Check file persistence
                 const updatedFile = p.findFileSync(f.path);
@@ -200,7 +205,7 @@ describe("parseUtils", () => {
         t.addFileSync(f.path, f.getContentSync());
         doWithUniqueMatch<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, m => {
             throw new Error("Should not be invoked");
-        }).run()
+        })
             .catch(err => {
                 // Check file persistence
                 const updatedFile = t.findFileSync(f.path);
@@ -220,7 +225,7 @@ describe("parseUtils", () => {
         t.addFileSync(f2.path, f2.getContentSync());
         doWithUniqueMatch<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, m => {
             // Doesn't matter
-        }).run()
+        })
             .catch(err => {
                 // Check file persistence
                 console.log(err);
@@ -237,7 +242,7 @@ describe("parseUtils", () => {
         const f = new InMemoryFile("src/main/java/com/foo/bar/Thing.java", initialContent);
         t.addFileSync(f.path, f.getContentSync());
         assert(!t.dirty);
-        doWithFileMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, fh => {
+        defer(t, doWithFileMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, fh => {
             assert(fh.file.path === f.path);
             assert(fh.matches[0].name === oldPackage);
             fh.makeUpdatable();
@@ -249,7 +254,7 @@ describe("parseUtils", () => {
             assert(m.name);
             assert(m.name === oldPackage + "x");
             assert(fh.file.dirty, "File should be dirty");
-        }).defer();
+        }));
         assert(t.dirty);
         t.flush().then(_ => {
             // Check file persistence
@@ -279,7 +284,7 @@ describe("parseUtils", () => {
             assert(m.person.name);
             assert(m.person.name === "teriko");
             fh.matches[1].person.name = "andy";
-        }).run()
+        })
             .then(_ => {
                 // Check file persistence
                 const updatedFile = t.findFileSync(f.path);

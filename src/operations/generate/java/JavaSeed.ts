@@ -1,6 +1,6 @@
 import { CommandHandler, Parameter } from "../../../decorators";
-import { logger } from "../../../internal/util/logger";
-import { Project, ProjectNonBlocking } from "../../../project/Project";
+import { defer } from "../../../internal/common/Flushable";
+import { Project, ProjectAsync } from "../../../project/Project";
 import { deleteFiles } from "../../../project/util/projectUtils";
 import { UniversalSeed } from "../UniversalSeed";
 import { JavaProjectStructure } from "./JavaProjectStructure";
@@ -72,17 +72,18 @@ export class JavaSeed extends UniversalSeed {
      *
      * @param project  project to tailor
      */
-    public manipulate(project: ProjectNonBlocking): void {
-        super.manipulate(project);
-        const smartArtifactId = (this.artifactId === "${projectName}") ? project.name : this.artifactId;
-
-        updatePom(project as Project, smartArtifactId, this.groupId, this.version, this.description).defer();
-        project.recordAction(p =>
-            JavaProjectStructure.infer(p).then(structure =>
-                (structure) ?
-                    movePackage(p, structure.applicationPackage, this.rootPackage).run().then(files => p) :
-                    p),
-        );
+    public manipulate(project: Project): Promise<Project> {
+        return super.manipulate(project)
+            .then(p => {
+                const smartArtifactId = (this.artifactId === "${projectName}") ? project.name : this.artifactId;
+                return updatePom(p, smartArtifactId, this.groupId, this.version, this.description);
+            })
+            .then(p =>
+                JavaProjectStructure.infer(p).then(structure =>
+                    (structure) ?
+                        movePackage(p, structure.applicationPackage, this.rootPackage) :
+                        p),
+            );
     }
 
     /**
@@ -92,12 +93,12 @@ export class JavaSeed extends UniversalSeed {
      *
      * @param project  Project to remove seed files from.
      */
-    protected removeSeedFiles(project: ProjectNonBlocking): void {
+    protected removeSeedFiles(project: ProjectAsync): void {
         super.removeSeedFiles(project);
         const filesToDelete: string[] = [
             "src/main/scripts/travis-build.bash",
         ];
-        deleteFiles(project, "src/main/scripts/**", f => filesToDelete.includes(f.path)).defer();
+        defer(project, deleteFiles(project, "src/main/scripts/**", f => filesToDelete.includes(f.path)));
     }
 
 }

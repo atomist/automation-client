@@ -21,7 +21,7 @@ describe("javaProjectUtils", () => {
     it("should refactor on simple match", done => {
         const t = tempProject();
         t.addFileSync("src/main/java/com/foo/Foo.java", "package com.foo;\npublic class Foo {}");
-        movePackage(t, "com.foo", "com.bar").run()
+        movePackage(t, "com.foo", "com.bar")
             .then(_ => {
                 const found = t.findFileSync("src/main/java/com/bar/Foo.java");
                 assert(found.getContentSync() === "package com.bar;\npublic class Foo {}");
@@ -32,8 +32,7 @@ describe("javaProjectUtils", () => {
     it("should refactor on deeper match", done => {
         const t = tempProject();
         t.addFileSync("src/main/java/com/foo/bar/Foo.java", "package com.foo.bar;\npublic class Foo {}");
-        movePackage(t, "com.foo.bar", "com.something.else").defer();
-        t.flush()
+        movePackage(t, "com.foo.bar", "com.something.else")
             .then(_ => {
                 const found = t.findFileSync("src/main/java/com/something/else/Foo.java");
                 assert(found);
