@@ -13,23 +13,9 @@ export class WebSocketClient {
                 private options: WebSocketClientOptions,
                 private requestProcessor: WebSocketRequestProcessor) {
 
-        const retryOptions = {
-            retries: 5,
-            factor: 3,
-            minTimeout: 1 * 1000,
-            maxTimeout: 60 * 1000,
-            randomize: true,
-        };
-
-        promiseRetry(retryOptions, (retry, retryCount) => {
-            if (retryCount > 1) {
-                logger.warn("Retrying registration due to previous error");
-            }
-            return register(this.registrationCallback, options, requestProcessor)
-                .then(registration =>
-                    connect(this.registrationCallback, registration, options, requestProcessor))
-                .catch(retry);
-        });
+        register(this.registrationCallback, options, requestProcessor)
+            .then(registration =>
+                connect(this.registrationCallback, registration, options, requestProcessor));
     }
 }
 
@@ -110,30 +96,51 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
     logger.info(`Registering ${registrationPayload.name}@${registrationPayload.version} ` +
         `with Atomist at '${options.registrationUrl}': ${JSON.stringify(registrationPayload)}`);
 
-    return axios.post(options.registrationUrl, registrationPayload,
-        { headers: { Authorization: `token ${options.token}` } })
-        .then(result => {
-            const registration = result.data as RegistrationConfirmation;
+    const retryOptions = {
+        retries: 5,
+        factor: 3,
+        minTimeout: 1 * 1000,
+        maxTimeout: 60 * 1000,
+        randomize: true,
+    };
 
-            registration.name = registrationPayload.name;
-            registration.version = registrationPayload.version;
+    return promiseRetry(retryOptions, (retry, retryCount) => {
 
-            handler.onRegistration(registration);
-            return registration;
-        })
-        .catch(error => {
-            if (error.response && error.response.status === 409) {
-                logger.error(`Registration failed because a session for ${registrationPayload.name}` +
-                    `@${registrationPayload.version} is already active`);
-            } else if (error.response && error.response.status === 400) {
-                logger.error(`Registration payload for for ${registrationPayload.name}` +
-                    `@${registrationPayload.version} was invalid`);
-                process.exit(1);
-            } else {
-                logger.error("Registration failed with '%s'", error);
-            }
-            throw error;
-        });
+        if (retryCount > 1) {
+            logger.warn("Retrying registration due to previous error");
+        }
+
+        return axios.post(options.registrationUrl, registrationPayload,
+            {headers: {Authorization: `token ${options.token}`}})
+            .then(result => {
+                const registration = result.data as RegistrationConfirmation;
+
+                registration.name = registrationPayload.name;
+                registration.version = registrationPayload.version;
+
+                handler.onRegistration(registration);
+                return registration;
+            })
+            .catch(error => {
+                if (error.response && error.response.status === 409) {
+                    logger.error(`Registration failed because a session for ${registrationPayload.name}` +
+                        `@${registrationPayload.version} is already active`);
+                    retry();
+                } else if (error.response && error.response.status === 400) {
+                    logger.error(`Registration payload for ${registrationPayload.name}` +
+                        `@${registrationPayload.version} was invalid`);
+                    process.exit(1);
+                } else if (error.response
+                    && (error.response.status === 401 || error.response.status === 403)) {
+                    logger.error(`Authentication failed for ${registrationPayload.name}` +
+                        `@${registrationPayload.version}`);
+                    process.exit(1);
+                } else {
+                    logger.error("Registration failed with '%s'", error);
+                    throw error;
+                }
+            });
+    });
 }
 
 export interface WebSocketClientOptions {
