@@ -6,7 +6,7 @@
 for creating Atomist development automations.  Development automations take the following forms:
 
 -   Bot commands - create bot commands using _command handlers_
--   Respond to DevOps events - use _event handlers_ to automatically
+-   Respond to events - use _event handlers_ to automatically
     take action when events, like someone commenting on an issue,
     happen
 -   Ingestors - define your own, custom events that you can then take
