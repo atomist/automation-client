@@ -86,8 +86,8 @@ export class WebSocketCommandMessageClient extends AbstractWebSocketMessageClien
 
     protected async doSend(msg: string | SlackMessage, userNames: string | string[],
                            channelNames: string | string[], options: MessageOptions = {}): Promise<any> {
-        const channels = clean(channelNames);
         const users = clean(userNames);
+        const channels = clean(channelNames);
 
         return super.doSend(msg, users, channels, options);
     }
@@ -101,8 +101,8 @@ export class WebSocketEventMessageClient extends AbstractWebSocketMessageClient 
 
     protected async doSend(msg: string | SlackMessage, userNames: string | string[],
                            channelNames: string | string[], options: MessageOptions = {}): Promise<any> {
-        const channels = clean(channelNames);
         const users = clean(userNames);
+        const channels = clean(channelNames);
 
         if (users.length === 0 && channels.length === 0) {
             throw new Error("Response messages are not supported for event handlers");

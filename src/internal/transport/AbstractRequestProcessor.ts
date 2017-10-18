@@ -48,6 +48,10 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             try {
                 this.automations.invokeCommand(ci, ctx)
                     .then(result => {
+                        if (!result) {
+                            result = defaultResult();
+                        }
+                        
                         if (result.code === 0) {
                             this.listeners.forEach(l => l.commandSuccessful(ci, ctx, result));
                             result = {
@@ -105,6 +109,10 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             try {
                 this.automations.onEvent(ef, ctx)
                     .then(result => {
+                        if (!result || result.length === 0) {
+                            result = [ defaultResult() ];
+                        }
+
                         if (!result.some(r => r.code !== 0)) {
                             this.listeners.forEach(l => l.eventSuccessful(ef, ctx, result));
                         } else {
