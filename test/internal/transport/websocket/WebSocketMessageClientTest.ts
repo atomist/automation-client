@@ -2,7 +2,7 @@ import "mocha";
 import * as assert from "power-assert";
 import {
     clean,
-    WebSocketEventMessageClient
+    WebSocketEventMessageClient,
 } from "../../../../src/internal/transport/websocket/WebSocketMessageClient";
 import { guid } from "../../../../src/internal/util/string";
 
