@@ -107,7 +107,7 @@ export class WebSocketEventMessageClient extends AbstractWebSocketMessageClient 
         if (users.length === 0 && channels.length === 0) {
             throw new Error("Response messages are not supported for event handlers");
         } else {
-            return super.doSend(msg, userNames, channelNames, options);
+            return super.doSend(msg, users, channels, options);
         }
     }
 }
