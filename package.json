@@ -35,9 +35,11 @@
     "express-force-ssl": "^0.3.2",
     "express-session": "^1.15.6",
     "fs-extra": "^4.0.2",
+    "github": "^11.0.0",
     "glob-stream": "^6.1.0",
     "graphql": "^0.10.0",
     "graphql-tag": "^2.4.2",
+    "inquirer": "^3.3.0",
     "isomorphic-fetch": "^2.2.1",
     "json-stringify-safe": "^5.0.1",
     "lodash": "^4.17.4",
@@ -75,6 +77,7 @@
     "@types/express-session": "^1.15.3",
     "@types/fs-extra": "^4.0.2",
     "@types/graphql": "^0.11.5",
+    "@types/inquirer": "0.0.35",
     "@types/isomorphic-fetch": "0.0.34",
     "@types/json-stringify-safe": "^5.0.0",
     "@types/lodash": "^4.14.77",
@@ -125,7 +128,8 @@
   "bin": {
     "git-info": "./git.info.js",
     "atomist-cli": "./start.cli.js",
-    "atomist-client": "./start.client.js"
+    "atomist-client": "./start.client.js",
+    "atomist-config": "./atomist-config.js"
   },
   "engines": {
     "node": "8.5.x",
