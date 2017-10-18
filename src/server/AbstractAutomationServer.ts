@@ -40,7 +40,7 @@ export abstract class AbstractAutomationServer implements AutomationServer {
             const payloadValue: Arg = payload.args ?
                 payload.args.find(a => a.name === p.name) : undefined;
             if (!payloadValue || !payloadValue.value) {
-                if (p.required) {
+                if (p.required && p.default_value === undefined) {
                     throw new Error(`Parameter '${p.name}' required but missing in invocation to '${handler.name}'`);
                 }
             } else {
