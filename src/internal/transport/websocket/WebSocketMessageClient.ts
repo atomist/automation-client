@@ -1,5 +1,7 @@
-import { render, SlackMessage } from "@atomist/slack-messages/SlackMessages";
-import { addTypenameToDocument } from "apollo-client";
+import {
+    render,
+    SlackMessage,
+} from "@atomist/slack-messages/SlackMessages";
 import * as WebSocket from "ws";
 import { AutomationServer } from "../../../server/AutomationServer";
 import {
@@ -10,8 +12,11 @@ import {
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { logger } from "../../util/logger";
-import { guid, toStringArray } from "../../util/string";
-import { CommandIncoming, EventIncoming } from "../RequestProcessor";
+import { toStringArray } from "../../util/string";
+import {
+    CommandIncoming,
+    EventIncoming,
+} from "../RequestProcessor";
 
 export abstract class AbstractWebSocketMessageClient extends MessageClientSupport {
 
