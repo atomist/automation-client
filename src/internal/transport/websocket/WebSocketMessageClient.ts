@@ -1,5 +1,7 @@
-import { render, SlackMessage } from "@atomist/slack-messages/SlackMessages";
-import { addTypenameToDocument } from "apollo-client";
+import {
+    render,
+    SlackMessage,
+} from "@atomist/slack-messages/SlackMessages";
 import * as WebSocket from "ws";
 import { AutomationServer } from "../../../server/AutomationServer";
 import {
@@ -10,8 +12,11 @@ import {
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { logger } from "../../util/logger";
-import { guid, toStringArray } from "../../util/string";
-import { CommandIncoming, EventIncoming } from "../RequestProcessor";
+import { toStringArray } from "../../util/string";
+import {
+    CommandIncoming,
+    EventIncoming,
+} from "../RequestProcessor";
 
 export abstract class AbstractWebSocketMessageClient extends MessageClientSupport {
 
@@ -81,8 +86,8 @@ export class WebSocketCommandMessageClient extends AbstractWebSocketMessageClien
 
     protected async doSend(msg: string | SlackMessage, userNames: string | string[],
                            channelNames: string | string[], options: MessageOptions = {}): Promise<any> {
-        const channels = clean(channelNames);
         const users = clean(userNames);
+        const channels = clean(channelNames);
 
         return super.doSend(msg, users, channels, options);
     }
@@ -96,13 +101,13 @@ export class WebSocketEventMessageClient extends AbstractWebSocketMessageClient 
 
     protected async doSend(msg: string | SlackMessage, userNames: string | string[],
                            channelNames: string | string[], options: MessageOptions = {}): Promise<any> {
-        const channels = clean(channelNames);
         const users = clean(userNames);
+        const channels = clean(channelNames);
 
         if (users.length === 0 && channels.length === 0) {
             throw new Error("Response messages are not supported for event handlers");
         } else {
-            return super.doSend(msg, userNames, channelNames, options);
+            return super.doSend(msg, users, channels, options);
         }
     }
 }
@@ -175,7 +180,7 @@ export function sendMessage(message: any, ws: WebSocket, log: boolean = true) {
     ws.send(payload);
 }
 
-function clean(addresses: string[] | string): string[] {
+export function clean(addresses: string[] | string): string[] {
     let na: string[] = toStringArray(addresses);
     if (na) {
         // Filter out any null addresses

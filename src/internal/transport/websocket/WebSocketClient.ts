@@ -16,12 +16,15 @@ export class WebSocketClient {
     }
 
     public start(): Promise<void> {
-        const connection = register(this.registrationCallback, this.options, this.requestProcessor)
+        const connection = register(this.registrationCallback, this.options, this.requestProcessor, 5)
             .then(registration =>
                 connect(this.registrationCallback, registration, this.options, this.requestProcessor));
-        return connection.then(_ => {
-            return;
-        });
+        return connection.then(() => {
+                return;
+            }).catch(() => {
+                logger.error("Persistent error registering with Atomist. Exiting");
+                process.exit(1);
+            });
     }
 }
 
@@ -96,17 +99,17 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
 }
 
 function register(registrationCallback: () => any, options: WebSocketClientOptions,
-                  handler: WebSocketRequestProcessor): Promise<RegistrationConfirmation> {
+                  handler: WebSocketRequestProcessor, retries: number = 100): Promise<RegistrationConfirmation> {
     const registrationPayload = registrationCallback();
 
     logger.info(`Registering ${registrationPayload.name}@${registrationPayload.version} ` +
         `with Atomist at '${options.registrationUrl}': ${JSON.stringify(registrationPayload)}`);
 
     const retryOptions = {
-        retries: 5,
+        retries,
         factor: 3,
-        minTimeout: 1 * 1000,
-        maxTimeout: 60 * 1000,
+        minTimeout: 1 * 500,
+        maxTimeout: 5 * 1000,
         randomize: true,
     };
 
@@ -155,7 +158,7 @@ This could be caused by:
                     process.exit(1);
                 } else {
                     logger.error("Registration failed with '%s'", error);
-                    throw error;
+                    retry();
                 }
             });
     });

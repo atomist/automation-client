@@ -9,10 +9,10 @@ import { GitHubToken } from "../atomist.config";
 describe("ApolloGraphClient", () => {
 
     it("should run repos query", done => {
-        const agc = new ApolloGraphClient("https://automation-staging.atomist.services/graphql/team/T1L0VDKJP"
+        const agc = new ApolloGraphClient("https://automation.atomist.com/graphql/team/T095SFFBK"
             , {Authorization: `token ${process.env.GITHUB_TOKEN}`});
         agc.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
-            {teamId: "T1L0VDKJP", offset: 0})
+            {teamId: "T095SFFBK", offset: 0})
             .then(result => {
                 // console.log(`Repos were ${JSON.stringify(result)}`);
                 const org = result.ChatTeam[0].orgs[0];
@@ -26,10 +26,10 @@ describe("ApolloGraphClient", () => {
     }).timeout(5000);
 
     it("should run repos query and clone repo", done => {
-        const agc = new ApolloGraphClient("https://automation-staging.atomist.services/graphql/team/T1L0VDKJP"
+        const agc = new ApolloGraphClient("https://automation.atomist.com/graphql/team/T095SFFBK"
             , {Authorization: `token ${process.env.GITHUB_TOKEN}`});
         agc.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
-            {teamId: "T1L0VDKJP", offset: 0})
+            {teamId: "T095SFFBK", offset: 0})
             .then(result => {
                 // console.log(`Repos were ${JSON.stringify(result)}`);
                 const org = result.ChatTeam[0].orgs[0];

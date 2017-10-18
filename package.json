@@ -20,6 +20,7 @@
     "@atomist/microgrammar": "^0.7.0",
     "@atomist/slack-messages": "^0.12.0",
     "@atomist/tree-path": "^0.1.1",
+    "@types/ws": "^3.0.2",
     "apollo-client": "^1.9.3",
     "app-root-path": "^2.0.1",
     "async-exit-hook": "^2.0.1",
@@ -35,9 +36,11 @@
     "express-force-ssl": "^0.3.2",
     "express-session": "^1.15.6",
     "fs-extra": "^4.0.2",
+    "github": "^11.0.0",
     "glob-stream": "^6.1.0",
     "graphql": "^0.10.0",
     "graphql-tag": "^2.4.2",
+    "inquirer": "^3.3.0",
     "isomorphic-fetch": "^2.2.1",
     "json-stringify-safe": "^5.0.1",
     "lodash": "^4.17.4",
@@ -75,6 +78,7 @@
     "@types/express-session": "^1.15.3",
     "@types/fs-extra": "^4.0.2",
     "@types/graphql": "^0.11.5",
+    "@types/inquirer": "0.0.35",
     "@types/isomorphic-fetch": "0.0.34",
     "@types/json-stringify-safe": "^5.0.0",
     "@types/lodash": "^4.14.77",
@@ -89,7 +93,6 @@
     "@types/shelljs": "^0.7.4",
     "@types/utf8": "^2.1.6",
     "@types/winston": "^2.3.6",
-    "@types/ws": "^3.0.2",
     "@types/yargs": "^8.0.2",
     "espower-typescript": "^8.0.2",
     "mocha": "^4.0.1",
@@ -125,7 +128,8 @@
   "bin": {
     "git-info": "./git.info.js",
     "atomist-cli": "./start.cli.js",
-    "atomist-client": "./start.client.js"
+    "atomist-client": "./start.client.js",
+    "atomist-config": "./atomist-config.js"
   },
   "engines": {
     "node": "8.5.x",
