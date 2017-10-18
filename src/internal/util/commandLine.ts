@@ -2,6 +2,7 @@
 import { exec } from "child-process-promise";
 
 import { ExecOptions} from "child_process";
+import { ActionResult } from "./ActionResult";
 import { logger } from "./logger";
 
 export interface ChildProcess {
@@ -10,7 +11,7 @@ export interface ChildProcess {
     pid: number;
 }
 
-export interface CommandResult {
+export interface CommandResult<T = undefined> extends ActionResult<T> {
     stdout: string;
     stderr: string;
     childProcess: ChildProcess;

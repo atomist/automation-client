@@ -43,7 +43,7 @@ export interface ReviewResult<T extends ProjectReview> extends HandlerResult {
 }
 
 /**
- * Give a project a clean bill of health, with no comments
+ * Give a project a isClean bill of health, with no comments
  * @param repoId identification of project
  * @return {{repoId: RepoId, comments: Array}}
  */

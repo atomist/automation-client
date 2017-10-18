@@ -74,16 +74,8 @@ export class JavaSeed extends UniversalSeed {
      */
     public manipulate(project: Project): Promise<Project> {
         return super.manipulate(project)
-            .then(p => {
-                const smartArtifactId = (this.artifactId === "${projectName}") ? project.name : this.artifactId;
-                return updatePom(p, smartArtifactId, this.groupId, this.version, this.description);
-            })
-            .then(p =>
-                JavaProjectStructure.infer(p).then(structure =>
-                    (structure) ?
-                        movePackage(p, structure.applicationPackage, this.rootPackage) :
-                        p),
-            );
+            .then(this.updatePom)
+            .then(this.inferStructureAndMovePackage);
     }
 
     /**
@@ -99,6 +91,19 @@ export class JavaSeed extends UniversalSeed {
             "src/main/scripts/travis-build.bash",
         ];
         defer(project, deleteFiles(project, "src/main/scripts/**", f => filesToDelete.includes(f.path)));
+    }
+
+    private updatePom(p: Project): Promise<Project> {
+        const smartArtifactId = (this.artifactId === "${projectName}") ? p.name : this.artifactId;
+        return updatePom(p, smartArtifactId, this.groupId, this.version, this.description);
+    }
+
+    private inferStructureAndMovePackage(p: Project): Promise<Project> {
+        return JavaProjectStructure.infer(p)
+            .then(structure =>
+                (structure) ?
+                    movePackage(p, structure.applicationPackage, this.rootPackage) :
+                    p);
     }
 
 }
