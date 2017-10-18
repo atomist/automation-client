@@ -71,7 +71,7 @@ describe("BuildableAutomationServer", () => {
         });
     });
 
-    it("should register one single arg handler and not complain on invocation without defaulted parameter", (done) => {
+    it("should register one single arg handler and not complain on invocation without defaulted parameter", done => {
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         s.withCommandHandler(
             {
