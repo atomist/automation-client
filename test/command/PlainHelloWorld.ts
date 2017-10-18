@@ -12,9 +12,12 @@ export class PlainHelloWorld implements HandleCommand, CommandHandlerMetadata {
 //                                                          useful for getting type checking from the compiler
 
     public description = "Sends a hello back to the client";
-    public intent = [ "hello world" ];
-    public parameters = [ { name: "name", pattern: "^.*$", required: true } ];
-    public secrets = [ { name: "userToken", path: Secrets.UserToken } ];
+    public intent = ["hello world"];
+    public parameters = [{
+        name: "name",
+        display_name: "Name", pattern: "^.*$", required: true, default_value: "Jim",
+    }];
+    public secrets = [{ name: "userToken", path: Secrets.UserToken }];
 
     public name: string;
 
