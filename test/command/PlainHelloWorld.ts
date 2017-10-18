@@ -13,7 +13,8 @@ export class PlainHelloWorld implements HandleCommand, CommandHandlerMetadata {
 
     public description = "Sends a hello back to the client";
     public intent = [ "hello world" ];
-    public parameters = [ { name: "name", pattern: "^.*$", required: true } ];
+    public parameters = [ { name: "name", display_name: "Name", pattern: "^.*$", required: true } ];
+    public mapped_parameters = [];
     public secrets = [ { name: "userToken", path: Secrets.UserToken } ];
 
     public name: string;
