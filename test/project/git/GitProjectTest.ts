@@ -116,6 +116,7 @@ describe("GitProject", () => {
     });
 
     function assertNotClean(r: ActionResult<GitCommandGitProject>) {
+        assert(r.target);
         assert(!r.success);
     }
 
@@ -172,7 +173,9 @@ describe("GitProject", () => {
         this.retries(5);
 
         newRepo().then(_ => {
-            return cloneEditAndPush(GitHubToken, TargetOwner, TargetRepo, p => p.addFileSync("Cat", "hat"), "thing2", {
+            return cloneEditAndPush(GitHubToken, TargetOwner, TargetRepo,
+                    p => p.addFileSync("Cat", "hat"),
+                "Commit message", "thing2", {
                 title: "Thing2",
                 body: "Adds another character now",
             })
