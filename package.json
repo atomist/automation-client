@@ -1,6 +1,6 @@
 {
   "name": "@atomist/automation-client",
-  "version": "0.1.48",
+  "version": "0.1.49",
   "description": "Atomist automation client for running command and event handlers",
   "author": "Atomist, Inc.",
   "license": "GPL-3.0",
@@ -20,6 +20,7 @@
     "@atomist/microgrammar": "^0.7.0",
     "@atomist/slack-messages": "^0.12.0",
     "@atomist/tree-path": "^0.1.2",
+    "@typed/curry": "^1.0.1",
     "@types/ws": "^3.0.2",
     "apollo-client": "^1.9.3",
     "app-root-path": "^2.0.1",
