@@ -7,9 +7,9 @@ import * as _ from "lodash";
 
 describe("allReposInOrgRepoFinder", () => {
 
-    const teamId = "T1L0VDKJP";
+    const teamId = "T095SFFBK";
 
-    const graphClient = new ApolloGraphClient(`https://automation-staging.atomist.services/graphql/team/${teamId}`
+    const graphClient = new ApolloGraphClient(`https://automation.atomist.com/graphql/team/${teamId}`
         , {Authorization: `token ${process.env.GITHUB_TOKEN}`});
 
     it("finds over 100 repos in org", done => {
