@@ -19,7 +19,7 @@ describe("BuildableAutomationServer", () => {
     it("should register one no-arg handler and return its metadataFromInstance", () => {
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         s.withCommandHandler(
-            {name: "foo", description: "foo", parameters: [], tags: [], intent: [], mapped_parameters: []},
+            { name: "foo", description: "foo", parameters: [], tags: [], intent: [], mapped_parameters: [] },
             ch => Promise.resolve({
                 code: 0,
             }));
@@ -76,24 +76,23 @@ describe("BuildableAutomationServer", () => {
         s.withCommandHandler(
             {
                 name: "foo", description: "foo", parameters: [{
-                name: "one", description: "a thing", pattern: ".*", required: true, default_value: "banana"
+                name: "one", description: "a thing", pattern: ".*", required: true, default_value: "banana",
             },
             ], tags: [], intent: [], mapped_parameters: [],
             },
             ch => Promise.resolve({
                 code: 0,
             }));
-            s.invokeCommand({
-                name: "foo",
-                args: [],
-            }, {
-                teamId: "T666",
-                correlationId: "555",
-                messageClient,
-            }).then(res => {
-                assert(res.code === 0);
-                done();
-            });
+        s.invokeCommand({
+            name: "foo",
+            args: [],
+        }, {
+            teamId: "T666",
+            correlationId: "555",
+            messageClient,
+        }).then(res => {
+            assert(res.code === 0);
+            done();
         });
     });
 
@@ -116,7 +115,7 @@ describe("BuildableAutomationServer", () => {
 
         s.invokeCommand({
             name: "foo",
-            args: [{name: "one", value: "value"}],
+            args: [{ name: "one", value: "value" }],
         }, {
             teamId: "T666",
             correlationId: "555",
@@ -132,8 +131,8 @@ describe("BuildableAutomationServer", () => {
         s.fromCommandHandlerInstance(() => new AddAtomistSpringAgent());
         s.invokeCommand({
             name: "AddAtomistSpringAgent",
-            args: [{name: "slackTeam", value: "T1691"}],
-            secrets: [{name: "atomist://some_secret", value: "some_secret"}],
+            args: [{ name: "slackTeam", value: "T1691" }],
+            secrets: [{ name: "atomist://some_secret", value: "some_secret" }],
         }, {
             teamId: "T666",
             correlationId: "555",
