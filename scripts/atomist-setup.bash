@@ -88,11 +88,7 @@ function main () {
         return 1
     fi
 
-    if ! npm start; then
-        err "failed to start Atomist client"
-        return 1
-    fi
-    msg "switch to your browser and visit http://localhost:2866/"
+    exec npm start
 }
 
 main "$@" || exit 1
