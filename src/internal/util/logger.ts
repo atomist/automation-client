@@ -4,10 +4,17 @@ import * as serializeError from "serialize-error";
 import * as winston from "winston";
 import * as context from "./cls";
 
-export function formatter(options: any): string {
-    const executionContext = context.get();
+export let LoggingConfig = {
+    format: "logger",
+};
 
-    let ctx;
+export function formatter(options: any): string {
+    if (LoggingConfig.format === "cli") {
+        return options.message;
+    }
+
+    const executionContext = context.get();
+    let ctx: string;
     if (executionContext) {
         if (executionContext.invocationId) {
             ctx = options.colorize ? winston.config.colorize(options.level, executionContext.invocationId)
@@ -55,7 +62,7 @@ const winstonLogger = new winston.Logger({
             timestamp: true,
             showLevel: true,
             align: true,
-            stderrLevels: [ "error" ],
+            stderrLevels: ["error"],
             formatter,
             // handleExceptions: true,
             // humanReadableUnhandledException: true,
