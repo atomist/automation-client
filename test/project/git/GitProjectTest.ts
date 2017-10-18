@@ -5,6 +5,7 @@ import * as assert from "power-assert";
 import { tempProject } from "../utils";
 
 import * as exec from "child_process";
+import { ActionResult } from "../../../src/internal/util/ActionResult";
 import { cloneEditAndPush, GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitHubBase, GitProject } from "../../../src/project/git/GitProject";
 import { LocalProject } from "../../../src/project/local/LocalProject";
@@ -95,13 +96,29 @@ describe("GitProject", () => {
         p.addFileSync("Thing", "1");
         const gp: GitProject = GitCommandGitProject.fromProject(p, GitHubToken);
         gp.init()
-            .then(() => gp.clean())
+            .then(() => gp.isClean())
             .then(clean => {
-                assert(!clean);
+                assert(!clean.success);
                 done();
             })
             .catch(done);
     });
+
+    it("uses then function", done => {
+        const p = tempProject();
+        p.addFileSync("Thing", "1");
+        const gp: GitProject = GitCommandGitProject.fromProject(p, GitHubToken);
+        gp.init()
+            .then(() => gp.isClean())
+            .then(assertNotClean)
+            .then(done)
+            .catch(done);
+    });
+
+    function assertNotClean(r: ActionResult<GitCommandGitProject>) {
+        assert(r.target);
+        assert(!r.success);
+    }
 
     it("add a file, check doesn't have uncommitted", done => {
         const p = tempProject();
@@ -109,7 +126,7 @@ describe("GitProject", () => {
         const gp: GitProject = GitCommandGitProject.fromProject(p, GitHubToken);
         gp.init()
             .then(() => gp.commit("Added a Thing"))
-            .then(() => gp.clean())
+            .then(() => gp.isClean())
             .then(clean => {
                 assert(clean);
                 done();
@@ -156,7 +173,9 @@ describe("GitProject", () => {
         this.retries(5);
 
         newRepo().then(_ => {
-            return cloneEditAndPush(GitHubToken, TargetOwner, TargetRepo, p => p.addFileSync("Cat", "hat"), "thing2", {
+            return cloneEditAndPush(GitHubToken, TargetOwner, TargetRepo,
+                    p => p.addFileSync("Cat", "hat"),
+                "Commit message", "thing2", {
                 title: "Thing2",
                 body: "Adds another character now",
             })

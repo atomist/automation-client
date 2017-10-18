@@ -1,4 +1,5 @@
 import { HandlerContext } from "../../HandlerContext";
+import { ActionResult } from "../../internal/util/ActionResult";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
 import { RepoId } from "../common/RepoId";
@@ -11,13 +12,12 @@ import { ProjectEditor } from "../edit/projectEditor";
  * @param repo repo id
  * @param editor editor to use
  * @param pr structure of the PR
- * @return {Promise<TResult2|boolean>}
  */
 export function editUsingPullRequest(token: string,
                                      context: HandlerContext,
                                      repo: RepoId,
                                      editor: ProjectEditor<any>,
-                                     pr: PullRequestInfo): Promise<any> {
+                                     pr: PullRequestInfo): Promise<ActionResult<GitProject>> {
     console.log("Editing project " + JSON.stringify(repo));
     return GitCommandGitProject.cloned(token, repo.owner, repo.repo)
         .then(gp => editProjectUsingPullRequest(context, repo, gp, editor, pr));
@@ -26,34 +26,39 @@ export function editUsingPullRequest(token: string,
 export function editProjectUsingPullRequest(context: HandlerContext,
                                             repo: RepoId,
                                             gp: GitProject,
-                                            editor: ProjectEditor<any>,
-                                            pr: PullRequestInfo): Promise<any> {
+                                            editor: ProjectEditor,
+                                            pr: PullRequestInfo): Promise<ActionResult<GitProject>> {
 
     return editor(repo, gp, context)
         .then(r => r.edited ?
             raisePr(gp, pr) :
-            Promise.resolve(false));
+            {
+                target: gp,
+                success: false,
+            });
 }
 
 export function editProjectUsingBranch(context: HandlerContext,
                                        repo: RepoId,
                                        gp: GitProject,
-                                       editor: ProjectEditor<any>,
-                                       ci: CommitInfo): Promise<any> {
+                                       editor: ProjectEditor,
+                                       ci: CommitInfo): Promise<ActionResult<GitProject>> {
 
     return editor(repo, gp, context)
         .then(r => r.edited ?
             createAndPushBranch(gp, ci) :
-            Promise.resolve(false));
+            {
+                target: gp,
+                success: false,
+            });
 }
 
 /**
  * Create a branch, commit with current content and push
  * @param {GitProject} gp
  * @param {CommitInfo} ci
- * @return {Promise<any>}
  */
-export function createAndPushBranch(gp: GitProject, ci: CommitInfo): Promise<any> {
+export function createAndPushBranch(gp: GitProject, ci: CommitInfo): Promise<ActionResult<GitProject>> {
     return gp.createBranch(ci.branch)
         .then(x => gp.commit(ci.commitMessage))
         .then(x => gp.push());
@@ -63,9 +68,8 @@ export function createAndPushBranch(gp: GitProject, ci: CommitInfo): Promise<any
  * Raise a PR from the current state of the project
  * @param {GitProject} gp
  * @param {PullRequestInfo} pr
- * @return {Promise<any>}
  */
-export function raisePr(gp: GitProject, pr: PullRequestInfo): Promise<any> {
+export function raisePr(gp: GitProject, pr: PullRequestInfo): Promise<ActionResult<GitProject>> {
     return createAndPushBranch(gp, pr)
         .then(x => {
             return gp.raisePullRequest(pr.title, pr.body);
