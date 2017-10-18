@@ -59,18 +59,9 @@ function main () {
     msg "this script will clone $slug, install its dependencies,"
     msg "build it, create an Atomist config for you, and then start the client."
     msg ""
-    local answer
-    while :; do
-        read -p "$Pkg: Continue? [Y/n] " answer
-        if [[ $answer == [Yy] || ! $answer ]]; then
-            break
-        elif [[ $answer == [Nn] ]]; then
-            msg "quitting"
-            return 0
-        else
-            err "invalid response: $answer, try again"
-        fi
-    done
+    msg "type Ctrl-C in the next five seconds to abort"
+    sleep 5
+    msg "continuing..."
 
     if ! git clone "$origin" "$slug"; then
         err "failed to clone repository $slug from $origin"
