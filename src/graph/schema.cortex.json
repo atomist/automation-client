@@ -858,6 +858,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "gitHubId",
+                  "description": "gitHubId of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "defaultBranch",
                   "description": "defaultBranch of Repo",
                   "type": {
@@ -946,6 +956,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubIds",
+                  "description": "gitHubIds is list variant of gitHubId of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -1913,7 +1937,7 @@
                   "description": "isAtomistBot of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -1923,7 +1947,7 @@
                   "description": "isOwner of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -1933,7 +1957,7 @@
                   "description": "isPrimaryOwner of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -1943,7 +1967,7 @@
                   "description": "isAdmin of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -1953,7 +1977,7 @@
                   "description": "isBot of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -2032,7 +2056,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -2046,7 +2070,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -2060,7 +2084,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -2074,7 +2098,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -2088,7 +2112,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -2447,6 +2471,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "prId",
+                  "description": "prId of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "name",
                   "description": "name of PullRequest",
                   "type": {
@@ -2589,6 +2623,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Float",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "prIds",
+                  "description": "prIds is list variant of prId of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -7283,6 +7331,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "gitHubId",
+                  "description": "gitHubId of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "defaultBranch",
                   "description": "defaultBranch of Repo",
                   "type": {
@@ -7371,6 +7429,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubIds",
+                  "description": "gitHubIds is list variant of gitHubId of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -8509,6 +8581,18 @@
               "deprecationReason": null
             },
             {
+              "name": "gitHubId",
+              "description": "The id that github uses to represent this repo",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "defaultBranch",
               "description": "Default branch. Usually 'master'",
               "args": [],
@@ -9011,7 +9095,7 @@
             },
             {
               "name": "issue",
-              "description": "Repo issue Issue",
+              "description": "Issues on this repository",
               "args": [
                 {
                   "name": "id",
@@ -9350,7 +9434,7 @@
             },
             {
               "name": "pullRequest",
-              "description": "Repo pullRequest PullRequest",
+              "description": "Pull requests on this repository",
               "args": [
                 {
                   "name": "id",
@@ -9368,6 +9452,16 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "Float",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "prId",
+                  "description": "prId of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -9515,6 +9609,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Float",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "prIds",
+                  "description": "prIds is list variant of prId of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -10109,11 +10217,349 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "repo",
+              "description": "The Repository that this label belongs to",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "owner",
+                  "description": "owner of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowRebaseMerge",
+                  "description": "allowRebaseMerge of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowSquashMerge",
+                  "description": "allowSquashMerge of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowMergeCommit",
+                  "description": "allowMergeCommit of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubId",
+                  "description": "gitHubId of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "defaultBranch",
+                  "description": "defaultBranch of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "owners",
+                  "description": "owners is list variant of owner of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowRebaseMerges",
+                  "description": "allowRebaseMerges is list variant of allowRebaseMerge of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowSquashMerges",
+                  "description": "allowSquashMerges is list variant of allowSquashMerge of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowMergeCommits",
+                  "description": "allowMergeCommits is list variant of allowMergeCommit of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubIds",
+                  "description": "gitHubIds is list variant of gitHubId of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "defaultBranchs",
+                  "description": "defaultBranchs is list variant of defaultBranch of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_RepoOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Repo",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "_RepoOrdering",
+          "description": "Ordering Enum for Repo",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "atmTeamId_asc",
+              "description": "Ascending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "atmTeamId_desc",
+              "description": "Descending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_asc",
+              "description": "Ascending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_desc",
+              "description": "Descending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "owner_asc",
+              "description": "Ascending sort for owner",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "owner_desc",
+              "description": "Descending sort for owner",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name_asc",
+              "description": "Ascending sort for name",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name_desc",
+              "description": "Descending sort for name",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "allowRebaseMerge_asc",
+              "description": "Ascending sort for allowRebaseMerge",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "allowRebaseMerge_desc",
+              "description": "Descending sort for allowRebaseMerge",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "allowSquashMerge_asc",
+              "description": "Ascending sort for allowSquashMerge",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "allowSquashMerge_desc",
+              "description": "Descending sort for allowSquashMerge",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "allowMergeCommit_asc",
+              "description": "Ascending sort for allowMergeCommit",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "allowMergeCommit_desc",
+              "description": "Descending sort for allowMergeCommit",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "gitHubId_asc",
+              "description": "Ascending sort for gitHubId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "gitHubId_desc",
+              "description": "Descending sort for gitHubId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "defaultBranch_asc",
+              "description": "Ascending sort for defaultBranch",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "defaultBranch_desc",
+              "description": "Descending sort for defaultBranch",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -10347,7 +10793,7 @@
                   "description": "isAtomistBot of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -10357,7 +10803,7 @@
                   "description": "isOwner of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -10367,7 +10813,7 @@
                   "description": "isPrimaryOwner of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -10377,7 +10823,7 @@
                   "description": "isAdmin of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -10387,7 +10833,7 @@
                   "description": "isBot of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -10466,7 +10912,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -10480,7 +10926,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -10494,7 +10940,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -10508,7 +10954,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -10522,7 +10968,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -10630,6 +11076,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "gitHubId",
+                  "description": "gitHubId of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "defaultBranch",
                   "description": "defaultBranch of Repo",
                   "type": {
@@ -10718,6 +11174,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubIds",
+                  "description": "gitHubIds is list variant of gitHubId of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -10956,7 +11426,7 @@
                   "description": "isAtomistBot of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -10966,7 +11436,7 @@
                   "description": "isOwner of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -10976,7 +11446,7 @@
                   "description": "isPrimaryOwner of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -10986,7 +11456,7 @@
                   "description": "isAdmin of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -10996,7 +11466,7 @@
                   "description": "isBot of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -11075,7 +11545,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -11089,7 +11559,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -11103,7 +11573,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -11117,7 +11587,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -11131,7 +11601,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -11470,7 +11940,7 @@
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Boolean",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -11482,7 +11952,7 @@
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Boolean",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -11494,7 +11964,7 @@
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Boolean",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -11506,7 +11976,7 @@
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Boolean",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -11518,7 +11988,7 @@
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Boolean",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -12669,7 +13139,7 @@
                   "description": "isAtomistBot of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -12679,7 +13149,7 @@
                   "description": "isOwner of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -12689,7 +13159,7 @@
                   "description": "isPrimaryOwner of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -12699,7 +13169,7 @@
                   "description": "isAdmin of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -12709,7 +13179,7 @@
                   "description": "isBot of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -12788,7 +13258,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -12802,7 +13272,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -12816,7 +13286,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -12830,7 +13300,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -12844,7 +13314,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -13810,7 +14280,7 @@
                   "description": "isAtomistBot of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -13820,7 +14290,7 @@
                   "description": "isOwner of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -13830,7 +14300,7 @@
                   "description": "isPrimaryOwner of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -13840,7 +14310,7 @@
                   "description": "isAdmin of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -13850,7 +14320,7 @@
                   "description": "isBot of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -13929,7 +14399,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -13943,7 +14413,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -13957,7 +14427,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -13971,7 +14441,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -13985,7 +14455,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -15081,7 +15551,7 @@
                   "description": "isAtomistBot of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -15091,7 +15561,7 @@
                   "description": "isOwner of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -15101,7 +15571,7 @@
                   "description": "isPrimaryOwner of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -15111,7 +15581,7 @@
                   "description": "isAdmin of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -15121,7 +15591,7 @@
                   "description": "isBot of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -15200,7 +15670,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -15214,7 +15684,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -15228,7 +15698,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -15242,7 +15712,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -15256,7 +15726,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -15618,6 +16088,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "gitHubId",
+                  "description": "gitHubId of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "defaultBranch",
                   "description": "defaultBranch of Repo",
                   "type": {
@@ -15706,6 +16186,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubIds",
+                  "description": "gitHubIds is list variant of gitHubId of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -16094,113 +16588,6 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "_RepoOrdering",
-          "description": "Ordering Enum for Repo",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "atmTeamId_asc",
-              "description": "Ascending sort for atmTeamId",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "atmTeamId_desc",
-              "description": "Descending sort for atmTeamId",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id_asc",
-              "description": "Ascending sort for id",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id_desc",
-              "description": "Descending sort for id",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "owner_asc",
-              "description": "Ascending sort for owner",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "owner_desc",
-              "description": "Descending sort for owner",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "name_asc",
-              "description": "Ascending sort for name",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "name_desc",
-              "description": "Descending sort for name",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "allowRebaseMerge_asc",
-              "description": "Ascending sort for allowRebaseMerge",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "allowRebaseMerge_desc",
-              "description": "Descending sort for allowRebaseMerge",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "allowSquashMerge_asc",
-              "description": "Ascending sort for allowSquashMerge",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "allowSquashMerge_desc",
-              "description": "Descending sort for allowSquashMerge",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "allowMergeCommit_asc",
-              "description": "Ascending sort for allowMergeCommit",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "allowMergeCommit_desc",
-              "description": "Descending sort for allowMergeCommit",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "defaultBranch_asc",
-              "description": "Ascending sort for defaultBranch",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "defaultBranch_desc",
-              "description": "Descending sort for defaultBranch",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
           "possibleTypes": null
         },
         {
@@ -16803,6 +17190,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "gitHubId",
+                  "description": "gitHubId of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "defaultBranch",
                   "description": "defaultBranch of Repo",
                   "type": {
@@ -16891,6 +17288,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubIds",
+                  "description": "gitHubIds is list variant of gitHubId of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -17171,6 +17582,18 @@
               "deprecationReason": null
             },
             {
+              "name": "prId",
+              "description": "prId of  PullRequest",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "name",
               "description": "name of  PullRequest",
               "args": [],
@@ -17379,6 +17802,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "gitHubId",
+                  "description": "gitHubId of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "defaultBranch",
                   "description": "defaultBranch of Repo",
                   "type": {
@@ -17467,6 +17900,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubIds",
+                  "description": "gitHubIds is list variant of gitHubId of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -19576,7 +20023,7 @@
         {
           "kind": "OBJECT",
           "name": "Commit",
-          "description": "Commit-Node",
+          "description": "a commit in GitHub",
           "fields": [
             {
               "name": "_id",
@@ -20054,6 +20501,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "gitHubId",
+                  "description": "gitHubId of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "defaultBranch",
                   "description": "defaultBranch of Repo",
                   "type": {
@@ -20142,6 +20599,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubIds",
+                  "description": "gitHubIds is list variant of gitHubId of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -21259,6 +21730,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "prId",
+                  "description": "prId of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "name",
                   "description": "name of PullRequest",
                   "type": {
@@ -21401,6 +21882,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Float",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "prIds",
+                  "description": "prIds is list variant of prId of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -22561,6 +23056,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "gitHubId",
+                  "description": "gitHubId of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "defaultBranch",
                   "description": "defaultBranch of Repo",
                   "type": {
@@ -22649,6 +23154,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubIds",
+                  "description": "gitHubIds is list variant of gitHubId of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -22815,6 +23334,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "prId",
+                  "description": "prId of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "name",
                   "description": "name of PullRequest",
                   "type": {
@@ -22957,6 +23486,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Float",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "prIds",
+                  "description": "prIds is list variant of prId of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -23980,6 +24523,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "gitHubId",
+                  "description": "gitHubId of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "defaultBranch",
                   "description": "defaultBranch of Repo",
                   "type": {
@@ -24068,6 +24621,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubIds",
+                  "description": "gitHubIds is list variant of gitHubId of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -24805,6 +25372,18 @@
             {
               "name": "number_desc",
               "description": "Descending sort for number",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "prId_asc",
+              "description": "Ascending sort for prId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "prId_desc",
+              "description": "Descending sort for prId",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -30443,6 +31022,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "gitHubId",
+                  "description": "gitHubId of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "defaultBranch",
                   "description": "defaultBranch of Repo",
                   "type": {
@@ -30531,6 +31120,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubIds",
+                  "description": "gitHubIds is list variant of gitHubId of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -30697,6 +31300,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "prId",
+                  "description": "prId of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "name",
                   "description": "name of PullRequest",
                   "type": {
@@ -30839,6 +31452,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Float",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "prIds",
+                  "description": "prIds is list variant of prId of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -31763,6 +32390,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "prId",
+                  "description": "prId of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "name",
                   "description": "name of PullRequest",
                   "type": {
@@ -31905,6 +32542,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Float",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "prIds",
+                  "description": "prIds is list variant of prId of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -32748,6 +33399,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "prId",
+                  "description": "prId of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "name",
                   "description": "name of PullRequest",
                   "type": {
@@ -32890,6 +33551,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Float",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "prIds",
+                  "description": "prIds is list variant of prId of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -33799,6 +34474,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "prId",
+                  "description": "prId of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "name",
                   "description": "name of PullRequest",
                   "type": {
@@ -33941,6 +34626,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Float",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "prIds",
+                  "description": "prIds is list variant of prId of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -34280,7 +34979,7 @@
                   "description": "isAtomistBot of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -34290,7 +34989,7 @@
                   "description": "isOwner of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -34300,7 +34999,7 @@
                   "description": "isPrimaryOwner of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -34310,7 +35009,7 @@
                   "description": "isAdmin of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -34320,7 +35019,7 @@
                   "description": "isBot of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -34399,7 +35098,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -34413,7 +35112,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -34427,7 +35126,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -34441,7 +35140,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -34455,7 +35154,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -36456,6 +37155,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "gitHubId",
+                  "description": "gitHubId of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "defaultBranch",
                   "description": "defaultBranch of Repo",
                   "type": {
@@ -36544,6 +37253,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubIds",
+                  "description": "gitHubIds is list variant of gitHubId of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -37511,7 +38234,7 @@
                   "description": "isAtomistBot of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -37521,7 +38244,7 @@
                   "description": "isOwner of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -37531,7 +38254,7 @@
                   "description": "isPrimaryOwner of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -37541,7 +38264,7 @@
                   "description": "isAdmin of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -37551,7 +38274,7 @@
                   "description": "isBot of ChatId",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "Boolean",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -37630,7 +38353,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -37644,7 +38367,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -37658,7 +38381,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -37672,7 +38395,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -37686,7 +38409,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "Boolean",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -38045,6 +38768,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "prId",
+                  "description": "prId of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "name",
                   "description": "name of PullRequest",
                   "type": {
@@ -38187,6 +38920,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Float",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "prIds",
+                  "description": "prIds is list variant of prId of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
