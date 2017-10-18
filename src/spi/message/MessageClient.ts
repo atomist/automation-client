@@ -4,6 +4,7 @@ import {
 } from "@atomist/slack-messages/SlackMessages";
 import * as _ from "lodash";
 import { ScriptedFlushable } from "../../internal/common/Flushable";
+import { metadataFromInstance } from "../../internal/metadata/metadataReading";
 
 /**
  * Implemented by classes that can send bot messages, whether to
@@ -92,24 +93,26 @@ export interface CommandReference {
     parameterName?: string;
 }
 
-export function buttonForCommand(buttonSpec: ButtonSpec, commandName: string, parameters: {} = {}): Action {
-    const id = commandName.toLocaleLowerCase();
+export function buttonForCommand(buttonSpec: ButtonSpec, command: any, parameters: {} = {}): Action {
+    const cmd = commandName(command);
+    const id = cmd.toLocaleLowerCase();
     const action = rugButtonFrom(buttonSpec, { id }) as CommandReferencingAction;
     action.command = {
         id,
-        name: commandName,
+        name: cmd,
         parameters,
     };
     return action;
 }
 
-export function menuForCommand(selectSpec: SelectSpec, commandName: string, parameterName: string,
+export function menuForCommand(selectSpec: SelectSpec, command: any, parameterName: string,
                                parameters?: {}): Action {
-    const id = commandName.toLocaleLowerCase();
+    const cmd = commandName(command);
+    const id = cmd.toLocaleLowerCase();
     const action = rugMenuFrom(selectSpec, { id, parameterName }) as CommandReferencingAction;
     action.command = {
         id,
-        name: commandName,
+        name: cmd,
         parameters,
         parameterName,
     };
@@ -118,6 +121,16 @@ export function menuForCommand(selectSpec: SelectSpec, commandName: string, para
 
 export function isSlackMessage(object: any): object is SlackMessage {
     return !object.length;
+}
+
+export function commandName(command: any): string {
+    if (typeof command === "string") {
+        return command as string;
+    } else if (typeof command === "function") {
+        return command.prototype.constructor.name;
+    } else {
+        return metadataFromInstance(command).name;
+    }
 }
 
 function rugButtonFrom(action: ButtonSpec, command: any): Action {
