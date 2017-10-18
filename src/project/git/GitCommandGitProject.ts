@@ -74,9 +74,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     public init(): Promise<CommandResult<this>> {
         this.newRepo = true;
         this.newBranch = "master";
-        return this.runCommandInCurrentWorkingDirectory("git init").then(c => {
-            return c;
-        });
+        return this.runCommandInCurrentWorkingDirectory("git init");
     }
 
     public isClean(): Promise<CommandResult<this>> {
