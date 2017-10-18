@@ -51,7 +51,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         if (!result) {
                             result = defaultResult();
                         }
-                        
+
                         if (result.code === 0) {
                             this.listeners.forEach(l => l.commandSuccessful(ci, ctx, result));
                             result = {
