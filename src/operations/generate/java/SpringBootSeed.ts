@@ -2,7 +2,7 @@ import { CommandHandler, Parameter, Tags } from "../../../decorators";
 import { logger } from "../../../internal/util/logger";
 import { Project, ProjectAsync } from "../../../project/Project";
 import { doWithFiles } from "../../../project/util/projectUtils";
-import { JavaFiles } from "./javaProjectUtils";
+import { AllJavaFiles } from "./javaProjectUtils";
 import { JavaSeed } from "./JavaSeed";
 import { SpringBootProjectStructure } from "./SpringBootProjectStructure";
 
@@ -30,7 +30,7 @@ export class SpringBootSeed extends JavaSeed {
     public manipulate(project: Project): Promise<Project> {
         return super.manipulate(project)
             .then(p =>
-                SpringBootProjectStructure.infer(p)
+                SpringBootProjectStructure.inferFromJavaSource(p)
                     .then(structure => {
                         if (structure) {
                             return this.renameClassStem(p, structure.applicationClassStem, this.serviceClassName);
@@ -55,7 +55,7 @@ export class SpringBootSeed extends JavaSeed {
     protected renameClassStem<P extends ProjectAsync>(project: P,
                                                       oldClass: string, newClass: string): Promise<P> {
         logger.info("Replacing old class stem [%s] with [%s]", oldClass, newClass);
-        return doWithFiles(project, JavaFiles, f => {
+        return doWithFiles(project, AllJavaFiles, f => {
             if (f.name.includes(oldClass)) {
                 f.recordRename(f.name.replace(oldClass, newClass));
                 f.recordReplaceAll(oldClass, newClass);

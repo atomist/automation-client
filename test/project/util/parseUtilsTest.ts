@@ -5,7 +5,7 @@ import { Integer } from "@atomist/microgrammar/Primitives";
 import * as assert from "power-assert";
 import { defer } from "../../../src/internal/common/Flushable";
 import { JavaPackageDeclaration } from "../../../src/operations/generate/java/JavaGrammars";
-import { JavaFiles } from "../../../src/operations/generate/java/javaProjectUtils";
+import { AllJavaFiles } from "../../../src/operations/generate/java/javaProjectUtils";
 import { AllFiles } from "../../../src/project/fileGlobs";
 import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
@@ -25,7 +25,7 @@ describe("parseUtils", () => {
             "package com.foo.bar;\npublic class Thing {}");
         t.addFileSync("src/main/java/com/foo/baz/Thing2.java",
             "package com.foo.baz;\npublic class Thing2 {}");
-        findMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration)
+        findMatches<{ name: string }>(t, AllJavaFiles, JavaPackageDeclaration)
             .then(matches => {
                 assert(matches.length === 2);
                 matches.forEach(m => {
@@ -37,7 +37,7 @@ describe("parseUtils", () => {
 
     it("gathers no matches without files", done => {
         const t = new InMemoryProject("name");
-        findMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration)
+        findMatches<{ name: string }>(t, AllJavaFiles, JavaPackageDeclaration)
             .then(matches => {
                 assert(matches.length === 0);
                 done();
@@ -50,7 +50,7 @@ describe("parseUtils", () => {
             "package com.foo.bar;\npublic class Thing {}");
         t.addFileSync("src/main/java/com/foo/baz/Thing2.java",
             "package com.foo.baz;\npublic class Thing2 {}");
-        findMatches<{ name: string }>(t, JavaFiles, Microgrammar.fromString("this won't match"))
+        findMatches<{ name: string }>(t, AllJavaFiles, Microgrammar.fromString("this won't match"))
             .then(matches => {
                 assert(matches.length === 0);
                 done();
@@ -63,7 +63,7 @@ describe("parseUtils", () => {
             "package com.foo.bar;\npublic class Thing {}");
         t.addFileSync("src/main/java/com/foo/baz/Thing2.java",
             "package com.foo.baz;\npublic class Thing2 {}");
-        findFileMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration)
+        findFileMatches<{ name: string }>(t, AllJavaFiles, JavaPackageDeclaration)
             .then(fileMatches => {
                 assert(fileMatches.length === 2);
                 assert.deepEqual(fileMatches.map(m => m.file.path), t.filesSync.map(m => m.path));
@@ -113,7 +113,7 @@ describe("parseUtils", () => {
         const initialContent = `package ${oldPackage};\npublic class Thing {}`;
         const f = new InMemoryFile("src/main/java/com/foo/bar/Thing.java", initialContent);
         p.addFileSync(f.path, f.getContentSync());
-        findFileMatches<{ name: string }>(p, JavaFiles, JavaPackageDeclaration)
+        findFileMatches<{ name: string }>(p, AllJavaFiles, JavaPackageDeclaration)
             .then(fileMatches => {
                 assert(fileMatches.length === 1);
                 assert(fileMatches[0].file.path === f.path);
@@ -147,7 +147,7 @@ describe("parseUtils", () => {
         const initialContent = `package ${oldPackage};\npublic class Thing {}`;
         const f = new InMemoryFile("src/main/java/com/foo/bar/Thing.java", initialContent);
         t.addFileSync(f.path, f.getContentSync());
-        doWithFileMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, fh => {
+        doWithFileMatches<{ name: string }>(t, AllJavaFiles, JavaPackageDeclaration, fh => {
             assert(fh.file.path === f.path);
             assert(fh.matches[0].name === oldPackage);
             const m: Match<{ name: string }> = fh.matches[0];
@@ -173,7 +173,7 @@ describe("parseUtils", () => {
         const initialContent = `package ${oldPackage};\npublic class Thing {}`;
         const f = new InMemoryFile("src/main/java/com/foo/bar/Thing.java", initialContent);
         p.addFileSync(f.path, f.getContentSync());
-        doWithUniqueMatch<{ name: string }>(p, JavaFiles, JavaPackageDeclaration, m => {
+        doWithUniqueMatch<{ name: string }>(p, AllJavaFiles, JavaPackageDeclaration, m => {
             assert(m.name === oldPackage, `Expected [${oldPackage}] got [${m.name}]`);
             // Add x to package names. Yes, this makes no sense in Java
             // but it's not meant to be domain meaningful
@@ -203,7 +203,7 @@ describe("parseUtils", () => {
         const initialContent = `public class Thing {}`;
         const f = new InMemoryFile("src/main/java/Thing.java", initialContent);
         t.addFileSync(f.path, f.getContentSync());
-        doWithUniqueMatch<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, m => {
+        doWithUniqueMatch<{ name: string }>(t, AllJavaFiles, JavaPackageDeclaration, m => {
             throw new Error("Should not be invoked");
         })
             .catch(err => {
@@ -223,7 +223,7 @@ describe("parseUtils", () => {
 
         t.addFileSync(f1.path, f1.getContentSync());
         t.addFileSync(f2.path, f2.getContentSync());
-        doWithUniqueMatch<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, m => {
+        doWithUniqueMatch<{ name: string }>(t, AllJavaFiles, JavaPackageDeclaration, m => {
             // Doesn't matter
         })
             .catch(err => {
@@ -242,7 +242,7 @@ describe("parseUtils", () => {
         const f = new InMemoryFile("src/main/java/com/foo/bar/Thing.java", initialContent);
         t.addFileSync(f.path, f.getContentSync());
         assert(!t.dirty);
-        defer(t, doWithFileMatches<{ name: string }>(t, JavaFiles, JavaPackageDeclaration, fh => {
+        defer(t, doWithFileMatches<{ name: string }>(t, AllJavaFiles, JavaPackageDeclaration, fh => {
             assert(fh.file.path === f.path);
             assert(fh.matches[0].name === oldPackage);
             fh.makeUpdatable();
