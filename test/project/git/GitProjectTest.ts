@@ -10,6 +10,7 @@ import { GitHubBase, GitProject } from "../../../src/project/git/GitProject";
 import { LocalProject } from "../../../src/project/local/LocalProject";
 import { Project } from "../../../src/project/Project";
 import { GitHubToken } from "../../atomist.config";
+import { ActionResult } from "../../../src/internal/util/ActionResult";
 
 function checkProject(p: Project) {
     const f = p.findFileSync("package.json");
@@ -95,13 +96,28 @@ describe("GitProject", () => {
         p.addFileSync("Thing", "1");
         const gp: GitProject = GitCommandGitProject.fromProject(p, GitHubToken);
         gp.init()
-            .then(() => gp.clean())
+            .then(() => gp.isClean())
             .then(clean => {
-                assert(!clean);
+                assert(!clean.success);
                 done();
             })
             .catch(done);
     });
+
+    it("uses then function", done => {
+        const p = tempProject();
+        p.addFileSync("Thing", "1");
+        const gp: GitProject = GitCommandGitProject.fromProject(p, GitHubToken);
+        gp.init()
+            .then(() => gp.isClean())
+            .then(assertNotClean)
+            .then(done)
+            .catch(done);
+    });
+
+    function assertNotClean(r: ActionResult<GitCommandGitProject>) {
+        assert(!r.success);
+    }
 
     it("add a file, check doesn't have uncommitted", done => {
         const p = tempProject();
@@ -109,7 +125,7 @@ describe("GitProject", () => {
         const gp: GitProject = GitCommandGitProject.fromProject(p, GitHubToken);
         gp.init()
             .then(() => gp.commit("Added a Thing"))
-            .then(() => gp.clean())
+            .then(() => gp.isClean())
             .then(clean => {
                 assert(clean);
                 done();

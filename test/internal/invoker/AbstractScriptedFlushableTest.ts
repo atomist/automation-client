@@ -10,7 +10,7 @@ class TestFlushable extends AbstractScriptedFlushable<TestFlushable> {
 
 describe("AbstractScriptedFlushable", () => {
 
-    it("is born clean", () => {
+    it("is born isClean", () => {
         const f = new TestFlushable();
         assert(!f.dirty);
     });

@@ -1,4 +1,5 @@
 import { LocalProject } from "../local/LocalProject";
+import { ActionResult } from "../../internal/util/ActionResult";
 
 export const GitHubBase = "https://api.github.com";
 
@@ -41,20 +42,19 @@ export interface GitProject extends LocalProject {
      * @param {string} email
      * @returns {Promise<any>}
      */
-    setUserConfig(user: string, email: string): Promise<any>;
+    setUserConfig(user: string, email: string): Promise<ActionResult<this>>;
 
     /**
      * Sets the user config by using GitHub user information. Make sure to use a token that
      * has user scope.
      * @returns {Promise<any>}
      */
-    setGitHubUserConfig(): Promise<any>;
+    setGitHubUserConfig(): Promise<ActionResult<this>>;
 
     /**
-     * Does the project have uncommitted changes in Git?
-     * @return {Promise<boolean>}
+     * Does the project have uncommitted changes in Git? Success means it's isClean
      */
-    clean(): Promise<boolean>;
+    isClean(): Promise<ActionResult<this>>;
 
     /**
      * Create a remote repository and set this repository's remote to it.
@@ -80,14 +80,14 @@ export interface GitProject extends LocalProject {
      * @param {string} message
      * @return {Promise<any>}
      */
-    commit(message: string): Promise<any>;
+    commit(message: string): Promise<ActionResult<this>>;
 
     /**
      * Check out a particular commit. We'll end in detached head state
      * @param sha sha or branch identifier
      * @return {any}
      */
-    checkout(sha: string): Promise<any>;
+    checkout(sha: string): Promise<ActionResult<this>>;
 
     /**
      * Push to the remote.
@@ -100,7 +100,7 @@ export interface GitProject extends LocalProject {
      * @param {string} name Name of the new branch
      * @return {Promise<any>}
      */
-    createBranch(name: string): Promise<any>;
+    createBranch(name: string): Promise<ActionResult<this>>;
 
 }
 

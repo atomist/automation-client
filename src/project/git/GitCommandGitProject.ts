@@ -78,10 +78,13 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         });
     }
 
-    public clean(): Promise<boolean> {
+    public isClean(): Promise<CommandResult<this>> {
         return this.runCommandInCwd("git status --porcelain")
-            .then(c => {
-                return c.stdout !== undefined && c.stdout === "";
+            .then(commandResult => {
+                return {
+                    ...commandResult,
+                    success: commandResult.stdout !== undefined && commandResult.stdout === "",
+                };
             });
     }
 
@@ -104,12 +107,12 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         return this.setRemote(`https://${this.token}@github.com/${owner}/${repo}.git`);
     }
 
-    public setUserConfig(user: string, email: string): Promise<any> {
+    public setUserConfig(user: string, email: string): Promise<CommandResult<this>> {
         return this.runCommandInCwd(`git config user.name "${user}"`)
             .then(() => this.runCommandInCwd(`git config user.email "${email}"`));
     }
 
-    public setGitHubUserConfig(): Promise<any> {
+    public setGitHubUserConfig(): Promise<CommandResult<this>> {
         const config = {
             headers: {
                 Authorization: `token ${this.token}`,
@@ -176,7 +179,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             });
     }
 
-    public commit(message: string): Promise<CommandResult> {
+    public commit(message: string): Promise<CommandResult<this>> {
         return this.runCommandInCwd(`git add .; git commit -a -m "${message}"`);
     }
 
@@ -186,7 +189,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @param sha
      * @return {any}
      */
-    public checkout(sha: string): Promise<CommandResult> {
+    public checkout(sha: string): Promise<CommandResult<this>> {
         return this.runCommandInCwd(`git checkout ${sha}`);
     }
 
@@ -200,13 +203,19 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             .catch(err => logger.error("Unable to push: " + err));
     }
 
-    public createBranch(name: string): Promise<CommandResult> {
+    public createBranch(name: string): Promise<CommandResult<this>> {
         this.newBranch = name;
         return this.runCommandInCwd(`git branch ${name}; git checkout ${name}`);
     }
 
-    private runCommandInCwd(cmd: string): Promise<CommandResult> {
-        return runCommand(cmd, {cwd: this.baseDir});
+    private runCommandInCwd(cmd: string): Promise<CommandResult<this>> {
+        return runCommand(cmd, {cwd: this.baseDir})
+            .then(result => {
+                return {
+                    target: this,
+                    ...result,
+                };
+            });
     }
 
     private createRepo(owner: string, url: string, name: string, description: string = name,
@@ -281,7 +290,7 @@ function clone(token: string,
                branch: string = "master",
                opts: CloneOptions): Promise<GitProject> {
 
-    return tmp.dir({ keep: opts.keep })
+    return tmp.dir({keep: opts.keep})
         .then(parentDir => {
             const repoDir = `${parentDir.path}/${repo}`;
             const command = (branch === "master") ?
