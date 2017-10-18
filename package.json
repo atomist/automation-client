@@ -19,7 +19,7 @@
   "dependencies": {
     "@atomist/microgrammar": "^0.7.0",
     "@atomist/slack-messages": "^0.12.0",
-    "@atomist/tree-path": "^0.1.1",
+    "@atomist/tree-path": "^0.1.2",
     "@types/ws": "^3.0.2",
     "apollo-client": "^1.9.3",
     "app-root-path": "^2.0.1",

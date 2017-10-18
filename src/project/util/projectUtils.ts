@@ -120,7 +120,6 @@ export function doWithFiles<P extends ProjectAsync>(project: P,
  * @param project project to act on
  * @param globPattern glob pattern for files to delete
  * @param test additional, optional test for files to be deleted
- * @return {RunOrDefer<number>}
  */
 export function deleteFiles<T>(project: ProjectAsync,
                                globPattern: string,
