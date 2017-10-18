@@ -7,6 +7,7 @@ import { Project } from "../Project";
 import * as tmp from "tmp-promise";
 
 import axios from "axios";
+import { ActionResult } from "../../internal/util/ActionResult";
 import { CommandResult, runCommand } from "../../internal/util/commandLine";
 import { logger } from "../../internal/util/logger";
 import { hideString } from "../../internal/util/string";
@@ -37,12 +38,12 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         throw new Error(`Project ${p.name} doesn't have a local directory`);
     }
 
-    public static fromBaseDir(name: string, baseDir: string, token: string): GitProject {
+    public static fromBaseDir(name: string, baseDir: string, token: string): GitCommandGitProject {
         return new GitCommandGitProject(name, baseDir, token);
     }
 
     public static cloned(token: string, user: string, repo: string, branch: string = "master",
-                         opts: CloneOptions = DefaultCloneOptions): Promise<GitProject> {
+                         opts: CloneOptions = DefaultCloneOptions): Promise<GitCommandGitProject> {
         return clone(token, user, repo, branch, opts)
             .then(p => {
                 const gp = GitCommandGitProject.fromBaseDir(repo, p.baseDir, token);
@@ -70,46 +71,43 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         logger.info(`Created GitProject with token '${hideString(this.token)}'`);
     }
 
-    public init(): Promise<any> {
+    public init(): Promise<CommandResult<this>> {
         this.newRepo = true;
         this.newBranch = "master";
-        return this.runCommandInCwd("git init").then(c => {
-            return c;
-        });
+        return this.runCommandInCurrentWorkingDirectory("git init");
     }
 
-    public clean(): Promise<boolean> {
-        return this.runCommandInCwd("git status --porcelain")
-            .then(c => {
-                return c.stdout !== undefined && c.stdout === "";
+    public isClean(): Promise<CommandResult<this>> {
+        return this.runCommandInCurrentWorkingDirectory("git status --porcelain")
+            .then(commandResult => {
+                return {
+                    ...commandResult,
+                    success: commandResult.stdout !== undefined && commandResult.stdout === "",
+                };
             });
     }
 
     /**
      * Remote is of form https://github.com/USERNAME/REPOSITORY.git
      * @param remote
-     * @return {Promise<TResult2|TResult1>|PromiseLike<TResult2|TResult1>}
      */
-    public setRemote(remote: string): Promise<any> {
+    public setRemote(remote: string): Promise<CommandResult<this>> {
         this.remote = remote;
-        return this.runCommandInCwd(`git remote add origin ${remote}`)
-            .then(c => {
-                return c;
-            });
+        return this.runCommandInCurrentWorkingDirectory(`git remote add origin ${remote}`);
     }
 
-    public setGitHubRemote(owner: string, repo: string): Promise<any> {
+    public setGitHubRemote(owner: string, repo: string): Promise<CommandResult<this>> {
         this.owner = owner;
         this.repoName = repo;
         return this.setRemote(`https://${this.token}@github.com/${owner}/${repo}.git`);
     }
 
-    public setUserConfig(user: string, email: string): Promise<any> {
-        return this.runCommandInCwd(`git config user.name "${user}"`)
-            .then(() => this.runCommandInCwd(`git config user.email "${email}"`));
+    public setUserConfig(user: string, email: string): Promise<CommandResult<this>> {
+        return this.runCommandInCurrentWorkingDirectory(`git config user.name "${user}"`)
+            .then(() => this.runCommandInCurrentWorkingDirectory(`git config user.email "${email}"`));
     }
 
-    public setGitHubUserConfig(): Promise<any> {
+    public setGitHubUserConfig(): Promise<CommandResult<this>> {
         const config = {
             headers: {
                 Authorization: `token ${this.token}`,
@@ -127,7 +125,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     public createAndSetGitHubRemote(owner: string, name: string, description: string = name,
-                                    visibility: "private" | "public" = "private"): Promise<any> {
+                                    visibility: "private" | "public" = "private"): Promise<CommandResult<this>> {
         const config = {
             headers: {
                 Authorization: `token ${this.token}`,
@@ -151,9 +149,8 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * Raise a PR after a push to this branch
      * @param title
      * @param body
-     * @return {any}
      */
-    public raisePullRequest(title: string, body: string = name): Promise<any> {
+    public raisePullRequest(title: string, body: string = name): Promise<ActionResult<this>> {
         if (!(this.newBranch)) {
             throw new Error("Cannot create a PR: no branch has been created");
         }
@@ -170,14 +167,21 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             head: this.newBranch,
             base: "master",
         }, config)
+            .then(axiosResponse => {
+                return {
+                    target: this,
+                    success: true,
+                    axiosResponse,
+                };
+            })
             .catch(err => {
                 logger.error("Error attempting to raise PR: " + err);
                 return Promise.reject(err);
             });
     }
 
-    public commit(message: string): Promise<CommandResult> {
-        return this.runCommandInCwd(`git add .; git commit -a -m "${message}"`);
+    public commit(message: string): Promise<CommandResult<this>> {
+        return this.runCommandInCurrentWorkingDirectory(`git add .; git commit -a -m "${message}"`);
     }
 
     /**
@@ -186,27 +190,33 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @param sha
      * @return {any}
      */
-    public checkout(sha: string): Promise<CommandResult> {
-        return this.runCommandInCwd(`git checkout ${sha}`);
+    public checkout(sha: string): Promise<CommandResult<this>> {
+        return this.runCommandInCurrentWorkingDirectory(`git checkout ${sha}`);
     }
 
     public push(): Promise<any> {
         if (this.newBranch && this.remote) {
             // We need to set the remote
-            return this.runCommandInCwd(`git push ${this.remote} ${this.newBranch}`)
+            return this.runCommandInCurrentWorkingDirectory(`git push ${this.remote} ${this.newBranch}`)
                 .catch(err => logger.error("Unable to push: " + err));
         }
-        return this.runCommandInCwd(`git push --set-upstream origin ${this.newBranch}`)
+        return this.runCommandInCurrentWorkingDirectory(`git push --set-upstream origin ${this.newBranch}`)
             .catch(err => logger.error("Unable to push: " + err));
     }
 
-    public createBranch(name: string): Promise<CommandResult> {
+    public createBranch(name: string): Promise<CommandResult<this>> {
         this.newBranch = name;
-        return this.runCommandInCwd(`git branch ${name}; git checkout ${name}`);
+        return this.runCommandInCurrentWorkingDirectory(`git branch ${name}; git checkout ${name}`);
     }
 
-    private runCommandInCwd(cmd: string): Promise<CommandResult> {
-        return runCommand(cmd, {cwd: this.baseDir});
+    private runCommandInCurrentWorkingDirectory(cmd: string): Promise<CommandResult<this>> {
+        return runCommand(cmd, {cwd: this.baseDir})
+            .then(result => {
+                return {
+                    target: this,
+                    ...result,
+                };
+            });
     }
 
     private createRepo(owner: string, url: string, name: string, description: string = name,
@@ -240,25 +250,28 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
  * @param doWithProject
  * @param branch
  * @param pr
- * @return {Promise<TResult|TResult2|TResult1>}
  */
 export function cloneEditAndPush(token: string,
                                  owner: string,
                                  name: string,
                                  doWithProject: (Project) => void,
+                                 commitMessage: string,
                                  branch?: string,
-                                 pr?: PullRequestInfo): Promise<any> {
+                                 pr?: PullRequestInfo): Promise<ActionResult<GitCommandGitProject>> {
     return GitCommandGitProject.cloned(token, owner, name).then(gp => {
         doWithProject(gp);
         const start: Promise<any> = branch ? gp.createBranch(branch) : Promise.resolve();
         return start
-            .then(_ => gp.commit("Added a Thing"))
+            .then(_ => gp.commit(commitMessage))
             .then(_ => gp.push())
             .then(x => {
                 if (pr) {
                     return gp.raisePullRequest(pr.title, pr.body);
                 } else {
-                    return new Promise(x);
+                    return {
+                        target: gp,
+                        success: false,
+                    };
                 }
             });
     }).catch(err => {
@@ -281,7 +294,7 @@ function clone(token: string,
                branch: string = "master",
                opts: CloneOptions): Promise<GitProject> {
 
-    return tmp.dir({ keep: opts.keep })
+    return tmp.dir({keep: opts.keep})
         .then(parentDir => {
             const repoDir = `${parentDir.path}/${repo}`;
             const command = (branch === "master") ?

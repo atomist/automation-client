@@ -1,8 +1,6 @@
 import { CommandHandler, MappedParameter, Parameter, Tags } from "../../decorators";
 import { MappedParameters } from "../../Handlers";
 import { defer } from "../../internal/common/Flushable";
-import { logger } from "../../internal/util/logger";
-import { GitProject } from "../../project/git/GitProject";
 import { Project, ProjectAsync } from "../../project/Project";
 import { deleteFiles, doWithFiles } from "../../project/util/projectUtils";
 import { SeedDrivenGenerator } from "./SeedDrivenGenerator";
@@ -50,11 +48,6 @@ export class UniversalSeed extends SeedDrivenGenerator {
         this.removeSeedFiles(project);
         this.cleanReadMe(project, this.description);
         return project.flush();
-    }
-
-    protected push(gp: GitProject): Promise<any> {
-        logger.info(`Pushing local repo at [${gp.baseDir}]`);
-        return gp.push();
     }
 
     /**
