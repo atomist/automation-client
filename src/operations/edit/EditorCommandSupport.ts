@@ -1,7 +1,6 @@
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { HandlerResult } from "../../HandlerResult";
-import { isPromise } from "../../internal/util/async";
 import { logger } from "../../internal/util/logger";
 import { LocalOrRemoteRepoOperation } from "../common/LocalOrRemoteRepoOperation";
 import { editUsingPullRequest, PullRequestInfo } from "../support/editorUtils";
@@ -16,7 +15,7 @@ export abstract class EditorCommandSupport extends LocalOrRemoteRepoOperation im
     public handle(context: HandlerContext): Promise<HandlerResult> {
         const load = this.repoLoader();
         const rawPe = this.projectEditor(context);
-        const projectEditorPromise: Promise<ProjectEditor<any>> = isPromise(rawPe) ? rawPe : Promise.resolve(rawPe);
+        const projectEditorPromise: Promise<ProjectEditor<any>> = Promise.resolve(rawPe);
 
         return projectEditorPromise.then(projectEditor => {
             return this.repoFinder()(context)
