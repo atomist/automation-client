@@ -1,22 +1,14 @@
 import "mocha";
-import { fail } from "power-assert";
 import * as assert from "power-assert";
-import * as WebSocket from "ws";
-import { EventFired } from "../../../../src/HandleEvent";
-import { HandlerContext } from "../../../../src/HandlerContext";
-import { HandlerResult } from "../../../../src/HandlerResult";
-import { CommandInvocation } from "../../../../src/internal/invoker/Payload";
-import { CommandHandlerMetadata, Rugs } from "../../../../src/internal/metadata/metadata";
 import {
-    DefaultWebSocketRequestProcessor,
-} from "../../../../src/internal/transport/websocket/DefaultWebSocketRequestProcessor";
-import { WebSocketEventMessageClient } from "../../../../src/internal/transport/websocket/WebSocketMessageClient";
+    clean,
+    WebSocketEventMessageClient
+} from "../../../../src/internal/transport/websocket/WebSocketMessageClient";
 import { guid } from "../../../../src/internal/util/string";
-import { AutomationServer } from "../../../../src/server/AutomationServer";
 
 describe("WebSocketMessageClient", () => {
 
-    it("verify respond is not allowed from event handlers", done => {
+    it("respond is not allowed from event handlers", done => {
         const client = new WebSocketEventMessageClient(
             {
                 data: {},
@@ -30,5 +22,11 @@ describe("WebSocketMessageClient", () => {
             });
 
     }).timeout(5000);
+
+    it("correctly clean up addresses", () => {
+        assert(clean("test")[0] === "test");
+        assert(clean(["test"])[0] === "test");
+        assert(clean([""]).length === 0);
+    });
 
 });

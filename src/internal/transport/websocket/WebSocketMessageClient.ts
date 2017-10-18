@@ -175,7 +175,7 @@ export function sendMessage(message: any, ws: WebSocket, log: boolean = true) {
     ws.send(payload);
 }
 
-function clean(addresses: string[] | string): string[] {
+export function clean(addresses: string[] | string): string[] {
     let na: string[] = toStringArray(addresses);
     if (na) {
         // Filter out any null addresses
