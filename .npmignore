@@ -6,6 +6,7 @@ test/
 tmp/
 build/
 release/
+scripts/
 .travis.yml
 *.bash
 tsconfig.*
