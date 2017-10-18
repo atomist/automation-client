@@ -1,6 +1,7 @@
 import { Parameter } from "../../decorators";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
+import { toPromiseOf } from "../../internal/util/async";
 import { raiseIssue } from "../../internal/util/gitHub";
 import { logger } from "../../internal/util/logger";
 import { LocalOrRemoteRepoOperation } from "../common/LocalOrRemoteRepoOperation";
@@ -36,7 +37,7 @@ export abstract class ReviewerCommandSupport<
         const repoIdPromises: Promise<RepoId[]> = this.repoFinder()(context);
         const projectReviews: Promise<Array<Promise<PR>>> = repoIdPromises
             .then(repos => repos.map(id => {
-                return this.repoFilter(id)
+                return toPromiseOf<boolean>(this.repoFilter(id))
                     .then(relevant => {
                         if (relevant) {
                             logger.info("Attempting to review %s", JSON.stringify(id));

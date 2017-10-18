@@ -1,6 +1,9 @@
 
 import { RepoId } from "../common/RepoId";
 
-export type RepoFilter = (r: RepoId) => Promise<boolean>;
+/**
+ * Determine whether the given repo is eligible
+ */
+export type RepoFilter = (r: RepoId) => boolean | Promise<boolean>;
 
-export const AllRepos: RepoFilter = r => Promise.resolve(true);
+export const AllRepos: RepoFilter = r => true;
