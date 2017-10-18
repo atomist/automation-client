@@ -2,8 +2,8 @@
 import { exec } from "child-process-promise";
 
 import { ExecOptions} from "child_process";
-import { logger } from "./logger";
 import { ActionResult } from "./ActionResult";
+import { logger } from "./logger";
 
 export interface ChildProcess {
     exitCode: number;

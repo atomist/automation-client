@@ -5,12 +5,12 @@ import * as assert from "power-assert";
 import { tempProject } from "../utils";
 
 import * as exec from "child_process";
+import { ActionResult } from "../../../src/internal/util/ActionResult";
 import { cloneEditAndPush, GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitHubBase, GitProject } from "../../../src/project/git/GitProject";
 import { LocalProject } from "../../../src/project/local/LocalProject";
 import { Project } from "../../../src/project/Project";
 import { GitHubToken } from "../../atomist.config";
-import { ActionResult } from "../../../src/internal/util/ActionResult";
 
 function checkProject(p: Project) {
     const f = p.findFileSync("package.json");

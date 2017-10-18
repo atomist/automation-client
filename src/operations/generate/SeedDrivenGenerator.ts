@@ -9,7 +9,7 @@ import { logger } from "../../internal/util/logger";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
-import { Project, ProjectAsync } from "../../project/Project";
+import { Project } from "../../project/Project";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { LocalOrRemote } from "../common/LocalOrRemote";
 import { SimpleRepoId } from "../common/RepoId";
@@ -129,7 +129,6 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
                     }).then(p => {
                         return {code: 0, baseDir: p.baseDir};
                     }) :
-                    // TODO keep git init even with local dir
                     populated.then(proj =>
                         proj.deleteDirectory(".git")
                             .then(p => {

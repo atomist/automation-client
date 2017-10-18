@@ -1,5 +1,5 @@
-import { LocalProject } from "../local/LocalProject";
 import { ActionResult } from "../../internal/util/ActionResult";
+import { LocalProject } from "../local/LocalProject";
 
 export const GitHubBase = "https://api.github.com";
 
