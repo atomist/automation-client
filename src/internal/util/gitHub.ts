@@ -63,7 +63,7 @@ export interface Issue {
     assignees?: string[];
 }
 
-export function raiseIssue(token: string, repoId: RepoId, issue: Issue): Promise<any> {
+export function raiseIssue(token: string, repoId: RepoId, issue: Issue): AxiosPromise {
     const config = {
         headers: {
             Authorization: `token ${token}`,

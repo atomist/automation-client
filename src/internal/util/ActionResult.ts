@@ -5,7 +5,13 @@
  */
 export interface ActionResult<T = undefined> {
 
+    /**
+     * Target on which we ran the action, if there is one.
+     */
     target: T;
 
+    /**
+     * Whether or not the action succeeded.
+     */
     success: boolean;
 }

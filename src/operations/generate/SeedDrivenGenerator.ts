@@ -5,6 +5,7 @@ import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { HandlerResult } from "../../HandlerResult";
 import { MappedParameters } from "../../Handlers";
+import { ActionResult } from "../../internal/util/ActionResult";
 import { logger } from "../../internal/util/logger";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
@@ -166,7 +167,7 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
         return defaultRepoLoader(this.githubToken);
     }
 
-    protected push(gp: GitProject): Promise<any> {
+    protected push(gp: GitProject): Promise<ActionResult<GitProject>> {
         logger.info(`Pushing local repo at [${gp.baseDir}]`);
         return gp.push();
     }

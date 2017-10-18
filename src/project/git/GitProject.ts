@@ -24,9 +24,8 @@ export interface GitProject extends LocalProject {
 
     /**
      * Init git for this project.
-     * @return {Promise<any>}
      */
-    init(): Promise<any>;
+    init(): Promise<ActionResult<this>>;
 
     /**
      * Remote is of form https://github.com/USERNAME/REPOSITORY.git
