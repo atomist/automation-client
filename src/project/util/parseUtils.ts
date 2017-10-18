@@ -55,7 +55,6 @@ export const DefaultOpts: Opts = {
  * @param globPattern file glob pattern
  * @param microgrammar microgrammar to run against each eligible file
  * @param opts options
- * @return {Promise<T[]>} hit record for each matching file
  */
 export function findMatches<M>(p: ProjectAsync,
                                globPattern: string,
@@ -75,7 +74,6 @@ export function findMatches<M>(p: ProjectAsync,
  * @param globPattern file glob pattern
  * @param microgrammar microgrammar to run against each eligible file
  * @param opts options
- * @return {Promise<T[]>} hit record for each matching file
  */
 export function findFileMatches<M>(p: ProjectAsync,
                                    globPattern: string,
@@ -98,12 +96,10 @@ export function findFileMatches<M>(p: ProjectAsync,
 
 /**
  * Manipulate each file match containing an actual match. Will automatically match if necessary.
- * @param {ProjectNonBlocking} p
  * @param {string} globPattern
  * @param {Microgrammar<M>} microgrammar
  * @param {(fh: FileWithMatches<M>) => void} action
  * @param opts options
- * @return {RunOrDefer<any>}
  */
 export function doWithFileMatches<M, P extends ProjectAsync = ProjectAsync>(p: P,
                                                                             globPattern: string,
@@ -132,12 +128,10 @@ export function doWithFileMatches<M, P extends ProjectAsync = ProjectAsync>(p: P
 /**
  * Convenience function to operate on the sole match in the project.
  * Fail if zero or more than one.
- * @param {ProjectNonBlocking} p
  * @param {string} globPattern
  * @param {Microgrammar<M>} microgrammar
  * @param {(m: M) => void} action
  * @param {{makeUpdatable: boolean}} opts
- * @return {RunOrDefer<File[]>}
  */
 export function doWithUniqueMatch<M, P extends ProjectAsync = ProjectAsync>(p: P,
                                                                             globPattern: string,
@@ -166,7 +160,6 @@ export function doWithUniqueMatch<M, P extends ProjectAsync = ProjectAsync>(p: P
 
 /**
  * Similar to doWithUniqueMatch, but accepts zero matches without error
- * @param {ProjectNonBlocking} p
  * @param {string} globPattern
  * @param {Microgrammar<M>} microgrammar
  * @param {(m: M) => void} action
@@ -223,6 +216,12 @@ class UpdatingFileHits<M> implements FileWithMatches<M> {
     }
 }
 
+/**
+ * Transform content before processing if necessary
+ * @param {string} rawContent
+ * @param {Opts} opts
+ * @return {string}
+ */
 function transformIfNecessary(rawContent: string, opts: Opts): string {
     return !!opts && !!opts.contentTransformer ?
         opts.contentTransformer(rawContent) :
