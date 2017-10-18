@@ -11,6 +11,11 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
 
     public name: string;
 
+    /**
+     * Return the file, or reject with error
+     * @param {string} path
+     * @return {Promise<File>}
+     */
     public abstract findFile(path: string): Promise<File>;
 
     public abstract findFileSync(path: string): File;
@@ -39,6 +44,15 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
         });
     }
 
+    public moveFile(oldPath: string, newPath: string): Promise<this> {
+        return this.findFile(oldPath)
+            .then(f =>
+                f.setPath(newPath).then(() => this),
+            )
+            // Not an error if no such file
+            .catch(err => this);
+    }
+
     public recordAddFile(path: string, content: string): this {
         return this.recordAction(p => p.addFile(path, content));
     }
@@ -52,10 +66,6 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
     public abstract deleteDirectorySync(path: string): void;
 
     public abstract deleteDirectory(path: string): Promise<this>;
-
-    public recordDeleteDirectory(path: string): this {
-        return this.recordAction(p => p.deleteDirectory(path));
-    }
 
     public abstract addFile(path: string, content: string): Promise<this>;
 

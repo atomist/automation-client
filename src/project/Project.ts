@@ -114,6 +114,14 @@ export interface ProjectAsync extends ProjectCore, ScriptedFlushable<Project> {
     deleteFile(path: string): Promise<this>;
 
     /**
+     * Move the file. Do not error if it's not found.
+     * @param {string} oldPath
+     * @param {string} newPath
+     * @return {Promise<this>}
+     */
+    moveFile(oldPath: string, newPath: string): Promise<this>;
+
+    /**
      * Delete a directory. Do not throw an error if it doesn't exist
      * @param {string} path
      * @return {Promise<this>}

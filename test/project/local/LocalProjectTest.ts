@@ -159,6 +159,36 @@ describe("LocalProject", () => {
             }).catch(done);
     });
 
+    it("moves file that's there", done => {
+        const p = tempProject();
+        defer(p, p.addFile("thing", "1"));
+        assert(p.dirty);
+        p.flush()
+            .then(flushed => {
+                const f2 = p.findFileSync("thing");
+                assert(f2);
+                p.moveFile(f2.path, "thing2").then(_ => {
+                    assert(_.findFileSync("thing2").getContentSync() === "1");
+                    done();
+                });
+            }).catch(done);
+    });
+
+    it("attempts to move file that's not there without error", done => {
+        const p = tempProject();
+        defer(p, p.addFile("thing", "1"));
+        assert(p.dirty);
+        p.flush()
+            .then(flushed => {
+                const f2 = p.findFileSync("thing");
+                assert(f2);
+                p.moveFile("this/aint/there", "thing2").then(_ => {
+                    assert(_.findFileSync("thing").getContentSync() === "1");
+                    done();
+                });
+            }).catch(done);
+    });
+
     it("adds nested file", done => {
         const p = tempProject();
         defer(p, p.addFile("config/thing", "1"));
