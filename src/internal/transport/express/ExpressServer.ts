@@ -222,7 +222,7 @@ export class ExpressServer {
                 }).map(p => {
                     return {name: p.name, value: req.query[p.name]};
                 });
-                const mappedParameters = h.mapped_parameters.filter(p => {
+                const mappedParameters = (h.mapped_parameters || []).filter(p => {
                     const value = req.query[`mp_${p.local_key}`];
                     return value && value.length > 0;
                 }).map(p => {
