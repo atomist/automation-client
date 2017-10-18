@@ -5,11 +5,12 @@ import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { HandlerResult } from "../../HandlerResult";
 import { MappedParameters } from "../../Handlers";
+import { ActionResult } from "../../internal/util/ActionResult";
 import { logger } from "../../internal/util/logger";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
-import { Project, ProjectAsync } from "../../project/Project";
+import { Project } from "../../project/Project";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { LocalOrRemote } from "../common/LocalOrRemote";
 import { SimpleRepoId } from "../common/RepoId";
@@ -127,29 +128,28 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
                         logger.info(`Creating local project using cwd '${parentDir}': Other name '${p.name}'`);
                         return NodeFsLocalProject.copy(p, parentDir, this.targetRepo);
                     }).then(p => {
-                        return {code: 0, baseDir: p.baseDir };
+                        return {code: 0, baseDir: p.baseDir};
                     }) :
-                    // TODO keep git init even with local dir
-                    populated.then(p => {
-                        // TODO shouldn't be synch, but it needs to complete before the later steps.
-                        p.deleteDirectorySync(".git");
-                        const gp: GitProject = GitCommandGitProject.fromProject(p, this.githubToken);
-                        return gp.init()
-                            .then(() => gp.setGitHubUserConfig())
-                            .then(_ => {
-                                logger.info(`Creating new repo '${this.targetOwner}/${this.targetRepo}'`);
-                                return gp.createAndSetGitHubRemote(this.targetOwner, this.targetRepo,
-                                    this.targetRepo, this.visibility);
-                            })
-                            .then(_ => {
-                                logger.info(`Committing to local repo at '${gp.baseDir}'`);
-                                return gp.commit("Initial commit from Atomist");
-                            })
-                            .then(_ => this.push(gp))
-                            .then(_ => {
-                                return {code: 0};
-                    });
-                });
+                    populated.then(proj =>
+                        proj.deleteDirectory(".git")
+                            .then(p => {
+                                const gp: GitProject = GitCommandGitProject.fromProject(p, this.githubToken);
+                                return gp.init()
+                                    .then(() => gp.setGitHubUserConfig())
+                                    .then(_ => {
+                                        logger.info(`Creating new repo '${this.targetOwner}/${this.targetRepo}'`);
+                                        return gp.createAndSetGitHubRemote(this.targetOwner, this.targetRepo,
+                                            this.targetRepo, this.visibility);
+                                    })
+                                    .then(_ => {
+                                        logger.info(`Committing to local repo at '${gp.baseDir}'`);
+                                        return gp.commit("Initial commit from Atomist");
+                                    })
+                                    .then(_ => this.push(gp))
+                                    .then(_ => {
+                                        return {code: 0};
+                                    });
+                            }));
             });
     }
 
@@ -167,7 +167,7 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
         return defaultRepoLoader(this.githubToken);
     }
 
-    protected push(gp: GitProject): Promise<any> {
+    protected push(gp: GitProject): Promise<ActionResult<GitProject>> {
         logger.info(`Pushing local repo at [${gp.baseDir}]`);
         return gp.push();
     }
