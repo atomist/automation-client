@@ -8,10 +8,23 @@ export interface ActionResult<T = undefined> {
     /**
      * Target on which we ran the action, if there is one.
      */
-    target: T;
+    readonly target: T;
 
     /**
      * Whether or not the action succeeded.
      */
-    success: boolean;
+    readonly success: boolean;
+}
+
+/**
+ * Convenient implementation of ActionResult
+ */
+export class SimpleActionResult<T> implements ActionResult<T> {
+
+    constructor(public readonly target: T, public readonly success: boolean) {
+    }
+}
+
+export function successOn<T>(t: T): ActionResult<T> {
+    return new SimpleActionResult(t, true);
 }

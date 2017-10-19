@@ -1,4 +1,5 @@
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
+import { GitProject } from "../../project/git/GitProject";
 import { RepoId } from "./RepoId";
 import { RepoLoader } from "./repoLoader";
 
@@ -8,7 +9,7 @@ import { RepoLoader } from "./repoLoader";
  * @return function to materialize repos
  * @constructor
  */
-export function gitHubRepoLoader(token: string): RepoLoader {
+export function gitHubRepoLoader(token: string): RepoLoader<GitProject> {
     return (repoId: RepoId) => {
         return GitCommandGitProject.cloned(token, repoId.owner, repoId.repo);
     };

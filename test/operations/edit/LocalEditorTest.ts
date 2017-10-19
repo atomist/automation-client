@@ -1,14 +1,14 @@
 import * as fs from "fs";
 import "mocha";
 import * as assert from "power-assert";
-import { EditResult, ProjectEditor } from "../../../src/operations/edit/projectEditor";
+import { ProjectEditor, successfulEdit } from "../../../src/operations/edit/projectEditor";
 import { tempProject } from "../../project/utils";
 
 describe("Local editing", () => {
 
     it("should not edit with no op editor", done => {
         const project = tempProject();
-        const editor: ProjectEditor<EditResult> = p => Promise.resolve({ edited: false });
+        const editor: ProjectEditor = p => Promise.resolve(successfulEdit(p, false));
         editor(project, null)
             .then(r => {
                 assert(!r.edited);
@@ -18,9 +18,9 @@ describe("Local editing", () => {
 
     it("should edit on disk with real editor", done => {
         const project = tempProject();
-        const editor: ProjectEditor<EditResult> = p => {
+        const editor: ProjectEditor = p => {
             p.addFileSync("thing", "1");
-            return Promise.resolve({ edited: true });
+            return Promise.resolve(successfulEdit(p, true));
         };
         editor(project, null)
             .then(r => {
