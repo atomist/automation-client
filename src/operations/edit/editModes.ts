@@ -1,12 +1,21 @@
-/**
- * Basic information for any edit
- */
 
 import { Project } from "../../project/Project";
 import { EditResult } from "./projectEditor";
 
+/**
+ * Used to determine EditInfo on a per project basis,
+ * for example if we want to use a different branch name on different repos
+ */
 export type EditInfoFactory = (p: Project) => EditInfo;
 
+export function toEditInfoFactory(ei: EditInfo | EditInfoFactory): EditInfoFactory {
+    return p => isEditInfo(ei) ? ei : ei(p);
+}
+
+/**
+ * Root interface for information on how to apply an edit:
+ * E.g via a PR or commit to master
+ */
 export interface EditInfo {
     commitMessage: string;
 }

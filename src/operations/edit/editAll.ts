@@ -9,7 +9,7 @@ import { RepoFinder } from "../common/repoFinder";
 import { RepoLoader } from "../common/repoLoader";
 import { doWithAllRepos } from "../common/repoUtils";
 import { loadAndEditRepo } from "../support/editorUtils";
-import { EditInfo, EditInfoFactory, isEditInfo } from "./editModes";
+import { EditInfo, EditInfoFactory, isEditInfo, toEditInfoFactory } from "./editModes";
 import { EditResult, ProjectEditor } from "./projectEditor";
 
 /**
@@ -31,8 +31,6 @@ export function editAll<R>(ctx: HandlerContext,
                            repoFinder: RepoFinder = allReposInTeam(),
                            repoFilter: RepoFilter = AllRepos,
                            repoLoader: RepoLoader = defaultRepoLoader(token)): Promise<EditResult[]> {
-    const ei: (project: Project) => EditInfo = p =>
-        isEditInfo(editInfo) ? editInfo : editInfo(p);
-    const edit = (p: Project) => loadAndEditRepo(token, ctx, p, editor, ei(p));
+    const edit = (p: Project) => loadAndEditRepo(token, ctx, p, editor, toEditInfoFactory(editInfo)(p));
     return doWithAllRepos<EditResult>(ctx, token, edit, repoFinder, repoFilter, repoLoader);
 }
