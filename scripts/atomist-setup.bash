@@ -55,16 +55,54 @@ function main () {
     fi
     local origin=https://github.com/$slug.git
 
-    msg "setting up Atomist API client $slug"
-    msg "this script will clone $slug, install its dependencies,"
+    msg ""
+    msg "Setting up Atomist API client $slug:"
+    msg "This script will clone $slug, install its dependencies,"
     msg "build it, create an Atomist config for you, and then start the client."
     msg ""
-    msg "type Ctrl-C in the next five seconds to abort"
-    sleep 5
-    msg "continuing..."
+    while :; do
+        local answer
+        read -p "$Pkg: Continue? [Y/n]: " answer
+        if [[ ! $asnwer || $answer == [Yy]* ]]; then
+            break
+        elif [[ $answer == [Nn]* ]]; then
+            msg "exiting per your request"
+            msg "please try Atomist again soon!"
+            return 0
+        else
+            err "invalid response: '$answer', please try again"
+        fi
+    done
 
-    if ! git clone "$origin" "$slug"; then
-        err "failed to clone repository $slug from $origin"
+    local config=$HOME/.atomist/client.config.json
+    if [[ $team && -f $config ]]; then
+        if ! grep -q "\"$team\"" "$config" > /dev/null 2>&1; then
+            err "You have an existing Atomist client config, '$config',"
+            err "but it does not contain the same team you supplied on"
+            err "the command line: $team."
+            err "Please use the same team or manually edit the config,"
+            err "adding/changing the team list as appropriate."
+            return 1
+        fi
+    fi
+
+    if [[ -e $slug ]]; then
+        local x=0 bad_slug=$slug-$$
+        while [[ -e $bad_slug ]]; do
+            bad_slug=$bad_slug-$((x++))
+        done
+        msg "moving old attempt on $slug to $bad_slug"
+        if ! mv "$slug" "$bad_slug"; then
+            err "failed to move files from old attempt, $slug, out of the way"
+            err "please manually move or remove '$slug' and try again"
+            return 1
+        fi
+    fi
+
+    local log=$Pkg-$$.log
+    msg "cloning $slug..."
+    if ! git clone "$origin" "$slug" >> "$log" 2>&1; then
+        err "failed to clone repository $slug from $origin, see $log for details"
         return 1
     fi
 
@@ -73,22 +111,26 @@ function main () {
         return 1
     fi
 
-    if ! npm install; then
-        err "failed to run 'npm install'"
+    msg "installing dependencies..."
+    if ! npm install >> "$log" 2>&1; then
+        err "failed to run 'npm install', see $log for details"
         return 1
     fi
 
-    if ! npm run compile; then
-        err "failed to compile TypeScript"
+    msg "building client..."
+    if ! npm run compile >> "$log" 2>&1; then
+        err "failed to compile TypeScript, see $log for details"
         return 1
     fi
 
+    msg "configuring Atomist..."
     if ! $(npm bin)/atomist-config $team; then
         err "failed to configure Atomist, our sincerest apologies"
         return 1
     fi
 
-    exec npm start
+    msg "starting client, type Ctrl-C to exit..."
+    exec npm run autostart
 }
 
 main "$@" || exit 1
