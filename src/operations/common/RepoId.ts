@@ -27,6 +27,11 @@ export interface RepoId {
     provider: VcsProvider;
 }
 
+export function isRepoId(r: any): r is RepoId {
+    const maybeRi = r as RepoId;
+    return !!maybeRi.owner && !!maybeRi.repo;
+}
+
 export class SimpleRepoId implements RepoId {
 
     constructor(public owner: string,

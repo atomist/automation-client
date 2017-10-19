@@ -1,20 +1,28 @@
 import { HandlerContext } from "../../HandlerContext";
+import { ActionResult } from "../../internal/util/ActionResult";
 import { Project } from "../../project/Project";
-import { RepoId } from "../common/RepoId";
 
 /**
  * Modifies the given project, returning information about the modification.
  */
 export type ProjectEditor<ER extends EditResult = EditResult> =
-    (id: RepoId, p: Project, context: HandlerContext) => Promise<ER>;
+    (p: Project, context: HandlerContext) => Promise<ER>;
 
 /**
  * Result of editing a project. More information may be added by instances.
  */
-export interface EditResult {
+export interface EditResult<P extends Project = Project> extends ActionResult<P> {
 
     /**
      * Whether or not this project was edited
      */
-    edited: boolean;
+    readonly edited: boolean;
+}
+
+export function successfulEdit<P extends Project>(p: P, edited: boolean = true): EditResult<P> {
+    return {
+        target: p,
+        success: true,
+        edited,
+    };
 }

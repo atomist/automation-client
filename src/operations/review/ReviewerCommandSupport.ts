@@ -12,9 +12,8 @@ import { ProjectReview, ReviewResult } from "./ReviewResult";
  * Support for reviewing multiple projects
  * Subclasses should have @CommandHandler annotation
  */
-export abstract class ReviewerCommandSupport<
-        RR extends ReviewResult<PR> = ReviewResult<PR>,
-        PR extends ProjectReview = ProjectReview>
+export abstract class ReviewerCommandSupport<RR extends ReviewResult<PR> = ReviewResult<PR>,
+    PR extends ProjectReview = ProjectReview>
     extends LocalOrRemoteRepoOperation
     implements HandleCommand {
 
@@ -42,7 +41,7 @@ export abstract class ReviewerCommandSupport<
                             logger.info("Attempting to review %s", JSON.stringify(id));
                             return load(id)
                                 .then(p => {
-                                    return projectReviewer(id, p, context);
+                                    return projectReviewer(p, context);
                                 })
                                 .then(review => {
                                     // Don't attempt to raise issues when reviewing a local repo
@@ -50,7 +49,7 @@ export abstract class ReviewerCommandSupport<
                                         review.comments && review.comments.length > 0) {
                                         return raiseIssue(this.githubToken,
                                             review.repoId, {
-                                                title: "Outdated Spring Boot version",
+                                                title: "Atomist review comments",
                                                 body: review.comments.map(c => c.comment).join("\n"),
                                             })
                                             .then(_ => review);
