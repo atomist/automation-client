@@ -4,8 +4,8 @@ import * as assert from "power-assert";
 
 import { fromListRepoFinder, fromListRepoLoader } from "../../../src/operations/common/fromProjectList";
 import { editAll } from "../../../src/operations/edit/editAll";
-import { ProjectEditor, successfulEdit } from "../../../src/operations/edit/projectEditor";
 import { CustomExecutionEditInfo } from "../../../src/operations/edit/editModes";
+import { ProjectEditor, successfulEdit } from "../../../src/operations/edit/projectEditor";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../src/project/Project";
 

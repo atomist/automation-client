@@ -4,11 +4,11 @@ import { Project } from "../../project/Project";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { isRepoId, RepoId } from "../common/RepoId";
 import { RepoLoader } from "../common/repoLoader";
-import { EditResult, ProjectEditor, successfulEdit } from "../edit/projectEditor";
 import {
     CommitInfo, EditInfo, isCommitInfo, isCustomExecutionEditInfo, isPullRequestInfo,
     PullRequestInfo,
 } from "../edit/editModes";
+import { EditResult, ProjectEditor, successfulEdit } from "../edit/projectEditor";
 
 /**
  * Edit a GitHub project using a PR or branch

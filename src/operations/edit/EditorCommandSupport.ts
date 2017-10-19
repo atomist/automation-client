@@ -3,8 +3,8 @@ import { HandlerContext } from "../../HandlerContext";
 import { HandlerResult } from "../../HandlerResult";
 import { Project } from "../../project/Project";
 import { LocalOrRemoteRepoOperation } from "../common/LocalOrRemoteRepoOperation";
-import { EditInfo } from "./editModes";
 import { editAll } from "./editAll";
+import { EditInfo } from "./editModes";
 import { ProjectEditor } from "./projectEditor";
 
 /**

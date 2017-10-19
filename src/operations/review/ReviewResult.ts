@@ -34,7 +34,7 @@ export interface ProjectReview {
  * The result of reviewing many projects: For example,
  * all the projects in an org
  */
-export interface ReviewResult<T extends ProjectReview> extends HandlerResult {
+export interface ReviewResult<T extends ProjectReview = ProjectReview> extends HandlerResult {
 
     projectsReviewed: number;
 

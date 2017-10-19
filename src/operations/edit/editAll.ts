@@ -8,8 +8,8 @@ import { AllRepos, RepoFilter } from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
 import { RepoLoader } from "../common/repoLoader";
 import { doWithAllRepos } from "../common/repoUtils";
-import { EditInfo, EditInfoFactory, isEditInfo } from "./editModes";
 import { loadAndEditRepo } from "../support/editorUtils";
+import { EditInfo, EditInfoFactory, isEditInfo } from "./editModes";
 import { EditResult, ProjectEditor } from "./projectEditor";
 
 /**
