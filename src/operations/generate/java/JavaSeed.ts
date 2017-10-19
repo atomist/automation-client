@@ -1,3 +1,4 @@
+import { curry } from "@typed/curry";
 import { CommandHandler, Parameter } from "../../../decorators";
 import { defer } from "../../../internal/common/Flushable";
 import { Project, ProjectAsync } from "../../../project/Project";
@@ -75,7 +76,7 @@ export class JavaSeed extends UniversalSeed {
     public manipulate(project: Project): Promise<Project> {
         return super.manipulate(project)
             .then(this.updatePom)
-            .then(this.inferStructureAndMovePackage);
+            .then(curry(inferStructureAndMovePackage)(this.rootPackage));
     }
 
     /**
@@ -98,12 +99,12 @@ export class JavaSeed extends UniversalSeed {
         return updatePom(p, smartArtifactId, this.groupId, this.version, this.description);
     }
 
-    private inferStructureAndMovePackage(p: Project): Promise<Project> {
-        return JavaProjectStructure.infer(p)
-            .then(structure =>
-                (structure) ?
-                    movePackage(p, structure.applicationPackage, this.rootPackage) :
-                    p);
-    }
+}
 
+function inferStructureAndMovePackage(rootPackage: string, p: Project): Promise<Project> {
+    return JavaProjectStructure.infer(p)
+        .then(structure =>
+            (structure) ?
+                movePackage(p, structure.applicationPackage, rootPackage) :
+                p);
 }

@@ -1,7 +1,6 @@
 import "mocha";
 
 import * as assert from "power-assert";
-import { defer } from "../../../src/internal/common/Flushable";
 import { CommandHandlerMetadata } from "../../../src/internal/metadata/metadata";
 import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
 import { JavaSeed } from "../../../src/operations/generate/java/JavaSeed";
