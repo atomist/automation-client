@@ -1,9 +1,10 @@
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { HandlerResult } from "../../HandlerResult";
-import { logger } from "../../internal/util/logger";
+import { Project } from "../../project/Project";
 import { LocalOrRemoteRepoOperation } from "../common/LocalOrRemoteRepoOperation";
-import { editUsingPullRequest, PullRequestInfo } from "../support/editorUtils";
+import { editAll } from "./editAll";
+import { EditInfo } from "./editModes";
 import { ProjectEditor } from "./projectEditor";
 
 /**
@@ -13,43 +14,39 @@ import { ProjectEditor } from "./projectEditor";
 export abstract class EditorCommandSupport extends LocalOrRemoteRepoOperation implements HandleCommand {
 
     public handle(context: HandlerContext): Promise<HandlerResult> {
-        const load = this.repoLoader();
-        const rawPe = this.projectEditor(context);
-        const projectEditorPromise: Promise<ProjectEditor<any>> = Promise.resolve(rawPe);
+        // Save us from this
+        const token = this.githubToken;
+        const repoFinder = this.repoFinder();
+        const repoFilter = this.repoFilter;
+        const repoLoader = this.repoLoader();
+        const editInfoFactory = this.editInfo;
 
-        return projectEditorPromise.then(projectEditor => {
-            return this.repoFinder()(context)
-                .then(repoIds => {
-                    const reposToEdit = repoIds.filter(this.repoFilter);
-                    logger.info("Repos to edit are " + reposToEdit.map(r => r.repo).join(","));
-                    const editOps: Array<Promise<any>> =
-                        reposToEdit.map(r => {
-                            if (this.local) {
-                                return load(r)
-                                    .then(p => projectEditor(r, p, context));
-                            } else {
-                                return editUsingPullRequest(this.githubToken, context, r, projectEditor,
-                                    // TODO customize PR config
-                                    new PullRequestInfo("add-license", "Added license"));
-                            }
-                        });
-                    return Promise.all(editOps)
-                        .then(_ => {
-                            return {
-                                code: 0,
-                                reposEdited: reposToEdit.length,
-                                reposSeen: repoIds.length,
-                            };
-                        });
-                });
-        });
+        return Promise.resolve(this.projectEditor(context))
+            .then(pe =>
+                editAll(context, token, pe,
+                    editInfoFactory,
+                    repoFinder, repoFilter, repoLoader))
+            .then(edits => {
+                return {
+                    code: 0,
+                    reposEdited: edits.filter(e => e.edited).length,
+                    reposSeen: edits.length,
+                };
+            });
     }
+
+    /**
+     * Return PullRequestInfo or other identification for commit message
+     * @param {Project} p
+     * @return {EditInfo}
+     */
+    public abstract editInfo(p: Project): EditInfo;
 
     /**
      * Invoked after parameters have been populated in the context of
      * a particular operation. Return an actual editor or a promise,
      * if the editor needs to be created based on the current context.
      */
-    public abstract projectEditor(context: HandlerContext): ProjectEditor<any> | Promise<ProjectEditor<any>>;
+    public abstract projectEditor(context: HandlerContext): ProjectEditor | Promise<ProjectEditor>;
 
 }
