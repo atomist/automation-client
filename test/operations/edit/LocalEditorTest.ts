@@ -13,7 +13,7 @@ describe("Local editing", () => {
             .then(r => {
                 assert(!r.edited);
                 done();
-            });
+            }).catch(done);
     });
 
     it("should edit on disk with real editor", done => {
@@ -28,7 +28,7 @@ describe("Local editing", () => {
                 // Reload project
                 assert(fs.statSync(project.baseDir + "/thing").isFile());
                 done();
-            });
+            }).catch(done);
     });
 
 });

@@ -5,6 +5,7 @@ import { doWithFiles } from "../../../project/util/projectUtils";
 import { AllJavaFiles } from "./javaProjectUtils";
 import { JavaSeed } from "./JavaSeed";
 import { SpringBootProjectStructure } from "./SpringBootProjectStructure";
+import { chainEditors } from "../../edit/projectEditorOps";
 
 /**
  * Spring Boot seed project. Extends generic Java seed to renames Spring Boot package and class name.
@@ -27,20 +28,25 @@ export class SpringBootSeed extends JavaSeed {
     })
     public serviceClassName: string = "RestService";
 
-    public manipulate(project: Project): Promise<Project> {
-        return super.manipulate(project)
-            .then(p =>
-                SpringBootProjectStructure.inferFromJavaSource(p)
-                    .then(structure => {
-                        if (structure) {
-                            return this.renameClassStem(p, structure.applicationClassStem, this.serviceClassName);
-                        } else {
-                            console.log("WARN: Spring Boot project structure not found");
-                            return p;
+    constructor() {
+        super();
+        this.projectEditor = chainEditors(
+            super.projectEditor,
+            this.inferSpringStructureAndRename,
+        );
+    }
 
-                        }
-                    }),
-            );
+    public inferSpringStructureAndRename(p: Project): Promise<Project> {
+        return SpringBootProjectStructure.inferFromJavaSource(p)
+            .then(structure => {
+                if (structure) {
+                    return this.renameClassStem(p, structure.applicationClassStem, this.serviceClassName);
+                } else {
+                    console.log("WARN: Spring Boot project structure not found");
+                    return p;
+
+                }
+            });
     }
 
     /**

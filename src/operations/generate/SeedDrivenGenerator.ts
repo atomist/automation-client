@@ -15,6 +15,7 @@ import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { LocalOrRemote } from "../common/LocalOrRemote";
 import { SimpleRepoId } from "../common/RepoId";
 import { RepoLoader } from "../common/repoLoader";
+import { ProjectEditor } from "../edit/projectEditor";
 
 const gitHubNameRegExp = {
     pattern: /^[-.\w]+$/,
@@ -114,14 +115,16 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
     // declareMappedParameter(this, "visibility", "atomist://github/default_repo_visibility");
     public visibility: "public" | "private" = "public";
 
-    constructor() {
+    constructor(public projectEditor: ProjectEditor<any>) {
         super();
     }
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
         return this.repoLoader()(new SimpleRepoId(this.sourceOwner, this.sourceRepo, this.sourceBranch))
             .then(project => {
-                const populated: Promise<Project> = this.manipulate(project);
+                const populated: Promise<Project> =
+                    this.projectEditor(project, ctx, this)
+                        .then(r => r.target);
                 return this.local ?
                     populated.then(p => {
                         const parentDir = shell.pwd() + "";
@@ -152,15 +155,6 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
                             }));
             });
     }
-
-    /**
-     * Do the work of the generator.
-     * Manipulate and flush--or manipulate synchronously. Leave the project in a ready state
-     * for storing.
-     * @param {Project} project from seed
-     * @return {Promise<Project>}
-     */
-    public abstract manipulate(project: Project): Promise<Project>;
 
     protected repoLoader(): RepoLoader {
         assert(this.githubToken, "Github token must be set");

@@ -40,8 +40,7 @@ export function review<R, PARAMS extends Parameters>(ctx: HandlerContext,
                                                      repoFinder: RepoFinder = allReposInTeam(),
                                                      repoFilter: RepoFilter = AllRepos,
                                                      repoLoader: RepoLoader =
-                                                         defaultRepoLoader(token),
-                                                            ): Promise<ReviewResult> {
+                                                         defaultRepoLoader(token)): Promise<ReviewResult> {
     let projectsReviewed = 0;
     const countingRepoFilter: RepoFilter = id => {
         const include = repoFilter(id);
@@ -50,7 +49,7 @@ export function review<R, PARAMS extends Parameters>(ctx: HandlerContext,
         }
         return include;
     };
-    return doWithAllRepos(ctx, token, p => reviewer(p, ctx),
+    return doWithAllRepos(ctx, token, p => reviewer(p, ctx), undefined,
         repoFinder, countingRepoFilter, repoLoader)
         .then(projectReviews => {
             return {

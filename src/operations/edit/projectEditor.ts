@@ -27,3 +27,8 @@ export function successfulEdit<P extends Project>(p: P, edited: boolean = true):
         edited,
     };
 }
+
+export function flushAndSucceed<P extends Project>(p: P): Promise<EditResult<P>> {
+    return p.flush().then(successfulEdit);
+
+}

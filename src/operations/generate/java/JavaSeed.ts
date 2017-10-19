@@ -7,6 +7,7 @@ import { UniversalSeed } from "../UniversalSeed";
 import { JavaProjectStructure } from "./JavaProjectStructure";
 import { movePackage } from "./javaProjectUtils";
 import { updatePom } from "./updatePom";
+import { chainEditors } from "../../edit/projectEditorOps";
 
 export interface VersionedArtifact {
 
@@ -75,16 +76,12 @@ export class JavaSeed extends UniversalSeed implements VersionedArtifact {
     })
     public rootPackage: string;
 
-    /**
-     * After initial population from seed project, update POM and
-     * source code to reflect proper artifact, group, version, etc.
-     *
-     * @param project  project to tailor
-     */
-    public manipulate(project: Project): Promise<Project> {
-        return super.manipulate(project)
-            .then(curry(doUpdatePom)(this))
-            .then(curry(inferStructureAndMovePackage)(this.rootPackage));
+    constructor() {
+        super();
+        this.projectEditor = chainEditors(
+            super.projectEditor,
+            this.removeSeedFiles,
+        );
     }
 
     /**
@@ -94,12 +91,13 @@ export class JavaSeed extends UniversalSeed implements VersionedArtifact {
      *
      * @param project  Project to remove seed files from.
      */
-    protected removeSeedFiles(project: ProjectAsync): void {
-        super.removeSeedFiles(project);
+    protected removeSeedFiles(project: Project): Promise<Project> {
         const filesToDelete: string[] = [
             "src/main/scripts/travis-build.bash",
         ];
-        defer(project, deleteFiles(project, "src/main/scripts/**", f => filesToDelete.includes(f.path)));
+        return deleteFiles(project, "src/main/scripts/**",
+            f => filesToDelete.includes(f.path))
+            .then(count => project);
     }
 
 }

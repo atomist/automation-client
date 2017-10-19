@@ -1,8 +1,10 @@
 import { CommandHandler, MappedParameter, Parameter, Tags } from "../../decorators";
 import { MappedParameters } from "../../Handlers";
 import { defer } from "../../internal/common/Flushable";
-import { Project, ProjectAsync } from "../../project/Project";
+import { Project } from "../../project/Project";
 import { deleteFiles, doWithFiles } from "../../project/util/projectUtils";
+import { flushAndSucceed, ProjectEditor } from "../edit/projectEditor";
+import { chainEditors } from "../edit/projectEditorOps";
 import { SeedDrivenGenerator } from "./SeedDrivenGenerator";
 
 /**
@@ -33,54 +35,37 @@ export class UniversalSeed extends SeedDrivenGenerator {
     public visibility: "public" | "private" = "public";
 
     constructor() {
-        super();
-    }
-
-    /**
-     * Subclasses can extend this to add custom logic to the repo
-     * contents from the seed location.  The project is already
-     * populated when this method is called.  This version calls
-     * removeSeedFiles and updates the README.
-     *
-     * @param project raw seed project
-     */
-    public manipulate(project: Project): Promise<Project> {
-        this.removeSeedFiles(project);
-        this.cleanReadMe(project, this.description);
-        return project.flush();
-    }
-
-    /**
-     * Remove content from README specific to this project.
-     *
-     * @param project      project whose README should be cleaned
-     * @param description  brief description of newly created project
-     */
-    protected cleanReadMe(project: ProjectAsync, description: string): void {
-        defer(project, doWithFiles(project, "README.md", readMe => {
-            readMe.recordReplace(/^#[\\s\\S]*?## Development/, `# ${project.name}
-This project contains ${description}.
-## Development`);
-        }));
-    }
-
-    /**
-     * Remove files in seed that are not useful, valid, or appropriate
-     * for a generated project.
-     */
-    protected removeSeedFiles(project: ProjectAsync): void {
-        const filesToDelete: string[] = [
-            ".travis.yml",
-            "LICENSE",
-            "CHANGELOG.md",
-            "CODE_OF_CONDUCT.md",
-            "CONTRIBUTING.md",
-        ];
-        defer(project, deleteFiles(project, "/*", f => filesToDelete.includes(f.path)));
-        const deleteDirs: string[] = [
-            ".travis",
-        ];
-        deleteDirs.forEach(d => defer(project, project.deleteDirectory(d)));
+        super(chainEditors(RemoveSeedFiles));
     }
 
 }
+
+/**
+ * Remove content from README specific to this project.
+ *
+ * @param project      project whose README should be cleaned
+ * @param description  brief description of newly created project
+ */
+export function cleanReadMe(description: string, project: Project): Promise<Project> {
+    return doWithFiles(project, "README.md", readMe => {
+        readMe.recordReplace(/^#[\\s\\S]*?## Development/, `# ${project.name}
+This project contains ${description}.
+## Development`);
+    });
+}
+
+export const RemoveSeedFiles: ProjectEditor = project => {
+    const filesToDelete: string[] = [
+        ".travis.yml",
+        "LICENSE",
+        "CHANGELOG.md",
+        "CODE_OF_CONDUCT.md",
+        "CONTRIBUTING.md",
+    ];
+    defer(project, deleteFiles(project, "/*", f => filesToDelete.includes(f.path)));
+    const deleteDirs: string[] = [
+        ".travis",
+    ];
+    deleteDirs.forEach(d => defer(project, project.deleteDirectory(d)));
+    return flushAndSucceed(project);
+};
