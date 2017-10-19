@@ -9,7 +9,7 @@ describe("Local editing", () => {
     it("should not edit with no op editor", done => {
         const project = tempProject();
         const editor: ProjectEditor = p => Promise.resolve(successfulEdit(p, false));
-        editor(project, null)
+        editor(project, null, null)
             .then(r => {
                 assert(!r.edited);
                 done();

@@ -1,3 +1,4 @@
+import { Parameters } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { ActionResult } from "../../internal/util/ActionResult";
 import { Project } from "../../project/Project";
@@ -5,8 +6,8 @@ import { Project } from "../../project/Project";
 /**
  * Modifies the given project, returning information about the modification.
  */
-export type ProjectEditor<ER extends EditResult = EditResult> =
-    (p: Project, context: HandlerContext) => Promise<ER>;
+export type ProjectEditor<PARAMS extends Parameters = undefined, ER extends EditResult = EditResult> =
+    (p: Project, context: HandlerContext, params?: PARAMS) => Promise<ER>;
 
 /**
  * Result of editing a project. More information may be added by instances.
