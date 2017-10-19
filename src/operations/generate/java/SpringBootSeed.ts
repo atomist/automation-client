@@ -60,8 +60,7 @@ export class SpringBootSeed extends JavaSeed {
                 f.recordRename(f.name.replace(oldClass, newClass));
                 f.recordReplaceAll(oldClass, newClass);
             }
-        })
-            .then(files => project);
+        });
     }
 
 }

@@ -3,6 +3,7 @@ import * as assert from "power-assert";
 import { SpringBootProjectStructure } from "../../../../src/operations/generate/java/SpringBootProjectStructure";
 import { InMemoryProject } from "../../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../../src/project/Project";
+import { SimplePom } from "./updatePomTest";
 
 describe("SpringBootProjectStructure: Java inference", () => {
 
@@ -51,5 +52,8 @@ export const GishProject: Project = InMemoryProject.of(
     {
         path: GishPath,
         content: javaSource,
+    }, {
+        path: "pom.xml",
+        content: SimplePom,
     },
 );

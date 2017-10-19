@@ -8,12 +8,20 @@ import { JavaProjectStructure } from "./JavaProjectStructure";
 import { movePackage } from "./javaProjectUtils";
 import { updatePom } from "./updatePom";
 
+export interface VersionedArtifact {
+
+    artifactId: string;
+    groupId: string;
+    version: string;
+    description: string;
+}
+
 /**
  * Superclass for all Java seeds using Maven. Updates Maven pom
  * based on parameters.
  */
 @CommandHandler("project generator for Java library seeds", ["java", "generator"])
-export class JavaSeed extends UniversalSeed {
+export class JavaSeed extends UniversalSeed implements VersionedArtifact {
 
     public static Name = "JavaSeed";
 
@@ -75,7 +83,7 @@ export class JavaSeed extends UniversalSeed {
      */
     public manipulate(project: Project): Promise<Project> {
         return super.manipulate(project)
-            .then(this.updatePom)
+            .then(curry(doUpdatePom)(this))
             .then(curry(inferStructureAndMovePackage)(this.rootPackage));
     }
 
@@ -94,11 +102,11 @@ export class JavaSeed extends UniversalSeed {
         defer(project, deleteFiles(project, "src/main/scripts/**", f => filesToDelete.includes(f.path)));
     }
 
-    private updatePom(p: Project): Promise<Project> {
-        const smartArtifactId = (this.artifactId === "${projectName}") ? p.name : this.artifactId;
-        return updatePom(p, smartArtifactId, this.groupId, this.version, this.description);
-    }
+}
 
+function doUpdatePom(id: VersionedArtifact, p: Project): Promise<Project> {
+    const smartArtifactId = (id.artifactId === "${projectName}") ? p.name : id.artifactId;
+    return updatePom(p, smartArtifactId, id.groupId, id.version, id.description);
 }
 
 function inferStructureAndMovePackage(rootPackage: string, p: Project): Promise<Project> {
