@@ -14,6 +14,10 @@ import { GitHubToken } from "../../atomist.config";
 
 function checkProject(p: Project) {
     const f = p.findFileSync("package.json");
+    assert(!!p.id);
+    assert(!!p.id.sha);
+    assert(!!p.id.owner);
+    assert(!!p.id.repo);
     assert(f.getContentSync());
 }
 
@@ -99,6 +103,9 @@ describe("GitProject", () => {
             .then(() => gp.isClean())
             .then(clean => {
                 assert(!clean.success);
+                assert(!!clean.target.branch);
+                assert(!!clean.target.id);
+                assert(clean.target.id.sha === "master");
                 done();
             })
             .catch(done);

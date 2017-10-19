@@ -11,6 +11,7 @@ import { ActionResult } from "../../internal/util/ActionResult";
 import { CommandResult, runCommand } from "../../internal/util/commandLine";
 import { logger } from "../../internal/util/logger";
 import { hideString } from "../../internal/util/string";
+import { RepoId, SimpleRepoId } from "../../operations/common/RepoId";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
 import { GitProject, PullRequestInfo } from "./GitProject";
 
@@ -53,10 +54,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             });
     }
 
-    /**
-     * Undefined unless set
-     */
-    public newBranch: string;
+    public branch: string;
 
     public remote: string;
 
@@ -71,9 +69,13 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         logger.info(`Created GitProject with token '${hideString(this.token)}'`);
     }
 
+    get id(): RepoId {
+        return new SimpleRepoId(this.owner, this.repoName, undefined, { url: "github.com"});
+    }
+
     public init(): Promise<CommandResult<this>> {
         this.newRepo = true;
-        this.newBranch = "master";
+        this.branch = "master";
         return this.runCommandInCurrentWorkingDirectory("git init");
     }
 
@@ -151,7 +153,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @param body
      */
     public raisePullRequest(title: string, body: string = name): Promise<ActionResult<this>> {
-        if (!(this.newBranch)) {
+        if (!(this.branch)) {
             throw new Error("Cannot create a PR: no branch has been created");
         }
         const config = {
@@ -164,7 +166,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         return axios.post(url, {
             title,
             body,
-            head: this.newBranch,
+            head: this.branch,
             base: "master",
         }, config)
             .then(axiosResponse => {
@@ -195,17 +197,17 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     public push(): Promise<any> {
-        if (this.newBranch && this.remote) {
+        if (this.branch && this.remote) {
             // We need to set the remote
-            return this.runCommandInCurrentWorkingDirectory(`git push ${this.remote} ${this.newBranch}`)
+            return this.runCommandInCurrentWorkingDirectory(`git push ${this.remote} ${this.branch}`)
                 .catch(err => logger.error("Unable to push: " + err));
         }
-        return this.runCommandInCurrentWorkingDirectory(`git push --set-upstream origin ${this.newBranch}`)
+        return this.runCommandInCurrentWorkingDirectory(`git push --set-upstream origin ${this.branch}`)
             .catch(err => logger.error("Unable to push: " + err));
     }
 
     public createBranch(name: string): Promise<CommandResult<this>> {
-        this.newBranch = name;
+        this.branch = name;
         return this.runCommandInCurrentWorkingDirectory(`git branch ${name}; git checkout ${name}`);
     }
 

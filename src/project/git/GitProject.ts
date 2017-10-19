@@ -1,4 +1,5 @@
 import { ActionResult } from "../../internal/util/ActionResult";
+import { RepoId } from "../../operations/common/RepoId";
 import { LocalProject } from "../local/LocalProject";
 
 export const GitHubBase = "https://api.github.com";
@@ -9,10 +10,9 @@ export const GitHubBase = "https://api.github.com";
  */
 export interface GitProject extends LocalProject {
 
-    /**
-     * Undefined unless set
-     */
-    newBranch: string;
+    readonly id: RepoId;
+
+    readonly branch: string;
 
     remote: string;
 
