@@ -79,7 +79,7 @@ describe("GitProject", () => {
         p.addFileSync("Thing", "1");
         const gp: GitProject = GitCommandGitProject.fromProject(p, GitHubToken);
         gp.init().then(() => gp.commit("Added a Thing").then(c => {
-            exec.exec("git status; git log", { cwd: p.baseDir }, (err, stdout, stderr) => {
+            exec.exec("git status; git log", {cwd: p.baseDir}, (err, stdout, stderr) => {
                 if (err) {
                     // node couldn't execute the command
                     console.error(`Node err on dir [${p.baseDir}]: ${err}`);
@@ -181,11 +181,12 @@ describe("GitProject", () => {
 
         newRepo().then(_ => {
             return cloneEditAndPush(GitHubToken, TargetOwner, TargetRepo,
-                    p => p.addFileSync("Cat", "hat"),
-                "Commit message", "thing2", {
-                title: "Thing2",
-                body: "Adds another character now",
-            })
+                p => p.addFileSync("Cat", "hat"), {
+                    branch: "thing2",
+                    title: "Thing2",
+                    commitMessage: "Commit message",
+                    body: "Adds another character now",
+                })
                 .then(() => done());
         }).catch(done);
     }).timeout(20000);
@@ -200,7 +201,7 @@ describe("GitProject", () => {
 
                 gp.checkout(sha)
                     .then(_ => {
-                        exec.exec("git status", { cwd: baseDir }, (err, stdout, stderr) => {
+                        exec.exec("git status", {cwd: baseDir}, (err, stdout, stderr) => {
                             if (err) {
                                 // node couldn't execute the command
                                 console.error(`Node err on dir [${baseDir}]: ${err}`);

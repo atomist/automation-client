@@ -12,8 +12,9 @@ import { CommandResult, runCommand } from "../../internal/util/commandLine";
 import { logger } from "../../internal/util/logger";
 import { hideString } from "../../internal/util/string";
 import { RepoId, SimpleRepoId } from "../../operations/common/RepoId";
+import { PullRequestInfo } from "../../operations/edit/editModes";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
-import { GitProject, PullRequestInfo } from "./GitProject";
+import { GitProject } from "./GitProject";
 
 export const GitHubBase = "https://api.github.com";
 
@@ -257,14 +258,12 @@ export function cloneEditAndPush(token: string,
                                  owner: string,
                                  name: string,
                                  doWithProject: (Project) => void,
-                                 commitMessage: string,
-                                 branch?: string,
                                  pr?: PullRequestInfo): Promise<ActionResult<GitCommandGitProject>> {
     return GitCommandGitProject.cloned(token, owner, name).then(gp => {
         doWithProject(gp);
-        const start: Promise<any> = branch ? gp.createBranch(branch) : Promise.resolve();
+        const start: Promise<any> = pr.branch ? gp.createBranch(pr.branch) : Promise.resolve();
         return start
-            .then(_ => gp.commit(commitMessage))
+            .then(_ => gp.commit(pr.commitMessage))
             .then(_ => gp.push())
             .then(x => {
                 if (pr) {
@@ -288,7 +287,6 @@ export function cloneEditAndPush(token: string,
  * @param user
  * @param repo
  * @param branch
- * @return {Promise<TResult2|LocalProject>|PromiseLike<TResult2|LocalProject>}
  */
 function clone(token: string,
                user: string,

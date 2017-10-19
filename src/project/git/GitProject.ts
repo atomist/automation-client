@@ -94,14 +94,3 @@ export interface GitProject extends LocalProject {
     createBranch(name: string): Promise<ActionResult<this>>;
 
 }
-
-/**
- * Information used in creating a GitHub pull request.
- */
-export interface PullRequestInfo {
-
-    title: string;
-
-    body: string;
-
-}
