@@ -5,8 +5,8 @@ import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { isRepoId, RepoId } from "../common/RepoId";
 import { RepoLoader } from "../common/repoLoader";
 import {
-    CommitInfo, EditInfo, isCommitInfo, isCustomExecutionEditInfo, isPullRequestInfo,
-    PullRequestInfo,
+    BranchCommit, EditMode, isBranchCommit, isCustomExecutionEditMode, isPullRequest,
+    PullRequest,
 } from "../edit/editModes";
 import { EditResult, ProjectEditor, successfulEdit } from "../edit/projectEditor";
 
@@ -23,15 +23,15 @@ export function loadAndEditRepo(token: string,
                                 context: HandlerContext,
                                 repo: RepoId | Project,
                                 editor: ProjectEditor,
-                                ei: EditInfo,
+                                ei: EditMode,
                                 repoLoader: RepoLoader =
                                     defaultRepoLoader(token)): Promise<EditResult> {
     const loadRepo: Promise<Project> = isRepoId(repo) ? repoLoader(repo) : Promise.resolve(repo);
-    if (isPullRequestInfo(ei)) {
+    if (isPullRequest(ei)) {
         return loadRepo.then(gp => editProjectUsingPullRequest(context, gp as GitProject, editor, ei));
-    } else if (isCommitInfo(ei)) {
+    } else if (isBranchCommit(ei)) {
         return loadRepo.then(gp => editProjectUsingBranch(context, gp as GitProject, editor, ei));
-    } else if (isCustomExecutionEditInfo(ei)) {
+    } else if (isCustomExecutionEditMode(ei)) {
         return loadRepo.then(ei.edit);
     } else {
         // No edit to do
@@ -42,7 +42,7 @@ export function loadAndEditRepo(token: string,
 export function editProjectUsingPullRequest(context: HandlerContext,
                                             gp: GitProject,
                                             editor: ProjectEditor,
-                                            pr: PullRequestInfo): Promise<EditResult> {
+                                            pr: PullRequest): Promise<EditResult> {
 
     return editor(gp, context)
         .then(r => r.edited ?
@@ -57,7 +57,7 @@ export function editProjectUsingPullRequest(context: HandlerContext,
 export function editProjectUsingBranch(context: HandlerContext,
                                        gp: GitProject,
                                        editor: ProjectEditor,
-                                       ci: CommitInfo): Promise<EditResult> {
+                                       ci: BranchCommit): Promise<EditResult> {
 
     return editor(gp, context)
         .then(r => r.edited ?
@@ -72,11 +72,11 @@ export function editProjectUsingBranch(context: HandlerContext,
 /**
  * Create a branch, commit with current content and push
  * @param {GitProject} gp
- * @param {CommitInfo} ci
+ * @param {BranchCommit} ci
  */
-export function createAndPushBranch(gp: GitProject, ci: CommitInfo): Promise<EditResult> {
+export function createAndPushBranch(gp: GitProject, ci: BranchCommit): Promise<EditResult> {
     return gp.createBranch(ci.branch)
-        .then(x => gp.commit(ci.commitMessage))
+        .then(x => gp.commit(ci.message))
         .then(x => gp.push())
         .then(r => successfulEdit(r.target, true));
 }
@@ -84,9 +84,9 @@ export function createAndPushBranch(gp: GitProject, ci: CommitInfo): Promise<Edi
 /**
  * Raise a PR from the current state of the project
  * @param {GitProject} gp
- * @param {PullRequestInfo} pr
+ * @param {PullRequest} pr
  */
-export function raisePr(gp: GitProject, pr: PullRequestInfo): Promise<EditResult> {
+export function raisePr(gp: GitProject, pr: PullRequest): Promise<EditResult> {
     return createAndPushBranch(gp, pr)
         .then(x => {
             return gp.raisePullRequest(pr.title, pr.body)

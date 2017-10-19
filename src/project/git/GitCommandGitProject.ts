@@ -12,7 +12,7 @@ import { CommandResult, runCommand } from "../../internal/util/commandLine";
 import { logger } from "../../internal/util/logger";
 import { hideString } from "../../internal/util/string";
 import { RepoId, SimpleRepoId } from "../../operations/common/RepoId";
-import { PullRequestInfo } from "../../operations/edit/editModes";
+import { PullRequest } from "../../operations/edit/editModes";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
 import { GitProject } from "./GitProject";
 
@@ -258,12 +258,12 @@ export function cloneEditAndPush(token: string,
                                  owner: string,
                                  name: string,
                                  doWithProject: (Project) => void,
-                                 pr?: PullRequestInfo): Promise<ActionResult<GitCommandGitProject>> {
+                                 pr?: PullRequest): Promise<ActionResult<GitCommandGitProject>> {
     return GitCommandGitProject.cloned(token, owner, name).then(gp => {
         doWithProject(gp);
         const start: Promise<any> = pr.branch ? gp.createBranch(pr.branch) : Promise.resolve();
         return start
-            .then(_ => gp.commit(pr.commitMessage))
+            .then(_ => gp.commit(pr.message))
             .then(_ => gp.push())
             .then(x => {
                 if (pr) {

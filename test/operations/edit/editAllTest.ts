@@ -4,14 +4,14 @@ import * as assert from "power-assert";
 
 import { fromListRepoFinder, fromListRepoLoader } from "../../../src/operations/common/fromProjectList";
 import { editAll } from "../../../src/operations/edit/editAll";
-import { CustomExecutionEditInfo } from "../../../src/operations/edit/editModes";
+import { CustomExecutionEditMode } from "../../../src/operations/edit/editModes";
 import { ProjectEditor, successfulEdit } from "../../../src/operations/edit/projectEditor";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../src/project/Project";
 
 describe("editAll", () => {
 
-    it("should edit none", done => {
+    it("should edit repo", done => {
         const editor: ProjectEditor = p => {
             p.addFileSync("thing", "1");
             return Promise.resolve(successfulEdit(p, true));
@@ -23,8 +23,8 @@ describe("editAll", () => {
 
         const projectsEdited: Project[] = [];
 
-        const cei: CustomExecutionEditInfo = {
-            commitMessage : "Thing",
+        const cei: CustomExecutionEditMode = {
+            message : "Thing",
             edit: p => {
                 projectsEdited.push(p);
                 return Promise.resolve(successfulEdit(p));

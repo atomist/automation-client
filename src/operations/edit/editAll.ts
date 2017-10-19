@@ -9,7 +9,7 @@ import { RepoFinder } from "../common/repoFinder";
 import { RepoLoader } from "../common/repoLoader";
 import { doWithAllRepos } from "../common/repoUtils";
 import { loadAndEditRepo } from "../support/editorUtils";
-import { EditInfo, EditInfoFactory, isEditInfo, toEditInfoFactory } from "./editModes";
+import { EditMode, EditModeFactory, isEditMode, toEditModeFactory } from "./editModes";
 import { EditResult, ProjectEditor } from "./projectEditor";
 
 /**
@@ -17,7 +17,7 @@ import { EditResult, ProjectEditor } from "./projectEditor";
  * @param {HandlerContext} ctx
  * @param {string} token
  * @param {ProjectEditor} editor
- * @param editInfo: EditInfo determines how the edits should be applied.
+ * @param editInfo: EditMode determines how the edits should be applied.
  * Factory allows us to use different branches if necessary
  * @param {RepoFinder} repoFinder
  * @param {} repoFilter
@@ -27,10 +27,10 @@ import { EditResult, ProjectEditor } from "./projectEditor";
 export function editAll<R>(ctx: HandlerContext,
                            token: string,
                            editor: ProjectEditor,
-                           editInfo: EditInfo | EditInfoFactory,
+                           editInfo: EditMode | EditModeFactory,
                            repoFinder: RepoFinder = allReposInTeam(),
                            repoFilter: RepoFilter = AllRepos,
                            repoLoader: RepoLoader = defaultRepoLoader(token)): Promise<EditResult[]> {
-    const edit = (p: Project) => loadAndEditRepo(token, ctx, p, editor, toEditInfoFactory(editInfo)(p));
+    const edit = (p: Project) => loadAndEditRepo(token, ctx, p, editor, toEditModeFactory(editInfo)(p));
     return doWithAllRepos<EditResult>(ctx, token, edit, repoFinder, repoFilter, repoLoader);
 }

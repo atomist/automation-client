@@ -184,7 +184,7 @@ describe("GitProject", () => {
                 p => p.addFileSync("Cat", "hat"), {
                     branch: "thing2",
                     title: "Thing2",
-                    commitMessage: "Commit message",
+                    message: "Commit message",
                     body: "Adds another character now",
                 })
                 .then(() => done());

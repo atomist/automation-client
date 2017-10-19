@@ -4,7 +4,7 @@ import { HandlerResult } from "../../HandlerResult";
 import { Project } from "../../project/Project";
 import { LocalOrRemoteRepoOperation } from "../common/LocalOrRemoteRepoOperation";
 import { editAll } from "./editAll";
-import { EditInfo } from "./editModes";
+import { EditMode } from "./editModes";
 import { ProjectEditor } from "./projectEditor";
 
 /**
@@ -36,11 +36,11 @@ export abstract class EditorCommandSupport extends LocalOrRemoteRepoOperation im
     }
 
     /**
-     * Return PullRequestInfo or other identification for commit message
+     * Return PullRequest or other identification for commit message
      * @param {Project} p
-     * @return {EditInfo}
+     * @return {EditMode}
      */
-    public abstract editInfo(p: Project): EditInfo;
+    public abstract editInfo(p: Project): EditMode;
 
     /**
      * Invoked after parameters have been populated in the context of
