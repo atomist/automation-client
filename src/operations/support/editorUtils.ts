@@ -16,20 +16,19 @@ import { ProjectEditor } from "../edit/projectEditor";
 export function editUsingPullRequest(token: string,
                                      context: HandlerContext,
                                      repo: RepoId,
-                                     editor: ProjectEditor<any>,
+                                     editor: ProjectEditor,
                                      pr: PullRequestInfo): Promise<ActionResult<GitProject>> {
     console.log("Editing project " + JSON.stringify(repo));
     return GitCommandGitProject.cloned(token, repo.owner, repo.repo)
-        .then(gp => editProjectUsingPullRequest(context, repo, gp, editor, pr));
+        .then(gp => editProjectUsingPullRequest(context, gp, editor, pr));
 }
 
 export function editProjectUsingPullRequest(context: HandlerContext,
-                                            repo: RepoId,
                                             gp: GitProject,
                                             editor: ProjectEditor,
                                             pr: PullRequestInfo): Promise<ActionResult<GitProject>> {
 
-    return editor(repo, gp, context)
+    return editor(gp, context)
         .then(r => r.edited ?
             raisePr(gp, pr) :
             {
@@ -39,12 +38,11 @@ export function editProjectUsingPullRequest(context: HandlerContext,
 }
 
 export function editProjectUsingBranch(context: HandlerContext,
-                                       repo: RepoId,
                                        gp: GitProject,
                                        editor: ProjectEditor,
                                        ci: CommitInfo): Promise<ActionResult<GitProject>> {
 
-    return editor(repo, gp, context)
+    return editor(gp, context)
         .then(r => r.edited ?
             createAndPushBranch(gp, ci) :
             {

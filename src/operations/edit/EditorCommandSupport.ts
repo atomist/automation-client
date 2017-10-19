@@ -26,7 +26,7 @@ export abstract class EditorCommandSupport extends LocalOrRemoteRepoOperation im
                         reposToEdit.map(r => {
                             if (this.local) {
                                 return load(r)
-                                    .then(p => projectEditor(r, p, context));
+                                    .then(p => projectEditor(p, context));
                             } else {
                                 return editUsingPullRequest(this.githubToken, context, r, projectEditor,
                                     // TODO customize PR config

@@ -9,7 +9,7 @@ describe("Local editing", () => {
     it("should not edit with no op editor", done => {
         const project = tempProject();
         const editor: ProjectEditor<EditResult> = p => Promise.resolve({ edited: false });
-        editor(null, project, null)
+        editor(project, null)
             .then(r => {
                 assert(!r.edited);
                 done();
@@ -18,11 +18,11 @@ describe("Local editing", () => {
 
     it("should edit on disk with real editor", done => {
         const project = tempProject();
-        const editor: ProjectEditor<EditResult> = (id, p) => {
+        const editor: ProjectEditor<EditResult> = p => {
             p.addFileSync("thing", "1");
             return Promise.resolve({ edited: true });
         };
-        editor(null, project, null)
+        editor(project, null)
             .then(r => {
                 assert(r.edited);
                 // Reload project
