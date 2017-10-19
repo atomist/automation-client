@@ -20,7 +20,7 @@ import * as fs from "fs-extra";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { logger } from "./internal/util/logger";
-import { hideString } from "./internal/util/string";
+import { hideString, obfuscateJson } from "./internal/util/string";
 import { AutomationEventListener } from "./server/AutomationEventListener";
 import { RunOptions } from "./server/options";
 
@@ -80,17 +80,19 @@ export function writeUserConfig(cfg: UserConfig): Promise<void> {
 function getModuleConfig(): ModuleConfig {
     let userConfig: UserConfig;
     try {
-        userConfig = fs.readJsonSync(UserConfigFile) as UserConfig;
+        if (fs.existsSync(UserConfigFile)) {
+            userConfig = fs.readJsonSync(UserConfigFile) as UserConfig;
+        }
     } catch (e) {
         const err = (e as Error).message;
-        logger.info(`failed to read user config: ${err}`);
+        logger.info(`Failed to read user config: ${err}`);
     }
     let pkgJson: any;
     try {
         pkgJson = fs.readJsonSync(`${appRoot.path}/package.json`);
     } catch (e) {
         const err = (e as Error).message;
-        logger.info(`failed to read client module name: ${err}`);
+        logger.info(`Failed to read client package.json: ${err}`);
     }
 
     return resolveModuleConfig(userConfig, pkgJson);
@@ -140,7 +142,7 @@ export function findConfiguration(): Configuration {
     const file = files[0];
     // This part is tricky but essentially brings in the user's handlers.
     const config = require(`${appRoot.path}/${file}`).configuration as Configuration;
-    logger.debug("Using configuration from '%s': %s", file, JSON.stringify(config, cleanUp));
+    logger.debug("Using configuration from '%s': %s", file, JSON.stringify(config, obfuscateJson));
     config.token = (config.token) ? config.token : moduleConfig.token;
     config.teamIds = (config.teamIds && config.teamIds.length > 0) ?
         config.teamIds : moduleConfig.teamIds;
@@ -162,17 +164,4 @@ function validateConfiguration(configuration: Configuration, path: string) {
     if (!configuration.token) {
         throw new Error(`token property is missing in '${path}'`);
     }
-}
-
-function cleanUp(key: string, value: any) {
-    if (key === "token" || key === "password") {
-        return hideString(value);
-    } else if (key === "commands") {
-        return undefined;
-    } else if (key === "events") {
-        return undefined;
-    } else if (key === "ingestors") {
-        return undefined;
-    }
-    return value;
 }

@@ -7,6 +7,7 @@ import { hideString } from "../../util/string";
 import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../RequestProcessor";
 import { sendMessage } from "./WebSocketMessageClient";
 import { RegistrationConfirmation, WebSocketRequestProcessor } from "./WebSocketRequestProcessor";
+import Timer = NodeJS.Timer;
 
 export class WebSocketClient {
 
@@ -16,11 +17,18 @@ export class WebSocketClient {
     }
 
     public start(): Promise<void> {
+
         const connection = register(this.registrationCallback, this.options, this.requestProcessor, 5)
             .then(registration =>
                 connect(this.registrationCallback, registration, this.options, this.requestProcessor));
         return connection.then(() => {
-                return;
+
+                exitHook(() => {
+                    reconnect = false;
+                    ws.close();
+                    logger.info("Closing WebSocket connection");
+                });
+
             }).catch(() => {
                 logger.error("Persistent error registering with Atomist. Exiting");
                 process.exit(1);
@@ -29,6 +37,9 @@ export class WebSocketClient {
 }
 
 let reconnect = true;
+let ping = 0;
+let pong;
+let ws;
 
 function connect(registrationCallback: () => any, registration: RegistrationConfirmation,
                  options: WebSocketClientOptions, requestProcessor: WebSocketRequestProcessor): Promise<WebSocket> {
@@ -44,11 +55,24 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
 
     return new Promise<WebSocket>(resolve => {
         logger.info(`Opening WebSocket connection`);
-        const ws = new WebSocket(registration.url);
+        ws = new WebSocket(registration.url);
+        let timer: Timer;
 
         ws.on("open", function open() {
             requestProcessor.onConnection(this);
             resolve(ws);
+
+            // Install ping/pong timer and shutdown hooks
+            timer = setInterval(() => {
+                if (pong + 1 < ping) {
+                    reset();
+                    ws.terminate();
+                    logger.error("Missing ping/pong from the server. Closing WebSocket");
+                } else {
+                    sendMessage({ ping }, ws, false);
+                    ping++;
+                }
+            }, 10000);
         });
 
         ws.on("message", function incoming(data: WebSocket.Data) {
@@ -62,6 +86,8 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
             try {
                 if (isPing(request)) {
                     sendMessage({ pong: request.ping }, this, false);
+                } else if (isPong(request)) {
+                    pong = request.pong;
                 } else {
                     if (isCommandIncoming(request)) {
                         invokeCommandHandler(request);
@@ -83,6 +109,7 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
             } else {
                 logger.warn(`WebSocket connection closed`);
             }
+            reset();
             // Only attempt to reconnect if we aren't shutting down
             if (reconnect) {
                 register(registrationCallback, options, requestProcessor)
@@ -90,11 +117,11 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
             }
         });
 
-        exitHook(() => {
-            reconnect = false;
-            ws.close();
-            logger.info("Closing WebSocket connection");
-        });
+        function reset() {
+            clearInterval(timer);
+            ping = 0;
+            pong = 0;
+        }
     });
 }
 
@@ -174,6 +201,14 @@ function isPing(a: any): a is Ping {
     return a.ping != null;
 }
 
+function isPong(a: any): a is Pong {
+    return a.pong != null;
+}
+
 interface Ping {
     ping: string;
+}
+
+interface Pong {
+    pong: string;
 }

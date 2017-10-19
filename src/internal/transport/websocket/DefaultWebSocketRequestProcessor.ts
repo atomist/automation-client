@@ -6,6 +6,7 @@ import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
 import { MessageClient } from "../../../spi/message/MessageClient";
 import { logger } from "../../util/logger";
+import { obfuscateJson } from "../../util/string";
 import { AbstractEventStoringRequestProcessor } from "../AbstractEventStoringRequestProcessor";
 import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../RequestProcessor";
 import { WebSocketClientOptions } from "./WebSocketClient";
@@ -29,7 +30,7 @@ export class DefaultWebSocketRequestProcessor extends AbstractEventStoringReques
     }
 
     public onRegistration(registration: RegistrationConfirmation) {
-        logger.info("Registration successful: %s", JSON.stringify(registration));
+        logger.info("Registration successful: %s", JSON.stringify(registration, obfuscateJson));
         global.setJwtToken(registration.jwt);
         this.registration = registration;
     }

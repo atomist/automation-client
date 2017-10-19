@@ -50,3 +50,16 @@ export function toStringArray(strings: string | string[]): string[] {
         return null;
     }
 }
+
+export function obfuscateJson(key: string, value: any) {
+    if (key === "token" || key === "password" || key === "jwt" || key === "url") {
+        return hideString(value);
+    } else if (key === "commands") {
+        return undefined;
+    } else if (key === "events") {
+        return undefined;
+    } else if (key === "ingestors") {
+        return undefined;
+    }
+    return value;
+}
