@@ -3,6 +3,7 @@ import axios from "axios";
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as fs from "fs";
+import * as GitHubApi from "github";
 import * as _ from "lodash";
 import * as mustacheExpress from "mustache-express";
 import * as passport from "passport";
@@ -10,6 +11,7 @@ import * as github from "passport-github";
 import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
 import * as globals from "../../../globals";
+import { MappedParameters } from "../../../Handlers";
 import { AutomationServer } from "../../../server/AutomationServer";
 import {
     CommandHandlerMetadata,
@@ -25,6 +27,7 @@ import {
 } from "../RequestProcessor";
 
 const ApiBase = "";
+const api = new GitHubApi();
 
 let Basic = false;
 let Bearer = false;
@@ -88,9 +91,10 @@ export class ExpressServer {
         this.setupAuthentication();
 
         if (this.options.auth && this.options.auth.github.enabled) {
-            exp.get("/auth/github", passport.authenticate("github"));
+            exp.get("/auth/github", passport.authenticate("github",
+                { successReturnToOrRedirect: "/", failureRedirect: "/error", failureFlash: true }));
             exp.get("/auth/github/callback", passport.authenticate("github",
-                { failureRedirect: "/error", failureFlash: true }),
+                { successReturnToOrRedirect: "/", failureRedirect: "/error", failureFlash: true }),
                 (req, res) => {
                     // Successful authentication, redirect home.
                     res.redirect("/");
@@ -176,6 +180,7 @@ export class ExpressServer {
                 this.exposeCommandHandlerInvocationRoute(exp,
                     `${ApiBase}/command/${_.kebabCase(h.name)}`, h,
                     (res, result) => res.status(result.code === 0 ? 200 : 500).json(result));
+                this.exposeCommandHandlerHtmlInvocationRoute(exp, `${ApiBase}/command/html/${_.kebabCase(h.name)}`, h);
             },
         );
         automations.rugs.ingestors.forEach(
@@ -188,6 +193,26 @@ export class ExpressServer {
         exp.listen(this.options.port, () => {
             logger.info(`Atomist automation dashboard running at 'http://${this.options.host}:${this.options.port}'`);
         });
+    }
+
+    private exposeCommandHandlerHtmlInvocationRoute(exp: express.Express,
+                                                    url: string,
+                                                    h: CommandHandlerMetadata) {
+        exp.get(url, authenticate,
+            (req, res) => {
+                const mappedParameters = h.mapped_parameters.map(mp => {
+                    if (mp.foreign_key === MappedParameters.GitHubOwner) {
+                        return { name: mp.local_key, value: req.user.orgs };
+                    // } else if (mp.foreign_key === MappedParameters.GitHubRepository) {
+                    //    return { name: mp.local_key, value: req.user.repos };
+                    } else {
+                        return null;
+                    }
+                }).filter(mp => mp !== null);
+
+                res.render("command.html", {...h, route: _.kebabCase(h.name),
+                    mapped_parameters: mappedParameters });
+            });
     }
 
     private exposeCommandHandlerInvocationRoute(exp: express.Express,
@@ -308,10 +333,27 @@ export class ExpressServer {
                 }, (accessToken, refreshToken, profile, cb) => {
                     if (org) {
                         // check org membership
-                        axios.get(`https://api.github.com/orgs/${org}/members/${profile.username}`,
-                            { headers: { Authorization: `token ${accessToken}` }})
-                            .then(() => cb(null, { ...profile, accessToken } ))
+                        api.authenticate({ type: "token", token: accessToken });
+                        api.orgs.checkMembership({ org, username: profile.username })
+                            .then(() => {
+                                return api.users.getOrgs({ per_page: 100, page: 0})
+                                    .then(function paging(result, orgs = []) {
+                                        result.data.forEach(r => orgs.push(r.login));
+                                        if (!api.hasNextPage(result.meta.link)) {
+                                            return orgs;
+                                        }
+
+                                        return api.getNextPage(result.meta.link)
+                                            .then(r => paging(r, orgs));
+                                    });
+                            })
+                            .then(orgs => {
+                                orgs.push(profile.username);
+                                orgs = orgs.sort((o1, o2) => o1.localeCompare(o2));
+                                cb(null, { ...profile, accessToken, orgs })
+                            })
                             .catch(err => cb(null, false));
+
                     } else {
                         return cb(null, { ...profile, accessToken });
                     }
