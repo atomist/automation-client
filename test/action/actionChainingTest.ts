@@ -46,6 +46,7 @@ describe("action chaining", () => {
             }).catch(done);
     });
 
+    // this looks identical to the previous test
     it("should work in both directions", done => {
         const project = new InMemoryProject("");
         const editor: ProjectOp = p => {
@@ -58,7 +59,7 @@ describe("action chaining", () => {
                 done();
             }).catch(done);
     });
-
+    // how is this in any way different from the previous two except a variable name?
     it("should allow project function to be included", done => {
         const project = new InMemoryProject("");
         const projectFunction = p => {

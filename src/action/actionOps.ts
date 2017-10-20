@@ -15,17 +15,17 @@ export function actionChain<T>(...steps: Array<Chainable<T>>): TAction<T> {
     return steps.length === 0 ?
         NoAction :
         steps.reduce((c1, c2) => {
-            const ed1: TAction<T> = toAction(c1);
+            const ed1: TAction<T> = toAction(c1); // why would c1 be an array?
             const ed2: TAction<T> = toAction(c2);
             return p =>
-                (ed1(p)
+                (ed1(p) // what if not successful??
                     .then(r1 => {
                         // console.log("Applied action " + c1.toString());
                         return ed2(p)
                             .then(r2 => {
                                 // console.log("Applied action " + c2.toString());
                                 return {
-                                    ...r1,
+                                    ...r1, // the clojure ppl will LOVE this (I love it)
                                     ...r2,
                                 };
                             });
@@ -34,15 +34,13 @@ export function actionChain<T>(...steps: Array<Chainable<T>>): TAction<T> {
 }
 
 function toAction<T>(link: Chainable<T>): TAction<T> {
-    return link.length === 1 ?
-        t => (link as TOp<T>)(t)
-            .then(r => {
-                // See what it returns
-                return isActionResult(r) ?
-                    r :
-                    successOn(r);
-            }) :
-        link as TAction<T>;
+    return t => (link as TOp<T>)(t) // how about a nice catch with a failure ??
+        .then(r => {
+            // See what it returns
+            return isActionResult(r) ?
+                r :
+                successOn(r);
+        });
 }
 
 /**
