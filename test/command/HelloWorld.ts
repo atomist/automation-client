@@ -5,10 +5,10 @@ import { HandleCommand, HandlerContext, HandlerResult, MappedParameters, Secrets
 import { sendMessages } from "../../src/operations/support/contextUtils";
 import { buttonForCommand, menuForCommand } from "../../src/spi/message/MessageClient";
 
-@CommandHandler("Sends a hello back to the client", "hello cd")
+@CommandHandler("Send a hello back to the client", "hello cd")
 export class HelloWorld implements HandleCommand {
 
-    @Parameter({pattern: /^.*$/})
+    @Parameter({description: "Name of person the greeting should be send to", pattern: /^.*$/})
     public name: string;
 
     @Secret(Secrets.userToken(["repo"]))
