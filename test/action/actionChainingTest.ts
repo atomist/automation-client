@@ -73,4 +73,15 @@ describe("action chaining", () => {
             }).catch(done);
     });
 
+    it("should call actions in sequence", (done) => {
+        const f1 = (s: string) => Promise.resolve(s + " and 1");
+        const f2 = (s: string) => Promise.resolve(s + " and 2");
+        const chain = actionChain(f1, f2)
+        chain("Southwest").then(result => {
+            assert(result.success);
+            assert(result.target === "Southwest and 1 and 2");
+            done();
+        }).catch(done)
+    })
+
 });

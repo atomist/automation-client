@@ -21,7 +21,7 @@ export function actionChain<T>(...steps: Array<Chainable<T>>): TAction<T> {
                 (ed1(p) // what if not successful??
                     .then(r1 => {
                         // console.log("Applied action " + c1.toString());
-                        return ed2(p)
+                        return ed2(r1.target)
                             .then(r2 => {
                                 // console.log("Applied action " + c2.toString());
                                 return {
