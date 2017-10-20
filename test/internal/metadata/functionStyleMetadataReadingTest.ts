@@ -6,7 +6,7 @@ import { HandlerContext } from "../../../src/HandlerContext";
 import { CommandInvocation } from "../../../src/internal/invoker/Payload";
 import { CommandHandlerMetadata } from "../../../src/internal/metadata/metadata";
 import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
-import { addAtomistSpringAgent } from "./decoratedFunctions";
+import { addAtomistSpringAgent } from "./functionStyleCommandHandlers";
 
 describe("function style metadata reading", () => {
 

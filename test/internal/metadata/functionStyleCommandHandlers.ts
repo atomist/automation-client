@@ -1,5 +1,5 @@
 import { MappedParameter, Parameter, Parameters, Secret } from "../../../src/decorators";
-import { SelfDescribingHandleCommand } from "../../../src/HandleCommand";
+import { HandleCommand, SelfDescribingHandleCommand } from "../../../src/HandleCommand";
 import { commandHandlerFrom, Handler } from "../../../src/handler";
 import { succeed } from "../../../src/operations/support/contextUtils";
 
@@ -22,12 +22,10 @@ export class AddAtomistSpringAgentParams {
     public someSecret: string;
 }
 
-export const AddAtomistSpringAgent: Handler<AddAtomistSpringAgentParams> =
-    (ctx, params) =>
-        ctx.messageClient.respond("I got your message: slackTeam=" + params.slackTeam)
-            .then(succeed);
-
-export const addAtomistSpringAgent: SelfDescribingHandleCommand<AddAtomistSpringAgentParams> =
-    commandHandlerFrom(AddAtomistSpringAgent,
+// Note we need an explicit type annotation here to avoid an error
+export const addAtomistSpringAgent: HandleCommand =
+    commandHandlerFrom((ctx, params) =>
+            ctx.messageClient.respond("I got your message: slackTeam=" + params.slackTeam)
+                .then(succeed),
         AddAtomistSpringAgentParams,
         "AddAtomistSpringAgent");

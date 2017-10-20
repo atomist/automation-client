@@ -1,8 +1,14 @@
 import { Arg, CommandInvocation, Invocation } from "../internal/invoker/Payload";
-import { CommandHandlerMetadata, EventHandlerMetadata, IngestorMetadata, Rugs } from "../internal/metadata/metadata";
+import {
+    CommandHandlerMetadata,
+    EventHandlerMetadata,
+    IngestorMetadata,
+    isCommandHandlerMetadata,
+    Rugs,
+} from "../internal/metadata/metadata";
 import { AbstractAutomationServer } from "./AbstractAutomationServer";
 
-import { HandleCommand, SelfDescribingHandleCommand } from "../HandleCommand";
+import { HandleCommand } from "../HandleCommand";
 import { HandlerContext } from "../HandlerContext";
 import { NodeConfigSecretResolver } from "../internal/env/NodeConfigSecretResolver";
 import { metadataFromInstance } from "../internal/metadata/metadataReading";
@@ -94,12 +100,13 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         return this;
     }
 
-    public fromCommandHandler<P>(hc: SelfDescribingHandleCommand<P>): this {
+    public fromCommandHandler<P>(hc: HandleCommand<P>): this {
+        const md = isCommandHandlerMetadata(hc) ? hc : metadataFromInstance(hc);
         this.commandHandlers.push({
-            metadata: hc,
+            metadata: md,
             invoke: (i, ctx) => {
                 const freshParams = !!hc.freshParametersInstance ? hc.freshParametersInstance() : hc;
-                return this.invokeCommandHandlerWithFreshParametersInstance(hc, hc, freshParams, i, ctx);
+                return this.invokeCommandHandlerWithFreshParametersInstance(hc, md, freshParams, i, ctx);
             },
         });
         return this;
