@@ -1,28 +1,21 @@
 import * as _ from "lodash";
-import { CommandHandlerMaker, Configuration, toCommandHanderFactory } from "./configuration";
+import { Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { registerApplicationEvents } from "./internal/env/applicationEvent";
-import {
-    ExpressServer,
-    ExpressServerOptions,
-} from "./internal/transport/express/ExpressServer";
+import { ExpressServer, ExpressServerOptions } from "./internal/transport/express/ExpressServer";
 import { MetricEnabledAutomationEventListener } from "./internal/transport/MetricEnabledAutomationEventListener";
 import { RequestProcessor } from "./internal/transport/RequestProcessor";
-import {
-    DefaultWebSocketRequestProcessor,
-} from "./internal/transport/websocket/DefaultWebSocketRequestProcessor";
+import { DefaultWebSocketRequestProcessor } from "./internal/transport/websocket/DefaultWebSocketRequestProcessor";
 import { prepareRegistration } from "./internal/transport/websocket/payloads";
-import {
-    WebSocketClient,
-    WebSocketClientOptions,
-} from "./internal/transport/websocket/WebSocketClient";
+import { WebSocketClient, WebSocketClientOptions } from "./internal/transport/websocket/WebSocketClient";
 import { WebSocketRequestProcessor } from "./internal/transport/websocket/WebSocketRequestProcessor";
 import { logger } from "./internal/util/logger";
 import { toStringArray } from "./internal/util/string";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
 import { AutomationServerOptions } from "./server/options";
+import { Maker, toFactory } from "./util/constructionUtils";
 
 export const DefaultApiServer =
     "https://automation.atomist.com/registration";
@@ -63,8 +56,8 @@ export class AutomationClient {
         return this.automations;
     }
 
-    public withCommandHandler(chm: CommandHandlerMaker): AutomationClient {
-        this.automations.fromCommandHandlerInstance(toCommandHanderFactory(chm));
+    public withCommandHandler(chm: Maker<HandleCommand>): AutomationClient {
+        this.automations.fromCommandHandlerInstance(toFactory(chm));
         return this;
     }
 

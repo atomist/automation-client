@@ -29,4 +29,4 @@ export interface HandleCommand<P = any> {
 
 }
 
-export type SelfDescribingHandleCommand<P> = HandleCommand<P> & CommandHandlerMetadata;
+export type SelfDescribingHandleCommand<P = any> = HandleCommand<P> & CommandHandlerMetadata;

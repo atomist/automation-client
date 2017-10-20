@@ -154,7 +154,7 @@ export class Superclass implements HandleCommand {
     }
 }
 
-@CommandHandler("AddAtomistSpringAgent", "add the Atomist Spring Boot agent to a Spring Boot project")
+@CommandHandler("addAtomistSpringAgent", "add the Atomist Spring Boot agent to a Spring Boot project")
 @Tags("atomist", "spring")
 class Subclass extends Superclass {
 

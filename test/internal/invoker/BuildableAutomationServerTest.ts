@@ -132,7 +132,7 @@ describe("BuildableAutomationServer", () => {
 
     it("should register one command handler instance and invoke with valid parameter", done => {
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        s.fromCommandHandlerInstance(() => new AddAtomistSpringAgent());
+        s.fromCommandHandlerInstance(AddAtomistSpringAgent);
         s.invokeCommand({
             name: "AddAtomistSpringAgent",
             args: [{name: "slackTeam", value: "T1691"}],

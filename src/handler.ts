@@ -29,7 +29,7 @@ export type Handler<P = undefined> =
  * the given function
  * @param {Handler<P>} h
  * @param {ParametersConstructor<P>} factory
- * @param {string} name
+ * @param {string} name can be omitted if the function isn't exported
  * @param {string} description
  * @param {string[]} intent
  * @param {Tag[]} tags
@@ -37,9 +37,13 @@ export type Handler<P = undefined> =
  */
 export function commandHandlerFrom<P>(h: Handler<P>,
                                       factory: ParametersConstructor<P>,
-                                      name: string, description: string,
+                                      name: string = h.name,
+                                      description: string = name,
                                       intent: string[] = [],
                                       tags: Tag[] = []): HandleCommand<P> & CommandHandlerMetadata {
+    if (!name) {
+        throw new Error(`Cannot derive name from function [${h}]: Provide name explicitly`);
+    }
     return new FunctionWrappingCommandHandler(name, description, h, factory, tags, intent);
 }
 
@@ -52,7 +56,8 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
 
     public secrets?: SecretDeclaration[];
 
-    constructor(public name: string, public description: string,
+    constructor(public name: string,
+                public description: string,
                 private h: Handler<P>,
                 private parametersFactory: ParametersConstructor<P>,
                 public tags: Tag[] = [],

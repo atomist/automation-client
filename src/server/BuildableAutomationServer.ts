@@ -11,10 +11,11 @@ import { SecretResolver } from "../spi/env/SecretResolver";
 import { ApolloGraphClient } from "../graph/ApolloGraphClient";
 import { EventFired, HandleEvent } from "../HandleEvent";
 import { HandlerResult } from "../HandlerResult";
-import { GraphClient } from "../spi/graph/GraphClient";
 import { logger } from "../internal/util/logger";
 import { toStringArray } from "../internal/util/string";
 import { populateParameters } from "../operations/support/parameterPopulation";
+import { GraphClient } from "../spi/graph/GraphClient";
+import { Maker, toFactory } from "../util/constructionUtils";
 import { AutomationServerOptions } from "./options";
 
 interface CommandHandlerRegistration {
@@ -76,7 +77,8 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         return this;
     }
 
-    public fromCommandHandlerInstance(factory: () => HandleCommand): this {
+    public fromCommandHandlerInstance(chm: Maker<HandleCommand>): this {
+        const factory = toFactory(chm);
         const instanceToInspect = factory();
         const md = metadataFromInstance(instanceToInspect) as CommandHandlerMetadata;
         if (!md) {

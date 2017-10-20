@@ -6,16 +6,16 @@ import { HandlerContext } from "../../../src/HandlerContext";
 import { CommandInvocation } from "../../../src/internal/invoker/Payload";
 import { CommandHandlerMetadata } from "../../../src/internal/metadata/metadata";
 import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
-import { AddAtomistSpringAgent, AddAtomistSpringAgentParams } from "./decoratedFunctions";
+import { addAtomistSpringAgent } from "./decoratedFunctions";
 
 describe("function style metadata reading", () => {
 
     it("should get correct handler name", () => {
-        assert(metadataFromInstance(AddAtomistSpringAgent).name === "AddAtomistSpringAgent");
+        assert(metadataFromInstance(addAtomistSpringAgent).name === "AddAtomistSpringAgent");
     });
 
     it("should extract metadataFromInstance from function sourced command handler", () => {
-        const md = metadataFromInstance(AddAtomistSpringAgent) as CommandHandlerMetadata;
+        const md = metadataFromInstance(addAtomistSpringAgent) as CommandHandlerMetadata;
         assert(md.parameters.length === 1);
         assert(md.parameters[0].name === "slackTeam");
         assert(md.mapped_parameters.length === 1);
@@ -36,7 +36,7 @@ describe("function style metadata reading", () => {
             },
         } as HandlerContext;
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        s.fromCommandHandler(AddAtomistSpringAgent);
+        s.fromCommandHandler(addAtomistSpringAgent);
 
         const payload: CommandInvocation = {
             name: "AddAtomistSpringAgent",

@@ -22,13 +22,12 @@ export class AddAtomistSpringAgentParams {
     public someSecret: string;
 }
 
-const addAtomistSpringAgent: Handler<AddAtomistSpringAgentParams> =
+export const AddAtomistSpringAgent: Handler<AddAtomistSpringAgentParams> =
     (ctx, params) =>
-         ctx.messageClient.respond("I got your message: slackTeam=" + params.slackTeam)
+        ctx.messageClient.respond("I got your message: slackTeam=" + params.slackTeam)
             .then(succeed);
 
-export const AddAtomistSpringAgent: SelfDescribingHandleCommand<AddAtomistSpringAgentParams> =
-    commandHandlerFrom(addAtomistSpringAgent,
+export const addAtomistSpringAgent: SelfDescribingHandleCommand<AddAtomistSpringAgentParams> =
+    commandHandlerFrom(AddAtomistSpringAgent,
         AddAtomistSpringAgentParams,
-        "AddAtomistSpringAgent",
-        "add something");
+        "AddAtomistSpringAgent");

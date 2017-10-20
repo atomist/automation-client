@@ -20,26 +20,14 @@ import * as fs from "fs-extra";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { logger } from "./internal/util/logger";
-import { hideString, obfuscateJson } from "./internal/util/string";
+import { obfuscateJson } from "./internal/util/string";
 import { AutomationEventListener } from "./server/AutomationEventListener";
 import { RunOptions } from "./server/options";
-
-export type CommandHandlerFactory = () => HandleCommand;
-
-export interface CommandHandlerConstructor {
-    new(): HandleCommand;
-}
-
-export type CommandHandlerMaker = CommandHandlerFactory | CommandHandlerConstructor;
-
-export function toCommandHanderFactory(chm: CommandHandlerMaker): CommandHandlerFactory {
-    return ((chm as CommandHandlerConstructor).length === 1) ?
-        Function.apply(chm) :
-        new (chm as CommandHandlerConstructor)();
-}
+import { Maker } from "./util/constructionUtils";
 
 export interface Configuration extends RunOptions {
-    commands?: CommandHandlerMaker[];
+
+    commands?: Array<Maker<HandleCommand>>;
     events?: Array<() => HandleEvent<any>>;
     ingestors?: Array<() => HandleEvent<any>>;
     listeners?: AutomationEventListener[];
