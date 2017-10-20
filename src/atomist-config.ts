@@ -22,7 +22,7 @@ import * as inquirer from "inquirer";
 import * as os from "os";
 import * as process from "process";
 
-import { UserConfig, UserConfigFile, writeUserConfig } from "./configuration";
+import { UserConfigFile, writeUserConfig } from "./configuration";
 import { LoggingConfig } from "./internal/util/logger";
 
 LoggingConfig.format = "cli";
