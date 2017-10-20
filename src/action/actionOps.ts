@@ -1,4 +1,4 @@
-import { ActionResult, isActionResult, successOn } from "./ActionResult";
+import { ActionResult, isActionResult, successOn, failureOn } from "./ActionResult";
 
 export type TOp<T> = (p: T) => Promise<T>;
 
@@ -17,10 +17,10 @@ export function actionChain<T>(...steps: Array<Chainable<T>>): TAction<T> {
         steps.reduce((c1, c2) => {
             const ed1: TAction<T> = toAction(c1); // why would c1 be an array?
             const ed2: TAction<T> = toAction(c2);
-            return p =>
-                (ed1(p) // what if not successful??
-                    .then(r1 => {
-                        // console.log("Applied action " + c1.toString());
+            return p => {
+                return ed1(p).then(r1 => {
+                    console.log("Applied action " + c1.toString());
+                    try {
                         return ed2(r1.target)
                             .then(r2 => {
                                 // console.log("Applied action " + c2.toString());
@@ -29,7 +29,12 @@ export function actionChain<T>(...steps: Array<Chainable<T>>): TAction<T> {
                                     ...r2,
                                 };
                             });
-                    }));
+                    } catch (err) {
+                        console.log("the second function failed")
+                        return Promise.resolve(failureOn(p, err, c2))
+                    }
+                })
+            }
         }) as TAction<T>;
 }
 
