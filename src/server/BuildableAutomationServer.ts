@@ -2,7 +2,7 @@ import { Arg, CommandInvocation, Invocation } from "../internal/invoker/Payload"
 import { CommandHandlerMetadata, EventHandlerMetadata, IngestorMetadata, Rugs } from "../internal/metadata/metadata";
 import { AbstractAutomationServer } from "./AbstractAutomationServer";
 
-import { HandleCommand } from "../HandleCommand";
+import { HandleCommand, SelfDescribingHandleCommand } from "../HandleCommand";
 import { HandlerContext } from "../HandlerContext";
 import { NodeConfigSecretResolver } from "../internal/env/NodeConfigSecretResolver";
 import { metadataFromInstance } from "../internal/metadata/metadataReading";
@@ -13,6 +13,7 @@ import { EventFired, HandleEvent } from "../HandleEvent";
 import { HandlerResult } from "../HandlerResult";
 import { GraphClient } from "../spi/graph/GraphClient";
 
+import { ParametersFactory } from "../handler";
 import { logger } from "../internal/util/logger";
 import { toStringArray } from "../internal/util/string";
 import { populateParameters } from "../operations/support/parameterPopulation";
@@ -58,7 +59,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         if (opts.endpoints && opts.endpoints.graphql) {
             if (opts.token) {
                 this.graphClient = new ApolloGraphClient(opts.endpoints.graphql,
-                    { Authorization: `token ${opts.token}` });
+                    {Authorization: `token ${opts.token}`});
             } else {
                 logger.warn("Cannot create graph client due to missing token");
             }
@@ -86,6 +87,15 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         this.commandHandlers.push({
             metadata: md,
             invoke: (i, ctx) => this.invokeFreshCommandHandlerInstance(factory(), md, i, ctx),
+        });
+        return this;
+    }
+
+    public fromCommandHandler<P>(hc: SelfDescribingHandleCommand<P> /*factory: ParametersFactory<P>*/): this {
+        // const paramsInstanceToInspect = new factory();
+        this.commandHandlers.push({
+            metadata: hc,
+            invoke: (i, ctx) => this.invokeFreshCommandHandlerInstance(hc, hc, i, ctx),
         });
         return this;
     }
@@ -149,7 +159,12 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         populateParameters(h, md, invocation.args);
         this.populateMappedParameters(h, invocation);
         this.populateSecrets(h, invocation.secrets);
-        return h.handle(this.enrichContext(ctx))
+        const handlerResult = h.handle(this.enrichContext(ctx), h);
+        if (!handlerResult) {
+            return Promise.reject(
+                `Error: Handler [${md.name}] returned null or undefined: Probably a user coding error`);
+        }
+        return handlerResult
             .catch(err => {
                 logger.error("Rejecting promise on " + err);
                 return Promise.reject(err);
@@ -204,6 +219,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                 throw new Error(`Cannot resolve mapped parameter '${key}'`);
             }
         }
+
         // if the bot sends any of them, then only use those?
         // it does not fallback for each parameter; all or nothing.
         // this is probably by design ... is there a test/dev circumstance where
@@ -234,6 +250,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                 throw new Error(`Cannot resolve secret '${key}'`);
             }
         }
+
         const secretResolver = invocationSecrets ? new InvocationSecretResolver(invocationSecrets) :
             this.fallbackSecretResolver;
         logger.debug("Applying secrets");

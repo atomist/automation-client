@@ -54,7 +54,7 @@ describe("Universal seed end to end", () => {
         seed.targetOwner = TargetOwner;
         seed.targetRepo = TargetRepo;
         (seed as any).githubToken = GitHubToken;
-        seed.handle(MockHandlerContext as HandlerContext)
+        seed.handle(MockHandlerContext as HandlerContext, seed)
             .then(result => {
                 assert(result.code === 0);
                 // Check the repo

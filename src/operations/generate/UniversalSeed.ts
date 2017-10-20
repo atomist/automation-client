@@ -36,7 +36,7 @@ export class UniversalSeed extends SeedDrivenGenerator {
     })
     public visibility: "public" | "private" = "public";
 
-    public projectEditor(ctx: HandlerContext): ProjectEditor<any> {
+    public projectEditor(ctx: HandlerContext, params: this): ProjectEditor<any> {
         return chainEditors(RemoveSeedFiles, curry(cleanReadMe)(this.description));
     }
 }

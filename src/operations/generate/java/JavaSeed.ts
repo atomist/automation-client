@@ -77,12 +77,12 @@ export class JavaSeed extends UniversalSeed implements VersionedArtifact {
     })
     public rootPackage: string;
 
-    public projectEditor(ctx: HandlerContext): ProjectEditor<any> {
+    public projectEditor(ctx: HandlerContext, params: this): ProjectEditor<any> {
         return chainEditors(
-            super.projectEditor(ctx),
+            super.projectEditor(ctx, params),
             removeTravisBuildFiles,
-            curry(doUpdatePom)(this),
-            curry(inferStructureAndMovePackage)(this.rootPackage),
+            curry(doUpdatePom)(params),
+            curry(inferStructureAndMovePackage)(params.rootPackage),
         );
     }
 

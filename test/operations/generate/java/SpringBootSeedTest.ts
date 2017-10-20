@@ -42,7 +42,7 @@ describe("SpringBootSeed", () => {
         sbs.artifactId = ArtId;
         sbs.rootPackage = "com.the.smiths";
         const ctx = null;
-        return sbs.projectEditor(null)(project, ctx, null);
+        return sbs.projectEditor(null, sbs)(project, ctx, null);
     }
 
 });

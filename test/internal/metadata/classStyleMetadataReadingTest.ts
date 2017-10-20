@@ -16,7 +16,7 @@ import {
 import { populateParameters } from "../../../src/operations/support/parameterPopulation";
 import { AddAtomistSpringAgent, FooBarIngestor } from "../invoker/TestHandlers";
 
-describe("metadataReading", () => {
+describe("class style metadata reading", () => {
 
     it("should extract metadataFromInstance from command handler", () => {
         const h = new AddAtomistSpringAgent();
