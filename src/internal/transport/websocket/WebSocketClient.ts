@@ -1,13 +1,20 @@
-import * as exitHook from "async-exit-hook";
 import axios from "axios";
 import * as promiseRetry from "promise-retry";
 import * as WebSocket from "ws";
 import { logger } from "../../util/logger";
-import { hideString } from "../../util/string";
-import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../RequestProcessor";
+import {
+    CommandIncoming,
+    EventIncoming,
+    isCommandIncoming,
+    isEventIncoming,
+} from "../RequestProcessor";
 import { sendMessage } from "./WebSocketMessageClient";
-import { RegistrationConfirmation, WebSocketRequestProcessor } from "./WebSocketRequestProcessor";
+import {
+    RegistrationConfirmation,
+    WebSocketRequestProcessor,
+} from "./WebSocketRequestProcessor";
 import Timer = NodeJS.Timer;
+import { registerShutdownHook } from "../../util/shutdown";
 
 export class WebSocketClient {
 
@@ -23,10 +30,11 @@ export class WebSocketClient {
                 connect(this.registrationCallback, registration, this.options, this.requestProcessor));
         return connection.then(() => {
 
-                exitHook(() => {
+                registerShutdownHook(() => {
                     reconnect = false;
                     ws.close();
                     logger.info("Closing WebSocket connection");
+                    return Promise.resolve(0);
                 });
 
             }).catch(() => {

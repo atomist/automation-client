@@ -1,9 +1,9 @@
 import * as appRoot from "app-root-path";
-import * as exitHook from "async-exit-hook";
 import axios from "axios";
 import * as os from "os";
 import { logger } from "../util/logger";
 import { guid } from "../util/string";
+import { registerShutdownHook } from "../util/shutdown";
 
 const Url = "https://webhook.atomist.com/atomist/application/teams";
 
@@ -62,16 +62,10 @@ export function registerApplicationEvents(teamId: string): Promise<any> {
     }
 
     // register shutdown hook
-    exitHook(callback => {
-        setTimeout(() => {
-            stopping(teamId, event)
-                .then(() => {
-                    callback();
-                })
-                .catch(() => {
-                    callback();
-                });
-        }, 1000);
+    registerShutdownHook(() => {
+        return stopping(teamId, event)
+            .then(() => Promise.resolve(0))
+            .catch(() => Promise.resolve(1));
     });
 
     // trigger application started event

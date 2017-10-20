@@ -1,8 +1,11 @@
 import * as _ from "lodash";
 import * as serializeError from "serialize-error";
-import { HandlerContext } from "../../HandlerContext";
-import { failure, HandlerResult } from "../../HandlerResult";
-import { EventFired } from "../../Handlers";
+import {
+    EventFired,
+    failure,
+    HandlerContext,
+    HandlerResult,
+} from "../../Handlers";
 import { AutomationEventListener } from "../../server/AutomationEventListener";
 import { AutomationServer } from "../../server/AutomationServer";
 import { GraphClient } from "../../spi/graph/GraphClient";
@@ -11,8 +14,15 @@ import { CommandInvocation } from "../invoker/Payload";
 import * as namespace from "../util/cls";
 import { logger } from "../util/logger";
 import { guid, hideString } from "../util/string";
-import { CommandIncoming, EventIncoming, RequestProcessor } from "./RequestProcessor";
-import { HandlerResponse, StatusMessage } from "./websocket/WebSocketMessageClient";
+import {
+    CommandIncoming,
+    EventIncoming,
+    RequestProcessor,
+} from "./RequestProcessor";
+import {
+    HandlerResponse,
+    StatusMessage,
+} from "./websocket/WebSocketMessageClient";
 
 export abstract class AbstractRequestProcessor implements RequestProcessor {
 
