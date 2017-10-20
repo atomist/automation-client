@@ -115,15 +115,13 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
     // declareMappedParameter(this, "visibility", "atomist://github/default_repo_visibility");
     public visibility: "public" | "private" = "public";
 
-    constructor(public projectEditor: ProjectEditor<any>) {
-        super();
-    }
+    public abstract projectEditor(ctx: HandlerContext): ProjectEditor<any>;
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
         return this.repoLoader()(new SimpleRepoId(this.sourceOwner, this.sourceRepo, this.sourceBranch))
             .then(project => {
                 const populated: Promise<Project> =
-                    this.projectEditor(project, ctx, this)
+                    this.projectEditor(ctx)(project, ctx, this)
                         .then(r => r.target);
                 return this.local ?
                     populated.then(p => {

@@ -1,11 +1,14 @@
+import { curry } from "@typed/curry";
 import { CommandHandler, Parameter, Tags } from "../../../decorators";
+import { HandlerContext } from "../../../HandlerContext";
 import { logger } from "../../../internal/util/logger";
 import { Project, ProjectAsync } from "../../../project/Project";
 import { doWithFiles } from "../../../project/util/projectUtils";
+import { ProjectEditor } from "../../edit/projectEditor";
+import { chainEditors } from "../../edit/projectEditorOps";
 import { AllJavaFiles } from "./javaProjectUtils";
 import { JavaSeed } from "./JavaSeed";
 import { SpringBootProjectStructure } from "./SpringBootProjectStructure";
-import { chainEditors } from "../../edit/projectEditorOps";
 
 /**
  * Spring Boot seed project. Extends generic Java seed to renames Spring Boot package and class name.
@@ -28,19 +31,18 @@ export class SpringBootSeed extends JavaSeed {
     })
     public serviceClassName: string = "RestService";
 
-    constructor() {
-        super();
-        this.projectEditor = chainEditors(
-            super.projectEditor,
-            this.inferSpringStructureAndRename,
+    public projectEditor(ctx: HandlerContext): ProjectEditor<any> {
+        return chainEditors(
+            super.projectEditor(ctx),
+            curry(this.inferSpringStructureAndRename)(this.serviceClassName),
         );
     }
 
-    public inferSpringStructureAndRename(p: Project): Promise<Project> {
+    public inferSpringStructureAndRename(serviceClassName: string, p: Project): Promise<Project> {
         return SpringBootProjectStructure.inferFromJavaSource(p)
             .then(structure => {
                 if (structure) {
-                    return this.renameClassStem(p, structure.applicationClassStem, this.serviceClassName);
+                    return renameClassStem(p, structure.applicationClassStem, serviceClassName);
                 } else {
                     console.log("WARN: Spring Boot project structure not found");
                     return p;
@@ -49,24 +51,24 @@ export class SpringBootSeed extends JavaSeed {
             });
     }
 
-    /**
-     * Rename all instances of a Java class.  This method is somewhat
-     * surgical when replacing appearances in Java code but brutal when
-     * replacing appearances elsewhere, i.e., it uses `Project.recordReplace()`.
-     *
-     * @param project    project whose Java classes should be renamed
-     * @param oldClass   name of class to move from
-     * @param newClass   name of class to move to
-     */
-    protected renameClassStem<P extends ProjectAsync>(project: P,
-                                                      oldClass: string, newClass: string): Promise<P> {
-        logger.info("Replacing old class stem [%s] with [%s]", oldClass, newClass);
-        return doWithFiles(project, AllJavaFiles, f => {
-            if (f.name.includes(oldClass)) {
-                f.recordRename(f.name.replace(oldClass, newClass));
-                f.recordReplaceAll(oldClass, newClass);
-            }
-        });
-    }
+}
 
+/**
+ * Rename all instances of a Java class.  This method is somewhat
+ * surgical when replacing appearances in Java code but brutal when
+ * replacing appearances elsewhere, i.e., it uses `Project.recordReplace()`.
+ *
+ * @param project    project whose Java classes should be renamed
+ * @param oldClass   name of class to move from
+ * @param newClass   name of class to move to
+ */
+function renameClassStem<P extends ProjectAsync>(project: P,
+                                                 oldClass: string, newClass: string): Promise<P> {
+    logger.info("Replacing old class stem [%s] with [%s]", oldClass, newClass);
+    return doWithFiles(project, AllJavaFiles, f => {
+        if (f.name.includes(oldClass)) {
+            f.recordRename(f.name.replace(oldClass, newClass));
+            f.recordReplaceAll(oldClass, newClass);
+        }
+    });
 }

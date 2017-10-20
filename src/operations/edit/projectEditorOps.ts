@@ -20,8 +20,10 @@ export function chainEditors(...projectEditors: Chainable[]): ProjectEditor {
             return (p, ctx, params) =>
                 (ed1(p, ctx, params)
                     .then(r1 => {
+                        // console.log("Applied editor " + c1.toString());
                         return ed2(p, ctx, params)
                             .then(r2 => {
+                                // console.log("Applied editor " + c2.toString());
                                 return {
                                     ...r1,
                                     ...r2,

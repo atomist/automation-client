@@ -15,7 +15,7 @@ import { GitHubToken } from "../../atomist.config";
 const TargetRepo = `test-repo-${new Date().getTime()}`;
 let TargetOwner = "johnsonr";
 
-describe("Seed end to end", () => {
+describe("Universal seed end to end", () => {
 
     before(done => {
         const config = {

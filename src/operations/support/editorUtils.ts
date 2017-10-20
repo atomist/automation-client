@@ -18,8 +18,8 @@ import { EditResult, ProjectEditor, successfulEdit } from "../edit/projectEditor
  * @param context handler context for this operation
  * @param repo repo id
  * @param editor editor to use
- * @param repoLoader repo loading strategy
  * @param ei how to persist the edit
+ * @param parameters to editor
  */
 export function editRepo<T extends Parameters>(
                                                context: HandlerContext,

@@ -1,4 +1,6 @@
+import { curry } from "@typed/curry";
 import { CommandHandler, MappedParameter, Parameter, Tags } from "../../decorators";
+import { HandlerContext } from "../../HandlerContext";
 import { MappedParameters } from "../../Handlers";
 import { defer } from "../../internal/common/Flushable";
 import { Project } from "../../project/Project";
@@ -34,10 +36,9 @@ export class UniversalSeed extends SeedDrivenGenerator {
     })
     public visibility: "public" | "private" = "public";
 
-    constructor() {
-        super(chainEditors(RemoveSeedFiles));
+    public projectEditor(ctx: HandlerContext): ProjectEditor<any> {
+        return chainEditors(RemoveSeedFiles, curry(cleanReadMe)(this.description));
     }
-
 }
 
 /**

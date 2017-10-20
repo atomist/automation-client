@@ -1,13 +1,14 @@
 import { curry } from "@typed/curry";
 import { CommandHandler, Parameter } from "../../../decorators";
-import { defer } from "../../../internal/common/Flushable";
-import { Project, ProjectAsync } from "../../../project/Project";
+import { HandlerContext } from "../../../HandlerContext";
+import { Project } from "../../../project/Project";
 import { deleteFiles } from "../../../project/util/projectUtils";
+import { ProjectEditor } from "../../edit/projectEditor";
+import { chainEditors } from "../../edit/projectEditorOps";
 import { UniversalSeed } from "../UniversalSeed";
 import { JavaProjectStructure } from "./JavaProjectStructure";
 import { movePackage } from "./javaProjectUtils";
 import { updatePom } from "./updatePom";
-import { chainEditors } from "../../edit/projectEditorOps";
 
 export interface VersionedArtifact {
 
@@ -76,11 +77,12 @@ export class JavaSeed extends UniversalSeed implements VersionedArtifact {
     })
     public rootPackage: string;
 
-    constructor() {
-        super();
-        this.projectEditor = chainEditors(
-            super.projectEditor,
-            this.removeSeedFiles,
+    public projectEditor(ctx: HandlerContext): ProjectEditor<any> {
+        return chainEditors(
+            super.projectEditor(ctx),
+            this.removeTravisBuildFiles,
+            curry(doUpdatePom)(this),
+            curry(inferStructureAndMovePackage)(this.rootPackage),
         );
     }
 
@@ -91,7 +93,7 @@ export class JavaSeed extends UniversalSeed implements VersionedArtifact {
      *
      * @param project  Project to remove seed files from.
      */
-    protected removeSeedFiles(project: Project): Promise<Project> {
+    public removeTravisBuildFiles(project: Project): Promise<Project> {
         const filesToDelete: string[] = [
             "src/main/scripts/travis-build.bash",
         ];
