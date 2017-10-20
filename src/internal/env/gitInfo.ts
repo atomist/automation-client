@@ -1,4 +1,4 @@
-import { runCommand } from "../util/commandLine";
+import { runCommand } from "../../action/cli/commandLine";
 
 export function obtainGitInfo(directory: string): Promise<GitInformation> {
 

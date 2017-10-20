@@ -1,11 +1,13 @@
+import { Parameters } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
-import { defaultRepoLoader } from "../common/defaultRepoLoader";
-import { isRepoId, RepoId } from "../common/RepoId";
-import { RepoLoader } from "../common/repoLoader";
 import {
-    BranchCommit, EditMode, isBranchCommit, isCustomExecutionEditMode, isPullRequest,
+    BranchCommit,
+    EditMode,
+    isBranchCommit,
+    isCustomExecutionEditMode,
+    isPullRequest,
     PullRequest,
 } from "../edit/editModes";
 import { EditResult, ProjectEditor, successfulEdit } from "../edit/projectEditor";
@@ -16,21 +18,22 @@ import { EditResult, ProjectEditor, successfulEdit } from "../edit/projectEditor
  * @param context handler context for this operation
  * @param repo repo id
  * @param editor editor to use
- * @param repoLoader repo loading strategy
  * @param ei how to persist the edit
+ * @param parameters to editor
  */
-export function loadAndEditRepo(token: string,
-                                context: HandlerContext,
-                                repo: RepoId | Project,
-                                editor: ProjectEditor,
-                                ei: EditMode,
-                                repoLoader: RepoLoader =
-                                    defaultRepoLoader(token)): Promise<EditResult> {
-    const loadRepo: Promise<Project> = isRepoId(repo) ? repoLoader(repo) : Promise.resolve(repo);
+export function editRepo<T extends Parameters>(
+                                               context: HandlerContext,
+                                               repo: Project,
+                                               editor: ProjectEditor,
+                                               ei: EditMode,
+                                               parameters?: T): Promise<EditResult> {
+    const loadRepo: Promise<Project> = Promise.resolve(repo);
     if (isPullRequest(ei)) {
-        return loadRepo.then(gp => editProjectUsingPullRequest(context, gp as GitProject, editor, ei));
+        return loadRepo.then(gp =>
+            editProjectUsingPullRequest(context, gp as GitProject, editor, ei, parameters));
     } else if (isBranchCommit(ei)) {
-        return loadRepo.then(gp => editProjectUsingBranch(context, gp as GitProject, editor, ei));
+        return loadRepo.then(gp =>
+            editProjectUsingBranch(context, gp as GitProject, editor, ei, parameters));
     } else if (isCustomExecutionEditMode(ei)) {
         return loadRepo.then(ei.edit);
     } else {
@@ -39,12 +42,13 @@ export function loadAndEditRepo(token: string,
     }
 }
 
-export function editProjectUsingPullRequest(context: HandlerContext,
-                                            gp: GitProject,
-                                            editor: ProjectEditor,
-                                            pr: PullRequest): Promise<EditResult> {
+export function editProjectUsingPullRequest<T extends Parameters>(context: HandlerContext,
+                                                                  gp: GitProject,
+                                                                  editor: ProjectEditor<T>,
+                                                                  pr: PullRequest,
+                                                                  parameters?: T): Promise<EditResult> {
 
-    return editor(gp, context)
+    return editor(gp, context, parameters)
         .then(r => r.edited ?
             raisePr(gp, pr) :
             {
@@ -54,12 +58,13 @@ export function editProjectUsingPullRequest(context: HandlerContext,
             });
 }
 
-export function editProjectUsingBranch(context: HandlerContext,
-                                       gp: GitProject,
-                                       editor: ProjectEditor,
-                                       ci: BranchCommit): Promise<EditResult> {
+export function editProjectUsingBranch<T extends Parameters>(context: HandlerContext,
+                                                             gp: GitProject,
+                                                             editor: ProjectEditor<T>,
+                                                             ci: BranchCommit,
+                                                             parameters?: T): Promise<EditResult> {
 
-    return editor(gp, context)
+    return editor(gp, context, parameters)
         .then(r => r.edited ?
             createAndPushBranch(gp, ci) :
             {
