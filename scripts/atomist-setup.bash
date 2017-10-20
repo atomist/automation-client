@@ -106,6 +106,7 @@ function main () {
         return 1
     fi
 
+    msg "changing into project directory $slug..."
     if ! cd "$slug"; then
         err "failed to change to $slug"
         return 1
