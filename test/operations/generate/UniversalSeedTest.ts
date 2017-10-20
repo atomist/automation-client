@@ -6,29 +6,9 @@ import { metadataFromInstance } from "../../../src/internal/metadata/metadataRea
 import { JavaSeed } from "../../../src/operations/generate/java/JavaSeed";
 import { SpringBootSeed } from "../../../src/operations/generate/java/SpringBootSeed";
 import { UniversalSeed } from "../../../src/operations/generate/UniversalSeed";
-import { GitProject } from "../../../src/project/git/GitProject";
 import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../src/project/Project";
-
-class TestableSeed extends UniversalSeed {
-
-    constructor(private verifier: (p: Project) => void) {
-        super();
-    }
-
-    protected push(gp: GitProject): Promise<any> {
-        this.verifier(gp);
-        return Promise.resolve(this);
-    }
-}
-
-function testableSeed(verifier: (p: Project) => void) {
-    const s = new TestableSeed(verifier);
-    s.targetRepo = "whatever";
-    s.targetOwner = "whatever";
-    return s;
-}
 
 describe("UniversalSeed", () => {
 

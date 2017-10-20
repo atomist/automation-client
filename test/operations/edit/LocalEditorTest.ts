@@ -9,11 +9,11 @@ describe("Local editing", () => {
     it("should not edit with no op editor", done => {
         const project = tempProject();
         const editor: ProjectEditor = p => Promise.resolve(successfulEdit(p, false));
-        editor(project, null)
+        editor(project, null, null)
             .then(r => {
                 assert(!r.edited);
                 done();
-            });
+            }).catch(done);
     });
 
     it("should edit on disk with real editor", done => {
@@ -28,7 +28,7 @@ describe("Local editing", () => {
                 // Reload project
                 assert(fs.statSync(project.baseDir + "/thing").isFile());
                 done();
-            });
+            }).catch(done);
     });
 
 });

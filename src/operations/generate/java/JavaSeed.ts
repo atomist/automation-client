@@ -1,8 +1,10 @@
 import { curry } from "@typed/curry";
 import { CommandHandler, Parameter } from "../../../decorators";
-import { defer } from "../../../internal/common/Flushable";
-import { Project, ProjectAsync } from "../../../project/Project";
+import { HandlerContext } from "../../../HandlerContext";
+import { Project } from "../../../project/Project";
 import { deleteFiles } from "../../../project/util/projectUtils";
+import { ProjectEditor } from "../../edit/projectEditor";
+import { chainEditors } from "../../edit/projectEditorOps";
 import { UniversalSeed } from "../UniversalSeed";
 import { JavaProjectStructure } from "./JavaProjectStructure";
 import { movePackage } from "./javaProjectUtils";
@@ -75,36 +77,34 @@ export class JavaSeed extends UniversalSeed implements VersionedArtifact {
     })
     public rootPackage: string;
 
-    /**
-     * After initial population from seed project, update POM and
-     * source code to reflect proper artifact, group, version, etc.
-     *
-     * @param project  project to tailor
-     */
-    public manipulate(project: Project): Promise<Project> {
-        return super.manipulate(project)
-            .then(curry(doUpdatePom)(this))
-            .then(curry(inferStructureAndMovePackage)(this.rootPackage));
-    }
-
-    /**
-     * Remove files in seed that are not useful, valid, or appropriate
-     * for a generated project.  In addition to those deleted by
-     * UniversalSeed, also remove Travis CI build script.
-     *
-     * @param project  Project to remove seed files from.
-     */
-    protected removeSeedFiles(project: ProjectAsync): void {
-        super.removeSeedFiles(project);
-        const filesToDelete: string[] = [
-            "src/main/scripts/travis-build.bash",
-        ];
-        defer(project, deleteFiles(project, "src/main/scripts/**", f => filesToDelete.includes(f.path)));
+    public projectEditor(ctx: HandlerContext): ProjectEditor<any> {
+        return chainEditors(
+            super.projectEditor(ctx),
+            removeTravisBuildFiles,
+            curry(doUpdatePom)(this),
+            curry(inferStructureAndMovePackage)(this.rootPackage),
+        );
     }
 
 }
 
-function doUpdatePom(id: VersionedArtifact, p: Project): Promise<Project> {
+/**
+ * Remove files in seed that are not useful, valid, or appropriate
+ * for a generated project.  In addition to those deleted by
+ * UniversalSeed, also remove Travis CI build script.
+ *
+ * @param project  Project to remove seed files from.
+ */
+export function removeTravisBuildFiles(project: Project): Promise<Project> {
+    const filesToDelete: string[] = [
+        "src/main/scripts/travis-build.bash",
+    ];
+    return deleteFiles(project, "src/main/scripts/**",
+        f => filesToDelete.includes(f.path))
+        .then(count => project);
+}
+
+export function doUpdatePom(id: VersionedArtifact, p: Project): Promise<Project> {
     const smartArtifactId = (id.artifactId === "${projectName}") ? p.name : id.artifactId;
     return updatePom(p, smartArtifactId, id.groupId, id.version, id.description);
 }

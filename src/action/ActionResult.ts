@@ -16,6 +16,10 @@ export interface ActionResult<T = undefined> {
     readonly success: boolean;
 }
 
+export function isActionResult(a: any): a is ActionResult {
+    return a.target !== undefined && a.success !== undefined;
+}
+
 /**
  * Convenient implementation of ActionResult
  */

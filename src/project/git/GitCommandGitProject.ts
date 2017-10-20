@@ -7,8 +7,8 @@ import { Project } from "../Project";
 import * as tmp from "tmp-promise";
 
 import axios from "axios";
-import { ActionResult } from "../../internal/util/ActionResult";
-import { CommandResult, runCommand } from "../../internal/util/commandLine";
+import { ActionResult } from "../../action/ActionResult";
+import { CommandResult, runCommand } from "../../action/cli/commandLine";
 import { logger } from "../../internal/util/logger";
 import { hideString } from "../../internal/util/string";
 import { RepoId, SimpleRepoId } from "../../operations/common/RepoId";

@@ -25,6 +25,7 @@ export abstract class EditorCommandSupport extends LocalOrRemoteRepoOperation im
             .then(pe =>
                 editAll(context, token, pe,
                     editInfoFactory,
+                    this,
                     repoFinder, repoFilter, repoLoader))
             .then(edits => {
                 return {

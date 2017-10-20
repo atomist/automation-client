@@ -2,6 +2,9 @@
 import { HandlerContext } from "./HandlerContext";
 import { HandlerResult } from "./HandlerResult";
 
+// tslint:disable-next-line:interface-over-type-literal
+export type Parameters = {};
+
 /**
  * Interface for command handlers.
  */

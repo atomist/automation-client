@@ -1,5 +1,6 @@
+import { ActionResult } from "../../action/ActionResult";
+import { Parameters } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
-import { ActionResult } from "../../internal/util/ActionResult";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
@@ -8,8 +9,8 @@ import { AllRepos, RepoFilter } from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
 import { RepoLoader } from "../common/repoLoader";
 import { doWithAllRepos } from "../common/repoUtils";
-import { loadAndEditRepo } from "../support/editorUtils";
-import { EditMode, EditModeFactory, isEditMode, toEditModeFactory } from "./editModes";
+import { editRepo } from "../support/editorUtils";
+import { EditMode, EditModeFactory, toEditModeFactory } from "./editModes";
 import { EditResult, ProjectEditor } from "./projectEditor";
 
 /**
@@ -19,18 +20,23 @@ import { EditResult, ProjectEditor } from "./projectEditor";
  * @param {ProjectEditor} editor
  * @param editInfo: EditMode determines how the edits should be applied.
  * Factory allows us to use different branches if necessary
+ * @param parameters parameters (optional)
  * @param {RepoFinder} repoFinder
  * @param {} repoFilter
  * @param {RepoLoader} repoLoader
  * @return {Promise<Array<ActionResult<GitProject>>>}
  */
-export function editAll<R>(ctx: HandlerContext,
-                           token: string,
-                           editor: ProjectEditor,
-                           editInfo: EditMode | EditModeFactory,
-                           repoFinder: RepoFinder = allReposInTeam(),
-                           repoFilter: RepoFilter = AllRepos,
-                           repoLoader: RepoLoader = defaultRepoLoader(token)): Promise<EditResult[]> {
-    const edit = (p: Project) => loadAndEditRepo(token, ctx, p, editor, toEditModeFactory(editInfo)(p));
-    return doWithAllRepos<EditResult>(ctx, token, edit, repoFinder, repoFilter, repoLoader);
+export function editAll<R, PARAMS extends Parameters>(ctx: HandlerContext,
+                                                      token: string,
+                                                      editor: ProjectEditor,
+                                                      editInfo: EditMode | EditModeFactory,
+                                                      parameters?: PARAMS,
+                                                      repoFinder: RepoFinder = allReposInTeam(),
+                                                      repoFilter: RepoFilter = AllRepos,
+                                                      repoLoader: RepoLoader =
+                                                          defaultRepoLoader(token)): Promise<EditResult[]> {
+    const edit = (p: Project, parms: PARAMS) =>
+        editRepo(ctx, p, editor, toEditModeFactory(editInfo)(p), parms);
+    return doWithAllRepos<EditResult, PARAMS>(ctx, token, edit, parameters,
+        repoFinder, repoFilter, repoLoader);
 }

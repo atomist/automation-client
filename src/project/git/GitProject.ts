@@ -1,4 +1,4 @@
-import { ActionResult } from "../../internal/util/ActionResult";
+import { ActionResult } from "../../action/ActionResult";
 import { RepoId } from "../../operations/common/RepoId";
 import { LocalProject } from "../local/LocalProject";
 
