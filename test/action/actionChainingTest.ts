@@ -1,8 +1,9 @@
 import "mocha";
 import * as assert from "power-assert";
-import { actionChain, NoAction } from "../../src/action/actionOps";
+import { actionChain, NoAction, actionChainWithCombiner } from "../../src/action/actionOps";
 import { ProjectOp } from "../../src/operations/edit/projectEditorOps";
 import { InMemoryProject } from "../../src/project/mem/InMemoryProject";
+import { ActionResult } from "../../src/action/ActionResult";
 
 class Person {
     constructor(public name: string) {
@@ -111,5 +112,22 @@ describe("action chaining", () => {
         }).catch(done)
 
     });
+
+    interface BonusActionResult extends ActionResult<string> {
+        bonusField: string
+    }
+    it("should allow for custom combination of results", (done) => {
+        const f1 = (s: string) => Promise.resolve({ success: true, target: s + " and 1", bonusField: "yes" })
+        const f2 = (s: string) => Promise.resolve({ success: true, target: s + " and 2", bonusField: " and no" })
+
+        const chain = actionChainWithCombiner<string, BonusActionResult>((r1, r2) =>
+            ({ ...r1, ...r2, bonusField: (r1 as any).bonusField + (r2 as any).bonusField }), f1, f2);
+        chain("Southwest").then(result => {
+            assert(result.success);
+            assert(result.target === "Southwest and 1 and 2");
+            assert((result as BonusActionResult).bonusField === "yes and no");
+            done();
+        }).catch(done)
+    })
 
 });

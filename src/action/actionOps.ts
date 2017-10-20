@@ -12,6 +12,15 @@ export type Chainable<T> = TAction<T> | TOp<T>;
  * @return {ProjectEditor}
  */
 export function actionChain<T>(...steps: Array<Chainable<T>>): TAction<T> {
+    return actionChainWithCombiner((r1, r2) => ({
+        ...r1, // the clojure ppl will LOVE this (I love it)
+        ...r2,
+    }), ...steps);
+}
+
+export function actionChainWithCombiner<T, R extends ActionResult<T> = ActionResult<T>>(
+    combiner: (a: R, b: R) => R,
+    ...steps: Array<Chainable<T>>): TAction<T> {
     return steps.length === 0 ?
         NoAction :
         steps.reduce((c1, c2) => {
@@ -22,14 +31,12 @@ export function actionChain<T>(...steps: Array<Chainable<T>>): TAction<T> {
                 if (!r1.success) { return r1 } else {
                     return ed2(r1.target).then(r2 => {
                         // console.log("Applied action " + c2.toString());
-                        return {
-                            ...r1, // the clojure ppl will LOVE this (I love it)
-                            ...r2,
-                        }
+                        const combinedResult: ActionResult<T> = combiner((r1 as R), (r2 as R));
+                        return combinedResult
                     })
                 }
             });
-        }) as TAction<T>;
+        }) as TAction<T>; // Consider adding R as a type parameter to TAction
 }
 
 function toAction<T>(link: Chainable<T>): TAction<T> {
