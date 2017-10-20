@@ -15,24 +15,31 @@ export function actionChain<T>(...steps: Array<Chainable<T>>): TAction<T> {
     return steps.length === 0 ?
         NoAction :
         steps.reduce((c1, c2) => {
-            const ed1: TAction<T> = toAction(c1); // why would c1 be an array?
+            const ed1: TAction<T> = toAction(c1);
             const ed2: TAction<T> = toAction(c2);
             return p => {
+                let firstResult;
+                try {
+                    firstResult = ed1(p)
+                } catch (error) {
+                    return Promise.resolve(failureOn(p, error, c1))
+                }
+
                 return ed1(p).then(r1 => {
                     console.log("Applied action " + c1.toString());
+                    let secondResult;
                     try {
-                        return ed2(r1.target)
-                            .then(r2 => {
-                                // console.log("Applied action " + c2.toString());
-                                return {
-                                    ...r1, // the clojure ppl will LOVE this (I love it)
-                                    ...r2,
-                                };
-                            });
+                        secondResult = ed2(r1.target);
                     } catch (err) {
-                        console.log("the second function failed")
                         return Promise.resolve(failureOn(p, err, c2))
                     }
+                    return secondResult.then(r2 => {
+                        // console.log("Applied action " + c2.toString());
+                        return {
+                            ...r1, // the clojure ppl will LOVE this (I love it)
+                            ...r2,
+                        };
+                    });;
                 })
             }
         }) as TAction<T>;

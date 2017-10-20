@@ -98,4 +98,18 @@ describe("action chaining", () => {
 
     });
 
+    it("should catch errors in the first function", (done) => {
+        const f2 = (s: string) => Promise.resolve(s + " yeah!");
+        const f1 = (s: string) => { throw new Error("What is " + s); }
+
+        const chain = actionChain(f1, f2)
+        chain("Southwest").then(result => {
+            assert(result.success === false);
+            assert(result.error.message === "What is Southwest");
+            assert(result.errorStep === "f1");
+            done();
+        }).catch(done)
+
+    });
+
 });
