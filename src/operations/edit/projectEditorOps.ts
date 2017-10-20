@@ -1,7 +1,7 @@
 import { isActionResult, ActionResult } from "../../action/ActionResult";
 import { Project } from "../../project/Project";
 import { EditResult, flushAndSucceed, ProjectEditor, successfulEdit } from "./projectEditor";
-import { Chainable, actionChain, actionChainWithCombiner } from "../../action/actionOps";
+import { Chainable, actionChain, actionChainWithCombiner, TAction } from "../../action/actionOps";
 import { Parameters } from "../../HandleCommand";
 import { HandlerContext } from "../../Handlers";
 
@@ -28,26 +28,32 @@ function combineEditResults<PARAMS>(r1: EditResultWithAll3<PARAMS>, r2: EditResu
  */
 export function chainEditors<PARAMS extends Parameters = undefined>(
     ...projectEditors: EditorChainable[]): ProjectEditor {
-    const groupParameters: Chainable<All3<PARAMS>>[] = projectEditors.map(toEditor).map(ed =>
-        (all3) => {
-            const [project, ctx, params] = all3;
-            const result: Promise<EditResult> = (ed as ProjectEditor)(project, ctx, params);
-            return result.then(er => {
-                const actionResult: ActionResult<[Project, HandlerContext, PARAMS]> = {
-                    ...er,
-                    target: [er.target, ctx, params]
-                } as ActionResult<[Project, HandlerContext, PARAMS]>; // it's OK to have `edited` too.
-                return actionResult;
-            })
-        })
-    return (p, ctx, params) => actionChainWithCombiner<All3<PARAMS>, EditResultWithAll3<PARAMS>>(
+    const editorsWithSameOutputAsInput: Chainable<All3<PARAMS>>[] =
+        projectEditors.map(toEditor).map(ed => passAlongExtraArguments<All3<PARAMS>>(ed));
+
+    const chain: TAction<All3<PARAMS>> = actionChainWithCombiner<All3<PARAMS>, EditResultWithAll3<PARAMS>>(
         combineEditResults,
-        ...groupParameters)([p, ctx, params]).then(bigResult => {
+        ...editorsWithSameOutputAsInput)
+
+    return (p, ctx, params) => chain([p, ctx, params]).then(bigResult => {
+        return {
+            ...bigResult,
+            target: bigResult.target[0] // pull out just the project
+        } as EditResult
+    });
+}
+
+function passAlongExtraArguments<All extends Array<any>>(ed /* Receives more args than it returns */): TAction<All> {
+    return (all: All) => {
+        const result = (ed as any)(...all);
+        return result.then(er => {
+            all[0] = er.target; /* only the first argument has been updated */
             return {
-                ...bigResult,
-                target: bigResult.target[0] // pull out just the project
-            } as EditResult
-        });
+                ...er,
+                target: all
+            };
+        })
+    }
 }
 
 function toEditor(pop: EditorChainable): ProjectEditor {
