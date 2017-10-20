@@ -80,31 +80,31 @@ export class JavaSeed extends UniversalSeed implements VersionedArtifact {
     public projectEditor(ctx: HandlerContext): ProjectEditor<any> {
         return chainEditors(
             super.projectEditor(ctx),
-            this.removeTravisBuildFiles,
+            removeTravisBuildFiles,
             curry(doUpdatePom)(this),
             curry(inferStructureAndMovePackage)(this.rootPackage),
         );
     }
 
-    /**
-     * Remove files in seed that are not useful, valid, or appropriate
-     * for a generated project.  In addition to those deleted by
-     * UniversalSeed, also remove Travis CI build script.
-     *
-     * @param project  Project to remove seed files from.
-     */
-    public removeTravisBuildFiles(project: Project): Promise<Project> {
-        const filesToDelete: string[] = [
-            "src/main/scripts/travis-build.bash",
-        ];
-        return deleteFiles(project, "src/main/scripts/**",
-            f => filesToDelete.includes(f.path))
-            .then(count => project);
-    }
-
 }
 
-function doUpdatePom(id: VersionedArtifact, p: Project): Promise<Project> {
+/**
+ * Remove files in seed that are not useful, valid, or appropriate
+ * for a generated project.  In addition to those deleted by
+ * UniversalSeed, also remove Travis CI build script.
+ *
+ * @param project  Project to remove seed files from.
+ */
+export function removeTravisBuildFiles(project: Project): Promise<Project> {
+    const filesToDelete: string[] = [
+        "src/main/scripts/travis-build.bash",
+    ];
+    return deleteFiles(project, "src/main/scripts/**",
+        f => filesToDelete.includes(f.path))
+        .then(count => project);
+}
+
+export function doUpdatePom(id: VersionedArtifact, p: Project): Promise<Project> {
     const smartArtifactId = (id.artifactId === "${projectName}") ? p.name : id.artifactId;
     return updatePom(p, smartArtifactId, id.groupId, id.version, id.description);
 }

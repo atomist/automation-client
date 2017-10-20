@@ -1,6 +1,6 @@
+import { ActionResult } from "../../action/ActionResult";
 import { Parameters } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
-import { ActionResult } from "../../internal/util/ActionResult";
 import { Project } from "../../project/Project";
 
 /**

@@ -5,7 +5,7 @@ import * as assert from "power-assert";
 import { tempProject } from "../utils";
 
 import * as exec from "child_process";
-import { ActionResult } from "../../../src/internal/util/ActionResult";
+import { ActionResult } from "../../../src/action/ActionResult";
 import { cloneEditAndPush, GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitHubBase, GitProject } from "../../../src/project/git/GitProject";
 import { LocalProject } from "../../../src/project/local/LocalProject";

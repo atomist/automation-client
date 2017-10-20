@@ -1,4 +1,4 @@
-import { isActionResult } from "../../internal/util/ActionResult";
+import { isActionResult } from "../../action/ActionResult";
 import { Project } from "../../project/Project";
 import { EditResult, flushAndSucceed, ProjectEditor, successfulEdit } from "./projectEditor";
 

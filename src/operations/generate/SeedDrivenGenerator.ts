@@ -1,11 +1,11 @@
 import * as assert from "power-assert";
 import * as shell from "shelljs";
+import { ActionResult } from "../../action/ActionResult";
 import { MappedParameter, Parameter } from "../../decorators";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { HandlerResult } from "../../HandlerResult";
 import { MappedParameters } from "../../Handlers";
-import { ActionResult } from "../../internal/util/ActionResult";
 import { logger } from "../../internal/util/logger";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
@@ -115,6 +115,12 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
     // declareMappedParameter(this, "visibility", "atomist://github/default_repo_visibility");
     public visibility: "public" | "private" = "public";
 
+    /**
+     * Subclasses must implement this function to return a project editor
+     * to use in the present context
+     * @param {HandlerContext} ctx
+     * @return {ProjectEditor<any>}
+     */
     public abstract projectEditor(ctx: HandlerContext): ProjectEditor<any>;
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
