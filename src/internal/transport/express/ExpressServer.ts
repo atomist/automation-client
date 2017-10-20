@@ -350,7 +350,7 @@ export class ExpressServer {
                             .then(orgs => {
                                 orgs.push(profile.username);
                                 orgs = orgs.sort((o1, o2) => o1.localeCompare(o2));
-                                cb(null, { ...profile, accessToken, orgs })
+                                cb(null, { ...profile, accessToken, orgs });
                             })
                             .catch(err => cb(null, false));
 

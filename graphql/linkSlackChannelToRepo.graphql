@@ -1,0 +1,6 @@
+mutation LinkSlackChannelToRepo($channelId: String!, $repo: String!, $owner: String!) {
+  linkSlackChannelToRepo(channelId: $channelId, repo: $repo, owner: $owner) {
+    name
+    id
+  }
+}

@@ -1,11 +1,18 @@
 import * as assert from "power-assert";
 import * as shell from "shelljs";
 import { ActionResult } from "../../action/ActionResult";
-import { MappedParameter, Parameter } from "../../decorators";
-import { HandleCommand } from "../../HandleCommand";
-import { HandlerContext } from "../../HandlerContext";
-import { HandlerResult } from "../../HandlerResult";
-import { MappedParameters } from "../../Handlers";
+import {
+    MappedParameter,
+    Parameter,
+} from "../../decorators";
+import {
+    failure,
+    HandleCommand,
+    HandlerContext,
+    HandlerResult,
+    MappedParameters,
+    Success,
+} from "../../Handlers";
 import { logger } from "../../internal/util/logger";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
@@ -143,20 +150,39 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
                                 const gp: GitProject = GitCommandGitProject.fromProject(p, this.githubToken);
                                 return gp.init()
                                     .then(() => gp.setGitHubUserConfig())
-                                    .then(_ => {
+                                    .then(() => {
                                         logger.info(`Creating new repo '${this.targetOwner}/${this.targetRepo}'`);
                                         return gp.createAndSetGitHubRemote(this.targetOwner, this.targetRepo,
                                             this.targetRepo, this.visibility);
                                     })
-                                    .then(_ => {
+                                    .then(() => {
                                         logger.info(`Committing to local repo at '${gp.baseDir}'`);
                                         return gp.commit("Initial commit from Atomist");
                                     })
-                                    .then(_ => this.push(gp))
-                                    .then(_ => {
+                                    .then(() => this.push(gp))
+                                    .then(() => {
                                         return {code: 0};
                                     });
                             }));
+            })
+            .then(() => {
+                if (!this.local) {
+                    return ctx.graphClient.executeMutationFromFile("graphql/createSlackChannel",
+                        { name: this.targetRepo})
+                        .then(channel => {
+                            const channelId = (channel as any).createSlackChannel[0].id;
+                            return ctx.graphClient.executeMutationFromFile("graphql/addBotToSlackChannel",
+                                { channelId })
+                                .then(() => {
+                                    return ctx.graphClient.executeMutationFromFile("graphql/linkSlackChannelToRepo",
+                                        { channelId, repo: this.targetRepo, owner: this.targetOwner });
+                                });
+                        })
+                        .then(() => Success)
+                        .catch(err => failure(err));
+                } else {
+                    return Promise.resolve(Success);
+                }
             });
     }
 

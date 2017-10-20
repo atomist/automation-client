@@ -1,0 +1,6 @@
+mutation CreateSlackChannel($name: String!) {
+  createSlackChannel(name: $name) {
+    name
+    id
+  }
+}
