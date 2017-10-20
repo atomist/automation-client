@@ -7,7 +7,58 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.1.47...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.2.0...HEAD
+
+## [0.2.0][] - 2017-10-18
+
+[0.2.0]: https://github.com/atomist/automation-client-ts/compare/0.1.50...0.2.0
+
+Alignment Release
+
+### Changed
+
+-   Make atomist-setup script quieter and more robust
+-   Align generators with ProjectEditor
+
+## [0.1.50][] - 2017-10-19
+
+[0.1.50]: https://github.com/atomist/automation-client-ts/compare/0.1.49...0.1.50
+
+Curry Release
+
+### Changed
+
+-   More currying
+-   Overhauled edit and review models
+
+### Added
+
+-   RepoId to Project
+
+### Fixed
+
+-   Issue with SpringBootSeed
+
+## [0.1.49][] - 2017-10-18
+
+[0.1.49]: https://github.com/atomist/automation-client-ts/compare/0.1.48...0.1.49
+
+Move Release
+
+### Changed
+
+-   Moved moveFile from AbstractProject to Project
+-   Exec npm start in atomist-setup script
+
+## [0.1.48][] - 2017-10-18
+
+[0.1.48]: https://github.com/atomist/automation-client-ts/compare/0.1.47...0.1.48
+
+Spring Release
+
+### Changed
+
+-   Spring and Java inference improvements
 
 ## [0.1.47][] - 2017-10-18
 
@@ -59,6 +110,10 @@ Pre Release
 [0.1.43]: https://github.com/atomist/automation-client-ts/compare/0.1.42...0.1.43
 
 Light Release
+
+### Changed
+
+-  GraphClient executeFile is now executeQueryFromFile
 
 ### Added
 
