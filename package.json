@@ -1,6 +1,6 @@
 {
   "name": "@atomist/automation-client",
-  "version": "0.1.51",
+  "version": "0.2.0",
   "description": "Atomist automation client for running command and event handlers",
   "author": "Atomist, Inc.",
   "license": "GPL-3.0",
