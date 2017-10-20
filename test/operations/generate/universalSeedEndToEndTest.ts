@@ -6,6 +6,7 @@ import * as tmp from "tmp-promise";
 
 import axios from "axios";
 
+import { HandlerContext } from "../../../src/HandlerContext";
 import { hasFile } from "../../../src/internal/util/gitHub";
 import { UniversalSeed } from "../../../src/operations/generate/UniversalSeed";
 import { GitHubBase } from "../../../src/project/git/GitProject";
@@ -53,7 +54,7 @@ describe("Universal seed end to end", () => {
         seed.targetOwner = TargetOwner;
         seed.targetRepo = TargetRepo;
         (seed as any).githubToken = GitHubToken;
-        seed.handle(null)
+        seed.handle(MockHandlerContext as HandlerContext)
             .then(result => {
                 assert(result.code === 0);
                 // Check the repo
@@ -72,7 +73,7 @@ describe("Universal seed end to end", () => {
         seed.targetRepo = TargetRepo;
         seed.local = true;
         (seed as any).githubToken = GitHubToken;
-        seed.handle(null)
+        seed.handle(MockHandlerContext as HandlerContext)
             .then(r => {
                 const result = r as any;
                 assert(result.code === 0);
@@ -84,3 +85,11 @@ describe("Universal seed end to end", () => {
     }).timeout(10000);
 
 });
+
+export const MockHandlerContext = {
+    graphClient: {
+        executeMutationFromFile(file: string, variables?: any): Promise<any> {
+            return Promise.resolve({ createSlackChannel: [ { id: "stts" } ]});
+        },
+    },
+};

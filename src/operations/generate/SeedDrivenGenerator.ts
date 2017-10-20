@@ -165,7 +165,7 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
                                     });
                             }));
             })
-            .then(() => {
+            .then(result => {
                 if (!this.local) {
                     return ctx.graphClient.executeMutationFromFile("graphql/createSlackChannel",
                         { name: this.targetRepo})
@@ -178,10 +178,10 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
                                         { channelId, repo: this.targetRepo, owner: this.targetOwner });
                                 });
                         })
-                        .then(() => Success)
+                        .then(() => result)
                         .catch(err => failure(err));
                 } else {
-                    return Promise.resolve(Success);
+                    return result;
                 }
             });
     }
