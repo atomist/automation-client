@@ -36,7 +36,7 @@ describe("function style metadata reading", () => {
             },
         } as HandlerContext;
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        s.fromCommandHandler(AddAtomistSpringAgent);//, AddAtomistSpringAgentParams);
+        s.fromCommandHandler(AddAtomistSpringAgent);
 
         const payload: CommandInvocation = {
             name: "AddAtomistSpringAgent",

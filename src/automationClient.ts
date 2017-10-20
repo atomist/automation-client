@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { Configuration } from "./configuration";
+import { CommandHandlerMaker, Configuration, toCommandHanderFactory } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { registerApplicationEvents } from "./internal/env/applicationEvent";
@@ -63,8 +63,8 @@ export class AutomationClient {
         return this.automations;
     }
 
-    public withCommandHandler(command: () => HandleCommand): AutomationClient {
-        this.automations.fromCommandHandlerInstance(command);
+    public withCommandHandler(chm: CommandHandlerMaker): AutomationClient {
+        this.automations.fromCommandHandlerInstance(toCommandHanderFactory(chm));
         return this;
     }
 

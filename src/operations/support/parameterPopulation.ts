@@ -1,4 +1,3 @@
-import { HandleCommand } from "../../HandleCommand";
 import { Arg } from "../../internal/invoker/Payload";
 import { CommandHandlerMetadata } from "../../internal/metadata/metadata";
 
@@ -9,7 +8,7 @@ import { CommandHandlerMetadata } from "../../internal/metadata/metadata";
  * @param hm handler metadata
  * @param args string args
  */
-export function populateParameters(h: HandleCommand, hm: CommandHandlerMetadata, args: Arg[]) {
+export function populateParameters(h: any, hm: CommandHandlerMetadata, args: Arg[]) {
     args.forEach(arg => {
         if (arg.value !== undefined) {
             const parameter = hm.parameters.find(p => p.name === arg.name);

@@ -73,7 +73,7 @@ describe("Universal seed end to end", () => {
         seed.targetRepo = TargetRepo;
         seed.local = true;
         (seed as any).githubToken = GitHubToken;
-        seed.handle(MockHandlerContext as HandlerContext)
+        seed.handle(MockHandlerContext as HandlerContext, seed)
             .then(r => {
                 const result = r as any;
                 assert(result.code === 0);

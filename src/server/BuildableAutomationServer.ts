@@ -12,8 +12,6 @@ import { ApolloGraphClient } from "../graph/ApolloGraphClient";
 import { EventFired, HandleEvent } from "../HandleEvent";
 import { HandlerResult } from "../HandlerResult";
 import { GraphClient } from "../spi/graph/GraphClient";
-
-import { ParametersFactory } from "../handler";
 import { logger } from "../internal/util/logger";
 import { toStringArray } from "../internal/util/string";
 import { populateParameters } from "../operations/support/parameterPopulation";
@@ -86,16 +84,21 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         }
         this.commandHandlers.push({
             metadata: md,
-            invoke: (i, ctx) => this.invokeFreshCommandHandlerInstance(factory(), md, i, ctx),
+            invoke: (i, ctx) => {
+                const newHandler = factory();
+                return this.invokeCommandHandlerWithFreshParametersInstance(newHandler, md, newHandler, i, ctx);
+            },
         });
         return this;
     }
 
-    public fromCommandHandler<P>(hc: SelfDescribingHandleCommand<P> /*factory: ParametersFactory<P>*/): this {
-        // const paramsInstanceToInspect = new factory();
+    public fromCommandHandler<P>(hc: SelfDescribingHandleCommand<P>): this {
         this.commandHandlers.push({
             metadata: hc,
-            invoke: (i, ctx) => this.invokeFreshCommandHandlerInstance(hc, hc, i, ctx),
+            invoke: (i, ctx) => {
+                const freshParams = !!hc.freshParametersInstance ? hc.freshParametersInstance() : hc;
+                return this.invokeCommandHandlerWithFreshParametersInstance(hc, hc, freshParams, i, ctx);
+            },
         });
         return this;
     }
@@ -152,14 +155,15 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
      * @param h
      * @param invocation
      */
-    private invokeFreshCommandHandlerInstance(h: HandleCommand,
-                                              md: CommandHandlerMetadata,
-                                              invocation: CommandInvocation,
-                                              ctx: HandlerContext): Promise<HandlerResult> {
-        populateParameters(h, md, invocation.args);
+    private invokeCommandHandlerWithFreshParametersInstance<P>(h: HandleCommand<P>,
+                                                               md: CommandHandlerMetadata,
+                                                               params: P,
+                                                               invocation: CommandInvocation,
+                                                               ctx: HandlerContext): Promise<HandlerResult> {
+        populateParameters(params, md, invocation.args);
         this.populateMappedParameters(h, invocation);
         this.populateSecrets(h, invocation.secrets);
-        const handlerResult = h.handle(this.enrichContext(ctx), h);
+        const handlerResult = h.handle(this.enrichContext(ctx), params);
         if (!handlerResult) {
             return Promise.reject(
                 `Error: Handler [${md.name}] returned null or undefined: Probably a user coding error`);

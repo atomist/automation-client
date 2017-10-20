@@ -1,4 +1,4 @@
-import { HandleCommand } from "./HandleCommand";
+import { HandleCommand, SelfDescribingHandleCommand } from "./HandleCommand";
 import { HandlerContext } from "./HandlerContext";
 import { HandlerResult } from "./HandlerResult";
 import {
@@ -10,7 +10,7 @@ import {
 } from "./internal/metadata/metadata";
 import { metadataFromInstance } from "./internal/metadata/metadataReading";
 
-export interface ParametersFactory<P> {
+export interface ParametersConstructor<P> {
 
     new(): P;
 
@@ -28,7 +28,7 @@ export type Handler<P = undefined> =
  * Create a HandleCommand instance with the appropriate metadata wrapping
  * the given function
  * @param {Handler<P>} h
- * @param {ParametersFactory<P>} factory
+ * @param {ParametersConstructor<P>} factory
  * @param {string} name
  * @param {string} description
  * @param {string[]} intent
@@ -36,14 +36,14 @@ export type Handler<P = undefined> =
  * @return {HandleCommand<P>}
  */
 export function commandHandlerFrom<P>(h: Handler<P>,
-                                      factory: ParametersFactory<P>,
+                                      factory: ParametersConstructor<P>,
                                       name: string, description: string,
                                       intent: string[] = [],
                                       tags: Tag[] = []): HandleCommand<P> & CommandHandlerMetadata {
     return new FunctionWrappingCommandHandler(name, description, h, factory, tags, intent);
 }
 
-class FunctionWrappingCommandHandler<P> implements HandleCommand<P>, CommandHandlerMetadata {
+class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P> {
 
     public parameters: Parameter[];
 
@@ -54,14 +54,18 @@ class FunctionWrappingCommandHandler<P> implements HandleCommand<P>, CommandHand
 
     constructor(public name: string, public description: string,
                 private h: Handler<P>,
-                private parametersFactory: ParametersFactory<P>,
+                private parametersFactory: ParametersConstructor<P>,
                 public tags: Tag[] = [],
                 public intent: string[] = []) {
-        const newParamInstance = new parametersFactory();
+        const newParamInstance = this.freshParametersInstance();
         const md = metadataFromInstance(newParamInstance) as CommandHandlerMetadata;
         this.parameters = md.parameters;
         this.mapped_parameters = md.mapped_parameters;
         this.secrets = md.secrets;
+    }
+
+    public freshParametersInstance(): P {
+        return new this.parametersFactory();
     }
 
     public handle(ctx: HandlerContext, params: P): Promise<HandlerResult> {
