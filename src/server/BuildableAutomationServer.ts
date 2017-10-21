@@ -46,7 +46,8 @@ interface IngestorRegistration {
 }
 
 /**
- * Simple automation server that works from a builder
+ * Simple automation server that offers building style
+ * configuration
  */
 export class BuildableAutomationServer extends AbstractAutomationServer {
 
@@ -73,17 +74,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         }
     }
 
-    // this one is used for testing
-    public withCommandHandler(h: CommandHandlerMetadata,
-                              handler: (command: CommandInvocation) => Promise<HandlerResult>): this {
-        this.commandHandlers.push({
-            metadata: h,
-            invoke: handler,
-        });
-        return this;
-    }
-
-    public fromCommandHandlerInstance(chm: Maker<HandleCommand>): this {
+    public registerCommandHandler(chm: Maker<HandleCommand>): this {
         const factory = toFactory(chm);
         const instanceToInspect = factory();
         const md = metadataFromInstance(instanceToInspect) as CommandHandlerMetadata;

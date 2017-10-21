@@ -1,7 +1,9 @@
 import "mocha";
 import * as assert from "power-assert";
 
+import { SelfDescribingHandleCommand } from "../../../src/HandleCommand";
 import { consoleMessageClient } from "../../../src/internal/message/ConsoleMessageClient";
+import { succeed } from "../../../src/operations/support/contextUtils";
 import { AutomationServer } from "../../../src/server/AutomationServer";
 import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
 import { HelloIssue } from "../../event/HelloIssue";
@@ -19,11 +21,11 @@ describe("BuildableAutomationServer", () => {
 
     it("should register one no-arg handler and return its metadataFromInstance", () => {
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        s.withCommandHandler(
-            {name: "foo", description: "foo", parameters: [], tags: [], intent: [], mapped_parameters: []},
-            ch => Promise.resolve({
-                code: 0,
-            }));
+        const h: SelfDescribingHandleCommand = {
+            name: "foo", description: "foo", parameters: [], tags: [], intent: [], mapped_parameters: [],
+            handle: succeed,
+        };
+        s.registerCommandHandler(() => h);
         assert(s.rugs.commands.length === 1);
         assert(s.rugs.events.length === 0);
         assert(s.rugs.commands[0].parameters.length === 0);
@@ -32,16 +34,14 @@ describe("BuildableAutomationServer", () => {
 
     it("should register one single arg handler and return its metadataFromInstance", () => {
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        s.withCommandHandler(
-            {
-                name: "foo", description: "foo", parameters: [{
+        const h: SelfDescribingHandleCommand = {
+            name: "foo", description: "foo", parameters: [{
                 name: "one", description: "a thing", pattern: ".*", required: true,
             },
             ], tags: [], intent: [], mapped_parameters: [],
-            },
-            ch => Promise.resolve({
-                code: 0,
-            }));
+            handle: succeed,
+        };
+        s.registerCommandHandler(() => h);
         assert(s.rugs.commands.length === 1);
         assert(s.rugs.events.length === 0);
         assert(s.rugs.commands[0].parameters.length === 1);
@@ -50,16 +50,14 @@ describe("BuildableAutomationServer", () => {
 
     it("should register one single arg handler and complain on invocation without parameter", () => {
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        s.withCommandHandler(
-            {
-                name: "foo", description: "foo", parameters: [{
+        const h: SelfDescribingHandleCommand = {
+            name: "foo", description: "foo", parameters: [{
                 name: "one", description: "a thing", pattern: ".*", required: true,
             },
             ], tags: [], intent: [], mapped_parameters: [],
-            },
-            ch => Promise.resolve({
-                code: 0,
-            }));
+            handle: succeed,
+        };
+        s.registerCommandHandler(() => h);
         assert.throws(() => {
             s.invokeCommand({
                 name: "foo",
@@ -74,16 +72,14 @@ describe("BuildableAutomationServer", () => {
 
     it("should register one single arg handler and not complain on invocation without defaulted parameter", done => {
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        s.withCommandHandler(
-            {
-                name: "foo", description: "foo", parameters: [{
+        const h: SelfDescribingHandleCommand = {
+            name: "foo", description: "foo", parameters: [{
                 name: "one", description: "a thing", pattern: ".*", required: true, default_value: "banana",
             },
             ], tags: [], intent: [], mapped_parameters: [],
-            },
-            ch => Promise.resolve({
-                code: 0,
-            }));
+            handle: succeed,
+        };
+        s.registerCommandHandler(() => h);
         s.invokeCommand({
             name: "foo",
             args: [],
@@ -99,20 +95,19 @@ describe("BuildableAutomationServer", () => {
 
     it("should register one single arg handler and invoke with valid parameter", done => {
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        s.withCommandHandler(
-            {
-                name: "foo", description: "foo", parameters: [{
+        const h: SelfDescribingHandleCommand = {
+            name: "foo", description: "foo", parameters: [{
                 name: "one", description: "a thing", pattern: ".*", required: true,
             },
             ], tags: [], intent: [], mapped_parameters: [],
-            },
-            ch => {
+            handle: (ch, params) => {
                 return Promise.resolve({
                     code: 0,
-                    paramVal: ch.args[0].value,
-
+                    paramVal: (params as any).one,
                 });
-            });
+            },
+        };
+        s.registerCommandHandler(() => h);
         registerOneSingleArgHandlerAndInvokeWithValidParameter(s, done);
     });
 
@@ -127,12 +122,12 @@ describe("BuildableAutomationServer", () => {
         }).then(hr => {
             assert((hr as any).paramVal === "value");
             done();
-        });
+        }).catch(done);
     }
 
     it("should register one command handler instance and invoke with valid parameter", done => {
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        s.fromCommandHandlerInstance(AddAtomistSpringAgent);
+        s.registerCommandHandler(AddAtomistSpringAgent);
         s.invokeCommand({
             name: "AddAtomistSpringAgent",
             args: [{name: "slackTeam", value: "T1691"}],
@@ -232,4 +227,5 @@ describe("BuildableAutomationServer", () => {
         });
     });
 
-});
+})
+;

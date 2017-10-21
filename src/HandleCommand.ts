@@ -1,7 +1,7 @@
+import { Handler } from "./handler";
 import { HandlerContext } from "./HandlerContext";
 import { HandlerResult } from "./HandlerResult";
 import { CommandHandlerMetadata } from "./internal/metadata/metadata";
-import { Handler } from "./handler";
 
 // tslint:disable-next-line:interface-over-type-literal
 export type Parameters = {};

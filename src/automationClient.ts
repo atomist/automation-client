@@ -57,7 +57,7 @@ export class AutomationClient {
     }
 
     public withCommandHandler(chm: Maker<HandleCommand>): AutomationClient {
-        this.automations.fromCommandHandlerInstance(toFactory(chm));
+        this.automations.registerCommandHandler(toFactory(chm));
         return this;
     }
 

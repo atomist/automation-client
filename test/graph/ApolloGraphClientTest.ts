@@ -46,7 +46,7 @@ describe("ApolloGraphClient", () => {
                     });
             })
             .catch(done);
-    });
+    }).timeout(10000);
 
     it("should mutate preferences", done => {
         const agc = new ApolloGraphClient("https://automation-staging.atomist.services/graphql/team/T1L0VDKJP"
