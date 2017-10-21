@@ -1,8 +1,8 @@
 import "mocha";
 
 import * as assert from "power-assert";
-import { CommandHandlerMetadata } from "../../../src/internal/metadata/metadata";
 import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
+import { CommandHandlerMetadata } from "../../../src/metadata/automationMetadata";
 import { JavaSeed } from "../../../src/operations/generate/java/JavaSeed";
 import { SpringBootSeed } from "../../../src/operations/generate/java/SpringBootSeed";
 import { UniversalSeed } from "../../../src/operations/generate/UniversalSeed";

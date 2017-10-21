@@ -1,14 +1,14 @@
 import { HandleCommand, SelfDescribingHandleCommand } from "./HandleCommand";
 import { HandlerContext } from "./HandlerContext";
 import { HandlerResult } from "./HandlerResult";
+import { metadataFromInstance } from "./internal/metadata/metadataReading";
 import {
     CommandHandlerMetadata,
     MappedParameterDeclaration,
     Parameter,
     SecretDeclaration,
     Tag,
-} from "./internal/metadata/metadata";
-import { metadataFromInstance } from "./internal/metadata/metadataReading";
+} from "./metadata/automationMetadata";
 
 export interface ParametersConstructor<P> {
 

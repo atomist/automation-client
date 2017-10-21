@@ -1,14 +1,9 @@
 import * as GraphQL from "../../graph/graphQL";
 import {
-    CommandHandlerMetadata,
-    EventHandlerMetadata,
-    IngestorMetadata,
-    isCommandHandlerMetadata,
-    isEventHandlerMetadata,
-    isIngestorMetadata,
-    MappedParameterDeclaration,
+    CommandHandlerMetadata, EventHandlerMetadata, IngestorMetadata, MappedParameterDeclaration,
     SecretDeclaration,
-} from "./metadata";
+} from "../../metadata/automationMetadata";
+import { isCommandHandlerMetadata, isEventHandlerMetadata, isIngestorMetadata } from "./metadata";
 
 /**
  * Extract metadata from a handler instance. We need an

@@ -1,11 +1,5 @@
-import { logger } from "../../src/internal/util/logger";
-
-import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
-import { CommandHandler, Parameter, Secret } from "../../src/decorators";
 import { HandleCommand, HandlerContext, HandlerResult, Secrets } from "../../src/Handlers";
-import { CommandHandlerMetadata } from "../../src/internal/metadata/metadata";
-import { sendMessages } from "../../src/operations/support/contextUtils";
-import { buttonForCommand, menuForCommand } from "../../src/spi/message/MessageClient";
+import { CommandHandlerMetadata } from "../../src/metadata/automationMetadata";
 
 export class PlainHelloWorld implements HandleCommand, CommandHandlerMetadata {
 //                                                     ^ -- implementing that interface is totally optional and only
@@ -23,7 +17,8 @@ export class PlainHelloWorld implements HandleCommand, CommandHandlerMetadata {
 
     public userToken: string;
 
-    public handle(ctx: HandlerContext): Promise<HandlerResult> {
+    // Use "params" rather than "this" to get parameters and avoid scoping issues!
+    public handle(ctx: HandlerContext, params: this): Promise<HandlerResult> {
         throw new Error("Not relevant");
     }
 }

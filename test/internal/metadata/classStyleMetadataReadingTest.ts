@@ -8,11 +8,10 @@ import { EventFired, HandleEvent } from "../../../src/HandleEvent";
 import { HandlerContext } from "../../../src/HandlerContext";
 import { HandlerResult } from "../../../src/HandlerResult";
 import { MappedParameters } from "../../../src/Handlers";
+
 import {
-    CommandHandlerMetadata,
-    EventHandlerMetadata,
-    IngestorMetadata,
-} from "../../../src/internal/metadata/metadata";
+    CommandHandlerMetadata, EventHandlerMetadata, IngestorMetadata,
+} from "../../../src/metadata/automationMetadata";
 import { populateParameters } from "../../../src/operations/support/parameterPopulation";
 import { AddAtomistSpringAgent, FooBarIngestor } from "../invoker/TestHandlers";
 
@@ -46,26 +45,26 @@ describe("class style metadata reading", () => {
     it("should convert to explicit type: boolean", () => {
         const h = new HasDefaultedBooleanParam();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
-        populateParameters(h, md, [ {name: "booleanParam", value: "true"}]);
+        populateParameters(h, md, [{name: "booleanParam", value: "true"}]);
         assert(h.booleanParam === true);
-        populateParameters(h, md, [ {name: "booleanParam", value: "false"}]);
+        populateParameters(h, md, [{name: "booleanParam", value: "false"}]);
         assert(h.booleanParam === false);
     });
 
     it("should convert to explicit type: number", () => {
         const h = new HasNumberParam();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
-        populateParameters(h, md, [ {name: "numberParam", value: "1"}]);
+        populateParameters(h, md, [{name: "numberParam", value: "1"}]);
         assert(h.numberParam === 1);
-        populateParameters(h, md, [ {name: "numberParam", value: "100"}]);
+        populateParameters(h, md, [{name: "numberParam", value: "100"}]);
         assert(h.numberParam === 100);
     });
 
     it("should handle both tags and intent", () => {
         const h = new TagsAndIntent();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
-        assert.deepEqual(md.intent, [ "universal", "generator"]);
-        assert.deepEqual(md.tags, [ "universal", "generator"]);
+        assert.deepEqual(md.intent, ["universal", "generator"]);
+        assert.deepEqual(md.tags, ["universal", "generator"]);
     });
 
     it("should handle ingestor metadata", () => {
@@ -207,7 +206,7 @@ export class HasNumberParam implements HandleCommand {
     }
 }
 
-@CommandHandler("description", [ "universal", "generator" ])
+@CommandHandler("description", ["universal", "generator"])
 @Tags("universal", "generator")
 export class TagsAndIntent implements HandleCommand {
 
@@ -219,7 +218,7 @@ export class TagsAndIntent implements HandleCommand {
 export class NoDecoratorCommandHandler implements HandleCommand, CommandHandlerMetadata {
 
     protected static params() {
-        return [ { name: "foo", description: "Some param", required: false, pattern: /^.*$/.source } ];
+        return [{name: "foo", description: "Some param", required: false, pattern: /^.*$/.source}];
     }
 
     public name = "NoDecoratorCommandHandler";
@@ -233,12 +232,12 @@ export class NoDecoratorCommandHandler implements HandleCommand, CommandHandlerM
     }
 }
 
-export class NoDecoratorCommandHandlerSubClass extends NoDecoratorCommandHandler implements
-    HandleCommand, CommandHandlerMetadata {
+export class NoDecoratorCommandHandlerSubClass
+    extends NoDecoratorCommandHandler implements HandleCommand, CommandHandlerMetadata {
 
     protected static params() {
-        return [ ...NoDecoratorCommandHandler.params(),
-            { name: "bar", description: "Some param", required: false, pattern: /^.*$/.source } ];
+        return [...NoDecoratorCommandHandler.params(),
+            {name: "bar", description: "Some param", required: false, pattern: /^.*$/.source}];
     }
 
     public parameters = NoDecoratorCommandHandlerSubClass.params();

@@ -3,9 +3,7 @@ import {
     CommandHandlerMetadata,
     EventHandlerMetadata,
     IngestorMetadata,
-    isCommandHandlerMetadata,
-    Rugs,
-} from "../internal/metadata/metadata";
+} from "../metadata/automationMetadata";
 import { AbstractAutomationServer } from "./AbstractAutomationServer";
 
 import { HandleCommand } from "../HandleCommand";
@@ -17,6 +15,7 @@ import { SecretResolver } from "../spi/env/SecretResolver";
 import { ApolloGraphClient } from "../graph/ApolloGraphClient";
 import { EventFired, HandleEvent } from "../HandleEvent";
 import { HandlerResult } from "../HandlerResult";
+import { isCommandHandlerMetadata, Rugs } from "../internal/metadata/metadata";
 import { logger } from "../internal/util/logger";
 import { toStringArray } from "../internal/util/string";
 import { populateParameters } from "../operations/support/parameterPopulation";

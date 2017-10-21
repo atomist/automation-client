@@ -1,4 +1,5 @@
-import { ParameterType } from "./metadata";
+
+import { ParameterType } from "../../metadata/automationMetadata";
 
 export interface BaseParameter {
     readonly pattern: RegExp;

@@ -2,7 +2,8 @@ import { EventFired } from "../HandleEvent";
 import { HandlerContext } from "../HandlerContext";
 import { HandlerResult } from "../HandlerResult";
 import { Arg, CommandInvocation } from "../internal/invoker/Payload";
-import { CommandHandlerMetadata, EventHandlerMetadata, IngestorMetadata, Rugs } from "../internal/metadata/metadata";
+import { Rugs } from "../internal/metadata/metadata";
+import { CommandHandlerMetadata, EventHandlerMetadata, IngestorMetadata } from "../metadata/automationMetadata";
 import { AutomationServer } from "./AutomationServer";
 
 /**

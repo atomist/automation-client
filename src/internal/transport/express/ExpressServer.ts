@@ -12,11 +12,8 @@ import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
 import * as globals from "../../../globals";
 import { MappedParameters } from "../../../Handlers";
+import { CommandHandlerMetadata, IngestorMetadata } from "../../../metadata/automationMetadata";
 import { AutomationServer } from "../../../server/AutomationServer";
-import {
-    CommandHandlerMetadata,
-    IngestorMetadata,
-} from "../../metadata/metadata";
 import { logger } from "../../util/logger";
 import { report } from "../../util/metric";
 import { guid } from "../../util/string";

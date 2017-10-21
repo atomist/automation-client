@@ -1,10 +1,10 @@
 import { Arg } from "../../internal/invoker/Payload";
-import { CommandHandlerMetadata } from "../../internal/metadata/metadata";
+import { CommandHandlerMetadata } from "../../metadata/automationMetadata";
 
 /**
  * Populate the parameters of the command handler instance,
  * performing type coercion if necessary
- * @param h handler instance
+ * @param h parameters instance (may be handler instance itself)
  * @param hm handler metadata
  * @param args string args
  */

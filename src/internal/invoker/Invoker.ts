@@ -1,7 +1,7 @@
 import { EventFired } from "../../HandleEvent";
 import { HandlerContext } from "../../HandlerContext";
 import { HandlerResult } from "../../HandlerResult";
-import { CommandHandlerMetadata } from "../metadata/metadata";
+import { CommandHandlerMetadata } from "../../metadata/automationMetadata";
 import { CommandInvocation } from "./Payload";
 
 export interface Invoker {
