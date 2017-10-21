@@ -161,8 +161,6 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
 
     /**
      * Populate handler parameters
-     * @param h
-     * @param invocation
      */
     private invokeCommandHandlerWithFreshParametersInstance<P>(h: HandleCommand<P>,
                                                                md: CommandHandlerMetadata,
@@ -208,14 +206,13 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
     }
 
     private enrichContext(ctx: HandlerContext): HandlerContext {
-        const context: HandlerContext = {
+        return {
             teamId: ctx.teamId,
             correlationId: ctx.correlationId,
             invocationId: ctx.invocationId,
             messageClient: ctx.messageClient,
             graphClient: ctx.graphClient ? ctx.graphClient : this.graphClient,
         };
-        return context;
     }
 
     private populateMappedParameters(h: {}, invocation: Invocation) {

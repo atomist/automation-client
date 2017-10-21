@@ -17,8 +17,10 @@ export interface ParametersConstructor<P> {
 }
 
 /**
- * Handle the given command. Parameters will have been set on the object
- * @param {HandlerContext} ctx context from which GraphQL client can be obtained
+ * Handle the given command. Parameters will have been set on a fresh
+ * parameters instance before invocation
+ * @param {HandlerContext} ctx context from which GraphQL client can be obtained,
+ * messages can be sent etc.
  * @return {Promise<HandlerResult>} result containing status and any command-specific data
  */
 export type Handler<P = undefined> =
