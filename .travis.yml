@@ -5,11 +5,11 @@ node_js:
 - 8.4.0
 branches:
   except:
-  - /\+travis\.\d+$/
+  - "/\\+travis\\.\\d+$/"
 env:
   global:
   - NPM_REGISTRY=https://atomist.jfrog.io/atomist/api/npm/npm-dev-local
-  - secure: sYyJUOt6jnMgpE2kuvQTxgUzDvZDf5dahdgkCXfjqlzpuQcwyamBk/0RQnC0WjNBm0N426ix0E2f+36Ivu1QXAhr3zKK4o/5x0ekh0dF05ILg14/leU7LZNG/epZ0f25Sh/fQW0aGQZzKrnPZbJQ+DVCqjcuYy8Tgb/sCt91xabE4QynT4p/Jb7JZKCKirfrK5aeQlgK+R56VWuIHxDhT6221hTYwKWXJvADXThzyuwCh3VEocX6xOYvkWRq+yKkhB/5NuElNGiulEGsluqqWxdXUaJDwtIoSv2dxcEBgKeCS9PVVvK1C1umOSkNXVqGsFs6g3tSPJDCBWEXb+Z0IIgIMwNSlOCUCsJhiPrfq2hiIIu2Diq+Fjp2KUWT/Ennz2BHueCGyHqDA5wLB4Vu/wTUHgWFO7MWZswAN/qkUlNFj+gQxQagfmevXKrn4QlfgcR53XWH1pwHrmJCrqAPm8Ma19ebnxPV6pMzUXciyHH1CWM4VpDhsOAluL/fdVk8c4NB060/s3u1k1PB7qWp9qlFbkh6VGPjm0dTC97u/zR/CJDtWeoOcfu0w0gVNPZKklfL/r1tU1k2j5zw1NxCZP4Kmo0UubF4G9N+tpO7aHsI1ddpKeujGxAoYfj6VYe5KD46gzmzcyGU305SeKtSlRbVOm1DA5WdJZQexDO+naM=
+  - secure: zChPmwXwJPWS3W9T+IL2NWtJVOL/CZQjj799ArFGAaNINVu1vkXPjgD/slJWxl5JN4wU05S6XMc2RpkaK9clI2O4V3/bcBhO/EoMGX1oR46kHN4bvOJ5Th0pA3QO/iL3FSOPOo0jXO5ukCjPItyE2IYI24BBkyy7Z5wp8PPE66zCPEmtR9+ng7ZXw/XxecASEw808wkro+ze4nUqM259WnprbZIDGD4xCPkmf1/I6KOeALsG6wFAl8BAi06ajYjOdXunQFpQeOQ4l2qHrNLMoKjWkOYh5GoMMEwm+xRMNF4AvvpkV+gCgV614oNzNkRIW6y+Q6Q6VypxQEVLX2hvNolYID+39Z8l+nJ9q5E7/sTw02R1dmUhx2eyDQQDVaayWIIZHfzR59rnPrWR+LxvmumW7HN9f5JUneDEwVni7Q4OmEAc2I9m8O3D7QdgjZ1bkRJ2fJ9pIuXbKW2Sc9ChXWOHedRi4xEvntvCT63I3TCB/Dx44g7k7Oth9wgqEoTA5X9U6qjbV5wfQbNSxDL4KUXtOc8WEWiKl33DCyqTI/+2aYDWfvZHGDWkSmvJPH7gWcmWkcqM3cBOQlvpyOWOmlfMbeczidiPL94INDhckkp1e83v1WnuLCn23xniDVSrnuQS9jkKWCEXIrMiEUgDJq6mTzKIpjm55MFDOhXls0w=
 before_install:
 - openssl aes-256-cbc -K $encrypted_e466dd0f1e03_key -iv $encrypted_e466dd0f1e03_iv
   -in scripts/.npmrc.enc -out $HOME/.npmrc -d
@@ -26,13 +26,13 @@ notifications:
     on_error: always
 cache:
   directories:
-  - $HOME/.npm
+  - "$HOME/.npm"
 deploy:
   provider: releases
   api_key:
     secure: M8yF6uIEmOJ56KV286PlM9cNph4ZRohDhkOKiuSob5P65GLMmjy88oZ8njppPnn8u76lJH2o0jCgznlcE+UZHtoWRdTFxaPD3xWbvgwGuScdnKz2wDe2EsC42jkjsr1c1daPjQ9bvF9IbHBknLDhZLs4vOl5ny2jsO8SDW94S2GwqmjQ6XiDKVGHBi4o7xieR67oGlxbsH10+OgIBfXUe8wZh3jGKB6Moc5Ln01l/JR/8ic3CCm6JhvaMooLHoxgGatwx/YOztn5MrrMXthOia2MAGX2yMMyPE5lZKjqw42LdU/yTtJhP9bRU+GNVx9MCGNhiMTCzM1pJkCizLx4+dYRepqdvnWq3P6qbn1vgAk6PR/Re6rMPDj1q7SZ4MKSoCtB5OpkI7Ld2mR7b8tz63ybcsdm/YWRDAfxTXdrAmp22IY4U3kRvQj7MrETHb+hBVosumiZb7XrVKp1QWqevHNS1be93Fdj9Gs+aH+r7ucRxxn9a2bvYBdIdmpeUgHijds5qEx5PV3C4AvtCqvwM22xIUr3DcTm5DbMtsf+6Uc+BQEKBg/++o9MRnjARhhekOwHpwp+Ce+5VmF2tcvSH448unzYccpImfkedP5f0tI4De/b3v6dntUr8ZBDItxTkN0OFljBzli2gbjwlCv9wwWTHx0uqFVIyYZ1DniFIE0=
   on:
     tags: true
-    condition: $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+(-(m|rc)\.[0-9]+)?$
+    condition: "$TRAVIS_TAG =~ ^[0-9]+\\.[0-9]+\\.[0-9]+(-(m|rc)\\.[0-9]+)?$"
 after_deploy:
 - bash scripts/gh-publish.bash $TRAVIS_REPO_SLUG
