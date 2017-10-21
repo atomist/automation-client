@@ -10,7 +10,7 @@ import { EventFired, HandleEvent } from "../../../src/HandleEvent";
 import { HandlerResult } from "../../../src/HandlerResult";
 import { MappedParameters } from "../../../src/Handlers";
 
-@CommandHandler("AddAtomistSpringAgent", "add the Atomist Spring Boot agent to a Spring Boot project")
+@CommandHandler("add the Atomist Spring Boot agent to a Spring Boot project")
 @Tags("atomist", "spring")
 export class AddAtomistSpringAgent implements HandleCommand {
 

@@ -2,6 +2,8 @@ import axios from "axios";
 import * as promiseRetry from "promise-retry";
 import * as WebSocket from "ws";
 import { logger } from "../../util/logger";
+import Timer = NodeJS.Timer;
+import { registerShutdownHook } from "../../util/shutdown";
 import {
     CommandIncoming,
     EventIncoming,
@@ -13,8 +15,6 @@ import {
     RegistrationConfirmation,
     WebSocketRequestProcessor,
 } from "./WebSocketRequestProcessor";
-import Timer = NodeJS.Timer;
-import { registerShutdownHook } from "../../util/shutdown";
 
 export class WebSocketClient {
 

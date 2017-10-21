@@ -36,8 +36,24 @@ export function Secret(path: string) {
     };
 }
 
+/**
+ * Decorator for a command handler class. Implements HandleCommand
+ * @param {string} description
+ * @param {string[] | string} intent
+ * @return {(obj: any) => any}
+ * @constructor
+ */
 export function CommandHandler(description: string, intent?: string[] | string) {
     return (obj: any) => { declareCommandHandler(obj, description, intent); };
+}
+
+/**
+ * Decorator for a parameter class that doesn't contain handler logic
+ * @return {(obj: any) => any}
+ * @constructor
+ */
+export function Parameters() {
+    return (obj: any) => { declareCommandHandler(obj, undefined, []); };
 }
 
 export function Ingestor(

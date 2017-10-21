@@ -1,19 +1,31 @@
-
+import { Handler } from "./handler";
 import { HandlerContext } from "./HandlerContext";
 import { HandlerResult } from "./HandlerResult";
+import { CommandHandlerMetadata } from "./internal/metadata/metadata";
 
 // tslint:disable-next-line:interface-over-type-literal
 export type Parameters = {};
 
 /**
- * Interface for command handlers.
+ * Interface for class-based command handlers.
+ * These combine the parameters with the command. A fresh
+ * instance will be created for every invocation. Prefer using the
+ * parameters object to "this" in implementations of the handle method.
  */
-export interface HandleCommand {
+export interface HandleCommand<P = any> {
 
     /**
-     * Handle the given command. Parameters will have been set on the object
-     * @param {HandlerContext} ctx context from which GraphQL client can be obtained
-     * @return {Promise<HandlerResult>} result containing status and any command-specific data
+     * Handler function for this command
      */
-    handle(ctx: HandlerContext): Promise<HandlerResult>;
+    handle: Handler<P>;
+
+    /**
+     * If this method is implemented, it returns a fresh parameters instance
+     * to use for this class. Otherwise will use the class itself as its parameters.
+     * @return {P}
+     */
+    freshParametersInstance?(): P;
+
 }
+
+export type SelfDescribingHandleCommand<P = any> = HandleCommand<P> & CommandHandlerMetadata;

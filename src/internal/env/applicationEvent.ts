@@ -2,8 +2,8 @@ import * as appRoot from "app-root-path";
 import axios from "axios";
 import * as os from "os";
 import { logger } from "../util/logger";
-import { guid } from "../util/string";
 import { registerShutdownHook } from "../util/shutdown";
+import { guid } from "../util/string";
 
 const Url = "https://webhook.atomist.com/atomist/application/teams";
 

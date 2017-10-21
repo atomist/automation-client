@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.2.0...HEAD
 
+Functional invocation release
+
+### Added
+
+-   Allow `CommandHandler` instances to be created from functions
+-   Allow a class to be passed into a command handler list, as well as `() => handler`
+function
+
 ## [0.2.0][] - 2017-10-18
 
 [0.2.0]: https://github.com/atomist/automation-client-ts/compare/0.1.50...0.2.0

@@ -22,7 +22,7 @@ class StartUpListener extends AutomationEventListenerSupport {
         transport.processCommand({
             name: "SendStartupMessage",
             atomist_type: "command_handler_request",
-            correlation_context: { team: { id: "T1L0VDKJP" } },
+            correlation_context: {team: {id: "T1L0VDKJP"}},
             corrid: guid(),
             parameters: [{
                 name: "owner",
@@ -36,7 +36,7 @@ class StartUpListener extends AutomationEventListenerSupport {
             }],
             mapped_parameters: [],
             secrets: [],
-            team: { id: "T1L0VDKJP" },
+            team: {id: "T1L0VDKJP"},
             rug: {},
         });
     }
@@ -47,8 +47,8 @@ export const configuration: Configuration = {
     version: "0.0.6",
     teamIds: ["T1L0VDKJP"],
     commands: [
-        () => new HelloWorld(),
-        () => new SendStartupMessage(),
+        HelloWorld,
+        SendStartupMessage,
         () => new PlainHelloWorld(),
         // () => new UniversalSeed(),
         // () => new JavaSeed(),

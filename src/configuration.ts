@@ -20,12 +20,14 @@ import * as fs from "fs-extra";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { logger } from "./internal/util/logger";
-import { hideString, obfuscateJson } from "./internal/util/string";
+import { obfuscateJson } from "./internal/util/string";
 import { AutomationEventListener } from "./server/AutomationEventListener";
 import { RunOptions } from "./server/options";
+import { Maker } from "./util/constructionUtils";
 
 export interface Configuration extends RunOptions {
-    commands?: Array<() => HandleCommand>;
+
+    commands?: Array<Maker<HandleCommand>>;
     events?: Array<() => HandleEvent<any>>;
     ingestors?: Array<() => HandleEvent<any>>;
     listeners?: AutomationEventListener[];
@@ -121,7 +123,7 @@ export function resolveModuleConfig(userConfig: UserConfig, pkgJson: any): Modul
         }
     }
 
-    return { token, teamIds };
+    return {token, teamIds};
 }
 
 const AtomistConfigFile = "atomist.config.js";
@@ -131,7 +133,7 @@ export function findConfiguration(): Configuration {
 
     // TODO we could add an env variable ATOMIST_CONFIG for people to specify a path to a file to use
     const glob = require("glob");
-    const files = glob.sync(`**/${AtomistConfigFile}`, { ignore: "node_modules/**" });
+    const files = glob.sync(`**/${AtomistConfigFile}`, {ignore: "node_modules/**"});
 
     if (files.length === 0) {
         throw new Error(`No '${AtomistConfigFile}' file found in project`);

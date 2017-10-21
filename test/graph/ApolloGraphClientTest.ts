@@ -6,13 +6,15 @@ import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject
 import { ReposQuery, ReposQueryVariables } from "../../src/schema/schema";
 import { GitHubToken } from "../atomist.config";
 
+const teamId = "T095SFFBK";
+
 describe("ApolloGraphClient", () => {
 
     it("should run repos query", done => {
-        const agc = new ApolloGraphClient("https://automation.atomist.com/graphql/team/T095SFFBK"
-            , {Authorization: `token ${process.env.GITHUB_TOKEN}`});
+        const agc = new ApolloGraphClient("https://automation.atomist.com/graphql/team/" + teamId,
+            {Authorization: `token ${process.env.GITHUB_TOKEN}`});
         agc.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
-            {teamId: "T095SFFBK", offset: 0})
+            {teamId, offset: 0})
             .then(result => {
                 // console.log(`Repos were ${JSON.stringify(result)}`);
                 const org = result.ChatTeam[0].orgs[0];
@@ -44,7 +46,7 @@ describe("ApolloGraphClient", () => {
                     });
             })
             .catch(done);
-    });
+    }).timeout(10000);
 
     it("should mutate preferences", done => {
         const agc = new ApolloGraphClient("https://automation-staging.atomist.services/graphql/team/T1L0VDKJP"
@@ -53,7 +55,7 @@ describe("ApolloGraphClient", () => {
             {
                 userId: "U1L22E3SA",
                 name: "test",
-                value:  `{"disable_for_test":true}`,
+                value: `{"disable_for_test":true}`,
             })
             .then(result => {
                 assert((result as any).setUserPreference[0].name === "test");

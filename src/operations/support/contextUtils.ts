@@ -1,6 +1,6 @@
 
 import { HandlerContext } from "../../HandlerContext";
-import { HandlerResult } from "../../HandlerResult";
+import { HandlerResult, Success } from "../../HandlerResult";
 
 /**
  * Convenient function to return a success result if we are able to send messages
@@ -9,7 +9,14 @@ import { HandlerResult } from "../../HandlerResult";
  */
 export function sendMessages(ctx: HandlerContext): Promise<HandlerResult> {
     return ctx.messageClient.flush()
-        .then(_ => {
-            return {code: 0};
-        });
+        .then(succeed);
+}
+
+/**
+ * Can throw this into the end of a handler chain to return a HandlerResult
+ * @param whatever
+ * @return {Promise<HandlerResult>}
+ */
+export function succeed(whatever: any): Promise<HandlerResult> {
+    return Promise.resolve(Success);
 }
