@@ -9,12 +9,7 @@ export type ProjectOp = (p: Project) => Promise<Project>;
 
 export type EditorChainable = ProjectEditor | ProjectOp;
 
-
-type All3<PARAMS> = [Project, HandlerContext, PARAMS]
-interface EditResultWithAll3<PARAMS> extends ActionResult<All3<PARAMS>> {
-    edited: boolean
-}
-function combineEditResults<PARAMS>(r1: EditResultWithAll3<PARAMS>, r2: EditResultWithAll3<PARAMS>): EditResultWithAll3<PARAMS> {
+function combineEditResults(r1: EditResult, r2: EditResult): EditResult {
     return {
         ...r1, ...r2,
         edited: r1.edited || r2.edited
@@ -26,36 +21,18 @@ function combineEditResults<PARAMS>(r1: EditResultWithAll3<PARAMS>, r2: EditResu
  * @param {ProjectEditor} projectEditors
  * @return {ProjectEditor}
  */
-export function chainEditors<PARAMS extends Parameters = undefined>(
+export function chainEditors(
     ...projectEditors: EditorChainable[]): ProjectEditor {
-    const editorsWithSameOutputAsInput: Chainable<All3<PARAMS>>[] =
-        projectEditors.map(toEditor).map(ed => passAlongExtraArguments<All3<PARAMS>>(ed));
+    const alwaysReturnEditResult =
+        projectEditors.map(toEditor);
 
-    const chain: TAction<All3<PARAMS>> = actionChainWithCombiner<All3<PARAMS>, EditResultWithAll3<PARAMS>>(
-        combineEditResults,
-        ...editorsWithSameOutputAsInput)
-
-    return (p, ctx, params) => chain([p, ctx, params]).then(bigResult => {
-        return {
-            ...bigResult,
-            target: bigResult.target[0] // pull out just the project
-        } as EditResult
-    });
+    return (p, ctx, params) => {
+        const curried = alwaysReturnEditResult.map(ed => (pp) => ed(pp, ctx, params));
+        const chain = actionChainWithCombiner(combineEditResults,
+            ...curried);
+        return chain(p) as Promise<EditResult>;
+    };
 }
-
-function passAlongExtraArguments<All extends Array<any>>(ed /* Receives more args than it returns */): TAction<All> {
-    return (all: All) => {
-        const result = (ed as any)(...all);
-        return result.then(er => {
-            all[0] = er.target; /* only the first argument has been updated */
-            return {
-                ...er,
-                target: all
-            };
-        })
-    }
-}
-
 function toEditor(pop: EditorChainable): ProjectEditor {
     return (proj, ctx, params) => (pop as ProjectOp)(proj)
         .then(r => {
