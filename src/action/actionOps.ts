@@ -1,4 +1,4 @@
-import { ActionResult, isActionResult, successOn, failureOn } from "./ActionResult";
+import { ActionResult, failureOn, isActionResult, successOn } from "./ActionResult";
 
 export type TOp<T> = (p: T) => Promise<T>;
 
@@ -28,12 +28,12 @@ export function actionChainWithCombiner<T, R extends ActionResult<T> = ActionRes
             const ed2: TAction<T> = toAction(c2);
             return p => ed1(p).then(r1 => {
                 // console.log("Applied action " + c1.toString());
-                if (!r1.success) { return r1 } else {
+                if (!r1.success) { return r1; } else {
                     return ed2(r1.target).then(r2 => {
                         // console.log("Applied action " + c2.toString());
                         const combinedResult: ActionResult<T> = combiner((r1 as R), (r2 as R));
-                        return combinedResult
-                    })
+                        return combinedResult;
+                    });
                 }
             });
         }) as TAction<T>; // Consider adding R as a type parameter to TAction
@@ -48,11 +48,10 @@ function toAction<T>(link: Chainable<T>): TAction<T> {
                     r :
                     successOn(r);
             });
+        } catch (error) {
+            return Promise.resolve(failureOn(t, error, link));
         }
-        catch (error) {
-            return Promise.resolve(failureOn(t, error, link))
-        }
-    }
+    };
 }
 
 /**

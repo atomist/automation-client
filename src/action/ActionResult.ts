@@ -42,6 +42,6 @@ export function failureOn<T>(t: T, err: Error, f?: any /* function */): ActionRe
         success: false,
         target: t,
         error: err,
-        errorStep: f ? f.name : undefined
+        errorStep: f ? f.name : undefined,
     };
 }

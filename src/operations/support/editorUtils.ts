@@ -44,10 +44,10 @@ export function editRepo<T extends Parameters>(
 }
 
 export function editProjectUsingPullRequest<T extends Parameters>(context: HandlerContext,
-    gp: GitProject,
-    editor: ProjectEditor<T>,
-    pr: PullRequest,
-    parameters?: T): Promise<EditResult> {
+                                                                  gp: GitProject,
+                                                                  editor: ProjectEditor<T>,
+                                                                  pr: PullRequest,
+                                                                  parameters?: T): Promise<EditResult> {
 
     return editor(gp, context, parameters)
         .then(r => r.edited ?
@@ -60,10 +60,10 @@ export function editProjectUsingPullRequest<T extends Parameters>(context: Handl
 }
 
 export function editProjectUsingBranch<T extends Parameters>(context: HandlerContext,
-    gp: GitProject,
-    editor: ProjectEditor<T>,
-    ci: BranchCommit,
-    parameters?: T): Promise<EditResult> {
+                                                             gp: GitProject,
+                                                             editor: ProjectEditor<T>,
+                                                             ci: BranchCommit,
+                                                             parameters?: T): Promise<EditResult> {
 
     return editor(gp, context, parameters)
         .then(r => r.edited ?
