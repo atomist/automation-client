@@ -47,13 +47,12 @@ describe("action chaining", () => {
             }).catch(done);
     });
 
-    // this looks identical to the previous test
     it("should work in both directions", done => {
         const project = new InMemoryProject("");
         const editor: ProjectOp = p => {
             return p.addFile("thing", "1");
         };
-        const editorChain = actionChain(editor, p => Promise.resolve(p));
+        const editorChain = actionChain(p => Promise.resolve(p), editor);
         editorChain(project)
             .then(r => {
                 assert(!!r.target.findFileSync("thing"));

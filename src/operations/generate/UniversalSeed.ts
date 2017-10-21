@@ -68,6 +68,5 @@ export const RemoveSeedFiles: ProjectEditor = project => {
         ".travis",
     ];
     deleteDirs.forEach(d => defer(project, project.deleteDirectory(d)));
-    // why defer when you're gonna flush after each one
     return flushAndSucceed(project);
 };
