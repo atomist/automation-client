@@ -8,7 +8,7 @@ import {
 } from "../../../src/decorators";
 import { EventFired, HandleEvent } from "../../../src/HandleEvent";
 import { HandlerResult } from "../../../src/HandlerResult";
-import { MappedParameters } from "../../../src/Handlers";
+import { MappedParameters, Secrets } from "../../../src/Handlers";
 
 @CommandHandler("add the Atomist Spring Boot agent to a Spring Boot project")
 @Tags("atomist", "spring")
@@ -47,6 +47,19 @@ export class AddAtomistSpringAgent implements HandleCommand {
 export class AlwaysOkEventHandler implements HandleEvent<any> {
 
     public handle(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult> {
+        return Promise.resolve({ code: 0, thing: e.data.Thing[0].some_thing });
+    }
+}
+
+@EventHandler("OK only if mySecret is populated", "subscription Foo {Issue { name } }")
+@Tags("thing")
+export class TrustMeIGaveMySecret implements HandleEvent<any> {
+
+    @Secret(Secrets.OrgToken)
+    private mySecret: string;
+
+    public handle(e: EventFired<any>, ctx: HandlerContext, params: this): Promise<HandlerResult> {
+        assert(params.mySecret === "valid");
         return Promise.resolve({ code: 0, thing: e.data.Thing[0].some_thing });
     }
 }

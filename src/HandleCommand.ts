@@ -1,5 +1,5 @@
-import { Handler } from "./handler";
 import { CommandHandlerMetadata } from "./metadata/automationMetadata";
+import { OnCommand } from "./onCommand";
 
 // tslint:disable-next-line:interface-over-type-literal
 export type Parameters = {};
@@ -13,9 +13,9 @@ export type Parameters = {};
 export interface HandleCommand<P = any> {
 
     /**
-     * Handler function for this command
+     * OnCommand function for this command
      */
-    handle: Handler<P>;
+    handle: OnCommand<P>;
 
     /**
      * If this method is implemented, it returns a fresh parameters instance

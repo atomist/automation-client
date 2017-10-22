@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import * as yargs from "yargs";
-import { Argv } from "yargs";
 import { automationClient } from "./automationClient";
 import { findConfiguration } from "./configuration";
 import { HandlerContext } from "./HandlerContext";

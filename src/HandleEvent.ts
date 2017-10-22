@@ -1,6 +1,7 @@
 import { HandlerContext } from "./HandlerContext";
 import { HandlerResult } from "./HandlerResult";
 import { Arg } from "./internal/invoker/Payload";
+import { OnEvent } from "./onEvent";
 
 export interface EventFired<T> {
 
@@ -19,5 +20,5 @@ export interface EventFired<T> {
  */
 export interface HandleEvent<T> {
 
-    handle(e: EventFired<T>, ctx: HandlerContext): Promise<HandlerResult>;
+    handle: OnEvent<T>;
 }

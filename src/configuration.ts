@@ -28,8 +28,8 @@ import { Maker } from "./util/constructionUtils";
 export interface Configuration extends RunOptions {
 
     commands?: Array<Maker<HandleCommand>>;
-    events?: Array<() => HandleEvent<any>>;
-    ingestors?: Array<() => HandleEvent<any>>;
+    events?: Array<Maker<HandleEvent<any>>>;
+    ingestors?: Array<Maker<HandleEvent<any>>>;
     listeners?: AutomationEventListener[];
 
     applicationEvents?: {

@@ -102,7 +102,8 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         return this;
     }
 
-    public fromEventHandlerInstance(factory: () => HandleEvent<any>): this {
+    public fromEventHandlerInstance(maker: Maker<HandleEvent<any>>): this {
+        const factory = toFactory(maker);
         const instanceToInspect = factory();
         const md = metadataFromInstance(instanceToInspect) as EventHandlerMetadata;
         if (!md) {
@@ -115,7 +116,8 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         return this;
     }
 
-    public fromIngestorInstance(factory: () => HandleEvent<any>): this {
+    public fromIngestorInstance(maker: Maker<HandleEvent<any>>): this {
+        const factory = toFactory(maker);
         const instanceToInspect = factory();
         const md = metadataFromInstance(instanceToInspect) as IngestorMetadata;
         if (!md) {
@@ -176,7 +178,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                                             e: EventFired<any>,
                                             ctx: HandlerContext): Promise<HandlerResult> {
         this.populateSecrets(h, e.secrets);
-        return h.handle(e, this.enrichContext(ctx))
+        return h.handle(e, this.enrichContext(ctx), h)
             .catch(err => {
                 // these do not fire when the handler fails.
                 // perhaps only in the case of unexpected errors?
@@ -188,7 +190,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
     private invokeFreshIngestorInstance(h: HandleEvent<any>,
                                         e: EventFired<any>,
                                         ctx: HandlerContext): Promise<HandlerResult> {
-        return h.handle(e, this.enrichContext(ctx))
+        return h.handle(e, this.enrichContext(ctx), h)
             .catch(err => {
                 logger.error("Rejecting promise on " + err);
                 return Promise.reject(err);

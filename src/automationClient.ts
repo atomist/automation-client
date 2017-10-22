@@ -61,12 +61,12 @@ export class AutomationClient {
         return this;
     }
 
-    public withEventHandler(event: () => HandleEvent<any>): AutomationClient {
+    public withEventHandler(event: Maker<HandleEvent<any>>): AutomationClient {
         this.automations.fromEventHandlerInstance(event);
         return this;
     }
 
-    public withIngestor(event: () => HandleEvent<any>): AutomationClient {
+    public withIngestor(event: Maker<HandleEvent<any>>): AutomationClient {
         this.automations.fromIngestorInstance(event);
         return this;
     }

@@ -1,6 +1,6 @@
 import { MappedParameter, Parameter, Parameters, Secret } from "../../../src/decorators";
 import { HandleCommand, SelfDescribingHandleCommand } from "../../../src/HandleCommand";
-import { commandHandlerFrom, Handler } from "../../../src/handler";
+import { commandHandlerFrom, OnCommand } from "../../../src/onCommand";
 import { succeed } from "../../../src/operations/support/contextUtils";
 
 @Parameters()

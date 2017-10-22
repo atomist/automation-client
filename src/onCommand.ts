@@ -23,13 +23,13 @@ export interface ParametersConstructor<P> {
  * messages can be sent etc.
  * @return {Promise<HandlerResult>} result containing status and any command-specific data
  */
-export type Handler<P = undefined> =
+export type OnCommand<P = undefined> =
     (ctx: HandlerContext, parameters: P) => Promise<HandlerResult>;
 
 /**
  * Create a HandleCommand instance with the appropriate metadata wrapping
  * the given function
- * @param {Handler<P>} h
+ * @param {OnCommand<P>} h
  * @param {ParametersConstructor<P>} factory
  * @param {string} name can be omitted if the function isn't exported
  * @param {string} description
@@ -37,7 +37,7 @@ export type Handler<P = undefined> =
  * @param {Tag[]} tags
  * @return {HandleCommand<P>}
  */
-export function commandHandlerFrom<P>(h: Handler<P>,
+export function commandHandlerFrom<P>(h: OnCommand<P>,
                                       factory: ParametersConstructor<P>,
                                       name: string = h.name,
                                       description: string = name,
@@ -60,7 +60,7 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
 
     constructor(public name: string,
                 public description: string,
-                private h: Handler<P>,
+                private h: OnCommand<P>,
                 private parametersFactory: ParametersConstructor<P>,
                 public tags: Tag[] = [],
                 public intent: string[] = []) {
