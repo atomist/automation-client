@@ -6,8 +6,12 @@ import { consoleMessageClient } from "../../../src/internal/message/ConsoleMessa
 import { succeed } from "../../../src/operations/support/contextUtils";
 import { AutomationServer } from "../../../src/server/AutomationServer";
 import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
+import { SecretResolver } from "../../../src/spi/env/SecretResolver";
 import { HelloIssue } from "../../event/HelloIssue";
-import { AddAtomistSpringAgent, AlwaysOkEventHandler, FooBarEventHandler, FooBarIngestor } from "./TestHandlers";
+import {
+    AddAtomistSpringAgent, AlwaysOkEventHandler, FooBarEventHandler, FooBarIngestor,
+    TrustMeIGaveMySecret,
+} from "./TestHandlers";
 
 const messageClient = consoleMessageClient;
 
@@ -140,9 +144,39 @@ describe("BuildableAutomationServer", () => {
             .then(_ => done());
     });
 
-    it("should register one event handler instance and invoke with valid parameter", done => {
+    it("should register one event handler instance and invoke with valid event data", done => {
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        s.fromEventHandlerInstance(() => new AlwaysOkEventHandler());
+        s.fromEventHandlerInstance(AlwaysOkEventHandler);
+        s.onEvent({
+            extensions: {
+                operationName: "Foo",
+            },
+            data: {
+                Thing: [{
+                    some_thing: 27,
+                }],
+            },
+        }, {
+            teamId: "T666",
+            correlationId: "555",
+            messageClient,
+        }).then(_ => {
+            assert((_[0] as any).thing === 27);
+            done();
+        });
+    });
+
+    it("should register one event handler instance and access secret through params", done => {
+        const sr: SecretResolver = {
+            resolve(sec: string) {
+                assert(sec === "github://org_token");
+                return "valid";
+            },
+        };
+        const s = new BuildableAutomationServer(
+            {name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []},
+            sr);
+        s.fromEventHandlerInstance(TrustMeIGaveMySecret);
         s.onEvent({
             extensions: {
                 operationName: "Foo",
