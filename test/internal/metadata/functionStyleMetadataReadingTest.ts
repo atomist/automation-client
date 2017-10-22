@@ -2,11 +2,8 @@ import "mocha";
 import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
 
 import * as assert from "power-assert";
-import { HandlerContext } from "../../../src/HandlerContext";
-import { CommandInvocation } from "../../../src/internal/invoker/Payload";
 import { CommandHandlerMetadata } from "../../../src/metadata/automationMetadata";
-import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
-import { addAtomistSpringAgent } from "./functionStyleCommandHandlers";
+import { addAtomistSpringAgent } from "./addAtomistSpringAgent";
 
 describe("function style metadata reading", () => {
 
@@ -25,31 +22,4 @@ describe("function style metadata reading", () => {
         assert(md.secrets[0].name === "someSecret");
         assert(md.secrets[0].path === "atomist://some_secret");
     });
-
-    it("should successfully invoke", done => {
-        const ctx: HandlerContext = {
-            messageClient: {
-                respond(x) {
-                    console.log(x);
-                    return Promise.resolve(true);
-                },
-            },
-        } as HandlerContext;
-        const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        s.fromCommandHandler(addAtomistSpringAgent);
-
-        const payload: CommandInvocation = {
-            name: "AddAtomistSpringAgent",
-            mappedParameters: [],
-            secrets : [],
-            args: [{
-                name: "slackTeam",
-                value: "T1066",
-            }],
-        };
-        s.invokeCommand(payload, ctx).then(hr => {
-            done();
-        }).catch(done);
-    });
-
 });
