@@ -30,7 +30,7 @@ export function editRepo<T extends Parameters>(
     if (isPullRequest(ei)) {
         return editProjectUsingPullRequest(context, repo as GitProject, editor, ei, parameters);
     } else if (isBranchCommit(ei)) {
-        return editProjectUsingBranch(context, repo as GitProject, editor, ei, parameters));
+        return editProjectUsingBranch(context, repo as GitProject, editor, ei, parameters);
     } else if (isCustomExecutionEditMode(ei)) {
         return ei.edit(repo);
     } else {
@@ -40,10 +40,10 @@ export function editRepo<T extends Parameters>(
 }
 
 export function editProjectUsingPullRequest<T extends Parameters>(context: HandlerContext,
-    gp: GitProject,
-    editor: ProjectEditor<T>,
-    pr: PullRequest,
-    parameters?: T): Promise<EditResult> {
+                                                                  gp: GitProject,
+                                                                  editor: ProjectEditor<T>,
+                                                                  pr: PullRequest,
+                                                                  parameters?: T): Promise<EditResult> {
 
     return editor(gp, context, parameters)
         .then(r => r.edited ?
@@ -56,10 +56,10 @@ export function editProjectUsingPullRequest<T extends Parameters>(context: Handl
 }
 
 export function editProjectUsingBranch<T extends Parameters>(context: HandlerContext,
-    gp: GitProject,
-    editor: ProjectEditor<T>,
-    ci: BranchCommit,
-    parameters?: T): Promise<EditResult> {
+                                                             gp: GitProject,
+                                                             editor: ProjectEditor<T>,
+                                                             ci: BranchCommit,
+                                                             parameters?: T): Promise<EditResult> {
 
     return editor(gp, context, parameters)
         .then(r => r.edited ?
