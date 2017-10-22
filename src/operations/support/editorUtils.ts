@@ -22,31 +22,28 @@ import { EditResult, ProjectEditor, successfulEdit } from "../edit/projectEditor
  * @param parameters to editor
  */
 export function editRepo<T extends Parameters>(
-                                               context: HandlerContext,
-                                               repo: Project,
-                                               editor: ProjectEditor,
-                                               ei: EditMode,
-                                               parameters?: T): Promise<EditResult> {
-    const loadRepo: Promise<Project> = Promise.resolve(repo);
+    context: HandlerContext,
+    repo: Project,
+    editor: ProjectEditor,
+    ei: EditMode,
+    parameters?: T): Promise<EditResult> {
     if (isPullRequest(ei)) {
-        return loadRepo.then(gp =>
-            editProjectUsingPullRequest(context, gp as GitProject, editor, ei, parameters));
+        return editProjectUsingPullRequest(context, repo as GitProject, editor, ei, parameters);
     } else if (isBranchCommit(ei)) {
-        return loadRepo.then(gp =>
-            editProjectUsingBranch(context, gp as GitProject, editor, ei, parameters));
+        return editProjectUsingBranch(context, repo as GitProject, editor, ei, parameters));
     } else if (isCustomExecutionEditMode(ei)) {
-        return loadRepo.then(ei.edit);
+        return ei.edit(repo);
     } else {
         // No edit to do
-        return loadRepo.then(gp => successfulEdit(gp, true));
+        return Promise.resolve(successfulEdit(repo, true));
     }
 }
 
 export function editProjectUsingPullRequest<T extends Parameters>(context: HandlerContext,
-                                                                  gp: GitProject,
-                                                                  editor: ProjectEditor<T>,
-                                                                  pr: PullRequest,
-                                                                  parameters?: T): Promise<EditResult> {
+    gp: GitProject,
+    editor: ProjectEditor<T>,
+    pr: PullRequest,
+    parameters?: T): Promise<EditResult> {
 
     return editor(gp, context, parameters)
         .then(r => r.edited ?
@@ -59,10 +56,10 @@ export function editProjectUsingPullRequest<T extends Parameters>(context: Handl
 }
 
 export function editProjectUsingBranch<T extends Parameters>(context: HandlerContext,
-                                                             gp: GitProject,
-                                                             editor: ProjectEditor<T>,
-                                                             ci: BranchCommit,
-                                                             parameters?: T): Promise<EditResult> {
+    gp: GitProject,
+    editor: ProjectEditor<T>,
+    ci: BranchCommit,
+    parameters?: T): Promise<EditResult> {
 
     return editor(gp, context, parameters)
         .then(r => r.edited ?

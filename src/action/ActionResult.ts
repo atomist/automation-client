@@ -14,6 +14,10 @@ export interface ActionResult<T = undefined> {
      * Whether or not the action succeeded.
      */
     readonly success: boolean;
+
+    readonly error?: Error;
+
+    readonly errorStep?: string;
 }
 
 export function isActionResult(a: any): a is ActionResult {
@@ -31,4 +35,13 @@ export class SimpleActionResult<T> implements ActionResult<T> {
 
 export function successOn<T>(t: T): ActionResult<T> {
     return new SimpleActionResult(t, true);
+}
+
+export function failureOn<T>(t: T, err: Error, f?: any /* function */): ActionResult<T> {
+    return {
+        success: false,
+        target: t,
+        error: err,
+        errorStep: f ? f.name : undefined,
+    };
 }

@@ -1,6 +1,7 @@
 import "mocha";
 import * as assert from "power-assert";
-import { actionChain, NoAction } from "../../src/action/actionOps";
+import { actionChain, actionChainWithCombiner, NoAction } from "../../src/action/actionOps";
+import { ActionResult } from "../../src/action/ActionResult";
 import { ProjectOp } from "../../src/operations/edit/projectEditorOps";
 import { InMemoryProject } from "../../src/project/mem/InMemoryProject";
 
@@ -51,14 +52,14 @@ describe("action chaining", () => {
         const editor: ProjectOp = p => {
             return p.addFile("thing", "1");
         };
-        const editorChain = actionChain(editor, p => Promise.resolve(p));
+        const editorChain = actionChain(p => Promise.resolve(p), editor);
         editorChain(project)
             .then(r => {
                 assert(!!r.target.findFileSync("thing"));
                 done();
             }).catch(done);
     });
-
+    // how is this in any way different from the previous two except a variable name?
     it("should allow project function to be included", done => {
         const project = new InMemoryProject("");
         const projectFunction = p => {
@@ -70,6 +71,62 @@ describe("action chaining", () => {
                 assert(!!r.target.findFileSync("thing"));
                 done();
             }).catch(done);
+    });
+
+    it("should call actions in sequence", done => {
+        const f1 = (s: string) => Promise.resolve(s + " and 1");
+        const f2 = (s: string) => Promise.resolve(s + " and 2");
+        const chain = actionChain(f1, f2);
+        chain("Southwest").then(result => {
+            assert(result.success);
+            assert(result.target === "Southwest and 1 and 2");
+            done();
+        }).catch(done);
+    });
+
+    it("should catch errors and return failure", done => {
+        const f1 = (s: string) => Promise.resolve(s + " yeah!");
+        const f2 = (s: string) => { throw new Error("What is " + s); };
+
+        const chain = actionChain(f1, f2);
+        chain("Southwest").then(result => {
+            assert(result.success === false);
+            assert(result.error.message === "What is Southwest yeah!");
+            assert(result.errorStep === "f2");
+            done();
+        }).catch(done);
+
+    });
+
+    it("should catch errors in the first function", done => {
+        const f2 = (s: string) => Promise.resolve(s + " yeah!");
+        const f1 = (s: string) => { throw new Error("What is " + s); };
+
+        const chain = actionChain(f1, f2);
+        chain("Southwest").then(result => {
+            assert(result.success === false);
+            assert(result.error.message === "What is Southwest");
+            assert(result.errorStep === "f1");
+            done();
+        }).catch(done);
+
+    });
+
+    interface BonusActionResult extends ActionResult<string> {
+        bonusField: string;
+    }
+    it("should allow for custom combination of results", done => {
+        const f1 = (s: string) => Promise.resolve({ success: true, target: s + " and 1", bonusField: "yes" });
+        const f2 = (s: string) => Promise.resolve({ success: true, target: s + " and 2", bonusField: " and no" });
+
+        const chain = actionChainWithCombiner<string, BonusActionResult>((r1, r2) =>
+            ({ ...r1, ...r2, bonusField: (r1 as any).bonusField + (r2 as any).bonusField }), f1, f2);
+        chain("Southwest").then(result => {
+            assert(result.success);
+            assert(result.target === "Southwest and 1 and 2");
+            assert((result as BonusActionResult).bonusField === "yes and no");
+            done();
+        }).catch(done);
     });
 
 });

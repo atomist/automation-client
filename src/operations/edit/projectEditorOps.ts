@@ -1,49 +1,46 @@
-import { isActionResult } from "../../action/ActionResult";
+import { actionChain, actionChainWithCombiner, Chainable, TAction } from "../../action/actionOps";
+import { ActionResult, isActionResult } from "../../action/ActionResult";
+import { Parameters } from "../../HandleCommand";
+import { HandlerContext } from "../../Handlers";
 import { Project } from "../../project/Project";
 import { EditResult, flushAndSucceed, ProjectEditor, successfulEdit } from "./projectEditor";
 
 export type ProjectOp = (p: Project) => Promise<Project>;
 
-export type Chainable = ProjectEditor | ProjectOp;
+export type EditorChainable = ProjectEditor | ProjectOp;
+
+function combineEditResults(r1: EditResult, r2: EditResult): EditResult {
+    return {
+        ...r1, ...r2,
+        edited: r1.edited || r2.edited,
+    };
+}
 
 /**
  * Chain the editors, in the given order
  * @param {ProjectEditor} projectEditors
  * @return {ProjectEditor}
  */
-export function chainEditors(...projectEditors: Chainable[]): ProjectEditor {
-    return projectEditors.length === 0 ?
-        NoOpEditor :
-        projectEditors.reduce((c1, c2) => {
-            const ed1: ProjectEditor = toEditor(c1);
-            const ed2: ProjectEditor = toEditor(c2);
-            return (p, ctx, params) =>
-                (ed1(p, ctx, params)
-                    .then(r1 => {
-                        // console.log("Applied editor " + c1.toString());
-                        return ed2(p, ctx, params)
-                            .then(r2 => {
-                                // console.log("Applied editor " + c2.toString());
-                                return {
-                                    ...r1,
-                                    ...r2,
-                                    edited: r1.edited || r2.edited,
-                                };
-                            });
-                    }));
-        }) as ProjectEditor;
-}
+export function chainEditors(
+    ...projectEditors: EditorChainable[]): ProjectEditor {
+    const alwaysReturnEditResult =
+        projectEditors.map(toEditor);
 
-function toEditor(pop: Chainable): ProjectEditor {
-    return pop.length === 1 ?
-        (proj, ctx, params) => (pop as ProjectOp)(proj)
-            .then(r => {
-                // See what it returns
-                return isActionResult(r) ?
-                    r as any as EditResult :
-                    flushAndSucceed(r);
-            }) :
-        pop as ProjectEditor;
+    return (p, ctx, params) => {
+        const curried = alwaysReturnEditResult.map(ed => pp => ed(pp, ctx, params));
+        const chain = actionChainWithCombiner(combineEditResults,
+            ...curried);
+        return chain(p) as Promise<EditResult>;
+    };
+}
+function toEditor(pop: EditorChainable): ProjectEditor {
+    return (proj, ctx, params) => (pop as ProjectOp)(proj)
+        .then(r => {
+            // See what it returns
+            return isActionResult(r) ?
+                r as any as EditResult :
+                flushAndSucceed(r);
+        });
 }
 
 /**
