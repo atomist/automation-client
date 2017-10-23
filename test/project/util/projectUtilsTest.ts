@@ -142,7 +142,7 @@ describe("projectUtils", () => {
     });
 
     it("deleteFiles: defer deletes 2", done => {
-        const t = new InMemoryProject("name");
+        const t = new InMemoryProject();
         t.addFileSync("Thing", "1");
         t.addFileSync("config/Thing", "1");
         defer(t, deleteFiles(t, "**/Thing", f => true));
@@ -166,7 +166,7 @@ describe("projectUtils", () => {
     });
 
     it("deleteFiles: defer deletes conditionally", done => {
-        const t = new InMemoryProject("name");
+        const t = new InMemoryProject();
         t.addFileSync("Thing", "1");
         t.addFileSync("config/Thing", "1");
         defer(t, deleteFiles(t, "**/Thing", f => f.path.includes("config")));

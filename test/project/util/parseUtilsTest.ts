@@ -20,7 +20,7 @@ import { tempProject } from "../utils";
 describe("parseUtils", () => {
 
     it("gathers matches without files", done => {
-        const t = new InMemoryProject("name");
+        const t = new InMemoryProject();
         t.addFileSync("src/main/java/com/foo/bar/Thing.java",
             "package com.foo.bar;\npublic class Thing {}");
         t.addFileSync("src/main/java/com/foo/baz/Thing2.java",
@@ -36,7 +36,7 @@ describe("parseUtils", () => {
     });
 
     it("gathers no matches without files", done => {
-        const t = new InMemoryProject("name");
+        const t = new InMemoryProject();
         findMatches<{ name: string }>(t, AllJavaFiles, JavaPackageDeclaration)
             .then(matches => {
                 assert(matches.length === 0);
@@ -45,7 +45,7 @@ describe("parseUtils", () => {
     });
 
     it("gathers no matches without matches in files", done => {
-        const t = new InMemoryProject("name");
+        const t = new InMemoryProject();
         t.addFileSync("src/main/java/com/foo/bar/Thing.java",
             "package com.foo.bar;\npublic class Thing {}");
         t.addFileSync("src/main/java/com/foo/baz/Thing2.java",
@@ -58,7 +58,7 @@ describe("parseUtils", () => {
     });
 
     it("gathers matches from files", done => {
-        const t = new InMemoryProject("name");
+        const t = new InMemoryProject();
         t.addFileSync("src/main/java/com/foo/bar/Thing.java",
             "package com.foo.bar;\npublic class Thing {}");
         t.addFileSync("src/main/java/com/foo/baz/Thing2.java",
@@ -101,7 +101,7 @@ describe("parseUtils", () => {
     });
 
     it("updates matches from files: in memory", done => {
-        updateMatchesFromFiles(new InMemoryProject(""), done);
+        updateMatchesFromFiles(new InMemoryProject(), done);
     });
 
     it("updates matches from files: on disk", done => {
@@ -191,7 +191,7 @@ describe("parseUtils", () => {
     }
 
     it("updates unique match from files using callback: in memory", done =>
-        updateUniqueMatchFromFilesUsingCallback(new InMemoryProject(""), done),
+        updateUniqueMatchFromFilesUsingCallback(new InMemoryProject(), done),
     );
 
     it("updates unique match from files using callback: on disk", done =>
@@ -199,7 +199,7 @@ describe("parseUtils", () => {
     );
 
     it("updates unique match from files using callback: fail with zero", done => {
-        const t = new InMemoryProject("name");
+        const t = new InMemoryProject();
         const initialContent = `public class Thing {}`;
         const f = new InMemoryFile("src/main/java/Thing.java", initialContent);
         t.addFileSync(f.path, f.getContentSync());
@@ -237,7 +237,7 @@ describe("parseUtils", () => {
 
     it("updates matches from files using callback and defer", done => {
         const oldPackage = "com.foo.bar";
-        const t = new InMemoryProject("name");
+        const t = new InMemoryProject();
         const initialContent = `package ${oldPackage};\npublic class Thing {}`;
         const f = new InMemoryFile("src/main/java/com/foo/bar/Thing.java", initialContent);
         t.addFileSync(f.path, f.getContentSync());
@@ -268,7 +268,7 @@ describe("parseUtils", () => {
     });
 
     it("updates nested matches from files using callback", done => {
-        const t = new InMemoryProject("name");
+        const t = new InMemoryProject();
         const initialContent = `tom:61 alice:27`;
         const f = new InMemoryFile("People", initialContent);
         t.addFileSync(f.path, f.getContentSync());

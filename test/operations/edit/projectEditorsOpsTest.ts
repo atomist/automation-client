@@ -28,7 +28,7 @@ describe("editor chaining", () => {
     });
 
     it("should edit with real editor", done => {
-        const project = new InMemoryProject("");
+        const project = new InMemoryProject();
         const editor: ProjectEditor = p => {
             p.addFileSync("thing", "1");
             return Promise.resolve(successfulEdit(p, true));
@@ -42,7 +42,7 @@ describe("editor chaining", () => {
     });
 
     it("should work in both directions", done => {
-        const project = new InMemoryProject("");
+        const project = new InMemoryProject();
         const editor: ProjectEditor = p => {
             p.addFileSync("thing", "1");
             return Promise.resolve(successfulEdit(p, true));
@@ -56,7 +56,7 @@ describe("editor chaining", () => {
     });
 
     it("should allow project function to be included", done => {
-        const project = new InMemoryProject("");
+        const project = new InMemoryProject();
         const projectFunction = p => {
             return p.addFile("thing", "1");
         };

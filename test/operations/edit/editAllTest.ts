@@ -3,6 +3,7 @@ import "mocha";
 import * as assert from "power-assert";
 
 import { fromListRepoFinder, fromListRepoLoader } from "../../../src/operations/common/fromProjectList";
+import { SimpleRepoId } from "../../../src/operations/common/RepoId";
 import { editAll } from "../../../src/operations/edit/editAll";
 import { CustomExecutionEditMode } from "../../../src/operations/edit/editModes";
 import { ProjectEditor, successfulEdit } from "../../../src/operations/edit/projectEditor";
@@ -23,7 +24,7 @@ describe("editAll", () => {
         };
 
         const projects = [
-            new InMemoryProject(""),
+            new InMemoryProject(new SimpleRepoId("org", "name")),
         ];
 
         const projectsEdited: Project[] = [];

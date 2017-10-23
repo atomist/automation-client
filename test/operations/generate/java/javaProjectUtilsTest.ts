@@ -7,7 +7,7 @@ import { InMemoryProject } from "../../../../src/project/mem/InMemoryProject";
 describe("javaProjectUtils", () => {
 
     it("should not refactor on no match", done => {
-        const t = new InMemoryProject("");
+        const t = new InMemoryProject();
         t.addFileSync("src/main/java/Foo.java", "public class Foo {}");
         movePackage(t, "com.foo", "com.bar")
             .then(_ => {
@@ -18,7 +18,7 @@ describe("javaProjectUtils", () => {
     });
 
     it("should refactor on simple match", done => {
-        const t = new InMemoryProject("");
+        const t = new InMemoryProject();
         t.addFileSync("src/main/java/com/foo/Foo.java", "package com.foo;\npublic class Foo {}");
         movePackage(t, "com.foo", "com.bar")
             .then(_ => {
@@ -29,7 +29,7 @@ describe("javaProjectUtils", () => {
     });
 
     it("should refactor on deeper match", done => {
-        const t = new InMemoryProject("");
+        const t = new InMemoryProject();
         t.addFileSync("src/main/java/com/foo/bar/Foo.java", "package com.foo.bar;\npublic class Foo {}");
         movePackage(t, "com.foo.bar", "com.something.else")
             .then(_ => {
@@ -41,7 +41,7 @@ describe("javaProjectUtils", () => {
     });
 
     it("should not work on Kotlin by default", done => {
-        const t = new InMemoryProject("");
+        const t = new InMemoryProject();
         t.addFileSync("src/main/kotlin/com/foo/bar/Foo.kt", "package com.foo.bar\npublic class Foo {}");
         movePackage(t, "com.foo.bar", "com.something.else")
             .then(_ => {
@@ -52,7 +52,7 @@ describe("javaProjectUtils", () => {
     });
 
     it("should work on Kotlin with correct glob pattern", done => {
-        const t = new InMemoryProject("");
+        const t = new InMemoryProject();
         t.addFileSync("src/main/kotlin/com/foo/bar/Foo.kt", "package com.foo.bar\npublic class Foo {}");
         movePackage(t, "com.foo.bar", "com.something.else", "**/*.kt")
             .then(_ => {

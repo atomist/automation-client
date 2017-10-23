@@ -8,7 +8,7 @@ import { tempProject } from "../../../project/utils";
 describe("updatePom", () => {
 
     it("should not error on no POM", done => {
-        const p = new InMemoryProject("");
+        const p = new InMemoryProject();
         p.addFileSync("src/main/java/Foo.java", "public class Foo {}");
         updatePom(p, "art", "group", "version", "desc");
         p.flush()

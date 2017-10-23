@@ -117,7 +117,7 @@ describe("InMemoryProject", () => {
     }).timeout(5000);
 
     it("changes content", done => {
-        const p = new InMemoryProject("name");
+        const p = new InMemoryProject();
         p.addFileSync("thing", "1");
         const f1 = p.findFileSync("thing");
         assert(f1.getContentSync() === "1");
@@ -131,7 +131,7 @@ describe("InMemoryProject", () => {
     });
 
     it("adds file", done => {
-        const p = new InMemoryProject("name");
+        const p = new InMemoryProject();
         p.recordAddFile("thing", "1");
         assert(!p.dirty);
         p.flush()
@@ -143,7 +143,7 @@ describe("InMemoryProject", () => {
     });
 
     it("adds nested file", done => {
-        const p = new InMemoryProject("name");
+        const p = new InMemoryProject();
         p.recordAddFile("config/thing", "1");
         assert(!p.dirty);
         p.flush()
@@ -155,7 +155,7 @@ describe("InMemoryProject", () => {
     });
 
     it("adds deeply nested file", done => {
-        const p = new InMemoryProject("name");
+        const p = new InMemoryProject();
         p.recordAddFile("config/and/more/thing", "1");
         assert(!p.dirty);
         p.flush()
@@ -167,7 +167,7 @@ describe("InMemoryProject", () => {
     });
 
     it("deletes file", done => {
-        const p = new InMemoryProject("name");
+        const p = new InMemoryProject();
         p.addFileSync("thing", "1");
         const f1 = p.findFileSync("thing");
         assert(f1.getContentSync() === "1");
