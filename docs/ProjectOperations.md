@@ -5,6 +5,23 @@ of Atomist's distinguishing qualities is the ease with which you can
 work with code, as well as the data that surrounds code, such as
 builds, issues and deploys.
 
+## Sourcing Projects to Operate On
+Use the `doWithAllRepos` helper function to work with many repos. Its signature is as follows:
+
+```typescript
+export function doWithAllRepos<R, P>(ctx: HandlerContext,
+                                     token: string,
+                                     action: (p: Project, t: P) => Promise<R>,
+                                     parameters: P,
+                                     repoFinder: RepoFinder = allReposInTeam(),
+                                     repoFilter: RepoFilter = AllRepos,
+                                     repoLoader: RepoLoader =
+                                         defaultRepoLoader(token)): Promise<R[]> {
+```
+
+The most important parameter is `action` which maps from the project and parameters to the return type `R`. The subsequent parameters are optional: Default behavior will be
+to load all GitHub repos associated with the current team. Pass in different functions for custom filtering, sourcing from different a source etc.
+
 ## Concepts
 
 The `Project` and `File` interfaces allow you to work with project
@@ -22,12 +39,10 @@ performing cloning and git updates automatically.
 Microgrammar support
 allows sophisticated parsing and updates with clean diffs. [Path expression](PathExpressions.md) support makes it possible to drill into the structure of files within projects in a consistent way, using a variety of grammars.
 
-## Project and File Interface Concepts: Sync, Async and Scripting
+## Project and File Interface Concepts: Sync, Async and defer
 
 The project and file interfaces represent a project (usually backed by
 a whole repository) and a file (a single artifact within a project).
-
-### Fine Grained Interfaces
 
 The two interfaces follow the same pattern, in being composed from
 finer-grained interfaces with different purposes.
@@ -35,16 +50,11 @@ finer-grained interfaces with different purposes.
 Consider the `Project` interface:
 
 ```typescript
-export interface ProjectNonBlocking extends ProjectScripting, ProjectAsync {
-
-}
-
-export interface Project extends ProjectScripting, ProjectAsync, ProjectSync {
-
+export interface Project extends ProjectAsync, ProjectSync {
 }
 ```
 
-Let's examine these interfaces in turn, starting with the simplest:
+Let's examine these interfaces in turn:
 
 -   `ProjectSync`: Does what you expect: synchronous, blocking
     operations. Following `node` conventions, synchronous functions
@@ -52,25 +62,36 @@ Let's examine these interfaces in turn, starting with the simplest:
     code, although they can be very handy during tests.
 -   `ProjectAsync`: Functions that return TypeScript/ES6 promises or
     `node` streams. As they are the default choice in most cases, their names do not have any distinguishing prefix or suffix.
--   `ProjectScripting`: Non-blocking operations that queue up a script
-    of actions to execute. These operation names normally have a `record` prefix. This interface is conceptually more complex than the `ProjectAsync` methods (which follow normal JavaScript conventions), but can be useful for avoiding long promise chains if you need to perform many operations on a project. For example, many generators make many small, unrelated changes to a seed project, which are ideally suited to this approach.
     
-### Scripting interfaces in detail
+### Deferring operations
 
-Important points to consider:
+Any function that returns a Promise can be deferred for later execution. This can be useful when you have many fine-grained steps and prefer the convenience of void returns.
 
-- After using `ProjectScripting` or `FileScripting` operations, it's necessary to call
+Do this by using the `defer` wrapper function. For example:
+
+```typescript
+defer(project, project.addFile("thing", "1"));
+```
+
+- After using `defer`, it's necessary to call
 `flush` on the `Project` or `File` to effect the changes. This takes
-what might be many promises and puts them into a single promise. In generator support (`SeedDrivenGenerator` and subclasses, discussed below) this is done automatically.
+what might be many promises and puts them into a single promise.
 -  Until `flush` is called, changes made by scripting operations are not visible to subsequent scripting operations. However, `flush` can be called at any time to flush intermediate working, and repeated calls to `flush` are safe.
--  Deferred scripting operations will ultimately be executed in the order in which they were queued.
--  **Do not** mix scripting operations with synchronous or promise-returning operations without first calling `flush`, as non-scripting operations will not see changes made by scripting operations.
+-  Deferred operations will ultimately be executed in the order in which they were queued.
+-  **Do not** mix deferred operations with synchronous or promise-returning operations without first calling `flush`, as non-scripting operations will not see changes made by scripting operations.
 
-`XXXXScripting` operations typically begin with a `record` prefix. For example, these two code snippets are equivalent:
+Methods on the `FileScripting` interface automatically defer. These method names typically begin with a `record` prefix. For example, these three code snippets are equivalent:
 
 ```typescript
 const f: File = ...
 f.replaceAll("foo", "bar") // Returns a promise
+	.then(f => ...
+```
+
+```typescript
+const f: File = ...
+defer(f, f.replaceAll("foo", "bar"))
+	.flush()
 	.then(f => ...
 ```
 
@@ -81,32 +102,7 @@ f.recordReplaceAll("foo", "bar")
 	.then(f => ...
 ```
 
-In this case, it would probably be simpler to use `replaceAll`. However, if many operations must be performed, the record and flush style can be simpler than promise chaining.
-
-Many utility methods on projects return a `RunOrDefer` type that exposes two methods, offering a choice of promise or scripting functionality:
-
-- `run`: Immediately executing, returning a promise
-- `defer`: Add the change(s) as a script.
-
-Two examples of using the `doWithFiles` method from `parseUtils`. Obtaining a promise:
-
-```typescript
-doWithFiles(p, "**/**.java", 
-	f => f.replaceAll("OldAbsquatulator", "NewAbsquatulator"))
-    .run()
-    .then(_ => {
-        // Work with the promise
-    });
-```
-Deferring for execution on `flush`: 
-
-```typescript
-doWithFiles(p, "**/**.java", 
-	f => f.replaceAll("OldAbsquatulator", "NewAbsquatulator"))
-    .defer();
-```
-`defer` returns void, so you can queue other operations without promise chaining.
-
+In this case, it would probably be simpler to use `replaceAll`.
 
 ## Files
 
@@ -373,7 +369,7 @@ equivalents of former "Rug types" may be added in future.*
 
 ## Testing
 
-We've always emphasized testability of Atomist automations.
+Atomist automations are easily unit testable, which is a major design goal and benefit.
 
 This is easy with our project and file abstractions. `InMemoryProject`
 offers a convenient way of creating projects and making

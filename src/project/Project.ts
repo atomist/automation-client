@@ -144,6 +144,9 @@ export interface Project extends ProjectAsync, ProjectSync {
 
 }
 
+/**
+ * Extension of node Stream to handle files within a Project
+ */
 export interface FileStream extends Stream {
 
     on(event: "data" | "end" | "error", listener: (f: File) => void): this;
