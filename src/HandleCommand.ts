@@ -1,9 +1,6 @@
 import { CommandHandlerMetadata } from "./metadata/automationMetadata";
 import { OnCommand } from "./onCommand";
 
-// tslint:disable-next-line:interface-over-type-literal
-export type Parameters = {};
-
 /**
  * Interface for class-based command handlers.
  * These combine the parameters with the command. A fresh

@@ -1,5 +1,4 @@
 import { ActionResult } from "../../action/ActionResult";
-import { Parameters } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
@@ -26,17 +25,17 @@ import { EditResult, ProjectEditor } from "./projectEditor";
  * @param {RepoLoader} repoLoader
  * @return {Promise<Array<ActionResult<GitProject>>>}
  */
-export function editAll<R, PARAMS extends Parameters>(ctx: HandlerContext,
-                                                      token: string,
-                                                      editor: ProjectEditor,
-                                                      editInfo: EditMode | EditModeFactory,
-                                                      parameters?: PARAMS,
-                                                      repoFinder: RepoFinder = allReposInTeam(),
-                                                      repoFilter: RepoFilter = AllRepos,
-                                                      repoLoader: RepoLoader =
-                                                          defaultRepoLoader(token)): Promise<EditResult[]> {
-    const edit = (p: Project, parms: PARAMS) =>
+export function editAll<R, P>(ctx: HandlerContext,
+                              token: string,
+                              editor: ProjectEditor,
+                              editInfo: EditMode | EditModeFactory,
+                              parameters?: P,
+                              repoFinder: RepoFinder = allReposInTeam(),
+                              repoFilter: RepoFilter = AllRepos,
+                              repoLoader: RepoLoader =
+                                  defaultRepoLoader(token)): Promise<EditResult[]> {
+    const edit = (p: Project, parms: P) =>
         editRepo(ctx, p, editor, toEditModeFactory(editInfo)(p), parms);
-    return doWithAllRepos<EditResult, PARAMS>(ctx, token, edit, parameters,
+    return doWithAllRepos<EditResult, P>(ctx, token, edit, parameters,
         repoFinder, repoFilter, repoLoader);
 }

@@ -1,4 +1,3 @@
-import { Parameters } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { Project } from "../../project/Project";
 import { allReposInTeam } from "./allReposInTeamRepoFinder";
@@ -13,20 +12,20 @@ import { RepoLoader } from "./repoLoader";
  * @param {HandlerContext} ctx
  * @param {string} token
  * @param action action parameter
- * @parameter parameters optional parameters
+ * @param parameters optional parameters
  * @param {RepoFinder} repoFinder
  * @param {} repoFilter
  * @param {RepoLoader} repoLoader
  * @return {Promise<R[]>}
  */
-export function doWithAllRepos<R, PARAMS extends Parameters>(ctx: HandlerContext,
-                                                             token: string,
-                                                             action: (p: Project, t: PARAMS) => Promise<R>,
-                                                             parameters: PARAMS,
-                                                             repoFinder: RepoFinder = allReposInTeam(),
-                                                             repoFilter: RepoFilter = AllRepos,
-                                                             repoLoader: RepoLoader =
-                                                                 defaultRepoLoader(token)): Promise<R[]> {
+export function doWithAllRepos<R, P>(ctx: HandlerContext,
+                                     token: string,
+                                     action: (p: Project, t: P) => Promise<R>,
+                                     parameters: P,
+                                     repoFinder: RepoFinder = allReposInTeam(),
+                                     repoFilter: RepoFilter = AllRepos,
+                                     repoLoader: RepoLoader =
+                                         defaultRepoLoader(token)): Promise<R[]> {
     return relevantRepos(ctx, repoFinder, repoFilter)
         .then(ids =>
             Promise.all(ids.map(id => repoLoader(id)
