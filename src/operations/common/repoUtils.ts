@@ -8,11 +8,15 @@ import { RepoFinder } from "./repoFinder";
 import { RepoId } from "./RepoId";
 import { RepoLoader } from "./repoLoader";
 
+export interface Credentials {
+    token?: string;
+}
+
 /**
  * Perform an action against all the given repos.
  * Skip over repos that cannot be loaded, logging a warning.
  * @param {HandlerContext} ctx
- * @param {string} token
+ * @param credentials credentials for repo finding and loading
  * @param action action parameter
  * @param parameters optional parameters
  * @param {RepoFinder} repoFinder
@@ -21,13 +25,13 @@ import { RepoLoader } from "./repoLoader";
  * @return {Promise<R[]>}
  */
 export function doWithAllRepos<R, P>(ctx: HandlerContext,
-                                     token: string,
+                                     credentials: Credentials,
                                      action: (p: Project, t: P) => Promise<R>,
                                      parameters: P,
                                      repoFinder: RepoFinder = allReposInTeam(),
                                      repoFilter: RepoFilter = AllRepos,
                                      repoLoader: RepoLoader =
-                                         defaultRepoLoader(token)): Promise<R[]> {
+                                         defaultRepoLoader(credentials.token)): Promise<R[]> {
     return relevantRepos(ctx, repoFinder, repoFilter)
         .then(ids =>
             Promise.all(

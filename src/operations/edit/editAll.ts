@@ -7,7 +7,7 @@ import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { AllRepos, RepoFilter } from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
 import { RepoLoader } from "../common/repoLoader";
-import { doWithAllRepos } from "../common/repoUtils";
+import { Credentials, doWithAllRepos } from "../common/repoUtils";
 import { editRepo } from "../support/editorUtils";
 import { EditMode, EditModeFactory, toEditModeFactory } from "./editModes";
 import { EditResult, ProjectEditor } from "./projectEditor";
@@ -15,7 +15,7 @@ import { EditResult, ProjectEditor } from "./projectEditor";
 /**
  * Edit all the given repos with the given editor
  * @param {HandlerContext} ctx
- * @param {string} token
+ * @param credentials credentials
  * @param {ProjectEditor} editor
  * @param editInfo: EditMode determines how the edits should be applied.
  * Factory allows us to use different branches if necessary
@@ -26,16 +26,16 @@ import { EditResult, ProjectEditor } from "./projectEditor";
  * @return {Promise<Array<ActionResult<GitProject>>>}
  */
 export function editAll<R, P>(ctx: HandlerContext,
-                              token: string,
+                              credentials: Credentials,
                               editor: ProjectEditor,
                               editInfo: EditMode | EditModeFactory,
                               parameters?: P,
                               repoFinder: RepoFinder = allReposInTeam(),
                               repoFilter: RepoFilter = AllRepos,
                               repoLoader: RepoLoader =
-                                  defaultRepoLoader(token)): Promise<EditResult[]> {
+                                  defaultRepoLoader(credentials.token)): Promise<EditResult[]> {
     const edit = (p: Project, parms: P) =>
         editRepo(ctx, p, editor, toEditModeFactory(editInfo)(p), parms);
-    return doWithAllRepos<EditResult, P>(ctx, token, edit, parameters,
+    return doWithAllRepos<EditResult, P>(ctx, credentials, edit, parameters,
         repoFinder, repoFilter, repoLoader);
 }

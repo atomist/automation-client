@@ -10,14 +10,16 @@ Use the `doWithAllRepos` helper function to work with many repos. Its signature 
 
 ```typescript
 export function doWithAllRepos<R, P>(ctx: HandlerContext,
-                                     token: string,
+                                     credentials: Credentials,
                                      action: (p: Project, t: P) => Promise<R>,
                                      parameters: P,
                                      repoFinder: RepoFinder = allReposInTeam(),
                                      repoFilter: RepoFilter = AllRepos,
                                      repoLoader: RepoLoader =
-                                         defaultRepoLoader(token)): Promise<R[]> {
+                                         defaultRepoLoader(credentials.token)): Promise<R[]> {
 ```
+
+The `credentials` parameter usually contains the current GitHub token.
 
 The most important parameter is `action` which maps from the project and parameters to the return type `R`. The subsequent parameters are optional: Default behavior will be
 to load all GitHub repos associated with the current team. Pass in different functions for custom filtering, sourcing from different a source etc.

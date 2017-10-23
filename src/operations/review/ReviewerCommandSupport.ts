@@ -27,10 +27,10 @@ export abstract class ReviewerCommandSupport<RR extends ReviewResult<PR> = Revie
     })
     public raiseIssues: boolean = false;
 
-    public handle(context: HandlerContext): Promise<RR> {
+    public handle(context: HandlerContext, params: this): Promise<RR> {
         const load = this.repoLoader();
         // Save us from "this"
-        const projectReviewer: ProjectReviewer<PR> = this.projectReviewer(context);
+        const projectReviewer: ProjectReviewer<this, PR> = this.projectReviewer(context);
 
         const repoIdPromises: Promise<RepoId[]> = this.repoFinder()(context);
         const projectReviews: Promise<Array<Promise<PR>>> = repoIdPromises
@@ -41,7 +41,7 @@ export abstract class ReviewerCommandSupport<RR extends ReviewResult<PR> = Revie
                             logger.info("Attempting to review %s", JSON.stringify(id));
                             return Promise.resolve(load(id))
                                 .then(p => {
-                                    return projectReviewer(p, context);
+                                    return projectReviewer(p, context, params);
                                 })
                                 .then(review => {
                                     // Don't attempt to raise issues when reviewing a local repo
@@ -80,7 +80,7 @@ export abstract class ReviewerCommandSupport<RR extends ReviewResult<PR> = Revie
      * Invoked after parameters have been populated in the context of
      * a particular operation.
      */
-    public abstract projectReviewer(context: HandlerContext): ProjectReviewer<PR>;
+    public abstract projectReviewer(context: HandlerContext): ProjectReviewer<this, PR>;
 
     /**
      * Subclasses can override this method to enrich the returned ReviewResult:

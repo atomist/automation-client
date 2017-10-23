@@ -23,7 +23,7 @@ export abstract class EditorCommandSupport extends LocalOrRemoteRepoOperation im
 
         return Promise.resolve(this.projectEditor(context))
             .then(pe =>
-                editAll(context, token, pe,
+                editAll(context, { token }, pe,
                     editInfoFactory,
                     this,
                     repoFinder, repoFilter, repoLoader))

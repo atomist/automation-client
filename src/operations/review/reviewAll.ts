@@ -6,14 +6,14 @@ import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { AllRepos, RepoFilter } from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
 import { RepoLoader } from "../common/repoLoader";
-import { doWithAllRepos } from "../common/repoUtils";
+import { Credentials, doWithAllRepos } from "../common/repoUtils";
 import { ProjectReviewer } from "./projectReviewer";
 import { ProjectReview, ReviewResult } from "./ReviewResult";
 
 /**
  * Review all the repos
  * @param {HandlerContext} ctx
- * @param {string} token
+ * @param credentials credentials to use to find and load repos
  * @param {ProjectReviewer} reviewer
  * @param {RepoFinder} repoFinder
  * @param parameters parameters to the reviewer
@@ -21,26 +21,30 @@ import { ProjectReview, ReviewResult } from "./ReviewResult";
  * @param {RepoLoader} repoLoader
  * @return {Promise<Array<ActionResult<GitProject>>>}
  */
-export function reviewAll<R, P>(ctx: HandlerContext,
-                                token: string,
-                                reviewer: ProjectReviewer,
-                                parameters?: P,
-                                repoFinder: RepoFinder = allReposInTeam(),
-                                repoFilter: RepoFilter = AllRepos,
-                                repoLoader: RepoLoader =
-                                    defaultRepoLoader(token)): Promise<ProjectReview[]> {
-    return doWithAllRepos(ctx, token, p => reviewer(p, ctx), parameters,
+export function reviewAll<P,
+    R extends ProjectReview = ProjectReview>(ctx: HandlerContext,
+                                             credentials: Credentials,
+                                             reviewer: ProjectReviewer<P, R>,
+                                             parameters?: P,
+                                             repoFinder: RepoFinder = allReposInTeam(),
+                                             repoFilter: RepoFilter = AllRepos,
+                                             repoLoader: RepoLoader =
+                                                 defaultRepoLoader(
+                                                     credentials.token)): Promise<ProjectReview[]> {
+    return doWithAllRepos(ctx, credentials,
+        p => reviewer(p, ctx, parameters), parameters,
         repoFinder, repoFilter, repoLoader);
 }
 
-export function review<R, P>(ctx: HandlerContext,
-                             token: string,
-                             reviewer: ProjectReviewer,
-                             parameters?: P,
-                             repoFinder: RepoFinder = allReposInTeam(),
-                             repoFilter: RepoFilter = AllRepos,
-                             repoLoader: RepoLoader =
-                                 defaultRepoLoader(token)): Promise<ReviewResult> {
+export function review<P,
+    R extends ProjectReview = ProjectReview>(ctx: HandlerContext,
+                                             credentials: Credentials,
+                                             reviewer: ProjectReviewer<P, R>,
+                                             parameters?: P,
+                                             repoFinder: RepoFinder = allReposInTeam(),
+                                             repoFilter: RepoFilter = AllRepos,
+                                             repoLoader: RepoLoader =
+                                                 defaultRepoLoader(credentials.token)): Promise<ReviewResult> {
     let projectsReviewed = 0;
     const countingRepoFilter: RepoFilter = id => {
         const include = repoFilter(id);
@@ -49,7 +53,7 @@ export function review<R, P>(ctx: HandlerContext,
         }
         return include;
     };
-    return doWithAllRepos(ctx, token, p => reviewer(p, ctx), undefined,
+    return doWithAllRepos(ctx, credentials, p => reviewer(p, ctx, parameters), parameters,
         repoFinder, countingRepoFilter, repoLoader)
         .then(projectReviews => {
             return {
