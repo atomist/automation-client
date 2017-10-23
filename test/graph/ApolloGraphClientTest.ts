@@ -49,11 +49,11 @@ describe("ApolloGraphClient", () => {
     }).timeout(10000);
 
     it("should mutate preferences", done => {
-        const agc = new ApolloGraphClient("https://automation-staging.atomist.services/graphql/team/T1L0VDKJP"
+        const agc = new ApolloGraphClient("https://automation.atomist.com/graphql/team/T095SFFBK"
             , {Authorization: `token ${process.env.GITHUB_TOKEN}`});
         agc.executeMutationFromFile("graphql/setUserPreference",
             {
-                userId: "U1L22E3SA",
+                userId: "T095SFFBK",
                 name: "test",
                 value: `{"disable_for_test":true}`,
             })
