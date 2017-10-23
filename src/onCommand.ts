@@ -1,6 +1,9 @@
-import { HandleCommand, SelfDescribingHandleCommand } from "./HandleCommand";
-import { HandlerContext } from "./HandlerContext";
-import { HandlerResult } from "./HandlerResult";
+import { SelfDescribingHandleCommand } from "./HandleCommand";
+import {
+    HandleCommand,
+    HandlerContext,
+    HandlerResult,
+} from "./Handlers";
 import { metadataFromInstance } from "./internal/metadata/metadataReading";
 import {
     CommandHandlerMetadata,

@@ -1,5 +1,4 @@
-import { HandlerContext } from "./HandlerContext";
-import { HandlerResult } from "./HandlerResult";
+import { HandlerContext, HandlerResult } from "./Handlers";
 import { Arg } from "./internal/invoker/Payload";
 import { OnEvent } from "./onEvent";
 
