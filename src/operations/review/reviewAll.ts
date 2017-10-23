@@ -3,10 +3,11 @@ import { HandlerContext } from "../../HandlerContext";
 import { GitProject } from "../../project/git/GitProject";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
+import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { AllRepos, RepoFilter } from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
 import { RepoLoader } from "../common/repoLoader";
-import { Credentials, doWithAllRepos } from "../common/repoUtils";
+import { doWithAllRepos } from "../common/repoUtils";
 import { ProjectReviewer } from "./projectReviewer";
 import { ProjectReview, ReviewResult } from "./ReviewResult";
 
@@ -23,14 +24,14 @@ import { ProjectReview, ReviewResult } from "./ReviewResult";
  */
 export function reviewAll<P,
     R extends ProjectReview = ProjectReview>(ctx: HandlerContext,
-                                             credentials: Credentials,
+                                             credentials: ProjectOperationCredentials,
                                              reviewer: ProjectReviewer<P, R>,
                                              parameters?: P,
                                              repoFinder: RepoFinder = allReposInTeam(),
                                              repoFilter: RepoFilter = AllRepos,
                                              repoLoader: RepoLoader =
                                                  defaultRepoLoader(
-                                                     credentials.token)): Promise<ProjectReview[]> {
+                                                     credentials)): Promise<ProjectReview[]> {
     return doWithAllRepos(ctx, credentials,
         p => reviewer(p, ctx, parameters), parameters,
         repoFinder, repoFilter, repoLoader);
@@ -38,13 +39,13 @@ export function reviewAll<P,
 
 export function review<P,
     R extends ProjectReview = ProjectReview>(ctx: HandlerContext,
-                                             credentials: Credentials,
+                                             credentials: ProjectOperationCredentials,
                                              reviewer: ProjectReviewer<P, R>,
                                              parameters?: P,
                                              repoFinder: RepoFinder = allReposInTeam(),
                                              repoFilter: RepoFilter = AllRepos,
                                              repoLoader: RepoLoader =
-                                                 defaultRepoLoader(credentials.token)): Promise<ReviewResult> {
+                                                 defaultRepoLoader(credentials)): Promise<ReviewResult> {
     let projectsReviewed = 0;
     const countingRepoFilter: RepoFilter = id => {
         const include = repoFilter(id);

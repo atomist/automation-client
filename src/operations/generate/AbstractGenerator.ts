@@ -100,7 +100,7 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
                     populated.then(proj =>
                         proj.deleteDirectory(".git")
                             .then(p => {
-                                const gp: GitProject = GitCommandGitProject.fromProject(p, this.githubToken);
+                                const gp: GitProject = GitCommandGitProject.fromProject(p, { token: this.githubToken });
                                 return gp.init()
                                     .then(() => gp.setGitHubUserConfig())
                                     .then(() => {
@@ -141,7 +141,7 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
 
     protected repoLoader(): RepoLoader {
         assert(this.githubToken, "Github token must be set");
-        return defaultRepoLoader(this.githubToken);
+        return defaultRepoLoader( {token: this.githubToken });
     }
 
     protected push(gp: GitProject): Promise<ActionResult<GitProject>> {

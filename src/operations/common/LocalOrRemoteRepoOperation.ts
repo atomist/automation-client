@@ -8,7 +8,7 @@ import { RepoLoader } from "./repoLoader";
 export abstract class LocalOrRemoteRepoOperation extends LocalOrRemote {
 
     protected repoLoader(): RepoLoader {
-        return defaultRepoLoader(this.githubToken);
+        return defaultRepoLoader({token: this.githubToken });
     }
 
 }

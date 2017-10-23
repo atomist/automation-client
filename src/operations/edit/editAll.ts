@@ -4,10 +4,11 @@ import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
+import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { AllRepos, RepoFilter } from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
 import { RepoLoader } from "../common/repoLoader";
-import { Credentials, doWithAllRepos } from "../common/repoUtils";
+import { doWithAllRepos } from "../common/repoUtils";
 import { editRepo } from "../support/editorUtils";
 import { EditMode, EditModeFactory, toEditModeFactory } from "./editModes";
 import { EditResult, ProjectEditor } from "./projectEditor";
@@ -26,14 +27,14 @@ import { EditResult, ProjectEditor } from "./projectEditor";
  * @return {Promise<Array<ActionResult<GitProject>>>}
  */
 export function editAll<R, P>(ctx: HandlerContext,
-                              credentials: Credentials,
+                              credentials: ProjectOperationCredentials,
                               editor: ProjectEditor,
                               editInfo: EditMode | EditModeFactory,
                               parameters?: P,
                               repoFinder: RepoFinder = allReposInTeam(),
                               repoFilter: RepoFilter = AllRepos,
                               repoLoader: RepoLoader =
-                                  defaultRepoLoader(credentials.token)): Promise<EditResult[]> {
+                                  defaultRepoLoader(credentials)): Promise<EditResult[]> {
     const edit = (p: Project, parms: P) =>
         editRepo(ctx, p, editor, toEditModeFactory(editInfo)(p), parms);
     return doWithAllRepos<EditResult, P>(ctx, credentials, edit, parameters,

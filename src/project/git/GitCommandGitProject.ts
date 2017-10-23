@@ -11,6 +11,7 @@ import { ActionResult } from "../../action/ActionResult";
 import { CommandResult, runCommand } from "../../action/cli/commandLine";
 import { logger } from "../../internal/util/logger";
 import { hideString } from "../../internal/util/string";
+import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
 import { RepoId, SimpleRepoId } from "../../operations/common/RepoId";
 import { PullRequest } from "../../operations/edit/editModes";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
@@ -33,22 +34,24 @@ const DefaultCloneOptions: CloneOptions = {
  */
 export class GitCommandGitProject extends NodeFsLocalProject implements GitProject {
 
-    public static fromProject(p: Project, token: string): GitProject {
+    public static fromProject(p: Project, credentials: ProjectOperationCredentials): GitProject {
         if (isLocalProject(p)) {
-            return GitCommandGitProject.fromBaseDir(p.name, p.baseDir, token);
+            return GitCommandGitProject.fromBaseDir(p.name, p.baseDir, credentials);
         }
         throw new Error(`Project ${p.name} doesn't have a local directory`);
     }
 
-    public static fromBaseDir(name: string, baseDir: string, token: string): GitCommandGitProject {
-        return new GitCommandGitProject(name, baseDir, token);
+    public static fromBaseDir(name: string, baseDir: string,
+                              credentials: ProjectOperationCredentials): GitCommandGitProject {
+        return new GitCommandGitProject(name, baseDir, credentials);
     }
 
-    public static cloned(token: string, user: string, repo: string, branch: string = "master",
+    public static cloned(credentials: ProjectOperationCredentials,
+                         user: string, repo: string, branch: string = "master",
                          opts: CloneOptions = DefaultCloneOptions): Promise<GitCommandGitProject> {
-        return clone(token, user, repo, branch, opts)
+        return clone(credentials.token, user, repo, branch, opts)
             .then(p => {
-                const gp = GitCommandGitProject.fromBaseDir(repo, p.baseDir, token);
+                const gp = GitCommandGitProject.fromBaseDir(repo, p.baseDir, credentials);
                 gp.repoName = repo;
                 gp.owner = user;
                 return gp;
@@ -65,13 +68,13 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     public owner: string;
 
-    private constructor(public name: string, public baseDir: string, private token: string) {
+    private constructor(public name: string, public baseDir: string, private credentials: ProjectOperationCredentials) {
         super(name, baseDir);
-        logger.info(`Created GitProject with token '${hideString(this.token)}'`);
+        logger.info(`Created GitProject with token '${hideString(this.credentials.token)}'`);
     }
 
     get id(): RepoId {
-        return new SimpleRepoId(this.owner, this.repoName, undefined, { url: "github.com"});
+        return new SimpleRepoId(this.owner, this.repoName, undefined, {url: "github.com"});
     }
 
     public init(): Promise<CommandResult<this>> {
@@ -102,7 +105,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     public setGitHubRemote(owner: string, repo: string): Promise<CommandResult<this>> {
         this.owner = owner;
         this.repoName = repo;
-        return this.setRemote(`https://${this.token}@github.com/${owner}/${repo}.git`);
+        return this.setRemote(`https://${this.credentials.token}@github.com/${owner}/${repo}.git`);
     }
 
     public setUserConfig(user: string, email: string): Promise<CommandResult<this>> {
@@ -113,7 +116,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     public setGitHubUserConfig(): Promise<CommandResult<this>> {
         const config = {
             headers: {
-                Authorization: `token ${this.token}`,
+                Authorization: `token ${this.credentials.token}`,
             },
         };
 
@@ -131,7 +134,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                                     visibility: "private" | "public" = "private"): Promise<CommandResult<this>> {
         const config = {
             headers: {
-                Authorization: `token ${this.token}`,
+                Authorization: `token ${this.credentials.token}`,
             },
         };
 
@@ -159,7 +162,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         }
         const config = {
             headers: {
-                Authorization: `token ${this.token}`,
+                Authorization: `token ${this.credentials.token}`,
             },
         };
         const url = `${GitHubBase}/repos/${this.owner}/${this.repoName}/pulls`;
@@ -226,7 +229,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                        visibility: "private" | "public" = "private"): Promise<any> {
         const config = {
             headers: {
-                Authorization: `token ${this.token}`,
+                Authorization: `token ${this.credentials.token}`,
             },
         };
 
@@ -236,11 +239,11 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             private: visibility === "private" ? true : false,
         };
         logger.debug(`Request to '${url}' with '${JSON.stringify(payload)}' ` +
-            `and auth token '${hideString(this.token)}'`);
+            `and auth token '${hideString(this.credentials.token)}'`);
         return axios.post(url, payload, config)
             .then(res => {
                 logger.debug(`Repo created ok: ${res.statusText}`);
-                return this.setRemote(`https://${this.token}@github.com/${owner}/${name}.git`);
+                return this.setRemote(`https://${this.credentials.token}@github.com/${owner}/${name}.git`);
             });
     }
 }
@@ -254,12 +257,12 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
  * @param branch
  * @param pr
  */
-export function cloneEditAndPush(token: string,
+export function cloneEditAndPush(credentials: ProjectOperationCredentials,
                                  owner: string,
                                  name: string,
                                  doWithProject: (Project) => void,
                                  pr?: PullRequest): Promise<ActionResult<GitCommandGitProject>> {
-    return GitCommandGitProject.cloned(token, owner, name).then(gp => {
+    return GitCommandGitProject.cloned(credentials, owner, name).then(gp => {
         doWithProject(gp);
         const start: Promise<any> = pr.branch ? gp.createBranch(pr.branch) : Promise.resolve();
         return start

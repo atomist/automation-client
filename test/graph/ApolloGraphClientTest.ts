@@ -37,7 +37,7 @@ describe("ApolloGraphClient", () => {
                 const org = result.ChatTeam[0].orgs[0];
                 assert(org.repo.length > 0);
                 const repo1 = org.repo[0];
-                GitCommandGitProject.cloned(GitHubToken, repo1.owner, repo1.name)
+                GitCommandGitProject.cloned({token: GitHubToken }, repo1.owner, repo1.name)
                     .then(p => {
                         const readme = p.findFileSync("README.md");
                         assert(readme);

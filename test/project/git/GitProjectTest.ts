@@ -24,6 +24,8 @@ function checkProject(p: Project) {
 const TargetRepo = `test-repo-${new Date().getTime()}`;
 let TargetOwner = "johnsonr";
 
+const Creds = {token: GitHubToken };
+
 describe("GitProject", () => {
 
     before(done => {
@@ -77,7 +79,7 @@ describe("GitProject", () => {
     it("add a file, init and commit", done => {
         const p = tempProject();
         p.addFileSync("Thing", "1");
-        const gp: GitProject = GitCommandGitProject.fromProject(p, GitHubToken);
+        const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
         gp.init().then(() => gp.commit("Added a Thing").then(c => {
             exec.exec("git status; git log", {cwd: p.baseDir}, (err, stdout, stderr) => {
                 if (err) {
@@ -98,7 +100,7 @@ describe("GitProject", () => {
     it("commit then add has uncommitted", done => {
         const p = tempProject();
         p.addFileSync("Thing", "1");
-        const gp: GitProject = GitCommandGitProject.fromProject(p, GitHubToken);
+        const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
         gp.init()
             .then(() => gp.isClean())
             .then(clean => {
@@ -114,7 +116,7 @@ describe("GitProject", () => {
     it("uses then function", done => {
         const p = tempProject();
         p.addFileSync("Thing", "1");
-        const gp: GitProject = GitCommandGitProject.fromProject(p, GitHubToken);
+        const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
         gp.init()
             .then(() => gp.isClean())
             .then(assertNotClean)
@@ -130,7 +132,7 @@ describe("GitProject", () => {
     it("add a file, check doesn't have uncommitted", done => {
         const p = tempProject();
         p.addFileSync("Thing", "1");
-        const gp: GitProject = GitCommandGitProject.fromProject(p, GitHubToken);
+        const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
         gp.init()
             .then(() => gp.commit("Added a Thing"))
             .then(() => gp.isClean())
@@ -147,7 +149,7 @@ describe("GitProject", () => {
         const p = tempProject();
         p.addFileSync("Thing", "1");
 
-        const gp: GitProject = GitCommandGitProject.fromProject(p, GitHubToken);
+        const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
         gp.init()
             .then(_ => gp.createAndSetGitHubRemote(TargetOwner, TargetRepo, "Thing1"))
             .then(() => gp.commit("Added a Thing"))
@@ -162,7 +164,7 @@ describe("GitProject", () => {
         this.retries(5);
 
         newRepo().then(_ => {
-            return GitCommandGitProject.cloned(GitHubToken, TargetOwner, TargetRepo).then(gp => {
+            return GitCommandGitProject.cloned(Creds, TargetOwner, TargetRepo).then(gp => {
                 gp.addFileSync("Cat", "hat");
                 const branch = "thing2";
                 gp.createBranch(branch)
@@ -180,7 +182,7 @@ describe("GitProject", () => {
         this.retries(5);
 
         newRepo().then(_ => {
-            return cloneEditAndPush(GitHubToken, TargetOwner, TargetRepo,
+            return cloneEditAndPush(Creds, TargetOwner, TargetRepo,
                 p => p.addFileSync("Cat", "hat"), {
                     branch: "thing2",
                     title: "Thing2",
@@ -193,10 +195,10 @@ describe("GitProject", () => {
 
     it("check out commit", done => {
         const sha = "590ed8f7a2430d45127ea04cc5bdf736fe698712";
-        GitCommandGitProject.cloned(GitHubToken, "atomist", "microgrammar", sha)
+        GitCommandGitProject.cloned(Creds, "atomist", "microgrammar", sha)
             .then(p => {
                 checkProject(p);
-                const gp: GitProject = GitCommandGitProject.fromProject(p, GitHubToken);
+                const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
                 const baseDir = (p as LocalProject).baseDir;
 
                 gp.checkout(sha)

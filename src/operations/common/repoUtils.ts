@@ -3,14 +3,11 @@ import { logger } from "../../internal/util/logger";
 import { Project } from "../../project/Project";
 import { allReposInTeam } from "./allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "./defaultRepoLoader";
+import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import { AllRepos, RepoFilter } from "./repoFilter";
 import { RepoFinder } from "./repoFinder";
 import { RepoId } from "./RepoId";
 import { RepoLoader } from "./repoLoader";
-
-export interface Credentials {
-    token?: string;
-}
 
 /**
  * Perform an action against all the given repos.
@@ -25,13 +22,13 @@ export interface Credentials {
  * @return {Promise<R[]>}
  */
 export function doWithAllRepos<R, P>(ctx: HandlerContext,
-                                     credentials: Credentials,
+                                     credentials: ProjectOperationCredentials,
                                      action: (p: Project, t: P) => Promise<R>,
                                      parameters: P,
                                      repoFinder: RepoFinder = allReposInTeam(),
                                      repoFilter: RepoFilter = AllRepos,
                                      repoLoader: RepoLoader =
-                                         defaultRepoLoader(credentials.token)): Promise<R[]> {
+                                         defaultRepoLoader(credentials)): Promise<R[]> {
     return relevantRepos(ctx, repoFinder, repoFilter)
         .then(ids =>
             Promise.all(
