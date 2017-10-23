@@ -55,11 +55,11 @@ export const configuration: Configuration = {
         // () => new SpringBootSeed(),
     ],
     events: [
-        () => new HelloIssue(),
+        HelloIssue,
         // () => new AlwaysOkEventHandler(),
     ],
     ingestors: [
-        () => new HelloIngestor(),
+        HelloIngestor,
     ],
     token: GitHubToken,
     http: {

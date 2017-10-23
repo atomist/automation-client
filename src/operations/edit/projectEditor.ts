@@ -4,6 +4,9 @@ import { Project } from "../../project/Project";
 
 /**
  * Modifies the given project, returning information about the modification.
+ * @param p project to edit
+ * @param context context for the current command or event handler
+ * @param params params, if available
  */
 export type ProjectEditor<P = undefined, ER extends EditResult = EditResult> =
     (p: Project, context: HandlerContext, params?: P) => Promise<ER>;

@@ -175,136 +175,15 @@ doWithFiles(p, "**/Thing", f => f.replace(/A-Z/, "alpha"))
 
 ## Reviewers
 
-`ReviewerCommandSupport` is a convenience superclass for writing
-command handlers that review (look at the contents of and possibly
-comment on) multiple projects.
-
-It works with the `ProjectReviewer` type, and takes care of cloning repos:
-
-```typescript
-export type ProjectReviewer<RR extends ProjectReview> =
-    (id: RepoId, p: Project, context: HandlerContext) => Promise<RR>;
-```
-
-`ProjectReview` contains repo identification and comments:
-
-```typescript
-export interface ProjectReview {
-
-    repoId: RepoId;
-
-    comments: ReviewComment[];
-}
-```
-
-`ReviewerCommandSupport` implements the `handle` method and takes care
-of cloning all repos within an org. Subclasses need to implement only
-one method to return a `ProjectReviewer` function that will review
-individual projects:
-
-```typescript
-projectReviewer(context: HandlerContext): ProjectReviewer<PR>;
-```
-
-Like the editor convenience class, `ReviewCommandSupport` can run
-either locally or remotely, depending on the provision of a `local`
-flag.
+See [Project Reviewers](ProjectReviewers.md).
 
 ## Editors
 
-`EditorSupport` is a convenience superclass for editing (modifying)
-projects. It is designed to make it easy to implement command handlers
-that work with a `ProjectEditor` function type, taking care of git
-cloning and updates.
-
-```typescript
-export type ProjectEditor<ER extends EditResult> =
-    (id: RepoId, p: Project, context: HandlerContext) => Promise<ER>;
-
-export interface EditResult {
-
-    /**
-     * Whether or not this project was edited
-     */
-    edited: boolean;
-}
-```
-
-`ProjectEditor` functions can be reused.
-
-An example of a simple editor command extending the
-`EditorCommandSupport` super class:
-
-```typescript
-@CommandHandler("Upgrade versions of Spring Boot across an org", "upgrade spring boot version")
-@Tags("atomist", "spring")
-export class SpringBootVersionUpgrade extends EditorCommandSupport {
-
-    @Parameter({
-        displayName: "Desired Spring Boot version",
-        description: "The desired Spring Boot version across these repos",
-        pattern: /^.+$/,
-        validInput: "Semantic version",
-        required: false,
-    })
-    public desiredBootVersion: string = "1.5.6.RELEASE";
-
-    public projectEditor(): ProjectEditor<EditResult> {
-    	// Construct the actual editor
-        return setSpringBootVersionEditor(this.desiredBootVersion);
-    }
-}
-```
-
-This will act on all repos associated with the current team. A filter
-can be specified in the constructor.
-
-The `ProjectEditor` function uses the `Project` and `File` interfaces
-to change each project it is invoked on.
+See [Project Editors](ProjectEditors.md).
 
 ## Generators
 
-Generators are commands that create
-projects. A
-[seed repo](https://the-composition.com/no-more-copy-paste-bf6c7f96e445) is
-an important Atomist concept in which content is sourced from a given
-repo and transformed to create a new project, based on parameters
-supplied by the user.
-
-There are several convenience superclasses provided in this library to
-work with seed-driven generation and wholly conceal the work of
-cloning the source repository and creating a target repository.
-
--   `SeedDrivenGenerator`: Abstract superclass for all commands that
-    generate projects from seeds. Takes care of specifying the source
-    and target repos, [secrets](Secrets.md) such tokens,
-    and [mapped parameters](MappedParameters.md) such as target owner.
--   `UniversalSeed`: Concrete class that does a very simple
-    transformation on a project.
--   `JavaSeed`: Concrete class that requests base package and other
-    Java-specific features.
-
-The transformation code in generators can be written either using
-promise or scripting style project operations. For example,
-`UniversalSeed` takes a scripting approach, overriding the
-`manipulate` function in `SeedDrivenGenerator`:
-
-```typescript
-public manipulate(project: ProjectNonBlocking): void {
-    this.removeSeedFiles(project);
-    this.cleanReadMe(project, this.description);
-}
-```
-
-`SeedDrivenGenerator` automatically calls `flush` on the project after
-invoking this method.
-
-Alternatively, you can override the `manipulateAndFlush` function
-itself to return a `Promise`. (In this case, `manipulate` will never
-be called unless you call it in your code.)
-
-To implement your own generator, override either `UniversalSeed` or
-`SeedDrivenGenerator`.
+See [Project Generators](ProjectGenerators.md).
 
 ## Local or remote operations
 
