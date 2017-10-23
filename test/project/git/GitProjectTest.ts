@@ -6,7 +6,7 @@ import { tempProject } from "../utils";
 
 import * as exec from "child_process";
 import { ActionResult } from "../../../src/action/ActionResult";
-import { cloneEditAndPush, GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
+import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitHubBase, GitProject } from "../../../src/project/git/GitProject";
 import { LocalProject } from "../../../src/project/local/LocalProject";
 import { Project } from "../../../src/project/Project";
@@ -175,21 +175,6 @@ describe("GitProject", () => {
                     })
                     .then(x => done());
             });
-        }).catch(done);
-    }).timeout(20000);
-
-    it("add a file, then PR push to remote repo using convenience function", function(done) {
-        this.retries(5);
-
-        newRepo().then(_ => {
-            return cloneEditAndPush(Creds, TargetOwner, TargetRepo,
-                p => p.addFileSync("Cat", "hat"), {
-                    branch: "thing2",
-                    title: "Thing2",
-                    message: "Commit message",
-                    body: "Adds another character now",
-                })
-                .then(() => done());
         }).catch(done);
     }).timeout(20000);
 
