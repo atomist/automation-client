@@ -146,7 +146,7 @@ describe("BuildableAutomationServer", () => {
 
     it("should register one event handler instance and invoke with valid event data", done => {
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        s.fromEventHandlerInstance(AlwaysOkEventHandler);
+        s.registerEventHandler(AlwaysOkEventHandler);
         s.onEvent({
             extensions: {
                 operationName: "Foo",
@@ -176,7 +176,7 @@ describe("BuildableAutomationServer", () => {
         const s = new BuildableAutomationServer(
             {name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []},
             sr);
-        s.fromEventHandlerInstance(TrustMeIGaveMySecret);
+        s.registerEventHandler(TrustMeIGaveMySecret);
         s.onEvent({
             extensions: {
                 operationName: "Foo",
@@ -198,8 +198,8 @@ describe("BuildableAutomationServer", () => {
 
     it("should register two event handler instances and invoke with valid parameter", done => {
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        s.fromEventHandlerInstance(() => new AlwaysOkEventHandler());
-        s.fromEventHandlerInstance(() => new FooBarEventHandler());
+        s.registerEventHandler(() => new AlwaysOkEventHandler());
+        s.registerEventHandler(() => new FooBarEventHandler());
         s.onEvent({
             extensions: {
                 operationName: "Foo",
@@ -222,7 +222,7 @@ describe("BuildableAutomationServer", () => {
 
     it("should register one ingestor instance and invoke with valid payload", done => {
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        s.fromIngestorInstance(() => new FooBarIngestor());
+        s.registerIngestor(() => new FooBarIngestor());
         s.onEvent({
             extensions: {
                 operationName: "FooBarIngestor",
@@ -242,8 +242,8 @@ describe("BuildableAutomationServer", () => {
 
     it("should register two ingestor instances and invoke with valid payload", done => {
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        s.fromIngestorInstance(() => new FooBarIngestor());
-        s.fromIngestorInstance(() => new HelloIssue());
+        s.registerIngestor(() => new FooBarIngestor());
+        s.registerEventHandler(() => new HelloIssue());
         s.onEvent({
             extensions: {
                 operationName: "FooBarIngestor",

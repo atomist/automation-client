@@ -1,26 +1,34 @@
-import { Arg, CommandInvocation, Invocation } from "../internal/invoker/Payload";
+import { ApolloGraphClient } from "../graph/ApolloGraphClient";
+import {
+    EventFired,
+    HandleCommand,
+    HandleEvent,
+    HandlerContext,
+    HandlerResult,
+} from "../Handlers";
+import { NodeConfigSecretResolver } from "../internal/env/NodeConfigSecretResolver";
+import {
+    Arg,
+    CommandInvocation,
+    Invocation,
+} from "../internal/invoker/Payload";
+import { isCommandHandlerMetadata, Rugs } from "../internal/metadata/metadata";
+import { metadataFromInstance } from "../internal/metadata/metadataReading";
+import { logger } from "../internal/util/logger";
+import { toStringArray } from "../internal/util/string";
 import {
     CommandHandlerMetadata,
     EventHandlerMetadata,
     IngestorMetadata,
 } from "../metadata/automationMetadata";
-import { AbstractAutomationServer } from "./AbstractAutomationServer";
-
-import { HandleCommand } from "../HandleCommand";
-import { HandlerContext } from "../HandlerContext";
-import { NodeConfigSecretResolver } from "../internal/env/NodeConfigSecretResolver";
-import { metadataFromInstance } from "../internal/metadata/metadataReading";
-import { SecretResolver } from "../spi/env/SecretResolver";
-
-import { ApolloGraphClient } from "../graph/ApolloGraphClient";
-import { EventFired, HandleEvent } from "../HandleEvent";
-import { HandlerResult } from "../HandlerResult";
-import { isCommandHandlerMetadata, Rugs } from "../internal/metadata/metadata";
-import { logger } from "../internal/util/logger";
-import { toStringArray } from "../internal/util/string";
 import { populateParameters } from "../operations/support/parameterPopulation";
+import { SecretResolver } from "../spi/env/SecretResolver";
 import { GraphClient } from "../spi/graph/GraphClient";
-import { Maker, toFactory } from "../util/constructionUtils";
+import {
+    Maker,
+    toFactory,
+} from "../util/constructionUtils";
+import { AbstractAutomationServer } from "./AbstractAutomationServer";
 import { AutomationServerOptions } from "./options";
 
 interface CommandHandlerRegistration {
@@ -102,7 +110,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         return this;
     }
 
-    public fromEventHandlerInstance(maker: Maker<HandleEvent<any>>): this {
+    public registerEventHandler(maker: Maker<HandleEvent<any>>): this {
         const factory = toFactory(maker);
         const instanceToInspect = factory();
         const md = metadataFromInstance(instanceToInspect) as EventHandlerMetadata;
@@ -116,7 +124,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         return this;
     }
 
-    public fromIngestorInstance(maker: Maker<HandleEvent<any>>): this {
+    public registerIngestor(maker: Maker<HandleEvent<any>>): this {
         const factory = toFactory(maker);
         const instanceToInspect = factory();
         const md = metadataFromInstance(instanceToInspect) as IngestorMetadata;
