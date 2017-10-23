@@ -38,10 +38,11 @@ describe("twoTierRepoFinder & LocalRepoLoader", () => {
                 assert(ids.length === 1);
                 assert(ids[0].repo === repo);
                 assert(ids[0].owner === owner);
-                LocalRepoLoader(ids[0]).then(p => {
-                    assert(p.findFileSync("thing").getContentSync() === "1");
-                    done();
-                });
+                LocalRepoLoader(ids[0])
+                    .then(p => {
+                        assert(p.findFileSync("thing").getContentSync() === "1");
+                        done();
+                    });
             });
     });
 

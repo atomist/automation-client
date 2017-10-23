@@ -39,7 +39,7 @@ export abstract class ReviewerCommandSupport<RR extends ReviewResult<PR> = Revie
                     .then(relevant => {
                         if (relevant) {
                             logger.info("Attempting to review %s", JSON.stringify(id));
-                            return load(id)
+                            return Promise.resolve(load(id))
                                 .then(p => {
                                     return projectReviewer(p, context);
                                 })

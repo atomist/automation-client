@@ -1,4 +1,5 @@
 import { HandlerContext } from "../../HandlerContext";
+import { logger } from "../../internal/util/logger";
 import { Project } from "../../project/Project";
 import { allReposInTeam } from "./allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "./defaultRepoLoader";
@@ -8,7 +9,8 @@ import { RepoId } from "./RepoId";
 import { RepoLoader } from "./repoLoader";
 
 /**
- * Perform an action against all the given repos
+ * Perform an action against all the given repos.
+ * Skip over repos that cannot be loaded, logging a warning.
  * @param {HandlerContext} ctx
  * @param {string} token
  * @param action action parameter
@@ -28,9 +30,16 @@ export function doWithAllRepos<R, P>(ctx: HandlerContext,
                                          defaultRepoLoader(token)): Promise<R[]> {
     return relevantRepos(ctx, repoFinder, repoFilter)
         .then(ids =>
-            Promise.all(ids.map(id => repoLoader(id)
-                .then(p => action(p, parameters))),
-            ),
+            Promise.all(
+                ids.map(id =>
+                    repoLoader(id)
+                        .then(p => action(p, parameters))
+                        .catch(err => {
+                            logger.warn("Unable to load repo %s:%s: %s", id.owner, id.repo, err);
+                            return undefined;
+                        }),
+                ),
+            ).then(proms => proms.filter(prom => prom)),
         );
 }
 

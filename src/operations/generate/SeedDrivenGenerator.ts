@@ -131,7 +131,8 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
     public abstract projectEditor(ctx: HandlerContext, params: this): ProjectEditor<any>;
 
     public handle(ctx: HandlerContext, params: this): Promise<HandlerResult> {
-        return this.repoLoader()(new SimpleRepoId(this.sourceOwner, this.sourceRepo, this.sourceBranch))
+        return Promise.resolve(this.repoLoader()(
+                new SimpleRepoId(this.sourceOwner, this.sourceRepo, this.sourceBranch)))
             .then(project => {
                 const populated: Promise<Project> =
                     this.projectEditor(ctx, params)(project, ctx, this)
