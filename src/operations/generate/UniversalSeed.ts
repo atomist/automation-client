@@ -19,8 +19,6 @@ import { SeedDrivenGenerator } from "./SeedDrivenGenerator";
 @Tags("universal", "generator")
 export class UniversalSeed extends SeedDrivenGenerator {
 
-    public static Name = "UniversalSeed";
-
     @MappedParameter(MappedParameters.GitHubOwner)
     public targetOwner: string;
 
@@ -36,7 +34,7 @@ export class UniversalSeed extends SeedDrivenGenerator {
     })
     public visibility: "public" | "private" = "public";
 
-    public projectEditor(ctx: HandlerContext, params: this): ProjectEditor<any> {
+    public projectEditor(ctx: HandlerContext, params: this): ProjectEditor {
         return chainEditors(RemoveSeedFiles, curry(cleanReadMe)(this.description));
     }
 }

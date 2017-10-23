@@ -31,7 +31,7 @@ export class SpringBootSeed extends JavaSeed {
     })
     public serviceClassName: string = "RestService";
 
-    public projectEditor(ctx: HandlerContext, params: this): ProjectEditor<any> {
+    public projectEditor(ctx: HandlerContext, params: this): ProjectEditor {
         return chainEditors(
             super.projectEditor(ctx, this),
             curry(params.inferSpringStructureAndRename)(params.serviceClassName),

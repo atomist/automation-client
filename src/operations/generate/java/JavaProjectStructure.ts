@@ -1,12 +1,7 @@
 import { File } from "../../../project/File";
 import { ProjectAsync } from "../../../project/Project";
 import { JavaPackageDeclaration } from "./JavaGrammars";
-
-/**
- * Java source in a project following Maven convention
- * @type {string}
- */
-export const MavenConventionSources = "src/main/**/*.java";
+import { JavaSourceFiles } from "./javaProjectUtils";
 
 /**
  * Represents the structure of a Java project,
@@ -25,11 +20,10 @@ export class JavaProjectStructure {
 
         return new Promise((resolve, reject) => {
             let structure: JavaProjectStructure = null;
-            p.streamFiles(MavenConventionSources)
+            p.streamFiles(JavaSourceFiles)
                 .on("data", f => {
                     if (!structure) {
                         structure = inferStructure(f);
-                        // TODO would be good to abort streaming if non-null
                     }
                 })
                 .on("error", reject)

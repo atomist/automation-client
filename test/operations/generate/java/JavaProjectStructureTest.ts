@@ -29,7 +29,7 @@ describe("JavaProjectStructure", () => {
     it("infer application package and class when present", done => {
         const p = InMemoryProject.of(
             {
-                path: "src/main/com/smashing/pumpkins/Gish.java",
+                path: "src/main/java/com/smashing/pumpkins/Gish.java",
                 content: javaSource,
             },
         );

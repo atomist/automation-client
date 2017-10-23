@@ -10,6 +10,9 @@ import { JavaProjectStructure } from "./JavaProjectStructure";
 import { movePackage } from "./javaProjectUtils";
 import { updatePom } from "./updatePom";
 
+/**
+ * Represents a Maven or Gradle artifact.
+ */
 export interface VersionedArtifact {
 
     artifactId: string;
@@ -77,7 +80,7 @@ export class JavaSeed extends UniversalSeed implements VersionedArtifact {
     })
     public rootPackage: string;
 
-    public projectEditor(ctx: HandlerContext, params: this): ProjectEditor<any> {
+    public projectEditor(ctx: HandlerContext, params: this): ProjectEditor {
         return chainEditors(
             super.projectEditor(ctx, params),
             removeTravisBuildFiles,

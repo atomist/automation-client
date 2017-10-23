@@ -10,7 +10,7 @@ import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../src/project/Project";
 
-describe("UniversalSeed", () => {
+describe("UniversalSeed metadata test", () => {
 
     function validateUniversalSeedMetadata(md: CommandHandlerMetadata) {
         assert(md.parameters.some(p => p.name === "sourceOwner"));

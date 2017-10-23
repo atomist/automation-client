@@ -1,35 +1,11 @@
-import * as assert from "power-assert";
-import * as shell from "shelljs";
-import { ActionResult } from "../../action/ActionResult";
-import {
-    MappedParameter,
-    Parameter,
-} from "../../decorators";
-import {
-    failure,
-    HandleCommand,
-    HandlerContext,
-    HandlerResult,
-    MappedParameters,
-    Success,
-} from "../../Handlers";
-import { logger } from "../../internal/util/logger";
-import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
-import { GitProject } from "../../project/git/GitProject";
-import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
+import { Parameter } from "../../decorators";
+import { HandlerContext } from "../../Handlers";
 import { Project } from "../../project/Project";
-import { defaultRepoLoader } from "../common/defaultRepoLoader";
-import { LocalOrRemote } from "../common/LocalOrRemote";
 import { SimpleRepoId } from "../common/RepoId";
-import { RepoLoader } from "../common/repoLoader";
 import { ProjectEditor } from "../edit/projectEditor";
+import { AbstractGenerator, GitHubNameRegExp } from "./AbstractGenerator";
 
-const gitHubNameRegExp = {
-    pattern: /^[-.\w]+$/,
-    validInput: "a valid GitHub identifier which consists of alphanumeric, ., -, and _ characters",
-};
-
-const gitBranchRegExp = {
+const GitBranchRegExp = {
     // not perfect, but pretty good
     pattern: /^\w([-.\w]*[-\w])*(\w([-.\w]*[-\w])*)*$/,
     validInput: "a valid Git branch name, see" +
@@ -42,17 +18,14 @@ const gitBranchRegExp = {
  *
  * Defines common parameters.
  *
- * If the "local" parameter is set, the project will be created below the current working directory.
  */
-export abstract class SeedDrivenGenerator extends LocalOrRemote implements HandleCommand {
-
-    public static Name = "UniversalSeed";
+export abstract class SeedDrivenGenerator extends AbstractGenerator {
 
     @Parameter({
-        pattern: gitHubNameRegExp.pattern,
+        pattern: GitHubNameRegExp.pattern,
         displayName: "Seed Repository Owner",
         description: "owner, i.e., user or organization, of seed repository",
-        validInput: gitHubNameRegExp.validInput,
+        validInput: GitHubNameRegExp.validInput,
         minLength: 1,
         maxLength: 50,
         required: false,
@@ -61,10 +34,10 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
     public sourceOwner: string = "atomist-seeds";
 
     @Parameter({
-        pattern: gitHubNameRegExp.pattern,
+        pattern: GitHubNameRegExp.pattern,
         displayName: "Seed Repository Name",
         description: "name of the seed repository",
-        validInput: gitHubNameRegExp.validInput,
+        validInput: GitHubNameRegExp.validInput,
         minLength: 1,
         maxLength: 50,
         required: false,
@@ -73,10 +46,10 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
     public sourceRepo: string = "spring-rest-seed";
 
     @Parameter({
-        pattern: gitBranchRegExp.pattern,
+        pattern: GitBranchRegExp.pattern,
         displayName: "Seed Branch",
         description: "seed repository branch to clone for new project",
-        validInput: gitBranchRegExp.validInput,
+        validInput: GitBranchRegExp.validInput,
         minLength: 1,
         maxLength: 50,
         required: false,
@@ -84,116 +57,19 @@ export abstract class SeedDrivenGenerator extends LocalOrRemote implements Handl
     })
     public sourceBranch: string = "master";
 
-    @MappedParameter(MappedParameters.GitHubOwner)
-    public targetOwner: string;
-
-    @Parameter({
-        pattern: gitHubNameRegExp.pattern,
-        displayName: "Target Repository Name",
-        description: "name of the target repository",
-        validInput: gitHubNameRegExp.validInput,
-        minLength: 1,
-        maxLength: 50,
-        required: true,
-        displayable: false,
-    })
-    public targetRepo: string;
-
-    @Parameter({
-        displayName: "Project Description",
-        description: "short descriptive text describing the new project",
-        pattern: /.*/,
-        validInput: "free text",
-        minLength: 1,
-        maxLength: 100,
-        required: false,
-    })
-    public description: string = "my new project";
-
-    @Parameter({
-        displayName: "Repository Visibility",
-        description: "visibility of the new repository (public or private; defaults to public)",
-        pattern: /^(public|private)$/,
-        validInput: "public or private",
-        minLength: 6,
-        maxLength: 7,
-        required: false,
-    })
-    // declareMappedParameter(this, "visibility", "atomist://github/default_repo_visibility");
-    public visibility: "public" | "private" = "public";
-
     /**
      * Subclasses must implement this function to return a project editor
      * to use in the present context
      * @param {HandlerContext} ctx
+     * @param params. Actually this, as parameters are bound to a fresh instance of this class,
+     * but without the problems of scoping and "this".
      * @return {ProjectEditor<any>}
      */
-    public abstract projectEditor(ctx: HandlerContext, params: this): ProjectEditor<any>;
+    public abstract projectEditor(ctx: HandlerContext, params: this): ProjectEditor<this>;
 
-    public handle(ctx: HandlerContext, params: this): Promise<HandlerResult> {
-        return Promise.resolve(this.repoLoader()(
-                new SimpleRepoId(this.sourceOwner, this.sourceRepo, this.sourceBranch)))
-            .then(project => {
-                const populated: Promise<Project> =
-                    this.projectEditor(ctx, params)(project, ctx, this)
-                        .then(r => r.target);
-                return this.local ?
-                    populated.then(p => {
-                        const parentDir = shell.pwd() + "";
-                        logger.info(`Creating local project using cwd '${parentDir}': Other name '${p.name}'`);
-                        return NodeFsLocalProject.copy(p, parentDir, this.targetRepo);
-                    }).then(p => {
-                        return {code: 0, baseDir: p.baseDir};
-                    }) :
-                    populated.then(proj =>
-                        proj.deleteDirectory(".git")
-                            .then(p => {
-                                const gp: GitProject = GitCommandGitProject.fromProject(p, this.githubToken);
-                                return gp.init()
-                                    .then(() => gp.setGitHubUserConfig())
-                                    .then(() => {
-                                        logger.info(`Creating new repo '${this.targetOwner}/${this.targetRepo}'`);
-                                        return gp.createAndSetGitHubRemote(this.targetOwner, this.targetRepo,
-                                            this.targetRepo, this.visibility);
-                                    })
-                                    .then(() => {
-                                        logger.info(`Committing to local repo at '${gp.baseDir}'`);
-                                        return gp.commit("Initial commit from Atomist");
-                                    })
-                                    .then(() => this.push(gp))
-                                    .then(() => {
-                                        return {code: 0};
-                                    });
-                            }));
-            })
-            .then(result => {
-                if (!this.local) {
-                    return ctx.graphClient.executeMutationFromFile("graphql/createSlackChannel",
-                        { name: this.targetRepo})
-                        .then(channel => {
-                            const channelId = (channel as any).createSlackChannel[0].id;
-                            return ctx.graphClient.executeMutationFromFile("graphql/addBotToSlackChannel",
-                                { channelId })
-                                .then(() => {
-                                    return ctx.graphClient.executeMutationFromFile("graphql/linkSlackChannelToRepo",
-                                        { channelId, repo: this.targetRepo, owner: this.targetOwner });
-                                });
-                        })
-                        .then(() => result)
-                        .catch(err => failure(err));
-                } else {
-                    return result;
-                }
-            });
+    public startingPoint(ctx: HandlerContext, params: this): Promise<Project> {
+        return this.repoLoader()(
+            new SimpleRepoId(this.sourceOwner, this.sourceRepo, this.sourceBranch));
     }
 
-    protected repoLoader(): RepoLoader {
-        assert(this.githubToken, "Github token must be set");
-        return defaultRepoLoader(this.githubToken);
-    }
-
-    protected push(gp: GitProject): Promise<ActionResult<GitProject>> {
-        logger.info(`Pushing local repo at [${gp.baseDir}]`);
-        return gp.push();
-    }
 }
