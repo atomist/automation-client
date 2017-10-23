@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * Copyright © 2017  Atomist
+ * Copyright © 2017 Atomist
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

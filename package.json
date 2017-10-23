@@ -130,7 +130,7 @@
     "git-info": "./git.info.js",
     "atomist-cli": "./start.cli.js",
     "atomist-client": "./start.client.js",
-    "atomist-config": "./atomist-config.js"
+    "atomist-config": "./atomist.setup.js"
   },
   "engines": {
     "node": "8.5.x",
