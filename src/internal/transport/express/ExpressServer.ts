@@ -184,7 +184,7 @@ export class ExpressServer {
             i => {
                 this.exposeEventInvocationRoute(exp,
                     `${ApiBase}/ingest/${i.route.toLowerCase()}`, i,
-                    (res, result) => res.status(result.code === 0 ? 200 : 500).json(result));
+                    (res, result) => res.status(result.some(r => r.code !== 0) ? 500 : 200).json(result));
         });
 
         exp.listen(this.options.port, () => {
