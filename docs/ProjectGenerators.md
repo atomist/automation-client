@@ -6,8 +6,8 @@ an important Atomist concept in which content is sourced from a given
 repo and transformed to create a new project, based on parameters
 supplied by the user.
 
-There are several convenience superclasses provided in this library to
-work with seed-driven generation and wholly conceal the work of
+This library provides several convenience superclasses to
+work with seed-driven generation and conceal the work of
 cloning the source repository and creating a target repository.
 
 - `AbstractGenerator`: Abstract superclass for all commands that generate projects, regardless of where their starting point content comes from.
@@ -20,24 +20,12 @@ cloning the source repository and creating a target repository.
 -   `JavaSeed`: Concrete class that requests base package and other
     Java-specific features.
 
-The transformation code in generators can be written either using
-promise or scripting style project operations. For example,
-`UniversalSeed` takes a scripting approach, overriding the
-`manipulate` function in `SeedDrivenGenerator`:
+The transformation code in generators is provided in the form of a project editor, through overriding the following function:
 
 ```typescript
-public manipulate(project: ProjectNonBlocking): void {
-    this.removeSeedFiles(project);
-    this.cleanReadMe(project, this.description);
-}
+    public abstract projectEditor(ctx: HandlerContext, params: this): ProjectEditor<this>;
+
 ```
-
-`SeedDrivenGenerator` automatically calls `flush` on the project after
-invoking this method.
-
-Alternatively, you can override the `manipulateAndFlush` function
-itself to return a `Promise`. (In this case, `manipulate` will never
-be called unless you call it in your code.)
 
 To implement your own generator, override either `UniversalSeed` or
 `SeedDrivenGenerator`.

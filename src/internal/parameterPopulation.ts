@@ -1,5 +1,5 @@
-import { Arg } from "../../internal/invoker/Payload";
-import { CommandHandlerMetadata } from "../../metadata/automationMetadata";
+import { CommandHandlerMetadata } from "../metadata/automationMetadata";
+import { Arg } from "./invoker/Payload";
 
 /**
  * Populate the parameters of the command handler instance,

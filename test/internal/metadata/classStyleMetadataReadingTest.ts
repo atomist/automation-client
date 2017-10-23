@@ -9,10 +9,10 @@ import { HandlerContext } from "../../../src/HandlerContext";
 import { HandlerResult } from "../../../src/HandlerResult";
 import { MappedParameters } from "../../../src/Handlers";
 
+import { populateParameters } from "../../../src/internal/parameterPopulation";
 import {
     CommandHandlerMetadata, EventHandlerMetadata, IngestorMetadata,
 } from "../../../src/metadata/automationMetadata";
-import { populateParameters } from "../../../src/operations/support/parameterPopulation";
 import { AddAtomistSpringAgent, FooBarIngestor } from "../invoker/TestHandlers";
 
 describe("class style metadata reading", () => {

@@ -2,7 +2,6 @@ import { Parameter } from "../../decorators";
 import { HandlerContext } from "../../Handlers";
 import { Project } from "../../project/Project";
 import { SimpleRepoId } from "../common/RepoId";
-import { ProjectEditor } from "../edit/projectEditor";
 import { AbstractGenerator, GitHubNameRegExp } from "./AbstractGenerator";
 
 const GitBranchRegExp = {
@@ -56,16 +55,6 @@ export abstract class SeedDrivenGenerator extends AbstractGenerator {
         displayable: false,
     })
     public sourceBranch: string = "master";
-
-    /**
-     * Subclasses must implement this function to return a project editor
-     * to use in the present context
-     * @param {HandlerContext} ctx
-     * @param params. Actually this, as parameters are bound to a fresh instance of this class,
-     * but without the problems of scoping and "this".
-     * @return {ProjectEditor<any>}
-     */
-    public abstract projectEditor(ctx: HandlerContext, params: this): ProjectEditor<this>;
 
     public startingPoint(ctx: HandlerContext, params: this): Promise<Project> {
         return this.repoLoader()(

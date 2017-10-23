@@ -76,7 +76,7 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
     /**
      * Subclasses must implement this method to return a project editor
      * to use in the present context
-     * @param {HandlerContext} ctx
+     * @param {HandlerContext} ctx context for current command
      * @param params. Actually this, as parameters are bound to a fresh instance of this class,
      * but without the problems of scoping and "this".
      * @return {ProjectEditor<any>}

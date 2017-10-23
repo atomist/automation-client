@@ -1,7 +1,9 @@
 # Project Reviewers
 Project Reviewers are functions that can run across projects, identifying any problems that should be addressed. They are used in Atomist automations.
 
-## The ProjectReview Function
+## The ProjectReviewer Function
+The core interface is `ProjectReviewer`:
+
 ```typescript
 export type ProjectReviewer<P = undefined, PR extends ProjectReview = ProjectReview> =
     (p: Project, context: HandlerContext, params?: P) => Promise<PR>;

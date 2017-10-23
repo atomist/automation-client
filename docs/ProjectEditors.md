@@ -1,14 +1,16 @@
 # Project Editors
-Project editors are functions
+Project editors are functions that can modify a project.
 
-They are usually invoked from [command handlers](CommandHandlers.md).
+They are usually invoked from [command handlers](CommandHandlers.md). Project editors are also used to implement [project generators](ProjectGenerators.md).
 
 ## The ProjectEditor function
+The signature of the `ProjectEditor` is as follows:
 
 ```typescript
 export type ProjectEditor<P = undefined, ER extends EditResult = EditResult> =
     (p: Project, context: HandlerContext, params?: P) => Promise<ER>;
 ```
+The parameter of type `Project` may be mutated by invocation of the editor function. Projects, like real world file systems, are mutable.
 
 ## Implementing Editor commands
 
@@ -63,3 +65,4 @@ The `ProjectEditor` function uses the `Project` and `File` interfaces
 to change each project it is invoked on.
 
 ## Editor Chaining
+tbc

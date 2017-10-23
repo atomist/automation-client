@@ -14,6 +14,7 @@ import {
 } from "../internal/invoker/Payload";
 import { isCommandHandlerMetadata, Rugs } from "../internal/metadata/metadata";
 import { metadataFromInstance } from "../internal/metadata/metadataReading";
+import { populateParameters } from "../internal/parameterPopulation";
 import { logger } from "../internal/util/logger";
 import { toStringArray } from "../internal/util/string";
 import {
@@ -21,7 +22,6 @@ import {
     EventHandlerMetadata,
     IngestorMetadata,
 } from "../metadata/automationMetadata";
-import { populateParameters } from "../operations/support/parameterPopulation";
 import { SecretResolver } from "../spi/env/SecretResolver";
 import { GraphClient } from "../spi/graph/GraphClient";
 import {
