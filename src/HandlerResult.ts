@@ -14,13 +14,25 @@ export interface HandlerResult {
     message?: string;
 }
 
+/**
+ * The result of a command invocation returns a redirect URL that can be
+ * presented to the invoker of the command in different ways: eg. HTTP redirect
+ * or a slack message with the link.
+ */
+export interface RedirectResult extends HandlerResult {
+
+    /**
+     * The redirect url
+     */
+    redirect: string;
+}
+
 export interface HandlerError extends HandlerResult {
 
     /**
      * The stack trace of the error
      */
     stack?: any;
-
 }
 
 export const Success: HandlerResult = {

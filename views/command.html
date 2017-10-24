@@ -102,6 +102,7 @@
                 url: frm.attr('action'),
                 data: frm.serialize(),
                 success: function (data) {
+
                     $('#modal-result-body').html("<p class='alert alert-success alert-full'><i class='fa fa-check' style='padding-right: 5pt' aria-hidden='true'></i>&nbsp;Command executed successfully.</p><pre style='font-size: 80%'><code class='json'>" + JSON.stringify(data, null, 2) + "</code></pre>");
                     hljs.initHighlighting();
                     $(document).ready(function() {
@@ -109,6 +110,13 @@
                             hljs.highlightBlock(block);
                         });
                     });
+                    // Send redirect if we get a redirect url back from the command
+                    if (data.redirect) {
+                        setInterval(function() {
+                            window.location.href = data.redirect;
+                        }, 5000)
+                        $('#modal-result-body').append("Redirecting to " + data.redirect + " in 5s");
+                    }
                 },
                 error: function (data) {
                     $('#modal-result-body').html("<p class='alert alert-danger alert-full'><i class='fa fa-exclamation' style='padding-right: 5pt' aria-hidden='true'></i>&nbspCommand failed execution.</p><pre style='font-size: 80%'><code class='json'>" + JSON.stringify(data.responseJSON, null, 2) + "</code></pre>");

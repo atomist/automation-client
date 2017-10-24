@@ -2,6 +2,7 @@ import * as assert from "power-assert";
 import * as shell from "shelljs";
 import { ActionResult } from "../../action/ActionResult";
 import { MappedParameter, Parameter } from "../../decorators";
+import { RedirectResult } from "../../HandlerResult";
 import { failure, HandleCommand, HandlerContext, HandlerResult, MappedParameters } from "../../Handlers";
 import { logger } from "../../internal/util/logger";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
@@ -95,7 +96,7 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
                         logger.info(`Creating local project using cwd '${parentDir}': Other name '${p.name}'`);
                         return NodeFsLocalProject.copy(p, parentDir, this.targetRepo);
                     }).then(p => {
-                        return {code: 0, baseDir: p.baseDir};
+                        return {code: 0, baseDir: p.baseDir} as HandlerResult;
                     }) :
                     populated.then(proj =>
                         proj.deleteDirectory(".git")
@@ -114,12 +115,15 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
                                     })
                                     .then(() => this.push(gp))
                                     .then(() => {
-                                        return {code: 0};
+                                        const r = {code: 0,
+                                            redirect: `https://github.com/${this.targetOwner}/${this.targetRepo}`};
+                                        return r as RedirectResult;
                                     });
                             }));
             })
             .then(result => {
-                if (!this.local) {
+                // TODO remove until we need this
+                /* if (!this.local) {
                     return ctx.graphClient.executeMutationFromFile("graphql/createSlackChannel",
                         {name: this.targetRepo})
                         .then(channel => {
@@ -133,9 +137,9 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
                         })
                         .then(() => result)
                         .catch(err => failure(err));
-                } else {
+                } else { */
                     return result;
-                }
+                // }
             });
     }
 

@@ -1,13 +1,13 @@
 import { Configuration } from "../src/configuration";
 import { RequestProcessor } from "../src/internal/transport/RequestProcessor";
 import { guid } from "../src/internal/util/string";
+import { SpringBootSeed } from "../src/operations/generate/java/SpringBootSeed";
 import { AutomationEventListenerSupport } from "../src/server/AutomationEventListener";
 import { HelloWorld } from "./command/HelloWorld";
 import { PlainHelloWorld } from "./command/PlainHelloWorld";
 import { SendStartupMessage } from "./command/SendStartupMessage";
 import { HelloIngestor } from "./event/HelloIngestor";
 import { HelloIssue } from "./event/HelloIssue";
-import { SpringBootSeed } from "../src/operations/generate/java/SpringBootSeed";
 
 export const GitHubToken = process.env.GITHUB_TOKEN;
 
@@ -76,7 +76,7 @@ export const configuration: Configuration = {
                 enabled: false,
             },
             github: {
-                enabled: false,
+                enabled: true,
                 clientId: "092b3124ced86d5d1569",
                 clientSecret: "71d72f657d4402009bd8d728fc1967939c343793",
                 callbackUrl: "http://localhost:2866",

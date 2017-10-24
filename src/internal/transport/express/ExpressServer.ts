@@ -16,6 +16,8 @@ import {
     IngestorMetadata,
 } from "../../../metadata/automationMetadata";
 import { AutomationServer } from "../../../server/AutomationServer";
+import { health, HealthStatus } from "../../util/health";
+import { info } from "../../util/info";
 import { logger } from "../../util/logger";
 import { metrics } from "../../util/metric";
 import { guid } from "../../util/string";
@@ -24,8 +26,6 @@ import {
     EventIncoming,
     RequestProcessor,
 } from "../RequestProcessor";
-import { health, HealthStatus } from "../../util/health";
-import { info } from "../../util/info";
 
 const ApiBase = "";
 const api = new GitHubApi();

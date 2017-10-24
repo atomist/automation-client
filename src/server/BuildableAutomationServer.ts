@@ -12,7 +12,7 @@ import {
     CommandInvocation,
     Invocation,
 } from "../internal/invoker/Payload";
-import { isCommandHandlerMetadata, Automations } from "../internal/metadata/metadata";
+import { Automations, isCommandHandlerMetadata } from "../internal/metadata/metadata";
 import { metadataFromInstance } from "../internal/metadata/metadataReading";
 import { populateParameters } from "../internal/parameterPopulation";
 import { logger } from "../internal/util/logger";

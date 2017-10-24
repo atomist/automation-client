@@ -3,7 +3,7 @@ import { Automations } from "../metadata/metadata";
 
 export function info(automations: Automations): any {
     const i: any = {};
-    i.name = automations.name
+    i.name = automations.name;
     i.version = automations.version;
     if (automations.team_ids) {
         i.team_ids = automations.team_ids;

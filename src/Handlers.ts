@@ -1,11 +1,11 @@
 import { HandleCommand } from "./HandleCommand";
 import { HandlerContext } from "./HandlerContext";
-import { Failure, failure, HandlerResult, Success } from "./HandlerResult";
+import { Failure, failure, HandlerResult, RedirectResult, Success } from "./HandlerResult";
 
 import { CommandHandler, EventHandler, MappedParameter, Parameter, Secret, Tags } from "./decorators";
 import { EventFired, HandleEvent } from "./HandleEvent";
 
-export { HandlerResult, HandlerContext, HandleCommand, Success, Failure, failure };
+export { HandlerResult, HandlerContext, HandleCommand, Success, Failure, failure, RedirectResult };
 export { HandleEvent, EventFired };
 export { EventHandler, Parameter, CommandHandler, MappedParameter, Secret, Tags };
 
