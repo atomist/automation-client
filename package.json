@@ -122,7 +122,7 @@
     "git:info": "npm run compile && node $NODE_DEBUG_OPTION --trace-warnings build/src/git.info.js",
     "lint": "tslint --format verbose --project . --exclude '{build,node_modules}/**' '**/*.ts'",
     "lint:fix": "npm run lint -- --fix",
-    "test": "mocha --require espower-typescript/guess 'test/**/!(*atomist.config).ts' --exit",
+    "test": "npm run compile && node build/test/verifyGitHubUser && mocha --require espower-typescript/guess 'test/**/!(*atomist.config).ts' --exit",
     "testone": "mocha --require espower-typescript/guess \"test/**/${TEST:-*.ts}\" --exit",
     "typedoc": "typedoc --mode modules --excludeExternals"
   },
