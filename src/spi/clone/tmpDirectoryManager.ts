@@ -9,7 +9,7 @@ import { CloneDirectoryInfo, CloneOptions, DirectoryManager } from "./DirectoryM
  */
 export const TmpDirectoryManager: DirectoryManager = {
 
-    directoryFor(user: string, repo: string, branch: string, opts: CloneOptions): Promise<CloneDirectoryInfo> {
+    directoryFor(owner: string, repo: string, branch: string, opts: CloneOptions): Promise<CloneDirectoryInfo> {
         return tmp.dir({keep: opts.keep})
             .then(fromTmp => Promise.resolve({
                 ...fromTmp,

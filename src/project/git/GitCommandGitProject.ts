@@ -1,22 +1,32 @@
 import { exec } from "child-process-promise";
 
+import axios from "axios";
+import * as os from "os";
 import { isLocalProject } from "../local/LocalProject";
 import { Project } from "../Project";
 
-import axios from "axios";
 import { ActionResult } from "../../action/ActionResult";
 import { CommandResult, runCommand } from "../../action/cli/commandLine";
 import { logger } from "../../internal/util/logger";
 import { hideString } from "../../internal/util/string";
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
 import { RepoId, SimpleRepoId } from "../../operations/common/RepoId";
+import { CloneOptions, DefaultCloneOptions, DirectoryManager } from "../../spi/clone/DirectoryManager";
+import { StableDirectoryManager } from "../../spi/clone/StableDirectoryManager";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
-import { CloneOptions, DefaultCloneOptions, DirectoryManager } from "./DirectoryManager";
 import { GitProject } from "./GitProject";
-import { PersistentDirectoryManager } from "./StableDirectoryManager";
-import { TmpDirectoryManager } from "./tmpDirectoryManager";
 
-const DefaultDirectoryManager = PersistentDirectoryManager;
+/**
+ * Default Atomist working directory
+ * @type {string}
+ */
+const AtomistWorkingDirectory = ".atomist-working";
+
+export const DefaultDirectoryManager = new StableDirectoryManager({
+    baseDir: os.homedir() + "/" + AtomistWorkingDirectory,
+    cleanOnExit: false,
+    reuseDirectories: false,
+});
 
 export const GitHubBase = "https://api.github.com";
 

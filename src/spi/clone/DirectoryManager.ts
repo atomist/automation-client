@@ -1,6 +1,11 @@
 
 export interface CloneOptions {
 
+    /**
+     * If this is true, the implementation should keep the directory at least
+     * for the duration of the current process. If it's false, persistence can be treated
+     * in any way.
+     */
     keep?: boolean;
 }
 

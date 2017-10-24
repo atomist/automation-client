@@ -3,7 +3,6 @@ import { registerShutdownHook } from "../../internal/util/shutdown";
 import { logger } from "../../internal/util/logger";
 
 import * as fs from "fs-extra";
-import * as os from "os";
 import { CloneDirectoryInfo, CloneOptions, DirectoryManager } from "./DirectoryManager";
 
 export interface StableDirectoryManagerOpts {
@@ -117,15 +116,3 @@ export class StableDirectoryManager implements DirectoryManager {
 
 // export const TmpCleaningDirectoryManager = new StableDirectoryManager(
 //     {baseDir: os.tmpdir() + "/atomist_working", cleanOnExit: true});
-
-/**
- * Default Atomist working directory
- * @type {string}
- */
-const AtomistWorkingDirectory = ".atomist-working";
-
-export const PersistentDirectoryManager = new StableDirectoryManager({
-    baseDir: os.homedir() + "/" + AtomistWorkingDirectory,
-    cleanOnExit: false,
-    reuseDirectories: false,
-});
