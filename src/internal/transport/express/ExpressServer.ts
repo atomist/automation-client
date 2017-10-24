@@ -33,6 +33,7 @@ const api = new GitHubApi();
 let Basic = false;
 let Bearer = false;
 let GitHub = false;
+let AdminOrg;
 
 /**
  * Registers an endpoint for every automation and exposes
@@ -116,63 +117,63 @@ export class ExpressServer {
                 res.status(h.status === HealthStatus.Up ? 200 : 500).json(h);
         });
 
-        exp.get(`${ApiBase}/info`, authenticate,
+        exp.get(`${ApiBase}/info`, authenticate, verifyAdminGroup,
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(info(automations.automations));
             });
 
-        exp.get(`${ApiBase}/automations`, authenticate,
+        exp.get(`${ApiBase}/automations`, authenticate, verifyAdminGroup,
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(automations.automations);
         });
 
-        exp.get(`${ApiBase}/metrics`, authenticate,
+        exp.get(`${ApiBase}/metrics`, authenticate, verifyAdminGroup,
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(metrics());
         });
 
-        exp.get(`${ApiBase}/log/events`, authenticate,
+        exp.get(`${ApiBase}/log/events`, authenticate, verifyAdminGroup,
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(globals.eventStore().events(req.query.from));
         });
 
-        exp.get(`${ApiBase}/log/commands`, authenticate,
+        exp.get(`${ApiBase}/log/commands`, authenticate, verifyAdminGroup,
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(globals.eventStore().commands(req.query.from));
         });
 
-        exp.get(`${ApiBase}/log/messages`, authenticate,
+        exp.get(`${ApiBase}/log/messages`, authenticate, verifyAdminGroup,
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(globals.eventStore().messages(req.query.from));
         });
 
-        exp.get(`${ApiBase}/series/events`, authenticate,
+        exp.get(`${ApiBase}/series/events`, authenticate, verifyAdminGroup,
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(globals.eventStore().eventSeries());
             });
 
-        exp.get(`${ApiBase}/series/commands`, authenticate,
+        exp.get(`${ApiBase}/series/commands`, authenticate, verifyAdminGroup,
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(globals.eventStore().commandSeries());
             });
 
-        exp.get("/graphql", authenticate,
+        exp.get("/graphql", authenticate, verifyAdminGroup,
             (req, res) => {
                 const teamId = req.query.teamId ? req.query.teamId : this.automations.automations.team_ids[0];
                 res.render("graphql.html", { token: globals.jwtToken(),
@@ -181,7 +182,7 @@ export class ExpressServer {
                     user: req.user });
         });
 
-        exp.get("/", authenticate,
+        exp.get("/", authenticate, verifyAdminGroup,
             (req, res) => {
                 res.render("index.html", { user: req.user });
         });
@@ -377,6 +378,7 @@ export class ExpressServer {
             ));
 
             GitHub = true;
+            AdminOrg = this.options.auth.github.adminOrg;
         }
 
         if (this.options.auth && this.options.auth.basic && this.options.auth.basic.enabled) {
@@ -437,6 +439,24 @@ function authenticate(req, res, next): any {
     }
 }
 
+function verifyAdminGroup(req, res, next): any {
+    // If this client is using GitHub auth and has an adminOrg configured;
+    // make sure the auth'ed user has access to that org
+    if (GitHub && AdminOrg) {
+        if (!req.user || !req.user.orgs) {
+            return res.redirect("/login");
+        }
+        if (req.user.orgs.some(o => o === AdminOrg)) {
+            next();
+        } else {
+            req.flash("error", "Access denied");
+            return res.redirect("/login");
+        }
+    } else {
+        next();
+    }
+}
+
 export interface ExpressServerOptions {
 
     port: number;
@@ -458,6 +478,7 @@ export interface ExpressServerOptions {
             clientSecret: string,
             callbackUrl: string,
             org?: string,
+            adminOrg?: string,
             scopes?: string[];
         },
     };

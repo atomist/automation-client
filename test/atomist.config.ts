@@ -7,6 +7,7 @@ import { PlainHelloWorld } from "./command/PlainHelloWorld";
 import { SendStartupMessage } from "./command/SendStartupMessage";
 import { HelloIngestor } from "./event/HelloIngestor";
 import { HelloIssue } from "./event/HelloIssue";
+import { SpringBootSeed } from "../src/operations/generate/java/SpringBootSeed";
 
 export const GitHubToken = process.env.GITHUB_TOKEN;
 
@@ -52,7 +53,7 @@ export const configuration: Configuration = {
         () => new PlainHelloWorld(),
         // () => new UniversalSeed(),
         // () => new JavaSeed(),
-        // () => new SpringBootSeed(),
+        () => new SpringBootSeed(),
     ],
     events: [
         HelloIssue,
@@ -74,10 +75,18 @@ export const configuration: Configuration = {
             bearer: {
                 enabled: false,
             },
+            github: {
+                enabled: false,
+                clientId: "092b3124ced86d5d1569",
+                clientSecret: "71d72f657d4402009bd8d728fc1967939c343793",
+                callbackUrl: "http://localhost:2866",
+                org: "atomisthqa",
+                adminOrg: "atomisthq",
+            },
         },
     },
     listeners: [
-        new StartUpListener(),
+        // new StartUpListener(),
     ],
     endpoints: {
         graphql: `${host}/graphql/team`,
