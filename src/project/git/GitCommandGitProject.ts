@@ -13,10 +13,10 @@ import { RepoId, SimpleRepoId } from "../../operations/common/RepoId";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
 import { CloneOptions, DefaultCloneOptions, DirectoryManager } from "./DirectoryManager";
 import { GitProject } from "./GitProject";
-import { DefaultStableDirectoryManager } from "./stableDirectoryManager";
+import { PersistentDirectoryManager } from "./StableDirectoryManager";
 import { TmpDirectoryManager } from "./tmpDirectoryManager";
 
-const DefaultDirectoryManager = DefaultStableDirectoryManager;
+const DefaultDirectoryManager = PersistentDirectoryManager;
 
 export const GitHubBase = "https://api.github.com";
 
