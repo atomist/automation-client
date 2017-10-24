@@ -5,17 +5,26 @@ import { AutomationEventListener } from "../../../server/AutomationEventListener
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
 import { MessageClient } from "../../../spi/message/MessageClient";
+import { HealthStatus, registerHealthIndicator } from "../../util/health";
 import { logger } from "../../util/logger";
 import { obfuscateJson } from "../../util/string";
 import { AbstractEventStoringRequestProcessor } from "../AbstractEventStoringRequestProcessor";
-import { CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming } from "../RequestProcessor";
+import {
+    CommandIncoming,
+    EventIncoming,
+    isCommandIncoming,
+    isEventIncoming,
+} from "../RequestProcessor";
 import { WebSocketClientOptions } from "./WebSocketClient";
 import {
     sendMessage,
     WebSocketCommandMessageClient,
     WebSocketEventMessageClient,
 } from "./WebSocketMessageClient";
-import { RegistrationConfirmation, WebSocketRequestProcessor } from "./WebSocketRequestProcessor";
+import {
+    RegistrationConfirmation,
+    WebSocketRequestProcessor,
+} from "./WebSocketRequestProcessor";
 
 export class DefaultWebSocketRequestProcessor extends AbstractEventStoringRequestProcessor
     implements WebSocketRequestProcessor {
@@ -27,6 +36,14 @@ export class DefaultWebSocketRequestProcessor extends AbstractEventStoringReques
     constructor(protected automations: AutomationServer, private options: WebSocketClientOptions,
                 protected listeners: AutomationEventListener[] = []) {
         super(automations, listeners);
+
+        registerHealthIndicator(() => {
+            if (this.webSocket && this.registration) {
+                return { status: HealthStatus.Up, detail: "WebSocket connection established" };
+            } else {
+                return { status: HealthStatus.Down, detail: "WebSocket disconnected" };
+            }
+        });
     }
 
     public onRegistration(registration: RegistrationConfirmation) {
@@ -35,10 +52,15 @@ export class DefaultWebSocketRequestProcessor extends AbstractEventStoringReques
         this.registration = registration;
     }
 
-    public onConnection(ws: WebSocket) {
+    public onConnect(ws: WebSocket) {
         logger.info("WebSocket connection established. Listening for incoming messages");
         this.webSocket = ws;
         this.listeners.forEach(l => l.registrationSuccessful(this));
+    }
+
+    public onDisconnect() {
+        this.webSocket = null;
+        this.registration = null;
     }
 
     protected sendMessage(payload: any) {

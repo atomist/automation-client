@@ -67,7 +67,7 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
         let timer: Timer;
 
         ws.on("open", function open() {
-            requestProcessor.onConnection(this);
+            requestProcessor.onConnect(this);
             resolve(ws);
 
             // Install ping/pong timer and shutdown hooks
@@ -126,6 +126,7 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
         });
 
         function reset() {
+            requestProcessor.onDisconnect();
             clearInterval(timer);
             ping = 0;
             pong = 0;

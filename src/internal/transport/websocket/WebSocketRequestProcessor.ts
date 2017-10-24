@@ -5,7 +5,9 @@ export interface WebSocketRequestProcessor extends RequestProcessor {
 
     onRegistration(registration: RegistrationConfirmation);
 
-    onConnection(ws: WebSocket);
+    onConnect(ws: WebSocket);
+
+    onDisconnect();
 }
 
 export interface RegistrationConfirmation {
