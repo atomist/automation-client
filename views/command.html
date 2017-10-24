@@ -29,26 +29,50 @@
             <h4 class="card-title">{{name}}</h4>
             <p>{{description}}</p>
             <form method="get" id="command-form" name="command-form" action="/command/{{route}}">
-                <h5 class="card-title">Parameters</h5>
+                {{#mapped_parameters.length}}
+                <h5 class="card-title">Mapped Parameters</h5>
+                {{/mapped_parameters.length}}
+                {{#mapped_parameters}}
+                <div class="form-group">
+                    <label for="{{name}}">{{name}}</label>
+                    <select class="form-control" id="mp_{{name}}" name="mp_{{name}}" aria-describedby="mp_{{name}}-help">
+                        {{#value}}
+                        <option>{{.}}</option>
+                        {{/value}}
+                    </select>
+                    <small id="mp_{{name}}-help" class="form-text text-muted">{{description}}</small>
+                </div>
+                {{/mapped_parameters}}
+                <h5 class="card-title">Required Parameters</h5>
                 {{#parameters}}
+                {{#displayable}}
+                {{#required}}
                 <div class="form-group">
                     <label for="{{name}}">{{name}}</label>
                     <input type="text" class="form-control form-control-sm" id="{{name}}" name="{{name}}" value="{{default_value}}" aria-describedby="{{name}}-help" data-validation="custom" data-validation-regexp="{{{pattern.source}}}" {{#required}}required{{/required}}>
                     <small id="{{name}}-help" class="form-text text-muted">{{description}}</small>
                 </div>
+                {{/required}}
+                {{/displayable}}
                 {{/parameters}}
-                <h5 class="card-title">Mapped Parameters</h5>
-                {{#mapped_parameters}}
+                <h5 class="card-title">Optional Parameters - <small><a data-toggle="collapse" href="#collapse-optional" aria-expanded="false" aria-controls="collapse-optional">show more <span class="icon icon-triangle-right"/></a></small></h5>
+                <div class="collapse" id="collapse-optional">
+                {{#parameters}}
+                {{#displayable}}
+                {{^required}}
                 <div class="form-group">
                     <label for="{{name}}">{{name}}</label>
-                    <select class="form-control" id="mp_{{name}}" name="mp_{{name}}">
-                        {{#value}}
-                            <option>{{.}}</option>
-                        {{/value}}
-                    </select>
+                    <input type="text" class="form-control form-control-sm" id="{{name}}" name="{{name}}" value="{{default_value}}" aria-describedby="{{name}}-help" data-validation="custom" data-validation-regexp="{{{pattern.source}}}" {{#required}}required{{/required}}>
+                    <small id="{{name}}-help" class="form-text text-muted">{{description}}</small>
                 </div>
-                {{/mapped_parameters}}
-                <input type="submit" class="btn btn-primary" value="Run">
+                {{/required}}
+                {{/displayable}}
+                {{/parameters}}
+                </div>
+                </p>
+                <div class="text-right">
+                    <input type="submit" class="btn btn-primary" value="Run">
+                </div>
             </form>
         </div>
     </div>
