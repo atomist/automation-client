@@ -111,14 +111,23 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             },
         };
 
-        return axios.get(`${GitHubBase}/user`, config)
-            .then(result => {
-                if (result.data.name && result.data.email) {
-                    return this.setUserConfig(result.data.name, result.data.email);
+        return Promise.all([ axios.get(`${GitHubBase}/user`, config),
+                axios.get(`${GitHubBase}/user/emails`, config) ])
+            .then(results => {
+                const name = results[0].data.name;
+                let email = results[0].data.email;
+
+                if (!email) {
+                    email = results[1].data.find(e => e.primary === true).email;
+                }
+
+                if (name && email) {
+                    return this.setUserConfig(name, email);
                 } else {
                     return this.setUserConfig("Atomist Bot", "bot@atomist.com");
                 }
-            });
+            })
+            .catch(() => this.setUserConfig("Atomist Bot", "bot@atomist.com"));
     }
 
     public createAndSetGitHubRemote(owner: string, name: string, description: string = name,
