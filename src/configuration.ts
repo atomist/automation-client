@@ -21,7 +21,7 @@ export interface Configuration extends RunOptions {
     };
 }
 
-const UserConfigDir = `${process.env.HOME}/.atomist`;
+const UserConfigDir = `${process.env[process.platform === 'win32'? 'USERPROFILE': 'HOME']}/.atomist`;
 export const UserConfigFile = `${UserConfigDir}/client.config.json`;
 const UserConfigEncoding = "utf8";
 
