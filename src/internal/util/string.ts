@@ -52,7 +52,8 @@ export function toStringArray(strings: string | string[]): string[] {
 }
 
 export function obfuscateJson(key: string, value: any) {
-    if (key === "token" || key === "password" || key === "jwt" || key === "url") {
+    if (key === "token" || key === "password" || key === "jwt" || key === "url"
+        || key.toLowerCase().indexOf("secret") >= 0) {
         return hideString(value);
     } else if (key === "commands") {
         return undefined;
