@@ -28,10 +28,6 @@ export class NodeFsLocalFile extends AbstractFile implements LocalFile {
             .then(buf => buf.toString());
     }
 
-    get permissions(): number {
-        throw new Error("not yet implemented");
-    }
-
     public setContent(content: string): Promise<this> {
         return fs.writeFile(this.realPath, content)
             .then(_ => this);

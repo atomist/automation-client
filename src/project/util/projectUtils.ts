@@ -8,11 +8,11 @@ import { FileStream, ProjectAsync } from "../Project";
  */
 export function toPromise(stream: FileStream): Promise<File[]> {
     return new Promise((resolve, reject) => {
-        const fils: File[] = [];
+        const files: File[] = [];
         stream
-            .on("data", f => fils.push(f))
+            .on("data", f => files.push(f))
             .on("error", reject)
-            .on("end", _ => resolve(fils));
+            .on("end", _ => resolve(files));
     });
 }
 
@@ -86,7 +86,6 @@ export function saveFromFilesAsync<T>(project: ProjectAsync,
 
 /**
  * Perform the same operation on all the files.
- * Either run and flush the results, or defer.
  * @param project project to act on
  * @param globPattern glob pattern to match
  * @param op operation to perform on files. Can return void or a promise.

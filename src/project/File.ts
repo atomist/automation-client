@@ -91,11 +91,4 @@ export interface FileSync extends FileCore {
  */
 export interface File extends FileScripting, FileSync, FileAsync {
 
-    /**
-     * Return the file's permissions
-     *
-     * @property {number} permissions
-     */
-    readonly permissions: number;
-
 }
