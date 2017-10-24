@@ -7,15 +7,44 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.2.0...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.2.1...HEAD
+
+### Fixes
+
+-   Create client config in proper directory on win32 [#44][44],
+    thanks to [jwalter][]
+
+[44]: https://github.com/atomist/automation-client-ts/issues/44
+[jwalter]: https://github.com/jwalter
+
+## [0.2.1][] - 2017-10-23
+
+[0.2.1]: https://github.com/atomist/automation-client-ts/compare/0.2.0...0.2.1
 
 Functional invocation release
 
 ### Added
 
 -   Allow `CommandHandler` instances to be created from functions
--   Allow a class to be passed into a command handler list, as well as `() => handler`
-function
+-   Allow a class to be passed into a command handler list, as well as
+    `() => handler` function
+-   Add channel mutations
+
+### Changed
+
+-   Improved reconnect handling
+
+### Fixed
+
+-   RepoId included in InMemory project [#33][33]
+-   Can continue after failed attempt to load a repo [#30][30]
+-   Updated docs after removal of RunOrDefer [#24][24]
+-   Documentation for editors and generators [#32][32]
+
+[33]: https://github.com/atomist/automation-client-ts/issues/33
+[30]: https://github.com/atomist/automation-client-ts/issues/30
+[24]: https://github.com/atomist/automation-client-ts/issues/24
+[32]: https://github.com/atomist/automation-client-ts/issues/32
 
 ## [0.2.0][] - 2017-10-18
 
