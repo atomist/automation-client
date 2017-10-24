@@ -9,16 +9,13 @@ import { CloneDirectoryInfo, CloneOptions, DirectoryManager } from "./DirectoryM
 export interface StableDirectoryManagerOpts {
 
     /**
-     * Maximum number of directories to use
-     * @type {number}
-     */
-    maxDirectories?: number;
-
-    /**
      * Attempt to reuse directories?
      */
     reuseDirectories: boolean;
 
+    /**
+     * Clean up directories on exit?
+     */
     cleanOnExit?: boolean;
 
     /**
@@ -28,8 +25,7 @@ export interface StableDirectoryManagerOpts {
 }
 
 const DefaultOpts = {
-
-    maxDirectories: 100,
+    reuseDirectories: false,
     cleanOnExit: true,
 };
 
@@ -49,10 +45,9 @@ export class StableDirectoryManager implements DirectoryManager {
             ...pOpts,
         };
 
-        logger.info("Setting up StableDirectoryManager with options %s", JSON.stringify(this.opts));
-
+        logger.info("Setting up StableDirectoryManager with options %j", this.opts);
         if (this.opts.cleanOnExit === true) {
-            logger.info("Registering shutdown hook to delete [%s]", this.opts.baseDir);
+            logger.debug("Registering shutdown hook to delete [%s]", this.opts.baseDir);
             registerShutdownHook(() => {
                 logger.info("Cleaning up temporary directories under [%s]", this.opts.baseDir);
                 return fs.remove(this.opts.baseDir).then(() => 0);
@@ -60,28 +55,28 @@ export class StableDirectoryManager implements DirectoryManager {
         }
     }
 
-    public directoryFor(user: string, repo: string, branch: string, opts: CloneOptions): Promise<CloneDirectoryInfo> {
+    public directoryFor(owner: string, repo: string, branch: string, opts: CloneOptions): Promise<CloneDirectoryInfo> {
         if (this.opts.reuseDirectories) {
             // Attempt to reuse the directory
-            return this.existingDirectoryFor(user, repo, branch, opts)
+            return this.existingDirectoryFor(owner, repo, branch, opts)
                 .then(existing =>
-                    !!existing ? existing : this.freshDirectoryFor(user, repo, branch, opts));
+                    !!existing ? existing : this.freshDirectoryFor(owner, repo, branch, opts));
         } else {
-            return this.freshDirectoryFor(user, repo, branch, opts);
+            return this.freshDirectoryFor(owner, repo, branch, opts);
         }
     }
 
     /**
      * Return undefined if not found
      */
-    private existingDirectoryFor(user: string, repo: string, branch: string,
+    private existingDirectoryFor(owner: string, repo: string, branch: string,
                                  opts: CloneOptions): Promise<CloneDirectoryInfo> {
-        const expectedPath = this.pathFor(user, repo);
+        const expectedPath = this.pathFor(owner, repo);
         return fs.pathExists(expectedPath)
             .then(exists => {
                 if (exists) {
-                    logger.info("%s directories used of %s: Reusing path [%s]",
-                        this.directoriesUsed, this.opts.maxDirectories, expectedPath);
+                    logger.debug("%s directories used: Reusing path [%s]",
+                        this.directoriesUsed, expectedPath);
                     return {
                         path: expectedPath,
                         type: "actual-directory" as any,
@@ -95,11 +90,11 @@ export class StableDirectoryManager implements DirectoryManager {
 
     private freshDirectoryFor(user: string, repo: string, branch: string,
                               opts: CloneOptions): Promise<CloneDirectoryInfo> {
-        return this.createDir(user, repo)
+        return this.createFreshDir(user, repo)
             .then(path => {
                 this.directoriesUsed++;
-                logger.info("%s directories used of %s: Returning new path [%s]",
-                    this.directoriesUsed, this.opts.maxDirectories, path);
+                logger.debug("%s directories used: Returning new path [%s]",
+                    this.directoriesUsed, path);
                 return {
                     path,
                     type: "parent-directory" as any,
@@ -111,8 +106,9 @@ export class StableDirectoryManager implements DirectoryManager {
         return `${this.opts.baseDir}/${user}/${repo}`;
     }
 
-    private createDir(user: string, repo: string): Promise<string> {
+    private createFreshDir(user: string, repo: string): Promise<string> {
         const dirName = `${this.opts.baseDir}/${user}`;
+        // Delete it if it exists
         return fs.remove(dirName)
             .then(_ => fs.mkdirs(dirName))
             .then(() => dirName);

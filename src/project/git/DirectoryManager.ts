@@ -32,10 +32,10 @@ export interface DirectoryManager {
 
     /**
      * Return a clean parent directory for this project to be checked out
-     * @param {string} user
+     * @param {string} owner
      * @param {string} repo
      * @param {string} branch
      * @param {CloneOptions} opts
      */
-    directoryFor(user: string, repo: string, branch: string, opts: CloneOptions): Promise<CloneDirectoryInfo>;
+    directoryFor(owner: string, repo: string, branch: string, opts: CloneOptions): Promise<CloneDirectoryInfo>;
 }
