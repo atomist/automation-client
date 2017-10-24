@@ -1,5 +1,4 @@
 import { exec } from "child-process-promise";
-import * as fs from "fs";
 
 import { isLocalProject } from "../local/LocalProject";
 import { Project } from "../Project";
@@ -14,7 +13,10 @@ import { RepoId, SimpleRepoId } from "../../operations/common/RepoId";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
 import { CloneOptions, DefaultCloneOptions, DirectoryManager } from "./DirectoryManager";
 import { GitProject } from "./GitProject";
+import { DefaultStableDirectoryManager } from "./stableDirectoryManager";
 import { TmpDirectoryManager } from "./tmpDirectoryManager";
+
+const DefaultDirectoryManager = DefaultStableDirectoryManager;
 
 export const GitHubBase = "https://api.github.com";
 
@@ -39,7 +41,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     public static cloned(credentials: ProjectOperationCredentials,
                          user: string, repo: string, branch: string = "master",
                          opts: CloneOptions = DefaultCloneOptions,
-                         directoryManager: DirectoryManager = TmpDirectoryManager): Promise<GitCommandGitProject> {
+                         directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitCommandGitProject> {
         return clone(credentials.token, user, repo, branch, opts, directoryManager)
             .then(p => {
                 const gp = GitCommandGitProject.fromBaseDir(repo, p.baseDir, credentials);

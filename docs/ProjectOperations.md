@@ -10,7 +10,7 @@ Use the `doWithAllRepos` helper function to work with many repos. Its signature 
 
 ```typescript
 export function doWithAllRepos<R, P>(ctx: HandlerContext,
-                                     credentials: Credentials,
+                                     credentials: ProjectOperationCredentials,
                                      action: (p: Project, t: P) => Promise<R>,
                                      parameters: P,
                                      repoFinder: RepoFinder = allReposInTeam(),
