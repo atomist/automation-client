@@ -218,8 +218,10 @@ export class ExpressServer {
         exp.get(url, authenticate,
             (req, res) => {
                 const mappedParameters = h.mapped_parameters.map(mp => {
-                    if (mp.foreign_key === MappedParameters.GitHubOwner) {
-                        return { name: mp.local_key, value: req.user.orgs };
+                    if (mp.foreign_key === MappedParameters.GitHubOwner && req.user) {
+                        return { name: mp.local_key, value: req.user.orgs,
+                            description: "organization or user on GitHub the command should run against."
+                            + " In case of a generator this is where the new repository will be created." };
                     // } else if (mp.foreign_key === MappedParameters.GitHubRepository) {
                     //    return { name: mp.local_key, value: req.user.repos };
                     } else {
@@ -341,6 +343,7 @@ export class ExpressServer {
                 ? this.options.auth.github.scopes : ["user", "repo", "read:org"];
 
             const org = this.options.auth.github.org;
+            const adminOrg = this.options.auth.github.adminOrg;
             passport.use(new github.Strategy({
                     clientID: this.options.auth.github.clientId,
                     clientSecret: this.options.auth.github.clientSecret,
@@ -348,9 +351,10 @@ export class ExpressServer {
                     userAgent: `${this.automations.automations.name}/${this.automations.automations.version}`,
                     scope: scopes,
                 }, (accessToken, refreshToken, profile, cb) => {
+                    logger.info(`Successfully authenticated GitHub user: %j`, profile);
+                    // check org membership
+                    api.authenticate({ type: "token", token: accessToken });
                     if (org) {
-                        // check org membership
-                        api.authenticate({ type: "token", token: accessToken });
                         api.orgs.checkMembership({ org, username: profile.username })
                             .then(() => {
                                 return api.users.getOrgs({ per_page: 100, page: 0})
@@ -370,7 +374,23 @@ export class ExpressServer {
                                 cb(null, { ...profile, accessToken, orgs });
                             })
                             .catch(err => cb(null, false));
+                    } else if (adminOrg) {
+                        return api.users.getOrgs({ per_page: 100, page: 0})
+                            .then(function paging(result, orgs = []) {
+                                result.data.forEach(r => orgs.push(r.login));
+                                if (!api.hasNextPage(result.meta.link)) {
+                                    return orgs;
+                                }
 
+                                return api.getNextPage(result.meta.link)
+                                    .then(r => paging(r, orgs));
+                            })
+                            .then(orgs => {
+                                orgs.push(profile.username);
+                                orgs = orgs.sort((o1, o2) => o1.localeCompare(o2));
+                                cb(null, { ...profile, accessToken, orgs });
+                            })
+                            .catch(err => cb(null, false));
                     } else {
                         return cb(null, { ...profile, accessToken });
                     }

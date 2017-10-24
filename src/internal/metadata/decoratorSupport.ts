@@ -11,6 +11,7 @@ export interface BaseParameter {
     readonly maxLength?: number;
     readonly minLength?: number;
     readonly type?: ParameterType;
+    readonly order?: number;
 }
 
 export interface Parameter extends BaseParameter {

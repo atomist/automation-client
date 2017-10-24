@@ -1,6 +1,10 @@
 import * as GraphQL from "../../graph/graphQL";
 import {
-    CommandHandlerMetadata, EventHandlerMetadata, IngestorMetadata, MappedParameterDeclaration,
+    CommandHandlerMetadata,
+    EventHandlerMetadata,
+    IngestorMetadata,
+    MappedParameterDeclaration,
+    Parameter,
     SecretDeclaration,
 } from "../../metadata/automationMetadata";
 import { isCommandHandlerMetadata, isEventHandlerMetadata, isIngestorMetadata } from "./metadata";
@@ -39,19 +43,7 @@ function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMet
                 description: r.__description,
                 tags: r.__tags ? r.__tags : [],
                 intent: r.__intent ? r.__intent : [],
-                parameters: r.__parameters ? r.__parameters.map(p => {
-                    if (!p.display_name) {
-                        p.display_name = p.name;
-                    }
-                    // Make this optional parameter explicit
-                    p.displayable = p.displayable !== false;
-                    p.default_value = r[p.name];
-                    if (p.default_value) {
-                        // right now the bot only supports string parameter values
-                        p.default_value = p.default_value.toString();
-                    }
-                    return p;
-                }) : [],
+                parameters: parametersFromInstance(r),
                 mapped_parameters: mappedParameterMetadataFromInstance(r),
                 secrets: secretsMetadataFromInstance(r),
             };
@@ -84,6 +76,28 @@ function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMet
         default :
             throw new Error(`Unsupported automation '${r.constructor.name}'`);
     }
+}
+
+function parametersFromInstance(r: any): Parameter[] {
+    const parameters = r.__parameters ? r.__parameters.map(p => {
+        if (!p.display_name) {
+            p.display_name = p.name;
+        }
+        // Make this optional parameter explicit
+        p.displayable = p.displayable !== false;
+        p.default_value = r[p.name];
+        if (p.default_value) {
+            // right now the bot only supports string parameter values
+            p.default_value = p.default_value.toString();
+        }
+        return p;
+    }) : [];
+
+    return parameters.sort((p1, p2) => {
+        const o1 = p1.order || Number.MAX_SAFE_INTEGER;
+        const o2 = p2.order || Number.MAX_SAFE_INTEGER;
+        return o1 - o2;
+    });
 }
 
 function secretsMetadataFromInstance(r: any): SecretDeclaration[] {

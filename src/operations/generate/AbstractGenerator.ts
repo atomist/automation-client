@@ -38,7 +38,7 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
         minLength: 1,
         maxLength: 50,
         required: true,
-        displayable: false,
+        order: 1,
     })
     public targetRepo: string;
 
@@ -62,7 +62,6 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
         maxLength: 7,
         required: false,
     })
-    // declareMappedParameter(this, "visibility", "atomist://github/default_repo_visibility");
     public visibility: "public" | "private" = "public";
 
     /**

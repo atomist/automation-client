@@ -15,7 +15,7 @@ export abstract class LocalOrRemote {
     @Parameter({
         displayName: "local",
         displayable: false,
-        description: "Should the editor run locally or query Atomist for repos?",
+        description: "should the editor run locally or query Atomist for repos?",
         pattern: /^(?:true|false)$/,
         validInput: "Boolean",
         required: false,
@@ -26,7 +26,7 @@ export abstract class LocalOrRemote {
     @Parameter({
         displayName: "directory to look for projects in if working locally",
         displayable: false,
-        description: "Directory to look for repos in. Must follow <org>/<repo> convention",
+        description: "directory to look for repos in. Must follow <org>/<repo> convention",
         pattern: /^.*$/,
         validInput: "Valid path for your OS",
         required: false,

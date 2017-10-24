@@ -40,6 +40,7 @@ export class JavaSeed extends UniversalSeed implements VersionedArtifact {
         minLength: 1,
         maxLength: 50,
         required: true,
+        order: 51,
     })
     public artifactId: string = "${projectName}";
 
@@ -54,6 +55,7 @@ export class JavaSeed extends UniversalSeed implements VersionedArtifact {
         minLength: 1,
         maxLength: 50,
         required: true,
+        order: 50,
     })
     public groupId: string;
 
@@ -64,7 +66,8 @@ export class JavaSeed extends UniversalSeed implements VersionedArtifact {
         validInput: "a valid semantic version, http://semver.org",
         minLength: 1,
         maxLength: 50,
-        required: false,
+        required: true,
+        order: 52,
     })
     public version: string = "0.1.0-SNAPSHOT";
 
@@ -77,6 +80,7 @@ export class JavaSeed extends UniversalSeed implements VersionedArtifact {
         minLength: 1,
         maxLength: 50,
         required: true,
+        order: 53,
     })
     public rootPackage: string;
 
