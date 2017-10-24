@@ -22,6 +22,18 @@ export interface EditResult<P extends Project = Project> extends ActionResult<P>
     readonly edited: boolean;
 }
 
+/**
+ * Turn the given transformation into a ProjectEditor
+ * @param {(p: Project, context: HandlerContext, params?: P) => Promise<Project>} trans
+ * @return {ProjectEditor<P>}
+ */
+export function toEditor<P = undefined>(
+                        trans: (p: Project, context: HandlerContext, params?: P) =>
+                            Promise<Project>): ProjectEditor<P> {
+    return (p, context, params) =>
+        trans(p, context, params).then(successfulEdit);
+}
+
 export function successfulEdit<P extends Project>(p: P, edited: boolean = true): EditResult<P> {
     return {
         target: p,

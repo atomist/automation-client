@@ -16,10 +16,6 @@ export class InMemoryFile extends AbstractFile {
         this.initialContent = content;
     }
 
-    get permissions(): number {
-        throw new Error("permissions not implemented");
-    }
-
     public getContentSync(): string {
         return this.content;
     }

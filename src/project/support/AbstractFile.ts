@@ -8,8 +8,6 @@ export abstract class AbstractFile extends AbstractScriptedFlushable<File> imple
 
     public abstract path: string;
 
-    public abstract permissions: number;
-
     get name(): string {
         return this.path.split("/").pop();
     }

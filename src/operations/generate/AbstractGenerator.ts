@@ -3,7 +3,7 @@ import * as shell from "shelljs";
 import { ActionResult } from "../../action/ActionResult";
 import { MappedParameter, Parameter } from "../../decorators";
 import { RedirectResult } from "../../HandlerResult";
-import { failure, HandleCommand, HandlerContext, HandlerResult, MappedParameters } from "../../Handlers";
+import { HandleCommand, HandlerContext, HandlerResult, MappedParameters } from "../../Handlers";
 import { logger } from "../../internal/util/logger";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
@@ -100,22 +100,10 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
                     populated.then(proj =>
                         proj.deleteDirectory(".git")
                             .then(p => {
-                                const gp: GitProject = GitCommandGitProject.fromProject(p, { token: this.githubToken });
-                                return gp.init()
-                                    .then(() => gp.setGitHubUserConfig())
-                                    .then(() => {
-                                        logger.info(`Creating new repo '${this.targetOwner}/${this.targetRepo}'`);
-                                        return gp.createAndSetGitHubRemote(this.targetOwner, this.targetRepo,
-                                            this.targetRepo, this.visibility);
-                                    })
-                                    .then(() => {
-                                        logger.info(`Committing to local repo at '${gp.baseDir}'`);
-                                        return gp.commit("Initial commit from Atomist");
-                                    })
-                                    .then(() => this.push(gp))
+                                    return this.initAndSetRemote(p, params)
                                     .then(() => {
                                         const r = {code: 0,
-                                            redirect: `https://github.com/${this.targetOwner}/${this.targetRepo}`};
+                                            redirect: `https://github.com/${params.targetOwner}/${params.targetRepo}`};
                                         return r as RedirectResult;
                                     });
                             }));
@@ -140,6 +128,23 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
                     return result;
                 // }
             });
+    }
+
+    protected initAndSetRemote(p: Project, params: this): Promise<ActionResult<Project>> {
+        const gp: GitProject =
+            GitCommandGitProject.fromProject(p, { token: params.githubToken });
+        return gp.init()
+            .then(() => gp.setGitHubUserConfig())
+            .then(() => {
+                logger.info(`Creating new repo '${params.targetOwner}/${params.targetRepo}'`);
+                return gp.createAndSetGitHubRemote(params.targetOwner, params.targetRepo,
+                    this.targetRepo, this.visibility);
+            })
+            .then(() => {
+                logger.info(`Committing to local repo at '${gp.baseDir}'`);
+                return gp.commit("Initial commit from Atomist");
+            })
+            .then(() => this.push(gp));
     }
 
     protected repoLoader(): RepoLoader {
