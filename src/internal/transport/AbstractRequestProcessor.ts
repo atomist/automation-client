@@ -147,7 +147,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             status: success ? "success" : "failure",
             code: hr.code,
             message: `${success ? "Successfully" : "Unsuccessfully"} invoked command-handler` +
-            ` ${request.name} of ${this.automations.rugs.name}@${this.automations.rugs.version}`,
+            ` ${request.name} of ${this.automations.automations.name}@${this.automations.automations.version}`,
         };
         const response: HandlerResponse = {
             rug: request.rug,
@@ -229,8 +229,8 @@ function setupNamespace(request: any, automations: AutomationServer) {
         teamId: _.get(request, "team.id") || _.get(request, "extensions.team_id"),
         teamName: _.get(request, "team.name") || _.get(request, "extensions.team_name"),
         operation: _.get(request, "name") || _.get(request, "extensions.operationName"),
-        name: automations.rugs.name,
-        version: automations.rugs.version,
+        name: automations.automations.name,
+        version: automations.automations.version,
         invocationId: guid(),
         ts: new Date().getTime(),
     });

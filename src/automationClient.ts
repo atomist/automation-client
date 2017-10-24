@@ -117,7 +117,7 @@ export class AutomationClient {
     }
 
     private runWs(handler: WebSocketRequestProcessor, options: WebSocketClientOptions): Promise<void> {
-        this.webSocketClient = new WebSocketClient(() => prepareRegistration(this.automations.rugs),
+        this.webSocketClient = new WebSocketClient(() => prepareRegistration(this.automations.automations),
             options, handler);
         return this.webSocketClient.start();
     }

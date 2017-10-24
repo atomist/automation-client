@@ -16,7 +16,7 @@ export function jwtToken() {
 let es: EventStore = new InMemoryEventStore();
 
 /**
- * Globally available instance of {EventStore} to be use across the automation client.
+ * Globally available instance of {EventStore} to be used across the automation client.
  * @type {InMemoryEventStore}
  */
 export function eventStore(): EventStore {

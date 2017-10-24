@@ -2,7 +2,7 @@ import { EventFired } from "../HandleEvent";
 import { HandlerContext } from "../HandlerContext";
 import { HandlerResult } from "../HandlerResult";
 import { Arg, CommandInvocation } from "../internal/invoker/Payload";
-import { Rugs } from "../internal/metadata/metadata";
+import { Automations } from "../internal/metadata/metadata";
 import { CommandHandlerMetadata, EventHandlerMetadata, IngestorMetadata } from "../metadata/automationMetadata";
 import { AutomationServer } from "./AutomationServer";
 
@@ -11,7 +11,7 @@ import { AutomationServer } from "./AutomationServer";
  */
 export abstract class AbstractAutomationServer implements AutomationServer {
 
-    public abstract rugs: Rugs;
+    public abstract automations: Automations;
 
     public invokeCommand(payload: CommandInvocation, ctx: HandlerContext): Promise<HandlerResult> {
         const h = this.validateCommandInvocation(payload);
@@ -19,12 +19,12 @@ export abstract class AbstractAutomationServer implements AutomationServer {
     }
 
     public onEvent(payload: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult[]> {
-        const h = this.rugs.events.filter(eh => eh.subscriptionName === payload.extensions.operationName);
+        const h = this.automations.events.filter(eh => eh.subscriptionName === payload.extensions.operationName);
         if (!h || h.length === 0) {
-            const i = this.rugs.ingestors.filter(ih => ih.route === payload.extensions.operationName);
+            const i = this.automations.ingestors.filter(ih => ih.route === payload.extensions.operationName);
             if (!i || i.length === 0) {
                 throw new Error(`No event handler or ingestor with name '${payload.extensions.operationName}'` +
-                    `: Known event handlers are [${this.rugs.events.map(e => e.name)}]`);
+                    `: Known event handlers are [${this.automations.events.map(e => e.name)}]`);
             } else {
                 return Promise.all(i.map(eh => this.invokeIngestor(payload, eh, ctx)));
             }
@@ -34,10 +34,10 @@ export abstract class AbstractAutomationServer implements AutomationServer {
     }
 
     public validateCommandInvocation(payload: CommandInvocation): CommandHandlerMetadata {
-        const handler = this.rugs.commands.find(h => h.name === payload.name);
+        const handler = this.automations.commands.find(h => h.name === payload.name);
         if (!handler) {
             throw new Error(`No command handler with name '${payload.name}'` +
-                `: Known command handlers are [${this.rugs.commands.map(c => c.name)}]`);
+                `: Known command handlers are [${this.automations.commands.map(c => c.name)}]`);
         }
         handler.parameters.forEach(p => {
             const payloadValue: Arg = payload.args ?

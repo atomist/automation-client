@@ -1,8 +1,8 @@
 
 import { CommandHandlerMetadata, EventHandlerMetadata } from "../../../metadata/automationMetadata";
-import { Rugs } from "../../metadata/metadata";
+import { Automations } from "../../metadata/metadata";
 
-export function prepareRegistration(metadata: Rugs): any {
+export function prepareRegistration(metadata: Automations): any {
     return convertRegExpValuesToString({
         name: metadata.name,
         version: metadata.version,

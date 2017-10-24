@@ -4,7 +4,7 @@
 
 import { CommandHandlerMetadata, EventHandlerMetadata, IngestorMetadata } from "../../metadata/automationMetadata";
 
-export interface Rugs {
+export interface Automations {
 
     name: string;
     version: string;

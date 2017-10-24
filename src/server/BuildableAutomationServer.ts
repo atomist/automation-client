@@ -12,7 +12,7 @@ import {
     CommandInvocation,
     Invocation,
 } from "../internal/invoker/Payload";
-import { isCommandHandlerMetadata, Rugs } from "../internal/metadata/metadata";
+import { isCommandHandlerMetadata, Automations } from "../internal/metadata/metadata";
 import { metadataFromInstance } from "../internal/metadata/metadataReading";
 import { populateParameters } from "../internal/parameterPopulation";
 import { logger } from "../internal/util/logger";
@@ -273,7 +273,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         });
     }
 
-    get rugs(): Rugs {
+    get automations(): Automations {
         return {
             name: this.opts.name,
             version: this.opts.version,

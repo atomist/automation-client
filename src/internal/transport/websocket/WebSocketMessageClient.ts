@@ -139,7 +139,7 @@ function mapActions(msg: SlackMessage, automations: AutomationServer): Action[] 
                             type: "command_handler",
                             group: "atomist",
                             artifact: "node",
-                            version: automations.rugs.version,
+                            version: automations.automations.version,
                             name: cra.command.name,
                         },
                     };

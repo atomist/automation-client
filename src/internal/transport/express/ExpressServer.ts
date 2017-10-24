@@ -1,5 +1,4 @@
 import * as appRoot from "app-root-path";
-import axios from "axios";
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as fs from "fs";
@@ -12,16 +11,21 @@ import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
 import * as globals from "../../../globals";
 import { MappedParameters } from "../../../Handlers";
-import { CommandHandlerMetadata, IngestorMetadata } from "../../../metadata/automationMetadata";
+import {
+    CommandHandlerMetadata,
+    IngestorMetadata,
+} from "../../../metadata/automationMetadata";
 import { AutomationServer } from "../../../server/AutomationServer";
 import { logger } from "../../util/logger";
-import { report } from "../../util/metric";
+import { metrics } from "../../util/metric";
 import { guid } from "../../util/string";
 import {
     CommandIncoming,
     EventIncoming,
     RequestProcessor,
 } from "../RequestProcessor";
+import { health, HealthStatus } from "../../util/health";
+import { info } from "../../util/info";
 
 const ApiBase = "";
 const api = new GitHubApi();
@@ -104,18 +108,33 @@ export class ExpressServer {
         }
 
         // Set up routes
+        exp.get(`${ApiBase}/health`,
+            (req, res) => {
+                res.setHeader("Content-Type", "application/json");
+                res.setHeader("Access-Control-Allow-Origin", "*");
+                const h = health();
+                res.status(h.status === HealthStatus.Up ? 200 : 500).json(h);
+        });
+
+        exp.get(`${ApiBase}/info`, authenticate,
+            (req, res) => {
+                res.setHeader("Content-Type", "application/json");
+                res.setHeader("Access-Control-Allow-Origin", "*");
+                res.json(info(automations.automations));
+            });
+
         exp.get(`${ApiBase}/automations`, authenticate,
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
-                res.json(automations.rugs);
+                res.json(automations.automations);
         });
 
         exp.get(`${ApiBase}/metrics`, authenticate,
             (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
-                res.json(report.summary());
+                res.json(metrics());
         });
 
         exp.get(`${ApiBase}/log/events`, authenticate,
@@ -155,10 +174,10 @@ export class ExpressServer {
 
         exp.get("/graphql", authenticate,
             (req, res) => {
-                const teamId = req.query.teamId ? req.query.teamId : this.automations.rugs.team_ids[0];
+                const teamId = req.query.teamId ? req.query.teamId : this.automations.automations.team_ids[0];
                 res.render("graphql.html", { token: globals.jwtToken(),
                     graphQLUrl: `${this.options.endpoint.graphql}/${teamId}`,
-                    teamIds: this.automations.rugs.team_ids,
+                    teamIds: this.automations.automations.team_ids,
                     user: req.user });
         });
 
@@ -172,7 +191,7 @@ export class ExpressServer {
                 res.render("login.html", { user: req.user, message: req.flash("error") });
             });
 
-        automations.rugs.commands.forEach(
+        automations.automations.commands.forEach(
             h => {
                 this.exposeCommandHandlerInvocationRoute(exp,
                     `${ApiBase}/command/${_.kebabCase(h.name)}`, h,
@@ -180,7 +199,7 @@ export class ExpressServer {
                 this.exposeCommandHandlerHtmlInvocationRoute(exp, `${ApiBase}/command/html/${_.kebabCase(h.name)}`, h);
             },
         );
-        automations.rugs.ingestors.forEach(
+        automations.automations.ingestors.forEach(
             i => {
                 this.exposeEventInvocationRoute(exp,
                     `${ApiBase}/ingest/${i.route.toLowerCase()}`, i,
@@ -223,10 +242,10 @@ export class ExpressServer {
                 atomist_type: "command_handler_request",
                 name: h.name,
                 rug: {},
-                correlation_context: {team: { id: this.automations.rugs.team_ids[0] }},
+                correlation_context: {team: { id: this.automations.automations.team_ids[0] }},
                 corrid: guid(),
                 team: {
-                    id: this.automations.rugs.team_ids[0],
+                    id: this.automations.automations.team_ids[0],
                 },
                 ...req.body,
             };
@@ -274,10 +293,10 @@ export class ExpressServer {
                     rug: {},
                     mapped_parameters: mappedParameters,
                     secrets,
-                    correlation_context: {team: { id: this.automations.rugs.team_ids[0] }},
+                    correlation_context: {team: { id: this.automations.automations.team_ids[0] }},
                     corrid: guid(),
                     team: {
-                        id: this.automations.rugs.team_ids[0],
+                        id: this.automations.automations.team_ids[0],
                     },
                 };
                 this.handler.processCommand(payload, result => {
@@ -296,7 +315,7 @@ export class ExpressServer {
                 extensions: {
                     operationName: h.route,
                     correlation_id: guid(),
-                    team_id: this.automations.rugs.team_ids[0],
+                    team_id: this.automations.automations.team_ids[0],
                 },
                 secrets: [],
             };
@@ -325,7 +344,7 @@ export class ExpressServer {
                     clientID: this.options.auth.github.clientId,
                     clientSecret: this.options.auth.github.clientSecret,
                     callbackURL: `${this.options.auth.github.callbackUrl}/auth/github/callback`,
-                    userAgent: `${this.automations.rugs.name}/${this.automations.rugs.version}`,
+                    userAgent: `${this.automations.automations.name}/${this.automations.automations.version}`,
                     scope: scopes,
                 }, (accessToken, refreshToken, profile, cb) => {
                     if (org) {

@@ -6,7 +6,7 @@ import { EventFired } from "../../../../src/HandleEvent";
 import { HandlerContext } from "../../../../src/HandlerContext";
 import { HandlerResult } from "../../../../src/HandlerResult";
 import { CommandInvocation } from "../../../../src/internal/invoker/Payload";
-import { Rugs } from "../../../../src/internal/metadata/metadata";
+import { Automations } from "../../../../src/internal/metadata/metadata";
 import {
     DefaultWebSocketRequestProcessor,
 } from "../../../../src/internal/transport/websocket/DefaultWebSocketRequestProcessor";
@@ -18,7 +18,7 @@ describe("DefaultWebSocketRequestProcessor", () => {
     it("check event received and processed", done => {
         class MockAutomationServer implements AutomationServer {
 
-            public rugs: Rugs = {
+            public automations: Automations = {
                 name: "boo",
                 version: "1.0.0",
                 keywords: [],
@@ -87,7 +87,7 @@ describe("DefaultWebSocketRequestProcessor", () => {
 function verifyCommandHandler(code: number, callback: (result) => void) {
     class MockAutomationServer implements AutomationServer {
 
-        public rugs: Rugs = {
+        public automations: Automations = {
             name: "foo",
             version: "1.0.0",
             events: [],

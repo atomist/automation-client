@@ -1,12 +1,12 @@
 import "mocha";
 import * as assert from "power-assert";
-import { Rugs } from "../../../../src/internal/metadata/metadata";
+import { Automations } from "../../../../src/internal/metadata/metadata";
 import { prepareRegistration } from "../../../../src/internal/transport/websocket/payloads";
 
 describe("payloads", () => {
 
     it("check registration payload is valid", () => {
-        const rugs: Rugs = {
+        const rugs: Automations = {
             name: "foo",
             version: "1.0.0",
             events: [{
@@ -58,7 +58,7 @@ describe("payloads", () => {
     });
 
     it("check registration for group = all is valid", () => {
-        const rugs: Rugs = {
+        const rugs: Automations = {
             name: "foo",
             version: "1.0.0",
             team_ids: [],

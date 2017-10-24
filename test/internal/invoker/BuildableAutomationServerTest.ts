@@ -17,10 +17,10 @@ const messageClient = consoleMessageClient;
 
 describe("BuildableAutomationServer", () => {
 
-    it("should start with no rugs", () => {
+    it("should start with no automations", () => {
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        assert(s.rugs.commands.length === 0);
-        assert(s.rugs.events.length === 0);
+        assert(s.automations.commands.length === 0);
+        assert(s.automations.events.length === 0);
     });
 
     it("should register one no-arg handler and return its metadataFromInstance", () => {
@@ -30,10 +30,10 @@ describe("BuildableAutomationServer", () => {
             handle: succeed,
         };
         s.registerCommandHandler(() => h);
-        assert(s.rugs.commands.length === 1);
-        assert(s.rugs.events.length === 0);
-        assert(s.rugs.commands[0].parameters.length === 0);
-        assert(s.rugs.commands[0].name === "foo");
+        assert(s.automations.commands.length === 1);
+        assert(s.automations.events.length === 0);
+        assert(s.automations.commands[0].parameters.length === 0);
+        assert(s.automations.commands[0].name === "foo");
     });
 
     it("should register one single arg handler and return its metadataFromInstance", () => {
@@ -46,10 +46,10 @@ describe("BuildableAutomationServer", () => {
             handle: succeed,
         };
         s.registerCommandHandler(() => h);
-        assert(s.rugs.commands.length === 1);
-        assert(s.rugs.events.length === 0);
-        assert(s.rugs.commands[0].parameters.length === 1);
-        assert(s.rugs.commands[0].name === "foo");
+        assert(s.automations.commands.length === 1);
+        assert(s.automations.events.length === 0);
+        assert(s.automations.commands[0].parameters.length === 1);
+        assert(s.automations.commands[0].name === "foo");
     });
 
     it("should register one single arg handler and complain on invocation without parameter", () => {

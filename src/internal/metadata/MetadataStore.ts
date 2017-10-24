@@ -1,8 +1,8 @@
 
-import { Rugs } from "./metadata";
+import { Automations } from "./metadata";
 
 export interface MetadataStore {
 
-    rugs: Rugs;
+    automations: Automations;
 
 }
