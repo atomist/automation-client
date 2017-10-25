@@ -1,4 +1,7 @@
-import ApolloClient, { createNetworkInterface } from "apollo-client";
+import { InMemoryCache } from "apollo-cache-inmemory";
+import ApolloClient from "apollo-client";
+import { ApolloLink } from "apollo-link";
+import { createHttpLink } from "apollo-link-http";
 import gql from "graphql-tag";
 import "isomorphic-fetch";
 import { logger } from "../internal/util/logger";
@@ -13,7 +16,7 @@ export class ApolloGraphClient implements GraphClient {
     /**
      * Configured Apollo Client instance subclasses can use directly
      */
-    public readonly client: ApolloClient;
+    public readonly client: ApolloClient<any>;
 
     /**
      * Create a new GraphClient
@@ -21,26 +24,24 @@ export class ApolloGraphClient implements GraphClient {
      * @param headers any special headers to use
      */
     constructor(public endpoint: string, headers: any = {}) {
-        const networkInterface = createNetworkInterface({
-            uri: endpoint,
+        const cache = new InMemoryCache({
+             addTypename: false,
         });
-        networkInterface.use([{
-            applyMiddleware(req, next) {
-                if (!req.options.headers) {
-                    req.options.headers = {};  // Create the header object if needed.
-                }
-                req.options.headers = {
-                    ...req.options.headers,
-                    ...headers,
-                };
-                next();
-            },
-        }]);
+
+        const httpLink = createHttpLink({ uri: endpoint });
+        const middlewareLink = new ApolloLink((operation, forward) => {
+            operation.setContext({
+                headers: { ...headers },
+            });
+            return forward(operation);
+        });
+
+        // use with apollo-client
+        const link = middlewareLink.concat(httpLink);
 
         this.client = new ApolloClient({
-            networkInterface,
-            // for now we disable the addition of the typenames
-            addTypename: false,
+            link,
+            cache,
         });
     }
 
@@ -70,7 +71,7 @@ export class ApolloGraphClient implements GraphClient {
         return this.executeMutation<T, Q>(graphql, variables);
     }
 
-    public executeMutation<T, Q>(graphql: string, variables?: Q): Promise<T> {
+    public executeMutation<T, Q>(graphql: string, variables?: Q): Promise<any> {
         logger.debug(`Mutating '%s' with variables '%s' and mutation: %s`,
             this.endpoint, JSON.stringify(variables), inlineQuery(graphql));
 
