@@ -8,6 +8,7 @@ import axios from "axios";
 
 import { HandlerContext } from "../../../src/HandlerContext";
 import { hasFile } from "../../../src/internal/util/gitHub";
+import { SimpleRepoId } from "../../../src/operations/common/RepoId";
 import { UniversalSeed } from "../../../src/operations/generate/UniversalSeed";
 import { GitHubBase } from "../../../src/project/git/GitProject";
 import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProject";
@@ -78,7 +79,7 @@ describe("Universal seed end to end", () => {
                 const result = r as any;
                 assert(result.code === 0);
                 assert(result.baseDir);
-                const created = new NodeFsLocalProject(TargetRepo, cwd + "/" + TargetRepo);
+                const created = new NodeFsLocalProject(new SimpleRepoId("owner", TargetRepo), cwd + "/" + TargetRepo);
                 assert(created.fileExistsSync("pom.xml"));
                 done();
             }).catch(done);

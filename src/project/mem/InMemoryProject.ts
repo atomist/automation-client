@@ -33,8 +33,8 @@ export class InMemoryProject extends AbstractProject {
 
     private memFiles: InMemoryFile[] = [];
 
-    constructor(public id?: RepoId) {
-        super();
+    constructor(xid?: RepoId) {
+        super(xid);
     }
 
     get fileCount() {
