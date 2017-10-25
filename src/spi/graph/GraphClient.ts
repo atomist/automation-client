@@ -39,5 +39,5 @@ export interface GraphClient {
      * @param {Q} variables the variables to be used
      * @returns {Promise<T>}
      */
-    executeMutation<T, Q>(mutation: string, variables?: Q): Promise<T>;
+    executeMutation<T, Q>(mutation: string, variables?: Q): Promise<any>;
 }
