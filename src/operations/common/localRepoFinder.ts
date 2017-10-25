@@ -13,7 +13,7 @@ export function twoTierDirectoryRepoFinder(cwd: string): RepoFinder {
     return (context: HandlerContext) => {
         logger.info(`Looking for repos in directories under [${cwd}]`);
 
-        const project = new NodeFsLocalProject("sources", cwd);
+        const project = new NodeFsLocalProject(new SimpleRepoId("owner", "sources"), cwd);
         return toPromise(project.streamFilesRaw(["*/*/"].concat(DefaultExcludes), { nodir: false }))
             .then(twoDirs => twoDirs.map(dir => {
                 const path = dir.path.startsWith("/") ? dir.path.substr(1) : dir.path;

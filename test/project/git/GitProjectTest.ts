@@ -6,6 +6,7 @@ import { tempProject } from "../utils";
 
 import * as exec from "child_process";
 import { ActionResult } from "../../../src/action/ActionResult";
+import { SimpleRepoId } from "../../../src/operations/common/RepoId";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitHubBase, GitProject } from "../../../src/project/git/GitProject";
 import { LocalProject } from "../../../src/project/local/LocalProject";
@@ -98,7 +99,7 @@ describe("GitProject", () => {
     });
 
     it("commit then add has uncommitted", done => {
-        const p = tempProject();
+        const p = tempProject(new SimpleRepoId("owner", "repo"));
         p.addFileSync("Thing", "1");
         const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
         gp.init()

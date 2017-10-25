@@ -9,6 +9,7 @@ import { LocalProject } from "../../../src/project/local/LocalProject";
 import { File } from "../../../src/project/File";
 
 import { defer } from "../../../src/internal/common/Flushable";
+import { SimpleRepoId } from "../../../src/operations/common/RepoId";
 import { AllFiles, ExcludeNodeModules } from "../../../src/project/fileGlobs";
 import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProject";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
@@ -17,18 +18,19 @@ import { tempProject } from "../utils";
 
 describe("LocalProject", () => {
 
-    const thisProject: LocalProject = new NodeFsLocalProject("test", appRoot.path);
+    const thisProject: LocalProject = new NodeFsLocalProject(new SimpleRepoId("owner", "test"), appRoot.path);
 
     it("rejects no such directory", () => {
-        assert.throws(() => new NodeFsLocalProject("name", "This/is/complete/nonsense"), err => true);
+        assert.throws(() => new NodeFsLocalProject(new SimpleRepoId("owner", "name"),
+            "This/is/complete/nonsense"), err => true);
     });
 
-    it("copies other project", done => {
-        const proj = InMemoryProject.of(
-            { path: "package.json", content: "{ node }" },
-            { path: "some/nested/thing", content: "{ node }" },
+    it("copies in memory project", done => {
+        const proj = InMemoryProject.from(
+            new SimpleRepoId("owner", "name"),
+            {path: "package.json", content: "{ node }"},
+            {path: "some/nested/thing", content: "{ node }"},
         );
-        proj.name = "name";
         const baseDir: string = tmp.dirSync().name;
         NodeFsLocalProject.copy(proj, baseDir).then(p => {
             assert(p.baseDir === baseDir + "/name");
@@ -38,6 +40,23 @@ describe("LocalProject", () => {
             assert(p.findFileSync("some/nested/thing"));
             done();
         }).catch(done);
+    });
+
+    it("copies other local project", done => {
+        const proj = tempProject(new SimpleRepoId("owner", "name"));
+        proj.addFileSync("package.json", "{ node }");
+        proj.addFileSync("some/nested/thing", "{ node }");
+
+        const baseDir: string = tmp.dirSync().name;
+        NodeFsLocalProject.copy(proj, baseDir)
+            .then(p => {
+                assert(p.baseDir === baseDir + "/name", p.baseDir);
+                const f = p.findFileSync("package.json");
+                assert(f.getContentSync());
+                assert(f.getContentSync().includes("node"));
+                assert(p.findFileSync("some/nested/thing"));
+                done();
+            }).catch(done);
     });
 
     it("findFileSync: existing file", () => {
@@ -87,11 +106,11 @@ describe("LocalProject", () => {
         let count = 0;
         thisProject.streamFiles(AllFiles, ExcludeNodeModules)
             .on("data", (f: File) => {
-                assert(f.name.length > 0);
-                assert(f.getContentSync() !== undefined);
-                count++;
-            },
-        )
+                    assert(f.name.length > 0);
+                    assert(f.getContentSync() !== undefined);
+                    count++;
+                },
+            )
             .on("end", () => {
                 assert(count > 0);
                 done();
@@ -101,18 +120,18 @@ describe("LocalProject", () => {
     it("streamFiles excludes glob non-matches", done => {
         let count = 0;
         const files = [
-            { path: "config/thing.js", content: "{ node: true }" },
-            { path: "config/other.ts", content: "{ node: true }" },
-            { path: "notconfig/other.ts", content: "{ node: true }" },
+            {path: "config/thing.js", content: "{ node: true }"},
+            {path: "config/other.ts", content: "{ node: true }"},
+            {path: "notconfig/other.ts", content: "{ node: true }"},
         ];
         const p = tempProject();
         files.forEach(f => p.addFileSync(f.path, f.content));
         p.streamFiles("config/**")
             .on("data", (f: File) => {
-                assert(f.name);
-                count++;
-            },
-        ).on("end", () => {
+                    assert(f.name);
+                    count++;
+                },
+            ).on("end", () => {
             assert(count === 2, "Found " + count);
             done();
         });

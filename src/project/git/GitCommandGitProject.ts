@@ -38,14 +38,14 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     public static fromProject(p: Project, credentials: ProjectOperationCredentials): GitProject {
         if (isLocalProject(p)) {
-            return GitCommandGitProject.fromBaseDir(p.name, p.baseDir, credentials);
+            return GitCommandGitProject.fromBaseDir(p.id, p.baseDir, credentials);
         }
         throw new Error(`Project ${p.name} doesn't have a local directory`);
     }
 
-    public static fromBaseDir(name: string, baseDir: string,
+    public static fromBaseDir(id: RepoId, baseDir: string,
                               credentials: ProjectOperationCredentials): GitCommandGitProject {
-        return new GitCommandGitProject(name, baseDir, credentials);
+        return new GitCommandGitProject(id, baseDir, credentials);
     }
 
     public static cloned(credentials: ProjectOperationCredentials,
@@ -54,7 +54,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                          directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitCommandGitProject> {
         return clone(credentials.token, user, repo, branch, opts, directoryManager)
             .then(p => {
-                const gp = GitCommandGitProject.fromBaseDir(repo, p.baseDir, credentials);
+                const gp = GitCommandGitProject.fromBaseDir(new SimpleRepoId(user, repo), p.baseDir, credentials);
                 gp.repoName = repo;
                 gp.owner = user;
                 return gp;
@@ -71,13 +71,9 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     public owner: string;
 
-    private constructor(public name: string, public baseDir: string, private credentials: ProjectOperationCredentials) {
-        super(name, baseDir);
+    private constructor(id: RepoId, public baseDir: string, private credentials: ProjectOperationCredentials) {
+        super(id, baseDir);
         logger.info(`Created GitProject with token '${hideString(this.credentials.token)}'`);
-    }
-
-    get id(): RepoId {
-        return new SimpleRepoId(this.owner, this.repoName, undefined, {url: "github.com"});
     }
 
     public init(): Promise<CommandResult<this>> {
@@ -290,7 +286,7 @@ function clone(token: string,
                             .then(_ => {
                                 logger.debug(`Clone succeeded with URL '${url}'`);
                                 // fs.chmodSync(repoDir, "0777");
-                                return new NodeFsLocalProject(repo, repoDir);
+                                return new NodeFsLocalProject(new SimpleRepoId(user, repo), repoDir);
                             });
                     case "actual-directory" :
                         throw new Error("actual-directory clone directory type not yet supported");
