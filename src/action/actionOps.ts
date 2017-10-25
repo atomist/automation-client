@@ -40,16 +40,21 @@ export function actionChainWithCombiner<T, R extends ActionResult<T> = ActionRes
 }
 
 function toAction<T>(link: Chainable<T>): TAction<T> {
-    return t => {
+    return p => {
         try {
-            return (link as TOp<T>)(t).then(r => {
+            const oneOrTheOther: Promise<T | ActionResult<T>> =
+                (link as TOp<T>)(p);
+            return oneOrTheOther
+                .catch(err => failureOn(p, err, link))
+                .then(r => {
                 // See what it returns
                 return isActionResult(r) ?
                     r :
-                    successOn(r);
+                    successOn(r) as ActionResult<T>;
             });
         } catch (error) {
-            return Promise.resolve(failureOn(t, error, link));
+            console.log("There was a failure yo!" + error.message);
+            return Promise.resolve(failureOn(p, error, link));
         }
     };
 }
