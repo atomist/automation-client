@@ -35,7 +35,7 @@ export class ApolloGraphClient implements GraphClient {
             });
             return forward(operation);
         });
-git
+
         // use with apollo-client
         const link = middlewareLink.concat(httpLink);
 
