@@ -8,8 +8,9 @@ import * as gs from "glob-stream";
 import * as stream from "stream";
 import { deleteFolderRecursive } from "../../internal/util/file";
 import { logger } from "../../internal/util/logger";
-import { InMemoryProject } from "../mem/InMemoryProject";
+import { RepoId } from "../../operations/common/RepoId";
 import { AbstractProject } from "../support/AbstractProject";
+import { toPromise } from "../util/projectUtils";
 import { isLocalProject, LocalProject } from "./LocalProject";
 import { NodeFsLocalFile } from "./NodeFsLocalFile";
 
@@ -32,15 +33,20 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
             fs.mkdirSync(baseDir);
         }
         if (isLocalProject(other)) {
-            return fs.copy(other.baseDir, baseDir).then(_ =>
-                new NodeFsLocalProject(newName, baseDir));
+            return fs.copy(other.baseDir, baseDir)
+                .then(_ =>
+                    new NodeFsLocalProject(other.id, baseDir));
         } else {
-            // TODO quick and dirty
-            const p = new NodeFsLocalProject(other.name, baseDir);
-            (other as InMemoryProject).filesSync.forEach(f => {
-                p.addFileSync(f.path, f.getContentSync());
-            });
-            return Promise.resolve(p);
+            // We don't know what kind of project the other one is,
+            // so we are going to need to copy the files one at a time
+            const p = new NodeFsLocalProject(other.id, baseDir);
+            return toPromise(other.streamFiles())
+                .then(files =>
+                    Promise.all(
+                        files.map(f =>
+                            f.getContent().then(content => p.addFile(f.path, content))),
+                    ),
+                ).then(() => p);
         }
     }
 
@@ -49,8 +55,8 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
      */
     public readonly baseDir: string;
 
-    constructor(public name: string, baseDir: string) {
-        super();
+    constructor(id: RepoId, baseDir: string) {
+        super(id);
         // TODO not sure why app-root-path seems to return something weird and this coercion is necessary
         this.baseDir = "" + baseDir;
         if (!fs.statSync(this.baseDir).isDirectory()) {
@@ -122,7 +128,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
             .then(exists => exists ?
                 Promise.resolve(new NodeFsLocalFile(this.baseDir, path)) :
                 Promise.reject(`File not found at ${path}`),
-        );
+            );
     }
 
     public findFileSync(path: string): File {
@@ -135,7 +141,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
     public streamFilesRaw(globPatterns: string[], opts: {}): FileStream {
         // Fight arrow function "this" issue
         const baseDir = this.baseDir;
-        const toFileTransform = new stream.Transform({ objectMode: true });
+        const toFileTransform = new stream.Transform({objectMode: true});
 
         toFileTransform._transform = function(chunk, encoding, done) {
             const f = new NodeFsLocalFile(baseDir, pathWithinArchive(baseDir, chunk.path));
