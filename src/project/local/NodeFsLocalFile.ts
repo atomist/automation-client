@@ -40,7 +40,7 @@ export class NodeFsLocalFile extends AbstractFile implements LocalFile {
 
     public setPath(path: string): Promise<this> {
         if (path !== this.path) {
-            console.log(`Repath from ${this.path} to ${path}: Unlinking ${this.realPath}`);
+            console.debug(`setPath: from ${this.path} to ${path}: Unlinking ${this.realPath}`);
             const oldPath = this.realPath;
             this.path = path;
             return fs.move(oldPath, this.realPath).then(_ => this);

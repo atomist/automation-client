@@ -1,13 +1,12 @@
 import "mocha";
 
 import * as appRoot from "app-root-path";
-import { LocalFile } from "../../../src/project/local/LocalFile";
 
 import * as assert from "power-assert";
 import { NodeFsLocalFile } from "../../../src/project/local/NodeFsLocalFile";
 import { tempProject } from "../utils";
 
-describe("LocalFile", () => {
+describe("NodeFsLocalFile", () => {
 
     it("should read file and check content sync", () => {
         const f = new NodeFsLocalFile(appRoot.path, "package.json");

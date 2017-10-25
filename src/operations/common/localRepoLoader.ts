@@ -6,7 +6,7 @@ export const LocalRepoLoader: RepoLoader =
     (repoId: RepoId) => {
         if (isLocalDirectory(repoId.provider)) {
             // Find it from the file system
-            return Promise.resolve(new NodeFsLocalProject(repoId, repoId.provider.baseDir));
+            return NodeFsLocalProject.fromExistingDirectory(repoId, repoId.provider.baseDir);
         } else {
             throw Promise.reject(`Not a local RepoId: [${JSON.stringify(repoId)}]`);
         }

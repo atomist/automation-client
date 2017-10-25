@@ -16,13 +16,17 @@ import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { toPromise } from "../../../src/project/util/projectUtils";
 import { tempProject } from "../utils";
 
-describe("LocalProject", () => {
+describe("NodeFsLocalProject", () => {
 
     const thisProject: LocalProject = new NodeFsLocalProject(new SimpleRepoId("owner", "test"), appRoot.path);
 
-    it("rejects no such directory", () => {
-        assert.throws(() => new NodeFsLocalProject(new SimpleRepoId("owner", "name"),
-            "This/is/complete/nonsense"), err => true);
+    it("rejects no such directory", done => {
+        NodeFsLocalProject.fromExistingDirectory(new SimpleRepoId("owner", "name"),
+            "This/is/complete/nonsense")
+            .catch(err => done())
+            .then(() => {
+                return Promise.reject("Should have failed due to invalid directory");
+            });
     });
 
     it("copies in memory project", done => {

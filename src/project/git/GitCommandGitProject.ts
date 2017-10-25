@@ -286,7 +286,7 @@ function clone(token: string,
                             .then(_ => {
                                 logger.debug(`Clone succeeded with URL '${url}'`);
                                 // fs.chmodSync(repoDir, "0777");
-                                return new NodeFsLocalProject(new SimpleRepoId(user, repo), repoDir);
+                                return NodeFsLocalProject.fromExistingDirectory(new SimpleRepoId(user, repo), repoDir);
                             });
                     case "actual-directory" :
                         throw new Error("actual-directory clone directory type not yet supported");

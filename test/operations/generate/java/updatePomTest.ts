@@ -3,7 +3,6 @@ import "mocha";
 import * as assert from "power-assert";
 import { updatePom } from "../../../../src/operations/generate/java/updatePom";
 import { InMemoryProject } from "../../../../src/project/mem/InMemoryProject";
-import { tempProject } from "../../../project/utils";
 
 describe("updatePom", () => {
 

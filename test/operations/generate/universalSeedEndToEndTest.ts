@@ -79,9 +79,12 @@ describe("Universal seed end to end", () => {
                 const result = r as any;
                 assert(result.code === 0);
                 assert(result.baseDir);
-                const created = new NodeFsLocalProject(new SimpleRepoId("owner", TargetRepo), cwd + "/" + TargetRepo);
-                assert(created.fileExistsSync("pom.xml"));
-                done();
+                NodeFsLocalProject.fromExistingDirectory(
+                    new SimpleRepoId("owner", TargetRepo), cwd + "/" + TargetRepo)
+                    .then(created => {
+                        assert(created.fileExistsSync("pom.xml"));
+                        done();
+                    });
             }).catch(done);
     }).timeout(10000);
 
@@ -90,7 +93,7 @@ describe("Universal seed end to end", () => {
 export const MockHandlerContext = {
     graphClient: {
         executeMutationFromFile(file: string, variables?: any): Promise<any> {
-            return Promise.resolve({ createSlackChannel: [ { id: "stts" } ]});
+            return Promise.resolve({createSlackChannel: [{id: "stts"}]});
         },
     },
 };

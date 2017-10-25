@@ -21,6 +21,21 @@ import { NodeFsLocalFile } from "./NodeFsLocalFile";
 export class NodeFsLocalProject extends AbstractProject implements LocalProject {
 
     /**
+     * Create a project from an existing directory. The directory must exist
+     * @param {RepoId} id
+     * @param {string} baseDir
+     * @return {Promise<LocalProject>}
+     */
+    public static fromExistingDirectory(id: RepoId, baseDir: string): Promise<LocalProject> {
+        return fs.stat(baseDir).then(stat => {
+            if (!stat.isDirectory()) {
+                throw new Error(`No such directory: [${baseDir}] when trying to create LocalProject`);
+            } else {
+                return new NodeFsLocalProject(id, baseDir);
+        }});
+    }
+
+    /**
      * Copy the contents of the other project to this project
      * @param {Project} other
      * @param {string} parentDir
@@ -55,13 +70,16 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
      */
     public readonly baseDir: string;
 
-    constructor(id: RepoId, baseDir: string) {
+    /**
+     * Note: this does not validate existence of the target
+     * directory, so using it except in tests should be avoided
+     * @param {RepoId} id
+     * @param {string} baseDir
+     */
+    public constructor(id: RepoId, baseDir: string) {
         super(id);
-        // TODO not sure why app-root-path seems to return something weird and this coercion is necessary
+        // TODO not sure why app-root-path can return something weird and this coercion is necessary
         this.baseDir = "" + baseDir;
-        if (!fs.statSync(this.baseDir).isDirectory()) {
-            throw new Error(`No such directory: [${baseDir}] when trying to create LocalProject`);
-        }
     }
 
     public addFileSync(path: string, content: string): void {
