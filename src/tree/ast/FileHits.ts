@@ -50,7 +50,7 @@ export class FileHit {
                     let newContent = content;
                     updates.sort(u => -u.offset);
                     for (const u of updates) {
-                        logger.debug("Applying update " + JSON.stringify(u));
+                        logger.debug("Applying update %j", u);
                         newContent = newContent.substr(0, u.offset) +
                             newContent.substr(u.offset).replace(u.initialValue, u.currentValue);
                     }
@@ -69,7 +69,7 @@ export class FileHit {
                     return currentValue;
                 },
                 set(v2) {
-                    logger.info("Updating value from [%s] to [%s] on [%s]", currentValue, v2, m.$name);
+                    logger.info("Updating value from '%s' to '%s' on '%s'", currentValue, v2, m.$name);
                     // TODO allow only one
                     currentValue = v2;
                     updates.push({initialValue, currentValue, offset: m.$offset});

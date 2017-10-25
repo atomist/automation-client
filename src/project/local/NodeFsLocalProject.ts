@@ -84,7 +84,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         return fs.remove(this.toRealPath(path))
             .then(_ => this)
             .catch(err => {
-                logger.warn("Unable to delete directory [%s]: %s", path, err);
+                logger.warn("Unable to delete directory '%s': %s", path, err);
                 return this;
             });
     }

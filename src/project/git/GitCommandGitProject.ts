@@ -73,7 +73,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     private constructor(id: RepoId, public baseDir: string, private credentials: ProjectOperationCredentials) {
         super(id, baseDir);
-        logger.info(`Created GitProject with token '${hideString(this.credentials.token)}'`);
+        logger.debug(`Created GitProject with token '${hideString(this.credentials.token)}'`);
     }
 
     public init(): Promise<CommandResult<this>> {
@@ -174,7 +174,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             },
         };
         const url = `${GitHubBase}/repos/${this.owner}/${this.repoName}/pulls`;
-        logger.debug(`Making request to [${url}] to raise PR`);
+        logger.debug(`Making request to '${url}' to raise PR`);
         return axios.post(url, {
             title,
             body,

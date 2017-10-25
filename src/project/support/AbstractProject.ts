@@ -45,7 +45,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
     }
 
     public trackFile(f: FileNonBlocking): this {
-        logger.debug(`Project is tracking [${f.path}]`);
+        logger.debug(`Project is tracking '${f.path}'`);
         return this.recordAction(p => {
             return f.flush().then(_ => p);
         });

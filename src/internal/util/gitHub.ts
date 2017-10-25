@@ -19,7 +19,7 @@ export function hasFile(token: string, user: string, repo: string, path: string)
     return filePromise(token, user, repo, path)
         .then(d => true)
         .catch(err => {
-            logger.info("Axiosr error getting file: Probably not there", err.toString());
+            logger.info("Axios error getting file: Probably not there", err.toString());
             return false;
         });
 }
@@ -49,7 +49,7 @@ function filePromise(token: string, user: string, repo: string, path: string): A
         }
         : {};
     const url = `${GitHubBase}/repos/${user}/${repo}/contents/${path}`;
-    logger.debug(`Request to [${url}] to check for file existence]`);
+    logger.debug(`Request to '${url}' to check for file existence]`);
     // We only care if it returns 200. Otherwise it isn't there
     return axios.get(url, config);
 }
@@ -70,6 +70,6 @@ export function raiseIssue(token: string, repoId: RepoId, issue: Issue): AxiosPr
         },
     };
     const url = `${GitHubBase}/repos/${repoId.owner}/${repoId.repo}/issues`;
-    logger.debug(`Request to [${url}] to raise issue`);
+    logger.debug(`Request to '${url}' to raise issue`);
     return axios.post(url, issue, config);
 }

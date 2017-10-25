@@ -92,7 +92,7 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
                 return this.local ?
                     populated.then(p => {
                         const parentDir = shell.pwd() + "";
-                        logger.info(`Creating local project using cwd '${parentDir}': Other name '${p.name}'`);
+                        logger.debug(`Creating local project using cwd '${parentDir}': Other name '${p.name}'`);
                         return NodeFsLocalProject.copy(p, parentDir, this.targetRepo);
                     }).then(p => {
                         return {code: 0, baseDir: p.baseDir} as HandlerResult;
@@ -136,12 +136,12 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
         return gp.init()
             .then(() => gp.setGitHubUserConfig())
             .then(() => {
-                logger.info(`Creating new repo '${params.targetOwner}/${params.targetRepo}'`);
+                logger.debug(`Creating new repo '${params.targetOwner}/${params.targetRepo}'`);
                 return gp.createAndSetGitHubRemote(params.targetOwner, params.targetRepo,
                     this.targetRepo, this.visibility);
             })
             .then(() => {
-                logger.info(`Committing to local repo at '${gp.baseDir}'`);
+                logger.debug(`Committing to local repo at '${gp.baseDir}'`);
                 return gp.commit("Initial commit from Atomist");
             })
             .then(() => this.push(gp));
@@ -153,7 +153,7 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
     }
 
     protected push(gp: GitProject): Promise<ActionResult<GitProject>> {
-        logger.info(`Pushing local repo at [${gp.baseDir}]`);
+        logger.debug(`Pushing local repo at [${gp.baseDir}]`);
         return gp.push();
     }
 }

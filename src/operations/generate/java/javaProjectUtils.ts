@@ -22,7 +22,7 @@ export function movePackage<P extends ProjectAsync>(project: P, oldPackage: stri
                                                     globPattern: string = AllJavaFiles): Promise<P> {
     const pathToReplace = packageToPath(oldPackage);
     const newPath = packageToPath(newPackage);
-    logger.info("Replacing path [%s] with [%s], package [%s] with [%s]",
+    logger.debug("Replacing path '%s' with '%s', package '%s' with '%s'",
         pathToReplace, newPath, oldPackage, newPackage);
     return doWithFiles(project, globPattern, f => {
         f.recordReplaceAll(oldPackage, newPackage)

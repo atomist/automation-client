@@ -23,7 +23,7 @@ function sendEvent(state: "stopping" | "started", teamId: string, event: Applica
 
     return axios.post(`${Url}/${teamId}`, event)
         .catch(err => {
-            console.error(err);
+            logger.error(err);
         });
 }
 

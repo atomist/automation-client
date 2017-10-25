@@ -84,10 +84,10 @@ export function findFileMatches<M>(p: ProjectAsync,
             .then(content => {
                 const matches = microgrammar.findMatches(transformIfNecessary(content, opts));
                 if (matches.length > 0) {
-                    logger.debug(`${matches.length} matches in [${file.path}]`);
+                    logger.debug(`${matches.length} matches in '${file.path}'`);
                     return new UpdatingFileHits(p, file, matches, content);
                 } else {
-                    logger.debug(`No matches in [${file.path}]`);
+                    logger.debug(`No matches in '${file.path}'`);
                     return undefined;
                 }
             });
@@ -111,14 +111,14 @@ export function doWithFileMatches<M, P extends ProjectAsync = ProjectAsync>(p: P
             .then(content => {
                 const matches = microgrammar.findMatches(transformIfNecessary(content, opts));
                 if (matches && matches.length > 0) {
-                    logger.debug(`${matches.length} matches in [${file.path}]`);
+                    logger.debug(`${matches.length} matches in '${file.path}'`);
                     const fh = new UpdatingFileHits(p, file, matches, content);
                     if (opts.makeUpdatable === true) {
                         fh.makeUpdatable();
                     }
                     action(fh);
                 } else {
-                    logger.debug(`No matches in [${file.path}]`);
+                    logger.debug(`No matches in '${file.path}'`);
                     return undefined;
                 }
             });

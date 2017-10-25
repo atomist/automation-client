@@ -11,7 +11,7 @@ import { SimpleRepoId } from "./RepoId";
  */
 export function twoTierDirectoryRepoFinder(cwd: string): RepoFinder {
     return (context: HandlerContext) => {
-        logger.info(`Looking for repos in directories under [${cwd}]`);
+        logger.debug(`Looking for repos in directories under '${cwd}'`);
 
         const project = new NodeFsLocalProject(new SimpleRepoId("owner", "sources"), cwd);
         return toPromise(project.streamFilesRaw(["*/*/"].concat(DefaultExcludes), { nodir: false }))

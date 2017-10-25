@@ -32,7 +32,7 @@ export class SpringBootProjectStructure {
                 const f = appFiles[0];
                 const packageName = JavaPackageDeclaration.firstMatch(f.getContentSync());
                 const appClass = SPRING_BOOT_APP.firstMatch(f.getContentSync());
-                logger.info(`Spring Boot inference: packageName=${packageName.name}, appClass=${appClass.name}`);
+                logger.debug(`Spring Boot inference: packageName '${packageName.name}', appClass '${appClass.name}'`);
 
                 return (packageName && appClass) ?
                     new SpringBootProjectStructure(packageName.name, appClass.name, f) :

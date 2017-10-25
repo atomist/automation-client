@@ -70,7 +70,7 @@ export function findFileMatches(p: ProjectAsync,
     return saveFromFilesAsync<FileHit>(p, globPattern, file => {
         return parser.toAst(file)
             .then(topLevelProduction => {
-                logger.debug("Successfully parsed file [%s] to AST with root node named [%s]. Will execute [%s]",
+                logger.debug("Successfully parsed file '%s' to AST with root node named '%s'. Will execute '%s'",
                     file.path, topLevelProduction.$name, pathExpression);
                 defineDynamicProperties(topLevelProduction);
                 // logger.debug(JSON.stringify(root, null, 1));
@@ -82,15 +82,15 @@ export function findFileMatches(p: ProjectAsync,
                 };
                 const r = evaluateExpression(fileNode, parsed);
                 if (isSuccessResult(r)) {
-                    logger.debug("%d matches in file [%s]", r.length, file.path);
+                    logger.debug("%d matches in file '%s'", r.length, file.path);
                     return new FileHit(p, file, fileNode, r);
                 } else {
-                    logger.debug("No matches in file [%s]", file.path);
+                    logger.debug("No matches in file '%s'", file.path);
                     return undefined;
                 }
             })
             .catch(err => {
-                logger.info("Failed to parse file [%s]: %s", file.path, err);
+                logger.info("Failed to parse file '%s': %s", file.path, err);
                 return undefined;
             });
     });
