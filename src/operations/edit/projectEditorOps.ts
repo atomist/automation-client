@@ -31,6 +31,7 @@ export function chainEditors(
         return chain(p) as Promise<EditResult>;
     };
 }
+
 function toEditor(pop: EditorChainable): ProjectEditor {
     return (proj, ctx, params) => (pop as ProjectOp)(proj)
         .then(r => {

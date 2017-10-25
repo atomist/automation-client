@@ -1,16 +1,18 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import { AbstractGenerator } from "../../../src/operations/generate/AbstractGenerator";
-import { HandlerContext } from "../../../src/HandlerContext";
-import { ProjectEditor, toEditor } from "../../../src/operations/edit/projectEditor";
-import { Project } from "../../../src/project/Project";
-import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { ActionResult, successOn } from "../../../src/action/ActionResult";
+import { HandlerContext } from "../../../src/HandlerContext";
+import { AnyProjectEditor, SimpleProjectEditor } from "../../../src/operations/edit/projectEditor";
+import { AbstractGenerator } from "../../../src/operations/generate/AbstractGenerator";
+import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
+import { Project } from "../../../src/project/Project";
 
 class CustomStartSeed extends AbstractGenerator {
 
-    constructor(private pe: ProjectEditor, private start: Project) {
+    public created: Project;
+
+    constructor(private pe: AnyProjectEditor, private start: Project) {
         super();
     }
 
@@ -18,16 +20,17 @@ class CustomStartSeed extends AbstractGenerator {
         return Promise.resolve(this.start);
     }
 
-    public projectEditor(ctx: HandlerContext, params: this): ProjectEditor<this> {
+    public projectEditor(ctx: HandlerContext, params: this) {
         return this.pe;
     }
 
     protected initAndSetRemote(p: Project, params: this): Promise<ActionResult<Project>> {
+        this.created = p;
         return Promise.resolve(successOn(p));
     }
 }
 
-const AddThingEditor: ProjectEditor = toEditor(p => p.addFile("Thing", "Thing1"));
+const AddThingEditor: SimpleProjectEditor = p => p.addFile("Thing", "Thing1");
 
 describe("AbstractGenerator", () => {
 
@@ -38,7 +41,8 @@ describe("AbstractGenerator", () => {
             .then(er => {
                 assert(er.code === 0);
                 assert(start.findFileSync("a"));
-                assert(!start.findFileSync("Thing"));
+                assert(generator.created.findFileSync("a"));
+                assert(generator.created.findFileSync("Thing"));
                 done();
             }).catch(done);
     });

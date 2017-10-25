@@ -144,6 +144,11 @@ export interface Project extends ProjectAsync, ProjectSync {
 
 }
 
+export function isProject(a: any): a is Project {
+    const p = a as Project;
+    return !!p.findFile && !!p.findFileSync && !!p.moveFile;
+}
+
 /**
  * Extension of node Stream to handle files within a Project
  */

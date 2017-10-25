@@ -12,7 +12,7 @@ import { Project } from "../../project/Project";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { LocalOrRemote } from "../common/LocalOrRemote";
 import { RepoLoader } from "../common/repoLoader";
-import { ProjectEditor } from "../edit/projectEditor";
+import { AnyProjectEditor, ProjectEditor, toEditor } from "../edit/projectEditor";
 
 export const GitHubNameRegExp = {
     pattern: /^[-.\w]+$/,
@@ -81,13 +81,13 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
      * but without the problems of scoping and "this".
      * @return {ProjectEditor<any>}
      */
-    public abstract projectEditor(ctx: HandlerContext, params: this): ProjectEditor<this>;
+    public abstract projectEditor(ctx: HandlerContext, params: this): AnyProjectEditor<this>;
 
     public handle(ctx: HandlerContext, params: this): Promise<HandlerResult> {
         return this.startingPoint(ctx, params)
             .then(project => {
                 const populated: Promise<Project> =
-                    this.projectEditor(ctx, params)(project, ctx, this)
+                    toEditor(this.projectEditor(ctx, params))(project, ctx, this)
                         .then(r => r.target);
                 return this.local ?
                     populated.then(p => {
