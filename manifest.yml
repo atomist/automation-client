@@ -1,0 +1,9 @@
+applications:
+- name: automation-client-ts
+  command: npm start
+  memory: 128M
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack
+  health-check-type: http
+  health-check-http-endpoint: /health
+  env:
+    SUPPRESS_NO_CONFIG_WARNING: true
