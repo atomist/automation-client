@@ -100,4 +100,17 @@ describe("editor chaining", () => {
             }).catch(done);
     });
 
+    it("should allow project function to be included after editor", done => {
+        const project = new InMemoryProject();
+        const projectFunction = p => {
+            return p.addFile("thing", "1");
+        };
+        const editorChain = chainEditors(projectFunction, NoOpEditor, (p: Project) => Promise.resolve(p));
+        editorChain(project, null)
+            .then(r => {
+                assert(r.edited);
+                done();
+            }).catch(done);
+    });
+
 });
