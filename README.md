@@ -49,20 +49,25 @@ by running the following command:
 $ npm install @atomist/automation-client --save
 ```
 
-You can find reference documentation at https://atomist.github.io/automation-client-ts/.
+You can find reference documentation at https://atomist.github.io/automation-client-ts/ .
 
 ### Starting from a Sample
 
 We also provide a working project with some basic automations that you can use to get started quickly. The repository
-is at [atomist/automation-client-samples-ts](https://github.com/atomist/automation-client-samples-ts).
+is at [atomist/automation-seed-ts](https://github.com/atomist/automation-seed-ts).
 
 To get started run the following commands:
 
 ```
-$ git clone git@github.com:atomist/automation-client-samples-ts.git
-$ cd automation-client-samples-ts
+$ git clone git@github.com:atomist/automation-seed-ts.git
+$ cd automation-seed-ts
 $ npm install
 ```
+
+See the [automation-seed-ts README][seed-readme] for further
+instructions.
+
+[seed-readme]: https://github.com/atomist/automation-seed-ts#readme
 
 ## Implementing Automations
 
@@ -80,27 +85,31 @@ import { HandleCommand, HandlerContext, HandlerResult } from "@atomist/automatio
 //                                                   ^ -- defines the command to trigger
 //                      "                                 this handler from the bot
 export class HelloWorld implements HandleCommand {
-//                                 ^ -- a command handler implements the HandleCommand interface
+//                                 ^ -- a command handler implements the HandleCommand
+//                                      interface
 
     @Parameter({ pattern: /^.*$/, required: true })
+//  ^            ^                ^ -- parameters can be marked required or optional
+//  ^            ^ -- the parameter can be validated against a RegExp pattern
 //  ^ -- this defines a user-provided parameter named 'name'
-//               ^ -- the parameter can be validated against a RegExp pattern
-//                                ^ -- parameters can be marked required or optional (required is default)
     public name: string;
 
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
+//  ^             ^ -- HandlerContext provides access to a 'MessageClient' for sending
+//  ^                  messages to the bot as well as a 'GraphClient' to query your
+//  ^                  data using GraphQL
 //  ^ -- this method is the body of the handler and where the actual code goes
-//                ^ -- HandlerContext provides access to a 'MessageClient' for sending messages to the bot
-//                     as well as a 'GraphClient' to query your data using GraphQL
         return ctx.messageClient.respond(`Hello ${this.name}`)
-//                               ^ -- Calling 'respond' on the 'MessageClient' will send a message back to
-//                                    wherever that command is invoked from (eg. a DM with @atomist in Slack)
+//                               ^ -- Calling 'respond' on the 'MessageClient' will
+//                                    send a message back to wherever that command
+//                                    is invoked from (eg. a DM with @atomist in Slack)
             .then(() => {
                 return Promise.resolve({ code: 0 });
-//                                     ^ -- Command handlers are expected to return a 'Promise' of type
-//                                          'HandlerResult' which just defines a return code. Nonzero
-//                                           return codes indicate errors.
+//                                     ^ -- Command handlers are expected to return a
+//                                          'Promise' of type 'HandlerResult' which
+//                                          just defines a return code. Nonzero
+//                                          return codes indicate errors.
             });
     }
 }
@@ -132,27 +141,35 @@ import { EventFired, EventHandler, HandleEvent, HandlerContext, HandlerResult }
       }
      }
 }`)
-//                                            ^ -- This is GraphQL subscription you want to match
-//                                                 to trigger your handler. Queries can also be
-//                                                 externalized
+//                                            ^ -- This is GraphQL subscription you want
+//                                                 to match to trigger your handler.
+//                                                 Queries can also be externalized.
 export class HelloIssue implements HandleEvent<any> {
-//                                 ^ -- an event handler implements the 'HandleEvent' interface
+//                                 ^ -- an event handler implements the 'HandleEvent'
+//                                      interface
 
     public handle(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult> {
-//                ^ -- 'EventFired' gives you access to the data that matched the subscription. Since GraphQL
-//                      queries return JSON it is very easy to work with the data in JavaScript/TypeScript
-//                                    ^ -- 'HandlerContext' gives access to 'MessageClient' and 'GraphClient'
+//                ^                   ^ -- 'HandlerContext' gives access to
+//                ^                        'MessageClient' and 'GraphClient'
+//                ^ -- 'EventFired' gives you access to the data that matched the
+//                     subscription. Since GraphQL queries return JSON it is very easy
+//                     to work with the data in JavaScript/TypeScript
+
         return Promise.all(e.data.Issue.map(i =>
             ctx.messageClient.addressChannels(`Got a new issue \`${i.number}# ${i.title}\``,
-//                            ^ -- besides responding, you can address users and channels in Slack by using the
-//                                 respective methods on 'MessageClient'
-                i.repo.channels.map(c => c.name ))))
-//              ^ -- in our correlated data model, repositories can be mapped to channels in a chat team. This
-//                   will effectively send a message into each mapped channel
+//                            ^ -- besides responding, you can address users and
+//                                 channels in Slack by using the respective methods
+//                                 on 'MessageClient'
+
+                i.repo.channels.map(c => c.name))))
+//              ^ -- in our correlated data model, repositories can be mapped to
+//                   channels in a chat team. This will effectively send a message
+//                   into each mapped channel
             .then(() => {
                 return Promise.resolve({ code: 0 });
-//                                     ^ -- Event handlers are expected to return a 'HandlerResult'. Nonzero
-//                                          code indicate error occurred
+//                                     ^ -- Event handlers are expected to return a
+//                                          'HandlerResult'. Nonzero code indicate
+//                                          error occurred
             });
     }
 }
@@ -175,7 +192,7 @@ import { HelloWorld } from "./commands/HelloWorld";
 import { HelloIssue } from "./events/HelloIssue";
 
 export const configuration: Configuration = {
-//                          ^ -- 'Configuration' defines all possible configuration options
+//                          ^ -- 'Configuration' defines all configuration options
 
     name: "your_module_name",
 //  ^ -- each automation-client should have a unique name
@@ -183,8 +200,9 @@ export const configuration: Configuration = {
     version: "0.0.1",
 //  ^ -- and a semver version
 
-    teamIds: "T29E48P34",
+    teamIds: ["T29E48P34"],
 //  ^ -- the ids of your chat teams which you can get by running '@atomist pwd'
+//       leave empty to use your user defaults saved by atomist-config
 
     commands: [
 //  ^ -- register all your command handlers
@@ -197,9 +215,10 @@ export const configuration: Configuration = {
 //  ^ -- the same for event handlers
 
     token: process.env.GITHUB_TOKEN || "34563sdf......................wq455eze",
-//  ^ -- configure a GitHub personal access token with org:read scope; this is used to authenticate the
-//       automation-client with Atomist to make sure the client should be granted access to the ingested data
-//       and chat team
+//  ^ -- configure a GitHub personal access token with read:org scope; this is used to
+//       authenticate the automation-client with Atomist to make sure the client should
+//       be granted access to the ingested data and chat team; leave null/undefined
+//       to use your user default saved by atomist-config
 };
 ```
 
@@ -214,7 +233,7 @@ There are several ways you can run your automation-client and have it connect to
 To start up the client locally and have it listen to incoming events, just run:
 
 ```
-$ npm run compile && $(npm bin)/atomist-client
+$ npm start
 ```
 
 ### Pushing to Cloud Foundry
@@ -247,8 +266,8 @@ like the following:
 
 ```javascript
   "engines": {
-    "node": "8.2.x",
-    "npm": "5.3.x"
+    "node": "8.x.x",
+    "npm": "5.x.x"
   }
 ```
 
@@ -268,6 +287,7 @@ client is running head over to `http://localhost:2866/` or `http://localhost:286
 When starting up, the `automation-client` exposes a couple of endpoints that can be accessed via HTTP.
 
 ### Authentication
+
 The endpoints are protected by HTTP Basic Auth or token-based authentication. When starting the client, you'll see
 a log message of the following format:
 
