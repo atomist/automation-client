@@ -21,69 +21,50 @@ import { info } from "../../util/info";
 import { logger } from "../../util/logger";
 import { metrics } from "../../util/metric";
 import { guid } from "../../util/string";
-import {
-    CommandIncoming,
-    EventIncoming,
-    RequestProcessor,
-} from "../RequestProcessor";
-
-const ApiBase = "";
-const api = new GitHubApi();
-
-let Basic = false;
-let Bearer = false;
-let GitHub = false;
-let AdminOrg;
-
 /**
  * Registers an endpoint for every automation and exposes
  * metadataFromInstance at root. Responsible for marshalling into the appropriate structure
  */
 export class ExpressServer {
 
+    private basicAuth = false;
+    private bearerAuth = false;
+    private gitHubAuth = false;
+    private adminOrg;
+
     constructor(private automations: AutomationServer,
                 private options: ExpressServerOptions,
                 private handler: RequestProcessor) {
 
         const exp = express();
-
         exp.set("view engine", "mustache");
         exp.engine("html", mustacheExpress());
 
         exp.use(bodyParser.json());
+        exp.use(require("helmet")());
         exp.use(require("connect-flash")());
 
         const session = require("express-session");
         const MemoryStore = require("memorystore")(session);
+
         exp.use(session({
-                store: new MemoryStore({
-                    checkPeriod: 86400000, // prune expired entries every 24h
-                }),
-                secret: "Careful Man, there's beverage here!",
-                cookie: { maxAge: 172800000 }, // two days
-                resave: true,
-                saveUninitialized: true,
-            }));
-
-        if (this.options.forceSecure === true) {
-            exp.set("forceSSLOptions", {
-                enable301Redirects: true,
-                trustXFPHeader: true,
-                httpsPort: 443,
-            });
-            exp.use(require("express-force-ssl"));
-        }
-
+            store: new MemoryStore({
+                checkPeriod: 86400000, // prune expired entries every 24h
+            }),
+            secret: "Careful Man, there's beverage here!",
+            cookie: { maxAge: 172800000 }, // two days
+            resave: true,
+            saveUninitialized: true,
+        }));
         exp.use(passport.initialize());
         exp.use(passport.session());
 
-        // TODO that's probably not the way it should work; but it does work when using this inside a node_module
+        // Serve the views and static content out of this module or from node_modules
         if (fs.existsSync(appRoot + "/views")) {
             exp.set("views", appRoot + "/views");
         } else {
             exp.set("views", appRoot + "/node_modules/@atomist/automation-client/views");
         }
-
         if (fs.existsSync(appRoot + "/public")) {
             exp.use(express.static(appRoot + "/public"));
         } else {
@@ -108,84 +89,83 @@ export class ExpressServer {
             });
         }
 
+        if (this.options.forceSecure === true) {
+            exp.set("forceSSLOptions", {
+                enable301Redirects: true,
+                trustXFPHeader: true,
+                httpsPort: 443,
+            });
+        }
+
         // Set up routes
         exp.get(`${ApiBase}/health`,
             (req, res) => {
-                res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 const h = health();
                 res.status(h.status === HealthStatus.Up ? 200 : 500).json(h);
-        });
+            });
 
-        exp.get(`${ApiBase}/info`, authenticate, verifyAdminGroup,
+        exp.get(`${ApiBase}/info`, this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
-                res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(info(automations.automations));
             });
 
-        exp.get(`${ApiBase}/automations`, authenticate, verifyAdminGroup,
+        exp.get(`${ApiBase}/automations`, this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
-                res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(automations.automations);
-        });
+            });
 
-        exp.get(`${ApiBase}/metrics`, authenticate, verifyAdminGroup,
+        exp.get(`${ApiBase}/metrics`, this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
-                res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(metrics());
-        });
+            });
 
-        exp.get(`${ApiBase}/log/events`, authenticate, verifyAdminGroup,
+        exp.get(`${ApiBase}/log/events`, this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
-                res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(globals.eventStore().events(req.query.from));
-        });
+            });
 
-        exp.get(`${ApiBase}/log/commands`, authenticate, verifyAdminGroup,
+        exp.get(`${ApiBase}/log/commands`, this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
-                res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(globals.eventStore().commands(req.query.from));
-        });
+            });
 
-        exp.get(`${ApiBase}/log/messages`, authenticate, verifyAdminGroup,
+        exp.get(`${ApiBase}/log/messages`, this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
-                res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(globals.eventStore().messages(req.query.from));
-        });
+            });
 
-        exp.get(`${ApiBase}/series/events`, authenticate, verifyAdminGroup,
+        exp.get(`${ApiBase}/series/events`, this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
-                res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(globals.eventStore().eventSeries());
             });
 
-        exp.get(`${ApiBase}/series/commands`, authenticate, verifyAdminGroup,
+        exp.get(`${ApiBase}/series/commands`, this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
-                res.setHeader("Content-Type", "application/json");
                 res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(globals.eventStore().commandSeries());
             });
 
-        exp.get("/graphql", authenticate, verifyAdminGroup,
+        exp.get("/graphql", this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
                 const teamId = req.query.teamId ? req.query.teamId : this.automations.automations.team_ids[0];
                 res.render("graphql.html", { token: globals.jwtToken(),
                     graphQLUrl: `${this.options.endpoint.graphql}/${teamId}`,
                     teamIds: this.automations.automations.team_ids,
                     user: req.user });
-        });
+            });
 
-        exp.get("/", authenticate, verifyAdminGroup,
+        exp.get("/", this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
                 res.render("index.html", { user: req.user });
-        });
+            });
 
         exp.get("/login",
             (req, res) => {
@@ -205,7 +185,7 @@ export class ExpressServer {
                 this.exposeEventInvocationRoute(exp,
                     `${ApiBase}/ingest/${i.route.toLowerCase()}`, i,
                     (res, result) => res.status(result.some(r => r.code !== 0) ? 500 : 200).json(result));
-        });
+            });
 
         exp.listen(this.options.port, () => {
             logger.info(`Atomist automation dashboard running at 'http://${this.options.host}:${this.options.port}'`);
@@ -215,7 +195,7 @@ export class ExpressServer {
     private exposeCommandHandlerHtmlInvocationRoute(exp: express.Express,
                                                     url: string,
                                                     h: CommandHandlerMetadata) {
-        exp.get(url, authenticate,
+        exp.get(url, this.authenticate,
             (req, res) => {
                 const mappedParameters = h.mapped_parameters.map(mp => {
                     if (mp.foreign_key === MappedParameters.GitHubOwner && req.user) {
@@ -223,8 +203,8 @@ export class ExpressServer {
                             description: "organization or user on GitHub the command should run against."
                             + " In case of a generator this is where the new repository will be created.",
                             display_name: "Target Organization"};
-                    // } else if (mp.foreign_key === MappedParameters.GitHubRepository) {
-                    //    return { name: mp.local_key, value: req.user.repos };
+                        // } else if (mp.foreign_key === MappedParameters.GitHubRepository) {
+                        //    return { name: mp.local_key, value: req.user.repos };
                     } else {
                         return null;
                     }
@@ -240,29 +220,29 @@ export class ExpressServer {
                                                 h: CommandHandlerMetadata,
                                                 handle: (res, result) => any) {
 
-        exp.post(url, authenticate, (req, res) => {
+        exp.post(url, this.enforceSecure, this.authenticate,
+            (req, res) => {
+                const id =  this.automations.automations.team_ids
+                    ? this.automations.automations.team_ids[0] : "Txxxxxxxx";
 
-            const id =  this.automations.automations.team_ids
-                ? this.automations.automations.team_ids[0] : "Txxxxxxxx";
+                const payload: CommandIncoming = {
+                    atomist_type: "command_handler_request",
+                    name: h.name,
+                    rug: {},
+                    correlation_context: {team: { id }},
+                    corrid: guid(),
+                    team: {
+                        id,
+                    },
+                    ...req.body,
+                };
 
-            const payload: CommandIncoming = {
-                atomist_type: "command_handler_request",
-                name: h.name,
-                rug: {},
-                correlation_context: {team: { id }},
-                corrid: guid(),
-                team: {
-                    id,
-                },
-                ...req.body,
-            };
-
-            this.handler.processCommand(payload, result => {
-                handle(res, result);
+                this.handler.processCommand(payload, result => {
+                    handle(res, result);
+                });
             });
-        });
 
-        exp.get(url, authenticate,
+        exp.get(url, this.enforceSecure, this.authenticate,
             (req, res) => {
                 const parameters = h.parameters.filter(p => {
                     const value = req.query[p.name];
@@ -312,7 +292,7 @@ export class ExpressServer {
                 this.handler.processCommand(payload, result => {
                     handle(res, result);
                 });
-        });
+            });
     }
 
     private exposeEventInvocationRoute(exp: express.Express,
@@ -404,8 +384,8 @@ export class ExpressServer {
                 },
             ));
 
-            GitHub = true;
-            AdminOrg = this.options.auth.github.adminOrg;
+            this.gitHubAuth = true;
+            this.adminOrg = this.options.auth.github.adminOrg;
         }
 
         if (this.options.auth && this.options.auth.basic && this.options.auth.basic.enabled) {
@@ -426,7 +406,7 @@ export class ExpressServer {
                 logger.info(`Auto-generated credentials for web endpoints are user '${user}' and password '${pwd}'`);
             }
 
-            Basic = true;
+            this.basicAuth = true;
         }
 
         if (this.options.auth && this.options.auth.bearer && this.options.auth.bearer.enabled) {
@@ -442,47 +422,65 @@ export class ExpressServer {
                 },
             ));
 
-            Bearer = true;
+            this.bearerAuth = true;
         }
     }
-}
 
-function authenticate(req, res, next): any {
-    // Check for Auth headers first
-    if (req.headers.authorization || req.headers.Authorization) {
-        if (Bearer && Basic) {
-            passport.authenticate(["basic", "bearer"])(req, res, next);
-        } else if (Bearer) {
-            passport.authenticate(["bearer"])(req, res, next);
-        } else if (Basic) {
+    private authenticate = (req, res, next) => {
+        // Check for Auth headers first
+        if (req.headers.authorization || req.headers.Authorization) {
+            if (this.bearerAuth && this.basicAuth) {
+                passport.authenticate(["basic", "bearer"])(req, res, next);
+            } else if (this.bearerAuth) {
+                passport.authenticate(["bearer"])(req, res, next);
+            } else if (this.basicAuth) {
+                passport.authenticate(["basic"])(req, res, next);
+            }
+        } else if (this.basicAuth && !this.gitHubAuth) {
             passport.authenticate(["basic"])(req, res, next);
-        }
-    } else if (Basic && !GitHub) {
-        passport.authenticate(["basic"])(req, res, next);
-    } else if (!Basic && !Bearer && !GitHub) {
-        next();
-    } else {
-        require("connect-ensure-login").ensureLoggedIn()(req, res, next);
-    }
-}
-
-function verifyAdminGroup(req, res, next): any {
-    // If this client is using GitHub auth and has an adminOrg configured;
-    // make sure the auth'ed user has access to that org
-    if (GitHub && AdminOrg) {
-        if (!req.user || !req.user.orgs) {
-            return res.redirect("/login");
-        }
-        if (req.user.orgs.some(o => o === AdminOrg)) {
+        } else if (!this.basicAuth && !this.bearerAuth && !this.gitHubAuth) {
             next();
         } else {
-            req.flash("error", "Access denied");
-            return res.redirect("/login");
+            require("connect-ensure-login").ensureLoggedIn()(req, res, next);
         }
-    } else {
-        next();
+    }
+
+    private verifyAdminGroup = (req, res, next) => {
+        // If this client is using GitHub auth and has an adminOrg configured;
+        // make sure the auth'ed user has access to that org
+        if (this.gitHubAuth && this.adminOrg) {
+            if (!req.user || !req.user.orgs) {
+                return res.redirect("/login");
+            }
+            if (req.user.orgs.some(o => o === this.adminOrg)) {
+                next();
+            } else {
+                req.flash("error", "Access denied");
+                return res.redirect("/login");
+            }
+        } else {
+            next();
+        }
+    }
+
+    private enforceSecure = (req, res, next) => {
+        if (this.options.forceSecure === true) {
+            const forceSsl = require("express-force-ssl");
+            return forceSsl(req, res, next);
+        } else {
+            return next();
+        }
     }
 }
+
+import {
+    CommandIncoming,
+    EventIncoming,
+    RequestProcessor,
+} from "../RequestProcessor";
+const ApiBase = "";
+
+const api = new GitHubApi();
 
 export interface ExpressServerOptions {
 
