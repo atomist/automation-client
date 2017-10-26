@@ -1,11 +1,11 @@
 import "mocha";
 import * as assert from "power-assert";
+import { promisify } from "util";
 import { actionChain, actionChainWithCombiner, NoAction } from "../../src/action/actionOps";
 import { ActionResult } from "../../src/action/ActionResult";
 import { SimpleRepoId } from "../../src/operations/common/RepoId";
 import { ProjectOp } from "../../src/operations/edit/projectEditorOps";
 import { InMemoryProject } from "../../src/project/mem/InMemoryProject";
-import { promisify } from "util";
 class Person {
     constructor(public name: string) {
     }
@@ -130,25 +130,25 @@ describe("action chaining", () => {
         }).catch(done);
     });
 
-    const sleepPlease: (number) => Promise<void> = promisify( (a, b) => setTimeout(b, a));
+    const sleepPlease: (timeout: number) => Promise<void> =
+        promisify( (a, b) => setTimeout(b, a));
 
     it("runs all of them for realz", done => {
-        let report = [];
+        const report = [];
         const f1 = (s: string) => {
-            console.log("Trying to fucking sleep why is this so hard");
-            return sleepPlease(5000).then(_ => {
+            return sleepPlease(50).then(_ => {
                 report.push("f1");
                 return Promise.resolve({ success: true, target: s + " and 1"});
-            })};
+            }); };
         const f2 = (s: string) => {
-            return sleepPlease(5000).then(_ => {
+            return sleepPlease(50).then(_ => {
                 report.push("f2");
                 return Promise.resolve({ success: true, target: s + " and 2"});
-            })};
+            }); };
         const chain = actionChain<string>(f1, f2);
         chain("Southwest").then(result => {
             if (!result.success) {
-                done(result.error)
+                done(result.error);
             }
             assert(result.success);
             assert(report.length === 2, "Report was: " + JSON.stringify(report));
