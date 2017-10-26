@@ -40,10 +40,7 @@ export class DifferenceEngine {
     private cloneRepo(githubIssueAuth: GithubIssueAuth, sha: string): Promise<GitProject> {
         return GitCommandGitProject.cloned(
             {token: githubIssueAuth.githubToken},
-            {
-                ...githubIssueAuth,
-                ...new GitHubRepoRef(githubIssueAuth.owner, githubIssueAuth.repo, githubIssueAuth.sha),
-            } as GitHubRepoRef);
+                new GitHubRepoRef(githubIssueAuth.owner, githubIssueAuth.repo, githubIssueAuth.sha));
     }
 }
 

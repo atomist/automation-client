@@ -272,10 +272,8 @@ function clone(credentials: ProjectOperationCredentials,
                     case "parent-directory" :
                         const repoDir = `${cloneDirectoryInfo.path}/${id.repo}`;
                         const command = (id.sha === "master") ?
-                            // tslint:disable-next-line:max-line-length
-                            `git clone --depth 1 https://${credentials.token}@${id.remoteBase}/${id.pathComponent}.git` :
-                            // tslint:disable-next-line:max-line-length
-                            `git clone https://${credentials.token}@${id.remoteBase}/${id.pathComponent}.git; cd ${id.repo};git checkout ${id.sha}`;
+                            `git clone --depth 1 ${id.cloneUrl(credentials)}` :
+                            `git clone ${id.cloneUrl(credentials)}; cd ${id.repo};git checkout ${id.sha}`;
 
                         logger.info(`Cloning repo '${id.url}' to '${cloneDirectoryInfo.path}'`);
                         return exec(command, {cwd: cloneDirectoryInfo.path})

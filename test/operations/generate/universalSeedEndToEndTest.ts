@@ -9,7 +9,7 @@ import axios from "axios";
 import { HandlerContext } from "../../../src/HandlerContext";
 import { GitHubRepoRef } from "../../../src/operations/common/RepoId";
 import { UniversalSeed } from "../../../src/operations/generate/UniversalSeed";
-import { GitHubBase } from "../../../src/project/git/GitProject";
+import { GitHubBase } from "../../../src/project/git/GitCommandGitProject";
 import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProject";
 import { hasFile } from "../../../src/util/gitHub";
 import { GitHubToken } from "../../atomist.config";

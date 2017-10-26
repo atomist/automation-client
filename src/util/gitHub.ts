@@ -3,7 +3,7 @@ import { logger } from "../internal/util/logger";
 
 import { decode } from "../internal/util/base64";
 import { RepoRef } from "../operations/common/RepoId";
-import { GitHubBase } from "../project/git/GitProject";
+import { GitHubBase } from "../project/git/GitCommandGitProject";
 
 /**
  * Check whether the given file, including path, exists

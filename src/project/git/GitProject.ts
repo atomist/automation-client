@@ -1,8 +1,6 @@
 import { ActionResult } from "../../action/ActionResult";
 import { LocalProject } from "../local/LocalProject";
 
-export const GitHubBase = "https://api.github.com";
-
 /**
  * Local project using git. Provides the ability to perform git operations
  * such as commit, and to set and push to a remote.

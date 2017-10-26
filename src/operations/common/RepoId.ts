@@ -1,6 +1,8 @@
 /**
  * Identifies a git repo
  */
+import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
+
 export interface RepoId {
 
     owner: string;
@@ -28,12 +30,18 @@ export interface RemoteRepoRef extends RepoRef {
      */
     readonly remoteBase: string;
 
-    pathComponent: string;
-
     /**
      * Entire url of the repo
      */
     url: string;
+
+    /**
+     * Return the clone URL for this to pass to git clone
+     * @param {ProjectOperationCredentials} creds
+     * @return {string}
+     */
+    cloneUrl(creds: ProjectOperationCredentials): string;
+
 }
 
 /**
@@ -62,8 +70,12 @@ export class RemoteRepoRefSupport implements RemoteRepoRef {
         return `${this.remoteBase}/${this.owner}/${this.repo}`;
     }
 
-    get pathComponent() {
-        return `${this.owner}/${this.repo}`;
+    public cloneUrl(creds: ProjectOperationCredentials) {
+        return `https://${creds.token}@${this.remoteBase}/${this.pathComponent}.git`;
+    }
+
+    get pathComponent(): string {
+        return this.owner + "/" + this.repo;
     }
 }
 
