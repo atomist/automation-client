@@ -9,8 +9,9 @@ import { ActionResult } from "../../action/ActionResult";
 import { CommandResult, runCommand } from "../../action/cli/commandLine";
 import { logger } from "../../internal/util/logger";
 import { hideString } from "../../internal/util/string";
+import { GitHubRepoRef, isGitHubRepoRef } from "../../operations/common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
-import { GitHubRepoRef, RemoteRepoRef, RepoRef } from "../../operations/common/RepoId";
+import { RemoteRepoRef, RepoRef } from "../../operations/common/RepoId";
 import { CloneOptions, DefaultCloneOptions, DirectoryManager } from "../../spi/clone/DirectoryManager";
 import { StableDirectoryManager } from "../../spi/clone/StableDirectoryManager";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
@@ -27,8 +28,6 @@ export const DefaultDirectoryManager = new StableDirectoryManager({
     cleanOnExit: false,
     reuseDirectories: false,
 });
-
-export const GitHubBase = "https://api.github.com";
 
 /**
  * Implements GitProject interface using the Git binary from the command line.
@@ -119,23 +118,26 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             },
         };
 
-        return Promise.all([ axios.get(`${GitHubBase}/user`, config),
-                axios.get(`${GitHubBase}/user/emails`, config) ])
-            .then(results => {
-                const name = results[0].data.name;
-                let email = results[0].data.email;
+        return isGitHubRepoRef(this.id) ?
+            Promise.all([axios.get(`${this.id.apiBase}/user`, config),
+                axios.get(`${this.id.apiBase}/user/emails`, config)])
+                .then(results => {
+                    const name = results[0].data.name;
+                    let email = results[0].data.email;
 
-                if (!email) {
-                    email = results[1].data.find(e => e.primary === true).email;
-                }
+                    if (!email) {
+                        email = results[1].data.find(e => e.primary === true).email;
+                    }
 
-                if (name && email) {
-                    return this.setUserConfig(name, email);
-                } else {
-                    return this.setUserConfig("Atomist Bot", "bot@atomist.com");
-                }
-            })
-            .catch(() => this.setUserConfig("Atomist Bot", "bot@atomist.com"));
+                    if (name && email) {
+                        return this.setUserConfig(name, email);
+                    } else {
+                        return this.setUserConfig("Atomist Bot", "bot@atomist.com");
+                    }
+                })
+                .catch(() => this.setUserConfig("Atomist Bot", "bot@atomist.com")) :
+            Promise.reject("Not a GitHub repo id: " + JSON.stringify(this.id));
+
     }
 
     public createAndSetGitHubRemote(owner: string, name: string, description: string = name,
@@ -145,16 +147,18 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                 Authorization: `token ${this.credentials.token}`,
             },
         };
+        const gid = new GitHubRepoRef(owner, name, "master");
+        this.id = gid;
 
-        return axios.get(`${GitHubBase}/orgs/${owner}`, config)
+        return axios.get(`${gid.apiBase}/orgs/${owner}`, config)
             .then(result => {
                 // We now know the owner is an org
-                const url = `${GitHubBase}/orgs/${owner}/repos`;
+                const url = `${gid.apiBase}/orgs/${owner}/repos`;
                 return this.createRepo(owner, url, name, description, visibility);
             })
             .catch(error => {
                 // We now know the owner is an user
-                const url = `${GitHubBase}/user/repos`;
+                const url = `${gid.apiBase}/user/repos`;
                 return this.createRepo(owner, url, name, description, visibility);
             });
     }
@@ -173,25 +177,29 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                 Authorization: `token ${this.credentials.token}`,
             },
         };
-        const url = `${GitHubBase}/repos/${this.id.owner}/${this.id.repo}/pulls`;
-        logger.debug(`Making request to '${url}' to raise PR`);
-        return axios.post(url, {
-            title,
-            body,
-            head: this.branch,
-            base: "master",
-        }, config)
-            .then(axiosResponse => {
-                return {
-                    target: this,
-                    success: true,
-                    axiosResponse,
-                };
-            })
-            .catch(err => {
-                logger.error("Error attempting to raise PR: " + err);
-                return Promise.reject(err);
-            });
+        if (isGitHubRepoRef(this.id)) {
+            const url = `${this.id.apiBase}/repos/${this.id.owner}/${this.id.repo}/pulls`;
+            logger.debug(`Making request to '${url}' to raise PR`);
+            return axios.post(url, {
+                title,
+                body,
+                head: this.branch,
+                base: "master",
+            }, config)
+                .then(axiosResponse => {
+                    return {
+                        target: this,
+                        success: true,
+                        axiosResponse,
+                    };
+                })
+                .catch(err => {
+                    logger.error("Error attempting to raise PR: " + err);
+                    return Promise.reject(err);
+                });
+        } else {
+            return Promise.reject("Not a GitHub remote: " + JSON.stringify(this.id));
+        }
     }
 
     public commit(message: string): Promise<CommandResult<this>> {

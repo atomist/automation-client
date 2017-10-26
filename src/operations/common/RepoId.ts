@@ -78,16 +78,3 @@ export class RemoteRepoRefSupport implements RemoteRepoRef {
         return this.owner + "/" + this.repo;
     }
 }
-
-/**
- * GitHub repo ref
- */
-export class GitHubRepoRef extends RemoteRepoRefSupport {
-
-    constructor(owner: string,
-                repo: string,
-                sha: string = "master") {
-        super("github.com", owner, repo, sha);
-    }
-
-}

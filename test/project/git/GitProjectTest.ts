@@ -6,8 +6,8 @@ import { tempProject } from "../utils";
 
 import * as exec from "child_process";
 import { ActionResult } from "../../../src/action/ActionResult";
-import { GitHubRepoRef } from "../../../src/operations/common/RepoId";
-import { GitCommandGitProject, GitHubBase } from "../../../src/project/git/GitCommandGitProject";
+import { GitHubDotComBase, GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
+import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../../src/project/git/GitProject";
 import { LocalProject } from "../../../src/project/local/LocalProject";
 import { Project } from "../../../src/project/Project";
@@ -35,7 +35,7 @@ describe("GitProject", () => {
                 Authorization: `token ${GitHubToken}`,
             },
         };
-        axios.get(`${GitHubBase}/user`, config).then(response => {
+        axios.get(`${GitHubDotComBase}/user`, config).then(response => {
             TargetOwner = response.data.login;
             done();
         });
@@ -47,7 +47,7 @@ describe("GitProject", () => {
                 Authorization: `token ${GitHubToken}`,
             },
         };
-        const url = `${GitHubBase}/repos/${TargetOwner}/${TargetRepo}`;
+        const url = `${GitHubDotComBase}/repos/${TargetOwner}/${TargetRepo}`;
         axios.delete(url, config)
             .then(() => {
                 done();
@@ -66,7 +66,7 @@ describe("GitProject", () => {
         };
         const name = TargetRepo;
         const description = "a thing";
-        const url = `${GitHubBase}/user/repos`;
+        const url = `${GitHubDotComBase}/user/repos`;
         return axios.post(url, {
             name,
             description,

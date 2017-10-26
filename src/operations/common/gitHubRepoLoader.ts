@@ -1,7 +1,7 @@
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
+import { GitHubRepoRef } from "./GitHubRepoRef";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
-import { GitHubRepoRef, RepoRef } from "./RepoId";
 import { RepoLoader } from "./repoLoader";
 
 /**

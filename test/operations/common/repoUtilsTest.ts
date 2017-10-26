@@ -1,7 +1,7 @@
 import "mocha";
 import * as assert from "power-assert";
 import { fromListRepoFinder } from "../../../src/operations/common/fromProjectList";
-import { GitHubRepoRef } from "../../../src/operations/common/RepoId";
+import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { RepoLoader } from "../../../src/operations/common/repoLoader";
 import { doWithAllRepos } from "../../../src/operations/common/repoUtils";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";

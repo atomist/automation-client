@@ -1,7 +1,7 @@
 import { Parameter } from "../../decorators";
 import { HandlerContext } from "../../Handlers";
 import { Project } from "../../project/Project";
-import { GitHubRepoRef } from "../common/RepoId";
+import { GitHubRepoRef } from "../common/GitHubRepoRef";
 import { AbstractGenerator, GitHubNameRegExp } from "./AbstractGenerator";
 
 const GitBranchRegExp = {

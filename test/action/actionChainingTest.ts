@@ -2,7 +2,7 @@ import "mocha";
 import * as assert from "power-assert";
 import { actionChain, actionChainWithCombiner, NoAction } from "../../src/action/actionOps";
 import { ActionResult } from "../../src/action/ActionResult";
-import { GitHubRepoRef } from "../../src/operations/common/RepoId";
+import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
 import { ProjectOp } from "../../src/operations/edit/projectEditorOps";
 import { InMemoryProject } from "../../src/project/mem/InMemoryProject";
 

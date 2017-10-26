@@ -1,7 +1,7 @@
 import * as minimatch from "minimatch";
 import * as spigot from "stream-spigot";
 
-import { GitHubRepoRef, RepoRef } from "../../operations/common/RepoId";
+import { RepoRef } from "../../operations/common/RepoId";
 import { File } from "../File";
 import { FileStream } from "../Project";
 import { AbstractProject } from "../support/AbstractProject";

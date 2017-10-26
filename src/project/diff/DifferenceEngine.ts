@@ -2,7 +2,8 @@ import * as _ from "lodash";
 
 import { Chain } from "./Chain";
 
-import { GitHubRepoRef, RepoRef } from "../../operations/common/RepoId";
+import { GitHubRepoRef } from "../../operations/common/GitHubRepoRef";
+import { RepoRef } from "../../operations/common/RepoId";
 import { GitCommandGitProject } from "../git/GitCommandGitProject";
 import { GitProject } from "../git/GitProject";
 

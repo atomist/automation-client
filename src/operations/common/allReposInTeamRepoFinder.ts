@@ -1,8 +1,9 @@
 import { HandlerContext } from "../../HandlerContext";
 import { ReposQuery, ReposQueryVariables } from "../../schema/schema";
+import { GitHubRepoRef } from "./GitHubRepoRef";
 import { twoTierDirectoryRepoFinder } from "./localRepoFinder";
 import { RepoFinder } from "./repoFinder";
-import { GitHubRepoRef, RepoRef } from "./RepoId";
+import { RepoRef } from "./RepoId";
 
 // Hard-coded limit in GraphQL queries. Not sure why we can't pass this
 const PageSize = 100;

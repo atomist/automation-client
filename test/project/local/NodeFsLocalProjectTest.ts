@@ -9,7 +9,7 @@ import { LocalProject } from "../../../src/project/local/LocalProject";
 import { File } from "../../../src/project/File";
 
 import { defer } from "../../../src/internal/common/Flushable";
-import { GitHubRepoRef } from "../../../src/operations/common/RepoId";
+import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { AllFiles, ExcludeNodeModules } from "../../../src/project/fileGlobs";
 import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProject";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";

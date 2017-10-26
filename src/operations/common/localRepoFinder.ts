@@ -3,8 +3,8 @@ import { logger } from "../../internal/util/logger";
 import { DefaultExcludes } from "../../project/fileGlobs";
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
 import { toPromise } from "../../project/util/projectUtils";
+import { GitHubRepoRef } from "./GitHubRepoRef";
 import { RepoFinder } from "./repoFinder";
-import { GitHubRepoRef } from "./RepoId";
 
 /**
  * Look for repos under /org/repo format, from current working directory
