@@ -1,9 +1,9 @@
 import axios, { AxiosPromise } from "axios";
-import { logger } from "./logger";
+import { logger } from "../internal/util/logger";
 
-import { RepoId } from "../../operations/common/RepoId";
-import { GitHubBase } from "../../project/git/GitProject";
-import { decode } from "./base64";
+import { RepoId } from "../operations/common/RepoId";
+import { GitHubBase } from "../project/git/GitProject";
+import { decode } from "../internal/util/base64";
 
 /**
  * Check whether the given file, including path, exists

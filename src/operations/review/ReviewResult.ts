@@ -1,5 +1,5 @@
 import { HandlerResult } from "../../HandlerResult";
-import { Issue } from "../../internal/util/gitHub";
+import { Issue } from "../../util/gitHub";
 import { RepoId } from "../common/RepoId";
 import { SourceLocation } from "../common/SourceLocation";
 
