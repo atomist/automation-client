@@ -10,7 +10,7 @@ import { CommandResult, runCommand } from "../../action/cli/commandLine";
 import { logger } from "../../internal/util/logger";
 import { hideString } from "../../internal/util/string";
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
-import { RepoId, SimpleRepoId } from "../../operations/common/RepoId";
+import { GitHubRepoRef, RemoteRepoRef, RepoRef } from "../../operations/common/RepoId";
 import { CloneOptions, DefaultCloneOptions, DirectoryManager } from "../../spi/clone/DirectoryManager";
 import { StableDirectoryManager } from "../../spi/clone/StableDirectoryManager";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
@@ -43,20 +43,25 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         throw new Error(`Project ${p.name} doesn't have a local directory`);
     }
 
-    public static fromBaseDir(id: RepoId, baseDir: string,
+    /**
+     * Create a project from an existing git directory
+     * @param {RepoRef} id
+     * @param {string} baseDir
+     * @param {ProjectOperationCredentials} credentials
+     * @return {GitCommandGitProject}
+     */
+    public static fromBaseDir(id: RepoRef, baseDir: string,
                               credentials: ProjectOperationCredentials): GitCommandGitProject {
         return new GitCommandGitProject(id, baseDir, credentials);
     }
 
     public static cloned(credentials: ProjectOperationCredentials,
-                         user: string, repo: string, branch: string = "master",
+                         id: RemoteRepoRef,
                          opts: CloneOptions = DefaultCloneOptions,
                          directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitCommandGitProject> {
-        return clone(credentials.token, user, repo, branch, opts, directoryManager)
+        return clone(credentials, id, opts, directoryManager)
             .then(p => {
-                const gp = GitCommandGitProject.fromBaseDir(new SimpleRepoId(user, repo), p.baseDir, credentials);
-                gp.repoName = repo;
-                gp.owner = user;
+                const gp = GitCommandGitProject.fromBaseDir(id, p.baseDir, credentials);
                 return gp;
             });
     }
@@ -67,11 +72,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     public newRepo: boolean = false;
 
-    public repoName: string;
-
-    public owner: string;
-
-    private constructor(id: RepoId, public baseDir: string, private credentials: ProjectOperationCredentials) {
+    private constructor(id: RepoRef, public baseDir: string, private credentials: ProjectOperationCredentials) {
         super(id, baseDir);
         logger.debug(`Created GitProject with token '${hideString(this.credentials.token)}'`);
     }
@@ -102,8 +103,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     public setGitHubRemote(owner: string, repo: string): Promise<CommandResult<this>> {
-        this.owner = owner;
-        this.repoName = repo;
+        this.id = new GitHubRepoRef(owner, repo);
         return this.setRemote(`https://${this.credentials.token}@github.com/${owner}/${repo}.git`);
     }
 
@@ -173,7 +173,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                 Authorization: `token ${this.credentials.token}`,
             },
         };
-        const url = `${GitHubBase}/repos/${this.owner}/${this.repoName}/pulls`;
+        const url = `${GitHubBase}/repos/${this.id.owner}/${this.id.repo}/pulls`;
         logger.debug(`Making request to '${url}' to raise PR`);
         return axios.post(url, {
             title,
@@ -257,36 +257,32 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
 /**
  * Clone the given repo from GitHub
- * @param token
- * @param user
- * @param repo
- * @param branch
+ * @param credentials git provider credentials
+ * @param id remote repo ref
  * @param opts options for clone
  * @param directoryManager strategy for cloning
  */
-function clone(token: string,
-               user: string,
-               repo: string,
-               branch: string = "master",
+function clone(credentials: ProjectOperationCredentials,
+               id: RemoteRepoRef,
                opts: CloneOptions,
                directoryManager: DirectoryManager): Promise<GitProject> {
-    return directoryManager.directoryFor(user, repo, branch, opts)
+    return directoryManager.directoryFor(id.owner, id.repo, id.sha, opts)
         .then(cloneDirectoryInfo => {
                 switch (cloneDirectoryInfo.type) {
                     case "parent-directory" :
-                        const repoDir = `${cloneDirectoryInfo.path}/${repo}`;
-                        const command = (branch === "master") ?
-                            `git clone --depth 1 https://${token}@github.com/${user}/${repo}.git` :
+                        const repoDir = `${cloneDirectoryInfo.path}/${id.repo}`;
+                        const command = (id.sha === "master") ?
                             // tslint:disable-next-line:max-line-length
-                            `git clone https://${token}@github.com/${user}/${repo}.git; cd ${repo};git checkout ${branch}`;
+                            `git clone --depth 1 https://${credentials.token}@${id.remoteBase}/${id.pathComponent}.git` :
+                            // tslint:disable-next-line:max-line-length
+                            `git clone https://${credentials.token}@${id.remoteBase}/${id.pathComponent}.git; cd ${id.repo};git checkout ${id.sha}`;
 
-                        const url = `https://github.com/${user}/${repo}`;
-                        logger.info(`Cloning repo '${url}' to '${cloneDirectoryInfo.path}'`);
+                        logger.info(`Cloning repo '${id.url}' to '${cloneDirectoryInfo.path}'`);
                         return exec(command, {cwd: cloneDirectoryInfo.path})
                             .then(_ => {
-                                logger.debug(`Clone succeeded with URL '${url}'`);
+                                logger.debug(`Clone succeeded with URL '${id.url}'`);
                                 // fs.chmodSync(repoDir, "0777");
-                                return NodeFsLocalProject.fromExistingDirectory(new SimpleRepoId(user, repo), repoDir);
+                                return NodeFsLocalProject.fromExistingDirectory(id, repoDir);
                             });
                     case "actual-directory" :
                         throw new Error("actual-directory clone directory type not yet supported");
