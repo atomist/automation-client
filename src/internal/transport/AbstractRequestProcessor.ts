@@ -79,11 +79,14 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         callback(result);
                         logger.info(`Finished invocation of command handler '%s': %s`,
                             command.name, JSON.stringify(result));
+                        clearNamespace();
                     }).catch(err => {
                         this.handleCommandError(err, command, ci, ctx, callback);
+                        clearNamespace();
                     });
             } catch (err) {
                 this.handleCommandError(err, command, ci, ctx, callback);
+                clearNamespace();
             }
         });
     }
@@ -131,12 +134,15 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         callback(result);
                         logger.info(`Finished invocation of event handler '%s': %s`,
                             event.extensions.operationName, JSON.stringify(result));
+                        clearNamespace();
                     })
                     .catch(err => {
                         this.handleEventError(err, event, ef, ctx, callback);
+                        clearNamespace();
                     });
             } catch (err) {
                 this.handleEventError(err, event, ef, ctx, callback);
+                clearNamespace();
             }
         });
     }
@@ -233,6 +239,19 @@ function setupNamespace(request: any, automations: AutomationServer) {
         version: automations.automations.version,
         invocationId: guid(),
         ts: new Date().getTime(),
+    });
+}
+
+function clearNamespace() {
+    namespace.set({
+        correlationId: null,
+        teamId: null,
+        teamName: null,
+        operation: null,
+        name: null,
+        version: null,
+        invocationId: null,
+        ts: null,
     });
 }
 
