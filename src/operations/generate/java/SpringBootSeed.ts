@@ -13,7 +13,7 @@ import { SpringBootProjectStructure } from "./SpringBootProjectStructure";
 /**
  * Spring Boot seed project. Extends generic Java seed to renames Spring Boot package and class name.
  */
-@CommandHandler("Spring Boot seed generator", ["java", "spring", "spring-boot", "generator"])
+@CommandHandler("Spring Boot seed generator", "create spring-boot rest")
 @Tags("java", "spring", "spring-boot", "generator")
 export class SpringBootSeed extends JavaSeed {
 

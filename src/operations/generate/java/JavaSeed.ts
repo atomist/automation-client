@@ -34,7 +34,7 @@ export class JavaSeed extends UniversalSeed implements VersionedArtifact {
         displayName: "Maven Artifact ID",
         description: "Maven artifact identifier, i.e., the name of the jar without the version," +
         " it is often the same as the project name",
-        pattern: /^([a-z][-a-z0-9_]*|\${projectName})$/,
+        pattern: /^([a-z][-a-z0-9_]*|\$\{projectName\})$/,
         validInput: "a valid Maven artifact ID, which starts with a lower-case letter and contains only " +
         " alphanumeric, -, and _ characters, or `${projectName}` to use the project name",
         minLength: 1,
