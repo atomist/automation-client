@@ -34,7 +34,7 @@
                 {{/mapped_parameters.length}}
                 {{#mapped_parameters}}
                 <div class="form-group">
-                    <label for="{{name}}">{{name}}</label>
+                    <label for="{{name}}">{{display_name}}</label>
                     <select class="form-control" id="mp_{{name}}" name="mp_{{name}}" aria-describedby="mp_{{name}}-help">
                         {{#value}}
                         <option>{{.}}</option>
@@ -48,7 +48,7 @@
                 {{#displayable}}
                 {{#required}}
                 <div class="form-group">
-                    <label for="{{name}}">{{name}}</label>
+                    <label for="{{name}}">{{display_name}}</label>
                     <input type="text" class="form-control form-control-sm" id="{{name}}" name="{{name}}" value="{{default_value}}" aria-describedby="{{name}}-help" data-validation="custom" data-validation-regexp="{{{pattern.source}}}" {{#required}}required{{/required}}>
                     <small id="{{name}}-help" class="form-text text-muted">{{description}}</small>
                 </div>
@@ -61,7 +61,7 @@
                 {{#displayable}}
                 {{^required}}
                 <div class="form-group">
-                    <label for="{{name}}">{{name}}</label>
+                    <label for="{{name}}">{{display_name}}</label>
                     <input type="text" class="form-control form-control-sm" id="{{name}}" name="{{name}}" value="{{default_value}}" aria-describedby="{{name}}-help" data-validation="custom" data-validation-regexp="{{{pattern.source}}}" {{#required}}required{{/required}}>
                     <small id="{{name}}-help" class="form-text text-muted">{{description}}</small>
                 </div>

@@ -80,8 +80,11 @@ function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMet
 
 function parametersFromInstance(r: any): Parameter[] {
     const parameters = r.__parameters ? r.__parameters.map(p => {
-        if (!p.display_name) {
+        if (!p.displayName) {
             p.display_name = p.name;
+        } else {
+            p.display_name = p.displayName;
+            delete p.displayName;
         }
         // Make this optional parameter explicit
         p.displayable = p.displayable !== false;

@@ -221,7 +221,8 @@ export class ExpressServer {
                     if (mp.foreign_key === MappedParameters.GitHubOwner && req.user) {
                         return { name: mp.local_key, value: req.user.orgs,
                             description: "organization or user on GitHub the command should run against."
-                            + " In case of a generator this is where the new repository will be created." };
+                            + " In case of a generator this is where the new repository will be created.",
+                            display_name: "Target Organization"};
                     // } else if (mp.foreign_key === MappedParameters.GitHubRepository) {
                     //    return { name: mp.local_key, value: req.user.repos };
                     } else {

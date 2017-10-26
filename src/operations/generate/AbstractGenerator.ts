@@ -153,7 +153,7 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
     }
 
     protected push(gp: GitProject): Promise<ActionResult<GitProject>> {
-        logger.debug(`Pushing local repo at [${gp.baseDir}]`);
+        logger.debug(`Pushing local repo at '${gp.baseDir}'`);
         return gp.push();
     }
 }
