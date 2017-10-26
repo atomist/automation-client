@@ -43,20 +43,25 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         throw new Error(`Project ${p.name} doesn't have a local directory`);
     }
 
+    /**
+     * Create a project from an existing git directory
+     * @param {RepoId} id
+     * @param {string} baseDir
+     * @param {ProjectOperationCredentials} credentials
+     * @return {GitCommandGitProject}
+     */
     public static fromBaseDir(id: RepoId, baseDir: string,
                               credentials: ProjectOperationCredentials): GitCommandGitProject {
         return new GitCommandGitProject(id, baseDir, credentials);
     }
 
     public static cloned(credentials: ProjectOperationCredentials,
-                         user: string, repo: string, branch: string = "master",
+                         id: RepoId,
                          opts: CloneOptions = DefaultCloneOptions,
                          directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitCommandGitProject> {
-        return clone(credentials.token, user, repo, branch, opts, directoryManager)
+        return clone(credentials.token, id.owner, id.repo, id.sha, opts, directoryManager)
             .then(p => {
-                const gp = GitCommandGitProject.fromBaseDir(new SimpleRepoId(user, repo), p.baseDir, credentials);
-                gp.repoName = repo;
-                gp.owner = user;
+                const gp = GitCommandGitProject.fromBaseDir(id, p.baseDir, credentials);
                 return gp;
             });
     }
@@ -66,10 +71,6 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     public remote: string;
 
     public newRepo: boolean = false;
-
-    public repoName: string;
-
-    public owner: string;
 
     private constructor(id: RepoId, public baseDir: string, private credentials: ProjectOperationCredentials) {
         super(id, baseDir);
@@ -102,8 +103,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     public setGitHubRemote(owner: string, repo: string): Promise<CommandResult<this>> {
-        this.owner = owner;
-        this.repoName = repo;
+        this.id = new SimpleRepoId(owner, repo);
         return this.setRemote(`https://${this.credentials.token}@github.com/${owner}/${repo}.git`);
     }
 
@@ -173,7 +173,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                 Authorization: `token ${this.credentials.token}`,
             },
         };
-        const url = `${GitHubBase}/repos/${this.owner}/${this.repoName}/pulls`;
+        const url = `${GitHubBase}/repos/${this.id.owner}/${this.id.repo}/pulls`;
         logger.debug(`Making request to '${url}' to raise PR`);
         return axios.post(url, {
             title,

@@ -14,7 +14,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
         return !!this.id ? this.id.repo : undefined;
     }
 
-    constructor(public readonly id: RepoId) {
+    constructor(public id: RepoId) {
         super();
     }
 

@@ -10,7 +10,7 @@ export interface ProjectCore {
 
     readonly name: string;
 
-    readonly id: RepoId;
+    id: RepoId;
 
 }
 

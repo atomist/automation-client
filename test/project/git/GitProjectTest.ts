@@ -25,7 +25,7 @@ function checkProject(p: Project) {
 const TargetRepo = `test-repo-${new Date().getTime()}`;
 let TargetOwner = "johnsonr";
 
-const Creds = {token: GitHubToken };
+const Creds = {token: GitHubToken};
 
 describe("GitProject", () => {
 
@@ -165,23 +165,25 @@ describe("GitProject", () => {
         this.retries(5);
 
         newRepo().then(_ => {
-            return GitCommandGitProject.cloned(Creds, TargetOwner, TargetRepo).then(gp => {
-                gp.addFileSync("Cat", "hat");
-                const branch = "thing2";
-                gp.createBranch(branch)
-                    .then(x => gp.commit("Added a Thing"))
-                    .then(x => gp.push())
-                    .then(x => {
-                        return gp.raisePullRequest("Thing2", "Adds another character");
-                    })
-                    .then(x => done());
-            });
+            return GitCommandGitProject.cloned(Creds,
+                new SimpleRepoId(TargetOwner, TargetRepo))
+                .then(gp => {
+                    gp.addFileSync("Cat", "hat");
+                    const branch = "thing2";
+                    gp.createBranch(branch)
+                        .then(x => gp.commit("Added a Thing"))
+                        .then(x => gp.push())
+                        .then(x => {
+                            return gp.raisePullRequest("Thing2", "Adds another character");
+                        })
+                        .then(x => done());
+                });
         }).catch(done);
     }).timeout(20000);
 
     it("check out commit", done => {
         const sha = "590ed8f7a2430d45127ea04cc5bdf736fe698712";
-        GitCommandGitProject.cloned(Creds, "atomist", "microgrammar", sha)
+        GitCommandGitProject.cloned(Creds, new SimpleRepoId("atomist", "microgrammar", sha))
             .then(p => {
                 checkProject(p);
                 const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);

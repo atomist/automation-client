@@ -12,6 +12,6 @@ import { RepoLoader } from "./repoLoader";
  */
 export function gitHubRepoLoader(credentials: ProjectOperationCredentials): RepoLoader<GitProject> {
     return (repoId: RepoId) => {
-        return GitCommandGitProject.cloned(credentials, repoId.owner, repoId.repo);
+        return GitCommandGitProject.cloned(credentials, repoId);
     };
 }

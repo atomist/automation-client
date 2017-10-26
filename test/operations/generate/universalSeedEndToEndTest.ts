@@ -7,11 +7,11 @@ import * as tmp from "tmp-promise";
 import axios from "axios";
 
 import { HandlerContext } from "../../../src/HandlerContext";
-import { hasFile } from "../../../src/util/gitHub";
 import { SimpleRepoId } from "../../../src/operations/common/RepoId";
 import { UniversalSeed } from "../../../src/operations/generate/UniversalSeed";
 import { GitHubBase } from "../../../src/project/git/GitProject";
 import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProject";
+import { hasFile } from "../../../src/util/gitHub";
 import { GitHubToken } from "../../atomist.config";
 
 const TargetRepo = `test-repo-${new Date().getTime()}`;

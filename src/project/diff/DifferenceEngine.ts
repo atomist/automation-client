@@ -2,6 +2,7 @@ import * as _ from "lodash";
 
 import {Chain} from "./Chain";
 
+import { RepoId } from "../../operations/common/RepoId";
 import {GitCommandGitProject} from "../git/GitCommandGitProject";
 import {GitProject} from "../git/GitProject";
 
@@ -38,18 +39,17 @@ export class DifferenceEngine {
     private cloneRepo(githubIssueAuth: GithubIssueAuth, sha: string): Promise<GitProject> {
         return GitCommandGitProject.cloned(
             {token: githubIssueAuth.githubToken},
-            githubIssueAuth.owner,
-            githubIssueAuth.repo,
-            sha);
+            {
+                ...githubIssueAuth,
+                sha,
+            } as RepoId);
     }
 }
 
 /**
  * Details that allow a GitHub issue to be referenced and modified
  */
-export interface GithubIssueAuth {
+export interface GithubIssueAuth extends RepoId  {
     githubToken: string;
-    owner: string;
-    repo: string;
     issueNumber: number;
 }

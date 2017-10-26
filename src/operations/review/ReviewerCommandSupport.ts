@@ -1,8 +1,8 @@
 import { Parameter } from "../../decorators";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
-import { raiseIssue } from "../../util/gitHub";
 import { logger } from "../../internal/util/logger";
+import { raiseIssue } from "../../util/gitHub";
 import { LocalOrRemoteRepoOperation } from "../common/LocalOrRemoteRepoOperation";
 import { RepoId } from "../common/RepoId";
 import { ProjectReviewer } from "./projectReviewer";
