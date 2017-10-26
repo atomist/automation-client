@@ -6,7 +6,7 @@ import { defaultRepoLoader } from "./defaultRepoLoader";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import { AllRepos, RepoFilter } from "./repoFilter";
 import { RepoFinder } from "./repoFinder";
-import { RepoId } from "./RepoId";
+import { RepoRef } from "./RepoId";
 import { RepoLoader } from "./repoLoader";
 
 /**
@@ -46,7 +46,7 @@ export function doWithAllRepos<R, P>(ctx: HandlerContext,
 
 export function relevantRepos(ctx: HandlerContext,
                               repoFinder: RepoFinder = allReposInTeam(),
-                              repoFilter: RepoFilter = AllRepos): Promise<RepoId[]> {
+                              repoFilter: RepoFilter = AllRepos): Promise<RepoRef[]> {
     return repoFinder(ctx)
         .then(rids =>
             Promise.all(rids.map(rid => Promise.resolve(repoFilter(rid))

@@ -1,9 +1,9 @@
 import axios, { AxiosPromise } from "axios";
-import { logger } from "./logger";
+import { logger } from "../internal/util/logger";
 
-import { RepoId } from "../../operations/common/RepoId";
-import { GitHubBase } from "../../project/git/GitProject";
-import { decode } from "./base64";
+import { decode } from "../internal/util/base64";
+import { GitHubDotComBase, GitHubRepoRef } from "../operations/common/GitHubRepoRef";
+import { RepoRef } from "../operations/common/RepoId";
 
 /**
  * Check whether the given file, including path, exists
@@ -48,7 +48,7 @@ function filePromise(token: string, user: string, repo: string, path: string): A
             },
         }
         : {};
-    const url = `${GitHubBase}/repos/${user}/${repo}/contents/${path}`;
+    const url = `${GitHubDotComBase}/repos/${user}/${repo}/contents/${path}`;
     logger.debug(`Request to '${url}' to check for file existence]`);
     // We only care if it returns 200. Otherwise it isn't there
     return axios.get(url, config);
@@ -63,13 +63,13 @@ export interface Issue {
     assignees?: string[];
 }
 
-export function raiseIssue(token: string, repoId: RepoId, issue: Issue): AxiosPromise {
+export function raiseIssue(token: string, repoId: RepoRef, issue: Issue): AxiosPromise {
     const config = {
         headers: {
             Authorization: `token ${token}`,
         },
     };
-    const url = `${GitHubBase}/repos/${repoId.owner}/${repoId.repo}/issues`;
+    const url = `${GitHubDotComBase}/repos/${repoId.owner}/${repoId.repo}/issues`;
     logger.debug(`Request to '${url}' to raise issue`);
     return axios.post(url, issue, config);
 }

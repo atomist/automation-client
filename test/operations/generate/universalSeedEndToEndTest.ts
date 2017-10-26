@@ -7,11 +7,10 @@ import * as tmp from "tmp-promise";
 import axios from "axios";
 
 import { HandlerContext } from "../../../src/HandlerContext";
-import { hasFile } from "../../../src/internal/util/gitHub";
-import { SimpleRepoId } from "../../../src/operations/common/RepoId";
+import { GitHubDotComBase, GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { UniversalSeed } from "../../../src/operations/generate/UniversalSeed";
-import { GitHubBase } from "../../../src/project/git/GitProject";
 import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProject";
+import { hasFile } from "../../../src/util/gitHub";
 import { GitHubToken } from "../../atomist.config";
 
 const TargetRepo = `test-repo-${new Date().getTime()}`;
@@ -25,7 +24,7 @@ describe("Universal seed end to end", () => {
                 Authorization: `token ${GitHubToken}`,
             },
         };
-        axios.get(`${GitHubBase}/user`, config).then(response => {
+        axios.get(`${GitHubDotComBase}/user`, config).then(response => {
             TargetOwner = response.data.login;
             done();
         });
@@ -37,7 +36,7 @@ describe("Universal seed end to end", () => {
                 Authorization: `token ${GitHubToken}`,
             },
         };
-        const url = `${GitHubBase}/repos/${TargetOwner}/${TargetRepo}`;
+        const url = `${GitHubDotComBase}/repos/${TargetOwner}/${TargetRepo}`;
         axios.delete(url, config)
             .then(_ => {
                 done();
@@ -80,7 +79,7 @@ describe("Universal seed end to end", () => {
                 assert(result.code === 0);
                 assert(result.baseDir);
                 NodeFsLocalProject.fromExistingDirectory(
-                    new SimpleRepoId("owner", TargetRepo), cwd + "/" + TargetRepo)
+                    new GitHubRepoRef("owner", TargetRepo), cwd + "/" + TargetRepo)
                     .then(created => {
                         assert(created.fileExistsSync("pom.xml"));
                         done();

@@ -1,42 +1,80 @@
-
-export interface LocalDirectory {
-    baseDir: string;
-}
-
-export interface GitHost {
-    url: "github.com";
-}
-
-export type VcsProvider = GitHost | LocalDirectory;
-
-export function isLocalDirectory(p: VcsProvider): p is LocalDirectory {
-    return (p as any).baseDir;
-}
-
 /**
- * Identifies a repo containing a potential Project.
+ * Identifies a git repo
  */
+import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
+
 export interface RepoId {
 
     owner: string;
 
     repo: string;
 
+}
+
+/**
+ * Identifies a version of a git repo containing a potential project
+ */
+export interface RepoRef extends RepoId {
+
     sha?: string;
 
-    provider: VcsProvider;
 }
 
-export function isRepoId(r: any): r is RepoId {
-    const maybeRi = r as RepoId;
-    return !!maybeRi.owner && !!maybeRi.repo;
+/**
+ * Identifies a git repo with a remote
+ */
+export interface RemoteRepoRef extends RepoRef {
+
+    /**
+     * Remote base
+     */
+    readonly remoteBase: string;
+
+    /**
+     * Entire url of the repo
+     */
+    url: string;
+
+    /**
+     * Return the clone URL for this to pass to git clone
+     * @param {ProjectOperationCredentials} creds
+     * @return {string}
+     */
+    cloneUrl(creds: ProjectOperationCredentials): string;
+
 }
 
-export class SimpleRepoId implements RepoId {
+/**
+ * Identifies a git repo checked out in a local directory.
+ * A RepoRef can be both Remote and Local
+ */
+export interface LocalRepoRef extends RepoRef {
 
-    constructor(public owner: string,
+    baseDir: string;
+}
+
+export function isLocalRepoRef(r: RepoRef): r is LocalRepoRef {
+    const maybeLocalRR = r as LocalRepoRef;
+    return !!maybeLocalRR.baseDir;
+}
+
+export class RemoteRepoRefSupport implements RemoteRepoRef {
+
+    constructor(public remoteBase: string,
+                public owner: string,
                 public repo: string,
-                public sha: string = "master",
-                public provider: VcsProvider = { url: "github.com" }) {
+                public sha: string = "master") {
+    }
+
+    get url() {
+        return `${this.remoteBase}/${this.owner}/${this.repo}`;
+    }
+
+    public cloneUrl(creds: ProjectOperationCredentials) {
+        return `https://${creds.token}@${this.remoteBase}/${this.pathComponent}.git`;
+    }
+
+    get pathComponent(): string {
+        return this.owner + "/" + this.repo;
     }
 }

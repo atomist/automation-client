@@ -9,7 +9,7 @@ import { LocalProject } from "../../../src/project/local/LocalProject";
 import { File } from "../../../src/project/File";
 
 import { defer } from "../../../src/internal/common/Flushable";
-import { SimpleRepoId } from "../../../src/operations/common/RepoId";
+import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { AllFiles, ExcludeNodeModules } from "../../../src/project/fileGlobs";
 import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProject";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
@@ -18,10 +18,10 @@ import { tempProject } from "../utils";
 
 describe("NodeFsLocalProject", () => {
 
-    const thisProject: LocalProject = new NodeFsLocalProject(new SimpleRepoId("owner", "test"), appRoot.path);
+    const thisProject: LocalProject = new NodeFsLocalProject(new GitHubRepoRef("owner", "test"), appRoot.path);
 
     it("rejects no such directory", done => {
-        NodeFsLocalProject.fromExistingDirectory(new SimpleRepoId("owner", "name"),
+        NodeFsLocalProject.fromExistingDirectory(new GitHubRepoRef("owner", "name"),
             "This/is/complete/nonsense")
             .catch(err => done())
             .then(() => {
@@ -31,7 +31,7 @@ describe("NodeFsLocalProject", () => {
 
     it("copies in memory project", done => {
         const proj = InMemoryProject.from(
-            new SimpleRepoId("owner", "name"),
+            new GitHubRepoRef("owner", "name"),
             {path: "package.json", content: "{ node }"},
             {path: "some/nested/thing", content: "{ node }"},
         );
@@ -47,7 +47,7 @@ describe("NodeFsLocalProject", () => {
     });
 
     it("copies other local project", done => {
-        const proj = tempProject(new SimpleRepoId("owner", "name"));
+        const proj = tempProject(new GitHubRepoRef("owner", "name"));
         proj.addFileSync("package.json", "{ node }");
         proj.addFileSync("some/nested/thing", "{ node }");
 

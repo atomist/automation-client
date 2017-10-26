@@ -1,7 +1,7 @@
 import { Parameter } from "../../decorators";
 import { HandlerContext } from "../../Handlers";
 import { Project } from "../../project/Project";
-import { SimpleRepoId } from "../common/RepoId";
+import { GitHubRepoRef } from "../common/GitHubRepoRef";
 import { AbstractGenerator, GitHubNameRegExp } from "./AbstractGenerator";
 
 const GitBranchRegExp = {
@@ -58,7 +58,7 @@ export abstract class SeedDrivenGenerator extends AbstractGenerator {
 
     public startingPoint(ctx: HandlerContext, params: this): Promise<Project> {
         return this.repoLoader()(
-            new SimpleRepoId(this.sourceOwner, this.sourceRepo, this.sourceBranch));
+            new GitHubRepoRef(this.sourceOwner, this.sourceRepo, this.sourceBranch));
     }
 
 }
