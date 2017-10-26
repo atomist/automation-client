@@ -2,7 +2,7 @@ import { GitProject } from "../../project/git/GitProject";
 import { gitHubRepoLoader } from "./gitHubRepoLoader";
 import { LocalRepoLoader } from "./localRepoLoader";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
-import { isLocalDirectory, RepoId } from "./RepoId";
+import { isLocalRepoRef, RepoRef } from "./RepoId";
 import { RepoLoader } from "./repoLoader";
 
 /**
@@ -12,8 +12,8 @@ import { RepoLoader } from "./repoLoader";
  * @constructor
  */
 export function defaultRepoLoader(credentials: ProjectOperationCredentials): RepoLoader<GitProject> {
-    return (repoId: RepoId) => {
-        if (isLocalDirectory(repoId.provider)) {
+    return (repoId: RepoRef) => {
+        if (isLocalRepoRef(repoId)) {
             return LocalRepoLoader(repoId) as Promise<GitProject>;
         } else {
            return gitHubRepoLoader(credentials)(repoId);
