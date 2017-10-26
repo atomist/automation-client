@@ -16,15 +16,18 @@ import { isCommandHandlerMetadata, isEventHandlerMetadata, isIngestorMetadata } 
  * @return {any}
  */
 export function metadataFromInstance(r: any): CommandHandlerMetadata | EventHandlerMetadata | IngestorMetadata {
+    let md = null;
     if (isEventHandlerMetadata(r)) {
-        return addName(r);
+        md = addName(r);
     } else if (isIngestorMetadata(r)) {
-        return addName(r);
+        md = addName(r);
     } else if (isCommandHandlerMetadata(r)) {
-        return addName(r);
+        md = addName(r);
     } else {
-        return metadataFromDecorator(r);
+        md = metadataFromDecorator(r);
     }
+    // Clone metadata as otherwise we mess with previous created instances  
+    return Object.assign({}, md);
 }
 
 function addName(r: CommandHandlerMetadata | EventHandlerMetadata | IngestorMetadata):
