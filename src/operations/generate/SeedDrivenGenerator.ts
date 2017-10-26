@@ -30,7 +30,7 @@ export abstract class SeedDrivenGenerator extends AbstractGenerator {
         required: false,
         displayable: false,
     })
-    public sourceOwner: string = "atomist-seeds";
+    public sourceOwner: string;
 
     @Parameter({
         pattern: GitHubNameRegExp.pattern,
@@ -42,7 +42,7 @@ export abstract class SeedDrivenGenerator extends AbstractGenerator {
         required: false,
         displayable: false,
     })
-    public sourceRepo: string = "spring-rest-seed";
+    public sourceRepo: string;
 
     @Parameter({
         pattern: GitBranchRegExp.pattern,

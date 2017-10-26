@@ -31,6 +31,12 @@ export class SpringBootSeed extends JavaSeed {
     })
     public serviceClassName: string = "RestService";
 
+    constructor() {
+        super();
+        this.sourceOwner = "atomist-seeds";
+        this.sourceRepo = "spring-rest-seed";
+    }
+
     public projectEditor(ctx: HandlerContext, params: this): ProjectEditor {
         return chainEditors(
             super.projectEditor(ctx, this),

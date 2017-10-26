@@ -34,6 +34,12 @@ export class UniversalSeed extends SeedDrivenGenerator {
     })
     public visibility: "public" | "private" = "public";
 
+    constructor() {
+        super();
+        this.sourceOwner = "atomist-seeds";
+        this.sourceRepo = "spring-rest-seed";
+    }
+
     public projectEditor(ctx: HandlerContext, params: this): ProjectEditor {
         return chainEditors(RemoveSeedFiles, curry(cleanReadMe)(this.description));
     }
