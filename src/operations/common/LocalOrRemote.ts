@@ -42,7 +42,7 @@ export abstract class LocalOrRemote {
 
     /**
      * Operate on all repos matching this filter.
-     * @param {(r: RepoId) => boolean} repoFilter
+     * @param {(r: RepoRef) => boolean} repoFilter
      */
     constructor(public repoFilter: RepoFilter = AllRepos) {
     }

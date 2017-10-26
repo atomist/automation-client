@@ -1,7 +1,7 @@
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
-import { RepoId } from "./RepoId";
+import { RepoRef } from "./RepoId";
 import { RepoLoader } from "./repoLoader";
 
 /**
@@ -11,7 +11,7 @@ import { RepoLoader } from "./repoLoader";
  * @constructor
  */
 export function gitHubRepoLoader(credentials: ProjectOperationCredentials): RepoLoader<GitProject> {
-    return (repoId: RepoId) => {
+    return (repoId: RepoRef) => {
         return GitCommandGitProject.cloned(credentials, repoId);
     };
 }

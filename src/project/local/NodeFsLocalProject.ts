@@ -8,7 +8,7 @@ import * as gs from "glob-stream";
 import * as stream from "stream";
 import { deleteFolderRecursive } from "../../internal/util/file";
 import { logger } from "../../internal/util/logger";
-import { RepoId } from "../../operations/common/RepoId";
+import { RepoRef } from "../../operations/common/RepoId";
 import { AbstractProject } from "../support/AbstractProject";
 import { toPromise } from "../util/projectUtils";
 import { isLocalProject, LocalProject } from "./LocalProject";
@@ -22,11 +22,11 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
 
     /**
      * Create a project from an existing directory. The directory must exist
-     * @param {RepoId} id
+     * @param {RepoRef} id
      * @param {string} baseDir
      * @return {Promise<LocalProject>}
      */
-    public static fromExistingDirectory(id: RepoId, baseDir: string): Promise<LocalProject> {
+    public static fromExistingDirectory(id: RepoRef, baseDir: string): Promise<LocalProject> {
         return fs.stat(baseDir).then(stat => {
             if (!stat.isDirectory()) {
                 throw new Error(`No such directory: [${baseDir}] when trying to create LocalProject`);
@@ -73,10 +73,10 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
     /**
      * Note: this does not validate existence of the target
      * directory, so using it except in tests should be avoided
-     * @param {RepoId} id
+     * @param {RepoRef} id
      * @param {string} baseDir
      */
-    public constructor(id: RepoId, baseDir: string) {
+    public constructor(id: RepoRef, baseDir: string) {
         super(id);
         // TODO not sure why app-root-path can return something weird and this coercion is necessary
         this.baseDir = "" + baseDir;

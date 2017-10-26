@@ -10,7 +10,7 @@ import { CommandResult, runCommand } from "../../action/cli/commandLine";
 import { logger } from "../../internal/util/logger";
 import { hideString } from "../../internal/util/string";
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
-import { RepoId, SimpleRepoId } from "../../operations/common/RepoId";
+import { GitHubRepoRef, RepoRef } from "../../operations/common/RepoId";
 import { CloneOptions, DefaultCloneOptions, DirectoryManager } from "../../spi/clone/DirectoryManager";
 import { StableDirectoryManager } from "../../spi/clone/StableDirectoryManager";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
@@ -45,18 +45,18 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     /**
      * Create a project from an existing git directory
-     * @param {RepoId} id
+     * @param {RepoRef} id
      * @param {string} baseDir
      * @param {ProjectOperationCredentials} credentials
      * @return {GitCommandGitProject}
      */
-    public static fromBaseDir(id: RepoId, baseDir: string,
+    public static fromBaseDir(id: RepoRef, baseDir: string,
                               credentials: ProjectOperationCredentials): GitCommandGitProject {
         return new GitCommandGitProject(id, baseDir, credentials);
     }
 
     public static cloned(credentials: ProjectOperationCredentials,
-                         id: RepoId,
+                         id: RepoRef,
                          opts: CloneOptions = DefaultCloneOptions,
                          directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitCommandGitProject> {
         return clone(credentials.token, id.owner, id.repo, id.sha, opts, directoryManager)
@@ -72,7 +72,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     public newRepo: boolean = false;
 
-    private constructor(id: RepoId, public baseDir: string, private credentials: ProjectOperationCredentials) {
+    private constructor(id: RepoRef, public baseDir: string, private credentials: ProjectOperationCredentials) {
         super(id, baseDir);
         logger.debug(`Created GitProject with token '${hideString(this.credentials.token)}'`);
     }
@@ -103,7 +103,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     public setGitHubRemote(owner: string, repo: string): Promise<CommandResult<this>> {
-        this.id = new SimpleRepoId(owner, repo);
+        this.id = new GitHubRepoRef(owner, repo);
         return this.setRemote(`https://${this.credentials.token}@github.com/${owner}/${repo}.git`);
     }
 
@@ -286,7 +286,7 @@ function clone(token: string,
                             .then(_ => {
                                 logger.debug(`Clone succeeded with URL '${url}'`);
                                 // fs.chmodSync(repoDir, "0777");
-                                return NodeFsLocalProject.fromExistingDirectory(new SimpleRepoId(user, repo), repoDir);
+                                return NodeFsLocalProject.fromExistingDirectory(new GitHubRepoRef(user, repo), repoDir);
                             });
                     case "actual-directory" :
                         throw new Error("actual-directory clone directory type not yet supported");

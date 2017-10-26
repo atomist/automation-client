@@ -1,20 +1,5 @@
-
-export interface LocalDirectory {
-    baseDir: string;
-}
-
-export interface GitHost {
-    url: "github.com";
-}
-
-export type VcsProvider = GitHost | LocalDirectory;
-
-export function isLocalDirectory(p: VcsProvider): p is LocalDirectory {
-    return (p as any).baseDir;
-}
-
 /**
- * Identifies a repo containing a potential Project.
+ * Identifies a git repo
  */
 export interface RepoId {
 
@@ -22,21 +7,52 @@ export interface RepoId {
 
     repo: string;
 
+}
+
+/**
+ * Identifies a version of a git repo containing a potential project
+ */
+export interface RepoRef extends RepoId {
+
     sha?: string;
 
-    provider: VcsProvider;
 }
 
-export function isRepoId(r: any): r is RepoId {
-    const maybeRi = r as RepoId;
-    return !!maybeRi.owner && !!maybeRi.repo;
+export type GitRemote = string;
+
+/**
+ * Identifies a git repo with a remote
+ */
+export interface RemoteRepoRef extends RepoRef {
+
+    remote: GitRemote;
 }
 
-export class SimpleRepoId implements RepoId {
+/**
+ * Identifies a git repo checked out in a local directory.
+ * A RepoRef can be both Remote and Local
+ */
+export interface LocalRepoRef extends RepoRef {
+
+    baseDir: string;
+}
+
+export function isLocalRepoRef(r: RepoRef): r is LocalRepoRef {
+    const maybeLocalRR = r as LocalRepoRef;
+    return !!maybeLocalRR.baseDir;
+}
+
+/**
+ * GitHub repo ref
+ */
+export class GitHubRepoRef implements RemoteRepoRef {
 
     constructor(public owner: string,
                 public repo: string,
-                public sha: string = "master",
-                public provider: VcsProvider = { url: "github.com" }) {
+                public sha: string = "master") {
+    }
+
+    get remote() {
+        return `https://github.com/${this.owner}/${this.repo}`;
     }
 }

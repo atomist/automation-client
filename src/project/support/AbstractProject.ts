@@ -1,6 +1,6 @@
 import { AbstractScriptedFlushable } from "../../internal/common/AbstractScriptedFlushable";
 import { logger } from "../../internal/util/logger";
-import { RepoId } from "../../operations/common/RepoId";
+import { RepoRef } from "../../operations/common/RepoId";
 import { File, FileNonBlocking } from "../File";
 import { DefaultExcludes, DefaultFiles } from "../fileGlobs";
 import { FileStream, Project } from "../Project";
@@ -14,7 +14,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
         return !!this.id ? this.id.repo : undefined;
     }
 
-    constructor(public id: RepoId) {
+    constructor(public id: RepoRef) {
         super();
     }
 

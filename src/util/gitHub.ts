@@ -2,7 +2,7 @@ import axios, { AxiosPromise } from "axios";
 import { logger } from "../internal/util/logger";
 
 import { decode } from "../internal/util/base64";
-import { RepoId } from "../operations/common/RepoId";
+import { RepoRef } from "../operations/common/RepoId";
 import { GitHubBase } from "../project/git/GitProject";
 
 /**
@@ -63,7 +63,7 @@ export interface Issue {
     assignees?: string[];
 }
 
-export function raiseIssue(token: string, repoId: RepoId, issue: Issue): AxiosPromise {
+export function raiseIssue(token: string, repoId: RepoRef, issue: Issue): AxiosPromise {
     const config = {
         headers: {
             Authorization: `token ${token}`,

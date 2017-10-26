@@ -1,6 +1,6 @@
 import { HandlerResult } from "../../HandlerResult";
 import { Issue } from "../../util/gitHub";
-import { RepoId } from "../common/RepoId";
+import { RepoRef } from "../common/RepoId";
 import { SourceLocation } from "../common/SourceLocation";
 
 export type Severity = "error" | "warn" | "info";
@@ -25,7 +25,7 @@ export interface ReviewComment {
  */
 export interface ProjectReview {
 
-    repoId: RepoId;
+    repoId: RepoRef;
 
     comments: ReviewComment[];
 }
@@ -45,9 +45,9 @@ export interface ReviewResult<T extends ProjectReview = ProjectReview> extends H
 /**
  * Give a project a clean bill of health, with no comments
  * @param repoId identification of project
- * @return {{repoId: RepoId, comments: Array}}
+ * @return {{repoId: RepoRef, comments: Array}}
  */
-export function clean(repoId: RepoId): ProjectReview {
+export function clean(repoId: RepoRef): ProjectReview {
     return {
         repoId,
         comments: [],

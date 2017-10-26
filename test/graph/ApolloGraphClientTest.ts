@@ -2,7 +2,7 @@ import "mocha";
 import { ApolloGraphClient } from "../../src/graph/ApolloGraphClient";
 
 import * as assert from "power-assert";
-import { SimpleRepoId } from "../../src/operations/common/RepoId";
+import { GitHubRepoRef } from "../../src/operations/common/RepoId";
 import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
 import { ReposQuery, ReposQueryVariables } from "../../src/schema/schema";
 import { GitHubToken } from "../atomist.config";
@@ -39,7 +39,7 @@ describe("ApolloGraphClient", () => {
                 assert(org.repo.length > 0);
                 const repo1 = org.repo[0];
                 GitCommandGitProject.cloned({token: GitHubToken },
-                    new SimpleRepoId(repo1.owner, repo1.name))
+                    new GitHubRepoRef(repo1.owner, repo1.name))
                     .then(p => {
                         const readme = p.findFileSync("README.md");
                         assert(readme);

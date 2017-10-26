@@ -22,7 +22,7 @@ describe("twoTierRepoFinder & LocalRepoLoader", () => {
                 assert(ids[0].repo === repo);
                 assert(ids[0].owner === owner);
                 done();
-            });
+            }).catch(done);
     });
 
     it("loads projects from local finder", done => {
@@ -43,7 +43,7 @@ describe("twoTierRepoFinder & LocalRepoLoader", () => {
                         assert(p.findFileSync("thing").getContentSync() === "1");
                         done();
                     });
-            });
+            }).catch(done);
     });
 
 });

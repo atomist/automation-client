@@ -2,7 +2,7 @@ import * as _ from "lodash";
 
 import {Chain} from "./Chain";
 
-import { RepoId } from "../../operations/common/RepoId";
+import { RepoRef } from "../../operations/common/RepoId";
 import {GitCommandGitProject} from "../git/GitCommandGitProject";
 import {GitProject} from "../git/GitProject";
 
@@ -42,14 +42,14 @@ export class DifferenceEngine {
             {
                 ...githubIssueAuth,
                 sha,
-            } as RepoId);
+            } as RepoRef);
     }
 }
 
 /**
  * Details that allow a GitHub issue to be referenced and modified
  */
-export interface GithubIssueAuth extends RepoId  {
+export interface GithubIssueAuth extends RepoRef  {
     githubToken: string;
     issueNumber: number;
 }

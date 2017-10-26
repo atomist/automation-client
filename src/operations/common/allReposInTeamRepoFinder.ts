@@ -2,7 +2,7 @@ import { HandlerContext } from "../../HandlerContext";
 import { ReposQuery, ReposQueryVariables } from "../../schema/schema";
 import { twoTierDirectoryRepoFinder } from "./localRepoFinder";
 import { RepoFinder } from "./repoFinder";
-import { RepoId, SimpleRepoId } from "./RepoId";
+import { GitHubRepoRef, RepoRef } from "./RepoId";
 
 // Hard-coded limit in GraphQL queries. Not sure why we can't pass this
 const PageSize = 100;
@@ -39,17 +39,17 @@ query Repos($teamId: ID!, $offset: Int!) {
  * Recursively query for repos from the present offset
  * @param {HandlerContext} context
  * @param {number} offset
- * @return {Promise<RepoId[]>}
+ * @return {Promise<RepoRef[]>}
  */
-function queryForPage(context: HandlerContext, offset: number): Promise<RepoId[]> {
+function queryForPage(context: HandlerContext, offset: number): Promise<RepoRef[]> {
     return context.graphClient.executeQuery<ReposQuery, ReposQueryVariables>(
         RepoQuery,
         {teamId: context.teamId, offset})
         .then(result => {
             const org = result.ChatTeam[0].orgs[0];
-            return org.repo.map(r => new SimpleRepoId(r.owner, r.name));
+            return org.repo.map(r => new GitHubRepoRef(r.owner, r.name));
         })
-        .then((repos: RepoId[]) => {
+        .then((repos: RepoRef[]) => {
             return (repos.length < PageSize) ?
                 repos :
                 queryForPage(context, offset + PageSize)

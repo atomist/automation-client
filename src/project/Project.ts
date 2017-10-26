@@ -1,6 +1,6 @@
 import { Stream } from "stream";
 import { ScriptedFlushable } from "../internal/common/Flushable";
-import { RepoId } from "../operations/common/RepoId";
+import { RepoRef } from "../operations/common/RepoId";
 import { File } from "./File";
 
 /**
@@ -10,7 +10,7 @@ export interface ProjectCore {
 
     readonly name: string;
 
-    id: RepoId;
+    id: RepoRef;
 
 }
 
