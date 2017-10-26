@@ -1,17 +1,18 @@
 import * as _ from "lodash";
 
-import {Chain} from "./Chain";
+import { Chain } from "./Chain";
 
-import { RepoRef } from "../../operations/common/RepoId";
-import {GitCommandGitProject} from "../git/GitCommandGitProject";
-import {GitProject} from "../git/GitProject";
+import { GitHubRepoRef, RepoRef } from "../../operations/common/RepoId";
+import { GitCommandGitProject } from "../git/GitCommandGitProject";
+import { GitProject } from "../git/GitProject";
 
 /**
  * Extracts fingerprints, diffs them, and invokes actions on Github shas that are being compared
  */
 export class DifferenceEngine {
 
-    constructor(private githubIssueAuth: GithubIssueAuth, private chains: Array<Chain<any, any>>) {}
+    constructor(private githubIssueAuth: GithubIssueAuth, private chains: Array<Chain<any, any>>) {
+    }
 
     /**
      * Run configured diff chains for these shas
@@ -22,7 +23,7 @@ export class DifferenceEngine {
         const baseProjectPromise = this.cloneRepo(this.githubIssueAuth, baseSha);
         baseProjectPromise.then(project => {
             const baseFingerprintPromises: Array<Promise<any>> = _.map(this.chains, c => c.extractor.extract(project));
-            Promise.all(baseFingerprintPromises).then( baseFps => {
+            Promise.all(baseFingerprintPromises).then(baseFps => {
                 const headProjectCheckout = project.checkout(headSha);
                 headProjectCheckout.then(headProjectCheckoutSuccess => {
                     const headFingerprintPromises: Array<Promise<any>> =
@@ -41,15 +42,15 @@ export class DifferenceEngine {
             {token: githubIssueAuth.githubToken},
             {
                 ...githubIssueAuth,
-                sha,
-            } as RepoRef);
+                ...new GitHubRepoRef(githubIssueAuth.owner, githubIssueAuth.repo, githubIssueAuth.sha),
+            } as GitHubRepoRef);
     }
 }
 
 /**
  * Details that allow a GitHub issue to be referenced and modified
  */
-export interface GithubIssueAuth extends RepoRef  {
+export interface GithubIssueAuth extends RepoRef {
     githubToken: string;
     issueNumber: number;
 }

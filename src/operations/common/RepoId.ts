@@ -18,14 +18,22 @@ export interface RepoRef extends RepoId {
 
 }
 
-export type GitRemote = string;
-
 /**
  * Identifies a git repo with a remote
  */
 export interface RemoteRepoRef extends RepoRef {
 
-    remote: GitRemote;
+    /**
+     * Remote base
+     */
+    readonly remoteBase: string;
+
+    pathComponent: string;
+
+    /**
+     * Entire url of the repo
+     */
+    url: string;
 }
 
 /**
@@ -42,17 +50,32 @@ export function isLocalRepoRef(r: RepoRef): r is LocalRepoRef {
     return !!maybeLocalRR.baseDir;
 }
 
-/**
- * GitHub repo ref
- */
-export class GitHubRepoRef implements RemoteRepoRef {
+export class RemoteRepoRefSupport implements RemoteRepoRef {
 
-    constructor(public owner: string,
+    constructor(public remoteBase: string,
+                public owner: string,
                 public repo: string,
                 public sha: string = "master") {
     }
 
-    get remote() {
-        return `https://github.com/${this.owner}/${this.repo}`;
+    get url() {
+        return `${this.remoteBase}/${this.owner}/${this.repo}`;
     }
+
+    get pathComponent() {
+        return `${this.owner}/${this.repo}`;
+    }
+}
+
+/**
+ * GitHub repo ref
+ */
+export class GitHubRepoRef extends RemoteRepoRefSupport {
+
+    constructor(owner: string,
+                repo: string,
+                sha: string = "master") {
+        super("github.com", owner, repo, sha);
+    }
+
 }
