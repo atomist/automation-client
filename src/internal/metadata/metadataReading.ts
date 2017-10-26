@@ -1,4 +1,5 @@
 import * as GraphQL from "../../graph/graphQL";
+import * as _ from "lodash";
 import {
     CommandHandlerMetadata,
     EventHandlerMetadata,
@@ -7,7 +8,11 @@ import {
     Parameter,
     SecretDeclaration,
 } from "../../metadata/automationMetadata";
-import { isCommandHandlerMetadata, isEventHandlerMetadata, isIngestorMetadata } from "./metadata";
+import {
+    isCommandHandlerMetadata,
+    isEventHandlerMetadata,
+    isIngestorMetadata,
+} from "./metadata";
 
 /**
  * Extract metadata from a handler instance. We need an
@@ -27,7 +32,7 @@ export function metadataFromInstance(r: any): CommandHandlerMetadata | EventHand
         md = metadataFromDecorator(r);
     }
     // Clone metadata as otherwise we mess with previous created instances
-    return Object.assign({}, md);
+    return _.cloneDeep(md);
 }
 
 function addName(r: CommandHandlerMetadata | EventHandlerMetadata | IngestorMetadata):
