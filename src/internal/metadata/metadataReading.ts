@@ -26,7 +26,7 @@ export function metadataFromInstance(r: any): CommandHandlerMetadata | EventHand
     } else {
         md = metadataFromDecorator(r);
     }
-    // Clone metadata as otherwise we mess with previous created instances  
+    // Clone metadata as otherwise we mess with previous created instances
     return Object.assign({}, md);
 }
 
