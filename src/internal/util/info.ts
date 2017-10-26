@@ -1,7 +1,6 @@
 import * as appRoot from "app-root-path";
 import { Automations } from "../metadata/metadata";
 
-
 export function info(automations: Automations): any {
     const i: any = {};
 
