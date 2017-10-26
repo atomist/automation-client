@@ -241,14 +241,17 @@ export class ExpressServer {
 
         exp.post(url, authenticate, (req, res) => {
 
+            const id =  this.automations.automations.team_ids
+                ? this.automations.automations.team_ids[0] : "Txxxxxxxx";
+
             const payload: CommandIncoming = {
                 atomist_type: "command_handler_request",
                 name: h.name,
                 rug: {},
-                correlation_context: {team: { id: this.automations.automations.team_ids[0] }},
+                correlation_context: {team: { id }},
                 corrid: guid(),
                 team: {
-                    id: this.automations.automations.team_ids[0],
+                    id,
                 },
                 ...req.body,
             };
@@ -289,6 +292,9 @@ export class ExpressServer {
                     }
                 });
 
+                const id =  this.automations.automations.team_ids
+                    ? this.automations.automations.team_ids[0] : "Txxxxxxxx";
+
                 const payload: CommandIncoming = {
                     atomist_type: "command_handler_request",
                     name: h.name,
@@ -296,10 +302,10 @@ export class ExpressServer {
                     rug: {},
                     mapped_parameters: mappedParameters,
                     secrets,
-                    correlation_context: {team: { id: this.automations.automations.team_ids[0] }},
+                    correlation_context: { team: { id } },
                     corrid: guid(),
                     team: {
-                        id: this.automations.automations.team_ids[0],
+                        id,
                     },
                 };
                 this.handler.processCommand(payload, result => {
