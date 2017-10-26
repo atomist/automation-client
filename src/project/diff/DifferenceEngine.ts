@@ -1,16 +1,18 @@
 import * as _ from "lodash";
 
-import {Chain} from "./Chain";
+import { Chain } from "./Chain";
 
-import {GitCommandGitProject} from "../git/GitCommandGitProject";
-import {GitProject} from "../git/GitProject";
+import { GitHubRepoRef, RepoRef } from "../../operations/common/RepoId";
+import { GitCommandGitProject } from "../git/GitCommandGitProject";
+import { GitProject } from "../git/GitProject";
 
 /**
  * Extracts fingerprints, diffs them, and invokes actions on Github shas that are being compared
  */
 export class DifferenceEngine {
 
-    constructor(private githubIssueAuth: GithubIssueAuth, private chains: Array<Chain<any, any>>) {}
+    constructor(private githubIssueAuth: GithubIssueAuth, private chains: Array<Chain<any, any>>) {
+    }
 
     /**
      * Run configured diff chains for these shas
@@ -21,7 +23,7 @@ export class DifferenceEngine {
         const baseProjectPromise = this.cloneRepo(this.githubIssueAuth, baseSha);
         baseProjectPromise.then(project => {
             const baseFingerprintPromises: Array<Promise<any>> = _.map(this.chains, c => c.extractor.extract(project));
-            Promise.all(baseFingerprintPromises).then( baseFps => {
+            Promise.all(baseFingerprintPromises).then(baseFps => {
                 const headProjectCheckout = project.checkout(headSha);
                 headProjectCheckout.then(headProjectCheckoutSuccess => {
                     const headFingerprintPromises: Array<Promise<any>> =
@@ -38,18 +40,14 @@ export class DifferenceEngine {
     private cloneRepo(githubIssueAuth: GithubIssueAuth, sha: string): Promise<GitProject> {
         return GitCommandGitProject.cloned(
             {token: githubIssueAuth.githubToken},
-            githubIssueAuth.owner,
-            githubIssueAuth.repo,
-            sha);
+                new GitHubRepoRef(githubIssueAuth.owner, githubIssueAuth.repo, githubIssueAuth.sha));
     }
 }
 
 /**
  * Details that allow a GitHub issue to be referenced and modified
  */
-export interface GithubIssueAuth {
+export interface GithubIssueAuth extends RepoRef {
     githubToken: string;
-    owner: string;
-    repo: string;
     issueNumber: number;
 }

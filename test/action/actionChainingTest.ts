@@ -2,7 +2,7 @@ import "mocha";
 import * as assert from "power-assert";
 import { actionChain, actionChainWithCombiner, NoAction } from "../../src/action/actionOps";
 import { ActionResult } from "../../src/action/ActionResult";
-import { SimpleRepoId } from "../../src/operations/common/RepoId";
+import { GitHubRepoRef } from "../../src/operations/common/RepoId";
 import { ProjectOp } from "../../src/operations/edit/projectEditorOps";
 import { InMemoryProject } from "../../src/project/mem/InMemoryProject";
 
@@ -36,7 +36,7 @@ describe("action chaining", () => {
     });
 
     it("should edit with real editor", done => {
-        const project = new InMemoryProject(new SimpleRepoId("org", "name"));
+        const project = new InMemoryProject(new GitHubRepoRef("org", "name"));
         const editor: ProjectOp = p => {
             return p.addFile("thing", "1");
         };
@@ -49,7 +49,7 @@ describe("action chaining", () => {
     });
 
     it("should work in both directions", done => {
-        const project = new InMemoryProject(new SimpleRepoId("org", "name"));
+        const project = new InMemoryProject(new GitHubRepoRef("org", "name"));
         const editor: ProjectOp = p => {
             return p.addFile("thing", "1");
         };
@@ -62,7 +62,7 @@ describe("action chaining", () => {
     });
     // how is this in any way different from the previous two except a variable name?
     it("should allow project function to be included", done => {
-        const project = new InMemoryProject(new SimpleRepoId("org", "name"));
+        const project = new InMemoryProject(new GitHubRepoRef("org", "name"));
         const projectFunction = p => {
             return p.addFile("thing", "1");
         };

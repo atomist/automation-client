@@ -1,9 +1,9 @@
 import axios, { AxiosPromise } from "axios";
-import { logger } from "./logger";
+import { logger } from "../internal/util/logger";
 
-import { RepoId } from "../../operations/common/RepoId";
-import { GitHubBase } from "../../project/git/GitProject";
-import { decode } from "./base64";
+import { decode } from "../internal/util/base64";
+import { RepoRef } from "../operations/common/RepoId";
+import { GitHubBase } from "../project/git/GitCommandGitProject";
 
 /**
  * Check whether the given file, including path, exists
@@ -63,7 +63,7 @@ export interface Issue {
     assignees?: string[];
 }
 
-export function raiseIssue(token: string, repoId: RepoId, issue: Issue): AxiosPromise {
+export function raiseIssue(token: string, repoId: RepoRef, issue: Issue): AxiosPromise {
     const config = {
         headers: {
             Authorization: `token ${token}`,

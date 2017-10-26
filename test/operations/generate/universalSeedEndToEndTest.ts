@@ -7,11 +7,11 @@ import * as tmp from "tmp-promise";
 import axios from "axios";
 
 import { HandlerContext } from "../../../src/HandlerContext";
-import { hasFile } from "../../../src/internal/util/gitHub";
-import { SimpleRepoId } from "../../../src/operations/common/RepoId";
+import { GitHubRepoRef } from "../../../src/operations/common/RepoId";
 import { UniversalSeed } from "../../../src/operations/generate/UniversalSeed";
-import { GitHubBase } from "../../../src/project/git/GitProject";
+import { GitHubBase } from "../../../src/project/git/GitCommandGitProject";
 import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProject";
+import { hasFile } from "../../../src/util/gitHub";
 import { GitHubToken } from "../../atomist.config";
 
 const TargetRepo = `test-repo-${new Date().getTime()}`;
@@ -80,7 +80,7 @@ describe("Universal seed end to end", () => {
                 assert(result.code === 0);
                 assert(result.baseDir);
                 NodeFsLocalProject.fromExistingDirectory(
-                    new SimpleRepoId("owner", TargetRepo), cwd + "/" + TargetRepo)
+                    new GitHubRepoRef("owner", TargetRepo), cwd + "/" + TargetRepo)
                     .then(created => {
                         assert(created.fileExistsSync("pom.xml"));
                         done();

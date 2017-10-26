@@ -1,7 +1,7 @@
 import * as minimatch from "minimatch";
 import * as spigot from "stream-spigot";
 
-import { RepoId, SimpleRepoId } from "../../operations/common/RepoId";
+import { GitHubRepoRef, RepoRef } from "../../operations/common/RepoId";
 import { File } from "../File";
 import { FileStream } from "../Project";
 import { AbstractProject } from "../support/AbstractProject";
@@ -14,11 +14,11 @@ export class InMemoryProject extends AbstractProject {
 
     /**
      * Create a new InMemoryProject
-     * @param id: RepoId
+     * @param id: RepoRef
      * @param files files to include in the project
      * @return {InMemoryProject}
      */
-    public static from(id: RepoId, ...files: Array<{ path: string, content: string}>): InMemoryProject {
+    public static from(id: RepoRef, ...files: Array<{ path: string, content: string}>): InMemoryProject {
         const inp = new InMemoryProject(id);
         files.forEach(f => inp.recordAddFile(f.path, f.content));
         return inp;
@@ -33,7 +33,7 @@ export class InMemoryProject extends AbstractProject {
 
     private memFiles: InMemoryFile[] = [];
 
-    constructor(xid?: RepoId) {
+    constructor(xid?: RepoRef) {
         super(xid);
     }
 

@@ -1,8 +1,5 @@
 import { ActionResult } from "../../action/ActionResult";
-import { RepoId } from "../../operations/common/RepoId";
 import { LocalProject } from "../local/LocalProject";
-
-export const GitHubBase = "https://api.github.com";
 
 /**
  * Local project using git. Provides the ability to perform git operations
@@ -10,17 +7,11 @@ export const GitHubBase = "https://api.github.com";
  */
 export interface GitProject extends LocalProject {
 
-    readonly id: RepoId;
-
-    readonly branch: string;
+    branch: string;
 
     remote: string;
 
     newRepo: boolean;
-
-    repoName: string;
-
-    owner: string;
 
     /**
      * Init git for this project.

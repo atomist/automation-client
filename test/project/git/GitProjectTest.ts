@@ -6,9 +6,9 @@ import { tempProject } from "../utils";
 
 import * as exec from "child_process";
 import { ActionResult } from "../../../src/action/ActionResult";
-import { SimpleRepoId } from "../../../src/operations/common/RepoId";
-import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
-import { GitHubBase, GitProject } from "../../../src/project/git/GitProject";
+import { GitHubRepoRef } from "../../../src/operations/common/RepoId";
+import { GitCommandGitProject, GitHubBase } from "../../../src/project/git/GitCommandGitProject";
+import { GitProject } from "../../../src/project/git/GitProject";
 import { LocalProject } from "../../../src/project/local/LocalProject";
 import { Project } from "../../../src/project/Project";
 import { GitHubToken } from "../../atomist.config";
@@ -25,7 +25,7 @@ function checkProject(p: Project) {
 const TargetRepo = `test-repo-${new Date().getTime()}`;
 let TargetOwner = "johnsonr";
 
-const Creds = {token: GitHubToken };
+const Creds = {token: GitHubToken};
 
 describe("GitProject", () => {
 
@@ -99,7 +99,7 @@ describe("GitProject", () => {
     });
 
     it("commit then add has uncommitted", done => {
-        const p = tempProject(new SimpleRepoId("owner", "repo"));
+        const p = tempProject(new GitHubRepoRef("owner", "repo"));
         p.addFileSync("Thing", "1");
         const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
         gp.init()
@@ -165,23 +165,25 @@ describe("GitProject", () => {
         this.retries(5);
 
         newRepo().then(_ => {
-            return GitCommandGitProject.cloned(Creds, TargetOwner, TargetRepo).then(gp => {
-                gp.addFileSync("Cat", "hat");
-                const branch = "thing2";
-                gp.createBranch(branch)
-                    .then(x => gp.commit("Added a Thing"))
-                    .then(x => gp.push())
-                    .then(x => {
-                        return gp.raisePullRequest("Thing2", "Adds another character");
-                    })
-                    .then(x => done());
-            });
+            return GitCommandGitProject.cloned(Creds,
+                new GitHubRepoRef(TargetOwner, TargetRepo))
+                .then(gp => {
+                    gp.addFileSync("Cat", "hat");
+                    const branch = "thing2";
+                    gp.createBranch(branch)
+                        .then(x => gp.commit("Added a Thing"))
+                        .then(x => gp.push())
+                        .then(x => {
+                            return gp.raisePullRequest("Thing2", "Adds another character");
+                        })
+                        .then(x => done());
+                });
         }).catch(done);
     }).timeout(20000);
 
     it("check out commit", done => {
         const sha = "590ed8f7a2430d45127ea04cc5bdf736fe698712";
-        GitCommandGitProject.cloned(Creds, "atomist", "microgrammar", sha)
+        GitCommandGitProject.cloned(Creds, new GitHubRepoRef("atomist", "microgrammar", sha))
             .then(p => {
                 checkProject(p);
                 const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);

@@ -1,10 +1,10 @@
 import { Parameter } from "../../decorators";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
-import { raiseIssue } from "../../internal/util/gitHub";
 import { logger } from "../../internal/util/logger";
+import { raiseIssue } from "../../util/gitHub";
 import { LocalOrRemoteRepoOperation } from "../common/LocalOrRemoteRepoOperation";
-import { RepoId } from "../common/RepoId";
+import { RepoRef } from "../common/RepoId";
 import { ProjectReviewer } from "./projectReviewer";
 import { ProjectReview, ReviewResult } from "./ReviewResult";
 
@@ -32,7 +32,7 @@ export abstract class ReviewerCommandSupport<RR extends ReviewResult<PR> = Revie
         // Save us from "this"
         const projectReviewer: ProjectReviewer<this, PR> = this.projectReviewer(context);
 
-        const repoIdPromises: Promise<RepoId[]> = this.repoFinder()(context);
+        const repoIdPromises: Promise<RepoRef[]> = this.repoFinder()(context);
         const projectReviews: Promise<Array<Promise<PR>>> = repoIdPromises
             .then(repos => repos.map(id => {
                 return Promise.resolve(this.repoFilter(id))
