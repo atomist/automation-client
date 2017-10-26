@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Project copying
 -   Update package dependencies and scripts for portability
+-   Git provider is now pluggable
 
 ### Fixed
 
