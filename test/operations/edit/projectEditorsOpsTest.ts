@@ -3,6 +3,7 @@ import * as assert from "power-assert";
 import { ProjectEditor, successfulEdit } from "../../../src/operations/edit/projectEditor";
 import { chainEditors, NoOpEditor } from "../../../src/operations/edit/projectEditorOps";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
+import { Project } from "../../../src/project/Project";
 import { tempProject } from "../../project/utils";
 
 describe("editor chaining", () => {
@@ -55,12 +56,56 @@ describe("editor chaining", () => {
             }).catch(done);
     });
 
+    function failingOp(p: Project): Promise<Project> {
+        return Promise.reject(new Error("This was supposed to fail"));
+    }
+
+    function happyOp(p: Project): Promise<Project> {
+        return Promise.resolve(p);
+    }
+
+    it("should handle a series of project transforms", done => {
+        const chain = chainEditors( happyOp, happyOp, happyOp);
+
+        const project = new InMemoryProject();
+
+        chain(project, null).then(res => {
+            assert(res.success);
+            done();
+        }).catch(done);
+    });
+
+    it("should fail when project transforms fail a series of project transforms", done => {
+        const chain = chainEditors( happyOp, failingOp, happyOp);
+
+        const project = new InMemoryProject();
+
+        chain(project, null).then(res => {
+            assert(!res.success);
+            assert(res.error.message === "This was supposed to fail");
+            done();
+        }).catch(done);
+    });
+
     it("should allow project function to be included", done => {
         const project = new InMemoryProject();
         const projectFunction = p => {
             return p.addFile("thing", "1");
         };
         const editorChain = chainEditors(projectFunction, NoOpEditor);
+        editorChain(project, null)
+            .then(r => {
+                assert(r.edited);
+                done();
+            }).catch(done);
+    });
+
+    it("should allow project function to be included after editor", done => {
+        const project = new InMemoryProject();
+        const projectFunction = p => {
+            return p.addFile("thing", "1");
+        };
+        const editorChain = chainEditors(projectFunction, NoOpEditor, (p: Project) => Promise.resolve(p));
         editorChain(project, null)
             .then(r => {
                 assert(r.edited);
