@@ -7,9 +7,45 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.2.1...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.2.3...HEAD
 
-### Fixes
+### Changed
+
+-   Project copying
+-   Update package dependencies and scripts for portability
+
+### Fixed
+
+-   Various generator issues
+-   Handler metadata inheritance
+
+## [0.2.3][] - 2017-10-24
+
+[0.2.3]: https://github.com/atomist/automation-client-ts/compare/0.2.2...0.2.3
+
+Refactoring release
+
+### Changed
+
+-   Generator and editor refactoring
+-   Update command page
+
+## [0.2.2][] - 2017-10-24
+
+[0.2.2]: https://github.com/atomist/automation-client-ts/compare/0.2.1...0.2.2
+
+Administrative release
+
+### Added
+
+-   Administrative endpoints for health, info, etc.
+
+### Changed
+
+-   Pulled up ProjectOperationCredentials and DirectoryManager
+    interfaces
+
+### Fixed
 
 -   Create client config in proper directory on win32 [#44][44],
     thanks to [jwalter][]
