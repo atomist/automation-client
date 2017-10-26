@@ -11,6 +11,11 @@ export interface RepoId {
 
 }
 
+export class SimpleRepoId implements RepoId {
+
+    constructor(public owner: string, public repo: string) {}
+}
+
 /**
  * Identifies a version of a git repo containing a potential project
  */

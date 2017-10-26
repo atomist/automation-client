@@ -20,6 +20,12 @@ describe("NodeFsLocalProject", () => {
 
     const thisProject: LocalProject = new NodeFsLocalProject(new GitHubRepoRef("owner", "test"), appRoot.path);
 
+    it("can create from string", () => {
+        const p = new NodeFsLocalProject("thing", "/base/dir");
+        assert(p.id.owner === undefined);
+        assert(p.id.repo === "thing");
+    });
+
     it("rejects no such directory", done => {
         NodeFsLocalProject.fromExistingDirectory(new GitHubRepoRef("owner", "name"),
             "This/is/complete/nonsense")
