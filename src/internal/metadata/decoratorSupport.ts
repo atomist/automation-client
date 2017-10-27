@@ -1,5 +1,5 @@
 
-import { ParameterType } from "../../metadata/automationMetadata";
+import { Group, ParameterType } from "../../metadata/automationMetadata";
 
 export interface BaseParameter {
     readonly pattern: RegExp;
@@ -12,6 +12,7 @@ export interface BaseParameter {
     readonly minLength?: number;
     readonly type?: ParameterType;
     readonly order?: number;
+    readonly group?: Group;
 }
 
 export interface Parameter extends BaseParameter {

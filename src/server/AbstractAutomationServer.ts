@@ -48,7 +48,7 @@ export abstract class AbstractAutomationServer implements AutomationServer {
                 }
             } else {
                 // We have a parameter. Validate it
-                if (p.pattern && payloadValue.value.match(new RegExp(p.pattern)) === null) {
+                if (p.pattern && (payloadValue.value as string).match(new RegExp(p.pattern)) === null) {
                     throw new Error(`Parameter '${p.name}' value of '${payloadValue.value}'` +
                         ` invalid in invocation to '${handler.name}' with pattern '${p.pattern}'`);
                 }
