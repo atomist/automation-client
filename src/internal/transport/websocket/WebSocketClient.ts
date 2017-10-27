@@ -170,7 +170,7 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
                 const nameVersion = `${registrationPayload.name}@${registrationPayload.version}`;
                 if (error.response && error.response.status === 409) {
                     logger.error(`Registration failed because a session for ${nameVersion} is already active`);
-                    retry();
+                    retry(error);
                 } else if (error.response && error.response.status === 400) {
                     logger.error(`Registration payload for ${nameVersion} was invalid`);
                     process.exit(1);
@@ -194,7 +194,7 @@ This could be caused by:
                     process.exit(1);
                 } else {
                     logger.error("Registration failed with '%s'", error);
-                    retry();
+                    retry(error);
                 }
             });
     });
