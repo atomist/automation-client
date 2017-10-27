@@ -26,7 +26,12 @@ function convertRegExpValuesToString(data: any): any {
 
 function prepareCommandRegistration(c: CommandHandlerMetadata) {
     return {
-        ...c,
+        name: c.name,
+        description: c.description,
+        tags: c.tags,
+        intent: c.intent,
+        parameters: c.parameters,
+        mapped_parameters: c.mapped_parameters,
         secrets: c.secrets ? c.secrets.map(s => s.path) : [],
     };
 }

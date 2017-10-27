@@ -185,7 +185,6 @@ export class AutomationClient {
     }
 }
 
-export function automationClient(configuration: Configuration):
-    AutomationClient {
+export function automationClient(configuration: Configuration): AutomationClient {
     return new AutomationClient(configuration);
 }

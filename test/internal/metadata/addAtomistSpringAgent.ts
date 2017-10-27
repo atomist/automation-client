@@ -30,4 +30,7 @@ export const addAtomistSpringAgent: HandleCommand =
             ctx.messageClient.respond("I got your message: slackTeam=" + params.slackTeam)
                 .then(succeed),
         AddAtomistSpringAgentParams,
-        "AddAtomistSpringAgent");
+        "AddAtomistSpringAgent",
+        "add the Atomist Agent to a Spring Boot project",
+        "add agent",
+        [ "atomist", "spring", "agent" ]);

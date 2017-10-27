@@ -111,12 +111,17 @@ export function resolveModuleConfig(userConfig: UserConfig, pkgJson: any): Modul
 
 const AtomistConfigFile = "atomist.config.js";
 
-export function findConfiguration(): Configuration {
+export function findConfiguration(path?: string): Configuration {
     const moduleConfig = getModuleConfig();
 
     // TODO we could add an env variable ATOMIST_CONFIG for people to specify a path to a file to use
     const glob = require("glob");
-    const files = glob.sync(`**/${AtomistConfigFile}`, {ignore: "node_modules/**"});
+    const files = glob.sync(`**/${AtomistConfigFile}`, { ignore: "node_modules/**" });
+
+    // add the provided file
+    if (path) {
+        files.push(path);
+    }
 
     if (files.length === 0) {
         throw new Error(`No '${AtomistConfigFile}' file found in project`);

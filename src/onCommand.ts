@@ -5,6 +5,7 @@ import {
     HandlerResult,
 } from "./Handlers";
 import { metadataFromInstance } from "./internal/metadata/metadataReading";
+import { toStringArray } from "./internal/util/string";
 import {
     CommandHandlerMetadata,
     MappedParameterDeclaration,
@@ -12,6 +13,7 @@ import {
     SecretDeclaration,
     Tag,
 } from "./metadata/automationMetadata";
+import { registerCommand } from "./scan";
 
 export interface ParametersConstructor<P> {
 
@@ -44,12 +46,14 @@ export function commandHandlerFrom<P>(h: OnCommand<P>,
                                       factory: ParametersConstructor<P>,
                                       name: string = h.name,
                                       description: string = name,
-                                      intent: string[] = [],
-                                      tags: Tag[] = []): HandleCommand<P> & CommandHandlerMetadata {
+                                      intent: string | string[] = [],
+                                      tags: string | string[] = []): HandleCommand<P> & CommandHandlerMetadata {
     if (!name) {
-        throw new Error(`Cannot derive name from function [${h}]: Provide name explicitly`);
+        throw new Error(`Cannot derive name from function '${h}': Provide name explicitly`);
     }
-    return new FunctionWrappingCommandHandler(name, description, h, factory, tags, intent);
+    const handler = new FunctionWrappingCommandHandler(name, description, h, factory, tags, intent);
+    registerCommand(handler);
+    return handler;
 }
 
 class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P> {
@@ -60,18 +64,24 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
     public mapped_parameters: MappedParameterDeclaration[];
 
     public secrets?: SecretDeclaration[];
+    public intent?: string[];
+    public tags?: Tag[];
 
     constructor(public name: string,
                 public description: string,
                 private h: OnCommand<P>,
                 private parametersFactory: ParametersConstructor<P>,
-                public tags: Tag[] = [],
-                public intent: string[] = []) {
+                // tslint:disable-next-line:variable-name
+                private _tags: string | string[] = [],
+                // tslint:disable-next-line:variable-name
+                private _intent: string | string[] = []) {
         const newParamInstance = this.freshParametersInstance();
         const md = metadataFromInstance(newParamInstance) as CommandHandlerMetadata;
         this.parameters = md.parameters;
         this.mapped_parameters = md.mapped_parameters;
         this.secrets = md.secrets;
+        this.intent = toStringArray(_intent);
+        this.tags = toStringArray(_tags).map(t => ({ name: t, description: t}) );
     }
 
     public freshParametersInstance(): P {
@@ -82,7 +92,7 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
         const handlerResult = this.h(ctx, params);
         if (!handlerResult) {
             return Promise.reject(
-                `Error: Function Handler [${this.name}] returned null or undefined: Probably a user coding error`);
+                `Error: Function Handler '${this.name}' returned null or undefined: Probably a user coding error`);
         }
         return handlerResult;
     }

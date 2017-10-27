@@ -5,6 +5,7 @@ import {
     declareIngestor,
     declareMappedParameter,
     declareParameter,
+    declareParameters,
     declareSecret,
     declareTags,
 } from "./internal/metadata/decoratorSupport";
@@ -53,7 +54,7 @@ export function CommandHandler(description: string, intent?: string[] | string) 
  * @constructor
  */
 export function Parameters() {
-    return (obj: any) => { declareCommandHandler(obj, undefined, []); };
+    return (obj: any) => { declareParameters(obj); };
 }
 
 export function Ingestor(
