@@ -1,4 +1,7 @@
-import { ParameterType } from "../../metadata/automationMetadata";
+import {
+    Group,
+    ParameterType,
+} from "../../metadata/automationMetadata";
 import {
     registerCommand,
     registerEvent,
@@ -15,11 +18,12 @@ export interface BaseParameter {
     readonly minLength?: number;
     readonly type?: ParameterType;
     readonly order?: number;
+    readonly group?: Group;
 }
 
 export interface Parameter extends BaseParameter {
     readonly name: string;
-    readonly default?: string;
+    // readonly default?: string;
 }
 
 function set_metadata(obj: any, key: string, value: any) {

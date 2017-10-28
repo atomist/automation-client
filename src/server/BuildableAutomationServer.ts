@@ -224,7 +224,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
             public resolve(key: string): string {
                 const value = this.mp.find(a => a.name === key);
                 if (value) {
-                    return value.value;
+                    return String(value.value);
                 }
                 throw new Error(`Cannot resolve mapped parameter '${key}'`);
             }
@@ -255,7 +255,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
             public resolve(key: string): string {
                 const value = this.sec.find(a => a.name === key);
                 if (value) {
-                    return value.value;
+                    return String(value.value);
                 }
                 throw new Error(`Cannot resolve secret '${key}'`);
             }
