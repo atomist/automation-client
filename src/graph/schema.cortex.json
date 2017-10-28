@@ -7110,6 +7110,24 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "Presence",
+              "description": "Query for the presence of a user ",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Presence"
+              },
+              "args": [
+                {
+                  "name": "screenName",
+                  "description": "The screen name of the user",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                }
+              ]
             }
           ],
           "inputFields": null,
@@ -35507,6 +35525,110 @@
                   }
                 }
               ]
+            },
+            {
+              "name": "createSlackChannel",
+              "description": "Create a slack channel in the current team",
+              "type": {
+                "kind": "OBJECT",
+                "name": "SlackChannel"
+              },
+              "args": [
+                {
+                  "name": "name",
+                  "description": "The name of the channel to create",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "addBotToSlackChannel",
+              "description": "Ask the bot to join a chat channel",
+              "type": {
+                "kind": "OBJECT",
+                "name": "SlackChannel"
+              },
+              "args": [
+                {
+                  "name": "channelId",
+                  "description": "The id of the channel to join",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "linkSlackChannelToRepo",
+              "description": "Link a channel to a repo",
+              "type": {
+                "kind": "OBJECT",
+                "name": "SlackChannel"
+              },
+              "args": [
+                {
+                  "name": "channelId",
+                  "description": "The id of the channel to link",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "repo",
+                  "description": "The name of the repo to link",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "owner",
+                  "description": "The owner of the repo to link",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "providerId",
+                  "description": "The provider id of the repo to link",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "inviteUserToSlackChannel",
+              "description": "Ask the bot to invite a user to join a chat channel",
+              "type": {
+                "kind": "OBJECT",
+                "name": "SlackChannel"
+              },
+              "args": [
+                {
+                  "name": "channelId",
+                  "description": "The id of the channel to join",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "userId",
+                  "description": "The id of the user to invite",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -43407,12 +43529,91 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "Presence",
+              "description": "Query for the presence of a user ",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Presence"
+              },
+              "args": [
+                {
+                  "name": "screenName",
+                  "description": "The screen name of the user",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                }
+              ]
             }
           ],
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
           "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SlackChannel",
+          "description": "A slack channel",
+          "interfaces": [],
+          "fields": [
+            {
+              "name": "name",
+              "description": "The name of the channel",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            {
+              "name": "id",
+              "description": "The id of the channel",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Presence",
+          "description": "A user's current Presence State",
+          "interfaces": [],
+          "fields": [
+            {
+              "name": "lastSeen",
+              "description": "last seen (number of minutes)",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int"
+              }
+            },
+            {
+              "name": "state",
+              "description": "current state of user's presence",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            {
+              "name": "user",
+              "description": "User",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ChatId"
+              }
+            }
+          ]
         }
       ],
       "directives": [

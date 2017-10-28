@@ -46,4 +46,16 @@ Variable "$teamId" is never used in operation "Repos". [1,13]
 query Repos($teamId: ID!, $offset: Int!) {
 ------------^`);
     });
+
+    it("should successfully load query from relative path out of project root", () => {
+        const query = GraphQL.subscriptionFromFile("../../graphql/repos", __dirname);
+        const errors = GraphQL.validateQuery(query);
+        assert(errors.length === 0);
+    });
+
+    it("should successfully load query from relative path", () => {
+        const query = GraphQL.subscriptionFromFile("./someOtherQuery.graphql", __dirname);
+        const errors = GraphQL.validateQuery(query);
+        assert(errors.length === 0);
+    });
 });

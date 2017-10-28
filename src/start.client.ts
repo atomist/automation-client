@@ -5,23 +5,24 @@ import * as yargs from "yargs";
 
 import { automationClient } from "./automationClient";
 import { findConfiguration } from "./configuration";
+import { enableDefaultScanning } from "./scan";
 
-const config = findConfiguration();
-const node = automationClient(config);
+const configuration = enableDefaultScanning(findConfiguration());
+const node = automationClient(configuration);
 
-if (config.commands) {
-    config.commands.forEach(c => {
+if (configuration.commands) {
+    configuration.commands.forEach(c => {
         node.withCommandHandler(c);
     });
 }
-if (config.events) {
-    config.events.forEach(e => {
+if (configuration.events) {
+    configuration.events.forEach(e => {
         node.withEventHandler(e);
     });
 }
 
-if (config.ingestors) {
-    config.ingestors.forEach(e => {
+if (configuration.ingestors) {
+    configuration.ingestors.forEach(e => {
         node.withIngestor(e);
     });
 }

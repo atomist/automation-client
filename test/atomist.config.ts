@@ -1,15 +1,11 @@
 import { Configuration } from "../src/configuration";
 import { RequestProcessor } from "../src/internal/transport/RequestProcessor";
 import { guid } from "../src/internal/util/string";
-import { SpringBootSeed } from "../src/operations/generate/java/SpringBootSeed";
+import { scanCommands, scanEvents } from "../src/scan";
 import { AutomationEventListenerSupport } from "../src/server/AutomationEventListener";
 import { HelloWorld } from "./command/HelloWorld";
-import { PlainHelloWorld } from "./command/PlainHelloWorld";
-import { SendStartupMessage } from "./command/SendStartupMessage";
-import { HelloIngestor } from "./event/HelloIngestor";
-import { HelloIssue } from "./event/HelloIssue";
 
-export const GitHubToken = process.env.GITHUB_TOKEN;
+export const GitHubToken = process.env.GITHUB_TOKEN || "<please set GITHUB_TOKEN env variable>";
 
 // const host = "https://automation.atomist.com";
 const host = "https://automation-staging.atomist.services";
@@ -47,22 +43,14 @@ export const configuration: Configuration = {
     name: "@atomist/automation-node-tests",
     version: "0.0.6",
     teamIds: ["T1L0VDKJP"],
+    token: GitHubToken,
     commands: [
+        ...scanCommands( ["**/metadata/addAtomistSpringAgent.js", "**/command/Search*.js"] ),
         HelloWorld,
-        SendStartupMessage,
-        () => new PlainHelloWorld(),
-        // () => new UniversalSeed(),
-        // () => new JavaSeed(),
-        () => new SpringBootSeed(),
     ],
     events: [
-        HelloIssue,
-        // () => new AlwaysOkEventHandler(),
+        ...scanEvents("**/event/*.js"),
     ],
-    ingestors: [
-        HelloIngestor,
-    ],
-    token: GitHubToken,
     http: {
         enabled: true,
         forceSecure: false,
@@ -74,9 +62,10 @@ export const configuration: Configuration = {
             },
             bearer: {
                 enabled: false,
+                token: GitHubToken,
             },
             github: {
-                enabled: true,
+                enabled: false,
                 clientId: "092b3124ced86d5d1569",
                 clientSecret: "71d72f657d4402009bd8d728fc1967939c343793",
                 callbackUrl: "http://localhost:2866",
@@ -93,6 +82,6 @@ export const configuration: Configuration = {
         api: `${host}/registration`,
     },
     applicationEvents: {
-        enabled: true,
+        enabled: false,
     },
 };

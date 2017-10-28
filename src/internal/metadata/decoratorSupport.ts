@@ -1,5 +1,11 @@
-
-import { Group, ParameterType } from "../../metadata/automationMetadata";
+import {
+    Group,
+    ParameterType,
+} from "../../metadata/automationMetadata";
+import {
+    registerCommand,
+    registerEvent,
+} from "../../scan";
 
 export interface BaseParameter {
     readonly pattern: RegExp;
@@ -17,7 +23,7 @@ export interface BaseParameter {
 
 export interface Parameter extends BaseParameter {
     readonly name: string;
-    readonly default?: string;
+    // readonly default?: string;
 }
 
 function set_metadata(obj: any, key: string, value: any) {
@@ -152,6 +158,13 @@ export function declareCommandHandler(obj: any, description: string, intent?: st
     } else if (intent) {
         declareIntent(obj, [intent]);
     }
+    registerCommand(obj);
+    return obj;
+}
+
+export function declareParameters(obj: any) {
+    set_metadata(obj, "__name", obj.prototype.constructor.name);
+    set_metadata(obj, "__kind", "parameters");
     return obj;
 }
 
@@ -174,6 +187,7 @@ export function declareEventHandler(
     obj: any, description: string, subscription: string) {
     declareRug(obj, "event-handler", description);
     set_metadata(obj, "__subscription", subscription);
+    registerEvent(obj);
     return obj;
 }
 
