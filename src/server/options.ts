@@ -1,3 +1,11 @@
+import { Express } from "express";
+
+/**
+ * Customize the express server configuration: For example
+ * to add custom routes
+ */
+export type ExpressCustomizer = (exp: Express) => void;
+
 /**
  * Options common to configuring an Automation node and creating
  * an AutomationServer
@@ -13,6 +21,7 @@ export interface RunOptions {
         port?: number;
         host?: string;
         forceSecure?: boolean;
+        expressCustomizer?: ExpressCustomizer,
         auth?: {
             basic?: {
                 enabled: boolean;
