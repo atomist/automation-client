@@ -187,9 +187,9 @@ export class ExpressServer {
                     (res, result) => res.status(result.some(r => r.code !== 0) ? 500 : 200).json(result));
             });
 
-        if (!!this.options.expressCustomizer) {
+        if (!!this.options.customizers) {
             logger.info("Customizing Express server");
-            this.options.expressCustomizer(exp);
+            this.options.customizers.forEach(c => c(exp, this.enforceSecure, this.authenticate));
         }
 
         exp.listen(this.options.port, () => {
@@ -200,7 +200,7 @@ export class ExpressServer {
     private exposeCommandHandlerHtmlInvocationRoute(exp: express.Express,
                                                     url: string,
                                                     h: CommandHandlerMetadata) {
-        exp.get(url, this.authenticate,
+        exp.get(url, this.enforceSecure, this.authenticate,
             (req, res) => {
                 const mappedParameters = h.mapped_parameters.map(mp => {
                     if (mp.foreign_key === MappedParameters.GitHubOwner && req.user) {
@@ -493,7 +493,7 @@ export interface ExpressServerOptions {
     port: number;
     host?: string;
     forceSecure?: boolean;
-    expressCustomizer: ExpressCustomizer;
+    customizers?: ExpressCustomizer[];
     auth?: {
         basic: {
             enabled: boolean;
