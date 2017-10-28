@@ -1,5 +1,8 @@
-
 import { ParameterType } from "../../metadata/automationMetadata";
+import {
+    registerCommand,
+    registerEvent,
+} from "../../scan";
 
 export interface BaseParameter {
     readonly pattern: RegExp;
@@ -151,6 +154,13 @@ export function declareCommandHandler(obj: any, description: string, intent?: st
     } else if (intent) {
         declareIntent(obj, [intent]);
     }
+    registerCommand(obj);
+    return obj;
+}
+
+export function declareParameters(obj: any) {
+    set_metadata(obj, "__name", obj.prototype.constructor.name);
+    set_metadata(obj, "__kind", "parameters");
     return obj;
 }
 
@@ -173,6 +183,7 @@ export function declareEventHandler(
     obj: any, description: string, subscription: string) {
     declareRug(obj, "event-handler", description);
     set_metadata(obj, "__subscription", subscription);
+    registerEvent(obj);
     return obj;
 }
 

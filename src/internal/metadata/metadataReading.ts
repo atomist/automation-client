@@ -55,6 +55,16 @@ function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMet
                 mapped_parameters: mappedParameterMetadataFromInstance(r),
                 secrets: secretsMetadataFromInstance(r),
             };
+        case "parameters" :
+            return {
+                name: r.__name,
+                description: r.__description,
+                tags: r.__tags ? r.__tags : [],
+                intent: r.__intent ? r.__intent : [],
+                parameters: parametersFromInstance(r),
+                mapped_parameters: mappedParameterMetadataFromInstance(r),
+                secrets: secretsMetadataFromInstance(r),
+            };
         case "event-handler" :
             // Validate subscription
             const errors = GraphQL.validateQuery(r.__subscription);
