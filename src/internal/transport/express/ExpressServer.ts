@@ -187,6 +187,11 @@ export class ExpressServer {
                     (res, result) => res.status(result.some(r => r.code !== 0) ? 500 : 200).json(result));
             });
 
+        if (!!this.options.expressCustomizer) {
+            logger.info("Customizing Express server");
+            this.options.expressCustomizer(exp);
+        }
+
         exp.listen(this.options.port, () => {
             logger.info(`Atomist automation dashboard running at 'http://${this.options.host}:${this.options.port}'`);
         });
@@ -473,6 +478,7 @@ export class ExpressServer {
     }
 }
 
+import { ExpressCustomizer } from "../../../server/options";
 import {
     CommandIncoming,
     EventIncoming,
@@ -487,6 +493,7 @@ export interface ExpressServerOptions {
     port: number;
     host?: string;
     forceSecure?: boolean;
+    expressCustomizer: ExpressCustomizer;
     auth?: {
         basic: {
             enabled: boolean;
