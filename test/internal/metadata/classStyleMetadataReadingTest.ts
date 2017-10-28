@@ -13,6 +13,7 @@ import { populateParameters } from "../../../src/internal/parameterPopulation";
 import {
     CommandHandlerMetadata, EventHandlerMetadata, IngestorMetadata,
 } from "../../../src/metadata/automationMetadata";
+import { oneOf, someOf } from "../../../src/metadata/parameterUtils";
 import { AddAtomistSpringAgent, FooBarIngestor } from "../invoker/TestHandlers";
 
 describe("class style metadata reading", () => {
@@ -58,6 +59,24 @@ describe("class style metadata reading", () => {
         assert(h.numberParam === 1);
         populateParameters(h, md, [{name: "numberParam", value: "100"}]);
         assert(h.numberParam === 100);
+    });
+
+    it("should convert to explicit type: single choice", () => {
+        const h = new HasOneChoiceParam();
+        const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        populateParameters(h, md, [{name: "animal", value: "pig"}]);
+        assert(h.animal === "pig");
+        populateParameters(h, md, [{name: "animal", value: "dog"}]);
+        assert(h.animal === "dog");
+    });
+
+    it("should convert to explicit type: some choices", () => {
+        const h = new HasSomeChoicesParam();
+        const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        populateParameters(h, md, [{name: "pets", value: ["pig"]}]);
+        assert.deepEqual(h.pets, [ "pig"]);
+        populateParameters(h, md, [{name: "pets", value: ["dog", "cat"]}]);
+        assert.deepEqual(h.pets, ["dog", "cat"]);
     });
 
     it("should handle both tags and intent", () => {
@@ -200,6 +219,38 @@ export class HasNumberParam implements HandleCommand {
         type: "number",
     })
     public numberParam: number;
+
+    public handle(context: HandlerContext): Promise<HandlerResult> {
+        throw new Error("not relevant");
+    }
+}
+
+@CommandHandler("name")
+export class HasOneChoiceParam implements HandleCommand {
+
+    @Parameter({
+        displayName: "a boolean",
+        pattern: /^T[0-9A-Z]+$/,
+        required: false,
+        type: oneOf("dog", "cat", "pig"),
+    })
+    public animal: string;
+
+    public handle(context: HandlerContext): Promise<HandlerResult> {
+        throw new Error("not relevant");
+    }
+}
+
+@CommandHandler("name")
+export class HasSomeChoicesParam implements HandleCommand {
+
+    @Parameter({
+        displayName: "a boolean",
+        pattern: /^T[0-9A-Z]+$/,
+        required: false,
+        type: someOf("dog", "cat", "pig"),
+    })
+    public pets: string[];
 
     public handle(context: HandlerContext): Promise<HandlerResult> {
         throw new Error("not relevant");

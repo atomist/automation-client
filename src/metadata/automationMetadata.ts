@@ -1,15 +1,29 @@
 
-export type ParameterType = "string" | "number" | "boolean";
+export interface Choice {
+    value: string;
+    description?: string;
+}
+
+export interface Chooser {
+    pickOne: boolean;
+    choices: Choice[];
+}
+
+export type ParameterType = "string" | "number" | "boolean" | Chooser;
 
 /**
- * Parameter to a command handler
+ * Parameter to a command handler.
+ * Parameter values are always captured as strings,
+ * but different types can narrow the required input.
  */
 export interface Parameter {
 
     name: string;
     description?: string;
+
     pattern?: string;
     required: boolean;
+
     displayable?: boolean;
 
     // TODO why does this come back wrong in annotation?
@@ -23,6 +37,18 @@ export interface Parameter {
      * Specify the type if this is not a string.
      */
     type?: ParameterType;
+
+    group?: Group;
+
+    tags?: string[];
+}
+
+/**
+ * Addtional information about parameters
+ */
+export interface Group {
+    readonly name: string;
+    readonly description?: string;
 }
 
 /**
