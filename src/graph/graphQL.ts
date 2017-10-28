@@ -7,19 +7,22 @@ import {
     parse,
 } from "graphql";
 import { validate } from "graphql/validation";
+import * as p from "path";
 import { findLine } from "../internal/util/string";
 
 // tslint:disable-next-line:no-var-requires
 const schema = require("./schema.cortex.json");
 
 /**
- * Read a subscription from a file relative to the root of the module
+ * Read a subscription from a file relative to the provided directory (or the module root by default)
+ * Note: Use __dirname to get the current directory of the calling script.
  * @param {string} path
+ * @param {string} current
  * @returns {string}
  */
-export function subscriptionFromFile(path: string): string {
+export function subscriptionFromFile(path: string, current: string = appRoot.path): string {
     // TODO cd add validation that we only read subscriptions here
-    return resolveAndReadFileSync(path);
+    return resolveAndReadFileSync(path, current);
 }
 
 /**
@@ -71,16 +74,14 @@ export function prettyPrintErrors(errors: GraphQLError[], query?: string): strin
  * @param {string} path
  * @returns {string}
  */
-export function resolveAndReadFileSync(path: string): string {
+export function resolveAndReadFileSync(path: string, current: string = appRoot.path): string {
     if (!path.endsWith(".graphql")) {
         path = `${path}.graphql`;
     }
-    if (!path.startsWith("/")) {
-        path = `${appRoot}/${path}`;
-    }
-    if (fs.existsSync(path)) {
-        return fs.readFileSync(path).toString();
+    const absolutePath = p.resolve(current, path);
+    if (fs.existsSync(absolutePath)) {
+        return fs.readFileSync(absolutePath).toString();
     } else {
-        throw new Error(`GraphQL file '${path}' does not exist`);
+        throw new Error(`GraphQL file '${absolutePath}' does not exist`);
     }
 }
