@@ -176,7 +176,12 @@ export class ExpressServer {
             h => {
                 this.exposeCommandHandlerInvocationRoute(exp,
                     `${ApiBase}/command/${_.kebabCase(h.name)}`, h,
-                    (res, result) => res.status(result.code === 0 ? 200 : 500).json(result));
+                    (res, result) => {
+                        if (result.redirect) {
+                            res.redirect(result.redirect);
+                        } else {
+                            res.status(result.code === 0 ? 200 : 500).json(result);
+                        }});
                 this.exposeCommandHandlerHtmlInvocationRoute(exp, `${ApiBase}/command/html/${_.kebabCase(h.name)}`, h);
             },
         );
