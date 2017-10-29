@@ -1,4 +1,4 @@
-import { Chooser, CommandHandlerMetadata } from "../metadata/automationMetadata";
+import { Chooser, CommandHandlerMetadata, FreeChoices } from "../metadata/automationMetadata";
 import { Arg } from "./invoker/Payload";
 
 /**
@@ -17,7 +17,11 @@ export function populateParameters(h: any, hm: CommandHandlerMetadata, args: Arg
                 let value;
                 switch (parameter.type) {
                     case undefined :
-                        // It's a string
+                        // It's a string. Keep the value the same
+                        value = arg.value;
+                        break;
+                    case FreeChoices :
+                        // It's a string array. Keep the value the same
                         value = arg.value;
                         break;
                     case "boolean":

@@ -11,7 +11,7 @@ import { MappedParameters } from "../../../src/Handlers";
 
 import { populateParameters } from "../../../src/internal/parameterPopulation";
 import {
-    CommandHandlerMetadata, EventHandlerMetadata, IngestorMetadata,
+    CommandHandlerMetadata, EventHandlerMetadata, FreeChoices, IngestorMetadata,
 } from "../../../src/metadata/automationMetadata";
 import { oneOf, someOf } from "../../../src/metadata/parameterUtils";
 import { AddAtomistSpringAgent, FooBarIngestor } from "../invoker/TestHandlers";
@@ -75,6 +75,15 @@ describe("class style metadata reading", () => {
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
         populateParameters(h, md, [{name: "pets", value: ["pig"]}]);
         assert.deepEqual(h.pets, [ "pig"]);
+        populateParameters(h, md, [{name: "pets", value: ["dog", "cat"]}]);
+        assert.deepEqual(h.pets, ["dog", "cat"]);
+    });
+
+    it("should convert to explicit type: some free choices", () => {
+        const h = new HasSomeFreeChoicesParam();
+        const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        populateParameters(h, md, [{name: "pets", value: ["pig", "heffalump" ]}]);
+        assert.deepEqual(h.pets, [ "pig", "heffalump"]);
         populateParameters(h, md, [{name: "pets", value: ["dog", "cat"]}]);
         assert.deepEqual(h.pets, ["dog", "cat"]);
     });
@@ -249,6 +258,22 @@ export class HasSomeChoicesParam implements HandleCommand {
         pattern: /^T[0-9A-Z]+$/,
         required: false,
         type: someOf("dog", "cat", "pig"),
+    })
+    public pets: string[];
+
+    public handle(context: HandlerContext): Promise<HandlerResult> {
+        throw new Error("not relevant");
+    }
+}
+
+@CommandHandler("name")
+export class HasSomeFreeChoicesParam implements HandleCommand {
+
+    @Parameter({
+        displayName: "a boolean",
+        pattern: /^T[0-9A-Z]+$/,
+        required: false,
+        type: FreeChoices,
     })
     public pets: string[];
 

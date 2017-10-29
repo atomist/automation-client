@@ -4,12 +4,28 @@ export interface Choice {
     description?: string;
 }
 
+/**
+ * Represents a choice of exactly one or some strings from a fixed list of choices
+ */
 export interface Chooser {
+
+    /**
+     * Whether the user must pick exactly one choice. In this case,
+     * binds to string. Otherwise binds to string[]
+     */
     pickOne: boolean;
+
     choices: Choice[];
 }
 
-export type ParameterType = "string" | "number" | "boolean" | Chooser;
+/**
+ * Constant for "freeChoices" type. Indicates that valid input is any number of strings, without validation.
+ * Useful in accepting input from other systems that perform their own validation.
+ * Binds to string[].
+ */
+export const FreeChoices = "freeChoices";
+
+export type ParameterType = "string" | "number" | "boolean" | Chooser | "freeChoices";
 
 /**
  * Parameter to a command handler.
