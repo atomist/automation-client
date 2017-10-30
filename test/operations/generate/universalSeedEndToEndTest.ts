@@ -66,6 +66,10 @@ describe("Universal seed end to end", () => {
             }).catch(done);
     }).timeout(20000);
 
+});
+
+describe("Local project creation", () => {
+
     it("should create a new local project", done => {
         const cwd = tmp.dirSync().name;
         shell.cd(cwd);
@@ -86,7 +90,6 @@ describe("Universal seed end to end", () => {
                     });
             }).catch(done);
     }).timeout(10000);
-
 });
 
 export const MockHandlerContext = {

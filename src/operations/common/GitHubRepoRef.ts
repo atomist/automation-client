@@ -19,5 +19,5 @@ export class GitHubRepoRef extends RemoteRepoRefSupport {
 
 export function isGitHubRepoRef(rr: RepoRef): rr is GitHubRepoRef {
     const maybe = rr as GitHubRepoRef;
-    return !!maybe.apiBase;
+    return maybe && !!maybe.apiBase;
 }
