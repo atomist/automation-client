@@ -1,6 +1,8 @@
 import { ActionResult } from "../../action/ActionResult";
 import { HandlerContext } from "../../HandlerContext";
+import { logger } from "../../internal/util/logger";
 import { DefaultDirectoryManager } from "../../project/git/GitCommandGitProject";
+import { LocalProject } from "../../project/local/LocalProject";
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
 import { Project } from "../../project/Project";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
@@ -24,20 +26,25 @@ export type ProjectPersister<P = undefined> = (p: Project,
  * @param {P} params
  * @return {Promise<ActionResult<Project>>}
  */
-export function generate<P = RepoId>(startingPoint: Promise<Project>,
-                                     ctx: HandlerContext,
-                                     credentials: ProjectOperationCredentials,
-                                     editor: AnyProjectEditor,
-                                     persist: ProjectPersister<P>,
-                                     params: P): Promise<ActionResult<Project>> {
+export function generate<P extends RepoId>(startingPoint: Promise<Project>,
+                                           ctx: HandlerContext,
+                                           credentials: ProjectOperationCredentials,
+                                           editor: AnyProjectEditor<P>,
+                                           persist: ProjectPersister<P>,
+                                           params: P): Promise<ActionResult<Project>> {
     const parentDir = DefaultDirectoryManager.opts.baseDir;
     return startingPoint
         .then(seed =>
             // Make a copy that we can work on
-            NodeFsLocalProject.copy(seed, parentDir, this.targetRepo)
-                .then(independentCopy => toEditor(editor)(independentCopy, ctx, this)
-                    .then(r => r.target)))
-        .then(populated =>
-            persist(populated, credentials, params));
+            NodeFsLocalProject.copy(seed, parentDir, params.repo))
+        // Let's be sure we didn't inherit any old git stuff
+        .then(proj => proj.deleteDirectory(".git"))
+        .then(independentCopy => toEditor(editor)(independentCopy, ctx, params))
+        .then(r => r.target)
+        .then(populated => {
+            logger.debug("Persisting repo at [%s] to GitHub: %s:%s",
+                (populated as LocalProject).baseDir, params.owner, params.repo);
+            return persist(populated, credentials, params);
+        });
 
 }
