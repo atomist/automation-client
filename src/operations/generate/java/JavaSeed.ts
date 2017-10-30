@@ -116,7 +116,7 @@ export function doUpdatePom(id: VersionedArtifact, p: Project): Promise<Project>
     return updatePom(p, smartArtifactId, id.groupId, id.version, id.description);
 }
 
-function inferStructureAndMovePackage(rootPackage: string, p: Project): Promise<Project> {
+export function inferStructureAndMovePackage(rootPackage: string, p: Project): Promise<Project> {
     return JavaProjectStructure.infer(p)
         .then(structure =>
             (structure) ?

@@ -68,8 +68,8 @@ export class SpringBootSeed extends JavaSeed {
  * @param oldClass   name of class to move from
  * @param newClass   name of class to move to
  */
-function renameClassStem<P extends ProjectAsync>(project: P,
-                                                 oldClass: string, newClass: string): Promise<P> {
+export function renameClassStem<P extends ProjectAsync>(project: P,
+                                                        oldClass: string, newClass: string): Promise<P> {
     logger.debug("Replacing old class stem '%s' with '%s'", oldClass, newClass);
     return doWithFiles(project, AllJavaFiles, f => {
         if (f.name.includes(oldClass)) {
