@@ -28,8 +28,14 @@ export const GitHubNameRegExp = {
  */
 export abstract class AbstractGenerator extends LocalOrRemote implements HandleCommand {
 
-    @MappedParameter(MappedParameters.GitHubOwner)
-    public targetOwner: string;
+    /**
+     * Owner of the target repo.
+     * Subclasses will normally override this with a mapped parameter.
+     * However, this class doesn't impose that solution with the constaints
+     * it implies on execution.
+     * @return {string}
+     */
+    abstract get targetOwner(): string;
 
     @Parameter({
         pattern: GitHubNameRegExp.pattern,

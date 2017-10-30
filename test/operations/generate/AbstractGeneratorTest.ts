@@ -14,6 +14,8 @@ class CustomStartSeed extends AbstractGenerator {
 
     public created: Project;
 
+    public targetOwner = "foo";
+
     constructor(private pe: AnyProjectEditor, private start: Project) {
         super();
     }
