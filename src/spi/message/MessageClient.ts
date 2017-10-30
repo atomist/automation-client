@@ -93,8 +93,9 @@ export interface CommandReference {
     parameterName?: string;
 }
 
-export function buttonForCommand(buttonSpec: ButtonSpec, command: any, parameters: {} = {}): Action {
+export function buttonForCommand(buttonSpec: ButtonSpec, command: any, parameters: any = {}): Action {
     const cmd = commandName(command);
+    parameters = mergeParameters(command, parameters);
     const id = cmd.toLocaleLowerCase();
     const action = rugButtonFrom(buttonSpec, { id }) as CommandReferencingAction;
     action.command = {
@@ -106,8 +107,9 @@ export function buttonForCommand(buttonSpec: ButtonSpec, command: any, parameter
 }
 
 export function menuForCommand(selectSpec: SelectSpec, command: any, parameterName: string,
-                               parameters?: {}): Action {
+                               parameters: any = {}): Action {
     const cmd = commandName(command);
+    parameters = mergeParameters(command, parameters);
     const id = cmd.toLocaleLowerCase();
     const action = rugMenuFrom(selectSpec, { id, parameterName }) as CommandReferencingAction;
     action.command = {
@@ -133,6 +135,16 @@ export function commandName(command: any): string {
     }
 }
 
+export function mergeParameters(command: any, parameters: any): any {
+    // Resue parameters defined on the instance
+    if (typeof command !== "string" && typeof command !== "function") {
+        parameters = {
+            ...command,
+            ...parameters,
+        };
+    }
+    return parameters;
+}
 function rugButtonFrom(action: ButtonSpec, command: any): Action {
     if (!command.id) {
         throw new Error(`Please provide a valid non-empty command id`);
