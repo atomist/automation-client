@@ -1,7 +1,7 @@
 import { curry } from "@typed/curry";
-import { CommandHandler, MappedParameter, Parameter, Tags } from "../../decorators";
+import { CommandHandler, MappedParameter, Parameter, Secret, Tags } from "../../decorators";
 import { HandlerContext } from "../../HandlerContext";
-import { MappedParameters } from "../../Handlers";
+import { MappedParameters, Secrets } from "../../Handlers";
 import { defer } from "../../internal/common/Flushable";
 import { Project } from "../../project/Project";
 import { deleteFiles, doWithFiles } from "../../project/util/projectUtils";
@@ -33,6 +33,9 @@ export class UniversalSeed extends SeedDrivenGenerator {
         required: false,
     })
     public visibility: "public" | "private" = "public";
+
+    @Secret(Secrets.userToken(["repo", "user"]))
+    protected githubToken: string;
 
     constructor() {
         super();

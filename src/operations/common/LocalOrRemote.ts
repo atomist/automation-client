@@ -1,7 +1,6 @@
 import * as shell from "shelljs";
 
-import { Parameter, Secret } from "../../decorators";
-import { Secrets } from "../../Handlers";
+import { Parameter } from "../../decorators";
 import { allReposInTeam } from "./allReposInTeamRepoFinder";
 import { RepoFinder } from "./repoFinder";
 
@@ -34,11 +33,12 @@ export abstract class LocalOrRemote {
     public dir: string;
 
     /**
+     * For a command handler, decorate with
+     * @Secret(Secrets.userToken(["repo", "user"]))
      * To use this in an event handler rather than a command handler,
      * please override this to be decorated with @Secret(Secrets.OrgToken)
      */
-    @Secret(Secrets.userToken(["repo", "user"]))
-    protected githubToken: string;
+    protected abstract get githubToken(): string;
 
     /**
      * Operate on all repos matching this filter.

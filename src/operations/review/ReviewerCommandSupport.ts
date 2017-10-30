@@ -1,6 +1,7 @@
-import { Parameter } from "../../decorators";
+import { Parameter, Secret } from "../../decorators";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
+import { Secrets } from "../../Handlers";
 import { logger } from "../../internal/util/logger";
 import { raiseIssue } from "../../util/gitHub";
 import { LocalOrRemoteRepoOperation } from "../common/LocalOrRemoteRepoOperation";
@@ -26,6 +27,9 @@ export abstract class ReviewerCommandSupport<RR extends ReviewResult<PR> = Revie
         type: "boolean",
     })
     public raiseIssues: boolean = false;
+
+    @Secret(Secrets.userToken(["repo", "user"]))
+    protected githubToken;
 
     public handle(context: HandlerContext, params: this): Promise<RR> {
         const load = this.repoLoader();

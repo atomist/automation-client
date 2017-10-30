@@ -16,6 +16,8 @@ class CustomStartSeed extends AbstractGenerator {
 
     public targetOwner = "foo";
 
+    public githubToken;
+
     constructor(private pe: AnyProjectEditor, private start: Project) {
         super();
     }
