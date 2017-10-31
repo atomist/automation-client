@@ -33,8 +33,8 @@ describe("GitProject", () => {
             },
         };
         return axios.get(`${GitHubDotComBase}/user`, config).then(response =>
-            response.data.login
-        )
+            response.data.login,
+        );
     }
 
     function deleteRepoIfExists(ownerAndRepo: {owner: string, repo: string}): Promise<any> {
@@ -47,7 +47,7 @@ describe("GitProject", () => {
         return axios.delete(url, config)
             .catch(err => {
                 console.log("IGNORING " + err);
-            })
+            });
     }
 
     function newRepo(): Promise<{owner: string, repo: string}> {
@@ -67,7 +67,7 @@ describe("GitProject", () => {
         }, config).catch(error => {
             throw new Error("Could not create repo: " + error.message);
         }).then(() =>
-            ({ owner: owner, repo: name })
+            ({ owner, repo: name }),
         ));
     }
 
@@ -138,7 +138,7 @@ describe("GitProject", () => {
             .catch(done);
     });
 
-    it("add a file, init and commit, then push to new remote repo", function (done) {
+    it("add a file, init and commit, then push to new remote repo", function(done) {
         this.retries(5);
 
         const p = tempProject();
@@ -152,12 +152,12 @@ describe("GitProject", () => {
             .then(_ => gp.createAndSetGitHubRemote(owner, repo, "Thing1", "private"))
             .then(() => gp.commit("Added a Thing"))
             .then(_ =>
-                gp.push().then(() => deleteRepoIfExists({ owner, repo}).then(done))
-            ).catch(() => deleteRepoIfExists({ owner, repo}).then(done))
-        ).catch(done)
+                gp.push().then(() => deleteRepoIfExists({ owner, repo}).then(done)),
+            ).catch(() => deleteRepoIfExists({ owner, repo}).then(done)),
+        ).catch(done);
     }).timeout(6000);
 
-    it("add a file, then PR push to remote repo", function (done) {
+    it("add a file, then PR push to remote repo", function(done) {
         this.retries(1);
 
         newRepo().then( ownerAndRepo => GitCommandGitProject.cloned(Creds,
@@ -172,7 +172,7 @@ describe("GitProject", () => {
                         return gp.raisePullRequest("Thing2", "Adds another character");
                     })
                     .then(x => deleteRepoIfExists(ownerAndRepo).then(done));
-            }).catch(() => {deleteRepoIfExists(ownerAndRepo); done()}));
+            }).catch(() => deleteRepoIfExists(ownerAndRepo).then(done)));
     }).timeout(20000);
 
     it("check out commit", done => {
