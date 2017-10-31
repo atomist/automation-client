@@ -22,59 +22,53 @@ function checkProject(p: Project) {
     assert(f.getContentSync());
 }
 
-const TargetRepo = `test-repo-${new Date().getTime()}`;
-let TargetOwner = "johnsonr";
-
-const Creds = {token: GitHubToken};
+const Creds = { token: GitHubToken };
 
 describe("GitProject", () => {
 
-    before(done => {
+    function getOwnerByToken(): Promise<string> {
         const config = {
             headers: {
                 Authorization: `token ${GitHubToken}`,
             },
         };
-        axios.get(`${GitHubDotComBase}/user`, config).then(response => {
-            TargetOwner = response.data.login;
-            done();
-        });
-    });
+        return axios.get(`${GitHubDotComBase}/user`, config).then(response =>
+            response.data.login,
+        );
+    }
 
-    afterEach(done => {
+    function deleteRepoIfExists(ownerAndRepo: {owner: string, repo: string}): Promise<any> {
         const config = {
             headers: {
                 Authorization: `token ${GitHubToken}`,
             },
         };
-        const url = `${GitHubDotComBase}/repos/${TargetOwner}/${TargetRepo}`;
-        axios.delete(url, config)
-            .then(() => {
-                done();
-            })
+        const url = `${GitHubDotComBase}/repos/${ownerAndRepo.owner}/${ownerAndRepo.repo}`;
+        return axios.delete(url, config)
             .catch(err => {
                 console.log("IGNORING " + err);
-                done();
             });
-    });
+    }
 
-    function newRepo(): Promise<any> {
+    function newRepo(): Promise<{owner: string, repo: string}> {
         const config = {
             headers: {
                 Authorization: `token ${GitHubToken}`,
             },
         };
-        const name = TargetRepo;
+        const name = `test-repo-${new Date().getTime()}`;
         const description = "a thing";
         const url = `${GitHubDotComBase}/user/repos`;
-        return axios.post(url, {
+        return getOwnerByToken().then(owner => axios.post(url, {
             name,
             description,
             private: true,
             auto_init: true,
         }, config).catch(error => {
             throw new Error("Could not create repo: " + error.message);
-        });
+        }).then(() =>
+            ({ owner, repo: name }),
+        ));
     }
 
     it("add a file, init and commit", done => {
@@ -82,7 +76,7 @@ describe("GitProject", () => {
         p.addFileSync("Thing", "1");
         const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
         gp.init().then(() => gp.commit("Added a Thing").then(c => {
-            exec.exec("git status; git log", {cwd: p.baseDir}, (err, stdout, stderr) => {
+            exec.exec("git status; git log", { cwd: p.baseDir }, (err, stdout, stderr) => {
                 if (err) {
                     // node couldn't execute the command
                     console.error(`Node err on dir [${p.baseDir}]: ${err}`);
@@ -150,35 +144,34 @@ describe("GitProject", () => {
         const p = tempProject();
         p.addFileSync("Thing", "1");
 
+        const repo = `test-repo-2-${new Date().getTime()}`;
+
         const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
-        gp.init()
-            .then(_ => gp.createAndSetGitHubRemote(TargetOwner, TargetRepo, "Thing1"))
+        getOwnerByToken().then(owner => gp.init()
+            .then(_ => gp.createAndSetGitHubRemote(owner, repo, "Thing1"))
             .then(() => gp.commit("Added a Thing"))
-            .then(_ => {
-                gp.push();
-                done();
-            })
-            .catch(done);
+            .then(_ =>
+                gp.push().then(() => deleteRepoIfExists({ owner, repo}).then(done)),
+            ).catch(() => deleteRepoIfExists({ owner, repo}).then(done)),
+        ).catch(done);
     }).timeout(6000);
 
     it("add a file, then PR push to remote repo", function(done) {
-        this.retries(5);
+        this.retries(1);
 
-        newRepo().then(_ => {
-            return GitCommandGitProject.cloned(Creds,
-                new GitHubRepoRef(TargetOwner, TargetRepo))
-                .then(gp => {
-                    gp.addFileSync("Cat", "hat");
-                    const branch = "thing2";
-                    gp.createBranch(branch)
-                        .then(x => gp.commit("Added a Thing"))
-                        .then(x => gp.push())
-                        .then(x => {
-                            return gp.raisePullRequest("Thing2", "Adds another character");
-                        })
-                        .then(x => done());
-                });
-        }).catch(done);
+        newRepo().then( ownerAndRepo => GitCommandGitProject.cloned(Creds,
+            new GitHubRepoRef(ownerAndRepo.owner, ownerAndRepo.repo))
+            .then(gp => {
+                gp.addFileSync("Cat", "hat");
+                const branch = "thing2";
+                return gp.createBranch(branch)
+                    .then(x => gp.commit("Added a Thing"))
+                    .then(x => gp.push())
+                    .then(x => {
+                        return gp.raisePullRequest("Thing2", "Adds another character");
+                    })
+                    .then(x => deleteRepoIfExists(ownerAndRepo).then(done));
+            }).catch(() => deleteRepoIfExists(ownerAndRepo).then(done)));
     }).timeout(20000);
 
     it("check out commit", done => {
@@ -191,7 +184,7 @@ describe("GitProject", () => {
 
                 gp.checkout(sha)
                     .then(_ => {
-                        exec.exec("git status", {cwd: baseDir}, (err, stdout, stderr) => {
+                        exec.exec("git status", { cwd: baseDir }, (err, stdout, stderr) => {
                             if (err) {
                                 // node couldn't execute the command
                                 console.error(`Node err on dir [${baseDir}]: ${err}`);
