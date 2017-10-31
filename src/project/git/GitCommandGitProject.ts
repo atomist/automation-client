@@ -227,7 +227,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     public createBranch(name: string): Promise<CommandResult<this>> {
         this.branch = name;
-        return this.runCommandInCurrentWorkingDirectory(`git branch ${name}; git checkout ${name}`);
+        return this.runCommandInCurrentWorkingDirectory(`git branch ${name} && git checkout ${name}`);
     }
 
     private runCommandInCurrentWorkingDirectory(cmd: string): Promise<CommandResult<this>> {
