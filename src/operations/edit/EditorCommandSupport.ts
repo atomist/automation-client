@@ -13,20 +13,13 @@ import { ProjectEditor } from "./projectEditor";
  */
 export abstract class EditorCommandSupport extends LocalOrRemoteRepoOperation implements HandleCommand {
 
-    public handle(context: HandlerContext): Promise<HandlerResult> {
-        // Save us from this
-        const token = this.githubToken;
-        const repoFinder = this.repoFinder();
-        const repoFilter = this.repoFilter;
-        const repoLoader = this.repoLoader();
-        const editInfoFactory = this.editInfo;
-
+    public handle(context: HandlerContext, params: this): Promise<HandlerResult> {
         return Promise.resolve(this.projectEditor(context))
             .then(pe =>
-                editAll(context, { token }, pe,
-                    editInfoFactory,
+                editAll(context, { token: params.githubToken }, pe,
+                    this.editInfo,
                     this,
-                    repoFinder, repoFilter, repoLoader))
+                    params.repoFinder(), params.repoFilter, params.repoLoader()))
             .then(edits => {
                 return {
                     code: 0,

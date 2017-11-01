@@ -145,7 +145,7 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
             .then(() => {
                 logger.debug(`Creating new repo '${params.targetOwner}/${params.targetRepo}'`);
                 return gp.createAndSetGitHubRemote(params.targetOwner, params.targetRepo,
-                    this.targetRepo, this.visibility);
+                    params.targetRepo, params.visibility);
             })
             .then(() => {
                 logger.debug(`Committing to local repo at '${gp.baseDir}'`);

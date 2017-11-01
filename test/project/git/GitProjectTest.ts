@@ -152,7 +152,7 @@ describe("GitProject", () => {
 
         const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
         gp.init()
-            .then(_ => gp.createAndSetGitHubRemote(TargetOwner, TargetRepo, "Thing1"))
+            .then(_ => gp.createAndSetGitHubRemote(TargetOwner, TargetRepo, "Thing1", "private"))
             .then(() => gp.commit("Added a Thing"))
             .then(_ => {
                 gp.push();

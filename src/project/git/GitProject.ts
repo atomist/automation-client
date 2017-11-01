@@ -51,7 +51,7 @@ export interface GitProject extends LocalProject {
      * @param {string} description
      * @param {"private" | "public"} visibility
      */
-    createAndSetGitHubRemote(owner: string, name: string, description: string, visibility?: "private" | "public"):
+    createAndSetGitHubRemote(owner: string, name: string, description: string, visibility: "private" | "public"):
         Promise<ActionResult<this>>;
 
     /**

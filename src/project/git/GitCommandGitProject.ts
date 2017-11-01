@@ -141,7 +141,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     public createAndSetGitHubRemote(owner: string, name: string, description: string = name,
-                                    visibility: "private" | "public" = "private"): Promise<CommandResult<this>> {
+                                    visibility: "private" | "public"): Promise<CommandResult<this>> {
         const config = {
             headers: {
                 Authorization: `token ${this.credentials.token}`,
@@ -241,7 +241,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     private createRepo(owner: string, url: string, name: string, description: string = name,
-                       visibility: "private" | "public" = "private"): Promise<any> {
+                       visibility: "private" | "public"): Promise<any> {
         const config = {
             headers: {
                 Authorization: `token ${this.credentials.token}`,
