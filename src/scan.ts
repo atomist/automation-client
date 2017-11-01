@@ -100,7 +100,7 @@ export function enableDefaultScanning(configuration: Configuration): Configurati
 function scan(patterns: string[]) {
     const glob = require("glob");
     patterns.forEach(pattern => {
-        const files = glob.sync(pattern, {ignore: "node_modules/**"});
+        const files = glob.sync(pattern, { ignore: [ "node_modules/**", "**/*Test.js", "**/*Tests.js" ] });
         files.forEach(f => safeRequire(f));
     });
 }
