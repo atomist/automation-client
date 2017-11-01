@@ -1,13 +1,45 @@
+import {
+    CommandHandler,
+    EventHandler,
+    MappedParameter,
+    Parameter,
+    Secret,
+    Tags,
+} from "./decorators";
 import { HandleCommand } from "./HandleCommand";
+import {
+    EventFired,
+    HandleEvent,
+} from "./HandleEvent";
 import { HandlerContext } from "./HandlerContext";
-import { Failure, failure, HandlerResult, RedirectResult, Success } from "./HandlerResult";
+import {
+    Failure,
+    failure,
+    HandlerResult,
+    RedirectResult,
+    Success,
+} from "./HandlerResult";
+import { toStringArray } from "./internal/util/string";
 
-import { CommandHandler, EventHandler, MappedParameter, Parameter, Secret, Tags } from "./decorators";
-import { EventFired, HandleEvent } from "./HandleEvent";
-
-export { HandlerResult, HandlerContext, HandleCommand, Success, Failure, failure, RedirectResult };
-export { HandleEvent, EventFired };
-export { EventHandler, Parameter, CommandHandler, MappedParameter, Secret, Tags };
+export {
+    HandlerResult,
+    HandlerContext,
+    HandleCommand,
+    HandleEvent,
+    EventFired,
+    Success,
+    Failure,
+    failure,
+    RedirectResult,
+};
+export {
+    EventHandler,
+    Parameter,
+    CommandHandler,
+    MappedParameter,
+    Secret,
+    Tags,
+};
 
 export abstract class MappedParameters {
     public static readonly GitHubOwner: string = "atomist://github/repository/owner";
@@ -28,7 +60,8 @@ export abstract class Secrets {
     public static readonly OrgToken: string = "github://org_token";
     public static readonly UserToken: string = "github://user_token";
 
-    public static userToken(scopes: string[]): string {
+    public static userToken(scopes: string | string[]): string {
+        scopes = toStringArray(scopes);
         if (scopes && scopes.length > 0) {
             return `${this.UserToken}?scopes=${scopes.join(",")}`;
         } else {
