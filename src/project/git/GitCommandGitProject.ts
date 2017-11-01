@@ -233,11 +233,12 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     public createBranch(name: string): Promise<CommandResult<this>> {
         this.branch = name;
-        return this.runCommandInCurrentWorkingDirectory(`git branch ${name}; git checkout ${name}`);
+        return this.runCommandInCurrentWorkingDirectory(`git branch ${name}`).then(() =>
+            this.runCommandInCurrentWorkingDirectory(`git checkout ${name}`));
     }
 
     private runCommandInCurrentWorkingDirectory(cmd: string): Promise<CommandResult<this>> {
-        return runCommand(cmd, {cwd: this.baseDir})
+        return runCommand(cmd, { cwd: this.baseDir })
             .then(result => {
                 return {
                     target: this,
@@ -290,7 +291,7 @@ function clone(credentials: ProjectOperationCredentials,
                             `git clone ${id.cloneUrl(credentials)}; cd ${id.repo};git checkout ${id.sha}`;
 
                         logger.info(`Cloning repo '${id.url}' to '${cloneDirectoryInfo.path}'`);
-                        return exec(command, {cwd: cloneDirectoryInfo.path})
+                        return exec(command, { cwd: cloneDirectoryInfo.path })
                             .then(_ => {
                                 logger.debug(`Clone succeeded with URL '${id.url}'`);
                                 // fs.chmodSync(repoDir, "0777");
