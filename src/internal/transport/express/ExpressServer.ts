@@ -21,6 +21,7 @@ import { info } from "../../util/info";
 import { logger } from "../../util/logger";
 import { metrics } from "../../util/metric";
 import { guid } from "../../util/string";
+
 /**
  * Registers an endpoint for every automation and exposes
  * metadataFromInstance at root. Responsible for marshalling into the appropriate structure
@@ -38,7 +39,14 @@ export class ExpressServer {
 
         const exp = express();
         exp.set("view engine", "mustache");
-        exp.engine("html", mustacheExpress());
+        const mustacheEngine = mustacheExpress();
+
+        if (process.env.NODE_ENV !== "production") {
+            logger.info("Not in production mode (no 'production' environment variable set)." +
+                "HTML templates will be reloaded on request. DO NOT USE IN PRODUCTION.");
+            mustacheEngine.cache = null;
+        }
+        exp.engine("html", mustacheEngine);
 
         exp.use(bodyParser.json());
         exp.use(require("helmet")());
