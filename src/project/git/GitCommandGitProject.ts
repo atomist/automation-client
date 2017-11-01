@@ -215,14 +215,20 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         return this.runCommandInCurrentWorkingDirectory(`git checkout ${sha}`);
     }
 
-    public push(): Promise<any> {
+    public push(): Promise<CommandResult<this>> {
         if (this.branch && this.remote) {
             // We need to set the remote
             return this.runCommandInCurrentWorkingDirectory(`git push ${this.remote} ${this.branch}`)
-                .catch(err => logger.error("Unable to push: " + err));
+                .catch(err => {
+                    logger.error("Unable to push with existing remote: %s", err);
+                    return Promise.reject(err);
+                });
         }
         return this.runCommandInCurrentWorkingDirectory(`git push --set-upstream origin ${this.branch}`)
-            .catch(err => logger.error("Unable to push: " + err));
+            .catch(err => {
+                logger.error("Unable to push with set upstream origin: %s", err);
+                return Promise.reject(err);
+            });
     }
 
     public createBranch(name: string): Promise<CommandResult<this>> {
