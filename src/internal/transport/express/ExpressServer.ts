@@ -38,12 +38,10 @@ export class ExpressServer {
                 private handler: RequestProcessor) {
 
         const exp = express();
+
         exp.set("view engine", "mustache");
         const mustacheEngine = mustacheExpress();
-
         if (process.env.NODE_ENV !== "production") {
-            logger.info("Not in production mode (no 'production' environment variable set)." +
-                "HTML templates will be reloaded on request. DO NOT USE IN PRODUCTION.");
             mustacheEngine.cache = null;
         }
         exp.engine("html", mustacheEngine);
