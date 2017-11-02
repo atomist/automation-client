@@ -43618,73 +43618,6 @@
       ],
       "directives": [
         {
-          "name": "relation",
-          "description": "Relationship",
-          "locations": [
-            "FIELD"
-          ],
-          "args": []
-        },
-        {
-          "name": "defaultValue",
-          "description": "default value",
-          "locations": [
-            "FIELD"
-          ],
-          "args": []
-        },
-        {
-          "name": "isUnique",
-          "description": "field is unique in type",
-          "locations": [
-            "FIELD"
-          ],
-          "args": []
-        },
-        {
-          "name": "cypher",
-          "description": "Cypher query to run",
-          "locations": [
-            "FIELD"
-          ],
-          "args": []
-        },
-        {
-          "name": "profile",
-          "description": "Enable query profiling",
-          "locations": [
-            "QUERY"
-          ],
-          "args": []
-        },
-        {
-          "name": "explain",
-          "description": "Enable query explanation",
-          "locations": [
-            "QUERY"
-          ],
-          "args": []
-        },
-        {
-          "name": "version",
-          "description": "Specify Cypher version",
-          "locations": [
-            "QUERY"
-          ],
-          "args": [
-            {
-              "name": "version",
-              "description": "Cypher Version (3.0, 3.1, 3.2)",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": "\"3.1\""
-            }
-          ]
-        },
-        {
           "name": "skip",
           "description": "Directs the executor to skip this field or fragment when the `if`'argument is true.",
           "locations": [
@@ -43727,6 +43660,60 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ]
+        },
+        {
+          "name": "required",
+          "description": "Requires this field to be present and not null",
+          "locations": [
+            "FIELD"
+          ],
+          "args": []
+        },
+        {
+          "name": "ne",
+          "description": "Ensures a field's value does not equal 'value'",
+          "locations": [
+            "FIELD"
+          ],
+          "args": [
+            {
+              "name": "value",
+              "description": "Value to match with fields value (after .toString)",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ]
+        },
+        {
+          "name": "matches",
+          "description": "Ensures a field's value matches the supplied regular expression",
+          "locations": [
+            "FIELD"
+          ],
+          "args": [
+            {
+              "name": "re",
+              "description": "Re to match with fields value (after .toString)",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
                   "ofType": null
                 }
               },
