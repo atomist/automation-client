@@ -72,7 +72,7 @@ export class RemoteRepoRefSupport implements RemoteRepoRef {
     }
 
     get url() {
-        return `${this.remoteBase}/${this.owner}/${this.repo}`;
+        return `https://${this.remoteBase}/${this.owner}/${this.repo}`;
     }
 
     public cloneUrl(creds: ProjectOperationCredentials) {
