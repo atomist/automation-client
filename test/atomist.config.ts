@@ -4,6 +4,7 @@ import { guid } from "../src/internal/util/string";
 import { scanCommands, scanEvents } from "../src/scan";
 import { AutomationEventListenerSupport } from "../src/server/AutomationEventListener";
 import { HelloWorld } from "./command/HelloWorld";
+import * as secured from "../src/secured";
 
 export const GitHubToken = process.env.GITHUB_TOKEN || "<please set GITHUB_TOKEN env variable>";
 
@@ -46,7 +47,7 @@ export const configuration: Configuration = {
     token: GitHubToken,
     commands: [
         ...scanCommands( ["**/metadata/addAtomistSpringAgent.js", "**/command/Search*.js"] ),
-        HelloWorld,
+        secured.githubTeam(HelloWorld, "atomist-automation"),
     ],
     events: [
         ...scanEvents("**/event/*.js"),
