@@ -129,7 +129,7 @@ function isGitHubTeamMember(owner: string, login: string, team: string, token: s
     } else {
         return Promise.resolve(false);
     }
-};
+}
 
 function sendUnauthorized(ctx: HandlerContext): Promise<HandlerResult> {
     const msg: SlackMessage = {

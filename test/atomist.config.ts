@@ -2,9 +2,9 @@ import { Configuration } from "../src/configuration";
 import { RequestProcessor } from "../src/internal/transport/RequestProcessor";
 import { guid } from "../src/internal/util/string";
 import { scanCommands, scanEvents } from "../src/scan";
+import * as secured from "../src/secured";
 import { AutomationEventListenerSupport } from "../src/server/AutomationEventListener";
 import { HelloWorld } from "./command/HelloWorld";
-import * as secured from "../src/secured";
 
 export const GitHubToken = process.env.GITHUB_TOKEN || "<please set GITHUB_TOKEN env variable>";
 
