@@ -77,44 +77,59 @@ export function githubTeam(maker: Maker<HandleCommand>, team: string): () => Han
                 .then(result => {
                     const login = _.get(result, "ChatTeam[0].members[0].person.gitHubId.login");
 
-                    if (login) {
-                        const config = {
-                            headers: {
-                                Authorization: `token ${token}`,
-                                Accept: "application/vnd.github.hellcat-preview+json",
-                            },
-                        };
-
-                        return axios.get(`https://api.github.com/orgs/${owner}/teams`, config)
-                            .then(gitHubTeams => {
-                                return gitHubTeams.data.find(t => t.name === team);
-                            })
-                            .then(gitHubTeam => {
-                                if (gitHubTeam) {
-                                    return axios.get(
-                                        `https://api.github.com/teams/${gitHubTeam.id}/memberships/${login}`,
-                                        config)
-                                        .then(() => {
-                                            return handleMethod.bind(command)(ctx);
-                                        })
-                                        .catch(() => {
-                                            return sendUnauthorized(ctx);
-                                        });
-                                } else {
-                                    return sendUnauthorized(ctx);
-                                }
-                            })
-                            .catch(() => {
+                    return isGitHubTeamMember(owner, login, team, token)
+                        .then(isTeamMember => {
+                            if (isTeamMember === true) {
+                                return handleMethod.bind(command)(ctx);
+                            } else {
                                 return sendUnauthorized(ctx);
-                            });
-                    } else {
-                        return sendUnauthorized(ctx);
-                    }
+                            }
+                        })
+                        .catch(err => {
+                            return sendUnauthorized(ctx);
+                        });
                 });
         };
         return command;
     };
 }
+
+function isGitHubTeamMember(owner: string, login: string, team: string, token: string): Promise<boolean> {
+    if (login) {
+
+        const config = {
+            headers: {
+                Authorization: `token ${token}`,
+                Accept: "application/vnd.github.hellcat-preview+json",
+            },
+        };
+
+        return axios.get(`https://api.github.com/orgs/${owner}/teams`, config)
+            .then(gitHubTeams => {
+                return gitHubTeams.data.find(t => t.name === team);
+            })
+            .then(gitHubTeam => {
+                if (gitHubTeam) {
+                    return axios.get(
+                        `https://api.github.com/teams/${gitHubTeam.id}/memberships/${login}`,
+                        config)
+                        .then(() => {
+                            return true;
+                        })
+                        .catch(() => {
+                            return false;
+                        });
+                } else {
+                    return false;
+                }
+            })
+            .catch(() => {
+                return false;
+            });
+    } else {
+        return Promise.resolve(false);
+    }
+};
 
 function sendUnauthorized(ctx: HandlerContext): Promise<HandlerResult> {
     const msg: SlackMessage = {
