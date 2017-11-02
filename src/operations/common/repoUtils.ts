@@ -50,5 +50,6 @@ export function relevantRepos(ctx: HandlerContext,
     return repoFinder(ctx)
         .then(rids =>
             Promise.all(rids.map(rid => Promise.resolve(repoFilter(rid))
-                .then(relevant => relevant ? rid : undefined))));
+                .then(relevant => relevant ? rid : undefined))))
+        .then(many => many.filter(s => s !== undefined));
 }

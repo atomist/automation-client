@@ -6,6 +6,8 @@ import { RepoLoader } from "../../../src/operations/common/repoLoader";
 import { doWithAllRepos } from "../../../src/operations/common/repoUtils";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../src/project/Project";
+import { RepoFilter } from "../../../src/operations/common/repoFilter";
+import { RepoId, RepoRef } from "../../../src/operations/common/RepoId";
 
 describe("doWithAllRepos", () => {
 
@@ -22,7 +24,35 @@ describe("doWithAllRepos", () => {
             .then(results => {
                 assert(results.length === 0);
                 done();
-            });
+            }).catch(done);
+    });
+
+    it ("should skip over filtered repos without error", done => {
+        const good = new InMemoryProject(new GitHubRepoRef("org", "good"));
+        const bad = new InMemoryProject(new GitHubRepoRef("org", "bad"));
+        const redeemed = new InMemoryProject(new GitHubRepoRef("org", "redeemed"));
+        const threeRepos = fromListRepoFinder([
+            good, bad, redeemed,
+        ]);
+
+        const notBadFilter: RepoFilter = (r: RepoId) => {
+            return r.repo !== "bad"
+        };
+
+        const dontBotherRepoLoader: RepoLoader = (r: RepoRef) => {
+            return Promise.resolve({ id: r } as Project);
+        }
+
+        doWithAllRepos(null, null,
+            p => {
+                assert(p.id.repo === "good" || p.id.repo === "redeemed");
+                return Promise.resolve(p);
+            }, null,
+            threeRepos, notBadFilter, dontBotherRepoLoader)
+            .then(results => {
+                assert(results.length === 2, `Got ${results.length} results`);
+                done();
+            }).catch(done);
     });
 
     it("should skip over failing repos without error", done => {
