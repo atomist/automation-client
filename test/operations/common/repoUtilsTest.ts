@@ -2,12 +2,12 @@ import "mocha";
 import * as assert from "power-assert";
 import { fromListRepoFinder } from "../../../src/operations/common/fromProjectList";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
+import { RepoFilter } from "../../../src/operations/common/repoFilter";
+import { RepoId, RepoRef } from "../../../src/operations/common/RepoId";
 import { RepoLoader } from "../../../src/operations/common/repoLoader";
 import { doWithAllRepos } from "../../../src/operations/common/repoUtils";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../src/project/Project";
-import { RepoFilter } from "../../../src/operations/common/repoFilter";
-import { RepoId, RepoRef } from "../../../src/operations/common/RepoId";
 
 describe("doWithAllRepos", () => {
 
@@ -36,12 +36,12 @@ describe("doWithAllRepos", () => {
         ]);
 
         const notBadFilter: RepoFilter = (r: RepoId) => {
-            return r.repo !== "bad"
+            return r.repo !== "bad";
         };
 
         const dontBotherRepoLoader: RepoLoader = (r: RepoRef) => {
             return Promise.resolve({ id: r } as Project);
-        }
+        };
 
         doWithAllRepos(null, null,
             p => {
