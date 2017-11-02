@@ -392,4 +392,3 @@ export class NoDecoratorIngestor implements HandleEvent<any>, IngestorMetadata {
         throw new Error("not relevant");
     }
 }
-

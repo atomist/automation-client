@@ -1,4 +1,4 @@
-import { Secrets, Secret, MappedParameters, MappedParameter } from "../../src/Handlers";
+import { MappedParameter, MappedParameters, Secret, Secrets } from "../../src/Handlers";
 
 export abstract class SecretBaseHandler {
 
