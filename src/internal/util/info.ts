@@ -33,5 +33,7 @@ export function info(automations: Automations): any {
         // Ignore the missing git-info.json
     }
 
+    i.pid = process.pid;
+
     return i;
 }

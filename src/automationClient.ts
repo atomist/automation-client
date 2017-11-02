@@ -80,7 +80,8 @@ export class AutomationClient {
     }
 
     public run(): Promise<any> {
-        logger.info(`Starting Atomist automation client for ${this.configuration.name}@${this.configuration.version}`);
+        logger.info(`Starting Atomist automation client ${this.configuration.name}@${this.configuration.version} ` +
+            `with pid ${process.pid}`);
         const webSocketOptions: WebSocketClientOptions = {
             graphUrl: _.get(this.configuration, "endpoints.graphql", DefaultGraphQLServer),
             registrationUrl: _.get(this.configuration, "endpoints.api", DefaultApiServer),
