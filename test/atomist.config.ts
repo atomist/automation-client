@@ -82,6 +82,7 @@ export const configuration: Configuration = {
         api: `${host}/registration`,
     },
     applicationEvents: {
-        enabled: false,
+        enabled: true,
+        teamId: "T1L0VDKJP",
     },
 };
