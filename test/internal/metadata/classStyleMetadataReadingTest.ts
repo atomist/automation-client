@@ -43,6 +43,19 @@ describe("class style metadata reading", () => {
         assert(md.secrets.some(p => p.name === "superSecret"), "Secret should be inherited");
     });
 
+    it("should handle inherited parameters through the entire hierarchy", () => {
+        const h = new SubSubclass();
+        const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        assert(md.parameters.length === 3, "Should find all parameters");
+        assert(md.parameters.some(p => p.name === "subclassParam"), "Subclass parameter should be found");
+        assert(md.parameters.some(p => p.name === "superclassParam"), "Parameter should be inherited");
+        assert(md.mapped_parameters.length === 3);
+        assert(md.secrets.length === 3);
+        assert(md.secrets.some(p => p.name === "subSecret"), "Subclass secret should be found");
+        assert(md.secrets.some(p => p.name === "subSubSecret"), "SubSubclass secret should be found");
+        assert(md.secrets.some(p => p.name === "superSecret"), "Secret should be inherited");
+    });
+
     it("should convert to explicit type: boolean", () => {
         const h = new HasDefaultedBooleanParam();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
@@ -181,7 +194,7 @@ export class Superclass implements HandleCommand {
     }
 }
 
-@CommandHandler("addAtomistSpringAgent", "add the Atomist Spring Boot agent to a Spring Boot project")
+@CommandHandler("Some sub class")
 @Tags("atomist", "spring")
 class Subclass extends Superclass {
 
@@ -199,6 +212,25 @@ class Subclass extends Superclass {
 
     @Secret("atomist://some_secret")
     public subSecret: string;
+
+}
+
+@CommandHandler("Some sub sub class")
+class SubSubclass extends Subclass {
+
+    @Parameter({
+        displayName: "a boolean",
+        pattern: /^T[0-9A-Z]+$/,
+        required: false,
+        type: "boolean",
+    })
+    public booleanParam: boolean = true;
+
+    @MappedParameter(MappedParameters.GitHubRepository)
+    public subRepo: string;
+
+    @Secret("atomist://some_secret?path")
+    public subSubSecret: string;
 
 }
 
@@ -360,3 +392,4 @@ export class NoDecoratorIngestor implements HandleEvent<any>, IngestorMetadata {
         throw new Error("not relevant");
     }
 }
+

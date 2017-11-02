@@ -1,21 +1,16 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
-import { CommandHandler, MappedParameter, Parameter, Secret } from "../../src/decorators";
+import { CommandHandler, Parameter, } from "../../src/decorators";
 import { Failure } from "../../src/HandlerResult";
-import { HandleCommand, HandlerContext, HandlerResult, MappedParameters, Secrets } from "../../src/Handlers";
+import { HandleCommand, HandlerContext, HandlerResult, } from "../../src/Handlers";
 import { sendMessages } from "../../src/operations/support/contextUtils";
 import { buttonForCommand, menuForCommand } from "../../src/spi/message/MessageClient";
+import { SecretBaseHandler } from "./SecretBaseHandler";
 
 @CommandHandler("Send a hello back to the client", "hello cd")
-export class HelloWorld implements HandleCommand {
+export class HelloWorld extends SecretBaseHandler implements HandleCommand {
 
     @Parameter({description: "Name of person the greeting should be send to", pattern: /^.*$/})
     public name: string;
-
-    @Secret(Secrets.userToken(["repo"]))
-    public userToken: string;
-
-    @MappedParameter(MappedParameters.SlackUser)
-    public userName: string;
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
         console.log(`Incoming parameter was ${this.name}`);

@@ -64,7 +64,7 @@ export function githubTeam(maker: Maker<HandleCommand>, team: string): () => Han
         const command = toFactory(maker)();
         declareMappedParameter(command, "__atomist_slack_user", MappedParameters.SlackUser);
         declareMappedParameter(command, "__atomist_github_owner", MappedParameters.GitHubOwner);
-        declareSecret(command, "__atomist_user_token", Secrets.userToken(["read:org"]));
+        declareSecret(command, "__atomist_user_token", Secrets.userToken("read:org"));
         const handleMethod = command.handle;
         command.handle = (ctx: HandlerContext) => {
 

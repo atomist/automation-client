@@ -75,14 +75,18 @@ export function declareParameter(target: any, propertyKey: string, details: Base
     params.push(copy);
 
     // merge parameters from parent if it has some
-    const protoParams: any[] = get_metadata(Object.getPrototypeOf(target), "__parameters");
-    if (protoParams != null) {
-        protoParams.forEach(protoParam => {
-            // if we don't already have a parameter with the same name
-            if (!params.some(param => param.name === protoParam.name)) {
-                params.push(protoParam);
-            }
-        });
+    let parent = Object.getPrototypeOf(target);
+    while (parent != null) {
+        const protoParams: any[] = get_metadata(parent, "__parameters");
+        if (protoParams != null) {
+            protoParams.forEach(protoParam => {
+                // if we don't already have a parameter with the same name
+                if (!params.some(param => param.name === protoParam.name)) {
+                    params.push(protoParam);
+                }
+            });
+        }
+        parent = Object.getPrototypeOf(parent);
     }
 
     set_metadata(target, "__parameters", params);
@@ -105,15 +109,19 @@ export function declareMappedParameter(target: any, localKey: string, foreignKey
     const param = { localKey, foreignKey };
     params.push(param);
 
-    // merge parameters from parent if it has some
-    const protoParams: any[] = get_metadata(Object.getPrototypeOf(target), "__mappedParameters");
-    if (protoParams != null) {
-        protoParams.forEach(protoParam => {
-            // if we don't already have a parameter with the same name
-            if (!params.some(p => p.localKey === protoParam.localKey)) {
-                params.push(protoParam);
-            }
-        });
+    // merge mapped_parameters from parent if it has some
+    let parent = Object.getPrototypeOf(target);
+    while (parent != null) {
+        const protoParams: any[] = get_metadata(parent, "__mappedParameters");
+        if (protoParams != null) {
+            protoParams.forEach(protoParam => {
+                // if we don't already have a parameter with the same name
+                if (!params.some(p => p.localKey === protoParam.localKey)) {
+                    params.push(protoParam);
+                }
+            });
+        }
+        parent = Object.getPrototypeOf(parent);
     }
 
     set_metadata(target, "__mappedParameters", params);
@@ -136,15 +144,19 @@ export function declareSecret(target: any, name: string, path: string) {
     const param = { name, path };
     params.push(param);
 
-    // merge parameters from parent if it has some
-    const protoParams: any[] = get_metadata(Object.getPrototypeOf(target), "__secrets");
-    if (protoParams != null) {
-        protoParams.forEach(protoParam => {
-            // if we don't already have a parameter with the same name
-            if (!params.some(p => p.name === protoParam.name)) {
-                params.push(protoParam);
-            }
-        });
+    // merge secrets from parent if it has some
+    let parent = Object.getPrototypeOf(target);
+    while (parent != null) {
+        const protoParams: any[] = get_metadata(parent, "__secrets");
+        if (protoParams != null) {
+            protoParams.forEach(protoParam => {
+                // if we don't already have a parameter with the same name
+                if (!params.some(p => p.name === protoParam.name)) {
+                    params.push(protoParam);
+                }
+            });
+        }
+        parent = Object.getPrototypeOf(parent);
     }
 
     set_metadata(target, "__secrets", params);
