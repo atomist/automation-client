@@ -9,7 +9,11 @@ var loaded = false;
 function init() {
 
     var kebabCase = function kebabCase(string) {
-        return string.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
+        if (string) {
+            return string.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
+        } else {
+            return string;
+        }
     };
 
     var automations, metrics;
