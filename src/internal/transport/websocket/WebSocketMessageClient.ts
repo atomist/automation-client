@@ -39,8 +39,8 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 channels: channelNames as string[],
                 users: userNames as string[],
                 message_id: options.id,
-                timestamp: ts.toString(),
-                ttl: options.ttl && ts ? (ts + options.ttl).toString() : undefined,
+                timestamp: ts ? ts.toString() : undefined,
+                ttl: ts && options.ttl ? (ts + options.ttl).toString() : undefined,
                 post: options.post,
                 actions,
             };
@@ -56,8 +56,8 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 channels: channelNames as string[],
                 users: userNames as string[],
                 message_id: options.id,
-                timestamp: ts.toString(),
-                ttl: options.ttl && ts ? (ts + options.ttl).toString() : undefined,
+                timestamp: ts ? ts.toString() : undefined,
+                ttl: ts && options.ttl ? (ts + options.ttl).toString() : undefined,
                 post: options.post,
             };
             sendMessage(response, this.ws);
