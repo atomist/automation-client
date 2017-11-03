@@ -15,7 +15,7 @@ import { SeedDrivenGenerator } from "./SeedDrivenGenerator";
  *
  * Defines common parameters.
  */
-@CommandHandler("Project generator for any seed", ["universal generator"])
+@CommandHandler("Project generator for any seed", "generate universal")
 @Tags("universal", "generator")
 export class UniversalSeed extends SeedDrivenGenerator {
 

@@ -314,7 +314,7 @@ export class HasSomeFreeChoicesParam implements HandleCommand {
     }
 }
 
-@CommandHandler("description", ["universal", "generator"])
+@CommandHandler("description", "universal", "generator")
 @Tags("universal", "generator")
 export class TagsAndIntent implements HandleCommand {
 

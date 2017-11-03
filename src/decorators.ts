@@ -44,7 +44,7 @@ export function Secret(path: string) {
  * @return {(obj: any) => any}
  * @constructor
  */
-export function CommandHandler(description: string, intent?: string[] | string) {
+export function CommandHandler(description: string, ...intent: string[]) {
     return (obj: any) => { declareCommandHandler(obj, description, intent); };
 }
 

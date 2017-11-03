@@ -25,7 +25,7 @@ export interface VersionedArtifact {
  * Superclass for all Java seeds using Maven. Updates Maven pom
  * based on parameters.
  */
-@CommandHandler("project generator for Java library seeds", ["java", "generator"])
+@CommandHandler("project generator for Java library seeds", "generate java")
 export class JavaSeed extends UniversalSeed implements VersionedArtifact {
 
     public static Name = "JavaSeed";

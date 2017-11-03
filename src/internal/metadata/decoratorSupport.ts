@@ -163,13 +163,9 @@ export function declareSecret(target: any, name: string, path: string) {
     return target;
 }
 
-export function declareCommandHandler(obj: any, description: string, intent?: string[] | string) {
+export function declareCommandHandler(obj: any, description: string, intent?: string[]) {
     declareRug(obj, "command-handler", description);
-    if (Array.isArray(intent)) {
-        declareIntent(obj, intent);
-    } else if (intent) {
-        declareIntent(obj, [intent]);
-    }
+    declareIntent(obj, intent);
     registerCommand(obj);
     return obj;
 }
