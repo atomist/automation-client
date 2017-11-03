@@ -1,12 +1,11 @@
 import "mocha";
 import * as assert from "power-assert";
 
+import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import { ActionResult, successOn } from "../../../src/action/ActionResult";
 import { HandlerContext } from "../../../src/HandlerContext";
-import { ProjectOperationCredentials } from "../../../src/operations/common/ProjectOperationCredentials";
 import { AnyProjectEditor, SimpleProjectEditor } from "../../../src/operations/edit/projectEditor";
 import { AbstractGenerator } from "../../../src/operations/generate/AbstractGenerator";
-import { ProjectPersister } from "../../../src/operations/generate/generatorUtils";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../src/project/Project";
 
@@ -15,6 +14,8 @@ class CustomStartSeed extends AbstractGenerator {
     public created: Project;
 
     public targetOwner = "foo";
+
+    public targetRepo = "bar";
 
     public githubToken;
 
@@ -50,7 +51,14 @@ describe("AbstractGenerator", () => {
     it("should add file to result", done => {
         const start = InMemoryProject.of({path: "a", content: "a"});
         const generator = new CustomStartSeed(AddThingEditor, start);
-        generator.handle(null, generator)
+        const ctx: any = {
+            messageClient: {
+                respond(msg: string | SlackMessage) {
+                    return Promise.resolve();
+                },
+            },
+        };
+        generator.handle(ctx as HandlerContext, generator)
             .then(er => {
                 assert(er.code === 0);
                 assert(start.findFileSync("a"));
@@ -63,7 +71,14 @@ describe("AbstractGenerator", () => {
     it.skip("should add file to result but not modify seed", done => {
         const start = InMemoryProject.of({path: "a", content: "a"});
         const generator = new CustomStartSeed(AddThingEditor, start);
-        generator.handle(null, generator)
+        const ctx: any = {
+            messageClient: {
+                respond(msg: string | SlackMessage) {
+                    return Promise.resolve();
+                },
+            },
+        };
+        generator.handle(ctx as HandlerContext, generator)
             .then(er => {
                 assert(er.code === 0);
                 assert(start.findFileSync("a"));

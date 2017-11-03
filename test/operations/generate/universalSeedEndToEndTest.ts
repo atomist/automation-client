@@ -6,6 +6,7 @@ import * as tmp from "tmp-promise";
 
 import axios from "axios";
 
+import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import { HandlerContext } from "../../../src/HandlerContext";
 import { GitHubDotComBase, GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { UniversalSeed } from "../../../src/operations/generate/UniversalSeed";
@@ -93,6 +94,11 @@ describe("Local project creation", () => {
 });
 
 export const MockHandlerContext = {
+    messageClient: {
+        respond(msg: string | SlackMessage) {
+            return Promise.resolve();
+        },
+    },
     graphClient: {
         executeMutationFromFile(file: string, variables?: any): Promise<any> {
             return Promise.resolve({createSlackChannel: [{id: "stts"}]});

@@ -119,23 +119,19 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
             })
             .then(result => {
                 // If we are running in a Slack context send confirmation message back
-                if (ctx.messageClient) {
-                    const msg: SlackMessage = {
-                        attachments: [{
-                            text: `Visit ${url(`https://github.com/${params.targetOwner}/${params.targetRepo}`,
-                                `${params.targetOwner}/${params.targetRepo}`)} to inspect your new repository`,
-                            author_icon: `https://images.atomist.com/rug/check-circle.gif?gif=${guid()}`,
-                            author_name: "Successfully generated new repository",
-                            fallback: "Successfully generated new repository",
-                            color: "#45B254",
-                            mrkdwn_in: ["text"],
-                        }],
-                    };
-                    return ctx.messageClient.respond(msg)
-                        .then(() => result);
-                } else {
-                    return result;
-                }
+                const msg: SlackMessage = {
+                    attachments: [{
+                        text: `Visit ${url(`https://github.com/${params.targetOwner}/${params.targetRepo}`,
+                            `${params.targetOwner}/${params.targetRepo}`)} to inspect your new repository`,
+                        author_icon: `https://images.atomist.com/rug/check-circle.gif?gif=${guid()}`,
+                        author_name: "Successfully generated new repository",
+                        fallback: "Successfully generated new repository",
+                        color: "#45B254",
+                        mrkdwn_in: ["text"],
+                    }],
+                };
+                return ctx.messageClient.respond(msg)
+                    .then(() => result);
             })
             .catch(err => failure(err));
     }
