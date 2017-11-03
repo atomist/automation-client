@@ -27,7 +27,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
 
     protected async doSend(msg: string | SlackMessage, userNames: string | string[],
                            channelNames: string | string[], options: MessageOptions = {}): Promise<any> {
-
+        const ts = this.ts(options);
         if (isSlackMessage(msg)) {
             const actions = mapActions(msg, this.automations);
             const response: HandlerResponse = {
@@ -39,8 +39,8 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 channels: channelNames as string[],
                 users: userNames as string[],
                 message_id: options.id,
-                timestamp: this.ts(options),
-                ttl: options.ttl ? options.ttl.toString() : undefined,
+                timestamp: ts.toString(),
+                ttl: options.ttl && ts ? (ts + options.ttl).toString() : undefined,
                 post: options.post,
                 actions,
             };
@@ -56,8 +56,8 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 channels: channelNames as string[],
                 users: userNames as string[],
                 message_id: options.id,
-                timestamp: this.ts(options),
-                ttl: options.ttl ? options.ttl.toString() : undefined,
+                timestamp: ts.toString(),
+                ttl: options.ttl && ts ? (ts + options.ttl).toString() : undefined,
                 post: options.post,
             };
             sendMessage(response, this.ws);
@@ -65,12 +65,12 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
         }
     }
 
-    private ts(options: MessageOptions): string {
+    private ts(options: MessageOptions): number {
         if (options.id) {
             if (options.ts) {
-                return Math.floor(options.ts).toString();
+                return Math.floor(options.ts);
             } else {
-                return Math.floor(new Date().getTime() / 1000).toString();
+                return Math.floor(new Date().getTime() / 1000);
             }
         } else {
             return undefined;
