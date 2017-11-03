@@ -122,8 +122,11 @@
             $('#modal-result').modal('show');
             e.preventDefault();
             $.ajax({
-                type: frm.attr('method'),
-                url: frm.attr('action'),
+                headers: {
+                    "x-atomist-no-redirect":"true"
+                },
+                type: frm.attr("method"),
+                url: frm.attr("action"),
                 data: frm.serialize(),
                 success: function (data) {
 

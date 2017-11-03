@@ -182,8 +182,8 @@ export class ExpressServer {
             h => {
                 this.exposeCommandHandlerInvocationRoute(exp,
                     `${ApiBase}/command/${_.kebabCase(h.name)}`, h,
-                    (res, result) => {
-                        if (result.redirect) {
+                    (req, res, result) => {
+                        if (result.redirect && !res.get("x-atomist-no-redirect")) {
                             res.redirect(result.redirect);
                         } else {
                             res.status(result.code === 0 ? 200 : 500).json(result);
@@ -234,7 +234,7 @@ export class ExpressServer {
     private exposeCommandHandlerInvocationRoute(exp: express.Express,
                                                 url: string,
                                                 h: CommandHandlerMetadata,
-                                                handle: (res, result) => any) {
+                                                handle: (req, res, result) => any) {
 
         exp.post(url, this.enforceSecure, this.authenticate,
             (req, res) => {
@@ -254,7 +254,7 @@ export class ExpressServer {
                 };
 
                 this.handler.processCommand(payload, result => {
-                    handle(res, result);
+                    handle(req, res, result);
                 });
             });
 
