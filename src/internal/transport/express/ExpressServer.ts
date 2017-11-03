@@ -306,7 +306,7 @@ export class ExpressServer {
                     },
                 };
                 this.handler.processCommand(payload, result => {
-                    handle(res, result);
+                    handle(req, res, result);
                 });
             });
     }
