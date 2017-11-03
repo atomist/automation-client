@@ -183,7 +183,7 @@ export class ExpressServer {
                 this.exposeCommandHandlerInvocationRoute(exp,
                     `${ApiBase}/command/${_.kebabCase(h.name)}`, h,
                     (req, res, result) => {
-                        if (result.redirect && !res.get("x-atomist-no-redirect")) {
+                        if (result.redirect && !req.get("x-atomist-no-redirect")) {
                             res.redirect(result.redirect);
                         } else {
                             res.status(result.code === 0 ? 200 : 500).json(result);

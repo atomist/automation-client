@@ -1,11 +1,13 @@
+import { SlackMessage, url } from "@atomist/slack-messages/SlackMessages";
 import * as assert from "power-assert";
 import * as promiseRetry from "promise-retry";
 import * as shell from "shelljs";
 import { ActionResult } from "../../action/ActionResult";
 import { MappedParameter, Parameter } from "../../decorators";
-import { RedirectResult } from "../../HandlerResult";
+import { failure, RedirectResult, Success } from "../../HandlerResult";
 import { HandleCommand, HandlerContext, HandlerResult, MappedParameters } from "../../Handlers";
 import { logger } from "../../internal/util/logger";
+import { guid } from "../../internal/util/string";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
@@ -116,25 +118,26 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
                             }));
             })
             .then(result => {
-                // TODO remove until we need this
-                /* if (!this.local) {
-                    return ctx.graphClient.executeMutationFromFile("graphql/createSlackChannel",
-                        {name: this.targetRepo})
-                        .then(channel => {
-                            const channelId = (channel as any).createSlackChannel[0].id;
-                            return ctx.graphClient.executeMutationFromFile("graphql/addBotToSlackChannel",
-                                {channelId})
-                                .then(() => {
-                                    return ctx.graphClient.executeMutationFromFile("graphql/linkSlackChannelToRepo",
-                                        {channelId, repo: this.targetRepo, owner: this.targetOwner});
-                                });
-                        })
-                        .then(() => result)
-                        .catch(err => failure(err));
-                } else { */
+                // If we are running in a Slack context send confirmation message back
+                if (ctx.messageClient) {
+                    const msg: SlackMessage = {
+                        attachments: [{
+                            text: `Visit ${url(`https://github.com/${params.targetOwner}/${params.targetRepo}`,
+                                `${params.targetOwner}/${params.targetRepo}`)} to inspect your new repository`,
+                            author_icon: `https://images.atomist.com/rug/check-circle.gif?gif=${guid()}`,
+                            author_name: "Successfully generated new repository",
+                            fallback: "Successfully generated new repository",
+                            color: "#45B254",
+                            mrkdwn_in: ["text"],
+                        }],
+                    };
+                    return ctx.messageClient.respond(msg)
+                        .then(() => result);
+                } else {
                     return result;
-                // }
-            });
+                }
+            })
+            .catch(err => failure(err));
     }
 
     protected initAndSetRemote(p: Project, params: this): Promise<ActionResult<Project>> {
