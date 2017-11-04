@@ -68,9 +68,9 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
     private ts(options: MessageOptions): number {
         if (options.id) {
             if (options.ts) {
-                return Math.floor(options.ts);
+                return options.ts;
             } else {
-                return Math.floor(new Date().getTime() / 1000);
+                return Date.now();
             }
         } else {
             return undefined;

@@ -44,7 +44,10 @@ export interface MessageOptions {
 
     /**
      * Timestamp of the message. The timestamp needs to be
-     * sortable lexicographically.
+     * sortable lexicographically. Should be in milliseconds and
+     * defaults to Date.now().
+     *
+     * This is only applicable if id is set too.
      */
     ts?: number;
 
