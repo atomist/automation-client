@@ -39,9 +39,13 @@ export const Success: HandlerResult = {
     code: 0,
 };
 
+export const SuccessPromise = Promise.resolve(Success);
+
 export const Failure: HandlerResult = {
     code: 1,
 };
+
+export const FailurePromise = Promise.resolve(Failure);
 
 export function failure(err: Error): HandlerError {
     return { code: 1, message: err.message, stack: err.stack };
