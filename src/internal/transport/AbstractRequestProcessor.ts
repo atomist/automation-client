@@ -51,6 +51,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 messageClient: this.createMessageClient(command),
                 graphClient: this.createGraphClient(command),
             };
+            this.listeners.forEach(l => l.contextCreated(ctx));
 
             this.onCommandWithNamespace(command);
             this.listeners.forEach(l => l.commandStarting(ci, ctx));
@@ -115,6 +116,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 messageClient: this.createMessageClient(event),
                 graphClient: this.createGraphClient(event),
             };
+            this.listeners.forEach(l => l.contextCreated(ctx));
 
             this.onEventWithNamespace(event);
             this.listeners.forEach(l => l.eventStarting(ef, ctx));

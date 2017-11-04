@@ -7,6 +7,8 @@ export interface AutomationEventListener {
 
     registrationSuccessful(handler: RequestProcessor): void;
 
+    contextCreated(context: HandlerContext): void;
+
     commandStarting(payload: CommandInvocation, ctx: HandlerContext): void;
     commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): void;
     commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): void;
@@ -20,6 +22,10 @@ export interface AutomationEventListener {
 export class AutomationEventListenerSupport implements AutomationEventListener {
 
     public registrationSuccessful(handler: RequestProcessor): void {
+        // This is intentionally left empty
+    }
+
+    public contextCreated(context: HandlerContext): void {
         // This is intentionally left empty
     }
 
