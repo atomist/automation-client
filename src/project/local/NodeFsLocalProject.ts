@@ -6,6 +6,7 @@ import * as fpath from "path";
 
 import * as gs from "glob-stream";
 import * as stream from "stream";
+import { promisify } from "util";
 import { deleteFolderRecursive } from "../../internal/util/file";
 import { logger } from "../../internal/util/logger";
 import { RepoRef, SimpleRepoId } from "../../operations/common/RepoId";
@@ -127,6 +128,15 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
 
     public deleteFile(path: string): Promise<this> {
         return fs.unlink(this.toRealPath(path)).then(_ => this);
+    }
+
+    public makeExecutable(path: string): Promise<this> {
+        return fs.stat(this.toRealPath(path))
+            .then(stats => {
+                logger.debug("Starting mode: " + stats.mode);
+                return fs.chmod(this.toRealPath(path), stats.mode && fs.constants.S_IXUSR);
+            } )
+            .then(() => this);
     }
 
     public makeExecutableSync(path: string): void {
