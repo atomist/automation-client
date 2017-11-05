@@ -131,6 +131,14 @@ export interface ProjectAsync extends ProjectCore, ScriptedFlushable<Project> {
      */
     deleteDirectory(path: string): Promise<this>;
 
+    /**
+     * Make a file executable by its owner.
+     * Other permissions are unchanged.
+     * @param {string} path
+     * @return {Promise<this>}
+     */
+    makeExecutable(path: string): Promise<this>;
+
 }
 
 /**

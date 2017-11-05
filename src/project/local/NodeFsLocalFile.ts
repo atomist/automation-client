@@ -1,5 +1,6 @@
 import * as fs from "fs-extra";
 
+import { promisify } from "util";
 import { AbstractFile } from "../support/AbstractFile";
 import { LocalFile } from "./LocalFile";
 
@@ -46,6 +47,10 @@ export class NodeFsLocalFile extends AbstractFile implements LocalFile {
             return fs.move(oldPath, this.realPath).then(_ => this);
         }
         return Promise.resolve(this);
+    }
+
+    public isExecutable(): Promise<boolean> {
+        return fs.access(this.realPath, fs.constants.X_OK).then(_ => true).catch(_ => false);
     }
 }
 

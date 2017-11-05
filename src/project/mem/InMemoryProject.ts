@@ -12,6 +12,7 @@ import { InMemoryFile } from "./InMemoryFile";
  */
 export class InMemoryProject extends AbstractProject {
 
+
     /**
      * Create a new InMemoryProject
      * @param id: RepoRef
@@ -115,6 +116,10 @@ export class InMemoryProject extends AbstractProject {
         return spigot.array({objectMode: true},
             this.memFiles.filter(f => matchingPaths.some(mp => mp === f.path)),
         );
+    }
+
+    public makeExecutable(path: string): Promise<this> {
+        throw new Error("makeExecutable not implemented.");
     }
 
 }
