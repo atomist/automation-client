@@ -136,7 +136,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
                 logger.debug("Starting mode: " + stats.mode);
                 return fs.chmod(this.toRealPath(path), stats.mode && fs.constants.S_IXUSR);
             } )
-            .then(_ => this);
+            .then(() => this);
     }
 
     public makeExecutableSync(path: string): void {
