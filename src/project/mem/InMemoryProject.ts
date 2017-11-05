@@ -12,7 +12,6 @@ import { InMemoryFile } from "./InMemoryFile";
  */
 export class InMemoryProject extends AbstractProject {
 
-
     /**
      * Create a new InMemoryProject
      * @param id: RepoRef

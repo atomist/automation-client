@@ -88,6 +88,4 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
 
     public abstract fileExistsSync(path: string): boolean;
 
-
-
 }
