@@ -62,6 +62,8 @@ export interface FileAsync extends FileCore {
 
     setPath(path: string): Promise<this>;
 
+    isExecutable(): Promise<boolean>;
+
 }
 
 export interface FileNonBlocking extends FileScripting, FileAsync {

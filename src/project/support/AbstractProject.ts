@@ -60,6 +60,8 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
             .catch(err => this);
     }
 
+    public abstract makeExecutable(path: string): Promise<this>;
+
     public recordAddFile(path: string, content: string): this {
         return this.recordAction(p => p.addFile(path, content));
     }
@@ -85,5 +87,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
     public abstract directoryExistsSync(path: string): boolean;
 
     public abstract fileExistsSync(path: string): boolean;
+
+
 
 }
