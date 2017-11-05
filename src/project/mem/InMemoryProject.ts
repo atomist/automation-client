@@ -117,4 +117,8 @@ export class InMemoryProject extends AbstractProject {
         );
     }
 
+    public makeExecutable(path: string): Promise<this> {
+        throw new Error("makeExecutable not implemented.");
+    }
+
 }
