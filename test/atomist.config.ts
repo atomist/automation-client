@@ -46,11 +46,11 @@ export const configuration: Configuration = {
     teamIds: ["T1L0VDKJP"],
     token: GitHubToken,
     commands: [
-        ...scanCommands( ["**/metadata/addAtomistSpringAgent.js", "**/command/Search*.js"] ),
+        // ...scanCommands( ["**/metadata/addAtomistSpringAgent.js", "**/command/Search*.js"] ),
         secured.githubTeam(HelloWorld, "atomist-automation"),
     ],
     events: [
-        ...scanEvents("**/event/*.js"),
+        // ...scanEvents("**/event/*.js"),
     ],
     http: {
         enabled: true,

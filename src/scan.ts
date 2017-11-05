@@ -67,6 +67,7 @@ export function scanCommands(patterns: string | string[] =
     const _patterns = toStringArray(patterns);
     logger.info(`Scanning for commands using file patterns: ${_patterns.join(", ")}`);
     scan(_patterns);
+    logger.debug(`Completed scanning for commands`);
     return registry.commands;
 }
 
@@ -81,6 +82,7 @@ export function scanEvents(patterns: string | string[] =
     const _patterns = toStringArray(patterns);
     logger.info(`Scanning for events using file patterns: ${_patterns.join(", ")}`);
     scan(_patterns);
+    logger.debug(`Completed scanning for events`);
     return registry.events;
 }
 
