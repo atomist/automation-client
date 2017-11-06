@@ -8,6 +8,7 @@ import {
     Parameter,
     SecretDeclaration,
 } from "../../metadata/automationMetadata";
+import * as decorators from "./decoratorSupport";
 import {
     isCommandHandlerMetadata,
     isEventHandlerMetadata,
@@ -97,23 +98,29 @@ function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMet
 }
 
 function parametersFromInstance(r: any): Parameter[] {
-    const parameters = r.__parameters ? r.__parameters.map(p => {
-        if (!p.display_name) {
-            if (p.displayName) {
-                p.display_name = p.displayName;
-                delete p.displayName;
-            } else {
-                p.display_name = p.name;
-            }
-        }
+    const parameters = r.__parameters ? (r.__parameters as decorators.Parameter[]).map(p => {
+        const parameter: Parameter = {
+            name: p.name,
+            pattern: p.pattern ? p.pattern.source : "^.*$",
+            description: p.description,
+            required: p.required,
+            group: p.group,
+            displayable: p.displayable !== false,
+            type: p.type,
+            max_length: p.maxLength,
+            min_length: p.minLength,
+            valid_input: p.validInput,
+            default_value: r[p.name],
+            display_name: p.displayName ? p.displayName : p.name,
+            order: p.order,
+        };
+
         // Make this optional parameter explicit
-        p.displayable = p.displayable !== false;
-        p.default_value = r[p.name];
-        if (p.default_value) {
+        if (parameter.default_value) {
             // right now the bot only supports string parameter values
-            p.default_value = p.default_value.toString();
+            parameter.default_value = parameter.default_value.toString();
         }
-        return p;
+        return parameter;
     }) : [];
 
     return parameters.sort((p1, p2) => {

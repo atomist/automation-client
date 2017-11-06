@@ -43,7 +43,7 @@ export interface Parameter {
     displayable?: boolean;
 
     // TODO why does this come back wrong in annotation?
-    validInput?: string;
+    valid_input?: string;
     max_length?: number;
     min_length?: number;
     display_name?: string;
@@ -57,6 +57,8 @@ export interface Parameter {
     group?: Group;
 
     tags?: string[];
+
+    order?: number;
 }
 
 /**
