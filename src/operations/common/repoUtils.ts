@@ -34,13 +34,16 @@ export function doWithAllRepos<R, P>(ctx: HandlerContext,
             Promise.all(
                 ids.map(id =>
                     repoLoader(id)
-                        .then(p => action(p, parameters))
                         .catch(err => {
                             logger.warn("Unable to load repo %s:%s: %s", id.owner, id.repo, err);
                             return undefined;
-                        }),
-                ),
-            ).then(proms => proms.filter(prom => prom)),
+                        })
+                        .then(p => {
+                            if (p) {
+                                return action(p, parameters);
+                            }
+                        })))
+                .then(proms => proms.filter(prom => prom)),
         );
 }
 
