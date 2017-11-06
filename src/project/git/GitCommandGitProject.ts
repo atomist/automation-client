@@ -203,7 +203,9 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     public commit(message: string): Promise<CommandResult<this>> {
-        return this.runCommandInCurrentWorkingDirectory(`git add .; git commit -a -m "${message}"`);
+        return this.runCommandInCurrentWorkingDirectory(`git add .`)
+            .then(() =>
+            this.runCommandInCurrentWorkingDirectory(`git commit -a -m "${message}"`));
     }
 
     /**
