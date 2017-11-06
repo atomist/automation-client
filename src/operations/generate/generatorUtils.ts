@@ -42,7 +42,7 @@ export function generate<P extends RepoId>(startingPoint: Promise<Project>,
         .then(independentCopy => toEditor(editor)(independentCopy, ctx, params))
         .then(r => r.target)
         .then(populated => {
-            logger.debug("Persisting repo at [%s] to GitHub: %s:%s",
+            logger.debug("Persisting repo at [%s]: owner/repo=%s:%s",
                 (populated as LocalProject).baseDir, params.owner, params.repo);
             return persist(populated, credentials, params);
         });
