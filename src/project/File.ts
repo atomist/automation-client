@@ -64,6 +64,8 @@ export interface FileAsync extends FileCore {
 
     isExecutable(): Promise<boolean>;
 
+    isReadable(): Promise<boolean>;
+
 }
 
 export interface FileNonBlocking extends FileScripting, FileAsync {
