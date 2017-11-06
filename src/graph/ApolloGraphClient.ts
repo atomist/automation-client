@@ -45,7 +45,7 @@ export class ApolloGraphClient implements GraphClient {
     }
 
     public executeQueryFromFile<T, Q>(queryFile: string, variables?: Q, current?: string): Promise<T> {
-        const graphql = resolveAndReadFileSync(queryFile);
+        const graphql = resolveAndReadFileSync(queryFile, current);
         return this.executeQuery<T, Q>(graphql, variables);
     }
 
@@ -66,7 +66,7 @@ export class ApolloGraphClient implements GraphClient {
     }
 
     public executeMutationFromFile<T, Q>(mutationFile: string, variables?: Q, current?: string): Promise<T> {
-        const graphql = resolveAndReadFileSync(mutationFile);
+        const graphql = resolveAndReadFileSync(mutationFile, current);
         return this.executeMutation<T, Q>(graphql, variables);
     }
 
