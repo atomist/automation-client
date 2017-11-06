@@ -6,7 +6,6 @@ import * as fpath from "path";
 
 import * as gs from "glob-stream";
 import * as stream from "stream";
-import { promisify } from "util";
 import { deleteFolderRecursive } from "../../internal/util/file";
 import { logger } from "../../internal/util/logger";
 import { RepoRef, SimpleRepoId } from "../../operations/common/RepoId";
