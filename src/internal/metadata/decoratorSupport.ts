@@ -8,7 +8,7 @@ import {
 } from "../../scan";
 
 export interface BaseParameter {
-    readonly pattern: RegExp;
+    readonly pattern?: RegExp;
     readonly required?: boolean;
     readonly description?: string;
     readonly displayName?: string;

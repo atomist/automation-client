@@ -3,25 +3,14 @@ import { CommandHandlerMetadata, EventHandlerMetadata } from "../../../metadata/
 import { Automations } from "../../metadata/metadata";
 
 export function prepareRegistration(metadata: Automations): any {
-    return convertRegExpValuesToString({
+    return {
         name: metadata.name,
         version: metadata.version,
         team_ids: metadata.team_ids && metadata.team_ids.length > 0 ? metadata.team_ids : undefined,
         groups: metadata.groups && metadata.groups.length > 0 ? metadata.groups : undefined,
         commands: metadata.commands.map(prepareCommandRegistration),
         events: metadata.events.map(prepareEventRegistration),
-    });
-}
-
-function convertRegExpValuesToString(data: any): any {
-    const payload = JSON.stringify(data, function replacer(key, value) {
-        if (value instanceof RegExp) {
-            return value.source;
-        } else {
-            return value;
-        }
-    });
-    return JSON.parse(payload);
+    };
 }
 
 function prepareCommandRegistration(c: CommandHandlerMetadata) {
