@@ -38,3 +38,23 @@ export function movePackage<P extends ProjectAsync>(project: P, oldPackage: stri
 export function packageToPath(pkg: string): string {
     return pkg.replace(/\./g, "/");
 }
+
+/**
+ * Rename all instances of a Java class.  This method is somewhat
+ * surgical when replacing appearances in Java code but brutal when
+ * replacing appearances elsewhere, i.e., it uses `Project.recordReplace()`.
+ *
+ * @param project    project whose Java classes should be renamed
+ * @param oldClass   name of class to move from
+ * @param newClass   name of class to move to
+ */
+export function renameClass<P extends ProjectAsync>(project: P,
+                                                    oldClass: string, newClass: string): Promise<P> {
+    logger.debug("Replacing old class stem '%s' with '%s'", oldClass, newClass);
+    return doWithFiles(project, AllJavaFiles, f => {
+        if (f.name.includes(oldClass)) {
+            f.recordRename(f.name.replace(oldClass, newClass));
+            f.recordReplaceAll(oldClass, newClass);
+        }
+    });
+}
