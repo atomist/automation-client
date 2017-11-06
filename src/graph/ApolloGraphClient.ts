@@ -36,7 +36,6 @@ export class ApolloGraphClient implements GraphClient {
             return forward(operation);
         });
 
-        // use with apollo-client
         const link = middlewareLink.concat(httpLink);
 
         this.client = new ApolloClient({
@@ -45,7 +44,7 @@ export class ApolloGraphClient implements GraphClient {
         });
     }
 
-    public executeQueryFromFile<T, Q>(queryFile: string, variables?: Q): Promise<T> {
+    public executeQueryFromFile<T, Q>(queryFile: string, variables?: Q, current?: string): Promise<T> {
         const graphql = resolveAndReadFileSync(queryFile);
         return this.executeQuery<T, Q>(graphql, variables);
     }
@@ -66,7 +65,7 @@ export class ApolloGraphClient implements GraphClient {
             });
     }
 
-    public executeMutationFromFile<T, Q>(mutationFile: string, variables?: Q): Promise<T> {
+    public executeMutationFromFile<T, Q>(mutationFile: string, variables?: Q, current?: string): Promise<T> {
         const graphql = resolveAndReadFileSync(mutationFile);
         return this.executeMutation<T, Q>(graphql, variables);
     }

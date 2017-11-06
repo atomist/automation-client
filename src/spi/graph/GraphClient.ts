@@ -10,12 +10,13 @@ export interface GraphClient {
 
     /**
      * Run GraphQL query based on the provided file name and variables
-     * @param queryFile the relative path from module root to the graphql file
-     * @param variables the variables to be used
+     * @param {string} path the relative path from module root to the graphql file
+     * @param {Q} variables the variables to be used
+     * @param {string} current the path to the calling script
      * @type T query return type
      * @type Q query type
      */
-    executeQueryFromFile<T, Q>(queryFile: string, variables?: Q): Promise<T>;
+    executeQueryFromFile<T, Q>(path: string, variables?: Q, current?: string): Promise<T>;
 
     /**
      * Run GraphQL query based on the provide query and variables
@@ -27,11 +28,12 @@ export interface GraphClient {
 
     /**
      * Run GraphQL mutation based on the provided file name and variables
-     * @param {string} mutationFile the relative path from module root to the graphql file
+     * @param {string} path the relative path from module root to the graphql file
      * @param {Q} variables the variables to be used
+     * @param {string} current the path to the calling script
      * @returns {Promise<T>}
      */
-    executeMutationFromFile<T, Q>(mutationFile: string, variables?: Q): Promise<T>;
+    executeMutationFromFile<T, Q>(path: string, variables?: Q, current?: string): Promise<T>;
 
     /**
      * Run GraphQL mutation based on the provided mutation name and variables
