@@ -13,8 +13,7 @@ export interface GraphClient {
      * @param {string} path the relative path from module root to the graphql file
      * @param {Q} variables the variables to be used
      * @param {string} current the path to the calling script
-     * @type T query return type
-     * @type Q query type
+     * @returns {Promise<T>}
      */
     executeQueryFromFile<T, Q>(path: string, variables?: Q, current?: string): Promise<T>;
 
