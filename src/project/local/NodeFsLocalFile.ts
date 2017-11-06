@@ -52,6 +52,10 @@ export class NodeFsLocalFile extends AbstractFile implements LocalFile {
     public isExecutable(): Promise<boolean> {
         return fs.access(this.realPath, fs.constants.X_OK).then(() => true).catch(_ => false);
     }
+
+    public isReadable(): Promise<boolean> {
+        return fs.access(this.realPath, fs.constants.R_OK).then(() => true).catch(_ => false);
+    }
 }
 
 function realPath(baseDir: string, path: string): string {

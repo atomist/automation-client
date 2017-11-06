@@ -132,7 +132,11 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
     public makeExecutable(path: string): Promise<this> {
         return fs.stat(this.toRealPath(path))
             .then(stats => {
-                return fs.chmod(this.toRealPath(path), stats.mode && fs.constants.S_IXUSR);
+                logger.debug("Starting mode: " + stats.mode);
+                // tslint:disable-next-line:no-bitwise
+                const newMode = stats.mode | fs.constants.S_IXUSR;
+                logger.debug("Setting mode to: " + newMode);
+                return fs.chmod(this.toRealPath(path), newMode);
             } )
             .then(() => this);
     }
