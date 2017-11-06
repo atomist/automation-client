@@ -196,8 +196,10 @@ describe("NodeFsLocalFile", () => {
                     return file.isExecutable().then(before => {
                         assert(!before, "should not be created executable " + (tempProject as any).baseDir);
                         return pp.makeExecutable("runMe").then(_ =>
-                            file.isExecutable().then(after => {
-                                assert(after, "should be executable now");
+                            Promise.all([file.isExecutable(), file.isReadable()]).then(checks => {
+                                const [executable, readable] = checks;
+                                assert(executable, "should be executable now");
+                                assert(readable, "should still be readable");
                                 done();
                             }));
                     });

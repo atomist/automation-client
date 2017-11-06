@@ -133,7 +133,10 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         return fs.stat(this.toRealPath(path))
             .then(stats => {
                 logger.debug("Starting mode: " + stats.mode);
-                return fs.chmod(this.toRealPath(path), stats.mode && fs.constants.S_IXUSR);
+                // tslint:disable-next-line:no-bitwise
+                const newMode = stats.mode | fs.constants.S_IXUSR;
+                logger.debug("Setting mode to: " + newMode);
+                return fs.chmod(this.toRealPath(path), newMode);
             } )
             .then(() => this);
     }

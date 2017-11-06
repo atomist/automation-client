@@ -42,4 +42,12 @@ export class InMemoryFile extends AbstractFile {
         return this.initialContent !== this.getContentSync() || this.initialPath !== this.path || super.dirty;
     }
 
+    public isExecutable(): Promise<boolean> {
+        throw new Error("isExecutable is not implemented here");
+    }
+
+    public isReadable(): Promise<boolean> {
+        throw new Error("isReadable is not implemented here");
+    }
+
 }

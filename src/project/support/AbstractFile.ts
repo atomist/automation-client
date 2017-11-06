@@ -60,8 +60,8 @@ export abstract class AbstractFile extends AbstractScriptedFlushable<File> imple
         return this.recordAction(f => f.replaceAll(oldLiteral, newLiteral));
     }
 
-    public isExecutable(): Promise<boolean> {
-        throw new Error("isExecutable not implemented.");
-    }
+    public abstract isExecutable(): Promise<boolean>;
+
+    public abstract isReadable(): Promise<boolean>;
 
 }
