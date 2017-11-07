@@ -1,3 +1,5 @@
+import * as fs from "fs-extra";
+
 import { ActionResult } from "../../action/ActionResult";
 import { HandlerContext } from "../../HandlerContext";
 import { logger } from "../../internal/util/logger";
@@ -37,18 +39,21 @@ export function generate<PARAMS extends RepoId,
                                                              persist: ProjectPersister<PARAMS, Project, R>,
                                                              params?: PARAMS): Promise<R> {
     const parentDir = DefaultDirectoryManager.opts.baseDir;
-    return startingPoint
-        .then(seed =>
-            // Make a copy that we can work on
-            NodeFsLocalProject.copy(seed, parentDir, params.repo))
-        // Let's be sure we didn't inherit any old git stuff
-        .then(proj => proj.deleteDirectory(".git"))
-        .then(independentCopy => toEditor(editor)(independentCopy, ctx, params))
-        .then(r => r.target)
-        .then(populated => {
-            logger.debug("Persisting repo at [%s]: owner/repo=%s:%s",
-                (populated as LocalProject).baseDir, params.owner, params.repo);
-            return persist(populated, credentials, params);
-        });
+    logger.debug("Independent copy of seed will be at %s/%s: owner/repo=%s:%s",
+        parentDir, params.repo, params.owner, params.repo);
+    return fs.remove(parentDir + "/" + params.repo)
+        .then(() => startingPoint
+            .then(seed =>
+                // Make a copy that we can work on
+                NodeFsLocalProject.copy(seed, parentDir, params.repo))
+            // Let's be sure we didn't inherit any old git stuff
+            .then(proj => proj.deleteDirectory(".git"))
+            .then(independentCopy => toEditor(editor)(independentCopy, ctx, params))
+            .then(r => r.target)
+            .then(populated => {
+                logger.debug("Persisting repo at [%s]: owner/repo=%s:%s",
+                    (populated as LocalProject).baseDir, params.owner, params.repo);
+                return persist(populated, credentials, params);
+            }));
 
 }
