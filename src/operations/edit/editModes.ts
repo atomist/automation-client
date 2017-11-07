@@ -1,6 +1,7 @@
 
+import { HandlerContext } from "../../HandlerContext";
 import { Project } from "../../project/Project";
-import { EditResult } from "./projectEditor";
+import { EditResult, ProjectEditor } from "./projectEditor";
 
 /**
  * Used to determine EditMode on a per project basis,
@@ -58,8 +59,7 @@ export function isPullRequest(em: EditMode): em is PullRequest {
  * Use for edit modes that require custom persistence
  */
 export interface CustomExecutionEditMode extends EditMode {
-
-    edit(p: Project): Promise<EditResult>;
+    edit<P>(p: Project, action: ProjectEditor<P>, context: HandlerContext, parameters: P): Promise<EditResult>;
 }
 
 export function isCustomExecutionEditMode(ei: EditMode): ei is CustomExecutionEditMode {
