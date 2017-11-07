@@ -45,6 +45,15 @@ export function successfulEdit<P extends Project>(p: P, edited: boolean = true):
     };
 }
 
+export function failedEdit<P extends Project>(p: P, error: Error, edited: boolean = false): EditResult<P> {
+    return {
+        target: p,
+        success: false,
+        error,
+        edited,
+    };
+}
+
 export function flushAndSucceed<P extends Project>(p: P): Promise<EditResult<P>> {
     return p.flush().then(successfulEdit);
 }
