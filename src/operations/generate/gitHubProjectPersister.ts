@@ -9,24 +9,33 @@ import { ProjectPersister } from "./generatorUtils";
 
 import * as promiseRetry from "promise-retry";
 
-export const GitHubProjectPersister: ProjectPersister<RepoId> = (p: Project,
-                                                                 creds: ProjectOperationCredentials,
-                                                                 params: RepoId) => {
-    const gp: GitProject =
-        GitCommandGitProject.fromProject(p, creds);
-    return gp.init()
-        .then(() => gp.setGitHubUserConfig())
-        .then(() => {
-            logger.debug(`Creating new repo '${params.owner}/${params.repo}'`);
-            return gp.createAndSetGitHubRemote(params.owner, params.repo,
-                this.targetRepo, this.visibility);
-        })
-        .then(() => {
-            logger.debug(`Committing to local repo at '${gp.baseDir}'`);
-            return gp.commit("Initial commit from Atomist");
-        })
-        .then(() => push(gp));
-};
+/**
+ * Persist project to GitHub, returning GitHub details. Use retry.
+ * @param {Project} p
+ * @param {ProjectOperationCredentials} creds
+ * @param {RepoId} params
+ * @return {Promise<ActionResult<GitProject>>}
+ * @constructor
+ */
+export const GitHubProjectPersister: ProjectPersister<RepoId, Project, ActionResult<GitProject>> =
+    (p: Project,
+     creds: ProjectOperationCredentials,
+     params: RepoId) => {
+        const gp: GitProject =
+            GitCommandGitProject.fromProject(p, creds);
+        return gp.init()
+            .then(() => gp.setGitHubUserConfig())
+            .then(() => {
+                logger.debug(`Creating new repo '${params.owner}/${params.repo}'`);
+                return gp.createAndSetGitHubRemote(params.owner, params.repo,
+                    this.targetRepo, this.visibility);
+            })
+            .then(() => {
+                logger.debug(`Committing to local repo at '${gp.baseDir}'`);
+                return gp.commit("Initial commit from Atomist");
+            })
+            .then(() => push(gp));
+    };
 
 function push(gp: GitProject): Promise<ActionResult<GitProject>> {
     const retryOptions = {
