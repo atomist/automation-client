@@ -29,7 +29,7 @@ export function editRepo<P>(context: HandlerContext,
     } else if (isBranchCommit(ei)) {
         return editProjectUsingBranch(context, repo as GitProject, editor, ei, parameters);
     } else if (isCustomExecutionEditMode(ei)) {
-        return ei.edit(repo);
+        return ei.edit(repo, editor, context, parameters);
     } else {
         // No edit to do
         return Promise.resolve(successfulEdit(repo, true));
