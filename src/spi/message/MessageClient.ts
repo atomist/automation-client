@@ -96,7 +96,7 @@ export interface CommandReference {
     parameterName?: string;
 }
 
-export function buttonForCommand(buttonSpec: ButtonSpec, command: any, parameters: any = {}): Action {
+export function buttonForCommand(buttonSpec: ButtonSpecification, command: any, parameters: any = {}): Action {
     const cmd = commandName(command);
     parameters = mergeParameters(command, parameters);
     const id = cmd.toLocaleLowerCase();
@@ -109,7 +109,7 @@ export function buttonForCommand(buttonSpec: ButtonSpec, command: any, parameter
     return action;
 }
 
-export function menuForCommand(selectSpec: SelectSpec, command: any, parameterName: string,
+export function menuForCommand(selectSpec: MenuSpecification, command: any, parameterName: string,
                                parameters: any = {}): Action {
     const cmd = commandName(command);
     parameters = mergeParameters(command, parameters);
@@ -148,7 +148,7 @@ export function mergeParameters(command: any, parameters: any): any {
     }
     return parameters;
 }
-function rugButtonFrom(action: ButtonSpec, command: any): Action {
+function rugButtonFrom(action: ButtonSpecification, command: any): Action {
     if (!command.id) {
         throw new Error(`Please provide a valid non-empty command id`);
     }
@@ -164,7 +164,7 @@ function rugButtonFrom(action: ButtonSpec, command: any): Action {
     return button;
 }
 
-function rugMenuFrom(action: SelectSpec, command: any): Action {
+function rugMenuFrom(action: MenuSpecification, command: any): Action {
 
     if (!command.id) {
         throw new Error("SelectableIdentifiableInstruction must have id set");
@@ -208,7 +208,7 @@ export interface ActionConfirmation {
     dismiss_text?: string;
 }
 
-export interface ButtonSpec {
+export interface ButtonSpecification {
     text: string;
     style?: string;
     confirm?: ActionConfirmation;
@@ -226,7 +226,7 @@ export interface OptionGroup {
 
 export type DataSource = "static" | "users" | "channels" | "conversations" | "external";
 
-export interface SelectSpec {
+export interface MenuSpecification {
     text: string;
     options: SelectOption[] | DataSource | OptionGroup[];
 }
