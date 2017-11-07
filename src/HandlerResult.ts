@@ -50,3 +50,7 @@ export const FailurePromise = Promise.resolve(Failure);
 export function failure(err: Error): HandlerError {
     return { code: 1, message: err.message, stack: err.stack };
 }
+
+export function success(): HandlerResult {
+    return Success;
+}
