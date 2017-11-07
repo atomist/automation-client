@@ -1479,6 +1479,36 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "workflowId",
+                  "description": "workflowId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobName",
+                  "description": "jobName of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobId",
+                  "description": "jobId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of Build",
                   "type": {
@@ -1647,6 +1677,48 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "workflowIds",
+                  "description": "workflowIds is list variant of workflowId of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobNames",
+                  "description": "jobNames is list variant of jobName of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobIds",
+                  "description": "jobIds is list variant of jobId of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "orderBy",
                   "description": null,
                   "type": {
@@ -1711,6 +1783,177 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "Build",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Workflow",
+              "description": null,
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Workflow",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of Workflow",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "provider",
+                  "description": "provider of Workflow",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "config",
+                  "description": "config of Workflow",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Workflow",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Workflow",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providers",
+                  "description": "providers is list variant of provider of Workflow",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "configs",
+                  "description": "configs is list variant of config of Workflow",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_WorkflowOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Workflow",
                   "ofType": null
                 }
               },
@@ -2906,6 +3149,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "ownerType",
+                  "description": "ownerType of Org",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OwnerType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of Org",
                   "type": {
@@ -2928,6 +3181,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ownerTypes",
+                  "description": "ownerTypes is list variant of ownerType of Org",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "OwnerType",
                       "ofType": null
                     }
                   },
@@ -6695,6 +6962,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "webhookType",
+                  "description": "webhookType of GitHubOrgWebhook",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "WebhookType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of GitHubOrgWebhook",
                   "type": {
@@ -6717,6 +6994,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "webhookTypes",
+                  "description": "webhookTypes is list variant of webhookType of GitHubOrgWebhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "WebhookType",
                       "ofType": null
                     }
                   },
@@ -9061,6 +9352,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "ownerType",
+                  "description": "ownerType of Org",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OwnerType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of Org",
                   "type": {
@@ -9083,6 +9384,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ownerTypes",
+                  "description": "ownerTypes is list variant of ownerType of Org",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "OwnerType",
                       "ofType": null
                     }
                   },
@@ -14984,6 +15299,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "ownerType",
+                  "description": "ownerType of Org",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OwnerType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of Org",
                   "type": {
@@ -15006,6 +15331,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ownerTypes",
+                  "description": "ownerTypes is list variant of ownerType of Org",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "OwnerType",
                       "ofType": null
                     }
                   },
@@ -15895,6 +16234,18 @@
               "deprecationReason": null
             },
             {
+              "name": "ownerType",
+              "description": "ownerType of  Org",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "OwnerType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "provider",
               "description": "Org provider GitHubProvider",
               "args": [
@@ -16333,6 +16684,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "webhookType",
+                  "description": "webhookType of GitHubOrgWebhook",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "WebhookType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of GitHubOrgWebhook",
                   "type": {
@@ -16355,6 +16716,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "webhookTypes",
+                  "description": "webhookTypes is list variant of webhookType of GitHubOrgWebhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "WebhookType",
                       "ofType": null
                     }
                   },
@@ -16609,6 +16984,29 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "OwnerType",
+          "description": "Enum for OwnerType",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "user",
+              "description": "Value for user",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "organization",
+              "description": "Value for organization",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "GitHubOrgWebhook",
           "description": "GitHubOrgWebhook-Node",
@@ -16650,6 +17048,18 @@
               "deprecationReason": null
             },
             {
+              "name": "webhookType",
+              "description": "webhookType of  GitHubOrgWebhook",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "WebhookType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "org",
               "description": "GitHubOrgWebhook org Org",
               "args": [
@@ -16669,6 +17079,16 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ownerType",
+                  "description": "ownerType of Org",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OwnerType",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -16702,6 +17122,20 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "ownerTypes",
+                  "description": "ownerTypes is list variant of ownerType of Org",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "OwnerType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "orderBy",
                   "description": null,
                   "type": {
@@ -16728,6 +17162,29 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "WebhookType",
+          "description": "Enum for WebhookType",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "organization",
+              "description": "Value for organization",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "repository",
+              "description": "Value for repository",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -16771,6 +17228,18 @@
             {
               "name": "owner_desc",
               "description": "Descending sort for owner",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ownerType_asc",
+              "description": "Ascending sort for ownerType",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ownerType_desc",
+              "description": "Descending sort for ownerType",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -16818,6 +17287,18 @@
             {
               "name": "url_desc",
               "description": "Descending sort for url",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webhookType_asc",
+              "description": "Ascending sort for webhookType",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webhookType_desc",
+              "description": "Descending sort for webhookType",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -19794,6 +20275,36 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "workflowId",
+                  "description": "workflowId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobName",
+                  "description": "jobName of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobId",
+                  "description": "jobId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of Build",
                   "type": {
@@ -19950,6 +20461,48 @@
                 {
                   "name": "timestamps",
                   "description": "timestamps is list variant of timestamp of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "workflowIds",
+                  "description": "workflowIds is list variant of workflowId of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobNames",
+                  "description": "jobNames is list variant of jobName of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobIds",
+                  "description": "jobIds is list variant of jobId of Build",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -20216,6 +20769,36 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "workflowId",
+                  "description": "workflowId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobName",
+                  "description": "jobName of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobId",
+                  "description": "jobId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of Build",
                   "type": {
@@ -20372,6 +20955,48 @@
                 {
                   "name": "timestamps",
                   "description": "timestamps is list variant of timestamp of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "workflowIds",
+                  "description": "workflowIds is list variant of workflowId of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobNames",
+                  "description": "jobNames is list variant of jobName of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobIds",
+                  "description": "jobIds is list variant of jobId of Build",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -23010,6 +23635,42 @@
               "deprecationReason": null
             },
             {
+              "name": "workflowId",
+              "description": "workflowId of  Build",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "jobName",
+              "description": "jobName of  Build",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "jobId",
+              "description": "jobId of  Build",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "repo",
               "description": "Build repo Repo",
               "args": [
@@ -24007,6 +24668,129 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "workflow",
+              "description": "Build workflow Workflow",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Workflow",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of Workflow",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "provider",
+                  "description": "provider of Workflow",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "config",
+                  "description": "config of Workflow",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Workflow",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Workflow",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providers",
+                  "description": "providers is list variant of provider of Workflow",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "configs",
+                  "description": "configs is list variant of config of Workflow",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_WorkflowOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Workflow",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -24820,6 +25604,36 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "workflowId",
+                  "description": "workflowId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobName",
+                  "description": "jobName of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobId",
+                  "description": "jobId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of Build",
                   "type": {
@@ -24976,6 +25790,48 @@
                 {
                   "name": "timestamps",
                   "description": "timestamps is list variant of timestamp of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "workflowIds",
+                  "description": "workflowIds is list variant of workflowId of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobNames",
+                  "description": "jobNames is list variant of jobName of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobIds",
+                  "description": "jobIds is list variant of jobId of Build",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -25284,6 +26140,42 @@
             {
               "name": "timestamp_desc",
               "description": "Descending sort for timestamp",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "workflowId_asc",
+              "description": "Ascending sort for workflowId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "workflowId_desc",
+              "description": "Descending sort for workflowId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "jobName_asc",
+              "description": "Ascending sort for jobName",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "jobName_desc",
+              "description": "Descending sort for jobName",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "jobId_asc",
+              "description": "Ascending sort for jobId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "jobId_desc",
+              "description": "Descending sort for jobId",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -25877,6 +26769,36 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "workflowId",
+                  "description": "workflowId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobName",
+                  "description": "jobName of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobId",
+                  "description": "jobId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of Build",
                   "type": {
@@ -26033,6 +26955,48 @@
                 {
                   "name": "timestamps",
                   "description": "timestamps is list variant of timestamp of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "workflowIds",
+                  "description": "workflowIds is list variant of workflowId of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobNames",
+                  "description": "jobNames is list variant of jobName of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobIds",
+                  "description": "jobIds is list variant of jobId of Build",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -26874,6 +27838,583 @@
             {
               "name": "refId_desc",
               "description": "Descending sort for refId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Workflow",
+          "description": "Workflow-Node",
+          "fields": [
+            {
+              "name": "_id",
+              "description": "internal node id",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Long",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "id of  Workflow",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "name of  Workflow",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "provider",
+              "description": "provider of  Workflow",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "config",
+              "description": "config of  Workflow",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "builds",
+              "description": "Workflow builds Build",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "buildId",
+                  "description": "buildId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "status",
+                  "description": "status of Build",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "BuildStatus",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "buildUrl",
+                  "description": "buildUrl of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "compareUrl",
+                  "description": "compareUrl of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "trigger",
+                  "description": "trigger of Build",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "BuildTrigger",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "provider",
+                  "description": "provider of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "pullRequestNumber",
+                  "description": "pullRequestNumber of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Float",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "startedAt",
+                  "description": "startedAt of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "finishedAt",
+                  "description": "finishedAt of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "timestamp",
+                  "description": "timestamp of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "workflowId",
+                  "description": "workflowId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobName",
+                  "description": "jobName of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobId",
+                  "description": "jobId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "buildIds",
+                  "description": "buildIds is list variant of buildId of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "statuss",
+                  "description": "statuss is list variant of status of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "BuildStatus",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "buildUrls",
+                  "description": "buildUrls is list variant of buildUrl of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "compareUrls",
+                  "description": "compareUrls is list variant of compareUrl of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "triggers",
+                  "description": "triggers is list variant of trigger of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "BuildTrigger",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providers",
+                  "description": "providers is list variant of provider of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "pullRequestNumbers",
+                  "description": "pullRequestNumbers is list variant of pullRequestNumber of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Float",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "startedAts",
+                  "description": "startedAts is list variant of startedAt of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "finishedAts",
+                  "description": "finishedAts is list variant of finishedAt of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "timestamps",
+                  "description": "timestamps is list variant of timestamp of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "workflowIds",
+                  "description": "workflowIds is list variant of workflowId of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobNames",
+                  "description": "jobNames is list variant of jobName of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobIds",
+                  "description": "jobIds is list variant of jobId of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_BuildOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Build",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "_WorkflowOrdering",
+          "description": "Ordering Enum for Workflow",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "atmTeamId_asc",
+              "description": "Ascending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "atmTeamId_desc",
+              "description": "Descending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_asc",
+              "description": "Ascending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_desc",
+              "description": "Descending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name_asc",
+              "description": "Ascending sort for name",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name_desc",
+              "description": "Descending sort for name",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "provider_asc",
+              "description": "Ascending sort for provider",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "provider_desc",
+              "description": "Descending sort for provider",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "config_asc",
+              "description": "Ascending sort for config",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "config_desc",
+              "description": "Descending sort for config",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -37898,6 +39439,36 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "workflowId",
+                  "description": "workflowId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobName",
+                  "description": "jobName of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobId",
+                  "description": "jobId of Build",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of Build",
                   "type": {
@@ -38066,6 +39637,48 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "workflowIds",
+                  "description": "workflowIds is list variant of workflowId of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobNames",
+                  "description": "jobNames is list variant of jobName of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "jobIds",
+                  "description": "jobIds is list variant of jobId of Build",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "orderBy",
                   "description": null,
                   "type": {
@@ -38130,6 +39743,177 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "Build",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Workflow",
+              "description": null,
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Workflow",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of Workflow",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "provider",
+                  "description": "provider of Workflow",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "config",
+                  "description": "config of Workflow",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Workflow",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Workflow",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providers",
+                  "description": "providers is list variant of provider of Workflow",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "configs",
+                  "description": "configs is list variant of config of Workflow",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_WorkflowOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Workflow",
                   "ofType": null
                 }
               },
@@ -39325,6 +41109,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "ownerType",
+                  "description": "ownerType of Org",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OwnerType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of Org",
                   "type": {
@@ -39347,6 +41141,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ownerTypes",
+                  "description": "ownerTypes is list variant of ownerType of Org",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "OwnerType",
                       "ofType": null
                     }
                   },
@@ -43114,6 +44922,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "webhookType",
+                  "description": "webhookType of GitHubOrgWebhook",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "WebhookType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of GitHubOrgWebhook",
                   "type": {
@@ -43136,6 +44954,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "webhookTypes",
+                  "description": "webhookTypes is list variant of webhookType of GitHubOrgWebhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "WebhookType",
                       "ofType": null
                     }
                   },
@@ -43618,6 +45450,73 @@
       ],
       "directives": [
         {
+          "name": "relation",
+          "description": "Relationship",
+          "locations": [
+            "FIELD"
+          ],
+          "args": []
+        },
+        {
+          "name": "defaultValue",
+          "description": "default value",
+          "locations": [
+            "FIELD"
+          ],
+          "args": []
+        },
+        {
+          "name": "isUnique",
+          "description": "field is unique in type",
+          "locations": [
+            "FIELD"
+          ],
+          "args": []
+        },
+        {
+          "name": "cypher",
+          "description": "Cypher query to run",
+          "locations": [
+            "FIELD"
+          ],
+          "args": []
+        },
+        {
+          "name": "profile",
+          "description": "Enable query profiling",
+          "locations": [
+            "QUERY"
+          ],
+          "args": []
+        },
+        {
+          "name": "explain",
+          "description": "Enable query explanation",
+          "locations": [
+            "QUERY"
+          ],
+          "args": []
+        },
+        {
+          "name": "version",
+          "description": "Specify Cypher version",
+          "locations": [
+            "QUERY"
+          ],
+          "args": [
+            {
+              "name": "version",
+              "description": "Cypher Version (3.0, 3.1, 3.2)",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": "\"3.1\""
+            }
+          ]
+        },
+        {
           "name": "skip",
           "description": "Directs the executor to skip this field or fragment when the `if`'argument is true.",
           "locations": [
@@ -43660,60 +45559,6 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "Boolean",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            }
-          ]
-        },
-        {
-          "name": "required",
-          "description": "Requires this field to be present and not null",
-          "locations": [
-            "FIELD"
-          ],
-          "args": []
-        },
-        {
-          "name": "ne",
-          "description": "Ensures a field's value does not equal 'value'",
-          "locations": [
-            "FIELD"
-          ],
-          "args": [
-            {
-              "name": "value",
-              "description": "Value to match with fields value (after .toString)",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            }
-          ]
-        },
-        {
-          "name": "matches",
-          "description": "Ensures a field's value matches the supplied regular expression",
-          "locations": [
-            "FIELD"
-          ],
-          "args": [
-            {
-              "name": "re",
-              "description": "Re to match with fields value (after .toString)",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
                   "ofType": null
                 }
               },
