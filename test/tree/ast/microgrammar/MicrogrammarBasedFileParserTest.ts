@@ -73,6 +73,39 @@ describe("MicrogrammarBasedFileParser", () => {
             }).catch(done);
     });
 
+    interface KidFact {
+        birthYear: number;
+        food: string;
+    }
+
+    interface Kid {
+        name: string;
+        fact: KidFact;
+    }
+
+    it("should parse a file and allow array navigation via property with a nested grammar", done => {
+        const f = new InMemoryFile("Family", "Linda:[2007, mushrooms] Evelyn:[2005, sugar]");
+        const mg = Microgrammar.fromString<Kid>("${name}:${fact}", {
+            fact: Microgrammar.fromString<KidFact>("[${birthYear},${food}]", {
+                birthYear: Integer,
+            }),
+        });
+        new MicrogrammarBasedFileParser("family", "kid", mg)
+            .toAst(f)
+            .then(root => {
+                console.log(JSON.stringify(root, null, 2));
+                // Check the array property
+                const linda = (root as any).kids[0] as Kid & TreeNode;
+                assert(linda.name === "Linda", "Name=" + linda.name);
+                const evelyn = (root as any).kids[1] as Kid & TreeNode;
+                assert(evelyn.name === "Evelyn", "Name=" + evelyn.name);
+                // Question for Rod: should this Integer-matcher be converting it to a number automatically?
+                assert(+evelyn.fact.birthYear === 2005, "birth year " + evelyn.fact.birthYear );
+                assert(evelyn.fact.food === "sugar");
+                done();
+            }).catch(done);
+    });
+
     it("should parse a file and keep positions", done => {
         const f = new InMemoryFile("Thing", "Tom:16 Mary:25");
         const mg = Microgrammar.fromString<Person>("${name}:${age}", {
