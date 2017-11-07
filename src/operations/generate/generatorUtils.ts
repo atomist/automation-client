@@ -10,11 +10,14 @@ import { RepoId } from "../common/RepoId";
 import { AnyProjectEditor, ProjectEditor, toEditor } from "../edit/projectEditor";
 
 /**
- * Function that knows how to persist a project.
+ * Function that knows how to persist a project using the given credentials.
+ * Can take parameters and return a subclass of action result.
  */
-export type ProjectPersister<P = undefined> = (p: Project,
-                                               credentials: ProjectOperationCredentials,
-                                               params?: P) => Promise<ActionResult<Project>>;
+export type ProjectPersister<PARAMS = undefined, P extends Project = Project,
+    R extends ActionResult<P> = ActionResult<P>> =
+    (p: Project,
+     credentials: ProjectOperationCredentials,
+     params?: PARAMS) => Promise<R>;
 
 /**
  * Generate given the starting point. Do not change the starting point.
@@ -22,16 +25,17 @@ export type ProjectPersister<P = undefined> = (p: Project,
  * @param {HandlerContext} ctx
  * @param {ProjectOperationCredentials} credentials
  * @param {ProjectEditor} editor
- * @param {ProjectPersister<P>} persist
- * @param {P} params
- * @return {Promise<ActionResult<Project>>}
+ * @param {ProjectPersister<PARAMS>} persist
+ * @param {PARAMS} params
+ * @return {Promise<R>}
  */
-export function generate<P extends RepoId>(startingPoint: Promise<Project>,
-                                           ctx: HandlerContext,
-                                           credentials: ProjectOperationCredentials,
-                                           editor: AnyProjectEditor<P>,
-                                           persist: ProjectPersister<P>,
-                                           params: P): Promise<ActionResult<Project>> {
+export function generate<PARAMS extends RepoId,
+    R extends ActionResult<Project> = ActionResult<Project>>(startingPoint: Promise<Project>,
+                                                             ctx: HandlerContext,
+                                                             credentials: ProjectOperationCredentials,
+                                                             editor: AnyProjectEditor<any>,
+                                                             persist: ProjectPersister<PARAMS, Project, R>,
+                                                             params?: PARAMS): Promise<R> {
     const parentDir = DefaultDirectoryManager.opts.baseDir;
     return startingPoint
         .then(seed =>
