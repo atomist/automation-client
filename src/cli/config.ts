@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 
+import * as child_process from "child_process";
 import * as fs from "fs-extra";
 import * as GitHubApi from "github";
 import * as inquirer from "inquirer";
 import * as os from "os";
+import * as p from "path";
 import * as process from "process";
 
-import { UserConfigFile, writeUserConfig } from "./configuration";
-import { LoggingConfig } from "./internal/util/logger";
+import { UserConfigFile, writeUserConfig } from "../configuration";
+import { LoggingConfig } from "../internal/util/logger";
 
 LoggingConfig.format = "cli";
 const github = new GitHubApi();
@@ -38,7 +40,7 @@ function createGitHubToken(user: string, password: string, mfa?: string): Promis
 function atomistConfig(argv: string[]) {
 
     if (fs.existsSync(UserConfigFile)) {
-        console.warn(`user configuration file, ${UserConfigFile}, already exists, exiting`);
+        console.warn(`User configuration file, ${UserConfigFile}, already exists, exiting`);
         process.exit(0);
     }
 
@@ -140,7 +142,7 @@ nor your GitHub username and password.
                         process.exit(1);
                     });
             } else {
-                console.error(`failed to generate GitHub token with provided credentials`);
+                console.error(`Failed to generate GitHub token with provided credentials`);
                 process.exit(1);
             }
         }
@@ -149,10 +151,10 @@ nor your GitHub username and password.
             teamIds: [slackTeamId],
         });
     }).then(() => {
-        console.info(`successfully created Atomist user config`);
+        console.info(`Successfully created Atomist user configuration`);
         process.exit(0);
     }).catch(err => {
-        console.error(`failed to create user config: ${JSON.stringify(err)}`);
+        console.error(`Failed to create user config: ${JSON.stringify(err)}`);
         process.exit(1);
     });
 }
