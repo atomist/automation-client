@@ -4,17 +4,23 @@ import * as p from "path";
 import { CommandInvocation } from "../internal/invoker/Payload";
 import { logger } from "../internal/util/logger";
 
-export function start(path: string) {
+export function start(path: string,
+                      runInstall: boolean = true,
+                      runCompile: boolean = true) {
     const ap = resolve(path);
     path = `${ap}/node_modules/@atomist/automation-client/start.client.js`;
 
-    if (!fs.existsSync(p.join(ap, "node_modules"))) {
+    if (!fs.existsSync(p.join(ap, "node_modules")) && runInstall) {
         install(ap);
     }
 
     if (!fs.existsSync(path)) {
         logger.error(`Project at '${ap}' is not a valid automation client project`);
         process.exit(1);
+    }
+
+    if (runCompile) {
+        compile(ap);
     }
 
     logger.info(`Starting Automation Client in '${ap}'\n`);
@@ -26,17 +32,24 @@ export function start(path: string) {
     }
 }
 
-export function run(path: string, ci: CommandInvocation) {
+export function run(path: string,
+                    ci: CommandInvocation,
+                    runInstall: boolean = true,
+                    runCompile: boolean = true) {
     const ap = resolve(path);
     path = `${ap}/node_modules/@atomist/automation-client/cli/run.js`;
 
-    if (!fs.existsSync(p.join(ap, "node_modules"))) {
+    if (!fs.existsSync(p.join(ap, "node_modules")) && runInstall) {
         install(ap);
     }
 
     if (!fs.existsSync(path)) {
         logger.error(`Project at '${ap}' is not a valid automation client project`);
         process.exit(1);
+    }
+
+    if (runCompile) {
+        compile(ap);
     }
 
     logger.info(`Running command '${ci.name}' in '${ap}'\n`);
@@ -62,8 +75,22 @@ export function gitInfo(path: string) {
 
 export function install(path: string) {
     logger.info(`Running 'npm install' in '${path}'`);
-    child_process.execSync(`npm install`,
-        { cwd: path, stdio: "inherit", env: process.env });
+    try {
+        child_process.execSync(`npm install`,
+            {cwd: path, stdio: "inherit", env: process.env});
+    } catch (e) {
+        process.exit(e.status);
+    }
+}
+
+export function compile(path: string) {
+    logger.info(`Running 'npm run compile' in '${path}'`);
+    try {
+        child_process.execSync(`npm run compile`,
+            {cwd: path, stdio: "inherit", env: process.env});
+    } catch (e) {
+        process.exit(e.status);
+    }
 }
 
 export function resolve(path: string): string {
