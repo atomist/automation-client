@@ -17,7 +17,7 @@ import {
 
 // tslint:disable-next-line:no-unused-expression
 yargs.completion("completion")
-    .command(["command <name>", "cmd <name>"], "Run a command", ya => {
+    .command(["execute <name>", "exec <name>", "cmd <name>"], "Run a command", ya => {
         // positional is not yet supported in @types/yargs
         return (ya as any).positional("name", {
             describe: "Name of command to run",
