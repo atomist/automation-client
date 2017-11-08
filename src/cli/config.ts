@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
-import * as child_process from "child_process";
+import { LoggingConfig } from "../internal/util/logger";
+process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
+LoggingConfig.format = "cli";
+
 import * as fs from "fs-extra";
 import * as GitHubApi from "github";
 import * as inquirer from "inquirer";
 import * as os from "os";
-import * as p from "path";
 import * as process from "process";
 
 import { UserConfigFile, writeUserConfig } from "../configuration";
-import { LoggingConfig } from "../internal/util/logger";
 
-LoggingConfig.format = "cli";
 const github = new GitHubApi();
 
 function createGitHubToken(user: string, password: string, mfa?: string): Promise<string> {

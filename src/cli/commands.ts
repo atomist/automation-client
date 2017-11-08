@@ -13,7 +13,7 @@ export function start(path: string) {
     }
 
     if (!fs.existsSync(path)) {
-        logger.error(`Project at '${ap}' is not a valid Automation Client project`);
+        logger.error(`Project at '${ap}' is not a valid automation client project`);
         process.exit(1);
     }
 
@@ -28,14 +28,14 @@ export function start(path: string) {
 
 export function run(path: string, ci: CommandInvocation) {
     const ap = resolve(path);
-    path = `${ap}/node_modules/@atomist/automation-client/scripts/run.js`;
+    path = `${ap}/node_modules/@atomist/automation-client/cli/run.js`;
 
     if (!fs.existsSync(p.join(ap, "node_modules"))) {
         install(ap);
     }
 
     if (!fs.existsSync(path)) {
-        logger.error(`Project at '${ap}' is not a valid Automation Client project`);
+        logger.error(`Project at '${ap}' is not a valid automation client project`);
         process.exit(1);
     }
 
