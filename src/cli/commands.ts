@@ -28,8 +28,7 @@ export function start(path: string) {
 
 export function run(path: string, ci: CommandInvocation) {
     const ap = resolve(path);
-    // path = `${ap}/node_modules/@atomist/automation-client/scripts/run.js`;
-    path = `${ap}/build/src/scripts/run.js`;
+    path = `${ap}/node_modules/@atomist/automation-client/scripts/run.js`;
 
     if (!fs.existsSync(p.join(ap, "node_modules"))) {
         install(ap);
