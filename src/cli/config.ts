@@ -40,7 +40,7 @@ function createGitHubToken(user: string, password: string, mfa?: string): Promis
 function atomistConfig(argv: string[]) {
 
     if (fs.existsSync(UserConfigFile)) {
-        console.warn(`user configuration file, ${UserConfigFile}, already exists, exiting`);
+        console.warn(`User configuration file, ${UserConfigFile}, already exists, exiting`);
         process.exit(0);
     }
 
@@ -142,7 +142,7 @@ nor your GitHub username and password.
                         process.exit(1);
                     });
             } else {
-                console.error(`failed to generate GitHub token with provided credentials`);
+                console.error(`Failed to generate GitHub token with provided credentials`);
                 process.exit(1);
             }
         }
@@ -151,10 +151,10 @@ nor your GitHub username and password.
             teamIds: [slackTeamId],
         });
     }).then(() => {
-        console.info(`successfully created Atomist user config`);
+        console.info(`Successfully created Atomist user configuration`);
         process.exit(0);
     }).catch(err => {
-        console.error(`failed to create user config: ${JSON.stringify(err)}`);
+        console.error(`Failed to create user config: ${JSON.stringify(err)}`);
         process.exit(1);
     });
 }

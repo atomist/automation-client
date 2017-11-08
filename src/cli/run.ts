@@ -1,8 +1,10 @@
 import * as yargs from "yargs";
 import { automationClient } from "../automationClient";
-import { Configuration, findConfiguration } from "../configuration";
+import {
+    Configuration,
+    findConfiguration } from "../configuration";
 import { HandlerContext } from "../HandlerContext";
-import { Arg, CommandInvocation } from "../internal/invoker/Payload";
+import { CommandInvocation } from "../internal/invoker/Payload";
 import { consoleMessageClient } from "../internal/message/ConsoleMessageClient";
 import { LoggingConfig } from "../internal/util/logger";
 import { guid } from "../internal/util/string";

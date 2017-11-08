@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 
+import { LoggingConfig } from "./internal/util/logger";
 LoggingConfig.format = "cli";
 
 import * as yargs from "yargs";
-import {
-    Arg,
-    CommandInvocation,
-} from "./internal/invoker/Payload";
-import { LoggingConfig } from "./internal/util/logger";
 import {
     config,
     gitInfo,
     run,
     start,
 } from "./cli/commands";
+import {
+    Arg,
+    CommandInvocation,
+} from "./internal/invoker/Payload";
 
 // tslint:disable-next-line:no-unused-expression
 yargs.completion("completion")
@@ -63,7 +63,7 @@ yargs.completion("completion")
         config();
     })
     .showHelpOnFail(false, "Specify --help for available options")
-    // .version(require("../package.json").version)
+    .version(readVersion())
     .argv;
 
 function extractArgs(args): Arg[] {
@@ -72,4 +72,13 @@ function extractArgs(args): Arg[] {
         .map(k => {
             return { name: k, value: args[k] };
         });
+}
+
+function readVersion(): string {
+    try {
+        const pj = require("../package.json");
+        return pj.version;
+    } catch (e) {
+        return "0.0.0";
+    }
 }
