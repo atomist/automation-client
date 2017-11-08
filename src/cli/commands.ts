@@ -25,7 +25,7 @@ export function start(path: string,
 
     logger.info(`Starting Automation Client in '${ap}'\n`);
     try {
-        child_process.execSync(`node ${path}`,
+        child_process.execSync(`node $ATOMIST_NODE_OPTIONS ${path}`,
             { cwd: ap, stdio: "inherit", env: process.env });
     } catch (e) {
         process.exit(e.status);
@@ -54,7 +54,7 @@ export function run(path: string,
 
     logger.info(`Running command '${ci.name}' in '${ap}'\n`);
     try {
-        child_process.execSync(`node ${path} --request='${JSON.stringify(ci)}'`,
+        child_process.execSync(`node $ATOMIST_NODE_OPTIONS ${path} --request='${JSON.stringify(ci)}'`,
             { cwd: ap, stdio: "inherit", env: process.env });
     } catch (e) {
         process.exit(e.status);
