@@ -76,6 +76,7 @@ export function gitInfo(path: string) {
 export function install(path: string) {
     logger.info(`Running 'npm install' in '${path}'`);
     try {
+        checkPackageJson(path);
         child_process.execSync(`npm install`,
             {cwd: path, stdio: "inherit", env: process.env});
     } catch (e) {
@@ -86,10 +87,18 @@ export function install(path: string) {
 export function compile(path: string) {
     logger.info(`Running 'npm run compile' in '${path}'`);
     try {
+        checkPackageJson(path);
         child_process.execSync(`npm run compile`,
             {cwd: path, stdio: "inherit", env: process.env});
     } catch (e) {
         process.exit(e.status);
+    }
+}
+
+export function checkPackageJson(path: string) {
+    if (!fs.existsSync(p.join(path, "package.json"))) {
+        logger.error(`No 'package.json' in '${path}'`);
+        process.exit(1);
     }
 }
 
