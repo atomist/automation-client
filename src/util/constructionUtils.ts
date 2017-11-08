@@ -14,7 +14,7 @@ export function toFactory<T>(fact: Maker<T>): Factory<T> {
         // Try it to see if it works
         chf();
         return chf;
-    } catch {
+    } catch (e) {
         // If we didn't succeed in using the constructor, try the other way
         return detyped;
     }

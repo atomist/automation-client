@@ -53,7 +53,7 @@ function main() {
 
     local td_dir=$out_dir/typedoc
     rm -rf "$td_dir"
-    if ! npm run typedoc -- --tsconfig "$td_tsconfig" --out "$td_dir"; then
+    if ! npm run typedoc -- --tsconfig "$td_tsconfig" --out "$td_dir" src; then
         err "failed to create typedoc"
         return 1
     fi
