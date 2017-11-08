@@ -3,7 +3,7 @@
 import * as yargs from "yargs";
 import { Arg, CommandInvocation } from "./internal/invoker/Payload";
 import { LoggingConfig } from "./internal/util/logger";
-import { config, gitInfo, install, run, start } from "./scripts/commands";
+import { config, gitInfo, install, run, start } from "./cli/commands";
 
 LoggingConfig.format = "cli";
 
