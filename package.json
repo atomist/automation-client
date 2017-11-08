@@ -131,7 +131,7 @@
     "compile:cortex": "ncp src/graph/schema.cortex.json build/src/graph/schema.cortex.json",
     "compile:ts": "tsc --project .",
     "fmt": "tsfmt --replace",
-    "git:info": "node  --trace-warnings build/src/git.info.js",
+    "git:info": "node build/src/scripts/git-info.js",
     "lint": "tslint --format verbose --project . --exclude '{build,node_modules}/**' '**/*.ts'",
     "lint:fix": "npm run lint -- --fix",
     "start": "npm-run-all git:info start:server",
@@ -144,10 +144,7 @@
     "watch:server": "supervisor --watch build --quiet --exec npm -- run start:server"
   },
   "bin": {
-    "git-info": "./git.info.js",
-    "atomist-cli": "./start.cli.js",
-    "atomist-client": "./start.client.js",
-    "atomist-config": "./atomist.setup.js"
+    "atomist": "./start.cli.js"
   },
   "engines": {
     "node": "8.x.x",
