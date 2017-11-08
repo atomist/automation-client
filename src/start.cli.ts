@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import * as yargs from "yargs";
+import { config, gitInfo, install, run, start } from "./cli/commands";
 import { Arg, CommandInvocation } from "./internal/invoker/Payload";
 import { LoggingConfig } from "./internal/util/logger";
-import { config, gitInfo, install, run, start } from "./cli/commands";
 
 LoggingConfig.format = "cli";
 
