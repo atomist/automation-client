@@ -66,7 +66,7 @@ Another unique feature of command handlers is the ability to respond
 to the invoking user in Slack, in the channel where the command was
 issued.
 
--- TODO example --
+`ctx.messageClient.respond("No, but thank you for asking.");`
 
 ## Queries
 
