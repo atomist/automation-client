@@ -1,79 +1,101 @@
 #!/usr/bin/env node
 
+import { LoggingConfig } from "./internal/util/logger";
+process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
+LoggingConfig.format = "cli";
+
 import * as yargs from "yargs";
-import { automationClient } from "./automationClient";
-import { findConfiguration } from "./configuration";
-import { HandlerContext } from "./HandlerContext";
-import { Arg, CommandInvocation } from "./internal/invoker/Payload";
-import { consoleMessageClient } from "./internal/message/ConsoleMessageClient";
-import { guid } from "./internal/util/string";
-import { AutomationServer } from "./server/AutomationServer";
-
-const config = findConfiguration();
-const node = automationClient(config);
-
-if (config.commands) {
-    config.commands.forEach(c => {
-        node.withCommandHandler(c);
-    });
-}
-if (config.events) {
-    config.events.forEach(e => {
-        node.withEventHandler(e);
-    });
-}
-
-if (config.ingestors) {
-    config.ingestors.forEach(e => {
-        node.withIngestor(e);
-    });
-}
+import {
+    config,
+    gitInfo,
+    run,
+    start,
+} from "./cli/commands";
+import {
+    CommandInvocation,
+} from "./internal/invoker/Payload";
 
 // tslint:disable-next-line:no-unused-expression
 yargs.completion("completion")
-    .command("run", "Run a command", ya => {
-        return ya.option("command", {
-                describe: "Command name",
-            });
+    .command(["execute <name>", "exec <name>", "cmd <name>"], "Run a command", ya => {
+        // positional is not yet supported in @types/yargs
+        return (ya as any).positional("name", {
+            describe: "Name of command to run",
+            required: true,
+        })
+        .option("path", {
+            alias: "p",
+            describe: "Path to automation client project",
+            required: false,
+            default: process.cwd(),
+        })
+        .boolean("compile")
+        .default("compile", true )
+        .describe("compile", "Run 'npm run compile'")
+        .boolean("install")
+        .default("install", true)
+        .describe("install", "Run 'npm install'");
     }, argv => {
         const args = extractArgs(argv);
         const ci: CommandInvocation = {
-            name: argv.command,
+            name: argv.name,
             args,
         };
-        invokeOnConsole(node.automationServer, ci, createHandlerContext());
+        run(argv.path, ci, argv.install, argv.compile);
     })
+    .command(["start", "st", "run"], "Start an automation client", ya => {
+        return ya.option("path", {
+            alias: "p",
+            describe: "Path to automation client project",
+            required: false,
+            default: process.cwd(),
+        })
+        .boolean("compile")
+        .default("compile", true )
+        .describe("compile", "Run 'npm run compile'")
+        .boolean("install")
+        .default("install", true)
+        .describe("install", "Run 'npm install'");
+    }, argv => {
+        console.log(JSON.stringify(argv));
+        start(argv.path, argv.install, argv.compile);
+    })
+    .command("git", "Create a git-info.json file", ya => {
+        return ya.option("path", {
+            alias: "p",
+            describe: "Path to automation client project",
+            required: false,
+            default: process.cwd(),
+        });
+    }, argv => {
+        gitInfo(argv.path);
+    })
+    .command("config", "Configure environment for running automation clients", ya => {
+        return ya;
+    }, argv => {
+        config();
+    })
+    .showHelpOnFail(false, "Specify --help for available options")
+    .alias("h", "help")
+    .alias("?", "help")
+    .version(readVersion())
+    .alias("v", "version")
+    .describe("version", "Show version information")
     .argv;
 
-function createHandlerContext(): HandlerContext {
-    return {
-        teamId: config.teamIds[0],
-        correlationId: guid(),
-        messageClient: consoleMessageClient,
-    };
-}
-
-function extractArgs(args): Arg[] {
+function extractArgs(args) {
     return Object.getOwnPropertyNames(args)
-        .filter(k => !(k.includes("$") || k.includes("_")))
+        // .filter(k => !(k.includes("$") || k.includes("_")))
         .map(k => {
-            return { name: k, value: args[k] };
+            return {name: k, value: args[k]};
         });
 }
 
-function invokeOnConsole(automationServer: AutomationServer, ci: CommandInvocation, ctx: HandlerContext) {
+function readVersion(): string {
     try {
-        automationServer.validateCommandInvocation(ci);
+        const pj = require("../package.json");
+        return `${pj.name} ${pj.version}`;
     } catch (e) {
-        console.log("Invalid parameters: %s", e.message);
-        process.exit(1);
+        return "@atomist/automation-client 0.0.0";
     }
-    automationServer.invokeCommand(ci, ctx)
-        .then(r => {
-            console.log(`Command succeeded: ${JSON.stringify(r, null, 2)}`);
-        })
-        .catch(err => {
-            console.log(`Command failed: ${JSON.stringify(err, null, 2)}`);
-            process.exit(1);
-        });
 }
