@@ -1,79 +1,72 @@
 #!/usr/bin/env node
 
 import * as yargs from "yargs";
-import { automationClient } from "./automationClient";
-import { findConfiguration } from "./configuration";
-import { HandlerContext } from "./HandlerContext";
 import { Arg, CommandInvocation } from "./internal/invoker/Payload";
-import { consoleMessageClient } from "./internal/message/ConsoleMessageClient";
-import { guid } from "./internal/util/string";
-import { AutomationServer } from "./server/AutomationServer";
+import { LoggingConfig } from "./internal/util/logger";
+import { config, gitInfo, install, run, start } from "./scripts/commands";
 
-const config = findConfiguration();
-const node = automationClient(config);
-
-if (config.commands) {
-    config.commands.forEach(c => {
-        node.withCommandHandler(c);
-    });
-}
-if (config.events) {
-    config.events.forEach(e => {
-        node.withEventHandler(e);
-    });
-}
-
-if (config.ingestors) {
-    config.ingestors.forEach(e => {
-        node.withIngestor(e);
-    });
-}
+LoggingConfig.format = "cli";
 
 // tslint:disable-next-line:no-unused-expression
 yargs.completion("completion")
-    .command("run", "Run a command", ya => {
-        return ya.option("command", {
-                describe: "Command name",
-            });
+    .command("run <name>", "Run a command", ya => {
+        // positional is not yet supported in @types/yargs
+        return (ya as any).positional("name", {
+            describe: "Name of command to run",
+            required: true,
+        })
+        .option("path", {
+            alias: "p",
+            describe: "Path to automation client project",
+            required: false,
+            default: process.cwd(),
+        });
     }, argv => {
         const args = extractArgs(argv);
         const ci: CommandInvocation = {
-            name: argv.command,
+            name: argv.name,
             args,
         };
-        invokeOnConsole(node.automationServer, ci, createHandlerContext());
+        run(argv.path, ci);
     })
+    .command(["start", "st"], "Start an automation client", ya => {
+        return ya.option("path", {
+            alias: "p",
+            describe: "Path to automation client project",
+            required: false,
+            default: process.cwd(),
+        });
+    }, argv => {
+        start(argv.path);
+    })
+    .command("git", "Create a git-info.json file", ya => {
+        return ya.option("path", {
+            alias: "p",
+            describe: "Path to automation client project",
+            required: false,
+            default: process.cwd(),
+        });
+    }, argv => {
+        gitInfo(argv.path);
+    })
+    .command(["config"], "Configure environment for running automation clients", ya => {
+        return ya.option("path", {
+            alias: "p",
+            describe: "Path to Automation Client project",
+            required: false,
+            default: process.cwd(),
+        });
+    }, argv => {
+        config();
+    })
+    .showHelpOnFail(false, "Specify --help for available options")
+    // .version(require("../package.json").version)
     .argv;
-
-function createHandlerContext(): HandlerContext {
-    return {
-        teamId: config.teamIds[0],
-        correlationId: guid(),
-        messageClient: consoleMessageClient,
-    };
-}
 
 function extractArgs(args): Arg[] {
     return Object.getOwnPropertyNames(args)
-        .filter(k => !(k.includes("$") || k.includes("_")))
+        // .filter(k => !(k.includes("$") || k.includes("_")))
         .map(k => {
             return { name: k, value: args[k] };
-        });
-}
-
-function invokeOnConsole(automationServer: AutomationServer, ci: CommandInvocation, ctx: HandlerContext) {
-    try {
-        automationServer.validateCommandInvocation(ci);
-    } catch (e) {
-        console.log("Invalid parameters: %s", e.message);
-        process.exit(1);
-    }
-    automationServer.invokeCommand(ci, ctx)
-        .then(r => {
-            console.log(`Command succeeded: ${JSON.stringify(r, null, 2)}`);
-        })
-        .catch(err => {
-            console.log(`Command failed: ${JSON.stringify(err, null, 2)}`);
-            process.exit(1);
         });
 }
