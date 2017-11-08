@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { LoggingConfig } from "./internal/util/logger";
+process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
 LoggingConfig.format = "cli";
 
 import * as yargs from "yargs";
@@ -16,7 +17,7 @@ import {
 
 // tslint:disable-next-line:no-unused-expression
 yargs.completion("completion")
-    .command("run <name>", "Run a command", ya => {
+    .command(["command <name>", "cmd <name>"], "Run a command", ya => {
         // positional is not yet supported in @types/yargs
         return (ya as any).positional("name", {
             describe: "Name of command to run",
@@ -36,7 +37,7 @@ yargs.completion("completion")
         };
         run(argv.path, ci);
     })
-    .command(["start", "st"], "Start an automation client", ya => {
+    .command(["start", "st", "run"], "Start an automation client", ya => {
         return ya.option("path", {
             alias: "p",
             describe: "Path to automation client project",
