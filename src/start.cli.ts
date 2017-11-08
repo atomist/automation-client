@@ -49,13 +49,8 @@ yargs.completion("completion")
     }, argv => {
         gitInfo(argv.path);
     })
-    .command(["config"], "Configure environment for running automation clients", ya => {
-        return ya.option("path", {
-            alias: "p",
-            describe: "Path to Automation Client project",
-            required: false,
-            default: process.cwd(),
-        });
+    .command("config", "Configure environment for running automation clients", ya => {
+        return ya;
     }, argv => {
         config();
     })
