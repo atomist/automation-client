@@ -1,11 +1,19 @@
 #!/usr/bin/env node
 
-import * as yargs from "yargs";
-import { config, gitInfo, install, run, start } from "./cli/commands";
-import { Arg, CommandInvocation } from "./internal/invoker/Payload";
-import { LoggingConfig } from "./internal/util/logger";
-
 LoggingConfig.format = "cli";
+
+import * as yargs from "yargs";
+import {
+    Arg,
+    CommandInvocation,
+} from "./internal/invoker/Payload";
+import { LoggingConfig } from "./internal/util/logger";
+import {
+    config,
+    gitInfo,
+    run,
+    start,
+} from "./cli/commands";
 
 // tslint:disable-next-line:no-unused-expression
 yargs.completion("completion")
