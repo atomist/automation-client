@@ -6,7 +6,7 @@ import { fromListRepoFinder, fromListRepoLoader } from "../../../src/operations/
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { editAll, editOne } from "../../../src/operations/edit/editAll";
 import { CustomExecutionEditMode } from "../../../src/operations/edit/editModes";
-import { EditResult, failedEdit, ProjectEditor, successfulEdit } from "../../../src/operations/edit/projectEditor";
+import { failedEdit, ProjectEditor, successfulEdit } from "../../../src/operations/edit/projectEditor";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../src/project/Project";
 
@@ -115,8 +115,8 @@ describe("editOne", () => {
             },
         };
 
-        editOne(null, editor, cei,
-            repoRef,
+        editOne(null, null, editor, cei,
+            repoRef, undefined,
             fromListRepoLoader(projects))
             .then(editResult => {
                 assert(editResult.edited);
@@ -150,7 +150,7 @@ describe("editOne", () => {
             },
         };
 
-        editOne( null, editor, cei, repoRef,
+        editOne( null, null, editor, cei, repoRef, {},
             fromListRepoLoader(projects))
             .then(editResult => {
                 assert(!editResult.edited);
