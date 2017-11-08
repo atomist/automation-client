@@ -8,9 +8,11 @@ import * as fs from "fs-extra";
 import * as GitHubApi from "github";
 import * as inquirer from "inquirer";
 import * as os from "os";
-import * as process from "process";
 
-import { UserConfigFile, writeUserConfig } from "../configuration";
+import {
+    UserConfigFile,
+    writeUserConfig,
+} from "../configuration";
 
 const github = new GitHubApi();
 
