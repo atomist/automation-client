@@ -37170,6 +37170,48 @@
                   }
                 }
               ]
+            },
+            {
+              "name": "unlinkSlackChannelFromRepo",
+              "description": "Unlink a channel from a repo",
+              "type": {
+                "kind": "OBJECT",
+                "name": "SlackChannel"
+              },
+              "args": [
+                {
+                  "name": "channelId",
+                  "description": "The id of the channel to link",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "repo",
+                  "description": "The name of the repo to link",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "owner",
+                  "description": "The owner of the repo to link",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "providerId",
+                  "description": "The provider id of the repo to link",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                }
+              ]
             }
           ]
         },
