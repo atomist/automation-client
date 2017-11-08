@@ -1,10 +1,7 @@
-import { ActionResult } from "../../action/ActionResult";
 import { HandlerContext } from "../../HandlerContext";
-import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
-import { fromListRepoFinder } from "../common/fromProjectList";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { AllRepos, RepoFilter } from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
@@ -13,7 +10,7 @@ import { RepoLoader } from "../common/repoLoader";
 import { doWithAllRepos } from "../common/repoUtils";
 import { editRepo } from "../support/editorUtils";
 import { EditMode, EditModeFactory, toEditModeFactory } from "./editModes";
-import { EditResult, failedEdit, ProjectEditor, successfulEdit } from "./projectEditor";
+import { AnyProjectEditor, EditResult, ProjectEditor, toEditor } from "./projectEditor";
 
 /**
  * Edit all the given repos with the given editor
@@ -45,23 +42,24 @@ export function editAll<R, P>(ctx: HandlerContext,
 
 /**
  * Edit the given repo with the given editor function, which depends only on the project
+ * @param {HandlerContext} ctx
  * @param credentials credentials
  * @param {ProjectEditor} editor
  * @param editInfo: EditMode determines how the edits should be applied.
+ * @param singleRepository reference to the single repo to edit
+ * @param parameters parameters (optional)
  * @param {RepoLoader} repoLoader (optional, useful in testing)
  * @return {Promise<EditResult>}
  */
-export function editOne(credentials: ProjectOperationCredentials,
-                        editor: (p: Project) => Promise<Project>,
-                        editInfo: EditMode,
-                        singleRepository: RepoRef,
-                        repoLoader: RepoLoader = defaultRepoLoader(credentials)): Promise<EditResult> {
-    const officialProjectEditor: ProjectEditor = (project, noContext, noParams) =>
-        Promise.resolve(editor(project)).then(successfulEdit, err => failedEdit(project, err));
-
+export function editOne<P = undefined>(ctx: HandlerContext,
+                                       credentials: ProjectOperationCredentials,
+                                       editor: AnyProjectEditor,
+                                       editInfo: EditMode,
+                                       singleRepository: RepoRef,
+                                       parameters?: P,
+                                       repoLoader: RepoLoader = defaultRepoLoader(credentials)): Promise<EditResult> {
     const singleRepoFinder: RepoFinder = () => Promise.resolve([singleRepository]);
-
-    return editAll(null, credentials, officialProjectEditor, editInfo, {},
+    return editAll(ctx, credentials, toEditor(editor), editInfo, parameters,
         singleRepoFinder, AllRepos, repoLoader)
         .then(ers => ers[0]);
 }

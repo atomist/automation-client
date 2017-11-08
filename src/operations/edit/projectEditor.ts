@@ -34,7 +34,8 @@ export function toEditor<P = undefined>(ed: (SimpleProjectEditor<P> | ProjectEdi
                 // See what it returns
                 isProject(r) ?
                     successfulEdit(r) :
-                    r as EditResult);
+                    r as EditResult)
+            .catch(err => failedEdit(proj, err));
 }
 
 export function successfulEdit<P extends Project>(p: P, edited: boolean = true): EditResult<P> {
