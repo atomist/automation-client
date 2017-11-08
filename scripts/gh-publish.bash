@@ -4,7 +4,7 @@
 
 set -o pipefail
 declare Pkg=gh-publish-npm
-declare Version=0.1.0
+declare Version=0.2.0
 
 # print message to stdout
 # usage: msg MESSAGE
