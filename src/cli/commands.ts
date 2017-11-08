@@ -56,6 +56,7 @@ export function run(path: string,
     try {
         child_process.execSync(`node $ATOMIST_NODE_OPTIONS ${path} --request='${JSON.stringify(ci)}'`,
             { cwd: ap, stdio: "inherit", env: process.env });
+        process.exit(0);
     } catch (e) {
         process.exit(e.status);
     }

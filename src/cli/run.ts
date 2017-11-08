@@ -18,19 +18,24 @@ import { guid } from "../internal/util/string";
 import { AutomationServer } from "../server/AutomationServer";
 
 if (yargs.argv.request) {
-    const request: CommandInvocation = JSON.parse(yargs.argv.request);
-    const config = findConfiguration();
-    const node = automationClient(config);
+    try {
+        const request: CommandInvocation = JSON.parse(yargs.argv.request);
+        const config = findConfiguration();
+        const node = automationClient(config);
 
-    if (config.commands) {
-        config.commands.forEach(c => {
-            node.withCommandHandler(c);
-        });
+        if (config.commands) {
+            config.commands.forEach(c => {
+                node.withCommandHandler(c);
+            });
+        }
+
+        invokeOnConsole(node.automationServer, request, createHandlerContext(config));
+    } catch (e) {
+        console.error(`Error: ${e.message}`);
+        process.exit(1);
     }
-
-    invokeOnConsole(node.automationServer, request, createHandlerContext(config));
 } else {
-    console.log("Missing command request");
+    console.log("Error: Missing command request");
     process.exit(1);
 }
 
@@ -62,7 +67,7 @@ function invokeOnConsole(automationServer: AutomationServer, ci: CommandInvocati
     try {
         automationServer.validateCommandInvocation(invocation);
     } catch (e) {
-        console.log("Invalid parameters: %s", e.message);
+        console.log("Error: Invalid parameters: %s", e.message);
         process.exit(1);
     }
     try {
@@ -72,11 +77,11 @@ function invokeOnConsole(automationServer: AutomationServer, ci: CommandInvocati
                 process.exit(0);
             })
             .catch(err => {
-                console.log(`Command failed: ${JSON.stringify(err, null, 2)}`);
+                console.log(`Error: Command failed: ${JSON.stringify(err, null, 2)}`);
                 process.exit(1);
             });
     } catch (e) {
-        console.log("Invocation failed: %s", e.message);
+        console.log("Error: Command failed: %s", e.message);
         process.exit(1);
     }
 }
