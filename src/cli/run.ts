@@ -1,21 +1,24 @@
+#!/usr/bin/env node
+
+import { LoggingConfig } from "../internal/util/logger";
+process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
+LoggingConfig.format = "cli";
+
 import * as yargs from "yargs";
 import { automationClient } from "../automationClient";
 import {
     Configuration,
-    findConfiguration } from "../configuration";
+    findConfiguration,
+} from "../configuration";
 import { HandlerContext } from "../HandlerContext";
 import { CommandInvocation } from "../internal/invoker/Payload";
 import { consoleMessageClient } from "../internal/message/ConsoleMessageClient";
-import { LoggingConfig } from "../internal/util/logger";
 import { guid } from "../internal/util/string";
+
 import { AutomationServer } from "../server/AutomationServer";
 
-LoggingConfig.format = "cli";
-
 if (yargs.argv.request) {
-    console.log(yargs.argv.request);
     const request: CommandInvocation = JSON.parse(yargs.argv.request);
-    console.log(2);
     const config = findConfiguration();
     const node = automationClient(config);
 
@@ -66,6 +69,7 @@ function invokeOnConsole(automationServer: AutomationServer, ci: CommandInvocati
         automationServer.invokeCommand(invocation, ctx)
             .then(r => {
                 console.log(`Command succeeded: ${JSON.stringify(r, null, 2)}`);
+                process.exit(0);
             })
             .catch(err => {
                 console.log(`Command failed: ${JSON.stringify(err, null, 2)}`);

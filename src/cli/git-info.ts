@@ -1,10 +1,12 @@
 #!/usr/bin/env node
+
+import { LoggingConfig } from "../internal/util/logger";
+process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
+LoggingConfig.format = "cli";
+
 import * as appRoot from "app-root-path";
 import { writeFile } from "fs";
 import { obtainGitInfo } from "../internal/env/gitInfo";
-import { LoggingConfig } from "../internal/util/logger";
-
-LoggingConfig.format = "cli";
 
 obtainGitInfo(appRoot.path)
     .then(result => {
