@@ -5,14 +5,13 @@ LoggingConfig.format = "cli";
 
 import * as yargs from "yargs";
 import {
-config,
-gitInfo,
-run,
-start,
+    config,
+    gitInfo,
+    run,
+    start,
 } from "./cli/commands";
 import {
-Arg,
-CommandInvocation,
+    CommandInvocation,
 } from "./internal/invoker/Payload";
 
 // tslint:disable-next-line:no-unused-expression
@@ -63,22 +62,26 @@ yargs.completion("completion")
         config();
     })
     .showHelpOnFail(false, "Specify --help for available options")
+    .alias("h", "help")
+    .alias("?", "help")
     .version(readVersion())
+    .alias("v", "version")
+    .describe("version", "Show version information")
     .argv;
 
-function extractArgs(args): Arg[] {
+function extractArgs(args) {
     return Object.getOwnPropertyNames(args)
         // .filter(k => !(k.includes("$") || k.includes("_")))
         .map(k => {
-            return { name: k, value: args[k] };
+            return {name: k, value: args[k]};
         });
 }
 
 function readVersion(): string {
     try {
         const pj = require("../package.json");
-        return pj.version;
+        return `${pj.name} ${pj.version}`;
     } catch (e) {
-        return "0.0.0";
+        return "@atomist/automation-client 0.0.0";
     }
 }
