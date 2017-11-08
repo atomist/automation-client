@@ -57,7 +57,6 @@ yargs.completion("completion")
         .default("install", true)
         .describe("install", "Run 'npm install'");
     }, argv => {
-        console.log(JSON.stringify(argv));
         start(argv.path, argv.install, argv.compile);
     })
     .command("git", "Create a git-info.json file", ya => {
