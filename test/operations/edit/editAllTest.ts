@@ -53,7 +53,7 @@ describe("editAll", () => {
 
     });
 
-    it("should edit repo", done => {
+    it("should edit repo with failure", done => {
 
         const editor: ProjectEditor<{}> = (p, ctx, params) => {
             return Promise.resolve(failedEdit(p, new Error("this didn't work")));
@@ -94,9 +94,9 @@ describe("editOne", () => {
 
     it("should edit repo", done => {
 
-        const editor: (p: Project) => Promise<EditResult> = p => {
+        const editor: (p: Project) => Promise<Project> = p => {
             p.addFileSync("thing", "1");
-            return Promise.resolve(successfulEdit(p, true));
+            return Promise.resolve(p);
         };
 
         const repoRef = new GitHubRepoRef("org", "name");
@@ -128,10 +128,10 @@ describe("editOne", () => {
 
     });
 
-    it("should edit repo", done => {
+    it("should edit repo that fails", done => {
 
         const editor = (p: Project) => {
-            return Promise.resolve(failedEdit(p, new Error("this didn't work")));
+            return Promise.reject(new Error("this didn't work"));
         };
 
         const repoRef = new GitHubRepoRef("org", "name");

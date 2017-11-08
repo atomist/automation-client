@@ -13,7 +13,7 @@ import { RepoLoader } from "../common/repoLoader";
 import { doWithAllRepos } from "../common/repoUtils";
 import { editRepo } from "../support/editorUtils";
 import { EditMode, EditModeFactory, toEditModeFactory } from "./editModes";
-import { EditResult, ProjectEditor } from "./projectEditor";
+import { EditResult, failedEdit, ProjectEditor, successfulEdit } from "./projectEditor";
 
 /**
  * Edit all the given repos with the given editor
@@ -52,12 +52,15 @@ export function editAll<R, P>(ctx: HandlerContext,
  * @return {Promise<EditResult>}
  */
 export function editOne(credentials: ProjectOperationCredentials,
-                        editor: (p: Project) => Promise<EditResult>,
+                        editor: (p: Project) => Promise<Project>,
                         editInfo: EditMode,
                         singleRepository: RepoRef,
                         repoLoader: RepoLoader = defaultRepoLoader(credentials)): Promise<EditResult> {
-    const officialProjectEditor: ProjectEditor = (proj, ctx, parms) => Promise.resolve(editor(proj));
+    const officialProjectEditor: ProjectEditor = (project, noContext, noParams) =>
+        Promise.resolve(editor(project)).then(successfulEdit, err => failedEdit(project, err));
+
     const singleRepoFinder: RepoFinder = () => Promise.resolve([singleRepository]);
+
     return editAll(null, credentials, officialProjectEditor, editInfo, {},
         singleRepoFinder, AllRepos, repoLoader)
         .then(ers => ers[0]);
