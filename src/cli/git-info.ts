@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 import * as appRoot from "app-root-path";
 import { writeFile } from "fs";
-import { obtainGitInfo } from "./internal/env/gitInfo";
+import { obtainGitInfo } from "../internal/env/gitInfo";
+import { LoggingConfig } from "../internal/util/logger";
+
+LoggingConfig.format = "cli";
 
 obtainGitInfo(appRoot.path)
     .then(result => {
