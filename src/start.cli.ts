@@ -28,14 +28,20 @@ yargs.completion("completion")
             describe: "Path to automation client project",
             required: false,
             default: process.cwd(),
-        });
+        })
+        .boolean("compile")
+        .default("compile", true )
+        .describe("compile", "Run 'npm run compile'")
+        .boolean("install")
+        .default("install", true)
+        .describe("install", "Run 'npm install'");
     }, argv => {
         const args = extractArgs(argv);
         const ci: CommandInvocation = {
             name: argv.name,
             args,
         };
-        run(argv.path, ci);
+        run(argv.path, ci, argv.install, argv.compile);
     })
     .command(["start", "st", "run"], "Start an automation client", ya => {
         return ya.option("path", {
@@ -43,9 +49,16 @@ yargs.completion("completion")
             describe: "Path to automation client project",
             required: false,
             default: process.cwd(),
-        });
+        })
+        .boolean("compile")
+        .default("compile", true )
+        .describe("compile", "Run 'npm run compile'")
+        .boolean("install")
+        .default("install", true)
+        .describe("install", "Run 'npm install'");
     }, argv => {
-        start(argv.path);
+        console.log(JSON.stringify(argv));
+        start(argv.path, argv.install, argv.compile);
     })
     .command("git", "Create a git-info.json file", ya => {
         return ya.option("path", {
