@@ -19,6 +19,7 @@ import {
     RedirectResult,
     success,
     Success,
+    SuccessPromise,
 } from "./HandlerResult";
 import { toStringArray } from "./internal/util/string";
 
@@ -33,6 +34,7 @@ export {
     Failure,
     failure,
     RedirectResult,
+    SuccessPromise,
 };
 export {
     EventHandler,
