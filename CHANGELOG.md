@@ -7,11 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.2.7...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.2.8...HEAD
+
+## [0.2.8][] - 2017-11-07
+
+[0.2.8]: https://github.com/atomist/automation-client-ts/compare/0.2.5...0.2.7
+
+-   export commonly used things from root
 
 ## [0.2.7][] - 2017-11-07
 
-[0.2.7]: https://github.com/atomist/automation-client-ts/compare/0.2.5...0.2.7
+[0.2.7]: https://github.com/atomist/automation-client-ts/compare/0.2.5...0.2.8
 
 -   Fix TypeDoc generation
 -   Convenience to edit exactly one repo
