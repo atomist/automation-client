@@ -41,7 +41,12 @@ yargs.completion("completion")
             name: argv.name,
             args,
         };
-        run(argv.path, ci, argv.install, argv.compile);
+        try {
+            run(argv["change-dir"], ci, argv.install, argv.compile);
+        } catch (e) {
+            console.log("Error: %s", e.message);
+            process.exit(1);
+        }
     })
     .command(["start", "st", "run"], "Start an automation client", ya => {
         return ya.option("change-dir", {
@@ -57,7 +62,13 @@ yargs.completion("completion")
         .default("install", true)
         .describe("install", "Run 'npm install'");
     }, argv => {
-        start(argv.path, argv.install, argv.compile);
+        try {
+            start(argv["change-dir"], argv.install, argv.compile);
+        } catch (e) {
+            console.log("Error: %s", e.message);
+            process.exit(1);
+        }
+
     })
     .command("git", "Create a git-info.json file", ya => {
         return ya.option("change-dir", {
