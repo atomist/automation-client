@@ -23,8 +23,8 @@ yargs.completion("completion")
             describe: "Name of command to run",
             required: true,
         })
-        .option("path", {
-            alias: "p",
+        .option("change-dir", {
+            alias: "C",
             describe: "Path to automation client project",
             required: false,
             default: process.cwd(),
@@ -44,8 +44,8 @@ yargs.completion("completion")
         run(argv.path, ci, argv.install, argv.compile);
     })
     .command(["start", "st", "run"], "Start an automation client", ya => {
-        return ya.option("path", {
-            alias: "p",
+        return ya.option("change-dir", {
+            alias: "C",
             describe: "Path to automation client project",
             required: false,
             default: process.cwd(),
@@ -60,8 +60,8 @@ yargs.completion("completion")
         start(argv.path, argv.install, argv.compile);
     })
     .command("git", "Create a git-info.json file", ya => {
-        return ya.option("path", {
-            alias: "p",
+        return ya.option("change-dir", {
+            alias: "C",
             describe: "Path to automation client project",
             required: false,
             default: process.cwd(),
