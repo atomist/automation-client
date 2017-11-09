@@ -4,8 +4,8 @@ import { FileParser } from "../FileParser";
 import { defineDynamicProperties, fillInEmptyNonTerminalValues } from "@atomist/tree-path/manipulation/enrichment";
 import { File } from "../../../project/File";
 
-import * as ts from "typescript";
 import { curry } from "@typed/curry";
+import * as ts from "typescript";
 
 /**
  * Allow path expressions against results from a single microgrammar
