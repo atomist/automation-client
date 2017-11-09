@@ -1,3 +1,4 @@
+import { Configuration } from "./configuration";
 import {
     CommandHandler,
     EventHandler,
@@ -36,6 +37,7 @@ export {
     RedirectResult,
     SuccessPromise,
 };
+
 export {
     EventHandler,
     Parameter,
@@ -43,6 +45,10 @@ export {
     MappedParameter,
     Secret,
     Tags,
+};
+
+export {
+    Configuration,
 };
 
 export abstract class MappedParameters {
