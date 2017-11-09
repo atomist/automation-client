@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.2.7][] - 2017-11-07
 
-[0.2.5]: https://github.com/atomist/automation-client-ts/compare/0.2.5...0.2.7
+[0.2.7]: https://github.com/atomist/automation-client-ts/compare/0.2.5...0.2.7
 
 -   Fix TypeDoc generation
 -   Convenience to edit exactly one repo
