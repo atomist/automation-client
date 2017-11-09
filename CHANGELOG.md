@@ -7,7 +7,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.2.5...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.2.7...HEAD
+
+## [0.2.7][] - 2017-11-07
+
+[0.2.5]: https://github.com/atomist/automation-client-ts/compare/0.2.5...0.2.7
+
+-   Fix TypeDoc generation
+-   Convenience to edit exactly one repo
+-   ability to make a file executable
+-   ts defaults to Date.now()
+-   switch intent on CommandHandler decorator to vararg
+-   add test app events
+-   add support for protecting command handlers
+-   Secret.userToken now takes string[] or string
+-   More functional approach to generation flow
+-   merge parameters from an instance
+-   Added FreeChoices value for parameter types to take arbitrary string arrays
+-   support redirect from handler invocations
+-   Added array parameters (#61)
+-   add RequestHandlers to express customizer
+-   Add ability to customize Express server instance
+-   allow graphql files to be loaded with relative paths
+-   update cortex schema
+-   retry generator pushes after repo creation
+
 
 ## [0.2.5][] - 2017-10-26
 
