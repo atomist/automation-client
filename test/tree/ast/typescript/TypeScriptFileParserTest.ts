@@ -3,6 +3,7 @@ import "mocha";
 import * as assert from "power-assert";
 import { InMemoryFile } from "../../../../src/project/mem/InMemoryFile";
 import { TypeScriptFileParser } from "../../../../src/tree/ast/typescript/TypeScriptFileParser";
+import { TreeNode } from "@atomist/tree-path/TreeNode";
 
 describe("TypeScriptFileParser", () => {
 
@@ -49,9 +50,9 @@ describe("TypeScriptFileParser", () => {
         new TypeScriptFileParser()
             .toAst(f)
             .then(root => {
-                // console.log(JSON.stringify(root, null, 2));
-                const value = evaluateExpression(root, "//VariableDeclaration/Identifier");
-                assert(value === "x");
+                const values = (evaluateExpression(root, "//Identifier") as TreeNode[])
+                    .map(n => n.$value);
+                assert.deepEqual(values, [ "x", "y"]);
                 done();
             }).catch(done);
     });
