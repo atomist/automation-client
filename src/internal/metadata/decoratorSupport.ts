@@ -176,19 +176,12 @@ export function declareParameters(obj: any) {
     return obj;
 }
 
-type RugKind = "command-handler" | "event-handler" | "ingestor";
+type RugKind = "command-handler" | "event-handler";
 
 function declareRug(obj: any, kind: RugKind, description: string) {
     set_metadata(obj, "__description", description);
     set_metadata(obj, "__name", obj.prototype.constructor.name);
     set_metadata(obj, "__kind", kind);
-}
-
-export function declareIngestor(
-    obj: any, description: string, route: string) {
-    declareRug(obj, "ingestor", description);
-    set_metadata(obj, "__route", (route ? route : obj.prototype.constructor.name));
-    return obj;
 }
 
 export function declareEventHandler(

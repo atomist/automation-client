@@ -2,7 +2,6 @@ import {
     BaseParameter,
     declareCommandHandler,
     declareEventHandler,
-    declareIngestor,
     declareMappedParameter,
     declareParameter,
     declareParameters,
@@ -55,12 +54,6 @@ export function CommandHandler(description: string, ...intent: string[]) {
  */
 export function Parameters() {
     return (obj: any) => { declareParameters(obj); };
-}
-
-export function Ingestor(
-    description: string,
-    route?: string) {
-    return (obj: object) => { declareIngestor(obj, description, route); };
 }
 
 export function EventHandler(

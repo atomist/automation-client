@@ -47,7 +47,7 @@ export class DefaultWebSocketRequestProcessor extends AbstractEventStoringReques
     }
 
     public onRegistration(registration: RegistrationConfirmation) {
-        logger.info("Registration successful: %s", JSON.stringify(registration, obfuscateJson));
+        logger.info("Registration successful: %s", JSON.stringify(registration));
         global.setJwtToken(registration.jwt);
         this.registration = registration;
     }

@@ -1,5 +1,5 @@
 import { Parameter } from "../../decorators";
-import { HandlerContext } from "../../Handlers";
+import { HandlerContext } from "../../index";
 import { Project } from "../../project/Project";
 import { GitHubRepoRef } from "../common/GitHubRepoRef";
 import { AbstractGenerator, GitHubNameRegExp } from "./AbstractGenerator";

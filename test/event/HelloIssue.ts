@@ -6,7 +6,7 @@ import {
     HandlerContext,
     HandlerResult,
     Secret, Secrets,
-} from "../../src/Handlers";
+} from "../../src/index";
 
 @EventHandler("Notify channel on new issue", `subscription HelloIssue
 {

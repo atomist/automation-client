@@ -7,10 +7,8 @@ import { succeed } from "../../../src/operations/support/contextUtils";
 import { AutomationServer } from "../../../src/server/AutomationServer";
 import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
 import { SecretResolver } from "../../../src/spi/env/SecretResolver";
-import { HelloIssue } from "../../event/HelloIssue";
 import {
-    AddAtomistSpringAgent, AlwaysOkEventHandler, FooBarEventHandler, FooBarIngestor,
-    TrustMeIGaveMySecret,
+    AddAtomistSpringAgent, AlwaysOkEventHandler, FooBarEventHandler, TrustMeIGaveMySecret,
 } from "./TestHandlers";
 
 const messageClient = consoleMessageClient;
@@ -219,47 +217,5 @@ describe("BuildableAutomationServer", () => {
             done();
         });
     });
-
-    it("should register one ingestor instance and invoke with valid payload", done => {
-        const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        s.registerIngestor(() => new FooBarIngestor());
-        s.onEvent({
-            extensions: {
-                operationName: "FooBarIngestor",
-            },
-            data: {
-                some_thing: 27,
-            },
-        }, {
-            teamId: "T666",
-            correlationId: "555",
-            messageClient,
-        }).then(_ => {
-            assert((_[0] as any).thing === 28);
-            done();
-        });
-    });
-
-    it("should register two ingestor instances and invoke with valid payload", done => {
-        const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
-        s.registerIngestor(() => new FooBarIngestor());
-        s.registerEventHandler(() => new HelloIssue());
-        s.onEvent({
-            extensions: {
-                operationName: "FooBarIngestor",
-            },
-            data: {
-                some_thing: 27,
-            },
-        }, {
-            teamId: "T666",
-            correlationId: "555",
-            messageClient,
-        }).then(_ => {
-            assert((_[0] as any).thing === 28);
-            done();
-        });
-    });
-
 })
 ;

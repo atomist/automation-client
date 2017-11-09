@@ -23,12 +23,6 @@ if (config.events) {
     });
 }
 
-if (config.ingestors) {
-    config.ingestors.forEach(e => {
-        node.withIngestor(e);
-    });
-}
-
 // tslint:disable-next-line:no-unused-expression
 yargs.completion("completion")
     .command("run", "Run a command", ya => {

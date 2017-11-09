@@ -107,11 +107,6 @@ export interface EventHandlerMetadata extends AutomationMetadata {
     secrets?: SecretDeclaration[];
 }
 
-export interface IngestorMetadata extends AutomationMetadata {
-
-    route: string;
-}
-
 /**
  * Command handler metadata. Includes parameters and intent,
  * allowing invocation from both or by other methods such as command line

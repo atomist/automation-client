@@ -1,4 +1,4 @@
-import { HandleCommand, HandlerContext, HandlerResult, Secrets } from "../../src/Handlers";
+import { HandleCommand, HandlerContext, HandlerResult, Secrets } from "../../src/index";
 import { CommandHandlerMetadata } from "../../src/metadata/automationMetadata";
 
 export class PlainHelloWorld implements HandleCommand, CommandHandlerMetadata {

@@ -3,7 +3,7 @@ import {
     HandleCommand,
     HandlerContext,
     HandlerResult,
-} from "./Handlers";
+} from "./index";
 import { metadataFromInstance } from "./internal/metadata/metadataReading";
 import { toStringArray } from "./internal/util/string";
 import {

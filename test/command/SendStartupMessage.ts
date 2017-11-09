@@ -1,6 +1,6 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import { CommandHandler, Parameter } from "../../src/decorators";
-import { HandleCommand, HandlerContext, HandlerResult } from "../../src/Handlers";
+import { HandleCommand, HandlerContext, HandlerResult } from "../../src/index";
 import { sendMessages } from "../../src/operations/support/contextUtils";
 
 @CommandHandler("Sends a startup message to the owner of this automation-client")

@@ -7,14 +7,14 @@ import { HandleCommand } from "../../../src/HandleCommand";
 import { EventFired, HandleEvent } from "../../../src/HandleEvent";
 import { HandlerContext } from "../../../src/HandlerContext";
 import { HandlerResult } from "../../../src/HandlerResult";
-import { MappedParameters } from "../../../src/Handlers";
+import { MappedParameters } from "../../../src/index";
 
 import { populateParameters } from "../../../src/internal/parameterPopulation";
 import {
-    CommandHandlerMetadata, EventHandlerMetadata, FreeChoices, IngestorMetadata,
+    CommandHandlerMetadata, EventHandlerMetadata, FreeChoices,
 } from "../../../src/metadata/automationMetadata";
 import { oneOf, someOf } from "../../../src/metadata/parameterUtils";
-import { AddAtomistSpringAgent, FooBarIngestor } from "../invoker/TestHandlers";
+import { AddAtomistSpringAgent } from "../invoker/TestHandlers";
 
 describe("class style metadata reading", () => {
 
@@ -108,14 +108,6 @@ describe("class style metadata reading", () => {
         assert.deepEqual(md.tags, ["universal", "generator"]);
     });
 
-    it("should handle ingestor metadata", () => {
-        const h = new FooBarIngestor();
-        const md = metadataFromInstance(h) as IngestorMetadata;
-        assert(md.route === "FooBarIngestor");
-        assert(md.name === "FooBarIngestor");
-        assert(md.description === "Always returns OK");
-    });
-
     it("should handle non-decorator command handler metadata", () => {
         const h = new NoDecoratorCommandHandler();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
@@ -149,14 +141,6 @@ describe("class style metadata reading", () => {
         assert(md.description === h.description);
         assert(md.subscriptionName === h.subscriptionName);
         assert(md.subscription === h.subscription);
-    });
-
-    it("should handle non-decorator ingestor metadata", () => {
-        const h = new NoDecoratorIngestor();
-        const md = metadataFromInstance(h) as IngestorMetadata;
-        assert(md.name === h.name);
-        assert(md.description === h.description);
-        assert(md.route === h.route);
     });
 
     it("should not have empty intent array", () => {
@@ -375,18 +359,6 @@ export class NoDecoratorEventHandlerWithoutInterface implements HandleEvent<any>
     public tags = [];
     public subscriptionName = "Foo";
     public subscription = "subscription Foo { Issue { name } }";
-
-    public handle(event: EventFired<any>, context: HandlerContext): Promise<HandlerResult> {
-        throw new Error("not relevant");
-    }
-}
-
-export class NoDecoratorIngestor implements HandleEvent<any>, IngestorMetadata {
-
-    public name = "NoDecoratorEventHandler";
-    public description = "Some description";
-    public tags = [];
-    public route = "someFoo";
 
     public handle(event: EventFired<any>, context: HandlerContext): Promise<HandlerResult> {
         throw new Error("not relevant");

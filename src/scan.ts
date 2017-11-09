@@ -3,7 +3,7 @@ import { Configuration } from "./configuration";
 import {
     HandleCommand,
     HandleEvent,
-} from "./Handlers";
+} from "./index";
 import { logger } from "./internal/util/logger";
 import { toStringArray } from "./internal/util/string";
 import { Maker } from "./util/constructionUtils";

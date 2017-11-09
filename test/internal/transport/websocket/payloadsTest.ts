@@ -26,7 +26,7 @@ describe("payloads", () => {
                 parameters: [{ name: "name", required: true }],
                 mapped_parameters: [{ foreign_key: "atomist://repo", local_key: "repo" }],
             }],
-            ingestors: [{
+            ingesters: [{
                 name: "Foo",
                 tags: [],
                 description: "Some description",
@@ -53,7 +53,7 @@ describe("payloads", () => {
         assert(payload.team_ids, "there are team ids");
         assert(payload.team_ids[0] === "x-team", "has a team id");
         assert(!payload.keywords);
-        assert(!payload.ingestors);
+        assert(payload.ingesters);
         assert(!payload.groups);
     });
 
@@ -65,7 +65,7 @@ describe("payloads", () => {
             groups: ["all"],
             commands: [],
             events: [],
-            ingestors: [],
+            ingesters: [],
             keywords: [],
         };
 

@@ -21,9 +21,9 @@ if (configuration.events) {
     });
 }
 
-if (configuration.ingestors) {
-    configuration.ingestors.forEach(e => {
-        node.withIngestor(e);
+if (configuration.ingesters) {
+    configuration.ingesters.forEach(e => {
+        node.withIngester(e);
     });
 }
 

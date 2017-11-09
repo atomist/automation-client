@@ -3,7 +3,6 @@ import * as GraphQL from "../../graph/graphQL";
 import {
     CommandHandlerMetadata,
     EventHandlerMetadata,
-    IngestorMetadata,
     MappedParameterDeclaration,
     Parameter,
     SecretDeclaration,
@@ -12,7 +11,6 @@ import * as decorators from "./decoratorSupport";
 import {
     isCommandHandlerMetadata,
     isEventHandlerMetadata,
-    isIngestorMetadata,
 } from "./metadata";
 
 /**
@@ -21,11 +19,9 @@ import {
  * @param r handler instance
  * @return {any}
  */
-export function metadataFromInstance(r: any): CommandHandlerMetadata | EventHandlerMetadata | IngestorMetadata {
+export function metadataFromInstance(r: any): CommandHandlerMetadata | EventHandlerMetadata {
     let md = null;
     if (isEventHandlerMetadata(r)) {
-        md = addName(r);
-    } else if (isIngestorMetadata(r)) {
         md = addName(r);
     } else if (isCommandHandlerMetadata(r)) {
         md = addName(r);
@@ -36,15 +32,15 @@ export function metadataFromInstance(r: any): CommandHandlerMetadata | EventHand
     return _.cloneDeep(md);
 }
 
-function addName(r: CommandHandlerMetadata | EventHandlerMetadata | IngestorMetadata):
-    CommandHandlerMetadata | EventHandlerMetadata | IngestorMetadata {
+function addName(r: CommandHandlerMetadata | EventHandlerMetadata):
+    CommandHandlerMetadata | EventHandlerMetadata {
      if (!r.name) {
          r.name = r.constructor.name;
      }
      return r;
 }
 
-function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMetadata | IngestorMetadata {
+function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMetadata {
     switch (r.__kind) {
         case "command-handler" :
             return {
@@ -67,12 +63,6 @@ function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMet
                 secrets: secretsMetadataFromInstance(r),
             };
         case "event-handler" :
-            // Validate subscription
-            const errors = GraphQL.validateQuery(r.__subscription);
-            if (errors.length > 0) {
-                throw new Error(`Validation of GraphQL subscription for event handler '${r.__name}' failed\n\n` +
-                    `${GraphQL.prettyPrintErrors(errors, r.__subscription)}`);
-            }
             // Remove any linebreaks and spaces from those subscription
             const subscription = GraphQL.inlineQuery(r.__subscription);
             const subscriptionName = GraphQL.operationName(subscription);
@@ -84,13 +74,6 @@ function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMet
                 subscription,
                 subscriptionName,
                 secrets: secretsMetadataFromInstance(r),
-            };
-        case "ingestor" :
-            return {
-                name: r.__name,
-                description: r.__description,
-                tags: r.__tags,
-                route: r.__route,
             };
         default :
             throw new Error(`Unsupported automation '${r.constructor.name}'`);

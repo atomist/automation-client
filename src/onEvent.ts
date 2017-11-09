@@ -2,7 +2,7 @@ import {
     EventFired,
     HandlerContext,
     HandlerResult,
-} from "./Handlers";
+} from "./index";
 
 /**
  * Handle the given event.

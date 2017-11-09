@@ -5,7 +5,7 @@ import {
     HandleEvent,
     HandlerContext,
     HandlerResult,
-} from "../Handlers";
+} from "../index";
 import { NodeConfigSecretResolver } from "../internal/env/NodeConfigSecretResolver";
 import {
     Arg,
@@ -20,7 +20,6 @@ import { toStringArray } from "../internal/util/string";
 import {
     CommandHandlerMetadata,
     EventHandlerMetadata,
-    IngestorMetadata,
 } from "../metadata/automationMetadata";
 import { SecretResolver } from "../spi/env/SecretResolver";
 import { GraphClient } from "../spi/graph/GraphClient";
@@ -45,13 +44,6 @@ interface EventHandlerRegistration {
     invoke(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult>;
 }
 
-interface IngestorRegistration {
-
-    metadata: IngestorMetadata;
-
-    invoke(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult>;
-}
-
 /**
  * Simple automation server that offers building style
  * configuration
@@ -64,7 +56,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
 
     private eventHandlers: EventHandlerRegistration[] = [];
 
-    private ingestors: IngestorRegistration[] = [];
+    private ingesters: any[] = [];
 
     constructor(public opts: AutomationServerOptions,
                 private fallbackSecretResolver: SecretResolver = new NodeConfigSecretResolver()) {
@@ -124,17 +116,8 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         return this;
     }
 
-    public registerIngestor(maker: Maker<HandleEvent<any>>): this {
-        const factory = toFactory(maker);
-        const instanceToInspect = factory();
-        const md = metadataFromInstance(instanceToInspect) as IngestorMetadata;
-        if (!md) {
-            throw new Error(`Cannot get metadata from ingestor '${JSON.stringify(instanceToInspect)}'`);
-        }
-        this.ingestors.push({
-            metadata: md,
-            invoke: (e, ctx) => this.invokeFreshIngestorInstance(factory(), e, ctx),
-        });
+    public registerIngester(ingester: any): this {
+        this.ingesters.push(ingester);
         return this;
     }
 
@@ -149,13 +132,6 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                                  ctx: HandlerContext): Promise<HandlerResult> {
         const handler = this.eventHandlers.find(a => a.metadata.name === h.name);
         logger.info("Invoking event handler '%s'", h.name);
-        return handler.invoke(e, ctx);
-    }
-
-    protected invokeIngestor(e: EventFired<any>, h: IngestorMetadata,
-                             ctx: HandlerContext): Promise<HandlerResult> {
-        const handler = this.ingestors.find(a => a.metadata.name === h.name);
-        logger.info("Invoking ingestor '%s'", h.name);
         return handler.invoke(e, ctx);
     }
 
@@ -282,7 +258,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
             keywords: this.opts.keywords,
             commands: this.commandHandlers.map(e => e.metadata),
             events: this.eventHandlers.map(e => e.metadata),
-            ingestors: this.ingestors.map(i => i.metadata),
+            ingesters: this.ingesters,
         };
     }
 

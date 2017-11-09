@@ -2,7 +2,10 @@
  * Describes the automations available on an automation server.
  */
 
-import { CommandHandlerMetadata, EventHandlerMetadata, IngestorMetadata } from "../../metadata/automationMetadata";
+import {
+    CommandHandlerMetadata,
+    EventHandlerMetadata,
+} from "../../metadata/automationMetadata";
 
 export interface Automations {
 
@@ -15,7 +18,7 @@ export interface Automations {
 
     events: EventHandlerMetadata[];
 
-    ingestors: IngestorMetadata[];
+    ingesters: any[];
 
     keywords: string[];
 }
@@ -26,8 +29,4 @@ export function isCommandHandlerMetadata(object: any): object is CommandHandlerM
 
 export function isEventHandlerMetadata(object: any): object is EventHandlerMetadata {
     return object.subscriptionName && object.subscription;
-}
-
-export function isIngestorMetadata(object: any): object is EventHandlerMetadata {
-    return object.route;
 }

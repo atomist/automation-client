@@ -6,6 +6,10 @@ import { scanCommands, scanEvents } from "../src/scan";
 import * as secured from "../src/secured";
 import { AutomationEventListenerSupport } from "../src/server/AutomationEventListener";
 import { HelloWorld } from "./command/HelloWorld";
+import { CircleCIPayload } from "./event/circleIngester";
+import { GitLabPushPayload } from "./event/gitLabIngester";
+import { GitLabPush } from "./event/GitLabPush";
+import { HelloCircle } from "./event/HelloCircle";
 
 export const GitHubToken = process.env.GITHUB_TOKEN || "<please set GITHUB_TOKEN env variable>";
 
@@ -43,7 +47,7 @@ class StartUpListener extends AutomationEventListenerSupport {
 
 export const configuration: Configuration = {
     name: "@atomist/automation-node-tests",
-    version: "0.0.6",
+    version: "0.0.7",
     teamIds: ["T1L0VDKJP"],
     token: GitHubToken,
     commands: [
@@ -52,7 +56,13 @@ export const configuration: Configuration = {
         SpringBootSeed,
     ],
     events: [
+        HelloCircle,
+        GitLabPush,
         // ...scanEvents("**/event/*.js"),
+    ],
+    ingesters: [
+        CircleCIPayload,
+        GitLabPushPayload,
     ],
     http: {
         enabled: true,

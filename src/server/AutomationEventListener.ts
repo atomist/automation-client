@@ -1,5 +1,5 @@
 import { EventFired } from "../HandleEvent";
-import { HandlerContext, HandlerResult } from "../Handlers";
+import { HandlerContext, HandlerResult } from "../index";
 import { CommandInvocation } from "../internal/invoker/Payload";
 import { RequestProcessor } from "../internal/transport/RequestProcessor";
 

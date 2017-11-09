@@ -7,7 +7,7 @@ import {
     HandlerResult,
     MappedParameters,
     Secrets,
-} from "./Handlers";
+} from "./index";
 import {
     declareMappedParameter,
     declareSecret,

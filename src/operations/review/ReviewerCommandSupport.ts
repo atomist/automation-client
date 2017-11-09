@@ -1,7 +1,7 @@
 import { Parameter, Secret } from "../../decorators";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
-import { Secrets } from "../../Handlers";
+import { Secrets } from "../../index";
 import { logger } from "../../internal/util/logger";
 import { raiseIssue } from "../../util/gitHub";
 import { LocalOrRemoteRepoOperation } from "../common/LocalOrRemoteRepoOperation";

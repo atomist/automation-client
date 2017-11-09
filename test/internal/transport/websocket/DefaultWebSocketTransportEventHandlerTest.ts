@@ -24,7 +24,7 @@ describe("DefaultWebSocketRequestProcessor", () => {
                 keywords: [],
                 events: [],
                 commands: [],
-                ingestors: [],
+                ingesters: [],
                 team_ids: ["xxx"],
             };
 
@@ -92,7 +92,7 @@ function verifyCommandHandler(code: number, callback: (result) => void) {
             version: "1.0.0",
             events: [],
             commands: [],
-            ingestors: [],
+            ingesters: [],
             team_ids: ["x-team"],
             keywords: [],
         };

@@ -1,5 +1,5 @@
 import { HandlerResult } from "../../HandlerResult";
-import { EventFired, HandlerContext } from "../../Handlers";
+import { EventFired, HandlerContext } from "../../index";
 import { AutomationEventListener, AutomationEventListenerSupport } from "../../server/AutomationEventListener";
 import { CommandInvocation } from "../invoker/Payload";
 import * as namespace from "../util/cls";

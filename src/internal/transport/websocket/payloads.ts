@@ -1,5 +1,7 @@
-
-import { CommandHandlerMetadata, EventHandlerMetadata } from "../../../metadata/automationMetadata";
+import {
+    CommandHandlerMetadata,
+    EventHandlerMetadata,
+} from "../../../metadata/automationMetadata";
 import { Automations } from "../../metadata/metadata";
 
 export function prepareRegistration(metadata: Automations): any {
@@ -10,6 +12,7 @@ export function prepareRegistration(metadata: Automations): any {
         groups: metadata.groups && metadata.groups.length > 0 ? metadata.groups : undefined,
         commands: metadata.commands.map(prepareCommandRegistration),
         events: metadata.events.map(prepareEventRegistration),
+        ingesters: metadata.ingesters,
     };
 }
 

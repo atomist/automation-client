@@ -5,7 +5,7 @@ import {
     failure,
     HandlerContext,
     HandlerResult,
-} from "../../Handlers";
+} from "../../index";
 import { AutomationEventListener } from "../../server/AutomationEventListener";
 import { AutomationServer } from "../../server/AutomationServer";
 import { GraphClient } from "../../spi/graph/GraphClient";

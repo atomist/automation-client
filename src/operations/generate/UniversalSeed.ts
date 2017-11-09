@@ -1,7 +1,7 @@
 import { curry } from "@typed/curry";
 import { CommandHandler, MappedParameter, Parameter, Secret, Tags } from "../../decorators";
 import { HandlerContext } from "../../HandlerContext";
-import { MappedParameters, Secrets } from "../../Handlers";
+import { MappedParameters, Secrets } from "../../index";
 import { defer } from "../../internal/common/Flushable";
 import { Project } from "../../project/Project";
 import { deleteFiles, doWithFiles } from "../../project/util/projectUtils";

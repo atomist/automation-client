@@ -12,7 +12,7 @@ export interface Configuration extends RunOptions {
 
     commands?: Array<Maker<HandleCommand>>;
     events?: Array<Maker<HandleEvent<any>>>;
-    ingestors?: Array<Maker<HandleEvent<any>>>;
+    ingesters?: any[];
     listeners?: AutomationEventListener[];
 
     applicationEvents?: {

@@ -1,9 +1,15 @@
 import { EventFired } from "../HandleEvent";
 import { HandlerContext } from "../HandlerContext";
 import { HandlerResult } from "../HandlerResult";
-import { Arg, CommandInvocation } from "../internal/invoker/Payload";
+import {
+    Arg,
+    CommandInvocation,
+} from "../internal/invoker/Payload";
 import { Automations } from "../internal/metadata/metadata";
-import { CommandHandlerMetadata, EventHandlerMetadata, IngestorMetadata } from "../metadata/automationMetadata";
+import {
+    CommandHandlerMetadata,
+    EventHandlerMetadata,
+} from "../metadata/automationMetadata";
 import { AutomationServer } from "./AutomationServer";
 
 /**
@@ -20,14 +26,9 @@ export abstract class AbstractAutomationServer implements AutomationServer {
 
     public onEvent(payload: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult[]> {
         const h = this.automations.events.filter(eh => eh.subscriptionName === payload.extensions.operationName);
-        if (!h || h.length === 0) {
-            const i = this.automations.ingestors.filter(ih => ih.route === payload.extensions.operationName);
-            if (!i || i.length === 0) {
-                throw new Error(`No event handler or ingestor with name '${payload.extensions.operationName}'` +
-                    `: Known event handlers are [${this.automations.events.map(e => e.name)}]`);
-            } else {
-                return Promise.all(i.map(eh => this.invokeIngestor(payload, eh, ctx)));
-            }
+        if (!h) {
+            throw new Error(`No event handler with name '${payload.extensions.operationName}'` +
+                `: Known event handlers are '${this.automations.events.map(e => e.name)}'`);
         } else {
             return Promise.all(h.map(eh => this.invokeEventHandler(payload, eh, ctx)));
         }
@@ -37,7 +38,7 @@ export abstract class AbstractAutomationServer implements AutomationServer {
         const handler = this.automations.commands.find(h => h.name === payload.name);
         if (!handler) {
             throw new Error(`No command handler with name '${payload.name}'` +
-                `: Known command handlers are [${this.automations.commands.map(c => c.name)}]`);
+                `: Known command handlers are '${this.automations.commands.map(c => c.name)}'`);
         }
         handler.parameters.forEach(p => {
             const payloadValue: Arg = payload.args ?
@@ -62,8 +63,5 @@ export abstract class AbstractAutomationServer implements AutomationServer {
 
     protected abstract invokeEventHandler(payload: EventFired<any>, h: EventHandlerMetadata,
                                           ctx: HandlerContext): Promise<HandlerResult>;
-
-    protected abstract invokeIngestor(payload: EventFired<any>, h: IngestorMetadata,
-                                      ctx: HandlerContext): Promise<HandlerResult>;
 
 }

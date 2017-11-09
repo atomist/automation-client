@@ -3,12 +3,12 @@ import { HandlerContext } from "../../../src/HandlerContext";
 
 import * as assert from "power-assert";
 import {
-    CommandHandler, EventHandler, Ingestor, MappedParameter, Parameter, Secret,
+    CommandHandler, EventHandler, MappedParameter, Parameter, Secret,
     Tags,
 } from "../../../src/decorators";
 import { EventFired, HandleEvent } from "../../../src/HandleEvent";
 import { HandlerResult } from "../../../src/HandlerResult";
-import { MappedParameters, Secrets } from "../../../src/Handlers";
+import { MappedParameters, Secrets } from "../../../src/index";
 
 @CommandHandler("add the Atomist Spring Boot agent to a Spring Boot project")
 @Tags("atomist", "spring")
@@ -70,13 +70,5 @@ export class FooBarEventHandler implements HandleEvent<any> {
 
     public handle(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult> {
         return Promise.resolve({ code: 0, thing: +e.data.Thing[0].some_thing + 1});
-    }
-}
-
-@Ingestor("Always returns OK")
-export class FooBarIngestor implements HandleEvent<any> {
-
-    public handle(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult> {
-        return Promise.resolve({ code: 0, thing: +e.data.some_thing + 1});
     }
 }

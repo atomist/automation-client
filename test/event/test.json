@@ -1,0 +1,368 @@
+{
+  "data": {
+    "Status": [{
+      "_id": 761711,
+      "commit": {
+        "pushes": [{
+          "builds": [{
+            "buildId": "58911582",
+            "buildUrl": "https://travis-ci.com/atomisthq/automation-api/builds/58911582",
+            "name": "665",
+            "provider": "travis",
+            "status": "passed",
+            "commit": {
+              "sha": "444b6bdb081f02f65544798151cb4ff922e939fc"
+            },
+            "timestamp": "2017-11-09T14:58:07.440Z"
+          }, {
+            "buildId": "58910834",
+            "buildUrl": "https://travis-ci.com/atomisthq/automation-api/builds/58910834",
+            "name": "663",
+            "provider": "travis",
+            "status": "passed",
+            "commit": {
+              "sha": "288f2eef4550393243957207ce73f6ba7d080435"
+            },
+            "timestamp": "2017-11-09T14:50:21.718Z"
+          }],
+          "before": {
+            "sha": "6675e88b0e1fd12048bbebcdb083071a847924a3"
+          },
+          "after": {
+            "sha": "444b6bdb081f02f65544798151cb4ff922e939fc",
+            "message": "Gitlab ingester",
+            "statuses": [{
+              "context": "continuous-integration/travis-ci/push",
+              "description": "The Travis CI build passed",
+              "targetUrl": "https://travis-ci.com/atomisthq/automation-api/builds/58911582?utm_source=github_status&utm_medium=notification",
+              "state": "success"
+            }],
+            "tags": [{
+              "name": "0.2.1-20171109145550",
+              "release": null
+            }]
+          },
+          "repo": {
+            "owner": "atomisthq",
+            "name": "automation-api",
+            "channels": [{
+              "name": "automation-api"
+            }, {
+              "name": "automation-api"
+            }],
+            "labels": [{
+              "name": "infrastructure"
+            }, {
+              "name": "blocked"
+            }, {
+              "name": "duplicate"
+            }, {
+              "name": "in-progress"
+            }, {
+              "name": "question"
+            }, {
+              "name": "invalid"
+            }, {
+              "name": "wontfix"
+            }, {
+              "name": "help wanted"
+            }, {
+              "name": "Discussion Required"
+            }, {
+              "name": "enhancement"
+            }, {
+              "name": "bug"
+            }, {
+              "name": "infrastructure"
+            }, {
+              "name": "blocked"
+            }, {
+              "name": "duplicate"
+            }, {
+              "name": "in-progress"
+            }, {
+              "name": "question"
+            }, {
+              "name": "invalid"
+            }, {
+              "name": "wontfix"
+            }, {
+              "name": "help wanted"
+            }, {
+              "name": "Discussion Required"
+            }, {
+              "name": "enhancement"
+            }, {
+              "name": "bug"
+            }],
+            "org": {
+              "provider": {},
+              "chatTeam": {
+                "preferences": [{
+                  "name": "lifecycles",
+                  "value": "{\"push\":{\"configuration\":{\"emoji-style\":\"atomist\",\"show-statuses-on-push\":true,\"build\":{\"style\":\"decorator\"},\"fingerprints\":{\"about-hint\":false,\"render-unchanged\":true,\"style\":\"fingerprint-inline\"}}}}"
+                }, {
+                  "name": "disable_bot_owner_on_github_activity_notification",
+                  "value": "true"
+                }]
+              }
+            },
+            "defaultBranch": "master"
+          },
+          "commits": [{
+            "sha": "444b6bdb081f02f65544798151cb4ff922e939fc",
+            "message": "Gitlab ingester",
+            "resolves": [],
+            "impact": null,
+            "apps": [{
+              "state": "published",
+              "host": "artifactory",
+              "domain": "",
+              "data": "{ \"version\":\"0.2.1-20171109145550\", \"buildNumber\":\"665\" }"
+            }],
+            "tags": [{
+              "name": "0.2.1-20171109145550",
+              "release": null,
+              "containers": []
+            }],
+            "author": {
+              "login": "kipz",
+              "person": {
+                "chatId": {
+                  "screenName": "kipz"
+                }
+              }
+            },
+            "timestamp": "2017-11-09T14:46:54Z"
+          }, {
+            "sha": "288f2eef4550393243957207ce73f6ba7d080435",
+            "message": "Add statsd timings to expensive operations",
+            "resolves": [],
+            "impact": null,
+            "apps": [],
+            "tags": [],
+            "author": {
+              "login": "kipz",
+              "person": {
+                "chatId": {
+                  "screenName": "kipz"
+                }
+              }
+            },
+            "timestamp": "2017-11-09T11:27:10Z"
+          }, {
+            "sha": "444b6bdb081f02f65544798151cb4ff922e939fc",
+            "message": "Gitlab ingester",
+            "resolves": [],
+            "impact": null,
+            "apps": [{
+              "state": "published",
+              "host": "artifactory",
+              "domain": "",
+              "data": "{ \"version\":\"0.2.1-20171109145550\", \"buildNumber\":\"665\" }"
+            }],
+            "tags": [{
+              "name": "0.2.1-20171109145550",
+              "release": null,
+              "containers": []
+            }],
+            "author": {
+              "login": "kipz",
+              "person": {
+                "chatId": {
+                  "screenName": "kipz"
+                }
+              }
+            },
+            "timestamp": "2017-11-09T14:46:54Z"
+          }],
+          "timestamp": "2017-11-09T14:53:55.862Z",
+          "branch": "master"
+        }, {
+          "builds": [{
+            "buildId": "58911582",
+            "buildUrl": "https://travis-ci.com/atomisthq/automation-api/builds/58911582",
+            "name": "665",
+            "provider": "travis",
+            "status": "passed",
+            "commit": {
+              "sha": "444b6bdb081f02f65544798151cb4ff922e939fc"
+            },
+            "timestamp": "2017-11-09T14:58:07.440Z"
+          }, {
+            "buildId": "58910834",
+            "buildUrl": "https://travis-ci.com/atomisthq/automation-api/builds/58910834",
+            "name": "663",
+            "provider": "travis",
+            "status": "passed",
+            "commit": {
+              "sha": "288f2eef4550393243957207ce73f6ba7d080435"
+            },
+            "timestamp": "2017-11-09T14:50:21.718Z"
+          }],
+          "before": {
+            "sha": "6675e88b0e1fd12048bbebcdb083071a847924a3"
+          },
+          "after": {
+            "sha": "444b6bdb081f02f65544798151cb4ff922e939fc",
+            "message": "Gitlab ingester",
+            "statuses": [{
+              "context": "continuous-integration/travis-ci/push",
+              "description": "The Travis CI build passed",
+              "targetUrl": "https://travis-ci.com/atomisthq/automation-api/builds/58911582?utm_source=github_status&utm_medium=notification",
+              "state": "success"
+            }],
+            "tags": [{
+              "name": "0.2.1-20171109145550",
+              "release": null
+            }]
+          },
+          "repo": {
+            "owner": "atomisthq",
+            "name": "automation-api",
+            "channels": [{
+              "name": "automation-api"
+            }, {
+              "name": "automation-api"
+            }],
+            "labels": [{
+              "name": "infrastructure"
+            }, {
+              "name": "blocked"
+            }, {
+              "name": "duplicate"
+            }, {
+              "name": "in-progress"
+            }, {
+              "name": "question"
+            }, {
+              "name": "invalid"
+            }, {
+              "name": "wontfix"
+            }, {
+              "name": "help wanted"
+            }, {
+              "name": "Discussion Required"
+            }, {
+              "name": "enhancement"
+            }, {
+              "name": "bug"
+            }, {
+              "name": "infrastructure"
+            }, {
+              "name": "blocked"
+            }, {
+              "name": "duplicate"
+            }, {
+              "name": "in-progress"
+            }, {
+              "name": "question"
+            }, {
+              "name": "invalid"
+            }, {
+              "name": "wontfix"
+            }, {
+              "name": "help wanted"
+            }, {
+              "name": "Discussion Required"
+            }, {
+              "name": "enhancement"
+            }, {
+              "name": "bug"
+            }],
+            "org": {
+              "provider": {},
+              "chatTeam": {
+                "preferences": [{
+                  "name": "lifecycles",
+                  "value": "{\"push\":{\"configuration\":{\"emoji-style\":\"atomist\",\"show-statuses-on-push\":true,\"build\":{\"style\":\"decorator\"},\"fingerprints\":{\"about-hint\":false,\"render-unchanged\":true,\"style\":\"fingerprint-inline\"}}}}"
+                }, {
+                  "name": "disable_bot_owner_on_github_activity_notification",
+                  "value": "true"
+                }]
+              }
+            },
+            "defaultBranch": "master"
+          },
+          "commits": [{
+            "sha": "444b6bdb081f02f65544798151cb4ff922e939fc",
+            "message": "Gitlab ingester",
+            "resolves": [],
+            "impact": null,
+            "apps": [{
+              "state": "published",
+              "host": "artifactory",
+              "domain": "",
+              "data": "{ \"version\":\"0.2.1-20171109145550\", \"buildNumber\":\"665\" }"
+            }],
+            "tags": [{
+              "name": "0.2.1-20171109145550",
+              "release": null,
+              "containers": []
+            }],
+            "author": {
+              "login": "kipz",
+              "person": {
+                "chatId": {
+                  "screenName": "kipz"
+                }
+              }
+            },
+            "timestamp": "2017-11-09T14:46:54Z"
+          }, {
+            "sha": "288f2eef4550393243957207ce73f6ba7d080435",
+            "message": "Add statsd timings to expensive operations",
+            "resolves": [],
+            "impact": null,
+            "apps": [],
+            "tags": [],
+            "author": {
+              "login": "kipz",
+              "person": {
+                "chatId": {
+                  "screenName": "kipz"
+                }
+              }
+            },
+            "timestamp": "2017-11-09T11:27:10Z"
+          }, {
+            "sha": "444b6bdb081f02f65544798151cb4ff922e939fc",
+            "message": "Gitlab ingester",
+            "resolves": [],
+            "impact": null,
+            "apps": [{
+              "state": "published",
+              "host": "artifactory",
+              "domain": "",
+              "data": "{ \"version\":\"0.2.1-20171109145550\", \"buildNumber\":\"665\" }"
+            }],
+            "tags": [{
+              "name": "0.2.1-20171109145550",
+              "release": null,
+              "containers": []
+            }],
+            "author": {
+              "login": "kipz",
+              "person": {
+                "chatId": {
+                  "screenName": "kipz"
+                }
+              }
+            },
+            "timestamp": "2017-11-09T14:46:54Z"
+          }],
+          "timestamp": "2017-11-09T14:47:39.311Z",
+          "branch": "timings"
+        }],
+        "timestamp": "2017-11-09T14:46:54Z"
+      }
+    }]
+  },
+  "extensions": {
+    "type": "READ_ONLY",
+    "operationName": "StatusToPushLifecycle",
+    "team_id": "T095SFFBK",
+    "team_name": "atomist",
+    "correlation_id": "c1b5bc0d-38b3-4ecb-9053-5bb412647b29"
+  }
+}

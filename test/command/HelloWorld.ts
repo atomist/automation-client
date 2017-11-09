@@ -1,5 +1,5 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
-import { CommandHandler, Failure, HandleCommand, HandlerContext, HandlerResult, Parameter } from "../../src/Handlers";
+import { CommandHandler, Failure, HandleCommand, HandlerContext, HandlerResult, Parameter } from "../../src/index";
 import { sendMessages } from "../../src/operations/support/contextUtils";
 import { buttonForCommand, menuForCommand } from "../../src/spi/message/MessageClient";
 import { SecretBaseHandler } from "./SecretBaseHandler";

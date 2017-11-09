@@ -10,11 +10,8 @@ import * as github from "passport-github";
 import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
 import * as globals from "../../../globals";
-import { MappedParameters } from "../../../Handlers";
-import {
-    CommandHandlerMetadata,
-    IngestorMetadata,
-} from "../../../metadata/automationMetadata";
+import { MappedParameters } from "../../../index";
+import { CommandHandlerMetadata } from "../../../metadata/automationMetadata";
 import { AutomationServer } from "../../../server/AutomationServer";
 import { health, HealthStatus } from "../../util/health";
 import { info } from "../../util/info";
@@ -191,12 +188,6 @@ export class ExpressServer {
                 this.exposeCommandHandlerHtmlInvocationRoute(exp, `${ApiBase}/command/html/${_.kebabCase(h.name)}`, h);
             },
         );
-        automations.automations.ingestors.forEach(
-            i => {
-                this.exposeEventInvocationRoute(exp,
-                    `${ApiBase}/ingest/${i.route.toLowerCase()}`, i,
-                    (res, result) => res.status(result.some(r => r.code !== 0) ? 500 : 200).json(result));
-            });
 
         if (!!this.options.customizers) {
             logger.info("Customizing Express server");
@@ -309,26 +300,6 @@ export class ExpressServer {
                     handle(req, res, result);
                 });
             });
-    }
-
-    private exposeEventInvocationRoute(exp: express.Express,
-                                       url: string,
-                                       h: IngestorMetadata,
-                                       handle: (res, result) => any) {
-        exp.post(url, (req, res) => {
-            const payload: EventIncoming = {
-                data: req.body,
-                extensions: {
-                    operationName: h.route,
-                    correlation_id: guid(),
-                    team_id: this.automations.automations.team_ids[0],
-                },
-                secrets: [],
-            };
-            this.handler.processEvent(payload, result => {
-                handle(res, result);
-            });
-        });
     }
 
     private setupAuthentication() {

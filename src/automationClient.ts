@@ -3,7 +3,7 @@ import { Configuration } from "./configuration";
 import {
     HandleCommand,
     HandleEvent,
-} from "./Handlers";
+} from "./index";
 import { registerApplicationEvents } from "./internal/env/applicationEvent";
 import {
     ExpressServer,
@@ -74,8 +74,8 @@ export class AutomationClient {
         return this;
     }
 
-    public withIngestor(event: Maker<HandleEvent<any>>): AutomationClient {
-        this.automations.registerIngestor(event);
+    public withIngester(ingester: any): AutomationClient {
+        this.automations.registerIngester(ingester);
         return this;
     }
 

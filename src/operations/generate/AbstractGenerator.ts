@@ -5,7 +5,7 @@ import * as shell from "shelljs";
 import { ActionResult } from "../../action/ActionResult";
 import { Parameter } from "../../decorators";
 import { failure, RedirectResult } from "../../HandlerResult";
-import { HandleCommand, HandlerContext, HandlerResult } from "../../Handlers";
+import { HandleCommand, HandlerContext, HandlerResult } from "../../index";
 import { logger } from "../../internal/util/logger";
 import { guid } from "../../internal/util/string";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
