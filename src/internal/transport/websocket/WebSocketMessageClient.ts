@@ -96,7 +96,12 @@ export class WebSocketCommandMessageClient extends AbstractWebSocketMessageClien
 export class WebSocketEventMessageClient extends AbstractWebSocketMessageClient {
 
     constructor(request: EventIncoming, automations: AutomationServer, ws: WebSocket) {
-        super(automations, ws, request.extensions.correlation_id, { team: { id: request.extensions.team_id }});
+        super(automations, ws, request.extensions.correlation_id, { team: { id: request.extensions.team_id }}, {
+            type: "event_handler",
+            group: automations.automations.name,
+            version: automations.automations.version,
+            name: request.extensions.operationName,
+        });
     }
 
     protected async doSend(msg: string | SlackMessage, userNames: string | string[],
