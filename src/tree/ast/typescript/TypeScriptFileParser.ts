@@ -58,6 +58,9 @@ class TypeScriptAstNodeTreeNode implements TreeNode {
         if (this.$children.length === 0) {
             // Get it off the JSON if it doesn't matter
             this.$children = undefined;
+        } else {
+            // It's a non-terminal, so the name needs to be the kind
+            this.$name = ts.SyntaxKind[node.kind];
         }
         this.$value = extractValue(sourceFile, node);
     }

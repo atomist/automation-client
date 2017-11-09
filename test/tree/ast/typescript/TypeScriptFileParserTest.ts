@@ -1,10 +1,12 @@
-import { evaluateScalar } from "@atomist/tree-path/path/expressionEngine";
+import { evaluateExpression, evaluateScalar, evaluateScalarValue } from "@atomist/tree-path/path/expressionEngine";
 import "mocha";
 import * as assert from "power-assert";
 import { InMemoryFile } from "../../../../src/project/mem/InMemoryFile";
 import { TypeScriptFileParser } from "../../../../src/tree/ast/typescript/TypeScriptFileParser";
 
 describe("TypeScriptFileParser", () => {
+
+    it("should handle ill-formed file");
 
     it("should parse a file", done => {
         const f = new InMemoryFile("script.ts", "const x = 1;");
@@ -17,7 +19,7 @@ describe("TypeScriptFileParser", () => {
             }).catch(done);
     });
 
-    it("should parse a file and use a path expression", done => {
+    it("should parse a file and use a path expression to find a node", done => {
         const f = new InMemoryFile("script.ts", "const x = 1;");
         new TypeScriptFileParser()
             .toAst(f)
@@ -26,6 +28,30 @@ describe("TypeScriptFileParser", () => {
                 const value = evaluateScalar(root, "//VariableDeclarationList");
                 assert(!!value);
                 console.log(JSON.stringify(value));
+                done();
+            }).catch(done);
+    });
+
+    it("should parse a file and use a path expression to find a value", done => {
+        const f = new InMemoryFile("script.ts", "const x = 1;");
+        new TypeScriptFileParser()
+            .toAst(f)
+            .then(root => {
+                // console.log(JSON.stringify(root, null, 2));
+                const value = evaluateScalarValue(root, "//VariableDeclaration/Identifier");
+                assert(value === "x");
+                done();
+            }).catch(done);
+    });
+
+    it("should parse a file and use a path expression to find values", done => {
+        const f = new InMemoryFile("script.ts", "const x = 1; let y = 2;");
+        new TypeScriptFileParser()
+            .toAst(f)
+            .then(root => {
+                // console.log(JSON.stringify(root, null, 2));
+                const value = evaluateExpression(root, "//VariableDeclaration/Identifier");
+                assert(value === "x");
                 done();
             }).catch(done);
     });
