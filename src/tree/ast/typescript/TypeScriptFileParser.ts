@@ -12,7 +12,7 @@ import * as ts from "typescript";
  */
 export class TypeScriptFileParser implements FileParser {
 
-    public rootName = "ts";
+    public rootName = ts.SyntaxKind[ts.SyntaxKind.SourceFile];
 
     constructor(public scriptTarget: ts.ScriptTarget = ts.ScriptTarget.ES2016,
                 public scriptKind: ts.ScriptKind = ts.ScriptKind.TS) {
@@ -45,6 +45,7 @@ class TypeScriptAstNodeTreeNode implements TreeNode {
 
     constructor(node: ts.Node) {
         //console.log(JSON.stringify(node, null, 2));
+        this.$name = extractName(node);
 
         function visit(children: TreeNode[], n: ts.Node) {
             if (!!n) {
@@ -52,22 +53,13 @@ class TypeScriptAstNodeTreeNode implements TreeNode {
             }
         }
 
-        this.$name = extractName(node);
         ts.forEachChild(node, curry(visit)(this.$children));
         if (this.$children.length === 0) {
             // Get it off the JSON if it doesn't matter
             this.$children = undefined;
         }
 
-        // this.$offset = m.$offset;
-        // if (isTreePatternMatch(m)) {
-        //     const subs = m.submatches();
-        //     this.$children = Object.getOwnPropertyNames(subs)
-        //         .map(prop => {
-        //             const sub = subs[prop];
-        //             // console.log("Exposing child %s.%s as [%s]", $name, prop, JSON.stringify(sub));
-        //             return new TypeScriptAstNodeTreeNode(prop, sub);
-        //         });
+        // TODO set offsets
 
         // console.log("Exposing terminal %s as [%s]: value=[%s]", $name, JSON.stringify(m), m.$matched);
         //this.$value = node.getText();
@@ -77,6 +69,7 @@ class TypeScriptAstNodeTreeNode implements TreeNode {
 
 function extractName(node: ts.Node): string {
     if ((node as any).name) {
+        // TODO this looks fragile
         return (node as any).name.escapedText;
     } else {
         return ts.SyntaxKind[node.kind];
