@@ -403,10 +403,10 @@ Command | Reason
 
 ### Release
 
-To create a new release of the project, simply push a tag of the form
+To create a new release of the project, update the version in package.json 
+and then push a tag for the version. The version must be of the form
 `M.N.P` where `M`, `N`, and `P` are integers that form the next
-appropriate [semantic version][semver] for release.  The version in
-the package.json is replaced by the build and is totally ignored!  For
+appropriate [semantic version][semver] for release.  For
 example:
 
 [semver]: http://semver.org
