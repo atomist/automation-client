@@ -8,6 +8,7 @@ import {
     declareSecret,
     declareTags,
 } from "./internal/metadata/decoratorSupport";
+import { toStringArray } from "./internal/util/string";
 
 /**
  * Decorator for parameters. Adds to object properties

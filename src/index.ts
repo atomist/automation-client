@@ -1,5 +1,6 @@
-import { Configuration } from "./configuration";
-import {
+export { Configuration } from "./configuration";
+
+export {
     CommandHandler,
     EventHandler,
     MappedParameter,
@@ -9,13 +10,17 @@ import {
     Secrets,
     Tags,
 } from "./decorators";
-import { HandleCommand } from "./HandleCommand";
-import {
+
+export { HandleCommand } from "./HandleCommand";
+
+export {
     EventFired,
     HandleEvent,
 } from "./HandleEvent";
-import { HandlerContext } from "./HandlerContext";
-import {
+
+export { HandlerContext } from "./HandlerContext";
+
+export {
     Failure,
     failure,
     HandlerResult,
@@ -24,32 +29,3 @@ import {
     Success,
     SuccessPromise,
 } from "./HandlerResult";
-
-export {
-    HandlerResult,
-    HandlerContext,
-    HandleCommand,
-    HandleEvent,
-    EventFired,
-    Success,
-    success,
-    Failure,
-    failure,
-    RedirectResult,
-    SuccessPromise,
-};
-
-export {
-    EventHandler,
-    Parameter,
-    CommandHandler,
-    MappedParameter,
-    Secret,
-    Tags,
-    MappedParameters,
-    Secrets,
-};
-
-export {
-    Configuration,
-};
