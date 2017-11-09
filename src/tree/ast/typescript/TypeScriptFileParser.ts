@@ -1,7 +1,6 @@
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { FileParser } from "../FileParser";
 
-import { defineDynamicProperties, fillInEmptyNonTerminalValues } from "@atomist/tree-path/manipulation/enrichment";
 import { File } from "../../../project/File";
 
 import { curry } from "@typed/curry";
@@ -21,10 +20,10 @@ export class TypeScriptFileParser implements FileParser {
     public toAst(f: File): Promise<TreeNode> {
         return f.getContent()
             .then(content => {
-                const node = ts.createSourceFile(f.name, content, this.scriptTarget, false, this.scriptKind);
-                const root = new TypeScriptAstNodeTreeNode(node);
-                defineDynamicProperties(root);
-                fillInEmptyNonTerminalValues(root, content);
+                const sourceFile = ts.createSourceFile(f.name, content, this.scriptTarget, false, this.scriptKind);
+                const root = new TypeScriptAstNodeTreeNode(sourceFile, sourceFile);
+                //defineDynamicProperties(root);
+                //fillInEmptyNonTerminalValues(root, content);
                 return root;
             });
     }
@@ -43,35 +42,44 @@ class TypeScriptAstNodeTreeNode implements TreeNode {
 
     public readonly $offset: number;
 
-    constructor(node: ts.Node) {
+    constructor(sourceFile: ts.SourceFile, node: ts.Node) {
         //console.log(JSON.stringify(node, null, 2));
         this.$name = extractName(node);
+        this.$offset = node.getStart(sourceFile, true);
 
         function visit(children: TreeNode[], n: ts.Node) {
             if (!!n) {
-                children.push(new TypeScriptAstNodeTreeNode(n));
+                children.push(new TypeScriptAstNodeTreeNode(sourceFile, n));
             }
         }
 
         ts.forEachChild(node, curry(visit)(this.$children));
+
         if (this.$children.length === 0) {
             // Get it off the JSON if it doesn't matter
             this.$children = undefined;
         }
-
-        // TODO set offsets
-
-        // console.log("Exposing terminal %s as [%s]: value=[%s]", $name, JSON.stringify(m), m.$matched);
-        //this.$value = node.getText();
+        this.$value = extractValue(sourceFile, node);
     }
 
 }
 
-function extractName(node: ts.Node): string {
+function extractName(node: any): string {
     if ((node as any).name) {
         // TODO this looks fragile
         return (node as any).name.escapedText;
     } else {
         return ts.SyntaxKind[node.kind];
+    }
+}
+
+function extractValue(sourceFile: ts.SourceFile, node: any): string {
+    if ((node.text)) {
+        return node.text;
+    }
+    try {
+        return node.getText(sourceFile);
+    } catch (te) {
+        return undefined;
     }
 }
