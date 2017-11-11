@@ -3,11 +3,12 @@ import { FileParser } from "../FileParser";
 
 import { File } from "../../../project/File";
 
+import { defineDynamicProperties } from "@atomist/tree-path/manipulation/enrichment";
 import { curry } from "@typed/curry";
 import * as ts from "typescript";
 
 /**
- * Allow path expressions against results from a single microgrammar
+ * Allow path expressions against ASTs from the TypeScript parser
  */
 export class TypeScriptFileParser implements FileParser {
 
@@ -22,15 +23,14 @@ export class TypeScriptFileParser implements FileParser {
             .then(content => {
                 const sourceFile = ts.createSourceFile(f.name, content, this.scriptTarget, false, this.scriptKind);
                 const root = new TypeScriptAstNodeTreeNode(sourceFile, sourceFile);
-                //defineDynamicProperties(root);
-                //fillInEmptyNonTerminalValues(root, content);
+                defineDynamicProperties(root);
                 return root;
             });
     }
 }
 
 /**
- * TreeNode implementation backed by a microgrammar match
+ * TreeNode implementation backed by a node from the TypeScript parser
  */
 class TypeScriptAstNodeTreeNode implements TreeNode {
 
@@ -43,7 +43,6 @@ class TypeScriptAstNodeTreeNode implements TreeNode {
     public readonly $offset: number;
 
     constructor(sourceFile: ts.SourceFile, node: ts.Node) {
-        //console.log(JSON.stringify(node, null, 2));
         this.$name = extractName(node);
         this.$offset = node.getStart(sourceFile, true);
 
