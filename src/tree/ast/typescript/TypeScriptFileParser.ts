@@ -1,0 +1,87 @@
+import { TreeNode } from "@atomist/tree-path/TreeNode";
+import { FileParser } from "../FileParser";
+
+import { File } from "../../../project/File";
+
+import { defineDynamicProperties } from "@atomist/tree-path/manipulation/enrichment";
+import { curry } from "@typed/curry";
+import * as ts from "typescript";
+
+/**
+ * Allow path expressions against ASTs from the TypeScript parser
+ */
+export class TypeScriptFileParser implements FileParser {
+
+    public rootName = ts.SyntaxKind[ts.SyntaxKind.SourceFile];
+
+    constructor(public scriptTarget: ts.ScriptTarget = ts.ScriptTarget.ES2016,
+                public scriptKind: ts.ScriptKind = ts.ScriptKind.TS) {
+    }
+
+    public toAst(f: File): Promise<TreeNode> {
+        return f.getContent()
+            .then(content => {
+                const sourceFile = ts.createSourceFile(f.name, content, this.scriptTarget, false, this.scriptKind);
+                const root = new TypeScriptAstNodeTreeNode(sourceFile, sourceFile);
+                defineDynamicProperties(root);
+                return root;
+            });
+    }
+}
+
+/**
+ * TreeNode implementation backed by a node from the TypeScript parser
+ */
+class TypeScriptAstNodeTreeNode implements TreeNode {
+
+    public readonly $children: TreeNode[] = [];
+
+    public readonly $name;
+
+    public $value: string;
+
+    public readonly $offset: number;
+
+    constructor(sourceFile: ts.SourceFile, node: ts.Node) {
+        this.$name = extractName(node);
+        this.$offset = node.getStart(sourceFile, true);
+
+        function visit(children: TreeNode[], n: ts.Node) {
+            if (!!n) {
+                children.push(new TypeScriptAstNodeTreeNode(sourceFile, n));
+            }
+        }
+
+        ts.forEachChild(node, curry(visit)(this.$children));
+
+        if (this.$children.length === 0) {
+            // Get it off the JSON if it doesn't matter
+            this.$children = undefined;
+        } else {
+            // It's a non-terminal, so the name needs to be the kind
+            this.$name = ts.SyntaxKind[node.kind];
+        }
+        this.$value = extractValue(sourceFile, node);
+    }
+
+}
+
+function extractName(node: any): string {
+    if ((node as any).name) {
+        // TODO this looks fragile
+        return (node as any).name.escapedText;
+    } else {
+        return ts.SyntaxKind[node.kind];
+    }
+}
+
+function extractValue(sourceFile: ts.SourceFile, node: any): string {
+    if ((node.text)) {
+        return node.text;
+    }
+    try {
+        return node.getText(sourceFile);
+    } catch (te) {
+        return undefined;
+    }
+}
