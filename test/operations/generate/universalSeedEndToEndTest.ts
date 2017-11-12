@@ -43,7 +43,6 @@ describe("Universal seed end to end", () => {
                 done();
             })
             .catch(err => {
-                console.log("IGNORING " + err);
                 done();
             });
     });

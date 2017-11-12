@@ -96,6 +96,24 @@ export function findFileMatches(p: ProjectAsync,
     });
 }
 
+/**
+ * Convenient method to find all values of matching nodes--
+ * typically, terminals such as identifiers
+ * @param p project
+ * @param globPattern file glob pattern
+ * @param parserOrRegistry parser for files
+ * @param pathExpression path expression string or parsed
+ * @return {Promise<TreeNode[]>} hit record for each matching file
+ */
+export function findValues(p: ProjectAsync,
+                           parserOrRegistry: FileParser | FileParserRegistry,
+                           globPattern: string,
+                           pathExpression: string | PathExpression): Promise<string[]> {
+    return findFileMatches(p, parserOrRegistry, globPattern, pathExpression)
+        .then(fileHits => _.flatten(fileHits.map(f => f.matches))
+            .map(m => m.$value));
+}
+
 export function toPathExpression(pathExpression: string | PathExpression): PathExpression {
     return (typeof pathExpression === "string") ?
         parsePathExpression(pathExpression) :
@@ -103,7 +121,12 @@ export function toPathExpression(pathExpression: string | PathExpression): PathE
 }
 
 export function findParser(pathExpression: PathExpression, fp: FileParser | FileParserRegistry): FileParser {
-    return (isFileParser(fp)) ?
-        fp :
-        fp.parserFor(pathExpression);
+    if (isFileParser(fp)) {
+        if (!!fp.validate) {
+            fp.validate(pathExpression);
+        }
+        return fp;
+    } else {
+        return fp.parserFor(pathExpression);
+    }
 }

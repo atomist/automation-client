@@ -46,7 +46,7 @@ describe("GitProject", () => {
         const url = `${GitHubDotComBase}/repos/${ownerAndRepo.owner}/${ownerAndRepo.repo}`;
         return axios.delete(url, config)
             .catch(err => {
-                console.log("IGNORING " + err);
+                // console.log("IGNORING " + err);
             });
     }
 

@@ -4,17 +4,28 @@ import { FileParser } from "../FileParser";
 import { File } from "../../../project/File";
 
 import { defineDynamicProperties } from "@atomist/tree-path/manipulation/enrichment";
+import { isNamedNodeTest } from "@atomist/tree-path/path/nodeTests";
+import { PathExpression, stringify } from "@atomist/tree-path/path/pathExpression";
 import { curry } from "@typed/curry";
 import * as ts from "typescript";
+import { logger } from "../../../internal/util/logger";
 
 /**
- * Allow path expressions against ASTs from the TypeScript parser
+ * Allow path expressions against ASTs from the TypeScript parser.
+ * For reference material on the grammar, and which productions are legal
+ * names in path expressions, see the grammar at
+ * https://github.com/Microsoft/TypeScript/blob/master/doc/spec.md#A.
+ * See also the ES6 grammar of which TypeScript is a superset:
+ * http://www.ecma-international.org/ecma-262/6.0/#sec-grammar-summary.
+ * and the SyntaxKind type defined by
+ * the TypeScript compiler. Invalid production names will be rejected
+ * with a runtime error.
  */
 export class TypeScriptFileParser implements FileParser {
 
     public rootName = ts.SyntaxKind[ts.SyntaxKind.SourceFile];
 
-    constructor(public scriptTarget: ts.ScriptTarget = ts.ScriptTarget.ES2016,
+    constructor(public scriptTarget: ts.ScriptTarget,
                 public scriptKind: ts.ScriptKind = ts.ScriptKind.TS) {
     }
 
@@ -26,6 +37,21 @@ export class TypeScriptFileParser implements FileParser {
                 defineDynamicProperties(root);
                 return root;
             });
+    }
+
+    /**
+     * Check that this path expression uses only valid TypeScript constructs
+     * @param {PathExpression} pex
+     */
+    public validate(pex: PathExpression): void {
+        for (const ls of pex.locationSteps) {
+            if (isNamedNodeTest(ls.test)) {
+                if (!ts.SyntaxKind[ls.test.name]) {
+                    throw new Error(`Invalid path expression '${stringify(pex)}': ` +
+                        `No such TypeScript element: '${ls.test.name}'`);
+                }
+            }
+        }
     }
 }
 
@@ -44,7 +70,12 @@ class TypeScriptAstNodeTreeNode implements TreeNode {
 
     constructor(sourceFile: ts.SourceFile, node: ts.Node) {
         this.$name = extractName(node);
-        this.$offset = node.getStart(sourceFile, true);
+        try {
+            this.$offset = node.getStart(sourceFile, true);
+        } catch (e) {
+            // Ignore and continue
+            logger.warn("Cannot get start for node with kind %s", ts.SyntaxKind[node.kind]);
+        }
 
         function visit(children: TreeNode[], n: ts.Node) {
             if (!!n) {
@@ -67,16 +98,15 @@ class TypeScriptAstNodeTreeNode implements TreeNode {
 }
 
 function extractName(node: any): string {
-    if ((node as any).name) {
-        // TODO this looks fragile
-        return (node as any).name.escapedText;
+    if (!!node.name && node.name.escapedText) {
+        return node.name.escapedText;
     } else {
         return ts.SyntaxKind[node.kind];
     }
 }
 
 function extractValue(sourceFile: ts.SourceFile, node: any): string {
-    if ((node.text)) {
+    if (!!node.text) {
         return node.text;
     }
     try {
@@ -85,3 +115,5 @@ function extractValue(sourceFile: ts.SourceFile, node: any): string {
         return undefined;
     }
 }
+
+export const TypeScriptES6FileParser = new TypeScriptFileParser(ts.ScriptTarget.ES2016);
