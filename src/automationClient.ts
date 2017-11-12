@@ -188,5 +188,22 @@ export class AutomationClient {
 }
 
 export function automationClient(configuration: Configuration): AutomationClient {
-    return new AutomationClient(configuration);
+    const client = new AutomationClient(configuration);
+    if (configuration.commands) {
+        configuration.commands.forEach(c => {
+            client.withCommandHandler(c);
+        });
+    }
+    if (configuration.events) {
+        configuration.events.forEach(e => {
+            client.withEventHandler(e);
+        });
+    }
+
+    if (configuration.ingesters) {
+        configuration.ingesters.forEach(e => {
+            client.withIngester(e);
+        });
+    }
+    return client;
 }

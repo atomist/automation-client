@@ -20,9 +20,6 @@ export interface Configuration extends RunOptions {
         teamId?: string;
     };
 
-    callbacks?: {
-        beforeStart?: Array<() => Promise<any>>,
-    };
 }
 
 const UserConfigDir = `${process.env[process.platform === "win32" ? "USERPROFILE" : "HOME"]}/.atomist`;
@@ -115,7 +112,7 @@ export function resolveModuleConfig(userConfig: UserConfig, pkgJson: any): Modul
 
 const AtomistConfigFile = "atomist.config.js";
 
-export function findConfiguration(path?: string): Promise<Configuration> {
+export function findConfiguration(path?: string): Configuration {
     const moduleConfig = getModuleConfig();
 
     // TODO we could add an env variable ATOMIST_CONFIG for people to specify a path to a file to use
@@ -142,7 +139,7 @@ export function findConfiguration(path?: string): Promise<Configuration> {
         config.teamIds : moduleConfig.teamIds;
 
     validateConfiguration(config, file);
-    return invokePreStartCallbacks(config);
+    return config;
 }
 
 function validateConfiguration(configuration: Configuration, path: string) {
@@ -157,14 +154,5 @@ function validateConfiguration(configuration: Configuration, path: string) {
     }
     if (!configuration.token) {
         throw new Error(`token property is missing in '${path}'`);
-    }
-}
-
-function invokePreStartCallbacks(config: Configuration): Promise<Configuration> {
-    if (config.callbacks && config.callbacks.beforeStart && config.callbacks.beforeStart.length > 0) {
-        return Promise.all(config.callbacks.beforeStart.map(p => p()))
-            .then(() => config);
-    } else {
-        return Promise.resolve(config);
     }
 }

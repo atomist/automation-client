@@ -98,7 +98,4 @@ export const configuration: Configuration = {
         enabled: true,
         teamId: "T1L0VDKJP",
     },
-    callbacks: {
-        beforeStart: [],
-    },
 };
