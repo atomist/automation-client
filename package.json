@@ -19,7 +19,7 @@
   "dependencies": {
     "@atomist/microgrammar": "^0.7.0",
     "@atomist/slack-messages": "^0.12.0",
-    "@atomist/tree-path": "^0.1.4",
+    "@atomist/tree-path": "^0.1.5",
     "@typed/curry": "^1.0.1",
     "@types/helmet": "0.0.37",
     "@types/ws": "^3.0.2",
