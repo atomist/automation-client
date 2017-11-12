@@ -1,11 +1,13 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
+import { failure, Success } from "../../src/HandlerResult";
 import { CommandHandler, Failure, HandleCommand, HandlerContext, HandlerResult, Parameter } from "../../src/index";
 import { sendMessages } from "../../src/operations/support/contextUtils";
+import { ReposQuery, ReposQueryVariables } from "../../src/schema/schema";
 import { buttonForCommand, menuForCommand } from "../../src/spi/message/MessageClient";
 import { SecretBaseHandler } from "./SecretBaseHandler";
 
 @CommandHandler("Send a hello back to the client", "hello cd")
-export class HelloWorld extends SecretBaseHandler implements HandleCommand {
+export class HelloWorld implements HandleCommand {
 
     @Parameter({description: "Name of person the greeting should be send to", pattern: /^.*$/})
     public name: string;
@@ -30,10 +32,15 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
             }],
         };
 
-        ctx.messageClient.recordAddressUsers(msg, "cd");
-            // .recordRespond(`Hello ${this.name}`)
-            // .recordRespond(msg)
-            // .recordAddressChannels(msg, "general");
-        return sendMessages(ctx);
+        return ctx.graphClient.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
+            {teamId: "T1L0VDKJP", offset: 0})
+            .then(result => {
+                return Promise.resolve();
+            })
+            .then(() => {
+                return ctx.messageClient.addressUsers(msg, "cd");
+            })
+            .then(() => Success, failure);
+
     }
 }

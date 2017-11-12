@@ -26,14 +26,17 @@ import {
 
 export abstract class AbstractRequestProcessor implements RequestProcessor {
 
-    constructor(protected automations: AutomationServer, protected listeners: AutomationEventListener[] = []) { }
+    constructor(protected automations: AutomationServer,
+                protected listeners: AutomationEventListener[] = []) { }
 
     // tslint:disable-next-line:no-empty
-    public processCommand(command: CommandIncoming, callback: (result: HandlerResult) => void = () => { }) {
+    public processCommand(command: CommandIncoming,
+                          callback: (result: HandlerResult) => void = () => { }) {
         // setup context
         const ses = namespace.init();
+        const cls = setupNamespace(command, this.automations);
         ses.run(() => {
-            setupNamespace(command, this.automations);
+             namespace.set(cls);
 
             logger.debug("Incoming command: %s", JSON.stringify(command, replacer));
 
@@ -56,48 +59,57 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             this.onCommandWithNamespace(command);
             this.listeners.forEach(l => l.commandStarting(ci, ctx));
 
-            try {
-                this.automations.invokeCommand(ci, ctx)
-                    .then(result => {
-                        if (!result) {
-                            result = defaultResult();
-                        }
-
-                        if (result.code === 0) {
-                            this.listeners.forEach(l => l.commandSuccessful(ci, ctx, result));
-                            result = {
-                                ...defaultResult(),
-                                ...result,
-                            };
-                        } else {
-                            this.listeners.forEach(l => l.commandFailed(ci, ctx, result));
-                            result = {
-                                ...defaultErrorResult(),
-                                ...result,
-                            };
-                        }
-                        this.sendStatus(result.code === 0 ? true : false, result, command);
-                        callback(result);
-                        logger.info(`Finished invocation of command handler '%s': %s`,
-                            command.name, JSON.stringify(result));
-                        clearNamespace();
-                    }).catch(err => {
-                        this.handleCommandError(err, command, ci, ctx, callback);
-                        clearNamespace();
-                    });
-            } catch (err) {
-                this.handleCommandError(err, command, ci, ctx, callback);
-                clearNamespace();
-            }
+            this.invokeCommand(ci, ctx, command, callback);
         });
     }
 
+    protected invokeCommand(ci: CommandInvocation,
+                            ctx: HandlerContext,
+                            command: CommandIncoming,
+                            callback: (result: HandlerResult) => void) {
+        try {
+            this.automations.invokeCommand(ci, ctx)
+                .then(result => {
+                    if (!result) {
+                        result = defaultResult();
+                    }
+
+                    if (result.code === 0) {
+                        this.listeners.forEach(l => l.commandSuccessful(ci, ctx, result));
+                        result = {
+                            ...defaultResult(),
+                            ...result,
+                        };
+                    } else {
+                        this.listeners.forEach(l => l.commandFailed(ci, ctx, result));
+                        result = {
+                            ...defaultErrorResult(),
+                            ...result,
+                        };
+                    }
+                    this.sendStatus(result.code === 0 ? true : false, result, command);
+                    callback(result);
+                    logger.info(`Finished invocation of command handler '%s': %s`,
+                        command.name, JSON.stringify(result));
+                    clearNamespace();
+                }).catch(err => {
+                this.handleCommandError(err, command, ci, ctx, callback);
+                clearNamespace();
+            });
+        } catch (err) {
+            this.handleCommandError(err, command, ci, ctx, callback);
+            clearNamespace();
+        }
+    }
+
     // tslint:disable-next-line:no-empty
-    public processEvent(event: EventIncoming, callback: (results: HandlerResult[]) => void = () => { }) {
+    public processEvent(event: EventIncoming,
+                        callback: (results: HandlerResult[]) => void = () => { }) {
         // setup context
         const ses = namespace.init();
+        const cls = setupNamespace(event, this.automations);
         ses.run(() => {
-            setupNamespace(event, this.automations);
+             namespace.set(cls);
 
             logger.debug("Incoming event: %s", JSON.stringify(event, replacer));
 
@@ -121,32 +133,39 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             this.onEventWithNamespace(event);
             this.listeners.forEach(l => l.eventStarting(ef, ctx));
 
-            try {
-                this.automations.onEvent(ef, ctx)
-                    .then(result => {
-                        if (!result || result.length === 0) {
-                            result = [ defaultResult() ];
-                        }
-
-                        if (!result.some(r => r.code !== 0)) {
-                            this.listeners.forEach(l => l.eventSuccessful(ef, ctx, result));
-                        } else {
-                            this.listeners.forEach(l => l.eventFailed(ef, ctx, result));
-                        }
-                        callback(result);
-                        logger.info(`Finished invocation of event handler '%s': %s`,
-                            event.extensions.operationName, JSON.stringify(result));
-                        clearNamespace();
-                    })
-                    .catch(err => {
-                        this.handleEventError(err, event, ef, ctx, callback);
-                        clearNamespace();
-                    });
-            } catch (err) {
-                this.handleEventError(err, event, ef, ctx, callback);
-                clearNamespace();
-            }
+            this.invokeEvent(ef, ctx, event, callback);
         });
+    }
+
+    protected invokeEvent(ef: EventFired<any>,
+                          ctx: HandlerContext,
+                          event: EventIncoming,
+                          callback: (results: HandlerResult[]) => void) {
+        try {
+            this.automations.onEvent(ef, ctx)
+                .then(result => {
+                    if (!result || result.length === 0) {
+                        result = [defaultResult()];
+                    }
+
+                    if (!result.some(r => r.code !== 0)) {
+                        this.listeners.forEach(l => l.eventSuccessful(ef, ctx, result));
+                    } else {
+                        this.listeners.forEach(l => l.eventFailed(ef, ctx, result));
+                    }
+                    callback(result);
+                    logger.info(`Finished invocation of event handler '%s': %s`,
+                        event.extensions.operationName, JSON.stringify(result));
+                    clearNamespace();
+                })
+                .catch(err => {
+                    this.handleEventError(err, event, ef, ctx, callback);
+                    clearNamespace();
+                });
+        } catch (err) {
+            this.handleEventError(err, event, ef, ctx, callback);
+            clearNamespace();
+        }
     }
 
     public sendStatus(success: boolean, hr: HandlerResult, request: CommandIncoming) {
@@ -212,7 +231,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
     }
 }
 
-function defaultResult(): HandlerResult {
+export function defaultResult(): HandlerResult {
     const result = {
         code: 0,
         message: `Command '${namespace.get().operation}' completed successfully`,
@@ -222,7 +241,7 @@ function defaultResult(): HandlerResult {
     return result as HandlerResult;
 }
 
-function defaultErrorResult(): HandlerResult {
+export function defaultErrorResult(): HandlerResult {
     const result = {
         ...defaultResult(),
         code: 1,
@@ -231,20 +250,21 @@ function defaultErrorResult(): HandlerResult {
     return result as HandlerResult;
 }
 
-function setupNamespace(request: any, automations: AutomationServer) {
-    namespace.set({
+export function setupNamespace(request: any, automations: AutomationServer, invocationId: string = guid(),
+                               ts: number = Date.now()) {
+    return {
         correlationId: _.get(request, "corrid") || _.get(request, "extensions.correlation_id"),
         teamId: _.get(request, "team.id") || _.get(request, "extensions.team_id"),
         teamName: _.get(request, "team.name") || _.get(request, "extensions.team_name"),
         operation: _.get(request, "name") || _.get(request, "extensions.operationName"),
         name: automations.automations.name,
         version: automations.automations.version,
-        invocationId: guid(),
-        ts: new Date().getTime(),
-    });
+        invocationId: _.get(request, "invocationId") || _.get(request, "extensions.invocation_id") || invocationId,
+        ts: _.get(request, "ts") || _.get(request, "extensions.ts") || ts,
+    };
 }
 
-function clearNamespace() {
+export function clearNamespace() {
     namespace.set({
         correlationId: null,
         teamId: null,

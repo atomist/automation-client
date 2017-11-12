@@ -45,14 +45,14 @@ describe("MessageClient", () => {
         it("extract parameters from instance", () => {
             const handler = new HelloWorld();
             handler.name = "cd";
-            handler.userToken = "token_bla";
+            // handler.userToken = "token_bla";
             assert.deepEqual(mergeParameters(handler, {}), { name: "cd", userToken: "token_bla" });
         });
 
         it("overwrite parameters from instance with explicit parameters", () => {
             const handler = new HelloWorld();
             handler.name = "cd";
-            handler.userToken = "token_bla";
+            // handler.userToken = "token_bla";
             assert.deepEqual(mergeParameters(handler, { name: "dd" }),
                 { name: "dd", userToken: "token_bla" });
         });

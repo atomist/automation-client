@@ -1,3 +1,4 @@
+import * as cluster from "cluster";
 import * as _ from "lodash";
 import { Configuration } from "./configuration";
 import {
@@ -5,6 +6,8 @@ import {
     HandleEvent,
 } from "./index";
 import { registerApplicationEvents } from "./internal/env/applicationEvent";
+import { ClusterWebSocketRequestProcessor } from "./internal/transport/cluster/ClusterMasterRequestProcessor";
+import { startWorker } from "./internal/transport/cluster/ClusterWorkerRequestProcessor";
 import {
     ExpressServer,
     ExpressServerOptions,
@@ -80,28 +83,43 @@ export class AutomationClient {
     }
 
     public run(): Promise<any> {
-        logger.info(`Starting Atomist automation client ${this.configuration.name}@${this.configuration.version} ` +
-            `with pid ${process.pid}`);
         const webSocketOptions: WebSocketClientOptions = {
             graphUrl: _.get(this.configuration, "endpoints.graphql", DefaultGraphQLServer),
             registrationUrl: _.get(this.configuration, "endpoints.api", DefaultApiServer),
             token: this.configuration.token,
         };
-        const handler = this.setupEventHandler(webSocketOptions);
-        return Promise.all([
-            this.runWs(handler, webSocketOptions),
-            Promise.resolve(this.runHttp(handler)),
-            this.setupApplicationEvents(),
-        ]);
+        if (cluster.isMaster || !(this.configuration.cluster && this.configuration.cluster.enabled)) {
+            logger.info(`Starting Atomist automation client ${this.configuration.name}@${this.configuration.version} ` +
+                `with pid ${process.pid}`);
+            const handler = this.setupRequestHandler(webSocketOptions);
+            return Promise.all([
+                this.runWs(handler, webSocketOptions),
+                Promise.resolve(this.runHttp(handler)),
+                this.setupApplicationEvents(),
+            ]);
+        } else if (cluster.isWorker) {
+            return Promise.resolve(startWorker(this.automations, webSocketOptions));
+        }
     }
 
-    private setupEventHandler(webSocketOptions: WebSocketClientOptions): WebSocketRequestProcessor {
-        if (this.configuration.listeners) {
-            return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
-                [new MetricEnabledAutomationEventListener(), ...this.configuration.listeners]);
+    private setupRequestHandler(webSocketOptions: WebSocketClientOptions): WebSocketRequestProcessor {
+        if (this.configuration.cluster && this.configuration.cluster.enabled) {
+            if (this.configuration.listeners) {
+                return new ClusterWebSocketRequestProcessor(this.automations, webSocketOptions,
+                    [new MetricEnabledAutomationEventListener(), ...this.configuration.listeners],
+                    this.configuration.cluster.workers);
+            } else {
+                return new ClusterWebSocketRequestProcessor(this.automations, webSocketOptions,
+                    [new MetricEnabledAutomationEventListener()], this.configuration.cluster.workers);
+            }
         } else {
-            return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
-                [new MetricEnabledAutomationEventListener()]);
+            if (this.configuration.listeners) {
+                return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
+                    [new MetricEnabledAutomationEventListener(), ...this.configuration.listeners]);
+            } else {
+                return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
+                    [new MetricEnabledAutomationEventListener()]);
+            }
         }
     }
 

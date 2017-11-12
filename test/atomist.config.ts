@@ -52,7 +52,7 @@ export const configuration: Configuration = {
     token: GitHubToken,
     commands: [
         // ...scanCommands( ["**/metadata/addAtomistSpringAgent.js", "**/command/Search*.js"] ),
-        secured.githubTeam(HelloWorld, "atomist-automation"),
+        HelloWorld,
         SpringBootSeed,
     ],
     events: [
@@ -97,5 +97,9 @@ export const configuration: Configuration = {
     applicationEvents: {
         enabled: true,
         teamId: "T1L0VDKJP",
+    },
+    cluster: {
+        enabled: true,
+        workers: 4,
     },
 };
