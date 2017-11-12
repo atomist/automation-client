@@ -22,7 +22,7 @@ export interface Configuration extends RunOptions {
 
     callbacks?: {
         beforeStart?: Array<() => Promise<any>>,
-    },
+    };
 }
 
 const UserConfigDir = `${process.env[process.platform === "win32" ? "USERPROFILE" : "HOME"]}/.atomist`;
