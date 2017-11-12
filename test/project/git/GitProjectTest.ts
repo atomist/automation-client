@@ -82,10 +82,6 @@ describe("GitProject", () => {
                     console.error(`Node err on dir [${p.baseDir}]: ${err}`);
                     return;
                 }
-
-                // the *entire* stdout and stderr (buffered)
-                console.log(`stdout: ${stdout}`);
-                console.log(`stderr: ${stderr}`);
                 done();
             });
         }))
@@ -155,7 +151,7 @@ describe("GitProject", () => {
                 gp.push().then(() => deleteRepoIfExists({ owner, repo}).then(done)),
             ).catch(() => deleteRepoIfExists({ owner, repo}).then(done)),
         ).catch(done);
-    }).timeout(6000);
+    }).timeout(16000);
 
     it("add a file, then PR push to remote repo", function(done) {
         this.retries(1);

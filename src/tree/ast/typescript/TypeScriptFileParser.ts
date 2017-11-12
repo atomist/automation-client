@@ -4,7 +4,7 @@ import { FileParser } from "../FileParser";
 import { File } from "../../../project/File";
 
 import { defineDynamicProperties } from "@atomist/tree-path/manipulation/enrichment";
-import { isNamedNodeTest } from "@atomist/tree-path/path/nodeTests";
+import { AllNodeTest, isNamedNodeTest } from "@atomist/tree-path/path/nodeTests";
 import { PathExpression, stringify } from "@atomist/tree-path/path/pathExpression";
 import { curry } from "@typed/curry";
 import * as ts from "typescript";
@@ -45,7 +45,7 @@ export class TypeScriptFileParser implements FileParser {
      */
     public validate(pex: PathExpression): void {
         for (const ls of pex.locationSteps) {
-            if (isNamedNodeTest(ls.test)) {
+            if (isNamedNodeTest(ls.test) && ls.test !== AllNodeTest) {
                 if (!ts.SyntaxKind[ls.test.name]) {
                     throw new Error(`Invalid path expression '${stringify(pex)}': ` +
                         `No such TypeScript element: '${ls.test.name}'`);
