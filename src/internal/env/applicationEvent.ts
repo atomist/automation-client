@@ -49,7 +49,7 @@ export function registerApplicationEvents(teamId: string): Promise<any> {
             branch,
             repo,
         },
-        domain: env ? env.space_name : "local",
+        domain: env ? env.space_name : (process.env.DOMAIN ? process.env.DOMAIN : "local"),
         pod: env ? env.instance_id : os.hostname(),
         host: env ? env.instance_id : os.hostname(),
         id: env ? env.instance_id : guid(),
