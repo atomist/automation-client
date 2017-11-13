@@ -123,7 +123,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         try {
             this.automations.invokeCommand(ci, ctx)
                 .then(result => {
-                    if (!result) {
+                    if (!result && !result.code) {
                         result = defaultResult();
                     }
 
@@ -145,10 +145,11 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                     logger.info(`Finished invocation of command handler '%s': %s`,
                         command.name, JSON.stringify(result));
                     clearNamespace();
-                }).catch(err => {
-                this.handleCommandError(err, command, ci, ctx, callback);
-                clearNamespace();
-            });
+                })
+                .catch(err => {
+                    this.handleCommandError(err, command, ci, ctx, callback);
+                    clearNamespace();
+                });
         } catch (err) {
             this.handleCommandError(err, command, ci, ctx, callback);
             clearNamespace();
