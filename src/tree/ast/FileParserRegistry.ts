@@ -1,6 +1,6 @@
 import { SelfAxisSpecifier } from "@atomist/tree-path/path/axisSpecifiers";
 import { isNamedNodeTest } from "@atomist/tree-path/path/nodeTests";
-import { PathExpression } from "@atomist/tree-path/path/pathExpression";
+import { isUnionPathExpression, PathExpression } from "@atomist/tree-path/path/pathExpression";
 import { Dictionary } from "lodash";
 import { toPathExpression } from "./astUtils";
 import { FileParser } from "./FileParser";
@@ -36,14 +36,16 @@ export class DefaultFileParserRegistry implements FileParserRegistry {
 
     public parserFor(pathExpression: string | PathExpression): FileParser | any {
         const parsed: PathExpression = toPathExpression(pathExpression);
-        const determiningStep = parsed.locationSteps.find(s => s.axis !== SelfAxisSpecifier);
-        if (!!determiningStep && isNamedNodeTest(determiningStep.test)) {
-            const parser = this.parserRegistry[determiningStep.test.name];
-            if (!!parser) {
-                if (parser.validate) {
-                    parser.validate(parsed);
+        if (!isUnionPathExpression(parsed)) {
+            const determiningStep = parsed.locationSteps.find(s => s.axis !== SelfAxisSpecifier);
+            if (!!determiningStep && isNamedNodeTest(determiningStep.test)) {
+                const parser = this.parserRegistry[determiningStep.test.name];
+                if (!!parser) {
+                    if (parser.validate) {
+                        parser.validate(parsed);
+                    }
+                    return parser;
                 }
-                return parser;
             }
         }
         return undefined;

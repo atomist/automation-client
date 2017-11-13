@@ -1,3 +1,5 @@
+import * as _ from "lodash";
+
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { FileParser } from "../FileParser";
 
@@ -5,7 +7,7 @@ import { File } from "../../../project/File";
 
 import { defineDynamicProperties } from "@atomist/tree-path/manipulation/enrichment";
 import { AllNodeTest, isNamedNodeTest } from "@atomist/tree-path/path/nodeTests";
-import { PathExpression, stringify } from "@atomist/tree-path/path/pathExpression";
+import { isUnionPathExpression, LocationStep, PathExpression, stringify } from "@atomist/tree-path/path/pathExpression";
 import { curry } from "@typed/curry";
 import * as ts from "typescript";
 import { logger } from "../../../internal/util/logger";
@@ -44,7 +46,7 @@ export class TypeScriptFileParser implements FileParser {
      * @param {PathExpression} pex
      */
     public validate(pex: PathExpression): void {
-        for (const ls of pex.locationSteps) {
+        for (const ls of locationSteps(pex)) {
             if (isNamedNodeTest(ls.test) && ls.test !== AllNodeTest) {
                 if (!ts.SyntaxKind[ls.test.name]) {
                     throw new Error(`Invalid path expression '${stringify(pex)}': ` +
@@ -53,6 +55,12 @@ export class TypeScriptFileParser implements FileParser {
             }
         }
     }
+}
+
+function locationSteps(pex: PathExpression): LocationStep[] {
+    return isUnionPathExpression(pex) ?
+        _.flatten(pex.unions.map(p => locationSteps(p))) :
+        pex.locationSteps;
 }
 
 /**

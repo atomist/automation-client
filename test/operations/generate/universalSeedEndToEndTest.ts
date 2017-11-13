@@ -7,10 +7,15 @@ import * as tmp from "tmp-promise";
 import axios from "axios";
 
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
+import * as fs from "fs";
+import { fail } from "power-assert";
 import { HandlerContext } from "../../../src/HandlerContext";
 import { GitHubDotComBase, GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { UniversalSeed } from "../../../src/operations/generate/UniversalSeed";
+import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
+import { LocalProject } from "../../../src/project/local/LocalProject";
 import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProject";
+import { Project } from "../../../src/project/Project";
 import { hasFile } from "../../../src/util/gitHub";
 import { GitHubToken } from "../../atomist.config";
 
@@ -61,10 +66,25 @@ describe("Universal seed end to end", () => {
                 return hasFile(GitHubToken, TargetOwner, TargetRepo, "pom.xml")
                     .then(r => {
                         assert(r);
-                        done();
+                        GitCommandGitProject.cloned({token: GitHubToken},
+                            new GitHubRepoRef(TargetOwner, TargetRepo))
+                            .then(verifyPermissions)
+                            .then(() => done());
                     });
             }).catch(done);
     }).timeout(20000);
+
+    function verifyPermissions(p: LocalProject): Promise<Project> {
+        // Check that Maven wrapper mvnw from Spring project is executable
+        const path = p.baseDir + "/mvnw";
+        assert(fs.statSync(path).isFile());
+        fs.access(path, fs.constants.X_OK, err => {
+            if (err) {
+                fail("Not executable");
+            }
+        });
+        return Promise.resolve(p);
+    }
 
 });
 
