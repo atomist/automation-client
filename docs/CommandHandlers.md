@@ -55,10 +55,10 @@ The decorated variable names the parameter.  If you assign a value to
 the variable, as in the example, it becomes the parameter’s default
 value.  The `@Parameter` decorator adds additional metadata via a
 single argument: a JavaScript object whose properties are documented
-in the conventions.  Though the only mandatory property is `pattern`,
-it is recommended to also set `description`, `displayName` and
-`validInput` in order to help other users when invoking the command
-via the Atomist bot.
+in the conventions.  It is recommended to set `description` and `displayName`
+in order to help other users when invoking the command
+via the Atomist bot. If you supply a `pattern` for validation, supply
+ `validInput` to describe it.
 
 ## Response Messages
 
@@ -71,5 +71,4 @@ issued.
 ## Queries
 
 Command handlers can issue GraphQL queries, using the `GraphClient` on
-the `HandlerContext` argument to their `handler` function.  These
-queries execute against the current team.
+the `HandlerContext` argument to their `handler` function.
