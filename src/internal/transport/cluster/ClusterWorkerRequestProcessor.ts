@@ -44,7 +44,11 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
                 // tslint:disable-next-line:variable-name
                 private _listeners: AutomationEventListener[] = []) {
         super(_automations, [..._listeners, new ClusterWorkerAutomationEventListener()]);
-        logger.info(`Starting worker with pid '${process.pid}'`);
+
+        const message = {
+            type: "online",
+        };
+        process.send(message);
     }
 
     public setRegistration(registration: RegistrationConfirmation) {

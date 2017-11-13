@@ -95,7 +95,7 @@ export class AutomationClient {
             (logger as any).level = this.configuration.logging.level;
         }
 
-        if (cluster.isMaster || !(this.configuration.cluster && this.configuration.cluster.enabled)) {
+        if (!(this.configuration.cluster && this.configuration.cluster.enabled)) {
             logger.info(`Starting Atomist automation client ${this.configuration.name}@${this.configuration.version}`);
             const handler = this.setupRequestHandler(webSocketOptions);
             return Promise.all([
@@ -103,29 +103,43 @@ export class AutomationClient {
                 Promise.resolve(this.runHttp(handler)),
                 this.setupApplicationEvents(),
             ]);
+        } else if (cluster.isMaster || !(this.configuration.cluster && this.configuration.cluster.enabled)) {
+            logger.info(
+                `Starting Atomist automation client master ${this.configuration.name}@${this.configuration.version}`);
+            const handler = this.setupClusterRequestHandler(webSocketOptions);
+            return handler.run()
+                .then(() => {
+                    return Promise.all([
+                        this.runWs(handler, webSocketOptions),
+                        Promise.resolve(this.runHttp(handler)),
+                        this.setupApplicationEvents(),
+                    ]);
+                });
         } else if (cluster.isWorker) {
+            logger.info(
+                `Starting Atomist automation client worker ${this.configuration.name}@${this.configuration.version}`);
             return Promise.resolve(startWorker(this.automations, webSocketOptions, this.configuration.listeners));
         }
     }
 
-    private setupRequestHandler(webSocketOptions: WebSocketClientOptions): WebSocketRequestProcessor {
-        if (this.configuration.cluster && this.configuration.cluster.enabled) {
-            if (this.configuration.listeners) {
-                return new ClusterMasterRequestProcessor(this.automations, webSocketOptions,
-                    [new MetricEnabledAutomationEventListener(), ...this.configuration.listeners],
-                    this.configuration.cluster.workers);
-            } else {
-                return new ClusterMasterRequestProcessor(this.automations, webSocketOptions,
-                    [new MetricEnabledAutomationEventListener()], this.configuration.cluster.workers);
-            }
+    private setupClusterRequestHandler(webSocketOptions: WebSocketClientOptions): ClusterMasterRequestProcessor {
+        if (this.configuration.listeners) {
+            return new ClusterMasterRequestProcessor(this.automations, webSocketOptions,
+                [new MetricEnabledAutomationEventListener(), ...this.configuration.listeners],
+                this.configuration.cluster.workers);
         } else {
-            if (this.configuration.listeners) {
-                return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
-                    [new MetricEnabledAutomationEventListener(), ...this.configuration.listeners]);
-            } else {
-                return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
-                    [new MetricEnabledAutomationEventListener()]);
-            }
+            return new ClusterMasterRequestProcessor(this.automations, webSocketOptions,
+                [new MetricEnabledAutomationEventListener()], this.configuration.cluster.workers);
+        }
+    }
+
+    private setupRequestHandler(webSocketOptions: WebSocketClientOptions): WebSocketRequestProcessor {
+        if (this.configuration.listeners) {
+            return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
+                [new MetricEnabledAutomationEventListener(), ...this.configuration.listeners]);
+        } else {
+            return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
+                [new MetricEnabledAutomationEventListener()]);
         }
     }
 

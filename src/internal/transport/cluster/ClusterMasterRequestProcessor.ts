@@ -62,8 +62,6 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
                 return { status: HealthStatus.Down, detail: "WebSocket disconnected" };
             }
         });
-
-        this.init();
     }
 
     public onRegistration(registration: RegistrationConfirmation) {
@@ -93,6 +91,98 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
     public onDisconnect() {
         this.webSocket = null;
         this.registration = null;
+    }
+
+    public run(): Promise<any> {
+        const ws = () => this.webSocket;
+        const listeners = this.listeners;
+        const promises: Array<Promise<any>> = [];
+
+        for (let i = 0; i < this.numWorkers; i++) {
+            const worker = cluster.fork();
+
+            const deferred = new Deferred<any>();
+            promises.push(deferred.promise);
+
+            worker.on("message", msg => {
+
+                // Wait for online message to come in
+                if (msg.type === "online") {
+                    deferred.resolve();
+                    return;
+                }
+
+                const ses = namespace.init();
+                ses.run(() => {
+                    namespace.set(msg.cls);
+                    const invocationId = namespace.get().invocationId;
+                    if (msg.type === "message") {
+
+                        let messageClient: MessageClient;
+                        if (this.commands.has(invocationId)) {
+                            messageClient = this.commands.get(invocationId).context.messageClient;
+                        } else if (this.events.has(invocationId)) {
+                            messageClient = this.events.get(invocationId).context.messageClient;
+                        } else {
+                            // TODO will that ever happen?
+                            logger.warn("Can't handle message from worker due to missing messageClient");
+                            clearNamespace();
+                            return;
+                        }
+
+                        if (msg.data.userNames && msg.data.userNames.length > 0) {
+                            messageClient.addressUsers(msg.data.message as string | SlackMessage,
+                                msg.data.userNames, msg.data.options)
+                                .then(() => clearNamespace());
+                        } else if (msg.data.channelNames && msg.data.channelNames.length > 0) {
+                            messageClient.addressChannels(msg.data.message as string | SlackMessage,
+                                msg.data.channelNames, msg.data.options)
+                                .then(() => clearNamespace());
+                        } else {
+                            messageClient.respond(msg.data.message as string | SlackMessage, msg.data.options)
+                                .then(() => clearNamespace());
+                        }
+
+                    } else if (msg.type === "status") {
+                        sendMessage(msg.data, ws());
+                        clearNamespace();
+                    } else if (msg.type === "command_success") {
+                        listeners.forEach(l => l.commandSuccessful(msg.event as CommandInvocation,
+                            null, msg.data as HandlerResult));
+                        if (this.commands.has(invocationId)) {
+                            this.commands.get(invocationId).result.resolve(msg.data as HandlerResult);
+                            this.commands.delete(invocationId);
+                        }
+                        clearNamespace();
+                    } else if (msg.type === "command_failure") {
+                        listeners.forEach(l => l.commandFailed(msg.event as CommandInvocation,
+                            null, msg.data));
+                        if (this.commands.has(invocationId)) {
+                            this.commands.get(invocationId).result.resolve(msg.data as HandlerResult);
+                            this.commands.delete(invocationId);
+                        }
+                        clearNamespace();
+                    } else if (msg.type === "event_success") {
+                        listeners.forEach(l => l.eventSuccessful(msg.event as EventFired<any>,
+                            null, msg.data as HandlerResult[]));
+                        if (this.events.has(invocationId)) {
+                            this.events.get(invocationId).result.resolve(msg.data as HandlerResult[]);
+                            this.events.delete(invocationId);
+                        }
+                        clearNamespace();
+                    } else if (msg.type === "event_failure") {
+                        listeners.forEach(l => l.eventFailed(msg.event as EventFired<any>,
+                            null, msg.data));
+                        if (this.events.has(invocationId)) {
+                            this.events.get(invocationId).result.resolve(msg.data as HandlerResult[]);
+                            this.events.delete(invocationId);
+                        }
+                        clearNamespace();
+                    }
+                });
+            });
+        }
+        return Promise.all(promises);
     }
 
     protected invokeCommand(ci: CommandInvocation,
@@ -177,86 +267,6 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
             this.currentWorker = 1;
         }
         return thisWorker.toString();
-    }
-
-    private init() {
-        const ws = () => this.webSocket;
-        const listeners = this.listeners;
-
-        for (let i = 0; i < this.numWorkers; i++) {
-            const worker = cluster.fork();
-
-            worker.on("message", msg => {
-                const ses = namespace.init();
-                ses.run(() => {
-                    namespace.set(msg.cls);
-                    const invocationId = namespace.get().invocationId;
-                    if (msg.type === "message") {
-
-                        let messageClient: MessageClient;
-                        if (this.commands.has(invocationId)) {
-                            messageClient = this.commands.get(invocationId).context.messageClient;
-                        } else if (this.events.has(invocationId)) {
-                            messageClient = this.events.get(invocationId).context.messageClient;
-                        } else {
-                            // TODO will that ever happen?
-                            logger.warn("Can't handle message from worker due to missing messageClient");
-                            clearNamespace();
-                            return;
-                        }
-
-                        if (msg.data.userNames && msg.data.userNames.length > 0) {
-                            messageClient.addressUsers(msg.data.message as string | SlackMessage,
-                                msg.data.userNames, msg.data.options)
-                                .then(() => clearNamespace());
-                        } else if (msg.data.channelNames && msg.data.channelNames.length > 0) {
-                            messageClient.addressChannels(msg.data.message as string | SlackMessage,
-                                msg.data.channelNames, msg.data.options)
-                                .then(() => clearNamespace());
-                        } else {
-                            messageClient.respond(msg.data.message as string | SlackMessage, msg.data.options)
-                                .then(() => clearNamespace());
-                        }
-
-                    } else if (msg.type === "status") {
-                        sendMessage(msg.data, ws());
-                        clearNamespace();
-                    } else if (msg.type === "command_success") {
-                        listeners.forEach(l => l.commandSuccessful(msg.event as CommandInvocation,
-                            null, msg.data as HandlerResult));
-                        if (this.commands.has(invocationId)) {
-                            this.commands.get(invocationId).result.resolve(msg.data as HandlerResult);
-                            this.commands.delete(invocationId);
-                        }
-                        clearNamespace();
-                    } else if (msg.type === "command_failure") {
-                        listeners.forEach(l => l.commandFailed(msg.event as CommandInvocation,
-                            null, msg.data));
-                        if (this.commands.has(invocationId)) {
-                            this.commands.get(invocationId).result.resolve(msg.data as HandlerResult);
-                            this.commands.delete(invocationId);
-                        }
-                        clearNamespace();
-                    } else if (msg.type === "event_success") {
-                        listeners.forEach(l => l.eventSuccessful(msg.event as EventFired<any>,
-                            null, msg.data as HandlerResult[]));
-                        if (this.events.has(invocationId)) {
-                            this.events.get(invocationId).result.resolve(msg.data as HandlerResult[]);
-                            this.events.delete(invocationId);
-                        }
-                        clearNamespace();
-                    } else if (msg.type === "event_failure") {
-                        listeners.forEach(l => l.eventFailed(msg.event as EventFired<any>,
-                            null, msg.data));
-                        if (this.events.has(invocationId)) {
-                            this.events.get(invocationId).result.resolve(msg.data as HandlerResult[]);
-                            this.events.delete(invocationId);
-                        }
-                        clearNamespace();
-                    }
-                });
-            });
-        }
     }
 }
 

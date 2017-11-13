@@ -99,7 +99,7 @@ export const configuration: Configuration = {
         teamId: "T1L0VDKJP",
     },
     cluster: {
-        enabled: false,
+        enabled: true,
         workers: 3,
     },
 };
