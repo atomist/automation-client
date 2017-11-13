@@ -170,8 +170,9 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
  * @returns {RequestProcessor}
  */
 export function startWorker(automations: AutomationServer,
-                            options: WebSocketClientOptions): RequestProcessor {
-    const worker = new ClusterWorkerRequestProcessor(automations, options);
+                            options: WebSocketClientOptions,
+                            listeners: AutomationEventListener[] = []): RequestProcessor {
+    const worker = new ClusterWorkerRequestProcessor(automations, options, listeners);
     process.on("message", msg => {
         if (msg.type === "registration") {
             worker.setRegistration(msg.data as RegistrationConfirmation);

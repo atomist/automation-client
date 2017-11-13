@@ -104,7 +104,7 @@ export class AutomationClient {
                 this.setupApplicationEvents(),
             ]);
         } else if (cluster.isWorker) {
-            return Promise.resolve(startWorker(this.automations, webSocketOptions));
+            return Promise.resolve(startWorker(this.automations, webSocketOptions, this.configuration.listeners));
         }
     }
 
