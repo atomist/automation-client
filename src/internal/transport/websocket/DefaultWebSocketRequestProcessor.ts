@@ -15,6 +15,7 @@ import {
     isCommandIncoming,
     isEventIncoming,
 } from "../RequestProcessor";
+import { GraphClientFactory } from "./GraphClientFactory";
 import { WebSocketClientOptions } from "./WebSocketClient";
 import {
     sendMessage,
@@ -29,11 +30,12 @@ import {
 export class DefaultWebSocketRequestProcessor extends AbstractEventStoringRequestProcessor
     implements WebSocketRequestProcessor {
 
+    private graphClients: GraphClientFactory;
     private registration?: RegistrationConfirmation;
     private webSocket?: WebSocket;
-    private graphClients: Map<string, GraphClient> = new Map<string, GraphClient>();
 
-    constructor(protected automations: AutomationServer, private options: WebSocketClientOptions,
+    constructor(protected automations: AutomationServer,
+                protected options: WebSocketClientOptions,
                 protected listeners: AutomationEventListener[] = []) {
         super(automations, listeners);
 
@@ -50,6 +52,7 @@ export class DefaultWebSocketRequestProcessor extends AbstractEventStoringReques
         logger.info("Registration successful: %s", JSON.stringify(registration));
         global.setJwtToken(registration.jwt);
         this.registration = registration;
+        this.graphClients = new GraphClientFactory(this.registration, this.options);
     }
 
     public onConnect(ws: WebSocket) {
@@ -68,22 +71,7 @@ export class DefaultWebSocketRequestProcessor extends AbstractEventStoringReques
     }
 
     protected createGraphClient(event: CommandIncoming | EventIncoming): GraphClient {
-        let teamId;
-        if (isCommandIncoming(event)) {
-            teamId = event.team.id;
-        } else if (isEventIncoming(event)) {
-            teamId = event.extensions.team_id;
-        }
-
-        if (this.graphClients.has(teamId)) {
-            return this.graphClients.get(teamId);
-        } else if (this.registration) {
-            const graphClient = new ApolloGraphClient(`${this.options.graphUrl}/${teamId}`,
-                { Authorization: `Bearer ${this.registration.jwt}` });
-
-            return graphClient;
-        }
-        return null;
+        return this.graphClients.createGraphClient(event);
     }
 
     protected doCreateMessageClient(event: CommandIncoming | EventIncoming): MessageClient {

@@ -25,6 +25,7 @@ import {
     isEventIncoming,
     RequestProcessor,
 } from "../RequestProcessor";
+import { GraphClientFactory } from "../websocket/GraphClientFactory";
 import { WebSocketClientOptions } from "../websocket/WebSocketClient";
 import { RegistrationConfirmation } from "../websocket/WebSocketRequestProcessor";
 
@@ -33,7 +34,7 @@ import { RegistrationConfirmation } from "../websocket/WebSocketRequestProcessor
  */
 class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
 
-    private graphClients: Map<string, GraphClient> = new Map<string, GraphClient>();
+    private graphClients: GraphClientFactory;
     private registration?: RegistrationConfirmation;
 
     // tslint:disable-next-line:variable-name
@@ -49,6 +50,7 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
     public setRegistration(registration: RegistrationConfirmation) {
         logger.debug("Receiving registration: %s", JSON.stringify(registration));
         this.registration = registration;
+        this.graphClients = new GraphClientFactory(this.registration, this._options);
     }
 
     protected sendMessage(payload: any): void {
@@ -63,26 +65,7 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
     }
 
     protected createGraphClient(event: CommandIncoming | EventIncoming): GraphClient {
-        let teamId;
-        if (isCommandIncoming(event)) {
-            teamId = event.team.id;
-        } else if (isEventIncoming(event)) {
-            teamId = event.extensions.team_id;
-        }
-
-        if (this.graphClients.has(teamId)) {
-            logger.debug("Re-using cached graph client for team '%s'", teamId);
-            return this.graphClients.get(teamId);
-        } else if (this.registration) {
-            logger.debug("Creating new graph client for team '%s'", teamId);
-            const graphClient = new ApolloGraphClient(`${this._options.graphUrl}/${teamId}`,
-                { Authorization: `Bearer ${this.registration.jwt}` });
-            this.graphClients.set(teamId, graphClient);
-            return graphClient;
-        }
-        logger.debug("Unable to create graph client for team '%s' and registration '$s'",
-            teamId, JSON.stringify(this.registration));
-        return null;
+        return this.graphClients.createGraphClient(event);
     }
 
     protected createMessageClient(event: EventIncoming | CommandIncoming): MessageClient {
