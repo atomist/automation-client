@@ -125,6 +125,15 @@ export interface ProjectAsync extends ProjectCore, ScriptedFlushable<Project> {
     moveFile(oldPath: string, newPath: string): Promise<this>;
 
     /**
+     * Add an empty directory to the project.
+     * Should be preserved through all transformations, although
+     * may not be accessible in some implementations
+     * @param {string} path
+     * @return {Promise<this>}
+     */
+    addDirectory(path: string): Promise<this>;
+
+    /**
      * Delete a directory. Do not throw an error if it doesn't exist
      * @param {string} path
      * @return {Promise<this>}

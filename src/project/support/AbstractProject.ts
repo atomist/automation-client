@@ -78,6 +78,8 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
 
     public abstract addFile(path: string, content: string): Promise<this>;
 
+    public abstract addDirectory(path: string): Promise<this>;
+
     public abstract deleteFile(path: string): Promise<this>;
 
     public abstract deleteFileSync(path: string): void;

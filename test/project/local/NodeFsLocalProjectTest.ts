@@ -15,6 +15,7 @@ import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProjec
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { toPromise } from "../../../src/project/util/projectUtils";
 import { tempProject } from "../utils";
+import * as fs from "fs";
 
 describe("NodeFsLocalProject", () => {
 
@@ -50,6 +51,22 @@ describe("NodeFsLocalProject", () => {
             assert(p.findFileSync("some/nested/thing"));
             done();
         }).catch(done);
+    });
+
+    it("copies in memory project including empty directory", done => {
+        const proj = InMemoryProject.from(
+            new GitHubRepoRef("owner", "name"),
+            {path: "package.json", content: "{ node }"},
+            {path: "some/nested/thing", content: "{ node }"},
+        );
+        proj.addDirectory("emptyDir")
+            .then(() => {
+                const baseDir: string = tmp.dirSync().name;
+                NodeFsLocalProject.copy(proj, baseDir).then(p => {
+                    assert(fs.statSync(p.baseDir + "/emptyDir").isDirectory());
+                    done();
+                });
+            }).catch(done);
     });
 
     it("copies other local project", done => {

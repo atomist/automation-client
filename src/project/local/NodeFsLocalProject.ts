@@ -13,6 +13,7 @@ import { AbstractProject } from "../support/AbstractProject";
 import { toPromise } from "../util/projectUtils";
 import { isLocalProject, LocalProject } from "./LocalProject";
 import { NodeFsLocalFile } from "./NodeFsLocalFile";
+import { isInMemoryProject } from "../mem/InMemoryProject";
 
 /**
  * Implementation of LocalProject based on node file system.
@@ -32,7 +33,8 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
                 throw new Error(`No such directory: [${baseDir}] when trying to create LocalProject`);
             } else {
                 return new NodeFsLocalProject(id, baseDir);
-        }});
+            }
+        });
     }
 
     /**
@@ -49,7 +51,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         }
         if (isLocalProject(other)) {
             return fs.copy(other.baseDir, baseDir)
-                .then(_ =>
+                .then(() =>
                     new NodeFsLocalProject(other.id, baseDir));
         } else {
             // We don't know what kind of project the other one is,
@@ -61,7 +63,18 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
                         files.map(f =>
                             f.getContent().then(content => p.addFile(f.path, content))),
                     ),
-                ).then(() => p);
+                )
+                .then(() => {
+                    // Add empty directories if necessary
+                    let prom = Promise.resolve(p);
+                    if (isInMemoryProject(other)) {
+                        other.addedDirectoryPaths.forEach(path => {
+                            console.log("Adding " + path);
+                            prom = prom.then(() => p.addDirectory(path));
+                        });
+                    }
+                    return prom;
+                });
         }
     }
 
@@ -95,7 +108,14 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         const realName = this.baseDir + "/" + path;
         const dir = fpath.dirname(realName);
         return fs.pathExists(dir).then(exists => exists ? Promise.resolve() : fs.mkdirs(dir))
-            .then(() => fs.writeFile(realName, content)).then(() => this);
+            .then(() => fs.writeFile(realName, content))
+            .then(() => this);
+    }
+
+    public addDirectory(path: string): Promise<this> {
+        const realName = this.baseDir + "/" + path;
+        return fs.mkdirp(realName)
+            .then(() => this);
     }
 
     public deleteDirectory(path: string): Promise<this> {
@@ -137,7 +157,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
                 const newMode = stats.mode | fs.constants.S_IXUSR;
                 logger.debug("Setting mode to: " + newMode);
                 return fs.chmod(this.toRealPath(path), newMode);
-            } )
+            })
             .then(() => this);
     }
 
@@ -173,7 +193,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         const baseDir = this.baseDir;
         const toFileTransform = new stream.Transform({objectMode: true});
 
-        toFileTransform._transform = function(chunk, encoding, done) {
+        toFileTransform._transform = function (chunk, encoding, done) {
             const f = new NodeFsLocalFile(baseDir, pathWithinArchive(baseDir, chunk.path));
             this.push(f);
             done();
