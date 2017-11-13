@@ -23,11 +23,9 @@ describe("MicrogrammarBasedFileParser", () => {
         new MicrogrammarBasedFileParser("people", "person", mg)
             .toAst(f)
             .then(root => {
-                console.log(JSON.stringify(root, null, 2));
                 assert(root.$name === "people");
                 assert(root.$children.length === 2);
                 const tom = root.$children[0] as TreeNode;
-                // console.log(JSON.stringify(tom));
                 assert(tom.$name === "person");
                 assert(tom.$children.length === 2);
                 done();
@@ -60,7 +58,6 @@ describe("MicrogrammarBasedFileParser", () => {
         new MicrogrammarBasedFileParser("people", "person", mg)
             .toAst(f)
             .then(root => {
-                console.log(JSON.stringify(root, null, 2));
                 assert(root.$name === "people");
                 // Check the array property
                 const tom = (root as any).persons[0] as Person & TreeNode;
@@ -93,7 +90,6 @@ describe("MicrogrammarBasedFileParser", () => {
         new MicrogrammarBasedFileParser("family", "kid", mg)
             .toAst(f)
             .then(root => {
-                console.log(JSON.stringify(root, null, 2));
                 // Check the array property
                 const linda = (root as any).kids[0] as Kid & TreeNode;
                 assert(linda.name === "Linda", "Name=" + linda.name);
@@ -118,7 +114,6 @@ describe("MicrogrammarBasedFileParser", () => {
                 let minOffset = -1;
                 let terminalCount = 0;
                 const v: TreeVisitor = tn => {
-                    console.log(tn.$name + "=" + tn.$value + ",offset=" + tn.$offset);
                     if (tn.$name !== "people") {
                         assert(tn.$offset !== undefined, `No offset on node with name ${tn.$name}`);
                         assert(tn.$offset >= minOffset, `Must have position for ${JSON.stringify(tn)}`);
