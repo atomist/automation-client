@@ -123,7 +123,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         try {
             this.automations.invokeCommand(ci, ctx)
                 .then(result => {
-                    if (!result && !result.code) {
+                    if (!result || !result.code) {
                         result = defaultResult();
                     }
 
