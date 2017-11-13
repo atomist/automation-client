@@ -70,12 +70,6 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
         logger.info("Registration successful: %s", JSON.stringify(registration));
         global.setJwtToken(registration.jwt);
         this.registration = registration;
-    }
-
-    public onConnect(ws: WebSocket) {
-        logger.info("WebSocket connection established. Listening for incoming messages");
-        this.webSocket = ws;
-        this.listeners.forEach(l => l.registrationSuccessful(this));
 
         const message = {
             type: "registration",
@@ -88,6 +82,12 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
                 worker.send(message);
             }
         }
+    }
+
+    public onConnect(ws: WebSocket) {
+        logger.info("WebSocket connection established. Listening for incoming messages");
+        this.webSocket = ws;
+        this.listeners.forEach(l => l.registrationSuccessful(this));
     }
 
     public onDisconnect() {
