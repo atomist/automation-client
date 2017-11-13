@@ -5,6 +5,7 @@ import { RepoRef } from "../../operations/common/RepoId";
 import { File, isFile } from "../File";
 import { FileStream, Project } from "../Project";
 import { AbstractProject } from "../support/AbstractProject";
+import { copyFiles } from "../support/projectUtils";
 import { InMemoryFile } from "./InMemoryFile";
 
 /**
@@ -31,6 +32,16 @@ export class InMemoryProject extends AbstractProject {
      */
     public static of(...files: Array<{ path: string, content: string } | File>): InMemoryProject {
         return InMemoryProject.from(undefined, ...files);
+    }
+
+    /**
+     * Make an independent copy of the given project, with the same files
+     * @param {Project} p
+     * @return {InMemoryProject}
+     */
+    public static cache(p: Project): Promise<InMemoryProject> {
+        const to = new InMemoryProject(p.id);
+        return copyFiles(p, to);
     }
 
     /**

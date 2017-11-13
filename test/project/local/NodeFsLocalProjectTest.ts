@@ -69,6 +69,28 @@ describe("NodeFsLocalProject", () => {
             }).catch(done);
     });
 
+    it.skip("copies in memory project including empty directory and copies back", done => {
+        const proj = InMemoryProject.from(
+            new GitHubRepoRef("owner", "name"),
+            {path: "package.json", content: "{ node }"},
+            {path: "some/nested/thing", content: "{ node }"},
+        );
+        proj.addDirectory("emptyDir")
+            .then(() => {
+                const baseDir: string = tmp.dirSync().name;
+                NodeFsLocalProject.copy(proj, baseDir).then(p => {
+                    assert(fs.statSync(p.baseDir + "/emptyDir").isDirectory());
+                    const inmp = InMemoryProject.cache(proj);
+                    inmp.then(inm => {
+                        assert(!!inm.findFileSync("package.json"));
+                        assert(!!inm.findFileSync("some/nested/thing"));
+                        assert(inm.addedDirectoryPaths.includes("emptyDir"));
+                        done();
+                    });
+                });
+            }).catch(done);
+    });
+
     it("copies other local project", done => {
         const proj = tempProject(new GitHubRepoRef("owner", "name"));
         proj.addFileSync("package.json", "{ node }");

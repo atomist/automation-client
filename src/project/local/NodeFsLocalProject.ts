@@ -2,16 +2,15 @@ import { File } from "../File";
 import { FileStream, Project } from "../Project";
 
 import * as fs from "fs-extra";
-import * as fpath from "path";
-
 import * as gs from "glob-stream";
+import * as fpath from "path";
 import * as stream from "stream";
 import { deleteFolderRecursive } from "../../internal/util/file";
 import { logger } from "../../internal/util/logger";
 import { RepoRef, SimpleRepoId } from "../../operations/common/RepoId";
 import { isInMemoryProject } from "../mem/InMemoryProject";
 import { AbstractProject } from "../support/AbstractProject";
-import { toPromise } from "../util/projectUtils";
+import { copyFiles } from "../support/projectUtils";
 import { isLocalProject, LocalProject } from "./LocalProject";
 import { NodeFsLocalFile } from "./NodeFsLocalFile";
 
@@ -57,13 +56,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
             // We don't know what kind of project the other one is,
             // so we are going to need to copy the files one at a time
             const p = new NodeFsLocalProject(other.id, baseDir);
-            return toPromise(other.streamFiles())
-                .then(files =>
-                    Promise.all(
-                        files.map(f =>
-                            f.getContent().then(content => p.addFile(f.path, content))),
-                    ),
-                )
+            return copyFiles(other, p)
                 .then(() => {
                     // Add empty directories if necessary
                     let prom = Promise.resolve(p);
