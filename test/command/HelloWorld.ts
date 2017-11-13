@@ -1,7 +1,5 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
-import { failure, Success } from "../../src/HandlerResult";
 import { CommandHandler, Failure, HandleCommand, HandlerContext, HandlerResult, Parameter } from "../../src/index";
-import { sendMessages } from "../../src/operations/support/contextUtils";
 import { ReposQuery, ReposQueryVariables } from "../../src/schema/schema";
 import { buttonForCommand, menuForCommand } from "../../src/spi/message/MessageClient";
 import { SecretBaseHandler } from "./SecretBaseHandler";
@@ -39,13 +37,8 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
 
         return ctx.graphClient.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
             {teamId: "T1L0VDKJP", offset: 0})
-            .then(result => {
-                return Promise.resolve();
-            })
             .then(() => {
                 return ctx.messageClient.addressUsers(msg, "cd");
-            })
-            .then(() => ({code: 0, test: "some message" }), failure);
-
+            });
     }
 }

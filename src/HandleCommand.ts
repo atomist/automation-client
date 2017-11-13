@@ -6,6 +6,7 @@ import { OnCommand } from "./onCommand";
  * These combine the parameters with the command. A fresh
  * instance will be created for every invocation. Prefer using the
  * parameters object to "this" in implementations of the handle method.
+ * @param P parameters type
  */
 export interface HandleCommand<P = any> {
 
@@ -17,7 +18,7 @@ export interface HandleCommand<P = any> {
     /**
      * If this method is implemented, it returns a fresh parameters instance
      * to use for this class. Otherwise will use the class itself as its parameters.
-     * @return {P}
+     * @return {P} new parameters instance
      */
     freshParametersInstance?(): P;
 
