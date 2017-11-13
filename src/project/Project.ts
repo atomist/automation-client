@@ -112,6 +112,13 @@ export interface ProjectAsync extends ProjectCore, ScriptedFlushable<Project> {
      */
     findFile(path: string): Promise<File>;
 
+    /**
+     * Add a file preserving permissions
+     * @param {File} f
+     * @return {Promise<this>}
+     */
+    add(f: File): Promise<this>;
+
     addFile(path: string, content: string): Promise<this>;
 
     deleteFile(path: string): Promise<this>;
