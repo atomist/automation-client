@@ -1,6 +1,12 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import { ApolloGraphClient } from "../../../graph/ApolloGraphClient";
-import { AutomationEventListener, AutomationEventListenerSupport } from "../../../server/AutomationEventListener";
+import { EventFired } from "../../../HandleEvent";
+import { HandlerContext } from "../../../HandlerContext";
+import { HandlerResult } from "../../../HandlerResult";
+import {
+    AutomationEventListener,
+    AutomationEventListenerSupport,
+} from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
 import {
@@ -8,6 +14,8 @@ import {
     MessageOptions,
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
+import { CommandInvocation } from "../../invoker/Payload";
+import * as namespace from "../../util/cls";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
     CommandIncoming,
@@ -18,21 +26,20 @@ import {
 } from "../RequestProcessor";
 import { WebSocketClientOptions } from "../websocket/WebSocketClient";
 import { RegistrationConfirmation } from "../websocket/WebSocketRequestProcessor";
-import { CommandInvocation } from "../../invoker/Payload";
-import { HandlerContext } from "../../../HandlerContext";
-import { HandlerResult } from "../../../HandlerResult";
-import { EventFired } from "../../../HandleEvent";
-import * as namespace from "../../util/cls";
 
-let worker: ClusterWorkerRequestProcessor;
-
+/**
+ * A RequestProcessor that is being run as Node.JS Cluster worker handling all the actual work.
+ */
 class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
 
     private graphClients: Map<string, GraphClient> = new Map<string, GraphClient>();
     private registration?: RegistrationConfirmation;
 
+    // tslint:disable-next-line:variable-name
     constructor(private _automations: AutomationServer,
+                // tslint:disable-next-line:variable-name
                 private _options: WebSocketClientOptions,
+                // tslint:disable-next-line:variable-name
                 private _listeners: AutomationEventListener[] = []) {
         super(_automations, [..._listeners, new ClusterWorkerAutomationEventListener()]);
     }
@@ -112,7 +119,7 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
                 ...namespace.get(),
             },
             data: result,
-        }
+        };
         process.send(message);
     }
 
@@ -124,7 +131,7 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
                 ...namespace.get(),
             },
             data: err,
-        }
+        };
         process.send(message);
     }
 
@@ -136,7 +143,7 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
                 ...namespace.get(),
             },
             data: result,
-        }
+        };
         process.send(message);
     }
 
@@ -148,24 +155,29 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
                 ...namespace.get(),
             },
             data: err,
-        }
+        };
         process.send(message);
     }
 
 }
 
+/**
+ * Start a new worker node
+ * @param {AutomationServer} automations
+ * @param {WebSocketClientOptions} options
+ * @returns {RequestProcessor}
+ */
 export function startWorker(automations: AutomationServer,
                             options: WebSocketClientOptions): RequestProcessor {
-    worker = new ClusterWorkerRequestProcessor(automations, options);
+    const worker = new ClusterWorkerRequestProcessor(automations, options);
+    process.on("message", msg => {
+        if (msg.type === "registration") {
+            worker.setRegistration(msg.data as RegistrationConfirmation);
+        } else if (msg.type === "command") {
+            worker.processCommand(msg.data as CommandIncoming);
+        } else if (msg.type === "event") {
+            worker.processEvent(msg.data as EventIncoming);
+        }
+    });
     return worker;
 }
-
-process.on("message", msg => {
-    if (msg.type === "registration") {
-        worker.setRegistration(msg.data as RegistrationConfirmation);
-    } else if (msg.type === "command") {
-        worker.processCommand(msg.data as CommandIncoming);
-    } else if (msg.type === "event") {
-        worker.processEvent(msg.data as EventIncoming);
-    }
-});

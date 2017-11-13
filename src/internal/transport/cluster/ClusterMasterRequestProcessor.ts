@@ -1,3 +1,4 @@
+import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import * as cluster from "cluster";
 import * as WebSocket from "ws";
 import * as global from "../../../globals";
@@ -9,9 +10,14 @@ import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
 import { MessageClient } from "../../../spi/message/MessageClient";
 import { CommandInvocation } from "../../invoker/Payload";
-import { HealthStatus, registerHealthIndicator } from "../../util/health";
+import * as namespace from "../../util/cls";
+import {
+    HealthStatus,
+    registerHealthIndicator,
+} from "../../util/health";
 import { logger } from "../../util/logger";
 import { AbstractEventStoringRequestProcessor } from "../AbstractEventStoringRequestProcessor";
+import { clearNamespace } from "../AbstractRequestProcessor";
 import {
     CommandIncoming,
     EventIncoming,
@@ -28,11 +34,13 @@ import {
     RegistrationConfirmation,
     WebSocketRequestProcessor,
 } from "../websocket/WebSocketRequestProcessor";
-import { clearNamespace, defaultResult, setupNamespace } from "../AbstractRequestProcessor";
-import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
-import * as namespace from "../../util/cls";
 
-export class ClusterWebSocketRequestProcessor extends AbstractEventStoringRequestProcessor
+/**
+ * A RequestProcessor that delegates to Node.JS Cluster workers to do the actual
+ * command and event processing.
+ * @see ClusterWorkerRequestProcessor
+ */
+export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestProcessor
     implements WebSocketRequestProcessor {
 
     private registration?: RegistrationConfirmation;
@@ -54,6 +62,8 @@ export class ClusterWebSocketRequestProcessor extends AbstractEventStoringReques
                 return { status: HealthStatus.Down, detail: "WebSocket disconnected" };
             }
         });
+
+        this.init();
     }
 
     public onRegistration(registration: RegistrationConfirmation) {
@@ -63,85 +73,20 @@ export class ClusterWebSocketRequestProcessor extends AbstractEventStoringReques
     }
 
     public onConnect(ws: WebSocket) {
-        const automations = this.automations;
-
-        function createMessageClient(event: CommandIncoming | EventIncoming): MessageClient {
-            if (isCommandIncoming(event)) {
-                return new WebSocketCommandMessageClient(event, automations, ws);
-            } else if (isEventIncoming(event)) {
-                return new WebSocketEventMessageClient(event, automations, ws);
-            }
-        }
-
         logger.info("WebSocket connection established. Listening for incoming messages");
         this.webSocket = ws;
         this.listeners.forEach(l => l.registrationSuccessful(this));
-
-        const listeners = this.listeners;
-
-        for (let i = 0; i < this.numWorkers; i++) {
-            const worker = cluster.fork();
-
-            worker.on("message", msg => {
-                const ses = namespace.init();
-                ses.run(() => {
-                    namespace.set(msg.cls);
-                    if (msg.type === "message") {
-                        const messageClient = createMessageClient(msg.event as CommandIncoming | EventIncoming);
-                        if (msg.data.userNames && msg.data.userNames.length > 0) {
-                            messageClient.addressUsers(msg.data.message as string | SlackMessage, msg.data.userNames, msg.data.options)
-                                .then(() => clearNamespace());
-                        } else if (msg.data.channelNames && msg.data.channelNames.length > 0) {
-                            messageClient.addressChannels(msg.data.message as string | SlackMessage, msg.data.channelNames, msg.data.options)
-                                .then(() => clearNamespace());
-                        } else {
-                            messageClient.respond(msg.data.message as string | SlackMessage, msg.data.options)
-                                .then(() => clearNamespace());
-                        }
-                    } else if (msg.type === "status") {
-                        sendMessage(msg.data, ws);
-                        clearNamespace();
-                    } else if (msg.type === "command_success") {
-                        listeners.forEach(l => l.commandSuccessful(msg.event as CommandInvocation, null, msg.data as HandlerResult));
-                        if (this.commandCallbacks.has(namespace.get().invocationId)) {
-                            this.commandCallbacks.get(namespace.get().invocationId).resolve(msg.data as HandlerResult);
-                            this.commandCallbacks.delete(namespace.get().invocationId);
-                        }
-                        clearNamespace();
-                    } else if (msg.type === "command_failure") {
-                        listeners.forEach(l => l.commandFailed(msg.event as CommandInvocation, null, msg.data));
-                        if (this.commandCallbacks.has(namespace.get().invocationId)) {
-                            this.commandCallbacks.get(namespace.get().invocationId).resolve(msg.data as HandlerResult);
-                            this.commandCallbacks.delete(namespace.get().invocationId);
-                        }
-                        clearNamespace();
-                    } else if (msg.type === "event_success") {
-                        listeners.forEach(l => l.eventSuccessful(msg.event as EventFired<any>, null, msg.data as HandlerResult[]));
-                        if (this.eventCallbacks.has(namespace.get().invocationId)) {
-                            this.eventCallbacks.get(namespace.get().invocationId).resolve(msg.data as HandlerResult[]);
-                            this.eventCallbacks.delete(namespace.get().invocationId);
-                        }
-                        clearNamespace();
-                    } else if (msg.type === "event_failure") {
-                        listeners.forEach(l => l.eventFailed(msg.event as EventFired<any>, null, msg.data));
-                        if (this.eventCallbacks.has(namespace.get().invocationId)) {
-                            this.eventCallbacks.get(namespace.get().invocationId).resolve(msg.data as HandlerResult[]);
-                            this.eventCallbacks.delete(namespace.get().invocationId);
-                        }
-                        clearNamespace();
-                    }
-                });
-            });
-        }
 
         const message = {
             type: "registration",
             data: this.registration,
         };
 
-        for (let id in cluster.workers) {
-            const worker = cluster.workers[id];
-            worker.send(message);
+        for (const id in cluster.workers) {
+            if (cluster.workers.hasOwnProperty(id)) {
+                const worker = cluster.workers[id];
+                worker.send(message);
+            }
         }
     }
 
@@ -159,6 +104,9 @@ export class ClusterWebSocketRequestProcessor extends AbstractEventStoringReques
 
         const message = {
             type: "command",
+            cls: {
+                ...namespace.get(),
+            },
             context: {
                 teamId: ctx.teamId,
                 correlationId: ctx.correlationId,
@@ -170,14 +118,8 @@ export class ClusterWebSocketRequestProcessor extends AbstractEventStoringReques
 
         const deferred = new Deferred<HandlerResult>();
         this.commandCallbacks.set(namespace.get().invocationId, deferred);
-        cluster.workers[this.currentWorker.toString()].send(message);
+        cluster.workers[this.assignWorker()].send(message);
         callback(deferred.promise);
-
-        if (this.currentWorker < this.numWorkers) {
-            this.currentWorker++;
-        } else {
-            this.currentWorker = 1;
-        }
     }
 
     protected invokeEvent(ef: EventFired<any>,
@@ -189,6 +131,7 @@ export class ClusterWebSocketRequestProcessor extends AbstractEventStoringReques
 
         const message = {
             type: "event",
+
             context: {
                 teamId: ctx.teamId,
                 correlationId: ctx.correlationId,
@@ -200,14 +143,8 @@ export class ClusterWebSocketRequestProcessor extends AbstractEventStoringReques
 
         const deferred = new Deferred<HandlerResult[]>();
         this.eventCallbacks.set(namespace.get().invocationId, deferred);
-        cluster.workers[this.currentWorker.toString()].send(message);
+        cluster.workers[this.assignWorker()].send(message);
         callback(deferred.promise);
-
-        if (this.currentWorker < this.numWorkers) {
-            this.currentWorker++;
-        } else {
-            this.currentWorker = 1;
-        }
     }
 
     protected sendMessage(payload: any) {
@@ -221,6 +158,92 @@ export class ClusterWebSocketRequestProcessor extends AbstractEventStoringReques
     protected doCreateMessageClient(event: CommandIncoming | EventIncoming): MessageClient {
        return null;
     }
+
+    private assignWorker(): string {
+        const thisWorker = this.currentWorker;
+        if (this.currentWorker < this.numWorkers) {
+            this.currentWorker++;
+        } else {
+            this.currentWorker = 1;
+        }
+        return thisWorker.toString();
+    }
+
+    private init() {
+        const automations = this.automations;
+        const ws = () => this.webSocket;
+
+        function createMessageClient(event: CommandIncoming | EventIncoming): MessageClient {
+            if (isCommandIncoming(event)) {
+                return new WebSocketCommandMessageClient(event, automations, ws());
+            } else if (isEventIncoming(event)) {
+                return new WebSocketEventMessageClient(event, automations, ws());
+            }
+        }
+
+        const listeners = this.listeners;
+
+        for (let i = 0; i < this.numWorkers; i++) {
+            const worker = cluster.fork();
+
+            worker.on("message", msg => {
+                const ses = namespace.init();
+                ses.run(() => {
+                    namespace.set(msg.cls);
+                    if (msg.type === "message") {
+                        const messageClient = createMessageClient(msg.event as CommandIncoming | EventIncoming);
+                        if (msg.data.userNames && msg.data.userNames.length > 0) {
+                            messageClient.addressUsers(msg.data.message as string | SlackMessage,
+                                msg.data.userNames, msg.data.options)
+                                .then(() => clearNamespace());
+                        } else if (msg.data.channelNames && msg.data.channelNames.length > 0) {
+                            messageClient.addressChannels(msg.data.message as string | SlackMessage,
+                                msg.data.channelNames, msg.data.options)
+                                .then(() => clearNamespace());
+                        } else {
+                            messageClient.respond(msg.data.message as string | SlackMessage, msg.data.options)
+                                .then(() => clearNamespace());
+                        }
+                    } else if (msg.type === "status") {
+                        sendMessage(msg.data, ws());
+                        clearNamespace();
+                    } else if (msg.type === "command_success") {
+                        listeners.forEach(l => l.commandSuccessful(msg.event as CommandInvocation,
+                            null, msg.data as HandlerResult));
+                        if (this.commandCallbacks.has(namespace.get().invocationId)) {
+                            this.commandCallbacks.get(namespace.get().invocationId).resolve(msg.data as HandlerResult);
+                            this.commandCallbacks.delete(namespace.get().invocationId);
+                        }
+                        clearNamespace();
+                    } else if (msg.type === "command_failure") {
+                        listeners.forEach(l => l.commandFailed(msg.event as CommandInvocation,
+                            null, msg.data));
+                        if (this.commandCallbacks.has(namespace.get().invocationId)) {
+                            this.commandCallbacks.get(namespace.get().invocationId).resolve(msg.data as HandlerResult);
+                            this.commandCallbacks.delete(namespace.get().invocationId);
+                        }
+                        clearNamespace();
+                    } else if (msg.type === "event_success") {
+                        listeners.forEach(l => l.eventSuccessful(msg.event as EventFired<any>,
+                            null, msg.data as HandlerResult[]));
+                        if (this.eventCallbacks.has(namespace.get().invocationId)) {
+                            this.eventCallbacks.get(namespace.get().invocationId).resolve(msg.data as HandlerResult[]);
+                            this.eventCallbacks.delete(namespace.get().invocationId);
+                        }
+                        clearNamespace();
+                    } else if (msg.type === "event_failure") {
+                        listeners.forEach(l => l.eventFailed(msg.event as EventFired<any>,
+                            null, msg.data));
+                        if (this.eventCallbacks.has(namespace.get().invocationId)) {
+                            this.eventCallbacks.get(namespace.get().invocationId).resolve(msg.data as HandlerResult[]);
+                            this.eventCallbacks.delete(namespace.get().invocationId);
+                        }
+                        clearNamespace();
+                    }
+                });
+            });
+        }
+    }
 }
 
 export class Deferred<T> {
@@ -229,51 +252,53 @@ export class Deferred<T> {
     private fate: "resolved" | "unresolved";
     private state: "pending" | "fulfilled" | "rejected";
 
-    private _resolve: Function;
-    private _reject: Function;
+    // tslint:disable-next-line:ban-types
+    private deferredResolve: Function;
+    // tslint:disable-next-line:ban-types
+    private deferredReject: Function;
 
     constructor() {
         this.state = "pending";
         this.fate = "unresolved";
         this.promise = new Promise((resolve, reject) => {
-            this._resolve = resolve;
-            this._reject = reject;
+            this.deferredResolve = resolve;
+            this.deferredReject = reject;
         });
         this.promise.then(
             () => this.state = "fulfilled",
-            () => this.state = "rejected"
+            () => this.state = "rejected",
         );
     }
 
-    resolve(value?: any) {
+    public resolve(value?: any) {
         if (this.fate === "resolved") {
-            throw "Deferred cannot be resolved twice";
+            throw new Error("Deferred cannot be resolved twice");
         }
         this.fate = "resolved";
-        this._resolve(value);
+        this.deferredResolve(value);
     }
 
-    reject(reason?: any) {
+    public reject(reason?: any) {
         if (this.fate === "resolved") {
-            throw "Deferred cannot be resolved twice";
+            throw new Error("Deferred cannot be resolved twice");
         }
         this.fate = "resolved";
-        this._reject(reason);
+        this.deferredReject(reason);
     }
 
-    isResolved() {
+    public isResolved() {
         return this.fate === "resolved";
     }
 
-    isPending() {
+    public isPending() {
         return this.state === "pending";
     }
 
-    isFulfilled() {
+    public isFulfilled() {
         return this.state === "fulfilled";
     }
 
-    isRejected() {
+    public isRejected() {
         return this.state === "rejected";
     }
 }

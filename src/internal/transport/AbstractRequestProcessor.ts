@@ -13,7 +13,10 @@ import { MessageClient } from "../../spi/message/MessageClient";
 import { CommandInvocation } from "../invoker/Payload";
 import * as namespace from "../util/cls";
 import { logger } from "../util/logger";
-import { guid, hideString } from "../util/string";
+import {
+    guid,
+    hideString,
+} from "../util/string";
 import {
     CommandIncoming,
     EventIncoming,
@@ -29,16 +32,14 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
     constructor(protected automations: AutomationServer,
                 protected listeners: AutomationEventListener[] = []) { }
 
-    // tslint:disable-next-line:no-empty
     public processCommand(command: CommandIncoming,
+                          // tslint:disable-next-line:no-empty
                           callback: (result: Promise<HandlerResult>) => void = () => { }) {
         // setup context
         const ses = namespace.init();
         const cls = setupNamespace(command, this.automations);
         ses.run(() => {
-             namespace.set(cls);
-
-            logger.debug("Incoming command: %s", JSON.stringify(command, replacer));
+            namespace.set(cls);
 
             const np = namespace.get();
             const ci: CommandInvocation = {
@@ -63,10 +64,62 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         });
     }
 
+    public processEvent(event: EventIncoming,
+                        // tslint:disable-next-line:no-empty
+                        callback: (results: Promise<HandlerResult[]>) => void = () => { }) {
+        // setup context
+        const ses = namespace.init();
+        const cls = setupNamespace(event, this.automations);
+        ses.run(() => {
+            namespace.set(cls);
+
+            const np = namespace.get();
+            const ef: EventFired<any> = {
+                data: event.data,
+                extensions: {
+                    operationName: event.extensions.operationName,
+                },
+                secrets: event.secrets,
+            };
+            const ctx: HandlerContext = {
+                teamId: event.extensions.team_id,
+                correlationId: event.extensions.correlation_id,
+                invocationId: np ? np.invocationId : undefined,
+                messageClient: this.createMessageClient(event),
+                graphClient: this.createGraphClient(event),
+            };
+            this.listeners.forEach(l => l.contextCreated(ctx));
+
+            this.onEventWithNamespace(event);
+            this.listeners.forEach(l => l.eventStarting(ef, ctx));
+
+            this.invokeEvent(ef, ctx, event, callback);
+        });
+    }
+
+    public sendStatus(success: boolean, hr: HandlerResult, request: CommandIncoming) {
+        // send success message back
+        const status: StatusMessage = {
+            status: success ? "success" : "failure",
+            code: hr.code,
+            message: `${success ? "Successfully" : "Unsuccessfully"} invoked command-handler` +
+            ` ${request.name} of ${this.automations.automations.name}@${this.automations.automations.version}`,
+        };
+        const response: HandlerResponse = {
+            rug: request.rug,
+            corrid: request.corrid,
+            correlation_context: request.correlation_context,
+            content_type: "application/x-atomist-status+json",
+            message: JSON.stringify(status),
+        };
+        this.sendMessage(response);
+    }
+
     protected invokeCommand(ci: CommandInvocation,
                             ctx: HandlerContext,
                             command: CommandIncoming,
                             callback: (result: Promise<HandlerResult>) => void) {
+        logger.debug("Incoming command: %s", JSON.stringify(command, replacer));
         try {
             this.automations.invokeCommand(ci, ctx)
                 .then(result => {
@@ -102,45 +155,11 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         }
     }
 
-    // tslint:disable-next-line:no-empty
-    public processEvent(event: EventIncoming,
-                        callback: (results: Promise<HandlerResult[]>) => void = () => { }) {
-        // setup context
-        const ses = namespace.init();
-        const cls = setupNamespace(event, this.automations);
-        ses.run(() => {
-             namespace.set(cls);
-
-            logger.debug("Incoming event: %s", JSON.stringify(event, replacer));
-
-            const np = namespace.get();
-            const ef: EventFired<any> = {
-                data: event.data,
-                extensions: {
-                    operationName: event.extensions.operationName,
-                },
-                secrets: event.secrets,
-            };
-            const ctx: HandlerContext = {
-                teamId: event.extensions.team_id,
-                correlationId: event.extensions.correlation_id,
-                invocationId: np ? np.invocationId : undefined,
-                messageClient: this.createMessageClient(event),
-                graphClient: this.createGraphClient(event),
-            };
-            this.listeners.forEach(l => l.contextCreated(ctx));
-
-            this.onEventWithNamespace(event);
-            this.listeners.forEach(l => l.eventStarting(ef, ctx));
-
-            this.invokeEvent(ef, ctx, event, callback);
-        });
-    }
-
     protected invokeEvent(ef: EventFired<any>,
                           ctx: HandlerContext,
                           event: EventIncoming,
                           callback: (results: Promise<HandlerResult[]>) => void) {
+        logger.debug("Incoming event: %s", JSON.stringify(event, replacer));
         try {
             this.automations.onEvent(ef, ctx)
                 .then(result => {
@@ -168,24 +187,6 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         }
     }
 
-    public sendStatus(success: boolean, hr: HandlerResult, request: CommandIncoming) {
-        // send success message back
-        const status: StatusMessage = {
-            status: success ? "success" : "failure",
-            code: hr.code,
-            message: `${success ? "Successfully" : "Unsuccessfully"} invoked command-handler` +
-            ` ${request.name} of ${this.automations.automations.name}@${this.automations.automations.version}`,
-        };
-        const response: HandlerResponse = {
-            rug: request.rug,
-            corrid: request.corrid,
-            correlation_context: request.correlation_context,
-            content_type: "application/x-atomist-status+json",
-            message: JSON.stringify(status),
-        };
-        this.sendMessage(response);
-    }
-
     protected onCommandWithNamespace(command: CommandIncoming) {
         // this is intentionally left empty; sub classes can hook in some logic
     }
@@ -210,7 +211,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         this.listeners.forEach(l => l.commandFailed(ci, ctx, err));
         this.sendStatus(false, result as HandlerResult, command);
         if (callback) {
-            callback(result);
+            callback(Promise.resolve(result));
         }
         logger.error(`Failed invocation of command handler '%s'`, command.name, serializeError(err));
     }
@@ -224,7 +225,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
         this.listeners.forEach(l => l.eventFailed(ef, ctx, err));
         if (callback) {
-            callback(result);
+            callback(Promise.resolve(result));
         }
         logger.error(`Failed invocation of command handler '%s'`,
             event.extensions.operationName, serializeError(err));

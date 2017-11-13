@@ -1,8 +1,10 @@
 import * as appRoot from "app-root-path";
 import * as cluster from "cluster";
 import * as fs from "fs-extra";
-import { HandleCommand } from "./HandleCommand";
-import { HandleEvent } from "./HandleEvent";
+import {
+    HandleCommand,
+    HandleEvent,
+} from "./index";
 import { logger } from "./internal/util/logger";
 import { obfuscateJson } from "./internal/util/string";
 import { AutomationEventListener } from "./server/AutomationEventListener";
@@ -22,8 +24,12 @@ export interface Configuration extends RunOptions {
     };
 
     cluster?: {
-        enabled?: boolean,
+        enabled: boolean,
         workers?: number,
+    };
+
+    logging?: {
+        level: "debug" | "info" | "warn" | "error",
     };
 }
 

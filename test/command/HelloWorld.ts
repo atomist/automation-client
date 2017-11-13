@@ -7,7 +7,7 @@ import { buttonForCommand, menuForCommand } from "../../src/spi/message/MessageC
 import { SecretBaseHandler } from "./SecretBaseHandler";
 
 @CommandHandler("Send a hello back to the client", "hello cd")
-export class HelloWorld implements HandleCommand {
+export class HelloWorld extends SecretBaseHandler implements HandleCommand {
 
     @Parameter({description: "Name of person the greeting should be send to", pattern: /^.*$/})
     public name: string;
@@ -31,6 +31,11 @@ export class HelloWorld implements HandleCommand {
                 ],
             }],
         };
+
+        let counter = 0;
+        while (counter < 100000) {
+            counter++;
+        }
 
         return ctx.graphClient.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
             {teamId: "T1L0VDKJP", offset: 0})

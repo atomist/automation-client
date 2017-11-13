@@ -6,7 +6,9 @@ import {
     HandleEvent,
 } from "./index";
 import { registerApplicationEvents } from "./internal/env/applicationEvent";
-import { ClusterWebSocketRequestProcessor } from "./internal/transport/cluster/ClusterMasterRequestProcessor";
+import {
+    ClusterMasterRequestProcessor,
+} from "./internal/transport/cluster/ClusterMasterRequestProcessor";
 import { startWorker } from "./internal/transport/cluster/ClusterWorkerRequestProcessor";
 import {
     ExpressServer,
@@ -88,9 +90,13 @@ export class AutomationClient {
             registrationUrl: _.get(this.configuration, "endpoints.api", DefaultApiServer),
             token: this.configuration.token,
         };
+
+        if (this.configuration.logging && this.configuration.logging.level) {
+            (logger as any).level = this.configuration.logging.level;
+        }
+
         if (cluster.isMaster || !(this.configuration.cluster && this.configuration.cluster.enabled)) {
-            logger.info(`Starting Atomist automation client ${this.configuration.name}@${this.configuration.version} ` +
-                `with pid ${process.pid}`);
+            logger.info(`Starting Atomist automation client ${this.configuration.name}@${this.configuration.version}`);
             const handler = this.setupRequestHandler(webSocketOptions);
             return Promise.all([
                 this.runWs(handler, webSocketOptions),
@@ -105,11 +111,11 @@ export class AutomationClient {
     private setupRequestHandler(webSocketOptions: WebSocketClientOptions): WebSocketRequestProcessor {
         if (this.configuration.cluster && this.configuration.cluster.enabled) {
             if (this.configuration.listeners) {
-                return new ClusterWebSocketRequestProcessor(this.automations, webSocketOptions,
+                return new ClusterMasterRequestProcessor(this.automations, webSocketOptions,
                     [new MetricEnabledAutomationEventListener(), ...this.configuration.listeners],
                     this.configuration.cluster.workers);
             } else {
-                return new ClusterWebSocketRequestProcessor(this.automations, webSocketOptions,
+                return new ClusterMasterRequestProcessor(this.automations, webSocketOptions,
                     [new MetricEnabledAutomationEventListener()], this.configuration.cluster.workers);
             }
         } else {

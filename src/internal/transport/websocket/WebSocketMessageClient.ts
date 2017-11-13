@@ -20,8 +20,11 @@ import {
 
 export abstract class AbstractWebSocketMessageClient extends MessageClientSupport {
 
-    constructor(private automations: AutomationServer, private ws: WebSocket, private correlationId: string,
-                private correlationContext: any, private rug: any = {}) {
+    constructor(private automations: AutomationServer,
+                private ws: WebSocket,
+                private correlationId: string,
+                private correlationContext: any,
+                private rug: any = {}) {
         super();
     }
 
