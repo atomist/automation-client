@@ -119,7 +119,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                             ctx: HandlerContext,
                             command: CommandIncoming,
                             callback: (result: Promise<HandlerResult>) => void) {
-        logger.debug("Incoming command: %s", JSON.stringify(command, replacer));
+        logger.debug("Incoming command '%s'", JSON.stringify(command, replacer));
         try {
             this.automations.invokeCommand(ci, ctx)
                 .then(result => {
@@ -159,7 +159,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                           ctx: HandlerContext,
                           event: EventIncoming,
                           callback: (results: Promise<HandlerResult[]>) => void) {
-        logger.debug("Incoming event: %s", JSON.stringify(event, replacer));
+        logger.debug("Incoming event '%s'", JSON.stringify(event, replacer));
         try {
             this.automations.onEvent(ef, ctx)
                 .then(result => {

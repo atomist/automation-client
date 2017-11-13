@@ -16,6 +16,7 @@ import {
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { CommandInvocation } from "../../invoker/Payload";
 import * as namespace from "../../util/cls";
+import { logger } from "../../util/logger";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
     CommandIncoming,
@@ -42,6 +43,7 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
                 // tslint:disable-next-line:variable-name
                 private _listeners: AutomationEventListener[] = []) {
         super(_automations, [..._listeners, new ClusterWorkerAutomationEventListener()]);
+        logger.info(`Starting worker with pid '${process.pid}'`);
     }
 
     public setRegistration(registration: RegistrationConfirmation) {

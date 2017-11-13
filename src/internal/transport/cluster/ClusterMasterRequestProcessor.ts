@@ -46,8 +46,8 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
     private registration?: RegistrationConfirmation;
     private webSocket?: WebSocket;
     private currentWorker: number = 1;
-    private commandCallbacks: Map<string, Deferred<HandlerResult>> = new Map();
-    private eventCallbacks: Map<string, Deferred<HandlerResult[]>> = new Map();
+    private commands: Map<string, Dispatched<HandlerResult>> = new Map();
+    private events: Map<string, Dispatched<HandlerResult[]>> = new Map();
 
     constructor(protected automations: AutomationServer,
                 protected options: WebSocketClientOptions,
@@ -116,10 +116,12 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
             data: command,
         };
 
-        const deferred = new Deferred<HandlerResult>();
-        this.commandCallbacks.set(namespace.get().invocationId, deferred);
-        cluster.workers[this.assignWorker()].send(message);
-        callback(deferred.promise);
+        const dispatched = new Dispatched(new Deferred<HandlerResult>(), ctx);
+        this.commands.set(namespace.get().invocationId, dispatched);
+        const worker = cluster.workers[this.assignWorker()];
+        logger.debug("Incoming command '%s' dispatching to worker '%s'", ci.name, worker.process.pid);
+        worker.send(message);
+        callback(dispatched.result.promise);
     }
 
     protected invokeEvent(ef: EventFired<any>,
@@ -131,7 +133,9 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
 
         const message = {
             type: "event",
-
+            cls: {
+                ...namespace.get(),
+            },
             context: {
                 teamId: ctx.teamId,
                 correlationId: ctx.correlationId,
@@ -141,10 +145,12 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
             data: event,
         };
 
-        const deferred = new Deferred<HandlerResult[]>();
-        this.eventCallbacks.set(namespace.get().invocationId, deferred);
-        cluster.workers[this.assignWorker()].send(message);
-        callback(deferred.promise);
+        const dispatched = new Dispatched(new Deferred<HandlerResult[]>(), ctx);
+        this.events.set(namespace.get().invocationId, dispatched);
+        const worker = cluster.workers[this.assignWorker()];
+        logger.debug("Incoming event '%s' dispatching to worker '%s'", ef.extensions.operationName, worker.process.pid);
+        worker.send(message);
+        callback(dispatched.result.promise);
     }
 
     protected sendMessage(payload: any) {
@@ -156,7 +162,11 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
     }
 
     protected doCreateMessageClient(event: CommandIncoming | EventIncoming): MessageClient {
-       return null;
+        if (isCommandIncoming(event)) {
+            return new WebSocketCommandMessageClient(event, this.automations, this.webSocket);
+        } else if (isEventIncoming(event)) {
+            return new WebSocketEventMessageClient(event, this.automations, this.webSocket);
+        }
     }
 
     private assignWorker(): string {
@@ -170,17 +180,7 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
     }
 
     private init() {
-        const automations = this.automations;
         const ws = () => this.webSocket;
-
-        function createMessageClient(event: CommandIncoming | EventIncoming): MessageClient {
-            if (isCommandIncoming(event)) {
-                return new WebSocketCommandMessageClient(event, automations, ws());
-            } else if (isEventIncoming(event)) {
-                return new WebSocketEventMessageClient(event, automations, ws());
-            }
-        }
-
         const listeners = this.listeners;
 
         for (let i = 0; i < this.numWorkers; i++) {
@@ -190,8 +190,21 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
                 const ses = namespace.init();
                 ses.run(() => {
                     namespace.set(msg.cls);
+                    const invocationId = namespace.get().invocationId;
                     if (msg.type === "message") {
-                        const messageClient = createMessageClient(msg.event as CommandIncoming | EventIncoming);
+
+                        let messageClient: MessageClient;
+                        if (this.commands.has(invocationId)) {
+                            messageClient = this.commands.get(invocationId).context.messageClient;
+                        } else if (this.events.has(invocationId)) {
+                            messageClient = this.events.get(invocationId).context.messageClient;
+                        } else {
+                            // TODO will that ever happen?
+                            logger.warn("Can't handle message from worker due to missing messageClient");
+                            clearNamespace();
+                            return;
+                        }
+
                         if (msg.data.userNames && msg.data.userNames.length > 0) {
                             messageClient.addressUsers(msg.data.message as string | SlackMessage,
                                 msg.data.userNames, msg.data.options)
@@ -204,39 +217,40 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
                             messageClient.respond(msg.data.message as string | SlackMessage, msg.data.options)
                                 .then(() => clearNamespace());
                         }
+
                     } else if (msg.type === "status") {
                         sendMessage(msg.data, ws());
                         clearNamespace();
                     } else if (msg.type === "command_success") {
                         listeners.forEach(l => l.commandSuccessful(msg.event as CommandInvocation,
                             null, msg.data as HandlerResult));
-                        if (this.commandCallbacks.has(namespace.get().invocationId)) {
-                            this.commandCallbacks.get(namespace.get().invocationId).resolve(msg.data as HandlerResult);
-                            this.commandCallbacks.delete(namespace.get().invocationId);
+                        if (this.commands.has(invocationId)) {
+                            this.commands.get(invocationId).result.resolve(msg.data as HandlerResult);
+                            this.commands.delete(invocationId);
                         }
                         clearNamespace();
                     } else if (msg.type === "command_failure") {
                         listeners.forEach(l => l.commandFailed(msg.event as CommandInvocation,
                             null, msg.data));
-                        if (this.commandCallbacks.has(namespace.get().invocationId)) {
-                            this.commandCallbacks.get(namespace.get().invocationId).resolve(msg.data as HandlerResult);
-                            this.commandCallbacks.delete(namespace.get().invocationId);
+                        if (this.commands.has(invocationId)) {
+                            this.commands.get(invocationId).result.resolve(msg.data as HandlerResult);
+                            this.commands.delete(invocationId);
                         }
                         clearNamespace();
                     } else if (msg.type === "event_success") {
                         listeners.forEach(l => l.eventSuccessful(msg.event as EventFired<any>,
                             null, msg.data as HandlerResult[]));
-                        if (this.eventCallbacks.has(namespace.get().invocationId)) {
-                            this.eventCallbacks.get(namespace.get().invocationId).resolve(msg.data as HandlerResult[]);
-                            this.eventCallbacks.delete(namespace.get().invocationId);
+                        if (this.events.has(invocationId)) {
+                            this.events.get(invocationId).result.resolve(msg.data as HandlerResult[]);
+                            this.events.delete(invocationId);
                         }
                         clearNamespace();
                     } else if (msg.type === "event_failure") {
                         listeners.forEach(l => l.eventFailed(msg.event as EventFired<any>,
                             null, msg.data));
-                        if (this.eventCallbacks.has(namespace.get().invocationId)) {
-                            this.eventCallbacks.get(namespace.get().invocationId).resolve(msg.data as HandlerResult[]);
-                            this.eventCallbacks.delete(namespace.get().invocationId);
+                        if (this.events.has(invocationId)) {
+                            this.events.get(invocationId).result.resolve(msg.data as HandlerResult[]);
+                            this.events.delete(invocationId);
                         }
                         clearNamespace();
                     }
@@ -246,7 +260,12 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
     }
 }
 
-export class Deferred<T> {
+class Dispatched<T> {
+
+    constructor(public result: Deferred<T>, public context: HandlerContext) {}
+}
+
+class Deferred<T> {
     public promise: Promise<T>;
 
     private fate: "resolved" | "unresolved";

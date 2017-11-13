@@ -44,11 +44,9 @@ export class StableDirectoryManager implements DirectoryManager {
             ...pOpts,
         };
 
-        logger.debug("Setting up StableDirectoryManager with options %j", this.opts);
         if (this.opts.cleanOnExit === true) {
-            logger.debug("Registering shutdown hook to delete '%s'", this.opts.baseDir);
             registerShutdownHook(() => {
-                logger.info("Cleaning up temporary directories under '%s'", this.opts.baseDir);
+                logger.verbose("Cleaning up temporary directories under '%s'", this.opts.baseDir);
                 return fs.remove(this.opts.baseDir).then(() => 0);
             });
         }
@@ -113,6 +111,3 @@ export class StableDirectoryManager implements DirectoryManager {
             .then(() => dirName);
     }
 }
-
-// export const TmpCleaningDirectoryManager = new StableDirectoryManager(
-//     {baseDir: os.tmpdir() + "/atomist_working", cleanOnExit: true});
