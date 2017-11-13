@@ -8,6 +8,7 @@ import { LocalProject } from "../../../src/project/local/LocalProject";
 
 import { File } from "../../../src/project/File";
 
+import * as fs from "fs";
 import { defer } from "../../../src/internal/common/Flushable";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { AllFiles, ExcludeNodeModules } from "../../../src/project/fileGlobs";
@@ -15,7 +16,6 @@ import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProjec
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { toPromise } from "../../../src/project/util/projectUtils";
 import { tempProject } from "../utils";
-import * as fs from "fs";
 
 describe("NodeFsLocalProject", () => {
 

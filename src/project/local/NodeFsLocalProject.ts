@@ -9,11 +9,11 @@ import * as stream from "stream";
 import { deleteFolderRecursive } from "../../internal/util/file";
 import { logger } from "../../internal/util/logger";
 import { RepoRef, SimpleRepoId } from "../../operations/common/RepoId";
+import { isInMemoryProject } from "../mem/InMemoryProject";
 import { AbstractProject } from "../support/AbstractProject";
 import { toPromise } from "../util/projectUtils";
 import { isLocalProject, LocalProject } from "./LocalProject";
 import { NodeFsLocalFile } from "./NodeFsLocalFile";
-import { isInMemoryProject } from "../mem/InMemoryProject";
 
 /**
  * Implementation of LocalProject based on node file system.
@@ -193,7 +193,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         const baseDir = this.baseDir;
         const toFileTransform = new stream.Transform({objectMode: true});
 
-        toFileTransform._transform = function (chunk, encoding, done) {
+        toFileTransform._transform = function(chunk, encoding, done) {
             const f = new NodeFsLocalFile(baseDir, pathWithinArchive(baseDir, chunk.path));
             this.push(f);
             done();
