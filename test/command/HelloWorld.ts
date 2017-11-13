@@ -40,7 +40,7 @@ export class HelloWorld implements HandleCommand {
             .then(() => {
                 return ctx.messageClient.addressUsers(msg, "cd");
             })
-            .then(() => Success, failure);
+            .then(() => ({code: 0, test: "some message" }), failure);
 
     }
 }

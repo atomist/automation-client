@@ -31,7 +31,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
     // tslint:disable-next-line:no-empty
     public processCommand(command: CommandIncoming,
-                          callback: (result: HandlerResult) => void = () => { }) {
+                          callback: (result: Promise<HandlerResult>) => void = () => { }) {
         // setup context
         const ses = namespace.init();
         const cls = setupNamespace(command, this.automations);
@@ -66,7 +66,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
     protected invokeCommand(ci: CommandInvocation,
                             ctx: HandlerContext,
                             command: CommandIncoming,
-                            callback: (result: HandlerResult) => void) {
+                            callback: (result: Promise<HandlerResult>) => void) {
         try {
             this.automations.invokeCommand(ci, ctx)
                 .then(result => {
@@ -88,7 +88,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         };
                     }
                     this.sendStatus(result.code === 0 ? true : false, result, command);
-                    callback(result);
+                    callback(Promise.resolve(result));
                     logger.info(`Finished invocation of command handler '%s': %s`,
                         command.name, JSON.stringify(result));
                     clearNamespace();
@@ -104,7 +104,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
     // tslint:disable-next-line:no-empty
     public processEvent(event: EventIncoming,
-                        callback: (results: HandlerResult[]) => void = () => { }) {
+                        callback: (results: Promise<HandlerResult[]>) => void = () => { }) {
         // setup context
         const ses = namespace.init();
         const cls = setupNamespace(event, this.automations);
@@ -140,7 +140,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
     protected invokeEvent(ef: EventFired<any>,
                           ctx: HandlerContext,
                           event: EventIncoming,
-                          callback: (results: HandlerResult[]) => void) {
+                          callback: (results: Promise<HandlerResult[]>) => void) {
         try {
             this.automations.onEvent(ef, ctx)
                 .then(result => {
@@ -153,7 +153,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                     } else {
                         this.listeners.forEach(l => l.eventFailed(ef, ctx, result));
                     }
-                    callback(result);
+                    callback(Promise.resolve(result));
                     logger.info(`Finished invocation of event handler '%s': %s`,
                         event.extensions.operationName, JSON.stringify(result));
                     clearNamespace();
