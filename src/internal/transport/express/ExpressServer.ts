@@ -245,7 +245,7 @@ export class ExpressServer {
                 };
 
                 this.handler.processCommand(payload, result => {
-                    handle(req, res, result);
+                    result.then(r => handle(req, res, r));
                 });
             });
 
@@ -297,7 +297,7 @@ export class ExpressServer {
                     },
                 };
                 this.handler.processCommand(payload, result => {
-                    handle(req, res, result);
+                    result.then(r => handle(req, res, r));
                 });
             });
     }

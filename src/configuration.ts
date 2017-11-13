@@ -1,7 +1,10 @@
 import * as appRoot from "app-root-path";
+import * as cluster from "cluster";
 import * as fs from "fs-extra";
-import { HandleCommand } from "./HandleCommand";
-import { HandleEvent } from "./HandleEvent";
+import {
+    HandleCommand,
+    HandleEvent,
+} from "./index";
 import { logger } from "./internal/util/logger";
 import { obfuscateJson } from "./internal/util/string";
 import { AutomationEventListener } from "./server/AutomationEventListener";
@@ -20,6 +23,14 @@ export interface Configuration extends RunOptions {
         teamId?: string;
     };
 
+    cluster?: {
+        enabled: boolean,
+        workers?: number,
+    };
+
+    logging?: {
+        level: "debug" | "info" | "warn" | "error",
+    };
 }
 
 const UserConfigDir = `${process.env[process.platform === "win32" ? "USERPROFILE" : "HOME"]}/.atomist`;
@@ -133,7 +144,9 @@ export function findConfiguration(path?: string): Configuration {
     const file = files[0];
     // This part is tricky but essentially brings in the user's handlers.
     const config = require(`${appRoot.path}/${file}`).configuration as Configuration;
-    logger.debug("Using configuration from '%s': %s", file, JSON.stringify(config, obfuscateJson));
+    if (cluster.isMaster) {
+        logger.debug("Using configuration from '%s': %s", file, JSON.stringify(config, obfuscateJson));
+    }
     config.token = (config.token) ? config.token : moduleConfig.token;
     config.teamIds = (config.teamIds && config.teamIds.length > 0) ?
         config.teamIds : moduleConfig.teamIds;

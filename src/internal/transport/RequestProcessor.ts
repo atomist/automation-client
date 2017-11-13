@@ -11,7 +11,7 @@ export interface RequestProcessor {
      * @param {(result: HandlerResult) => void} callback
      * @param {(error: any) => void} error
      */
-    processCommand(command: CommandIncoming, callback?: (result: HandlerResult) => void);
+    processCommand(command: CommandIncoming, callback?: (result: Promise<HandlerResult>) => void);
 
     /**
      * A new cortex event has been received.
@@ -19,7 +19,7 @@ export interface RequestProcessor {
      * @param {(results: HandlerResult[]) => void} callback
      * @param {(error: any) => void} error
      */
-    processEvent(event: EventIncoming, callback?: (results: HandlerResult[]) => void);
+    processEvent(event: EventIncoming, callback?: (results: Promise<HandlerResult[]>) => void);
 }
 
 export function isCommandIncoming(event: any): event is CommandIncoming {
