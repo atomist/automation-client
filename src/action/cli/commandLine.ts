@@ -1,7 +1,6 @@
-
 import { exec } from "child-process-promise";
 
-import { ExecOptions} from "child_process";
+import { ExecOptions } from "child_process";
 import { logger } from "../../internal/util/logger";
 import { ActionResult } from "../ActionResult";
 
@@ -25,5 +24,9 @@ export interface CommandResult<T = undefined> extends ActionResult<T> {
  */
 export function runCommand(cmd: string, opts: ExecOptions): Promise<CommandResult> {
     logger.debug((opts.cwd ? opts.cwd : "") + " ==> " + cmd);
-    return exec(cmd, opts);
+    return exec(cmd, opts)
+        .then(r => ({
+            ...r,
+            success: true,
+        }));
 }

@@ -11,6 +11,8 @@ import * as fs from "fs";
 import { fail } from "power-assert";
 import { HandlerContext } from "../../../src/HandlerContext";
 import { GitHubDotComBase, GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
+import { generate } from "../../../src/operations/generate/generatorUtils";
+import { GitHubProjectPersister } from "../../../src/operations/generate/gitHubProjectPersister";
 import { UniversalSeed } from "../../../src/operations/generate/UniversalSeed";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { LocalProject } from "../../../src/project/local/LocalProject";
@@ -22,7 +24,7 @@ import { GitHubToken } from "../../atomist.config";
 const TargetRepo = `test-repo-${new Date().getTime()}`;
 let TargetOwner = "johnsonr";
 
-describe("Universal seed end to end", () => {
+describe("generator end to end", () => {
 
     before(done => {
         const config = {
@@ -72,6 +74,49 @@ describe("Universal seed end to end", () => {
                             .then(() => done());
                     });
             }).catch(done);
+    }).timeout(20000);
+
+    it("should create a new GitHub repo using generate function", function(done) {
+        this.retries(5);
+
+        const clonedSeed = GitCommandGitProject.cloned({token: GitHubToken},
+            new GitHubRepoRef("atomist-seeds", "spring-rest-seed"));
+        const targetRepo = new GitHubRepoRef(TargetOwner, TargetRepo);
+
+        generate(clonedSeed, undefined, {token: GitHubToken},
+            p => Promise.resolve(p), GitHubProjectPersister,
+            targetRepo)
+            .then(result => {
+                assert(result.success);
+                // Check the repo
+                return hasFile(GitHubToken, TargetOwner, TargetRepo, "pom.xml")
+                    .then(r => {
+                        assert(r);
+                        GitCommandGitProject.cloned({token: GitHubToken},
+                            targetRepo)
+                            .then(verifyPermissions)
+                            .then(() => done());
+                    });
+            }).catch(done);
+    }).timeout(20000);
+
+    it("should refuse to create a new GitHub repo using existing repo name", function(done) {
+        this.retries(5);
+
+        const clonedSeed = GitCommandGitProject.cloned({token: GitHubToken},
+            new GitHubRepoRef("atomist-seeds", "spring-rest-seed"));
+        const targetRepo = new GitHubRepoRef("johnsonr", "wallaby");
+
+        generate(clonedSeed, undefined, {token: GitHubToken},
+            p => Promise.resolve(p), GitHubProjectPersister,
+            targetRepo)
+            .then(() => {
+                fail("Should not have succeeded");
+            })
+            .catch(err => {
+                assert(err.includes("exists"));
+                done();
+            });
     }).timeout(20000);
 
     function verifyPermissions(p: LocalProject): Promise<Project> {

@@ -22,27 +22,29 @@ export type ProjectPersister<PARAMS = undefined, P extends Project = Project,
      params?: PARAMS) => Promise<R>;
 
 /**
- * Generate given the starting point. Do not change the starting point.
+ * Generate a new project given the starting point project.
+ * Do not change the starting point.
  * @param {Promise<Project>} startingPoint
  * @param {HandlerContext} ctx
  * @param {ProjectOperationCredentials} credentials
- * @param {ProjectEditor} editor
- * @param {ProjectPersister<PARAMS>} persist
- * @param {PARAMS} params
+ * @param {ProjectEditor} editor editor that does the actual transformation
+ * @param {ProjectPersister<PARAMS>} persist function to persist the new project:
+ * for example, to GitHub
+ * @param {PARAMS} params - contain repo identification for persistence
  * @return {Promise<R>}
  */
 export function generate<PARAMS extends RepoId,
-    R extends ActionResult<Project> = ActionResult<Project>>(startingPoint: Promise<Project>,
+    R extends ActionResult<Project> = ActionResult<Project>>(startingPoint: Promise<Project> | Project,
                                                              ctx: HandlerContext,
                                                              credentials: ProjectOperationCredentials,
                                                              editor: AnyProjectEditor<any>,
                                                              persist: ProjectPersister<PARAMS, Project, R>,
-                                                             params?: PARAMS): Promise<R> {
+                                                             params: PARAMS): Promise<R> {
     const parentDir = DefaultDirectoryManager.opts.baseDir;
     logger.debug("Independent copy of seed will be at %s/%s: owner/repo=%s:%s",
         parentDir, params.repo, params.owner, params.repo);
     return fs.remove(parentDir + "/" + params.repo)
-        .then(() => startingPoint
+        .then(() => Promise.resolve(startingPoint)
             .then(seed =>
                 // Make a copy that we can work on
                 NodeFsLocalProject.copy(seed, parentDir, params.repo))
@@ -55,5 +57,4 @@ export function generate<PARAMS extends RepoId,
                     (populated as LocalProject).baseDir, params.owner, params.repo);
                 return persist(populated, credentials, params);
             }));
-
 }

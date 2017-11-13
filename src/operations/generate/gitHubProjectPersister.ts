@@ -11,11 +11,10 @@ import * as promiseRetry from "promise-retry";
 
 /**
  * Persist project to GitHub, returning GitHub details. Use retry.
- * @param {Project} p
+ * @param {Project} p project to persist
  * @param {ProjectOperationCredentials} creds
  * @param {RepoId} params
  * @return {Promise<ActionResult<GitProject>>}
- * @constructor
  */
 export const GitHubProjectPersister: ProjectPersister<RepoId, Project, ActionResult<GitProject>> =
     (p: Project,
@@ -28,7 +27,11 @@ export const GitHubProjectPersister: ProjectPersister<RepoId, Project, ActionRes
             .then(() => {
                 logger.debug(`Creating new repo '${params.owner}/${params.repo}'`);
                 return gp.createAndSetGitHubRemote(params.owner, params.repo,
-                    this.targetRepo, this.visibility);
+                    this.targetRepo, this.visibility)
+                    .catch(err => {
+                        return Promise.reject(`Unable to create new repo '${params.owner}/${params.repo}': ` +
+                            `Probably exists: ${err}`);
+                    });
             })
             .then(() => {
                 logger.debug(`Committing to local repo at '${gp.baseDir}'`);

@@ -54,6 +54,14 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         return new GitCommandGitProject(id, baseDir, credentials);
     }
 
+    /**
+     * Create a new GitCommandGitProject by cloning the given remote project
+     * @param {ProjectOperationCredentials} credentials
+     * @param {RemoteRepoRef} id
+     * @param {CloneOptions} opts
+     * @param {DirectoryManager} directoryManager
+     * @return {Promise<GitCommandGitProject>}
+     */
     public static cloned(credentials: ProjectOperationCredentials,
                          id: RemoteRepoRef,
                          opts: CloneOptions = DefaultCloneOptions,
@@ -218,7 +226,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     public push(): Promise<CommandResult<this>> {
-        if (this.branch && this.remote) {
+        if (!!this.branch && !!this.remote) {
             // We need to set the remote
             return this.runCommandInCurrentWorkingDirectory(`git push ${this.remote} ${this.branch}`)
                 .catch(err => {
