@@ -17,12 +17,14 @@ export function formatter(options: any): string {
     const executionContext = context.get();
     let ctx: string;
     if (cluster.isMaster) {
-        ctx = options.colorize ? winston.config.colorize(options.level, `m:${process.pid}`)
-            : `m:${process.pid}`;
+        ctx = options.colorize ? winston.config.colorize(options.level, "m")
+            : "m";
     } else {
-        ctx = options.colorize ? winston.config.colorize(options.level, `w:${process.pid}`)
-            : `w:${process.pid}`;
+        ctx = options.colorize ? winston.config.colorize(options.level, "w")
+            : "w";
     }
+    ctx += ":" + (options.colorize ? winston.config.colorize(options.level, process.pid.toString())
+        : process.pid);
     if (executionContext) {
         if (executionContext.invocationId) {
             ctx += ":" + (options.colorize ? winston.config.colorize(options.level, executionContext.invocationId)

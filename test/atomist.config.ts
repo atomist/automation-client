@@ -100,6 +100,6 @@ export const configuration: Configuration = {
     },
     cluster: {
         enabled: true,
-        workers: 4,
+        workers: 3,
     },
 };
