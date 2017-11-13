@@ -11,6 +11,11 @@ import {
 import { WebSocketClientOptions } from "./WebSocketClient";
 import { RegistrationConfirmation } from "./WebSocketRequestProcessor";
 
+/**
+ * Factory for creating GraphClient instances for incoming commands and events.
+ *
+ * Uses a cache to store GraphClient instances for 5 mins after which new instances will be given out.
+ */
 export class GraphClientFactory {
 
     private graphClients = new NodeCache( { stdTTL: 5 * 60, checkperiod: 1 * 60, useClones: false } );
