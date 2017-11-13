@@ -112,6 +112,13 @@ export interface ProjectAsync extends ProjectCore, ScriptedFlushable<Project> {
      */
     findFile(path: string): Promise<File>;
 
+    /**
+     * Add a file preserving permissions
+     * @param {File} f
+     * @return {Promise<this>}
+     */
+    add(f: File): Promise<this>;
+
     addFile(path: string, content: string): Promise<this>;
 
     deleteFile(path: string): Promise<this>;
@@ -123,6 +130,15 @@ export interface ProjectAsync extends ProjectCore, ScriptedFlushable<Project> {
      * @return {Promise<this>}
      */
     moveFile(oldPath: string, newPath: string): Promise<this>;
+
+    /**
+     * Add an empty directory to the project.
+     * Should be preserved through all transformations, although
+     * may not be accessible in some implementations
+     * @param {string} path
+     * @return {Promise<this>}
+     */
+    addDirectory(path: string): Promise<this>;
 
     /**
      * Delete a directory. Do not throw an error if it doesn't exist

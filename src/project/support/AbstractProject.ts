@@ -76,7 +76,15 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
 
     public abstract deleteDirectory(path: string): Promise<this>;
 
+    // TODO set permissions
+    public add(f: File): Promise<this> {
+        return f.getContent()
+            .then(content => this.addFile(f.path, content));
+    }
+
     public abstract addFile(path: string, content: string): Promise<this>;
+
+    public abstract addDirectory(path: string): Promise<this>;
 
     public abstract deleteFile(path: string): Promise<this>;
 

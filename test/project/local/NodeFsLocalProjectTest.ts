@@ -8,6 +8,7 @@ import { LocalProject } from "../../../src/project/local/LocalProject";
 
 import { File } from "../../../src/project/File";
 
+import * as fs from "fs";
 import { defer } from "../../../src/internal/common/Flushable";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { AllFiles, ExcludeNodeModules } from "../../../src/project/fileGlobs";
@@ -50,6 +51,22 @@ describe("NodeFsLocalProject", () => {
             assert(p.findFileSync("some/nested/thing"));
             done();
         }).catch(done);
+    });
+
+    it("copies in memory project including empty directory", done => {
+        const proj = InMemoryProject.from(
+            new GitHubRepoRef("owner", "name"),
+            {path: "package.json", content: "{ node }"},
+            {path: "some/nested/thing", content: "{ node }"},
+        );
+        proj.addDirectory("emptyDir")
+            .then(() => {
+                const baseDir: string = tmp.dirSync().name;
+                NodeFsLocalProject.copy(proj, baseDir).then(p => {
+                    assert(fs.statSync(p.baseDir + "/emptyDir").isDirectory());
+                    done();
+                });
+            }).catch(done);
     });
 
     it("copies other local project", done => {
