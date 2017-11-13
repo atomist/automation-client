@@ -91,8 +91,8 @@ export class InMemoryProject extends AbstractProject {
     }
 
     public deleteDirectory(path: string): Promise<this> {
-        return this.deleteDirectory(path)
-            .then(() => this);
+        this.deleteDirectorySync(path);
+        return Promise.resolve(this);
     }
 
     public deleteFileSync(path: string): this {

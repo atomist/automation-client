@@ -99,5 +99,5 @@ export interface File extends FileScripting, FileSync, FileAsync {
 
 export function isFile(a: any): a is File {
     const maybeF = a as File;
-    return !!maybeF.name && !!maybeF.path;
+    return !!maybeF.name && !!maybeF.path && !!maybeF.getContentSync;
 }

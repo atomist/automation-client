@@ -69,7 +69,6 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
                     let prom = Promise.resolve(p);
                     if (isInMemoryProject(other)) {
                         other.addedDirectoryPaths.forEach(path => {
-                            console.log("Adding " + path);
                             prom = prom.then(() => p.addDirectory(path));
                         });
                     }
