@@ -26,16 +26,17 @@ export interface ParametersConstructor<P> {
  * parameters instance before invocation
  * @param {HandlerContext} ctx context from which GraphQL client can be obtained,
  * messages can be sent etc.
- * @return {Promise<HandlerResult>} result containing status and any command-specific data
+ * @return a Promise of a HandlerResult, containing a status code, or anything else representing
+ * success.
  */
 export type OnCommand<P = undefined> =
-    (ctx: HandlerContext, parameters: P) => Promise<HandlerResult>;
+    (ctx: HandlerContext, parameters: P) => Promise<HandlerResult> | Promise<any>;
 
 /**
  * Create a HandleCommand instance with the appropriate metadata wrapping
  * the given function
- * @param {OnCommand<P>} h
- * @param {ParametersConstructor<P>} factory
+ * @param h handle function
+ * @param {ParametersConstructor<P>} factory to create new parameters instances
  * @param {string} name can be omitted if the function isn't exported
  * @param {string} description
  * @param {string[]} intent
