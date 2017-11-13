@@ -2,13 +2,14 @@ import * as minimatch from "minimatch";
 import * as spigot from "stream-spigot";
 
 import { RepoRef } from "../../operations/common/RepoId";
-import { File } from "../File";
-import { FileStream } from "../Project";
+import { File, isFile } from "../File";
+import { FileStream, Project } from "../Project";
 import { AbstractProject } from "../support/AbstractProject";
 import { InMemoryFile } from "./InMemoryFile";
 
 /**
- * In memory Project implementation. Mainly used for testing
+ * In memory Project implementation. Used for testing
+ * and high performance caching of small projects.
  */
 export class InMemoryProject extends AbstractProject {
 
@@ -18,18 +19,26 @@ export class InMemoryProject extends AbstractProject {
      * @param files files to include in the project
      * @return {InMemoryProject}
      */
-    public static from(id: RepoRef, ...files: Array<{ path: string, content: string}>): InMemoryProject {
+    public static from(id: RepoRef, ...files: Array<{ path: string, content: string } | File>): InMemoryProject {
         const inp = new InMemoryProject(id);
-        files.forEach(f => inp.recordAddFile(f.path, f.content));
+        files.forEach(f => inp.recordAddFile(f.path,
+            isFile(f) ? f.getContentSync() : f.content));
         return inp;
     }
 
     /**
      * Create a new InMemoryProject without an id
      */
-    public static of(...files: Array<{ path: string, content: string}>): InMemoryProject {
+    public static of(...files: Array<{ path: string, content: string } | File>): InMemoryProject {
         return InMemoryProject.from(undefined, ...files);
     }
+
+    /**
+     * Directories added. May contain no files. Must
+     * be included when copying to a file system.
+     * @type {Array}
+     */
+    public readonly addedDirectoryPaths: string[] = [];
 
     private memFiles: InMemoryFile[] = [];
 
@@ -68,6 +77,11 @@ export class InMemoryProject extends AbstractProject {
         return Promise.resolve(this);
     }
 
+    public addDirectory(path: string): Promise<this> {
+        this.addedDirectoryPaths.push(path);
+        return Promise.resolve(this);
+    }
+
     public deleteDirectorySync(path: string): void {
         for (const f of this.memFiles) {
             if (f.path.startsWith(path)) {
@@ -77,7 +91,6 @@ export class InMemoryProject extends AbstractProject {
     }
 
     public deleteDirectory(path: string): Promise<this> {
-        // TODO should not be synch
         this.deleteDirectorySync(path);
         return Promise.resolve(this);
     }
@@ -121,4 +134,9 @@ export class InMemoryProject extends AbstractProject {
         throw new Error("makeExecutable not implemented.");
     }
 
+}
+
+export function isInMemoryProject(p: Project): p is InMemoryProject {
+    const maybe = p as InMemoryProject;
+    return maybe.addedDirectoryPaths !== undefined;
 }
