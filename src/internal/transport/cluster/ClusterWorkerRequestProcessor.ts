@@ -44,17 +44,19 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
                 // tslint:disable-next-line:variable-name
                 private _listeners: AutomationEventListener[] = []) {
         super(_automations, [..._listeners, new ClusterWorkerAutomationEventListener()]);
-
-        const message = {
-            type: "online",
-        };
-        process.send(message);
+        process.send({type: "online" });
     }
 
     public setRegistration(registration: RegistrationConfirmation) {
         logger.debug("Receiving registration: %s", JSON.stringify(registration));
         this.registration = registration;
         this.graphClients = new GraphClientFactory(this.registration, this._options);
+    }
+
+    public setRegistrationIfRequired(data: any) {
+        if (!this.registration) {
+            this.setRegistration(data.registration as RegistrationConfirmation);
+        }
     }
 
     protected sendMessage(payload: any): void {
@@ -169,8 +171,10 @@ export function startWorker(automations: AutomationServer,
         if (msg.type === "registration") {
             worker.setRegistration(msg.data as RegistrationConfirmation);
         } else if (msg.type === "command") {
+            worker.setRegistrationIfRequired(msg);
             worker.processCommand(msg.data as CommandIncoming);
         } else if (msg.type === "event") {
+            worker.setRegistrationIfRequired(msg);
             worker.processEvent(msg.data as EventIncoming);
         }
     });

@@ -96,13 +96,10 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
     public run(): Promise<any> {
         const ws = () => this.webSocket;
         const listeners = this.listeners;
-        const promises: Array<Promise<any>> = [];
+        const commands = this.commands;
+        const events = this.events;
 
-        for (let i = 0; i < this.numWorkers; i++) {
-            const worker = cluster.fork();
-
-            const deferred = new Deferred<any>();
-            promises.push(deferred.promise);
+        function attachEvents(worker: cluster.Worker, deferred: Deferred<any>) {
 
             worker.on("message", msg => {
 
@@ -119,10 +116,10 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
                     if (msg.type === "message") {
 
                         let messageClient: MessageClient;
-                        if (this.commands.has(invocationId)) {
-                            messageClient = this.commands.get(invocationId).context.messageClient;
-                        } else if (this.events.has(invocationId)) {
-                            messageClient = this.events.get(invocationId).context.messageClient;
+                        if (commands.has(invocationId)) {
+                            messageClient = commands.get(invocationId).context.messageClient;
+                        } else if (events.has(invocationId)) {
+                            messageClient = events.get(invocationId).context.messageClient;
                         } else {
                             // TODO will that ever happen?
                             logger.warn("Can't handle message from worker due to missing messageClient");
@@ -149,39 +146,61 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
                     } else if (msg.type === "command_success") {
                         listeners.forEach(l => l.commandSuccessful(msg.event as CommandInvocation,
                             null, msg.data as HandlerResult));
-                        if (this.commands.has(invocationId)) {
-                            this.commands.get(invocationId).result.resolve(msg.data as HandlerResult);
-                            this.commands.delete(invocationId);
+                        if (commands.has(invocationId)) {
+                            commands.get(invocationId).result.resolve(msg.data as HandlerResult);
+                            commands.delete(invocationId);
                         }
                         clearNamespace();
                     } else if (msg.type === "command_failure") {
                         listeners.forEach(l => l.commandFailed(msg.event as CommandInvocation,
                             null, msg.data));
-                        if (this.commands.has(invocationId)) {
-                            this.commands.get(invocationId).result.resolve(msg.data as HandlerResult);
-                            this.commands.delete(invocationId);
+                        if (commands.has(invocationId)) {
+                            commands.get(invocationId).result.resolve(msg.data as HandlerResult);
+                            commands.delete(invocationId);
                         }
                         clearNamespace();
                     } else if (msg.type === "event_success") {
                         listeners.forEach(l => l.eventSuccessful(msg.event as EventFired<any>,
                             null, msg.data as HandlerResult[]));
-                        if (this.events.has(invocationId)) {
-                            this.events.get(invocationId).result.resolve(msg.data as HandlerResult[]);
-                            this.events.delete(invocationId);
+                        if (events.has(invocationId)) {
+                            events.get(invocationId).result.resolve(msg.data as HandlerResult[]);
+                            events.delete(invocationId);
                         }
                         clearNamespace();
                     } else if (msg.type === "event_failure") {
                         listeners.forEach(l => l.eventFailed(msg.event as EventFired<any>,
                             null, msg.data));
-                        if (this.events.has(invocationId)) {
-                            this.events.get(invocationId).result.resolve(msg.data as HandlerResult[]);
-                            this.events.delete(invocationId);
+                        if (events.has(invocationId)) {
+                            events.get(invocationId).result.resolve(msg.data as HandlerResult[]);
+                            events.delete(invocationId);
                         }
                         clearNamespace();
                     }
                 });
             });
         }
+
+        const promises: Array<Promise<any>> = [];
+
+        for (let i = 0; i < this.numWorkers; i++) {
+            const worker = cluster.fork();
+
+            const deferred = new Deferred<any>();
+            promises.push(deferred.promise);
+
+            attachEvents(worker, deferred);
+        }
+
+        cluster.on("disconnect", worker => {
+            logger.warn(`Worker '${worker.id}' disconnected. Killing ...`);
+            worker.kill("SIGTERM");
+        });
+
+        cluster.on("exit", (worker, code, signal) => {
+            logger.warn(`Worker '${worker.id}' exited with '${code}' '${signal}'. Restarting ...`);
+            attachEvents(cluster.fork(), new Deferred());
+        });
+
         return Promise.all(promises);
     }
 
@@ -194,6 +213,7 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
 
         const message = {
             type: "command",
+            registration: this.registration,
             cls: {
                 ...namespace.get(),
             },
@@ -208,8 +228,8 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
 
         const dispatched = new Dispatched(new Deferred<HandlerResult>(), ctx);
         this.commands.set(namespace.get().invocationId, dispatched);
-        const worker = cluster.workers[this.assignWorker()];
-        logger.debug("Incoming command '%s' dispatching to worker '%s'", ci.name, worker.process.pid);
+        const worker = this.assignWorker();
+        logger.debug("Incoming command '%s' dispatching to worker '%s'", ci.name, worker.id);
         worker.send(message);
         callback(dispatched.result.promise);
     }
@@ -223,6 +243,7 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
 
         const message = {
             type: "event",
+            registration: this.registration,
             cls: {
                 ...namespace.get(),
             },
@@ -237,8 +258,8 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
 
         const dispatched = new Dispatched(new Deferred<HandlerResult[]>(), ctx);
         this.events.set(namespace.get().invocationId, dispatched);
-        const worker = cluster.workers[this.assignWorker()];
-        logger.debug("Incoming event '%s' dispatching to worker '%s'", ef.extensions.operationName, worker.process.pid);
+        const worker = this.assignWorker();
+        logger.debug("Incoming event '%s' dispatching to worker '%s'", ef.extensions.operationName, worker.id);
         worker.send(message);
         callback(dispatched.result.promise);
     }
@@ -259,14 +280,17 @@ export class ClusterMasterRequestProcessor extends AbstractEventStoringRequestPr
         }
     }
 
-    private assignWorker(): string {
-        const thisWorker = this.currentWorker;
-        if (this.currentWorker < this.numWorkers) {
-            this.currentWorker++;
-        } else {
-            this.currentWorker = 1;
+    private assignWorker(): cluster.Worker {
+        const workers = [];
+        for (const id in cluster.workers) {
+            if (cluster.workers.hasOwnProperty(id)) {
+                const worker = cluster.workers[id];
+                if (worker.isConnected()) {
+                    workers.push(worker);
+                }
+            }
         }
-        return thisWorker.toString();
+        return workers[Math.floor(Math.random() * workers.length)];
     }
 }
 
