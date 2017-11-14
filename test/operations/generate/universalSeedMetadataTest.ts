@@ -14,7 +14,7 @@ describe("UniversalSeed metadata test", () => {
 
     function validateUniversalSeedMetadata(md: CommandHandlerMetadata) {
         const description = `parameters were named: ${md.parameters.map(p => p.name).join(",")}`;
-        assert(md.parameters.some(p => p.name === "sourceOwner"),description );
+        assert(md.parameters.some(p => p.name === "sourceOwner"), description );
         assert(md.parameters.some(p => p.name === "sourceRepo"), description);
         // assert(md.parameters.some(p=> p.name === "targetOwner"));
         assert(md.parameters.some(p => p.name === "targetRepo", description));

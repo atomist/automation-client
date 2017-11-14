@@ -50,11 +50,11 @@ describe("generator end to end", () => {
             });
     }
 
-    it("should create a new GitHub repo", function (done) {
+    it("should create a new GitHub repo", function(done) {
         this.retries(3);
         const repoName = tempRepoName();
         const cleanupDone = (err: Error | void) => {
-          deleteOrIgnore(repoName).then(done(err))
+          deleteOrIgnore(repoName).then(done(err));
         };
 
         const seed = new UniversalSeed();
@@ -70,16 +70,16 @@ describe("generator end to end", () => {
                         assert(r);
                         GitCommandGitProject.cloned({ token: GitHubToken },
                             new GitHubRepoRef(TargetOwner, repoName))
-                            .then(verifyPermissions)
+                            .then(verifyPermissions);
                     });
             }).then(cleanupDone, cleanupDone);
     }).timeout(20000);
 
-    it("should create a new GitHub repo using generate function", function (done) {
+    it("should create a new GitHub repo using generate function", function(done) {
         this.retries(3);
         const repoName = tempRepoName();
         const cleanupDone = (err: Error | void) => {
-            deleteOrIgnore(repoName).then(done(err))
+            deleteOrIgnore(repoName).then(done(err));
         };
 
         const clonedSeed = GitCommandGitProject.cloned({ token: GitHubToken },
@@ -97,12 +97,12 @@ describe("generator end to end", () => {
                         assert(r);
                         GitCommandGitProject.cloned({ token: GitHubToken },
                             targetRepo)
-                            .then(verifyPermissions)
+                            .then(verifyPermissions);
                     });
             }).then(cleanupDone, cleanupDone);
     }).timeout(20000);
 
-    it("should refuse to create a new GitHub repo using existing repo name", function (done) {
+    it("should refuse to create a new GitHub repo using existing repo name", function(done) {
         this.retries(5);
 
         const clonedSeed = GitCommandGitProject.cloned({ token: GitHubToken },
