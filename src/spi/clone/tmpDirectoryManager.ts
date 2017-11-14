@@ -10,10 +10,14 @@ import { CloneDirectoryInfo, CloneOptions, DirectoryManager } from "./DirectoryM
 export const TmpDirectoryManager: DirectoryManager = {
 
     directoryFor(owner: string, repo: string, branch: string, opts: CloneOptions): Promise<CloneDirectoryInfo> {
-        return tmp.dir({keep: opts.keep})
-            .then(fromTmp => Promise.resolve({
+        return tmp.dir({keep: opts.keep})// the lack of typings here causes lack of typechecking in this function
+            .then(fromTmp => ({
                 ...fromTmp,
-                type: "parent-directory",
+                type: "empty-directory",
+                release: () => Promise.resolve(), // opportunity: delete directory here
+                invalidate: () => Promise.resolve(), // and here
+                transient: true,
+                provenance: "created with tmp, keep = " + opts.keep,
             }));
     },
 };

@@ -52,12 +52,27 @@ export class StableDirectoryManager implements DirectoryManager {
         }
     }
 
+    public invalidate(existing: CloneDirectoryInfo): Promise<void> {
+        return fs.remove(existing.path)
+            .then(() => {
+                logger.info("deleted " + existing.path);
+            }, err => {
+                if (err.code === "ENOENT") {
+                    logger.info("It's already gone");
+                    // fine, it's already been removed
+                    return;
+                } else {
+                    logger.error("unexpected error deleting directory:" + err);
+                    throw err;
+                }
+            });
+    }
+
     public directoryFor(owner: string, repo: string, branch: string, opts: CloneOptions): Promise<CloneDirectoryInfo> {
         if (this.opts.reuseDirectories) {
             // Attempt to reuse the directory
             return this.existingDirectoryFor(owner, repo, branch, opts)
-                .then(existing =>
-                    !!existing ? existing : this.freshDirectoryFor(owner, repo, branch, opts));
+                .then(existing => !!existing ? existing : this.freshDirectoryFor(owner, repo, branch, opts));
         } else {
             return this.freshDirectoryFor(owner, repo, branch, opts);
         }
@@ -76,7 +91,10 @@ export class StableDirectoryManager implements DirectoryManager {
                         this.directoriesUsed, expectedPath);
                     return {
                         path: expectedPath,
-                        type: "actual-directory" as any,
+                        type: "existing-directory" as any,
+                        release: () => Promise.resolve(),
+                        invalidate: () => Promise.resolve(),
+                        transient: false,
                     };
                 } else {
                     // It doesn't exist
@@ -88,13 +106,16 @@ export class StableDirectoryManager implements DirectoryManager {
     private freshDirectoryFor(user: string, repo: string, branch: string,
                               opts: CloneOptions): Promise<CloneDirectoryInfo> {
         return this.createFreshDir(user, repo)
-            .then(path => {
+            .then((path): CloneDirectoryInfo => {
                 this.directoriesUsed++;
                 logger.debug("%s directories used: Returning new path '%s'",
                     this.directoriesUsed, path);
                 return {
                     path,
-                    type: "parent-directory" as any,
+                    type: "empty-directory",
+                    release: () => Promise.resolve(),
+                    invalidate: () => Promise.resolve(),
+                    transient: false,
                 };
             });
     }
@@ -109,18 +130,34 @@ export class StableDirectoryManager implements DirectoryManager {
         const repoDir = userDir + "/" + repo;
         return assureDirectoryExists(this.opts.baseDir)
             .then(() => assureDirectoryExists(userDir))
-            .then(() => fs.remove(repoDir))
-            .then(() => userDir);
+            .then(() => assureDirectoryExists(repoDir))
+            .then(() => assureDirectoryIsEmpty(repoDir))
+            .then(() => repoDir);
     }
 }
 
 function assureDirectoryExists(name: string): Promise<void> {
+    // fyi, there is a race condition when the directory does not exist and
+    // two concurrent activities both try to create it.
+    // It's a transient error, not the end of the world. Works on second try.
     return fs.stat(name).then(stats => {
         if (!stats.isDirectory()) {
             throw new Error(name + "exists but is not a directory.");
         }
     }, err => {
-        console.log(`Hope this means 'directory does not exist': ${err}`);
-        return fs.mkdir(name);
+        if (err.code === "ENOENT") {
+            console.info("Creating " + name);
+            return fs.mkdir(name);
+        }
+        throw err;
+    });
+}
+
+function assureDirectoryIsEmpty(name: string): Promise<void> {
+    return fs.readdir(name).then(files => {
+        if (files.length > 0) {
+            throw new Error("This directory was supposed to be empty: " + name +
+                " but it contains: " + files.join("\n"));
+        }
     });
 }

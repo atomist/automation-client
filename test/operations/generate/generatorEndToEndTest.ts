@@ -140,6 +140,10 @@ describe("Local project creation", () => {
         const cwd = tmp.dirSync().name;
         const repoName = tempRepoName();
         shell.cd(cwd);
+        function cleaningDone(err: Error | void) {
+            shell.cd("-");
+            done(err);
+        }
         const seed = new UniversalSeed();
         seed.targetRepo = repoName;
         seed.local = true;
@@ -154,7 +158,7 @@ describe("Local project creation", () => {
                     .then(created => {
                         assert(created.fileExistsSync("pom.xml"));
                     });
-            }).then(done, done);
+            }).then(cleaningDone, cleaningDone);
     }).timeout(10000);
 });
 

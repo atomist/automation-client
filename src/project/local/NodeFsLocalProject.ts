@@ -18,6 +18,8 @@ import { NodeFsLocalFile } from "./NodeFsLocalFile";
  * Implementation of LocalProject based on node file system.
  * Uses fs-extra vs raw fs.
  */
+export type ReleaseFunction = () => Promise<void>;
+
 export class NodeFsLocalProject extends AbstractProject implements LocalProject {
 
     /**
@@ -26,12 +28,14 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
      * @param {string} baseDir
      * @return {Promise<LocalProject>}
      */
-    public static fromExistingDirectory(id: RepoRef, baseDir: string): Promise<LocalProject> {
+    public static fromExistingDirectory(id: RepoRef,
+                                        baseDir: string,
+                                        release: ReleaseFunction = () => Promise.resolve()): Promise<LocalProject> {
         return fs.stat(baseDir).then(stat => {
             if (!stat.isDirectory()) {
                 throw new Error(`No such directory: [${baseDir}] when trying to create LocalProject`);
             } else {
-                return new NodeFsLocalProject(id, baseDir);
+                return new NodeFsLocalProject(id, baseDir, release);
             }
         });
     }
@@ -43,7 +47,8 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
      * @param newName new name of the project. Defaults to name of old project
      * @returns {LocalProject}
      */
-    public static copy(other: Project, parentDir: string, newName: string = other.name): Promise<LocalProject> {
+    public static copy(other: Project, parentDir: string, newName: string = other.name,
+                       cleanup: ReleaseFunction = () => Promise.resolve()): Promise<LocalProject> {
         const baseDir = parentDir + "/" + newName;
         if (!fs.existsSync(baseDir)) {
             fs.mkdirSync(baseDir);
@@ -51,11 +56,11 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         if (isLocalProject(other)) {
             return fs.copy(other.baseDir, baseDir)
                 .then(() =>
-                    new NodeFsLocalProject(other.id, baseDir));
+                    new NodeFsLocalProject(other.id, baseDir, cleanup));
         } else {
             // We don't know what kind of project the other one is,
             // so we are going to need to copy the files one at a time
-            const p = new NodeFsLocalProject(other.id, baseDir);
+            const p = new NodeFsLocalProject(other.id, baseDir, cleanup);
             return copyFiles(other, p)
                 .then(() => {
                     // Add empty directories if necessary
@@ -80,11 +85,19 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
      * directory, so using it except in tests should be avoided
      * @param {RepoRef} ident identification of the repo
      * @param {string} baseDir
+     * @param cleanup function that will release locks, delete temp directories etc
      */
-    public constructor(ident: RepoRef | string, baseDir: string) {
+    public constructor(ident: RepoRef | string, baseDir: string, private cleanup: ReleaseFunction) {
         super(typeof ident === "string" ? new SimpleRepoId(undefined, ident) : ident);
         // TODO not sure why app-root-path can return something weird and this coercion is necessary
         this.baseDir = "" + baseDir;
+    }
+
+    public release(): Promise<void> {
+        // clean up, clean up, everybody everywhere
+
+        // this will release locks and clean the cached project.
+        return this.cleanup();
     }
 
     public addFileSync(path: string, content: string): void {

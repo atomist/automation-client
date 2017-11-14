@@ -13,10 +13,15 @@ import { hideString } from "../../internal/util/string";
 import { GitHubRepoRef, isGitHubRepoRef } from "../../operations/common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
 import { RemoteRepoRef, RepoRef } from "../../operations/common/RepoId";
-import { CloneOptions, DefaultCloneOptions, DirectoryManager } from "../../spi/clone/DirectoryManager";
+import { CachingDirectoryManager } from "../../spi/clone/CachingDirectoryManager";
+import {
+    CloneDirectoryInfo, CloneOptions, DefaultCloneOptions,
+    DirectoryManager,
+} from "../../spi/clone/DirectoryManager";
 import { StableDirectoryManager } from "../../spi/clone/StableDirectoryManager";
-import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
+import { NodeFsLocalProject, ReleaseFunction } from "../local/NodeFsLocalProject";
 import { GitProject } from "./GitProject";
+import { GitStatus, runStatusIn } from "./gitStatus";
 
 /**
  * Default Atomist working directory
@@ -38,7 +43,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     public static fromProject(p: Project, credentials: ProjectOperationCredentials): GitProject {
         if (isLocalProject(p)) {
-            return GitCommandGitProject.fromBaseDir(p.id, p.baseDir, credentials);
+            return GitCommandGitProject.fromBaseDir(p.id, p.baseDir, credentials, () => Promise.resolve());
         }
         throw new Error(`Project ${p.name} doesn't have a local directory`);
     }
@@ -48,11 +53,15 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @param {RepoRef} id
      * @param {string} baseDir
      * @param {ProjectOperationCredentials} credentials
+     * @param release call this when you're done with the project. make its filesystem resources available to others.
+     * @param provenance optional; for debugging, describe how this was constructed
      * @return {GitCommandGitProject}
      */
     public static fromBaseDir(id: RepoRef, baseDir: string,
-                              credentials: ProjectOperationCredentials): GitCommandGitProject {
-        return new GitCommandGitProject(id, baseDir, credentials);
+                              credentials: ProjectOperationCredentials,
+                              release: ReleaseFunction,
+                              provenance?: string): GitCommandGitProject {
+        return new GitCommandGitProject(id, baseDir, credentials, release, provenance);
     }
 
     /**
@@ -66,14 +75,19 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     public static cloned(credentials: ProjectOperationCredentials,
                          id: RemoteRepoRef,
                          opts: CloneOptions = DefaultCloneOptions,
-                         directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitCommandGitProject> {
+                         directoryManager: DirectoryManager = CachingDirectoryManager): Promise<GitCommandGitProject> {
         return clone(credentials, id, opts, directoryManager)
             .then(p => {
-                const pathIntoRepo = !!id.path ?
-                    id.path.startsWith("/") ? id.path : "/" + id.path :
-                    "";
-                const gp = GitCommandGitProject.fromBaseDir(id, p.baseDir + pathIntoRepo, credentials);
-                return gp;
+                if (!!id.path) {
+                    const pathInsideRepo = id.path.startsWith("/") ? id.path : "/" + id.path;
+                    // not sure this will work with cached
+                    const gp = GitCommandGitProject.fromBaseDir(id, p.baseDir + pathInsideRepo, credentials,
+                        () => p.release(),
+                        p.provenance + "\ncopied into one with extra path " + id.path);
+                    return gp;
+                } else {
+                    return p
+                }
             });
     }
 
@@ -83,8 +97,10 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     public newRepo: boolean = false;
 
-    private constructor(id: RepoRef, public baseDir: string, private credentials: ProjectOperationCredentials) {
-        super(id, baseDir);
+    private constructor(id: RepoRef, public baseDir: string,
+                        private credentials: ProjectOperationCredentials, release: ReleaseFunction,
+                        public provenance?: string) {
+        super(id, baseDir, release);
         logger.debug(`Created GitProject with token '${hideString(this.credentials.token)}'`);
     }
 
@@ -102,6 +118,10 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                     success: commandResult.stdout !== undefined && commandResult.stdout === "",
                 };
             });
+    }
+
+    public gitStatus(): Promise<GitStatus> {
+        return runStatusIn(this.baseDir);
     }
 
     /**
@@ -214,10 +234,15 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         }
     }
 
+    /**
+     * `git add .` and `git commit`
+     * @param {string} message
+     * @returns {Promise<CommandResult<this>>}
+     */
     public commit(message: string): Promise<CommandResult<this>> {
         return this.runCommandInCurrentWorkingDirectory(`git add .`)
             .then(() =>
-            this.runCommandInCurrentWorkingDirectory(`git commit -a -m "${message}"`));
+                this.runCommandInCurrentWorkingDirectory(`git commit -a -m "${message}"`));
     }
 
     /**
@@ -294,26 +319,73 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 function clone(credentials: ProjectOperationCredentials,
                id: RemoteRepoRef,
                opts: CloneOptions,
-               directoryManager: DirectoryManager): Promise<GitProject> {
+               directoryManager: DirectoryManager,
+               secondTry: boolean = false): Promise<GitCommandGitProject> {
     return directoryManager.directoryFor(id.owner, id.repo, id.sha, opts)
         .then(cloneDirectoryInfo => {
-                switch (cloneDirectoryInfo.type) {
-                    case "parent-directory" :
-                        const repoDir = `${cloneDirectoryInfo.path}/${id.repo}`;
-                        const command = (id.sha === "master") ?
-                            `git clone --depth 1 ${id.cloneUrl(credentials)}` :
-                            `git clone ${id.cloneUrl(credentials)}; cd ${id.repo};git checkout ${id.sha}`;
-
-                        logger.info(`Cloning repo '${id.url}' to '${cloneDirectoryInfo.path}'`);
-                        return exec(command, { cwd: cloneDirectoryInfo.path })
-                            .then(_ => {
-                                logger.debug(`Clone succeeded with URL '${id.url}'`);
-                                // fs.chmodSync(repoDir, "0777");
-                                return NodeFsLocalProject.fromExistingDirectory(id, repoDir);
+            switch (cloneDirectoryInfo.type) {
+                case "empty-directory" :
+                    return cloneInto(credentials, cloneDirectoryInfo, id);
+                case "existing-directory" :
+                    const repoDir = cloneDirectoryInfo.path;
+                    return checkout(repoDir, id.sha)
+                        .then(() => clean(repoDir))
+                        .then(() => {
+                            return GitCommandGitProject.fromBaseDir(id,
+                                repoDir, credentials, cloneDirectoryInfo.release,
+                                cloneDirectoryInfo.provenance + "\nRe-using existing clone");
+                        }, error => {
+                            return cloneDirectoryInfo.invalidate().then(() => {
+                                if (secondTry) {
+                                    throw error;
+                                } else {
+                                    return clone(credentials, id, opts, directoryManager, true);
+                                }
                             });
-                    case "actual-directory" :
-                        throw new Error("actual-directory clone directory type not yet supported");
-                }
-            },
-        );
+                        });
+                default:
+                    throw new Error("What is this type: " + cloneDirectoryInfo.type);
+            }
+        });
+}
+
+function cloneInto(credentials: ProjectOperationCredentials,
+                   targetDirectoryInfo: CloneDirectoryInfo, id: RemoteRepoRef) {
+    const repoDir = targetDirectoryInfo.path;
+    const command = (id.sha === "master" && targetDirectoryInfo.transient) ?
+        runIn(".", `git clone --depth 1 ${id.cloneUrl(credentials)} ${repoDir}`) :
+        runIn(".", `git clone ${id.cloneUrl(credentials)} ${repoDir}`)
+            .then(() => runIn(repoDir, `git checkout ${id.sha}`));
+
+    logger.info(`Cloning repo '${id.url}' in '${repoDir}'`);
+    return command
+        .then(_ => {
+            logger.debug(`Clone succeeded with URL '${id.url}'`);
+            // fs.chmodSync(repoDir, "0777");
+            return GitCommandGitProject.fromBaseDir(id, repoDir, credentials,
+                targetDirectoryInfo.release,
+                targetDirectoryInfo.provenance + "\nfreshly cloned");
+        });
+}
+
+function checkout(repoDir: string, branch: string) {
+    return pwd(repoDir)
+        .then(() => runIn(repoDir, `git fetch origin ${branch}`))
+        .then(() => runIn(repoDir, `git checkout ${branch} --`))
+        .then(() => runIn(repoDir, `git reset --hard origin/${branch}`));
+}
+
+function clean(repoDir: string) {
+    return pwd(repoDir)
+        .then(() => runIn(repoDir, "git clean -dfx")) // also removes ignored files
+        .then(result => runIn(repoDir, "git checkout ."));
+}
+
+function runIn(baseDir: string, command: string) {
+    return runCommand(command, { cwd: baseDir });
+}
+
+function pwd(baseDir) {
+    return runCommand("pwd", { cwd: baseDir }).then(result =>
+        console.log(result.stdout));
 }
