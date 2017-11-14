@@ -116,12 +116,12 @@ describe("MicrogrammarBasedFileParser", () => {
                 const v: TreeVisitor = tn => {
                     if (tn.$name !== "people") {
                         assert(tn.$offset !== undefined, `No offset on node with name ${tn.$name}`);
-                        assert(tn.$offset >= minOffset, `Must have position for ${JSON.stringify(tn)}`);
+                        assert(tn.$offset >= minOffset, `Must have position for ${tn.$name}`);
                         if (!!tn.$value) {
                             ++terminalCount;
                             // It's a terminal
                             assert(f.getContentSync().substr(tn.$offset, tn.$value.length) === tn.$value,
-                                `Unable to validate content for ${JSON.stringify(tn)}`);
+                                `Unable to validate content for ${tn.$name}`);
                         }
                         minOffset = tn.$offset;
                     }

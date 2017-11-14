@@ -31,7 +31,6 @@ describe("TypeScriptFileParser", () => {
         TypeScriptES6FileParser
             .toAst(f)
             .then(root => {
-                // console.log(JSON.stringify(root, null, 2));
                 const value = evaluateScalar(root, "//VariableDeclarationList");
                 assert(!!value);
                 done();
@@ -86,12 +85,15 @@ describe("TypeScriptFileParser", () => {
                 const v: TreeVisitor = tn => {
                     if (tn.$name !== "people") {
                         assert(tn.$offset !== undefined, `No offset on node with name ${tn.$name}`);
-                        assert(tn.$offset >= minOffset, `Must have position for ${JSON.stringify(tn)}`);
+                        assert(tn.$offset >= minOffset, `Must have position for node with name ${tn.$name}`);
                         if (!!tn.$value) {
                             ++terminalCount;
                             // It's a terminal
-                            assert(f.getContentSync().substr(tn.$offset, tn.$value.length) === tn.$value,
-                                `Unable to validate content for ${JSON.stringify(tn)}`);
+                            const expected = f.getContentSync().substr(tn.$offset, tn.$value.length);
+                            const actual = tn.$value;
+                            assert(actual === expected,
+                                `Unable to validate content for node with name ${tn.$name}: ` +
+                                `[${actual}] and [${expected}]`);
                         }
                         minOffset = tn.$offset;
                     }

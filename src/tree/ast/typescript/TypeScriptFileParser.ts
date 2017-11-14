@@ -3,14 +3,11 @@ import * as _ from "lodash";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { FileParser } from "../FileParser";
 
-import { File } from "../../../project/File";
-
-import { defineDynamicProperties } from "@atomist/tree-path/manipulation/enrichment";
 import { AllNodeTest, isNamedNodeTest } from "@atomist/tree-path/path/nodeTests";
 import { isUnionPathExpression, LocationStep, PathExpression, stringify } from "@atomist/tree-path/path/pathExpression";
-import { curry } from "@typed/curry";
 import * as ts from "typescript";
 import { logger } from "../../../internal/util/logger";
+import { File } from "../../../project/File";
 
 /**
  * Allow path expressions against ASTs from the TypeScript parser.
@@ -35,8 +32,7 @@ export class TypeScriptFileParser implements FileParser {
         return f.getContent()
             .then(content => {
                 const sourceFile = ts.createSourceFile(f.name, content, this.scriptTarget, false, this.scriptKind);
-                const root = new TypeScriptAstNodeTreeNode(sourceFile, sourceFile);
-                defineDynamicProperties(root);
+                const root = new TypeScriptAstNodeTreeNode(sourceFile, sourceFile, undefined);
                 return root;
             });
     }
@@ -76,7 +72,7 @@ class TypeScriptAstNodeTreeNode implements TreeNode {
 
     public readonly $offset: number;
 
-    constructor(sourceFile: ts.SourceFile, node: ts.Node) {
+    constructor(sourceFile: ts.SourceFile, node: ts.Node, public $parent: TreeNode) {
         this.$name = extractName(node);
         try {
             this.$offset = node.getStart(sourceFile, true);
@@ -85,13 +81,11 @@ class TypeScriptAstNodeTreeNode implements TreeNode {
             logger.warn("Cannot get start for node with kind %s", ts.SyntaxKind[node.kind]);
         }
 
-        function visit(children: TreeNode[], n: ts.Node) {
+        for (const n of node.getChildren(sourceFile)) {
             if (!!n) {
-                children.push(new TypeScriptAstNodeTreeNode(sourceFile, n));
+                this.$children.push(new TypeScriptAstNodeTreeNode(sourceFile, n, this));
             }
         }
-
-        ts.forEachChild(node, curry(visit)(this.$children));
 
         if (this.$children.length === 0) {
             // Get it off the JSON if it doesn't matter
@@ -120,6 +114,11 @@ function extractValue(sourceFile: ts.SourceFile, node: any): string {
     try {
         return node.getText(sourceFile);
     } catch (te) {
+        const start = node.getStart(sourceFile, true);
+        const end = node.getEnd(sourceFile, true);
+        if (!!start && !!end) {
+            return sourceFile.text.substr(start, end - start);
+        }
         return undefined;
     }
 }

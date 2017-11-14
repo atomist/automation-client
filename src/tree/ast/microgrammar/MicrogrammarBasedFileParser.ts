@@ -23,7 +23,8 @@ export class MicrogrammarBasedFileParser implements FileParser {
                 const matches = this.grammar.findMatches(content);
                 const root = {
                     $name: this.rootName,
-                    $children: matches.map(m => new MicrogrammarBackedTreeNode(this.matchName, m)),
+                    $children: matches.map(m =>
+                        new MicrogrammarBackedTreeNode(this.matchName, m, undefined)),
                 };
                 defineDynamicProperties(root);
                 fillInEmptyNonTerminalValues(root, content);
@@ -43,7 +44,7 @@ class MicrogrammarBackedTreeNode implements TreeNode {
 
     public readonly $offset: number;
 
-    constructor(public $name: string, m: PatternMatch) {
+    constructor(public $name: string, m: PatternMatch, public $parent: TreeNode) {
         this.$offset = m.$offset;
         if (isTreePatternMatch(m)) {
             const subs = m.submatches();
@@ -51,7 +52,7 @@ class MicrogrammarBackedTreeNode implements TreeNode {
                 .map(prop => {
                     const sub = subs[prop];
                     // console.log("Exposing child %s.%s as [%s]", $name, prop, JSON.stringify(sub));
-                    return new MicrogrammarBackedTreeNode(prop, sub);
+                    return new MicrogrammarBackedTreeNode(prop, sub, this);
                 });
         } else {
             // console.log("Exposing terminal %s as [%s]: value=[%s]", $name, JSON.stringify(m), m.$matched);
