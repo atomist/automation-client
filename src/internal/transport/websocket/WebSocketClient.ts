@@ -1,5 +1,6 @@
 import axios from "axios";
 import * as promiseRetry from "promise-retry";
+import * as serializeError from "serialize-error";
 import * as WebSocket from "ws";
 import { logger } from "../../util/logger";
 import Timer = NodeJS.Timer;
@@ -15,7 +16,6 @@ import {
     RegistrationConfirmation,
     WebSocketRequestProcessor,
 } from "./WebSocketRequestProcessor";
-import * as serializeError from "serialize-error";
 
 export class WebSocketClient {
 
