@@ -68,11 +68,9 @@ class TypeScriptAstNodeTreeNode implements TreeNode {
 
     public readonly $name;
 
-    public $value: string;
-
     public readonly $offset: number;
 
-    constructor(sourceFile: ts.SourceFile, node: ts.Node, public $parent: TreeNode) {
+    constructor(private sourceFile: ts.SourceFile, private node: ts.Node, public $parent: TreeNode) {
         this.$name = extractName(node);
         try {
             this.$offset = node.getStart(sourceFile, true);
@@ -94,7 +92,10 @@ class TypeScriptAstNodeTreeNode implements TreeNode {
             // It's a non-terminal, so the name needs to be the kind
             this.$name = ts.SyntaxKind[node.kind];
         }
-        this.$value = extractValue(sourceFile, node);
+    }
+
+    get $value() {
+        return extractValue(this.sourceFile, this.node);
     }
 
 }
