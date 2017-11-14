@@ -104,10 +104,21 @@ export class StableDirectoryManager implements DirectoryManager {
     }
 
     private createFreshDir(user: string, repo: string): Promise<string> {
-        const dirName = `${this.opts.baseDir}/${user}`;
-        // Delete it if it exists
-        return fs.remove(dirName)
-            .then(_ => fs.mkdirs(dirName))
-            .then(() => dirName);
+        // assume the baseDir exists
+        const userDir = `${this.opts.baseDir}/${user}`;
+        // make the user dir exist
+        const assureUserDirExistence = fs.stat(userDir).then(stats => {
+                if (!stats.isDirectory()) {
+                    throw new Error(userDir + "exists but is not a directory.");
+                }
+            }, err => {
+                console.log(`Hope this means 'directory does not exist': ${err}`);
+                return fs.mkdir(userDir);
+            });
+        // make the repo dir not exist
+        const repoDir = userDir + "/" + repo;
+        return assureUserDirExistence
+            .then(() => fs.remove(repoDir))
+            .then(() => userDir);
     }
 }
