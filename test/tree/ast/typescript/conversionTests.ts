@@ -9,6 +9,7 @@ import { findMatches } from "../../../../src/tree/ast/astUtils";
 import { TypeScriptES6FileParser } from "../../../../src/tree/ast/typescript/TypeScriptFileParser";
 
 import { CFamilyLangHelper } from "@atomist/microgrammar/matchers/lang/cfamily/CFamilyLangHelper";
+import { DefaultTreeNodeReplacer } from "@atomist/tree-path/TreeNode";
 
 const allTypeMatches = [
     "//VariableDeclaration//ColonToken/following-sibling::*",
@@ -16,7 +17,7 @@ const allTypeMatches = [
     "//FunctionDeclaration//ColonToken/following-sibling::*",
     "//FunctionDeclaration//ColonToken",
     "//InterfaceDeclaration",
-    // "//TypeKeyword",
+    "//TypeAliasDeclaration",
 ];
 
 const allWhiteSpace: UnionPathExpression = {
@@ -65,7 +66,7 @@ describe("path expression driven conversion", () => {
         removesTypeAnnotationsIn("interface Thing { flag: boolean; }\nfunction f(): string { return 'x'; }",
             "function f() { return 'x'; }", done));
 
-    it.skip("removes type definition", done =>
+    it("removes type definition", done =>
         removesTypeAnnotationsIn("type Thing = string;\nfunction f(): string { return 'x'; }",
             "function f() { return 'x'; }", done));
 
