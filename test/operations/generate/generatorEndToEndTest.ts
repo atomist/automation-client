@@ -21,102 +21,104 @@ import { Project } from "../../../src/project/Project";
 import { hasFile } from "../../../src/util/gitHub";
 import { GitHubToken } from "../../atomist.config";
 
-const TargetRepo = `test-repo-${new Date().getTime()}`;
-let TargetOwner = "johnsonr";
+function tempRepoName() {
+    return `test-repo-${new Date().getTime()}`;
+}
+
+let TargetOwner = "atomist-travisorg";
+const config = {
+    headers: {
+        Authorization: `token ${GitHubToken}`,
+    },
+};
 
 describe("generator end to end", () => {
 
     before(done => {
-        const config = {
-            headers: {
-                Authorization: `token ${GitHubToken}`,
-            },
-        };
         axios.get(`${GitHubDotComBase}/user`, config).then(response => {
             TargetOwner = response.data.login;
-            done();
-        });
+        }).then(done, done);
     });
 
-    afterEach(done => {
-        const config = {
-            headers: {
-                Authorization: `token ${GitHubToken}`,
-            },
-        };
-        const url = `${GitHubDotComBase}/repos/${TargetOwner}/${TargetRepo}`;
-        axios.delete(url, config)
-            .then(_ => {
-                done();
-            })
+    function deleteOrIgnore(repoName: string) {
+
+        const url = `${GitHubDotComBase}/repos/${TargetOwner}/${repoName}`;
+        return axios.delete(url, config)
             .catch(err => {
-                done();
+                console.log(`cleanup: deleting ${repoName} failed with ${err}. oh well`);
+                return;
             });
-    });
+    }
 
-    it("should create a new GitHub repo", function(done) {
-        this.retries(5);
+    it("should create a new GitHub repo", function (done) {
+        this.retries(3);
+        const repoName = tempRepoName();
+        const cleanupDone = (err: Error | void) => {
+          deleteOrIgnore(repoName).then(done(err))
+        };
 
         const seed = new UniversalSeed();
         seed.targetOwner = TargetOwner;
-        seed.targetRepo = TargetRepo;
+        seed.targetRepo = repoName;
         (seed as any).githubToken = GitHubToken;
         seed.handle(MockHandlerContext as HandlerContext, seed)
             .then(result => {
                 assert(result.code === 0);
                 // Check the repo
-                return hasFile(GitHubToken, TargetOwner, TargetRepo, "pom.xml")
+                return hasFile(GitHubToken, TargetOwner, repoName, "pom.xml")
                     .then(r => {
                         assert(r);
-                        GitCommandGitProject.cloned({token: GitHubToken},
-                            new GitHubRepoRef(TargetOwner, TargetRepo))
+                        GitCommandGitProject.cloned({ token: GitHubToken },
+                            new GitHubRepoRef(TargetOwner, repoName))
                             .then(verifyPermissions)
-                            .then(() => done());
                     });
-            }).catch(done);
+            }).then(cleanupDone, cleanupDone);
     }).timeout(20000);
 
-    it("should create a new GitHub repo using generate function", function(done) {
-        this.retries(5);
+    it("should create a new GitHub repo using generate function", function (done) {
+        this.retries(3);
+        const repoName = tempRepoName();
+        const cleanupDone = (err: Error | void) => {
+            deleteOrIgnore(repoName).then(done(err))
+        };
 
-        const clonedSeed = GitCommandGitProject.cloned({token: GitHubToken},
+        const clonedSeed = GitCommandGitProject.cloned({ token: GitHubToken },
             new GitHubRepoRef("atomist-seeds", "spring-rest-seed"));
-        const targetRepo = new GitHubRepoRef(TargetOwner, TargetRepo);
+        const targetRepo = new GitHubRepoRef(TargetOwner, repoName);
 
-        generate(clonedSeed, undefined, {token: GitHubToken},
+        generate(clonedSeed, undefined, { token: GitHubToken },
             p => Promise.resolve(p), GitHubProjectPersister,
             targetRepo)
             .then(result => {
                 assert(result.success);
                 // Check the repo
-                return hasFile(GitHubToken, TargetOwner, TargetRepo, "pom.xml")
+                return hasFile(GitHubToken, TargetOwner, repoName, "pom.xml")
                     .then(r => {
                         assert(r);
-                        GitCommandGitProject.cloned({token: GitHubToken},
+                        GitCommandGitProject.cloned({ token: GitHubToken },
                             targetRepo)
                             .then(verifyPermissions)
-                            .then(() => done());
                     });
-            }).catch(done);
+            }).then(cleanupDone, cleanupDone);
     }).timeout(20000);
 
-    it("should refuse to create a new GitHub repo using existing repo name", function(done) {
+    it("should refuse to create a new GitHub repo using existing repo name", function (done) {
         this.retries(5);
 
-        const clonedSeed = GitCommandGitProject.cloned({token: GitHubToken},
+        const clonedSeed = GitCommandGitProject.cloned({ token: GitHubToken },
             new GitHubRepoRef("atomist-seeds", "spring-rest-seed"));
-        const targetRepo = new GitHubRepoRef("johnsonr", "wallaby");
+        const targetRepo = new GitHubRepoRef("johnsonr", "wallaby"); // never delete wallaby. this test will fail.
+        // TODO: make a repo called repo-that-exists in travisorg instead
 
-        generate(clonedSeed, undefined, {token: GitHubToken},
+        generate(clonedSeed, undefined, { token: GitHubToken },
             p => Promise.resolve(p), GitHubProjectPersister,
             targetRepo)
             .then(() => {
                 fail("Should not have succeeded");
             })
             .catch(err => {
-                assert(err.includes("exists"));
-                done();
-            });
+                assert(err.message.includes("exists")); // this is only because we put "Probably exists" in the string
+            }).then(done, done);
     }).timeout(20000);
 
     function verifyPermissions(p: LocalProject): Promise<Project> {
@@ -137,9 +139,10 @@ describe("Local project creation", () => {
 
     it("should create a new local project", done => {
         const cwd = tmp.dirSync().name;
+        const repoName = tempRepoName();
         shell.cd(cwd);
         const seed = new UniversalSeed();
-        seed.targetRepo = TargetRepo;
+        seed.targetRepo = repoName;
         seed.local = true;
         (seed as any).githubToken = GitHubToken;
         seed.handle(MockHandlerContext as HandlerContext, seed)
@@ -148,12 +151,11 @@ describe("Local project creation", () => {
                 assert(result.code === 0);
                 assert(result.baseDir);
                 NodeFsLocalProject.fromExistingDirectory(
-                    new GitHubRepoRef("owner", TargetRepo), cwd + "/" + TargetRepo)
+                    new GitHubRepoRef("owner", repoName), cwd + "/" + repoName)
                     .then(created => {
                         assert(created.fileExistsSync("pom.xml"));
-                        done();
                     });
-            }).catch(done);
+            }).then(done, done);
     }).timeout(10000);
 });
 
@@ -165,7 +167,7 @@ export const MockHandlerContext = {
     },
     graphClient: {
         executeMutationFromFile(file: string, variables?: any): Promise<any> {
-            return Promise.resolve({createSlackChannel: [{id: "stts"}]});
+            return Promise.resolve({ createSlackChannel: [{ id: "stts" }] });
         },
     },
 };
