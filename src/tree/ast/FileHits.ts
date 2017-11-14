@@ -24,7 +24,7 @@ export class FileHit {
 
     /**
      * Represents the hits within a file within a project
-     * @param {ProjectScripting} project
+     * @param project
      * @param {File} file file within the project
      * @param {TreeNode} fileNode node structure including AST, so
      * that if we want to dig into it or run further path expressions
@@ -48,8 +48,8 @@ export class FileHit {
                 .then(content => {
                     // Replace in reverse order so that offsets work
                     let newContent = content;
-                    updates.sort(u => -u.offset);
-                    for (const u of updates) {
+                    const sorted = updates.sort((a, b) => b.offset - a.offset);
+                    for (const u of sorted) {
                         logger.debug("Applying update %j", u);
                         newContent = newContent.substr(0, u.offset) +
                             newContent.substr(u.offset).replace(u.initialValue, u.currentValue);

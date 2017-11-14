@@ -13,6 +13,8 @@ import { CFamilyLangHelper } from "@atomist/microgrammar/matchers/lang/cfamily/C
 const allTypeMatches = [
     "//VariableDeclaration//ColonToken/following-sibling::*",
     "//VariableDeclaration//ColonToken",
+    "//FunctionDeclaration//ColonToken/following-sibling::*",
+    "//FunctionDeclaration//ColonToken",
 ];
 
 const allWhiteSpace: UnionPathExpression = {
@@ -43,7 +45,19 @@ describe("path expression driven conversion", () => {
 
     it("removes type annotation on variable declaration", done =>
         removesTypeAnnotationsIn("const s: string = '64';",
-            "const s  = '64';", done));
+            "const s = '64';", done));
+
+    it("removes type annotation on function parameter type", done =>
+        removesTypeAnnotationsIn("function f(n: number) { return 'x'; }",
+            "function f(n) { return 'x'; }", done));
+
+    it("removes type annotation on function parameter type and return type", done =>
+        removesTypeAnnotationsIn("function f(n: number): string { return 'x'; }",
+            "function f(n) { return 'x'; }", done));
+
+    it("removes type annotation on function return type", done =>
+        removesTypeAnnotationsIn("function f(): string { return 'x'; }",
+            "function f() { return 'x'; }", done));
 
     function removesTypeAnnotationsIn(src: string, after: string, done) {
         const f = new InMemoryFile("src/test.ts", src);
@@ -53,17 +67,21 @@ describe("path expression driven conversion", () => {
             "src/**/*.ts",
             allWhiteSpace)
             .then(values => {
-                assert(values.length === 2);
-                console.log(`Value is [${values[0].$value}]`);
                 // Zapify them
-                values.forEach(v => v.$value = "");
+                if (!!values) {
+                    // console.log(`Value is [${values[0].$value}]`);
+                    values.forEach(v => v.$value = "");
+                }
                 return p.flush();
             })
             .then(() => {
                 const f2 = p.findFileSync(f.path);
                 const h = new CFamilyLangHelper();
-                assert.equal(h.canonicalize(f2.getContentSync()),
-                    h.canonicalize(after));
+                // TODO should be able to use this
+                // assert.equal(h.stripWhitespace(f2.getContentSync()),
+                //    h.stripWhitespace(after));
+                assert.equal(f2.getContentSync().replace(/\s+/g, ""),
+                    after.replace(/\s+/g, ""));
                 done();
             }).catch(done);
     }

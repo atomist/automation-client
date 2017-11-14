@@ -2,7 +2,7 @@ import * as _ from "lodash";
 
 import { defineDynamicProperties } from "@atomist/tree-path/manipulation/enrichment";
 import { evaluateExpression } from "@atomist/tree-path/path/expressionEngine";
-import { isSuccessResult, PathExpression } from "@atomist/tree-path/path/pathExpression";
+import { isSuccessResult, PathExpression, stringify } from "@atomist/tree-path/path/pathExpression";
 import { parsePathExpression } from "@atomist/tree-path/path/pathExpressionParser";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { logger } from "../../internal/util/logger";
@@ -71,9 +71,8 @@ export function findFileMatches(p: ProjectAsync,
         return parser.toAst(file)
             .then(topLevelProduction => {
                 logger.debug("Successfully parsed file '%s' to AST with root node named '%s'. Will execute '%s'",
-                    file.path, topLevelProduction.$name, pathExpression);
+                    file.path, topLevelProduction.$name, stringify(parsed));
                 defineDynamicProperties(topLevelProduction);
-                // logger.debug(JSON.stringify(root, null, 1));
                 const fileNode = {
                     path: file.path,
                     name: file.name,
