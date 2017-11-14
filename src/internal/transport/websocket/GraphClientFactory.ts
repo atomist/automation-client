@@ -18,7 +18,7 @@ import { RegistrationConfirmation } from "./WebSocketRequestProcessor";
  */
 export class GraphClientFactory {
 
-    private graphClients = new NodeCache( { stdTTL: 5 * 60, checkperiod: 1 * 60, useClones: false } );
+    private graphClients = new NodeCache( { stdTTL: 1 * 60, checkperiod: 1 * 30, useClones: false } );
 
     constructor(private registration: RegistrationConfirmation, private options: WebSocketClientOptions) {}
 
