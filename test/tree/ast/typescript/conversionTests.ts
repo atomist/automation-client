@@ -9,7 +9,6 @@ import { findMatches } from "../../../../src/tree/ast/astUtils";
 import { TypeScriptES6FileParser } from "../../../../src/tree/ast/typescript/TypeScriptFileParser";
 
 import { CFamilyLangHelper } from "@atomist/microgrammar/matchers/lang/cfamily/CFamilyLangHelper";
-import { DefaultTreeNodeReplacer } from "@atomist/tree-path/TreeNode";
 
 const allTypeMatches = [
     "//VariableDeclaration//ColonToken/following-sibling::*",
