@@ -13,12 +13,13 @@ import { Project } from "../../../src/project/Project";
 describe("UniversalSeed metadata test", () => {
 
     function validateUniversalSeedMetadata(md: CommandHandlerMetadata) {
-        assert(md.parameters.some(p => p.name === "sourceOwner"));
-        assert(md.parameters.some(p => p.name === "sourceRepo"));
+        const description = `parameters were named: ${md.parameters.map(p => p.name).join(",")}`;
+        assert(md.parameters.some(p => p.name === "sourceOwner"), description );
+        assert(md.parameters.some(p => p.name === "sourceRepo"), description);
         // assert(md.parameters.some(p=> p.name === "targetOwner"));
-        assert(md.parameters.some(p => p.name === "targetRepo"));
-        assert(md.parameters.some(p => p.name === "visibility"));
-        assert(md.parameters.some(p => p.name === "sourceBranch"));
+        assert(md.parameters.some(p => p.name === "targetRepo", description));
+        assert(md.parameters.some(p => p.name === "visibility", description));
+        assert(md.parameters.some(p => p.name === "sourceBranch", description));
         assert(md.secrets.some(s => s.name === "githubToken"));
     }
 

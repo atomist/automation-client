@@ -28,8 +28,8 @@ export const GitHubProjectPersister: ProjectPersister<RepoId, Project, ActionRes
                 return gp.createAndSetGitHubRemote(params.owner, params.repo,
                     this.targetRepo, this.visibility)
                     .catch(err => {
-                        return Promise.reject(`Unable to create new repo '${params.owner}/${params.repo}': ` +
-                            `Probably exists: ${err}`);
+                        return Promise.reject(new Error(`Unable to create new repo '${params.owner}/${params.repo}': ` +
+                            `Probably exists: ${err}`));
                     });
             })
             .then(() => {
