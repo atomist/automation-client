@@ -7,7 +7,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.2.8...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.3.0...HEAD
+
+## [0.3.0][] - 2017-11-13
+
+[0.3.0]: https://github.com/atomist/automation-client-ts/compare/0.2.8...0.3.0
+
+### Added
+
+*   Upgraded tree-path library (more support for abbreviated syntax, union path expression support, additional axis specifiers)
+*   Support for parsing TypeScript, including path expression support
+
+### Changed
+
+*   allow `handle` to return `Promise<any>`
+*   enable graphql client-side caching
+
+### Fixed
+
+*   Fixed #86: Preserved empty directories when caching in memory project. Ability to cache a projcect in memory
+*   Fix #79: Check permissions from seed project (#83)
 
 ## [0.2.8][] - 2017-11-07
 
