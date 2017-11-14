@@ -15,6 +15,7 @@ import {
     RegistrationConfirmation,
     WebSocketRequestProcessor,
 } from "./WebSocketRequestProcessor";
+import * as serializeError from "serialize-error";
 
 export class WebSocketClient {
 
@@ -106,7 +107,7 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
                     }
                 }
             } catch (err) {
-                console.error("Failed processing of message payload wth: %s", err);
+                console.error("Failed processing of message payload with: %s", serializeError(err));
             }
         });
 
