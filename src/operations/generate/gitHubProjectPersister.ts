@@ -3,11 +3,10 @@ import { logger } from "../../internal/util/logger";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
+import { doWithRetry, RetryOptions } from "../../util/retry";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { RepoId } from "../common/RepoId";
 import { ProjectPersister } from "./generatorUtils";
-
-import * as promiseRetry from "promise-retry";
 
 /**
  * Persist project to GitHub, returning GitHub details. Use retry.
@@ -40,20 +39,14 @@ export const GitHubProjectPersister: ProjectPersister<RepoId, Project, ActionRes
             .then(() => push(gp));
     };
 
-function push(gp: GitProject): Promise<ActionResult<GitProject>> {
-    const retryOptions = {
+export function push(gp: GitProject, opts: Partial<RetryOptions> = {}): Promise<ActionResult<GitProject>> {
+    const retryOptions: RetryOptions = {
         retries: 5,
         factor: 3,
         minTimeout: 1 * 500,
         maxTimeout: 5 * 1000,
         randomize: true,
+        ...opts,
     };
-    logger.debug(`Pushing local repo at '${gp.baseDir}' with retry options '%j'`, retryOptions);
-    return promiseRetry(retryOptions, retry => {
-        return gp.push()
-            .catch(err => {
-                logger.warn(`Error occurred attempting to push local repo. '${err.message}'`);
-                retry(err);
-            });
-    });
+    return doWithRetry(() => gp.push(), `Pushing local repo at '${gp.baseDir}'`, retryOptions);
 }

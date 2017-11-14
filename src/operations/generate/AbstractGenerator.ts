@@ -1,6 +1,5 @@
 import { SlackMessage, url } from "@atomist/slack-messages/SlackMessages";
 import * as assert from "power-assert";
-import * as promiseRetry from "promise-retry";
 import * as shell from "shelljs";
 import { ActionResult } from "../../action/ActionResult";
 import { Parameter } from "../../decorators";
@@ -16,6 +15,7 @@ import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { LocalOrRemote } from "../common/LocalOrRemote";
 import { RepoLoader } from "../common/repoLoader";
 import { AnyProjectEditor, ProjectEditor, toEditor } from "../edit/projectEditor";
+import { push } from "./gitHubProjectPersister";
 
 export const GitHubNameRegExp = {
     pattern: /^[-.\w]+$/,
@@ -150,7 +150,7 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
                 logger.debug(`Committing to local repo at '${gp.baseDir}'`);
                 return gp.commit("Initial commit from Atomist");
             })
-            .then(() => this.push(gp));
+            .then(() => push(gp));
     }
 
     protected repoLoader(): RepoLoader {
@@ -158,21 +158,4 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
         return defaultRepoLoader( {token: this.githubToken });
     }
 
-    protected push(gp: GitProject): Promise<ActionResult<GitProject>> {
-        const retryOptions = {
-            retries: 5,
-            factor: 3,
-            minTimeout: 1 * 500,
-            maxTimeout: 5 * 1000,
-            randomize: true,
-        };
-        logger.debug(`Pushing local repo at '${gp.baseDir}' with retry options '%j'`, retryOptions);
-        return promiseRetry(retryOptions, retry => {
-                return gp.push()
-                    .catch(err => {
-                        logger.warn(`Error occurred attempting to push local repo. '${err.message}'`);
-                        retry(err);
-                    });
-            });
-    }
 }
