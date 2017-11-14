@@ -15,6 +15,8 @@ const allTypeMatches = [
     "//VariableDeclaration//ColonToken",
     "//FunctionDeclaration//ColonToken/following-sibling::*",
     "//FunctionDeclaration//ColonToken",
+    "//InterfaceDeclaration",
+    // "//TypeKeyword",
 ];
 
 const allWhiteSpace: UnionPathExpression = {
@@ -57,6 +59,14 @@ describe("path expression driven conversion", () => {
 
     it("removes type annotation on function return type", done =>
         removesTypeAnnotationsIn("function f(): string { return 'x'; }",
+            "function f() { return 'x'; }", done));
+
+    it("removes interface", done =>
+        removesTypeAnnotationsIn("interface Thing { flag: boolean; }\nfunction f(): string { return 'x'; }",
+            "function f() { return 'x'; }", done));
+
+    it.skip("removes type definition", done =>
+        removesTypeAnnotationsIn("type Thing = string;\nfunction f(): string { return 'x'; }",
             "function f() { return 'x'; }", done));
 
     function removesTypeAnnotationsIn(src: string, after: string, done) {
