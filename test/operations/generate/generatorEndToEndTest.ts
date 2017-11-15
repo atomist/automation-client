@@ -107,8 +107,7 @@ describe("generator end to end", () => {
 
         const clonedSeed = GitCommandGitProject.cloned({ token: GitHubToken },
             new GitHubRepoRef("atomist-seeds", "spring-rest-seed"));
-        const targetRepo = new GitHubRepoRef("johnsonr", "wallaby"); // never delete wallaby. this test will fail.
-        // TODO: make a repo called repo-that-exists in travisorg instead
+        const targetRepo = new GitHubRepoRef("atomist-travisorg", "this-repository-exists");
 
         generate(clonedSeed, undefined, { token: GitHubToken },
             p => Promise.resolve(p), GitHubProjectPersister,
