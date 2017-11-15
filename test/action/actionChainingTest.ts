@@ -4,8 +4,8 @@ import { promisify } from "util";
 import { actionChain, actionChainWithCombiner, NoAction } from "../../src/action/actionOps";
 import { ActionResult } from "../../src/action/ActionResult";
 import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
-import { ProjectOp } from "../../src/operations/edit/projectEditorOps";
 import { InMemoryProject } from "../../src/project/mem/InMemoryProject";
+
 class Person {
     constructor(public name: string) {
     }
@@ -37,7 +37,7 @@ describe("action chaining", () => {
 
     it("should edit with real editor", done => {
         const project = new InMemoryProject(new GitHubRepoRef("org", "name"));
-        const editor: ProjectOp = p => {
+        const editor = p => {
             return p.addFile("thing", "1");
         };
         const editorChain = actionChain(editor, p => Promise.resolve(p));
@@ -50,7 +50,7 @@ describe("action chaining", () => {
 
     it("should work in both directions", done => {
         const project = new InMemoryProject(new GitHubRepoRef("org", "name"));
-        const editor: ProjectOp = p => {
+        const editor = p => {
             return p.addFile("thing", "1");
         };
         const editorChain = actionChain(p => Promise.resolve(p), editor);

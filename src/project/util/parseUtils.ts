@@ -96,6 +96,7 @@ export function findFileMatches<M>(p: ProjectAsync,
 
 /**
  * Manipulate each file match containing an actual match. Will automatically match if necessary.
+ * @param p project
  * @param {string} globPattern
  * @param {Microgrammar<M>} microgrammar
  * @param {(fh: FileWithMatches<M>) => void} action
@@ -128,6 +129,7 @@ export function doWithFileMatches<M, P extends ProjectAsync = ProjectAsync>(p: P
 /**
  * Convenience function to operate on the sole match in the project.
  * Fail if zero or more than one.
+ * @param p project
  * @param {string} globPattern
  * @param {Microgrammar<M>} microgrammar
  * @param {(m: M) => void} action
@@ -160,6 +162,7 @@ export function doWithUniqueMatch<M, P extends ProjectAsync = ProjectAsync>(p: P
 
 /**
  * Similar to doWithUniqueMatch, but accepts zero matches without error
+ * @param p project
  * @param {string} globPattern
  * @param {Microgrammar<M>} microgrammar
  * @param {(m: M) => void} action

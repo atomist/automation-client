@@ -60,10 +60,10 @@ describe("TypeScriptFileParser real project parsing: TypeScript", () => {
 
     it("should find all exported functions in project", done => {
         findValues(thisProject, TypeScriptES6FileParser,
-            "src/**/*.ts",
+            "src/project/*.ts",
             "//FunctionDeclaration[//ExportKeyword]//Identifier")
             .then(values => {
-                assert(values.length > 100);
+                assert(values.length > 5);
                 done();
             }).catch(done);
     }).timeout(5000);

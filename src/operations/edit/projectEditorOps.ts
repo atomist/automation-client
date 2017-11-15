@@ -1,11 +1,10 @@
 import { actionChainWithCombiner } from "../../action/actionOps";
 import { isActionResult } from "../../action/ActionResult";
 import { Project } from "../../project/Project";
-import { EditResult, flushAndSucceed, ProjectEditor, successfulEdit } from "./projectEditor";
-
-export type ProjectOp = (p: Project) => Promise<Project>;
-
-export type EditorChainable = ProjectEditor | ProjectOp;
+import {
+    AnyProjectEditor, EditResult, flushAndSucceed, ProjectEditor, SimpleProjectEditor,
+    successfulEdit,
+} from "./projectEditor";
 
 function combineEditResults(r1: EditResult, r2: EditResult): EditResult {
     return {
@@ -20,7 +19,7 @@ function combineEditResults(r1: EditResult, r2: EditResult): EditResult {
  * @return {ProjectEditor}
  */
 export function chainEditors(
-    ...projectEditors: EditorChainable[]): ProjectEditor {
+    ...projectEditors: AnyProjectEditor[]): ProjectEditor {
     const alwaysReturnEditResult =
         projectEditors.map(toEditor);
 
@@ -32,8 +31,8 @@ export function chainEditors(
     };
 }
 
-function toEditor(pop: EditorChainable): ProjectEditor {
-    return (proj, ctx, params) => (pop as ProjectOp)(proj)
+function toEditor(pop: AnyProjectEditor): ProjectEditor {
+    return (proj, ctx, params) => (pop as SimpleProjectEditor)(proj, ctx, params)
         .then(r => {
             // See what it returns
             return isActionResult(r) ?

@@ -1,4 +1,4 @@
-import { ActionResult, isActionResult } from "../../action/ActionResult";
+import { ActionResult } from "../../action/ActionResult";
 import { HandlerContext } from "../../HandlerContext";
 import { isProject, Project } from "../../project/Project";
 

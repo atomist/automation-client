@@ -38,6 +38,22 @@ describe("editor chaining", () => {
         editorChain(project, null)
             .then(r => {
                 assert(r.edited);
+                assert(!!project.findFileSync("thing"));
+                done();
+            }).catch(done);
+    });
+
+    it("should edit with promise editor", done => {
+        const project = new InMemoryProject();
+        const editor = p => {
+            p.addFileSync("thing", "1");
+            return Promise.resolve(p);
+        };
+        const editorChain = chainEditors(editor, NoOpEditor);
+        editorChain(project, null)
+            .then(r => {
+                assert(r.edited);
+                assert(!!project.findFileSync("thing"));
                 done();
             }).catch(done);
     });
