@@ -7,8 +7,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.3.1...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.3.2...HEAD
 
+## [0.3.2][] - 2017-11-13
+
+[0.3.2]: https://github.com/atomist/automation-client-ts/compare/0.3.1...0.3.2
+
+Unification release
+
+### Added
+
+-   Unified `atomist` CLI
+
+### Deprecated
+
+-   atomist-cli, atomist-client, atomist-config, and git-info CLI
+    utilities
+
+### Changed
+
+-   Improved TypeScript parsing
+
+### Fixed
+
+-   Make tests more reliable
 
 ## [0.3.1][] - 2017-11-13
 
