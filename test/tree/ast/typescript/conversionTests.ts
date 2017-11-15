@@ -15,6 +15,8 @@ const allTypeMatches = [
     "//VariableDeclaration//ColonToken",
     "//FunctionDeclaration//ColonToken/following-sibling::*",
     "//FunctionDeclaration//ColonToken",
+    "//MethodDeclaration//ColonToken/following-sibling::*",
+    "//MethodDeclaration//ColonToken",
     "//InterfaceDeclaration",
     "//TypeAliasDeclaration",
 ];
@@ -68,6 +70,14 @@ describe("path expression driven conversion", () => {
     it("removes type definition", done =>
         removesTypeAnnotationsIn("type Thing = string;\nfunction f(): string { return 'x'; }",
             "function f() { return 'x'; }", done));
+
+    it("removes member parameter and return types", done =>
+        removesTypeAnnotationsIn("class Foo { it(n: number): string { return 'something'; } }",
+            "class Foo { it(n) { return 'something'; } }", done));
+
+    it.skip("removes implementation of interface", done =>
+        removesTypeAnnotationsIn("class Foo implements Bar { it(n: number): string { return 'something'; } }",
+            "class Foo { it(n) { return 'something'; } }", done));
 
     function removesTypeAnnotationsIn(src: string, after: string, done) {
         const f = new InMemoryFile("src/test.ts", src);
