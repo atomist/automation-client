@@ -39,6 +39,7 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
             {teamId: "T1L0VDKJP", offset: 0})
             .then(() => {
                 return ctx.messageClient.addressUsers(msg, "cd");
-            });
+            })
+            .then(() => ({ code: 0, redirect: "http://google.com" }));
     }
 }

@@ -123,22 +123,22 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         try {
             this.automations.invokeCommand(ci, ctx)
                 .then(result => {
-                    if (!result || !result.code) {
+                    if (!result || !result.hasOwnProperty("code")) {
                         result = defaultResult();
                     }
 
                     if (result.code === 0) {
-                        this.listeners.forEach(l => l.commandSuccessful(ci, ctx, result));
                         result = {
                             ...defaultResult(),
                             ...result,
                         };
+                        this.listeners.forEach(l => l.commandSuccessful(ci, ctx, result));
                     } else {
-                        this.listeners.forEach(l => l.commandFailed(ci, ctx, result));
                         result = {
                             ...defaultErrorResult(),
                             ...result,
                         };
+                        this.listeners.forEach(l => l.commandFailed(ci, ctx, result));
                     }
                     this.sendStatus(result.code === 0 ? true : false, result, command);
                     callback(Promise.resolve(result));
