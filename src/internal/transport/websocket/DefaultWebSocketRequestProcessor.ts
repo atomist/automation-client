@@ -7,8 +7,7 @@ import { GraphClient } from "../../../spi/graph/GraphClient";
 import { MessageClient } from "../../../spi/message/MessageClient";
 import { HealthStatus, registerHealthIndicator } from "../../util/health";
 import { logger } from "../../util/logger";
-import { obfuscateJson } from "../../util/string";
-import { AbstractEventStoringRequestProcessor } from "../AbstractEventStoringRequestProcessor";
+import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
     CommandIncoming,
     EventIncoming,
@@ -27,7 +26,7 @@ import {
     WebSocketRequestProcessor,
 } from "./WebSocketRequestProcessor";
 
-export class DefaultWebSocketRequestProcessor extends AbstractEventStoringRequestProcessor
+export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
     implements WebSocketRequestProcessor {
 
     private graphClients: GraphClientFactory;
@@ -74,7 +73,7 @@ export class DefaultWebSocketRequestProcessor extends AbstractEventStoringReques
         return this.graphClients.createGraphClient(event);
     }
 
-    protected doCreateMessageClient(event: CommandIncoming | EventIncoming): MessageClient {
+    protected createMessageClient(event: CommandIncoming | EventIncoming): MessageClient {
         if (isCommandIncoming(event)) {
             return new WebSocketCommandMessageClient(event, this.automations, this.webSocket);
         } else if (isEventIncoming(event)) {

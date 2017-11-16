@@ -46,7 +46,7 @@ export class StableDirectoryManager implements DirectoryManager {
 
         if (this.opts.cleanOnExit === true) {
             registerShutdownHook(() => {
-                logger.verbose("Cleaning up temporary directories under '%s'", this.opts.baseDir);
+                logger.debug("Cleaning up temporary directories under '%s'", this.opts.baseDir);
                 return fs.remove(this.opts.baseDir).then(() => 0);
             });
         }

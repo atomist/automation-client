@@ -1,3 +1,4 @@
+import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as serializeError from "serialize-error";
 import {
@@ -9,7 +10,9 @@ import {
 import { AutomationEventListener } from "../../server/AutomationEventListener";
 import { AutomationServer } from "../../server/AutomationServer";
 import { GraphClient } from "../../spi/graph/GraphClient";
-import { MessageClient } from "../../spi/message/MessageClient";
+import { MessageClient, MessageOptions } from "../../spi/message/MessageClient";
+import { MessageClientSupport } from "../../spi/message/MessageClientSupport";
+import { ScriptAction } from "../common/Flushable";
 import { CommandInvocation } from "../invoker/Payload";
 import * as namespace from "../util/cls";
 import { logger } from "../util/logger";
@@ -41,6 +44,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         ses.run(() => {
             namespace.set(cls);
 
+            this.listeners.forEach(l => l.commandIncoming(command));
+
             const np = namespace.get();
             const ci: CommandInvocation = {
                 name: command.name,
@@ -52,12 +57,11 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 teamId: command.team.id,
                 correlationId: command.corrid,
                 invocationId: np ? np.invocationId : undefined,
-                messageClient: this.createMessageClient(command),
+                messageClient: this.createAndWrapMessageClient(command),
                 graphClient: this.createGraphClient(command),
             };
-            this.listeners.forEach(l => l.contextCreated(ctx));
 
-            this.onCommandWithNamespace(command);
+            this.listeners.forEach(l => l.contextCreated(ctx));
             this.listeners.forEach(l => l.commandStarting(ci, ctx));
 
             this.invokeCommand(ci, ctx, command, callback);
@@ -73,6 +77,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         ses.run(() => {
             namespace.set(cls);
 
+            this.listeners.forEach(l => l.eventIncoming(event));
+
             const np = namespace.get();
             const ef: EventFired<any> = {
                 data: event.data,
@@ -85,12 +91,11 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 teamId: event.extensions.team_id,
                 correlationId: event.extensions.correlation_id,
                 invocationId: np ? np.invocationId : undefined,
-                messageClient: this.createMessageClient(event),
+                messageClient: this.createAndWrapMessageClient(event),
                 graphClient: this.createGraphClient(event),
             };
-            this.listeners.forEach(l => l.contextCreated(ctx));
 
-            this.onEventWithNamespace(event);
+            this.listeners.forEach(l => l.contextCreated(ctx));
             this.listeners.forEach(l => l.eventStarting(ef, ctx));
 
             this.invokeEvent(ef, ctx, event, callback);
@@ -188,12 +193,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         }
     }
 
-    protected onCommandWithNamespace(command: CommandIncoming) {
-        // this is intentionally left empty; sub classes can hook in some logic
-    }
-
-    protected onEventWithNamespace(event: EventIncoming) {
-        // this is intentionally left empty; sub classes can hook in some logic
+    protected createAndWrapMessageClient(event: EventIncoming | CommandIncoming): MessageClient {
+        return new AutomationEventListenerEnabledMessageClient(this.createMessageClient(event), this.listeners);
     }
 
     protected abstract sendMessage(payload: any): void;
@@ -230,6 +231,61 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         }
         logger.error(`Failed invocation of command handler '%s'`,
             event.extensions.operationName, serializeError(err));
+    }
+}
+
+class AutomationEventListenerEnabledMessageClient implements MessageClient {
+
+    constructor(private delegate: MessageClient, private listeners: AutomationEventListener[] = []) {}
+
+    public respond(msg: string | SlackMessage,
+                   options?: MessageOptions): Promise<any> {
+        this.listeners.forEach(l => l.messageSent(msg, [], [], options));
+        return this.delegate.respond(msg, options);
+    }
+
+    public addressUsers(msg: string | SlackMessage,
+                        userNames: string | string[],
+                        options?: MessageOptions): Promise<any> {
+        this.listeners.forEach(l => l.messageSent(msg, userNames, [], options));
+        return this.delegate.addressUsers(msg, userNames, options);
+    }
+
+    public addressChannels(msg: string | SlackMessage,
+                           channelNames: string | string[],
+                           options?: MessageOptions): Promise<any> {
+        this.listeners.forEach(l => l.messageSent(msg, [], channelNames, options));
+        return this.delegate.addressChannels(msg, channelNames, options);
+    }
+
+    public recordRespond(msg: string | SlackMessage,
+                         options?: MessageOptions): this {
+        return this.delegate.recordRespond(msg, options) as this;
+    }
+
+    public recordAddressUsers(msg: string | SlackMessage,
+                              userNames: string | string[],
+                              options?: MessageOptions): this {
+        return this.delegate.recordAddressUsers(msg, userNames, options) as this;
+    }
+
+    public recordAddressChannels(msg: string | SlackMessage,
+                                 channelNames: string | string[],
+                                 options?: MessageOptions): this {
+        return this.delegate.recordAddressChannels(msg, channelNames, options) as this;
+    }
+
+    public recordAction(action: ScriptAction<MessageClient, any>): this {
+        return this.delegate.recordAction(action) as this;
+    }
+
+    public flush(): Promise<this> {
+        return this.delegate.flush() as Promise<this>;
+
+    }
+
+    public get dirty() {
+        return this.delegate.dirty;
     }
 }
 

@@ -10,6 +10,7 @@ import {
     ClusterMasterRequestProcessor,
 } from "./internal/transport/cluster/ClusterMasterRequestProcessor";
 import { startWorker } from "./internal/transport/cluster/ClusterWorkerRequestProcessor";
+import { EventStoringAutomationEventListener } from "./internal/transport/EventStoringAutomationEventListener";
 import {
     ExpressServer,
     ExpressServerOptions,
@@ -34,6 +35,11 @@ export const DefaultApiServer =
     "https://automation.atomist.com/registration";
 export const DefaultGraphQLServer =
     "https://automation.atomist.com/graphql/team";
+
+const DefaultListeners = [
+    new MetricEnabledAutomationEventListener(),
+    new EventStoringAutomationEventListener(),
+];
 
 export class AutomationClient {
 
@@ -125,21 +131,21 @@ export class AutomationClient {
     private setupClusterRequestHandler(webSocketOptions: WebSocketClientOptions): ClusterMasterRequestProcessor {
         if (this.configuration.listeners) {
             return new ClusterMasterRequestProcessor(this.automations, webSocketOptions,
-                [new MetricEnabledAutomationEventListener(), ...this.configuration.listeners],
+                [...DefaultListeners, ...this.configuration.listeners],
                 this.configuration.cluster.workers);
         } else {
             return new ClusterMasterRequestProcessor(this.automations, webSocketOptions,
-                [new MetricEnabledAutomationEventListener()], this.configuration.cluster.workers);
+                DefaultListeners, this.configuration.cluster.workers);
         }
     }
 
     private setupRequestHandler(webSocketOptions: WebSocketClientOptions): WebSocketRequestProcessor {
         if (this.configuration.listeners) {
             return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
-                [new MetricEnabledAutomationEventListener(), ...this.configuration.listeners]);
+                [...DefaultListeners, ...this.configuration.listeners]);
         } else {
             return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
-                [new MetricEnabledAutomationEventListener()]);
+                DefaultListeners);
         }
     }
 
