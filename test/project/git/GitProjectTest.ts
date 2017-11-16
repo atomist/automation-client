@@ -22,7 +22,7 @@ function checkProject(p: Project) {
     assert(f.getContentSync());
 }
 
-const Creds = { token: GitHubToken };
+const Creds = {token: GitHubToken};
 
 describe("GitProject", () => {
 
@@ -37,7 +37,7 @@ describe("GitProject", () => {
         );
     }
 
-    function deleteRepoIfExists(ownerAndRepo: {owner: string, repo: string}): Promise<any> {
+    function deleteRepoIfExists(ownerAndRepo: { owner: string, repo: string }): Promise<any> {
         const config = {
             headers: {
                 Authorization: `token ${GitHubToken}`,
@@ -50,7 +50,7 @@ describe("GitProject", () => {
             });
     }
 
-    function newRepo(): Promise<{owner: string, repo: string}> {
+    function newRepo(): Promise<{ owner: string, repo: string }> {
         const config = {
             headers: {
                 Authorization: `token ${GitHubToken}`,
@@ -67,7 +67,7 @@ describe("GitProject", () => {
         }, config).catch(error => {
             throw new Error("Could not create repo: " + error.message);
         }).then(() =>
-            ({ owner, repo: name }),
+            ({owner, repo: name}),
         ));
     }
 
@@ -76,7 +76,7 @@ describe("GitProject", () => {
         p.addFileSync("Thing", "1");
         const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
         gp.init().then(() => gp.commit("Added a Thing").then(c => {
-            exec.exec("git status; git log", { cwd: p.baseDir }, (err, stdout, stderr) => {
+            exec.exec("git status; git log", {cwd: p.baseDir}, (err, stdout, stderr) => {
                 if (err) {
                     // node couldn't execute the command
                     console.error(`Node err on dir [${p.baseDir}]: ${err}`);
@@ -148,15 +148,15 @@ describe("GitProject", () => {
             .then(_ => gp.createAndSetGitHubRemote(owner, repo, "Thing1", "private"))
             .then(() => gp.commit("Added a Thing"))
             .then(_ =>
-                gp.push().then(() => deleteRepoIfExists({ owner, repo}).then(done)),
-            ).catch(() => deleteRepoIfExists({ owner, repo}).then(done)),
+                gp.push().then(() => deleteRepoIfExists({owner, repo}).then(done)),
+            ).catch(() => deleteRepoIfExists({owner, repo}).then(done)),
         ).catch(done);
     }).timeout(16000);
 
     it("add a file, then PR push to remote repo", function(done) {
         this.retries(1);
 
-        newRepo().then( ownerAndRepo => GitCommandGitProject.cloned(Creds,
+        newRepo().then(ownerAndRepo => GitCommandGitProject.cloned(Creds,
             new GitHubRepoRef(ownerAndRepo.owner, ownerAndRepo.repo))
             .then(gp => {
                 gp.addFileSync("Cat", "hat");
@@ -181,7 +181,7 @@ describe("GitProject", () => {
 
                 gp.checkout(sha)
                     .then(_ => {
-                        exec.exec("git status", { cwd: baseDir }, (err, stdout, stderr) => {
+                        exec.exec("git status", {cwd: baseDir}, (err, stdout, stderr) => {
                             if (err) {
                                 // node couldn't execute the command
                                 console.error(`Node err on dir [${baseDir}]: ${err}`);
@@ -196,5 +196,18 @@ describe("GitProject", () => {
                     });
             }).catch(done);
     }).timeout(5000);
+
+    it.skip("clones a project subdirectory", done => {
+        GitCommandGitProject.cloned(Creds, new GitHubRepoRef("pallets", "flask", "master",
+            GitHubDotComBase, "examples/flaskr"))
+            .then(gp => {
+                assert(!!gp.findFileSync("flaskr/__init__.py"));
+                gp.isClean()
+                    .then(r => {
+                        assert(r.success, "We should be able to get git status for a subdirectory");
+                        done();
+                    });
+            }).catch(done);
+    });
 
 });
