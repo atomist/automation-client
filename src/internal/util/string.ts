@@ -59,7 +59,11 @@ export function obfuscateJson(key: string, value: any) {
         return undefined;
     } else if (key === "events") {
         return undefined;
-    } else if (key === "ingestors") {
+    } else if (key === "ingesters") {
+        return undefined;
+    } else if (key === "listeners") {
+        return undefined;
+    } else if (key === "customizers") {
         return undefined;
     }
     return value;
