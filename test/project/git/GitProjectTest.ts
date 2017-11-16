@@ -135,7 +135,7 @@ describe("GitProject", () => {
             .catch(done);
     });
 
-    it("add a file, init and commit, then push to new remote repo", function(done) {
+    it("add a file, init and commit, then push to new remote repo", function (done) {
         this.retries(5);
 
         const p = tempProject();
@@ -154,7 +154,7 @@ describe("GitProject", () => {
         ).catch(done);
     }).timeout(16000);
 
-    it("add a file, then PR push to remote repo", function(done) {
+    it("add a file, then PR push to remote repo", function (done) {
         this.retries(1);
 
         newRepo().then(ownerAndRepo => GitCommandGitProject.cloned(Creds,
@@ -168,8 +168,10 @@ describe("GitProject", () => {
                     .then(x => {
                         return gp.raisePullRequest("Thing2", "Adds another character");
                     })
-                    .then(x => deleteRepoIfExists(ownerAndRepo).then(done));
-            }).catch(() => deleteRepoIfExists(ownerAndRepo).then(done)));
+                    .then(x => deleteRepoIfExists(ownerAndRepo));
+            }).catch(() => deleteRepoIfExists(ownerAndRepo)))
+            .then(done, done);
+
     }).timeout(20000);
 
     it("check out commit", done => {

@@ -1,5 +1,5 @@
 import * as cluster from "cluster";
-import * as  stringify from "json-stringify-safe";
+import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as serializeError from "serialize-error";
 import * as winston from "winston";
