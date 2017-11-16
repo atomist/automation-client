@@ -195,7 +195,13 @@ function main () {
     fi
 
     msg "running tests"
-    if ! npm test; then
+    if ! npm run test; then
+        err "test failed"
+        return 1
+    fi
+
+    msg "running tests that hit the production API"
+    if ! npm run test:api; then
         err "test failed"
         return 1
     fi

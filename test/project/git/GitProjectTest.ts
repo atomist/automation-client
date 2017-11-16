@@ -11,7 +11,7 @@ import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProj
 import { GitProject } from "../../../src/project/git/GitProject";
 import { LocalProject } from "../../../src/project/local/LocalProject";
 import { Project } from "../../../src/project/Project";
-import { GitHubToken } from "../../atomist.config";
+import { GitHubToken, TestRepositoryVisibility } from "../../credentials";
 
 function checkProject(p: Project) {
     const f = p.findFileSync("package.json");
@@ -59,13 +59,14 @@ describe("GitProject", () => {
         const name = `test-repo-${new Date().getTime()}`;
         const description = "a thing";
         const url = `${GitHubDotComBase}/user/repos`;
+        console.log("Visibility is " + TestRepositoryVisibility);
         return getOwnerByToken().then(owner => axios.post(url, {
             name,
             description,
-            private: true,
+            private: TestRepositoryVisibility === "private",
             auto_init: true,
         }, config).catch(error => {
-            throw new Error("Could not create repo: " + error.message);
+            throw new Error(`Could not create repo ${owner}/${name}: ` + error.message);
         }).then(() =>
             ({owner, repo: name}),
         ));
@@ -145,7 +146,7 @@ describe("GitProject", () => {
         const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
 
         getOwnerByToken().then(owner => gp.init()
-            .then(_ => gp.createAndSetGitHubRemote(owner, repo, "Thing1", "private"))
+            .then(_ => gp.createAndSetGitHubRemote(owner, repo, "Thing1", TestRepositoryVisibility))
             .then(() => gp.commit("Added a Thing"))
             .then(_ =>
                 gp.push().then(() => deleteRepoIfExists({owner, repo}).then(done)),
