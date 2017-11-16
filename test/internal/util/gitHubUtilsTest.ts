@@ -2,7 +2,7 @@ import "mocha";
 
 import * as assert from "power-assert";
 import { fileContent, hasFile } from "../../../src/util/gitHub";
-import { GitHubToken } from "../../atomist.config";
+import { GitHubToken } from "../../credentials";
 
 describe("gitHubUtils", () => {
 

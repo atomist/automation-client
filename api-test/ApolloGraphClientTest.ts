@@ -1,11 +1,11 @@
 import "mocha";
-import { ApolloGraphClient } from "../../src/graph/ApolloGraphClient";
+import { ApolloGraphClient } from "../src/graph/ApolloGraphClient";
 
 import * as assert from "power-assert";
-import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
-import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
-import { ReposQuery, ReposQueryVariables } from "../../src/schema/schema";
-import { GitHubToken } from "../atomist.config";
+import { GitHubRepoRef } from "../src/operations/common/GitHubRepoRef";
+import { GitCommandGitProject } from "../src/project/git/GitCommandGitProject";
+import { ReposQuery, ReposQueryVariables } from "../src/schema/schema";
+import { GitHubToken } from "./credentials";
 
 const teamId = "T095SFFBK";
 

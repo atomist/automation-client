@@ -19,7 +19,7 @@ import { LocalProject } from "../../../src/project/local/LocalProject";
 import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProject";
 import { Project } from "../../../src/project/Project";
 import { hasFile } from "../../../src/util/gitHub";
-import { GitHubToken } from "../../atomist.config";
+import { GitHubToken } from "../../credentials";
 
 function tempRepoName() {
     return `test-repo-${new Date().getTime()}`;
