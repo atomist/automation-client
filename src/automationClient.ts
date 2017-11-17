@@ -11,6 +11,7 @@ import {
 } from "./internal/transport/cluster/ClusterMasterRequestProcessor";
 import { startWorker } from "./internal/transport/cluster/ClusterWorkerRequestProcessor";
 import { EventStoringAutomationEventListener } from "./internal/transport/EventStoringAutomationEventListener";
+import { ExpressRequestProcessor } from "./internal/transport/express/ExpressRequestProcessor";
 import {
     ExpressServer,
     ExpressServerOptions,
@@ -103,21 +104,27 @@ export class AutomationClient {
 
         if (!(this.configuration.cluster && this.configuration.cluster.enabled)) {
             logger.info(`Starting Atomist automation client ${this.configuration.name}@${this.configuration.version}`);
-            const handler = this.setupRequestHandler(webSocketOptions);
-            return Promise.all([
-                this.runWs(handler, webSocketOptions),
-                Promise.resolve(this.runHttp(handler)),
-                this.setupApplicationEvents(),
-            ]);
+            if ((this.configuration.ws && this.configuration.ws.enabled) || !this.configuration.ws) {
+                return Promise.all([
+                    this.runWs(this.setupWebSocketRequestHandler(webSocketOptions), webSocketOptions),
+                    Promise.resolve(this.runHttp()),
+                    this.setupApplicationEvents(),
+                ]);
+            } else {
+                return Promise.all([
+                    Promise.resolve(this.runHttp()),
+                    this.setupApplicationEvents(),
+                ]);
+            }
         } else if (cluster.isMaster || !(this.configuration.cluster && this.configuration.cluster.enabled)) {
             logger.info(
                 `Starting Atomist automation client master ${this.configuration.name}@${this.configuration.version}`);
-            const handler = this.setupClusterRequestHandler(webSocketOptions);
-            return handler.run()
+            const wsHandler = this.setupWebSocketClusterRequestHandler(webSocketOptions);
+            return wsHandler.run()
                 .then(() => {
                     return Promise.all([
-                        this.runWs(handler, webSocketOptions),
-                        Promise.resolve(this.runHttp(handler)),
+                        this.runWs(wsHandler, webSocketOptions),
+                        Promise.resolve(this.runHttp()),
                         this.setupApplicationEvents(),
                     ]);
                 });
@@ -128,7 +135,8 @@ export class AutomationClient {
         }
     }
 
-    private setupClusterRequestHandler(webSocketOptions: WebSocketClientOptions): ClusterMasterRequestProcessor {
+    private setupWebSocketClusterRequestHandler(
+        webSocketOptions: WebSocketClientOptions): ClusterMasterRequestProcessor {
         if (this.configuration.listeners) {
             return new ClusterMasterRequestProcessor(this.automations, webSocketOptions,
                 [...DefaultListeners, ...this.configuration.listeners],
@@ -139,7 +147,7 @@ export class AutomationClient {
         }
     }
 
-    private setupRequestHandler(webSocketOptions: WebSocketClientOptions): WebSocketRequestProcessor {
+    private setupWebSocketRequestHandler(webSocketOptions: WebSocketClientOptions): WebSocketRequestProcessor {
         if (this.configuration.listeners) {
             return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
                 [...DefaultListeners, ...this.configuration.listeners]);
@@ -167,7 +175,7 @@ export class AutomationClient {
         return this.webSocketClient.start();
     }
 
-    private runHttp(handler: RequestProcessor): void {
+    private runHttp(): void {
         const http = this.configuration.http;
         this.httpPort = http && http.port ? http.port :
             (process.env.PORT ? +process.env.PORT : 2866);
@@ -182,7 +190,6 @@ export class AutomationClient {
                 },
                 bearer: {
                     enabled: true,
-                    token: this.configuration.token,
                 },
                 github: {
                     enabled: false,
@@ -210,7 +217,7 @@ export class AutomationClient {
                 }
                 if (http.auth.bearer && http.auth.bearer.enabled) {
                     expressOptions.auth.bearer.enabled = http.auth.bearer.enabled;
-                    expressOptions.auth.bearer.token = http.auth.bearer.token;
+                    expressOptions.auth.bearer.org = http.auth.bearer.org;
                 } else if (http.auth.bearer) {
                     expressOptions.auth.bearer.enabled = http.auth.bearer.enabled;
                 }
@@ -226,7 +233,7 @@ export class AutomationClient {
             }
         }
         if (!http || http.enabled) {
-            this.httpServer = new ExpressServer(this.automations, expressOptions, handler);
+            this.httpServer = new ExpressServer(this.automations, this.configuration.listeners, expressOptions);
         }
     }
 }

@@ -36,7 +36,7 @@ export interface RunOptions {
             }
             bearer?: {
                 enabled: boolean;
-                token?: string;
+                org?: string;
             },
             github?: {
                 enabled: boolean;
@@ -48,6 +48,9 @@ export interface RunOptions {
                 scopes?: string | string[];
             },
         }
+    };
+    ws?: {
+        enabled: boolean,
     };
     endpoints?: {
         graphql?: string,

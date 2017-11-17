@@ -11,7 +11,6 @@ import { AutomationEventListener } from "../../server/AutomationEventListener";
 import { AutomationServer } from "../../server/AutomationServer";
 import { GraphClient } from "../../spi/graph/GraphClient";
 import { MessageClient, MessageOptions } from "../../spi/message/MessageClient";
-import { MessageClientSupport } from "../../spi/message/MessageClientSupport";
 import { ScriptAction } from "../common/Flushable";
 import { CommandInvocation } from "../invoker/Payload";
 import * as namespace from "../util/cls";

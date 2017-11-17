@@ -31,8 +31,8 @@ export class ExpressServer {
     private adminOrg;
 
     constructor(private automations: AutomationServer,
-                private options: ExpressServerOptions,
-                private handler: RequestProcessor) {
+                private listeners: AutomationEventListener[] = [],
+                private options: ExpressServerOptions) {
 
         const exp = express();
 
@@ -244,7 +244,10 @@ export class ExpressServer {
                     ...req.body,
                 };
 
-                this.handler.processCommand(payload, result => {
+                const token = req.user ? req.user.token : undefined;
+                const handler = new ExpressRequestProcessor(token, this.automations, this.listeners, this.options);
+
+                handler.processCommand(payload, result => {
                     result.then(r => handle(req, res, r));
                 });
             });
@@ -296,7 +299,11 @@ export class ExpressServer {
                         id,
                     },
                 };
-                this.handler.processCommand(payload, result => {
+
+                const token = req.user ? req.user.token : undefined;
+                const handler = new ExpressRequestProcessor(token, this.automations, this.listeners, this.options);
+
+                handler.processCommand(payload, result => {
                     result.then(r => handle(req, res, r));
                 });
             });
@@ -327,6 +334,7 @@ export class ExpressServer {
                 }, (accessToken, refreshToken, profile, cb) => {
                     logger.info(`Successfully authenticated GitHub user: %j`, profile);
                     // check org membership
+                    const api = new GitHubApi();
                     api.authenticate({ type: "token", token: accessToken });
                     if (org) {
                         api.orgs.checkMembership({ org, username: profile.username })
@@ -397,15 +405,32 @@ export class ExpressServer {
         }
 
         if (this.options.auth && this.options.auth.bearer && this.options.auth.bearer.enabled) {
-            const tk = this.options.auth.bearer.token;
+            const org = this.options.auth.bearer.org;
 
             passport.use(new bearer.Strategy(
                 (token, done) => {
-                    if (token === tk) {
-                        done(null, { token } );
-                    } else {
-                        done(null, false);
-                    }
+                    const api = new GitHubApi();
+                    api.authenticate({type: "token", token});
+                    api.users.get({} )
+                        .then(user => {
+                            if (org) {
+                                return api.orgs.checkMembership({
+                                    username: user.data.login,
+                                    org,
+                                })
+                                .then(() => {
+                                    return user.data;
+                                });
+                            } else {
+                                return user.data;
+                            }
+                        })
+                        .then(user => {
+                            done(null, { token, user });
+                        })
+                        .catch(err => {
+                            done(null, false);
+                        });
                 },
             ));
 
@@ -460,15 +485,15 @@ export class ExpressServer {
     }
 }
 
+import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { ExpressCustomizer } from "../../../server/options";
 import {
     CommandIncoming,
     EventIncoming,
     RequestProcessor,
 } from "../RequestProcessor";
+import { ExpressRequestProcessor } from "./ExpressRequestProcessor";
 const ApiBase = "";
-
-const api = new GitHubApi();
 
 export interface ExpressServerOptions {
 
@@ -484,7 +509,7 @@ export interface ExpressServerOptions {
         },
         bearer: {
             enabled: boolean;
-            token: string;
+            org?: string;
         },
         github: {
             enabled: boolean;

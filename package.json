@@ -131,7 +131,7 @@
     "compile:cortex": "ncp src/graph/schema.cortex.json build/src/graph/schema.cortex.json",
     "compile:ts": "tsc --project .",
     "fmt": "tsfmt --replace",
-    "git:info": "node build/src/scripts/git-info.js",
+    "git:info": "node build/src/cli/git-info.js",
     "lint": "tslint --format verbose --project . --exclude '{build,node_modules}/**' '**/*.ts'",
     "lint:fix": "npm run lint -- --fix",
     "start": "npm-run-all git:info start:server",

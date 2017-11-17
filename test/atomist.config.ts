@@ -64,6 +64,9 @@ export const configuration: Configuration = {
         CircleCIPayload,
         GitLabPushPayload,
     ],
+    ws: {
+        enabled: true,
+    },
     http: {
         enabled: true,
         forceSecure: false,
@@ -74,8 +77,8 @@ export const configuration: Configuration = {
                 password: "test",
             },
             bearer: {
-                enabled: false,
-                token: GitHubToken,
+                enabled: true,
+                org: "atomisthq",
             },
             github: {
                 enabled: false,
@@ -99,7 +102,7 @@ export const configuration: Configuration = {
         teamId: "T1L0VDKJP",
     },
     cluster: {
-        enabled: true,
+        enabled: false,
         workers: 1,
     },
 };
