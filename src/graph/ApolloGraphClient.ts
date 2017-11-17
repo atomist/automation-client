@@ -4,6 +4,7 @@ import { ApolloLink } from "apollo-link";
 import { createHttpLink } from "apollo-link-http";
 import gql from "graphql-tag";
 import "isomorphic-fetch";
+import * as stringify from "json-stringify-safe";
 import { logger } from "../internal/util/logger";
 import { GraphClient } from "../spi/graph/GraphClient";
 import { inlineQuery, resolveAndReadFileSync } from "./graphQL";
@@ -51,7 +52,7 @@ export class ApolloGraphClient implements GraphClient {
 
     public executeQuery<T, Q>(graphql: string, variables?: Q): Promise<T> {
         logger.debug(`Querying '%s' with variables '%s' and query: %s`,
-            this.endpoint, JSON.stringify(variables), inlineQuery(graphql));
+            this.endpoint, stringify(variables), inlineQuery(graphql));
 
         const query = gql(graphql);
         return this.client.query<T>({
@@ -60,7 +61,7 @@ export class ApolloGraphClient implements GraphClient {
             })
             .then(response => {
                 // The following statement is needed for debugging; we can always disable that later
-                logger.debug("Query returned data: %s", JSON.stringify(response.data));
+                logger.debug("Query returned data: %s", stringify(response.data));
                 return response.data;
             });
     }
@@ -72,7 +73,7 @@ export class ApolloGraphClient implements GraphClient {
 
     public executeMutation<T, Q>(graphql: string, variables?: Q): Promise<any> {
         logger.debug(`Mutating '%s' with variables '%s' and mutation: %s`,
-            this.endpoint, JSON.stringify(variables), inlineQuery(graphql));
+            this.endpoint, stringify(variables), inlineQuery(graphql));
 
         const mutation = gql(graphql);
         return this.client.mutate<T>({
@@ -81,7 +82,7 @@ export class ApolloGraphClient implements GraphClient {
             })
             .then(response => {
                 // The following statement is needed for debugging; we can always disable that later
-                logger.debug("Mutation returned data: %s", JSON.stringify(response.data));
+                logger.debug("Mutation returned data: %s", stringify(response.data));
                 return response.data;
             });
     }

@@ -1,3 +1,4 @@
+import * as stringify from "json-stringify-safe";
 import { ApolloGraphClient } from "../graph/ApolloGraphClient";
 import {
     EventFired,
@@ -78,7 +79,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         const instanceToInspect = factory();
         const md = metadataFromInstance(instanceToInspect) as CommandHandlerMetadata;
         if (!md) {
-            throw new Error(`Cannot get metadata from handler '${JSON.stringify(instanceToInspect)}'`);
+            throw new Error(`Cannot get metadata from handler '${stringify(instanceToInspect)}'`);
         }
         this.commandHandlers.push({
             metadata: md,
@@ -107,7 +108,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         const instanceToInspect = factory();
         const md = metadataFromInstance(instanceToInspect) as EventHandlerMetadata;
         if (!md) {
-            throw new Error(`Cannot get metadata from event handler '${JSON.stringify(instanceToInspect)}'`);
+            throw new Error(`Cannot get metadata from event handler '${stringify(instanceToInspect)}'`);
         }
         this.eventHandlers.push({
             metadata: md,

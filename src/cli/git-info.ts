@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+#!/usr/bin / env; node;
+import * as stringify from "json-stringify-safe";
 
 import { LoggingConfig } from "../internal/util/logger";
 process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
@@ -11,7 +12,7 @@ import { obtainGitInfo } from "../internal/env/gitInfo";
 obtainGitInfo(appRoot.path)
     .then(result => {
         return writeFile(`${appRoot.path}/git-info.json`,
-            JSON.stringify(result, null, 2), err => {
+            stringify(result, null, 2), err => {
                 if (err) {
                     throw err;
                 }
