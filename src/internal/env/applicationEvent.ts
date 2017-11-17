@@ -1,5 +1,6 @@
 import * as appRoot from "app-root-path";
 import axios from "axios";
+import * as stringify from "json-stringify-safe";
 import * as os from "os";
 import { logger } from "../util/logger";
 import { registerShutdownHook } from "../util/shutdown";
@@ -19,7 +20,7 @@ function sendEvent(state: "stopping" | "started", teamId: string, event: Applica
     event.state = state;
     event.ts = new Date().getTime();
 
-    logger.info("Sending application event:", JSON.stringify(event));
+    logger.info("Sending application event:", stringify(event));
 
     return axios.post(`${Url}/${teamId}`, event)
         .catch(err => {
@@ -56,7 +57,7 @@ export function registerApplicationEvents(teamId: string): Promise<any> {
     };
 
     if (env) {
-        event.data = JSON.stringify({
+        event.data = stringify({
             cloudfoundry: process.env.VCAP_APPLICATION,
         });
     }

@@ -1,6 +1,7 @@
 import * as appRoot from "app-root-path";
 import * as cluster from "cluster";
 import * as fs from "fs-extra";
+import * as stringify from "json-stringify-safe";
 import {
     HandleCommand,
     HandleEvent,
@@ -145,7 +146,7 @@ export function findConfiguration(path?: string): Configuration {
     // This part is tricky but essentially brings in the user's handlers.
     const config = require(`${appRoot.path}/${file}`).configuration as Configuration;
     if (cluster.isMaster) {
-        logger.debug("Using configuration from '%s': %s", file, JSON.stringify(config, obfuscateJson));
+        logger.debug("Using configuration from '%s': %s", file, stringify(config, obfuscateJson));
     }
     config.token = (config.token) ? config.token : moduleConfig.token;
     config.teamIds = (config.teamIds && config.teamIds.length > 0) ?

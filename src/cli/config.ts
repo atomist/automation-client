@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+#!/usr/bin / env; node;
+import * as stringify from "json-stringify-safe";
 
 import { LoggingConfig } from "../internal/util/logger";
 process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
@@ -140,7 +141,7 @@ nor your GitHub username and password.
                         });
                     })
                     .catch(reason => {
-                        console.error(`failed to create user config: ${JSON.stringify(reason)}`);
+                        console.error(`failed to create user config: ${stringify(reason)}`);
                         process.exit(1);
                     });
             } else {
@@ -156,7 +157,7 @@ nor your GitHub username and password.
         console.info(`Successfully created Atomist user configuration`);
         process.exit(0);
     }).catch(err => {
-        console.error(`Failed to create user config: ${JSON.stringify(err)}`);
+        console.error(`Failed to create user config: ${stringify(err)}`);
         process.exit(1);
     });
 }
