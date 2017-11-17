@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import { defineDynamicProperties } from "@atomist/tree-path/manipulation/enrichment";
 import { evaluateExpression } from "@atomist/tree-path/path/expressionEngine";
 import { isSuccessResult, PathExpression, stringify } from "@atomist/tree-path/path/pathExpression";
-import { parsePathExpression } from "@atomist/tree-path/path/pathExpressionParser";
+import { toPathExpression } from "@atomist/tree-path/path/utils";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { logger } from "../../internal/util/logger";
 import { ProjectAsync } from "../../project/Project";
@@ -113,10 +113,26 @@ export function findValues(p: ProjectAsync,
             .map(m => m.$value));
 }
 
-export function toPathExpression(pathExpression: string | PathExpression): PathExpression {
-    return (typeof pathExpression === "string") ?
-        parsePathExpression(pathExpression) :
-        pathExpression;
+/**
+ * Integrate path expressions with project operations to find all matches
+ * of a path expression and zap them. Use with care!
+ * @param p project
+ * @param globPattern file glob pattern
+ * @param parserOrRegistry parser for files
+ * @param pathExpression path expression string or parsed
+ * @return {Promise<TreeNode[]>} hit record for each matching file
+ */
+export function zapAllMatches(p: ProjectAsync,
+                              parserOrRegistry: FileParser | FileParserRegistry,
+                              globPattern: string,
+                              pathExpression: string | PathExpression): Promise<ProjectAsync> {
+    return findMatches(p, parserOrRegistry, globPattern, pathExpression)
+        .then(values => {
+            if (!!values) {
+                values.forEach(v => v.$value = "");
+            }
+            return p.flush();
+        });
 }
 
 export function findParser(pathExpression: PathExpression, fp: FileParser | FileParserRegistry): FileParser {

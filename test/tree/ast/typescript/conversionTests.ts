@@ -5,7 +5,7 @@ import { parsePathExpression } from "@atomist/tree-path/path/pathExpressionParse
 import * as assert from "power-assert";
 import { InMemoryFile } from "../../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../../src/project/mem/InMemoryProject";
-import { findMatches } from "../../../../src/tree/ast/astUtils";
+import { findMatches, zapAllMatches } from "../../../../src/tree/ast/astUtils";
 import { TypeScriptES6FileParser } from "../../../../src/tree/ast/typescript/TypeScriptFileParser";
 
 import { CFamilyLangHelper } from "@atomist/microgrammar/matchers/lang/cfamily/CFamilyLangHelper";
@@ -21,7 +21,7 @@ const allTypeMatches = [
     "//TypeAliasDeclaration",
 ];
 
-const allWhiteSpace: UnionPathExpression = {
+const allTypeElements: UnionPathExpression = {
     unions: allTypeMatches.map(pe => parsePathExpression(pe)),
 };
 
@@ -83,17 +83,9 @@ describe("path expression driven conversion", () => {
         const f = new InMemoryFile("src/test.ts", src);
         const p = InMemoryProject.of(f);
 
-        findMatches(p, TypeScriptES6FileParser,
+        zapAllMatches(p, TypeScriptES6FileParser,
             "src/**/*.ts",
-            allWhiteSpace)
-            .then(values => {
-                // Zapify them
-                if (!!values) {
-                    // console.log(`Value is [${values[0].$value}]`);
-                    values.forEach(v => v.$value = "");
-                }
-                return p.flush();
-            })
+            allTypeElements)
             .then(() => {
                 const f2 = p.findFileSync(f.path);
                 const h = new CFamilyLangHelper();
