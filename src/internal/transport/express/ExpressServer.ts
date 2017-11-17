@@ -227,10 +227,18 @@ export class ExpressServer {
                                                 h: CommandHandlerMetadata,
                                                 handle: (req, res, result) => any) {
 
+        exp.options(url, this.enforceSecure, this.authenticate, (req, res) => {
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            res.setHeader("Access-Control-Allow-Methods",  "GET, POST, OPTIONS");
+            res.setHeader("Content-Type", "text/plain; charset=utf-8");
+            res.setHeader("Access-Control-Max-Age", 1728000);
+            res.setHeader("Content-Length", 0);
+        });
+
         exp.post(url, this.enforceSecure, this.authenticate,
             (req, res) => {
                 res.setHeader("Access-Control-Allow-Origin", "*");
-
+                
                 const id =  this.automations.automations.team_ids
                     ? this.automations.automations.team_ids[0] : "Txxxxxxxx";
 
