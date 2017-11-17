@@ -1,6 +1,7 @@
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import { ApolloGraphClient } from "../../../graph/ApolloGraphClient";
+import { HandlerResult } from "../../../HandlerResult";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
@@ -32,8 +33,16 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
         super(automations, listeners);
     }
 
+    public sendStatus(success: boolean, hr: HandlerResult, request: CommandIncoming) {
+        if (success) {
+            return raiseEvent(`Successfully invoked ${request.name}`, request, "success");
+        } else {
+            return raiseEvent(`Unsuccessfully invoked ${request.name}`, request, "failure");
+        }
+    }
+
     protected sendMessage(payload: any) {
-        return raiseEvent(payload, this.payload);
+        // don't need this
     }
 
     protected createGraphClient(event: EventIncoming | CommandIncoming): GraphClient {
@@ -55,16 +64,17 @@ class ExpressMessageClient extends MessageClientSupport {
 
     protected doSend(msg: string | SlackMessage, userNames: string | string[],
                      channelNames: string | string[], options?: MessageOptions): Promise<any> {
-        return raiseEvent(msg, this.payload);
+        return raiseEvent(msg, this.payload, "message");
     }
 }
 
-function raiseEvent(payload: any, incomingPayload: CommandIncoming): Promise<any> {
+function raiseEvent(payload: any, incomingPayload: CommandIncoming, type: string): Promise<any> {
     // TODO cd this url should change
     return axios.put("https://api.atomist.com/dashboard/v1/event", {
             team_id: incomingPayload.team.id,
             correlation_id: incomingPayload.corrid,
             message: payload,
+            type,
         })
         .catch(err => {
             logger.warn(err);
