@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Split out tests into test and test-api so non-Atomist developers
     could run non-API tests
+-   Improve `atomist config` handling of existing config file so it
+    can be used to add additional teams
+-   Run `config` and `git` commands in same node process
 
 ## [0.3.2][] - 2017-11-13
 
