@@ -25,6 +25,7 @@ import { ExpressServerOptions } from "./ExpressServer";
 export class ExpressRequestProcessor extends AbstractRequestProcessor {
 
     constructor(private token: string,
+                private payload: CommandIncoming,
                 protected automations: AutomationServer,
                 protected listeners: AutomationEventListener[] = [],
                 private options: ExpressServerOptions) {
@@ -55,12 +56,10 @@ class ExpressMessageClient extends MessageClientSupport {
 }
 
 function raiseEvent(payload: any): Promise<any> {
-    const teamId = namespace.get().teamId;
-    const correlationId = namespace.get().correlationId;
     // TODO cd this url should change
     return axios.put("https://api.atomist.com/dashboard/v1/event", {
-            team_id: teamId,
-            correlation_id: correlationId,
+            team_id: this.payload.teamId,
+            correlation_id: this.payload.corrid,
             message: payload,
         })
         .catch(err => {

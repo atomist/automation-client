@@ -245,7 +245,8 @@ export class ExpressServer {
                 };
 
                 const token = req.user ? req.user.token : undefined;
-                const handler = new ExpressRequestProcessor(token, this.automations, this.listeners, this.options);
+                const handler = new ExpressRequestProcessor(token, payload,
+                    this.automations, this.listeners, this.options);
 
                 handler.processCommand(payload, result => {
                     result.then(r => handle(req, res, r));
@@ -301,7 +302,8 @@ export class ExpressServer {
                 };
 
                 const token = req.user ? req.user.token : undefined;
-                const handler = new ExpressRequestProcessor(token, this.automations, this.listeners, this.options);
+                const handler = new ExpressRequestProcessor(token, payload,
+                    this.automations, this.listeners, this.options);
 
                 handler.processCommand(payload, result => {
                     result.then(r => handle(req, res, r));
