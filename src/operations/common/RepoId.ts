@@ -23,6 +23,11 @@ export interface RepoRef extends RepoId {
 
     sha?: string;
 
+    /**
+     * Path from root, using / syntax. If undefined or the empty string, use the root of the repo.
+     */
+    path?: string;
+
 }
 
 /**
@@ -68,7 +73,8 @@ export class RemoteRepoRefSupport implements RemoteRepoRef {
     constructor(public remoteBase: string,
                 public owner: string,
                 public repo: string,
-                public sha: string = "master") {
+                public sha: string = "master",
+                public path?: string) {
     }
 
     get url() {
