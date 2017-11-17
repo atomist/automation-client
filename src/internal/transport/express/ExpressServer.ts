@@ -238,7 +238,7 @@ export class ExpressServer {
         exp.post(url, this.enforceSecure, this.authenticate,
             (req, res) => {
                 res.setHeader("Access-Control-Allow-Origin", "*");
-                
+
                 const id =  this.automations.automations.team_ids
                     ? this.automations.automations.team_ids[0] : "Txxxxxxxx";
 
