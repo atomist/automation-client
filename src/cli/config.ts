@@ -1,15 +1,9 @@
-#!/usr/bin/env node
-
-import { LoggingConfig } from "../internal/util/logger";
-process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
-LoggingConfig.format = "cli";
-
-import * as fs from "fs-extra";
 import * as GitHubApi from "github";
 import * as inquirer from "inquirer";
 import * as os from "os";
 
 import {
+    getUserConfig,
     UserConfigFile,
     writeUserConfig,
 } from "../configuration";
@@ -39,126 +33,141 @@ function createGitHubToken(user: string, password: string, mfa?: string): Promis
     });
 }
 
-function atomistConfig(argv: string[]) {
+function badSlackTeamMessage(teamId: string): string {
+    return `The Slack team ID you entered should start with 'T' but does not: ${teamId}`;
+}
 
-    if (fs.existsSync(UserConfigFile)) {
-        console.warn(`User configuration file, ${UserConfigFile}, already exists, exiting`);
-        process.exit(0);
+export function cliAtomistConfig(argv: any): Promise<number> {
+
+    const argSlackTeamId: string = argv["slack-team"];
+    const argGitHubUser: string = argv["github-user"];
+    const argGitHubPassword: string = argv["github-password"];
+    const argGitHubMfaToken: string = argv["github-mfa-token"];
+
+    const userConfig = getUserConfig();
+
+    if (!userConfig.teamIds) {
+        userConfig.teamIds = [];
+    }
+    if (userConfig.token && userConfig.teamIds.length > 0 && !argSlackTeamId) {
+        console.log(`Existing configuration is valid and no team supplied, exiting`);
+        return Promise.resolve(0);
+    }
+    if (argSlackTeamId) {
+        if (argSlackTeamId.indexOf("T") !== 0) {
+            console.warn(badSlackTeamMessage(argSlackTeamId));
+        } else if (!userConfig.teamIds.includes(argSlackTeamId)) {
+            userConfig.teamIds.push(argSlackTeamId);
+        }
     }
 
-    let gitHubToken: string;
-    let slackTeamId: string;
     const questions: inquirer.Questions = [];
-    if (process.argv.length < 3) {
+    if (userConfig.teamIds.length < 1) {
         questions.push({
             type: "input",
             name: "teamId",
             message: "Slack Team ID",
             validate: value => {
                 if (value.indexOf("T") !== 0) {
-                    return `The Slack team ID you entered should start with 'T' but does not: ${value}`;
+                    return badSlackTeamMessage(value);
                 }
                 return true;
             },
         });
-    } else {
-        slackTeamId = process.argv[2];
     }
-    questions.push(
-        {
-            type: "input",
-            name: "user",
-            message: "GitHub Username",
-            validate: value => {
-                if (!/^[-.A-Za-z0-9]+$/.test(value)) {
-                    return `The GitHub username you entered contains invalid characters: ${value}`;
-                }
-                return true;
-            },
-        },
-        {
-            type: "password",
-            name: "password",
-            message: "GitHub Password",
-            validate: value => {
-                if (value.length < 1) {
-                    return `The GitHub password you entered is empty`;
-                }
-                return true;
-            },
-        },
-        {
-            type: "input",
-            name: "mfa",
-            message: "GitHub 2FA Code",
-            when: answers => {
-                return createGitHubToken(answers.user, answers.password)
-                    .then(token => {
-                        gitHubToken = token;
-                        return false;
-                    })
-                    .catch(err => {
-                        if (err.code === 401 && err.message) {
-                            const msg = JSON.parse(err.message);
-                            const mfaErr = "Must specify two-factor authentication OTP code.";
-                            if ((msg.message as string).indexOf(mfaErr) > -1) {
-                                return true;
+    if (!userConfig.token) {
+        if (!argGitHubUser) {
+            questions.push({
+                type: "input",
+                name: "user",
+                message: "GitHub Username",
+                validate: value => {
+                    if (!/^[-.A-Za-z0-9]+$/.test(value)) {
+                        return `The GitHub username you entered contains invalid characters: ${value}`;
+                    }
+                    return true;
+                },
+            });
+        }
+        if (!argGitHubPassword) {
+            questions.push({
+                type: "password",
+                name: "password",
+                message: "GitHub Password",
+                validate: value => {
+                    if (value.length < 1) {
+                        return `The GitHub password you entered is empty`;
+                    }
+                    return true;
+                },
+            });
+        }
+        if (!argGitHubMfaToken) {
+            questions.push({
+                type: "input",
+                name: "mfa",
+                message: "GitHub 2FA Code",
+                when: answers => {
+                    const user = (argGitHubUser) ? argGitHubUser : answers.user;
+                    const password = (argGitHubPassword) ? argGitHubPassword : answers.password;
+                    return createGitHubToken(user, password)
+                        .then(token => {
+                            userConfig.token = token;
+                            return false;
+                        })
+                        .catch(err => {
+                            if (err.code === 401 && err.message) {
+                                const msg = JSON.parse(err.message);
+                                const mfaErr = "Must specify two-factor authentication OTP code.";
+                                if ((msg.message as string).indexOf(mfaErr) > -1) {
+                                    return true;
+                                }
                             }
-                        }
-                        throw err;
-                    });
-            },
-            validate: (value, answers) => {
-                if (!/^\d{6}$/.test(value)) {
-                    return `The GitHub 2FA you entered is invalid, it should be six digits: ${value}`;
-                }
-                return true;
-            },
-        } as any as inquirer.Question,
-    );
+                            throw err;
+                        });
+                },
+                validate: (value, answers) => {
+                    if (!/^\d{6}$/.test(value)) {
+                        return `The GitHub 2FA you entered is invalid, it should be six digits: ${value}`;
+                    }
+                    return true;
+                },
+            } as any as inquirer.Question);
+        }
+    }
 
-    console.log(`
+    if (questions.length > 0) {
+        console.log(`
 As part of the initial Atomist configuration, we need to create a
 GitHub personal access token for you that will be used to authenticate
 with the Atomist API.  The personal access token will have "read:org"
 scope, be labeled as being for the "Atomist API", and will be written
-to a file on your local machine.  Atomist does not record the token
+to a file on your local machine.  Atomist does not retain the token
 nor your GitHub username and password.
 `);
-    inquirer.prompt(questions).then(answers => {
-        if (!slackTeamId) {
-            slackTeamId = answers.teamId;
+    }
+
+    return inquirer.prompt(questions).then(answers => {
+        if (answers.teamId) {
+            userConfig.teamIds.push(answers.teamId);
         }
 
-        if (!gitHubToken) {
-            if (answers.mfa) {
-                return createGitHubToken(answers.user, answers.password, answers.mfa)
-                    .then(token => {
-                        return writeUserConfig({
-                            token,
-                            teamIds: [slackTeamId],
-                        });
-                    })
-                    .catch(reason => {
-                        console.error(`failed to create user config: ${JSON.stringify(reason)}`);
-                        process.exit(1);
-                    });
-            } else {
-                console.error(`Failed to generate GitHub token with provided credentials`);
-                process.exit(1);
-            }
+        if (!userConfig.token) {
+            const user = (argGitHubUser) ? argGitHubUser : answers.user;
+            const password = (argGitHubPassword) ? argGitHubPassword : answers.password;
+            const mfa = (argGitHubMfaToken) ? argGitHubMfaToken : answers.mfa;
+            createGitHubToken(user, password, mfa)
+                .then(token => {
+                    userConfig.token = token;
+                });
         }
-        return writeUserConfig({
-            token: gitHubToken,
-            teamIds: [slackTeamId],
+    })
+        .then(() => writeUserConfig(userConfig))
+        .then(() => {
+            console.info(`Successfully created Atomist user configuration`);
+            return 0;
+        }, err => {
+            console.error(`Failed to create user config: ${JSON.stringify(err)}`);
+            return 1;
         });
-    }).then(() => {
-        console.info(`Successfully created Atomist user configuration`);
-        process.exit(0);
-    }).catch(err => {
-        console.error(`Failed to create user config: ${JSON.stringify(err)}`);
-        process.exit(1);
-    });
 }
-
-atomistConfig(process.argv);

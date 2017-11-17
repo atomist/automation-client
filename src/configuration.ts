@@ -54,7 +54,7 @@ export interface ModuleConfig {
     teamIds: string[];
 }
 
-/*
+/**
  * Write user config securely, creating directories as necessary.
  */
 export function writeUserConfig(cfg: UserConfig): Promise<void> {
@@ -67,7 +67,21 @@ export function writeUserConfig(cfg: UserConfig): Promise<void> {
         }));
 }
 
-/*
+/**
+ * Read and return user config.
+ */
+export function getUserConfig(): UserConfig {
+    try {
+        const userConfig = fs.readJsonSync(UserConfigFile) as UserConfig;
+        return userConfig;
+    } catch (e) {
+        const err = (e as Error).message;
+        logger.info(`Failed to read user config: ${err}`);
+    }
+    return {};
+}
+
+/**
  * Try to read user config at $HOME/.atomist/client.config.json and
  * return the configured tokens and team IDs.  If there are values
  * specific for the client NPM module as read from the module's
@@ -75,15 +89,7 @@ export function writeUserConfig(cfg: UserConfig): Promise<void> {
  * the default values under the `$default$` key.
  */
 function getModuleConfig(): ModuleConfig {
-    let userConfig: UserConfig;
-    try {
-        if (fs.existsSync(UserConfigFile)) {
-            userConfig = fs.readJsonSync(UserConfigFile) as UserConfig;
-        }
-    } catch (e) {
-        const err = (e as Error).message;
-        logger.info(`Failed to read user config: ${err}`);
-    }
+    const userConfig = getUserConfig();
     let pkgJson: any;
     try {
         pkgJson = fs.readJsonSync(`${appRoot.path}/package.json`);
@@ -118,7 +124,7 @@ export function resolveModuleConfig(userConfig: UserConfig, pkgJson: any): Modul
         }
     }
 
-    return {token, teamIds};
+    return { token, teamIds };
 }
 
 const AtomistConfigFile = "atomist.config.js";
