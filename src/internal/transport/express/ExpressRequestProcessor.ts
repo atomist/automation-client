@@ -33,7 +33,7 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
     }
 
     protected sendMessage(payload: any) {
-        return raiseEvent(payload);
+        return raiseEvent(payload, this.payload);
     }
 
     protected createGraphClient(event: EventIncoming | CommandIncoming): GraphClient {
@@ -43,23 +43,27 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
     }
 
     protected createMessageClient(event: EventIncoming | CommandIncoming): MessageClient {
-        return new ExpressMessageClient();
+        return new ExpressMessageClient(this.payload);
     }
 }
 
 class ExpressMessageClient extends MessageClientSupport {
 
+    constructor(private payload: CommandIncoming) {
+        super();
+    }
+
     protected doSend(msg: string | SlackMessage, userNames: string | string[],
                      channelNames: string | string[], options?: MessageOptions): Promise<any> {
-        return raiseEvent(msg);
+        return raiseEvent(msg, this.payload);
     }
 }
 
-function raiseEvent(payload: any): Promise<any> {
+function raiseEvent(payload: any, incomingPayload: CommandIncoming): Promise<any> {
     // TODO cd this url should change
     return axios.put("https://api.atomist.com/dashboard/v1/event", {
-            team_id: this.payload.teamId,
-            correlation_id: this.payload.corrid,
+            team_id: incomingPayload.team.id,
+            correlation_id: incomingPayload.corrid,
             message: payload,
         })
         .catch(err => {
