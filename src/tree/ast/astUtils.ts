@@ -122,10 +122,10 @@ export function findValues(p: ProjectAsync,
  * @param pathExpression path expression string or parsed
  * @return {Promise<TreeNode[]>} hit record for each matching file
  */
-export function zapAllMatches(p: ProjectAsync,
-                              parserOrRegistry: FileParser | FileParserRegistry,
-                              globPattern: string,
-                              pathExpression: string | PathExpression): Promise<ProjectAsync> {
+export function zapAllMatches<P extends ProjectAsync = ProjectAsync>(p: P,
+                                                                     parserOrRegistry: FileParser | FileParserRegistry,
+                                                                     globPattern: string,
+                                                                     pathExpression: string | PathExpression): Promise<P> {
     return findMatches(p, parserOrRegistry, globPattern, pathExpression)
         .then(values => {
             if (!!values) {
