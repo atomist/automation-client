@@ -1,5 +1,4 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
-import { ApolloGraphClient } from "../../../graph/ApolloGraphClient";
 import { EventFired } from "../../../HandleEvent";
 import { HandlerContext } from "../../../HandlerContext";
 import { HandlerResult } from "../../../HandlerResult";
@@ -21,8 +20,6 @@ import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
     CommandIncoming,
     EventIncoming,
-    isCommandIncoming,
-    isEventIncoming,
     RequestProcessor,
 } from "../RequestProcessor";
 import { GraphClientFactory } from "../websocket/GraphClientFactory";

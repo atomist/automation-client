@@ -12,12 +12,19 @@ import * as bearer from "passport-http-bearer";
 import * as globals from "../../../globals";
 import { MappedParameters } from "../../../index";
 import { CommandHandlerMetadata } from "../../../metadata/automationMetadata";
+import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
-import { health, HealthStatus } from "../../util/health";
+import { ExpressCustomizer } from "../../../server/options";
+import {
+    health,
+    HealthStatus,
+} from "../../util/health";
 import { info } from "../../util/info";
 import { logger } from "../../util/logger";
 import { metrics } from "../../util/metric";
 import { guid } from "../../util/string";
+import { CommandIncoming } from "../RequestProcessor";
+import { ExpressRequestProcessor } from "./ExpressRequestProcessor";
 
 /**
  * Registers an endpoint for every automation and exposes
@@ -49,6 +56,7 @@ export class ExpressServer {
 
         const session = require("express-session");
         const MemoryStore = require("memorystore")(session);
+        const cors = require("cors");
 
         exp.use(session({
             store: new MemoryStore({
@@ -100,59 +108,52 @@ export class ExpressServer {
             });
         }
 
+        exp.options("*", cors());
+
         // Set up routes
-        exp.get(`${ApiBase}/health`,
+        exp.get(`${ApiBase}/health`, cors(),
             (req, res) => {
-                res.setHeader("Access-Control-Allow-Origin", "*");
                 const h = health();
                 res.status(h.status === HealthStatus.Up ? 200 : 500).json(h);
             });
 
-        exp.get(`${ApiBase}/info`, this.enforceSecure, this.authenticate, this.verifyAdminGroup,
+        exp.get(`${ApiBase}/info`, cors(), this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
-                res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(info(automations.automations));
             });
 
-        exp.get(`${ApiBase}/automations`, this.enforceSecure, this.authenticate, this.verifyAdminGroup,
+        exp.get(`${ApiBase}/automations`, cors(), this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
-                res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(automations.automations);
             });
 
-        exp.get(`${ApiBase}/metrics`, this.enforceSecure, this.authenticate, this.verifyAdminGroup,
+        exp.get(`${ApiBase}/metrics`, cors(), this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
-                res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(metrics());
             });
 
-        exp.get(`${ApiBase}/log/events`, this.enforceSecure, this.authenticate, this.verifyAdminGroup,
+        exp.get(`${ApiBase}/log/events`, cors(), this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
-                res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(globals.eventStore().events(req.query.from));
             });
 
-        exp.get(`${ApiBase}/log/commands`, this.enforceSecure, this.authenticate, this.verifyAdminGroup,
+        exp.get(`${ApiBase}/log/commands`, cors(), this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
-                res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(globals.eventStore().commands(req.query.from));
             });
 
-        exp.get(`${ApiBase}/log/messages`, this.enforceSecure, this.authenticate, this.verifyAdminGroup,
+        exp.get(`${ApiBase}/log/messages`, cors(), this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
-                res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(globals.eventStore().messages(req.query.from));
             });
 
-        exp.get(`${ApiBase}/series/events`, this.enforceSecure, this.authenticate, this.verifyAdminGroup,
+        exp.get(`${ApiBase}/series/events`, cors(), this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
-                res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(globals.eventStore().eventSeries());
             });
 
-        exp.get(`${ApiBase}/series/commands`, this.enforceSecure, this.authenticate, this.verifyAdminGroup,
+        exp.get(`${ApiBase}/series/commands`, cors(), this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
-                res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(globals.eventStore().commandSeries());
             });
 
@@ -178,7 +179,7 @@ export class ExpressServer {
         automations.automations.commands.forEach(
             h => {
                 this.exposeCommandHandlerInvocationRoute(exp,
-                    `${ApiBase}/command/${_.kebabCase(h.name)}`, h,
+                    `${ApiBase}/command/${_.kebabCase(h.name)}`, h, cors,
                     (req, res, result) => {
                         if (result.redirect && !req.get("x-atomist-no-redirect")) {
                             res.redirect(result.redirect);
@@ -225,20 +226,11 @@ export class ExpressServer {
     private exposeCommandHandlerInvocationRoute(exp: express.Express,
                                                 url: string,
                                                 h: CommandHandlerMetadata,
+                                                cors,
                                                 handle: (req, res, result) => any) {
 
-        exp.options(url, this.enforceSecure, this.authenticate, (req, res) => {
-            res.setHeader("Access-Control-Allow-Origin", "*");
-            res.setHeader("Access-Control-Allow-Methods",  "GET, POST, OPTIONS");
-            res.setHeader("Content-Type", "text/plain; charset=utf-8");
-            res.setHeader("Access-Control-Max-Age", 1728000);
-            res.setHeader("Content-Length", 0);
-        });
-
-        exp.post(url, this.enforceSecure, this.authenticate,
+        exp.post(url, cors(), this.enforceSecure, this.authenticate,
             (req, res) => {
-                res.setHeader("Access-Control-Allow-Origin", "*");
-
                 const id =  this.automations.automations.team_ids
                     ? this.automations.automations.team_ids[0] : "Txxxxxxxx";
 
@@ -497,14 +489,6 @@ export class ExpressServer {
     }
 }
 
-import { AutomationEventListener } from "../../../server/AutomationEventListener";
-import { ExpressCustomizer } from "../../../server/options";
-import {
-    CommandIncoming,
-    EventIncoming,
-    RequestProcessor,
-} from "../RequestProcessor";
-import { ExpressRequestProcessor } from "./ExpressRequestProcessor";
 const ApiBase = "";
 
 export interface ExpressServerOptions {
