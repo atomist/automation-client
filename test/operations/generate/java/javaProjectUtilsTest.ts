@@ -40,6 +40,31 @@ describe("javaProjectUtils", () => {
             }).catch(done);
     });
 
+    it("should refactor using common path prefix", done => {
+        const p = InMemoryProject.of(
+            {
+                path: "src/main/java/com/bands/smashing/pumpkins/Gish.java",
+                content: "package com.bands.smashing.pumpkins; public class Gish {}",
+            },
+            {
+                path: "src/main/java/com/bands/nirvana/Thing.java",
+                content: "package com.bands.nirvana; public class Thing {}",
+            },
+        );
+        movePackage(p, "com.bands", "com.nineties")
+            .then(_ => {
+                assert(!p.findFileSync("src/main/java/com/bands/smashing/pumpkins/Gish.java"));
+                const nirvana = p.findFileSync("src/main/java/com/nineties/nirvana/Thing.java");
+                assert(nirvana);
+                assert(nirvana.getContentSync() === "package com.nineties.nirvana; public class Thing {}");
+                const pumpkins = p.findFileSync("src/main/java/com/nineties/smashing/pumpkins/Gish.java");
+                assert(pumpkins);
+                assert(pumpkins.getContentSync() === "package com.nineties.smashing.pumpkins; public class Gish {}");
+
+                done();
+            }).catch(done);
+    });
+
     it("should not work on Kotlin by default", done => {
         const t = new InMemoryProject();
         t.addFileSync("src/main/kotlin/com/foo/bar/Foo.kt", "package com.foo.bar\npublic class Foo {}");
