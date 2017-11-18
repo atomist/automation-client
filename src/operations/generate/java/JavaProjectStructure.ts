@@ -1,7 +1,8 @@
-import { File } from "../../../project/File";
+import * as _ from "lodash";
 import { ProjectAsync } from "../../../project/Project";
+import { findMatches } from "../../../project/util/parseUtils";
 import { JavaPackageDeclaration } from "./JavaGrammars";
-import { JavaSourceFiles } from "./javaProjectUtils";
+import { AllJavaFiles } from "./javaProjectUtils";
 
 /**
  * Represents the structure of a Java project,
@@ -10,25 +11,20 @@ import { JavaSourceFiles } from "./javaProjectUtils";
 export class JavaProjectStructure {
 
     public static infer(p: ProjectAsync): Promise<JavaProjectStructure> {
-        function inferStructure(f: File): JavaProjectStructure {
-            const packageName = JavaPackageDeclaration.firstMatch(f.getContentSync());
-            if (packageName) {
-                return new JavaProjectStructure(packageName.name);
-            }
-            return null;
-        }
-
-        return new Promise((resolve, reject) => {
-            let structure: JavaProjectStructure = null;
-            p.streamFiles(JavaSourceFiles)
-                .on("data", f => {
-                    if (!structure) {
-                        structure = inferStructure(f);
-                    }
-                })
-                .on("error", reject)
-                .on("end", _ => resolve(structure));
-        });
+        return findMatches(p, AllJavaFiles, JavaPackageDeclaration)
+            .then(packages => {
+                const uniquePackages = _.uniq(packages.map(pack => pack.name));
+                if (uniquePackages.length === 0) {
+                    return undefined;
+                }
+                if (uniquePackages.length === 1) {
+                    return new JavaProjectStructure(uniquePackages[0]);
+                }
+                const longestPrefix = sharedStart(uniquePackages);
+                return !!longestPrefix ?
+                    new JavaProjectStructure(longestPrefix.replace(/\.$/, "")) :
+                    undefined;
+            });
     }
 
     /**
@@ -37,4 +33,18 @@ export class JavaProjectStructure {
     constructor(public applicationPackage: string) {
     }
 
+}
+
+// Taken from https://stackoverflow.com/questions/1916218/find-the-longest-common-starting-substring-in-a-set-of-strings
+function sharedStart(array: string[]): string {
+    const A = array.concat().sort();
+    if (!A) {
+        return "";
+    }
+    const a1 = A[0];
+    const a2 = A[A.length - 1];
+    const L = a1.length;
+    let i = 0;
+    while (i < L && a1.charAt(i) === a2.charAt(i)) { i++; }
+    return a1.substring(0, i);
 }
