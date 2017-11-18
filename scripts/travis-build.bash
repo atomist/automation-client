@@ -170,23 +170,6 @@ function main () {
         esac
     done
 
-    msg "running lint"
-    local lint_status
-    npm run lint
-    lint_status=$?
-    if [[ $lint_status -eq 0 ]]; then
-        :
-    elif [[ $lint_status -eq 2 ]]; then
-        err "TypeScript failed to pass linting"
-        if [[ $ignore_lint ]]; then
-            err "ignoring linting failure"
-        else
-            return 1
-        fi
-    else
-        err "tslint errored"
-        return 1
-    fi
 
     msg "compiling TypeScript"
     if ! npm run compile; then
@@ -203,6 +186,24 @@ function main () {
     msg "running tests that hit the production API"
     if ! npm run test:api; then
         err "test failed"
+        return 1
+    fi
+
+    msg "running lint"
+    local lint_status
+    npm run lint
+    lint_status=$?
+    if [[ $lint_status -eq 0 ]]; then
+        :
+    elif [[ $lint_status -eq 2 ]]; then
+        err "TypeScript failed to pass linting"
+        if [[ $ignore_lint ]]; then
+            err "ignoring linting failure"
+        else
+            return 1
+        fi
+    else
+        err "tslint errored"
         return 1
     fi
 
