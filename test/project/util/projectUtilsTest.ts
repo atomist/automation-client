@@ -189,7 +189,7 @@ describe("projectUtils", () => {
             .then(done, done);
     });
 
-    it("replaces regex across project", done => {
+    it.skip("replaces regex across project", done => {
         const p = tempProject();
         p.addFileSync("Thing", "A");
         p.addFileSync("config/Thing", "B");
