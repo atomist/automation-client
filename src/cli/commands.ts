@@ -1,6 +1,5 @@
 import * as child_process from "child_process";
 import * as fs from "fs";
-import * as stringify from "json-stringify-safe";
 import * as p from "path";
 import { CommandInvocation } from "../internal/invoker/Payload";
 import { logger } from "../internal/util/logger";
@@ -55,7 +54,7 @@ export function run(path: string,
 
     logger.info(`Running command '${ci.name}' in '${ap}'\n`);
     try {
-        child_process.execSync(`node $ATOMIST_NODE_OPTIONS ${path} --request='${stringify(ci)}'`,
+        child_process.execSync(`node $ATOMIST_NODE_OPTIONS ${path} --request='${JSON.stringify(ci)}'`,
             { cwd: ap, stdio: "inherit", env: process.env });
         process.exit(0);
     } catch (e) {

@@ -2,7 +2,6 @@ import {
     render,
     SlackMessage,
 } from "@atomist/slack-messages/SlackMessages";
-import * as stringify from "json-stringify-safe";
 import * as WebSocket from "ws";
 import { AutomationServer } from "../../../server/AutomationServer";
 import {
@@ -182,7 +181,7 @@ function mapParameters(data: {}): Parameter[] {
 }
 
 export function sendMessage(message: any, ws: WebSocket, log: boolean = true) {
-    const payload = stringify(message);
+    const payload = JSON.stringify(message);
     if (log) {
         logger.debug(`Sending message: ${payload}`);
     }

@@ -57,7 +57,7 @@ export function registerApplicationEvents(teamId: string): Promise<any> {
     };
 
     if (env) {
-        event.data = stringify({
+        event.data = JSON.stringify({
             cloudfoundry: process.env.VCAP_APPLICATION,
         });
     }
