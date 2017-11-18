@@ -115,7 +115,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             corrid: request.corrid,
             correlation_context: request.correlation_context,
             content_type: "application/x-atomist-status+json",
-            message: stringify(status),
+            message: JSON.stringify(status),
         };
         this.sendMessage(response);
     }
