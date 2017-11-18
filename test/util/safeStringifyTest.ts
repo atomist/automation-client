@@ -31,5 +31,4 @@ describe("Safe Stringify", () => {
         assert.doesNotThrow(() => stringify(circle)); // don't throw
     });
 
-
 });
