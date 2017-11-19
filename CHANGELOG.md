@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.3.2...HEAD
 
+### Changed
+
+-   Split out tests into test and test-api so non-Atomist developers
+    could run non-API tests
+
 ## [0.3.2][] - 2017-11-13
 
 [0.3.2]: https://github.com/atomist/automation-client-ts/compare/0.3.1...0.3.2
