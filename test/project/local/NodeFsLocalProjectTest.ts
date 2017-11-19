@@ -151,7 +151,7 @@ describe("NodeFsLocalProject", () => {
                 assert(files.length > 50);
             })
             .then(done, done);
-    });
+    }).timeout(5000);
 
     it("streamFiles returns enough files", done => {
         let count = 0;

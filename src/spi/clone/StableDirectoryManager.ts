@@ -140,24 +140,26 @@ function assureDirectoryExists(name: string): Promise<void> {
     // fyi, there is a race condition when the directory does not exist and
     // two concurrent activities both try to create it.
     // It's a transient error, not the end of the world. Works on second try.
-    return fs.stat(name).then(stats => {
-        if (!stats.isDirectory()) {
-            throw new Error(name + "exists but is not a directory.");
-        }
-    }, err => {
-        if (err.code === "ENOENT") {
-            logger.info("Creating " + name);
-            return fs.mkdir(name).catch(err => {
-                    if (err.code === "EEXISTS") {
-                        logger.debug("race condition observed: two of us creating " + name + " as the same time. No bother");
-                    } else {
-                        throw err;
-                    }
-                },
-            );
-        }
-        throw err;
-    });
+    return fs.stat(name)
+        .then(stats => {
+            if (!stats.isDirectory()) {
+                throw new Error(name + "exists but is not a directory.");
+            }
+        }, err => {
+            if (err.code === "ENOENT") {
+                logger.info("Creating " + name);
+                return fs.mkdir(name)
+                    .catch(err => {
+                            if (err.code === "EEXISTS") {
+                                logger.debug("race condition observed: two of us creating " + name + " as the same time. No bother");
+                            } else {
+                                throw err;
+                            }
+                        },
+                    );
+            }
+            throw err;
+        });
 }
 
 function assureDirectoryIsEmpty(name: string): Promise<void> {
