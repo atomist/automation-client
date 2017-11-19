@@ -146,8 +146,15 @@ function assureDirectoryExists(name: string): Promise<void> {
         }
     }, err => {
         if (err.code === "ENOENT") {
-            console.info("Creating " + name);
-            return fs.mkdir(name);
+            logger.info("Creating " + name);
+            return fs.mkdir(name).catch(err => {
+                    if (err.code === "EEXISTS") {
+                        logger.debug("race condition observed: two of us creating " + name + " as the same time. No bother");
+                    } else {
+                        throw err;
+                    }
+                },
+            );
         }
         throw err;
     });
