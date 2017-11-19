@@ -197,17 +197,17 @@ describe("GitProject", () => {
             }).catch(done);
     }).timeout(5000);
 
-    it.skip("clones a project subdirectory", done => {
+    it("clones a project subdirectory", done => {
         GitCommandGitProject.cloned(Creds, new GitHubRepoRef("pallets", "flask", "master",
             GitHubDotComBase, "examples/flaskr"))
             .then(gp => {
-                assert(!!gp.findFileSync("flaskr/__init__.py"));
+                assert(!!gp.findFileSync("flaskr/__init__.py"), "Should be able to find file under subdirectory");
                 gp.isClean()
                     .then(r => {
                         assert(r.success, "We should be able to get git status for a subdirectory");
                         done();
                     });
             }).catch(done);
-    });
+    }).timeout(10000);
 
 });

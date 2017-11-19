@@ -68,7 +68,10 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                          directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitCommandGitProject> {
         return clone(credentials, id, opts, directoryManager)
             .then(p => {
-                const gp = GitCommandGitProject.fromBaseDir(id, p.baseDir, credentials);
+                const pathIntoRepo = !!id.path ?
+                    id.path.startsWith("/") ? id.path : "/" + id.path :
+                    "";
+                const gp = GitCommandGitProject.fromBaseDir(id, p.baseDir + pathIntoRepo, credentials);
                 return gp;
             });
     }
