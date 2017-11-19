@@ -1,11 +1,11 @@
 import "mocha";
-import { ApolloGraphClient } from "../../src/graph/ApolloGraphClient";
+import { ApolloGraphClient } from "../src/graph/ApolloGraphClient";
 
 import * as assert from "power-assert";
-import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
-import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
-import { ReposQuery, ReposQueryVariables } from "../../src/schema/schema";
-import { GitHubToken } from "../atomist.config";
+import { GitHubRepoRef } from "../src/operations/common/GitHubRepoRef";
+import { GitCommandGitProject } from "../src/project/git/GitCommandGitProject";
+import { ReposQuery, ReposQueryVariables } from "../src/schema/schema";
+import { GitHubToken } from "../test/atomist.config";
 
 const teamId = "T095SFFBK";
 
@@ -20,7 +20,6 @@ describe("ApolloGraphClient", () => {
             { teamId, offset: 0 })
             .then(result => {
                 console.log("query took " + (Date.now() - start));
-                // console.log(`Repos were ${JSON.stringify(result)}`);
                 const org = result.ChatTeam[0].orgs[0];
                 assert(org.repo.length > 0);
                 const repo1 = org.repo[0];
@@ -42,7 +41,6 @@ describe("ApolloGraphClient", () => {
         agc.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
             { teamId: "T095SFFBK", offset: 0 })
             .then(result => {
-                // console.log(`Repos were ${JSON.stringify(result)}`);
                 const org = result.ChatTeam[0].orgs[0];
                 assert(org.repo.length > 0);
                 const repo1 = org.repo[0];

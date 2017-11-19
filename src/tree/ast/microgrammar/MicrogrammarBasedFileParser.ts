@@ -1,3 +1,4 @@
+import * as stringify from "json-stringify-safe";
 
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { FileParser } from "../FileParser";
@@ -51,11 +52,11 @@ class MicrogrammarBackedTreeNode implements TreeNode {
             this.$children = Object.getOwnPropertyNames(subs)
                 .map(prop => {
                     const sub = subs[prop];
-                    // console.log("Exposing child %s.%s as [%s]", $name, prop, JSON.stringify(sub));
+                    // console.log("Exposing child %s.%s as [%s]", $name, prop, stringify(sub));
                     return new MicrogrammarBackedTreeNode(prop, sub, this);
                 });
         } else {
-            // console.log("Exposing terminal %s as [%s]: value=[%s]", $name, JSON.stringify(m), m.$matched);
+            // console.log("Exposing terminal %s as [%s]: value=[%s]", $name, stringify(m), m.$matched);
             this.$value = String(m.$value);
         }
     }
