@@ -25,7 +25,6 @@ describe("updatePom", () => {
             .then(_ => {
                 const found = p.findFileSync("pom.xml");
                 const newPom = found.getContentSync();
-                console.log(newPom);
                 assert(newPom.includes("<artifactId>art</artifactId>"));
                 done();
             }).catch(done);
