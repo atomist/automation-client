@@ -3,10 +3,14 @@ import * as fs from "fs";
 import * as p from "path";
 import { CommandInvocation } from "../internal/invoker/Payload";
 import { logger } from "../internal/util/logger";
+import { cliAtomistConfig } from "./config";
+import { cliGitInfo } from "./gitInfo";
 
-export function start(path: string,
-                      runInstall: boolean = true,
-                      runCompile: boolean = true) {
+export function start(
+    path: string,
+    runInstall: boolean = true,
+    runCompile: boolean = true,
+) {
     const ap = resolve(path);
     path = `${ap}/node_modules/@atomist/automation-client/start.client.js`;
 
@@ -32,10 +36,12 @@ export function start(path: string,
     }
 }
 
-export function run(path: string,
-                    ci: CommandInvocation,
-                    runInstall: boolean = true,
-                    runCompile: boolean = true) {
+export function run(
+    path: string,
+    ci: CommandInvocation,
+    runInstall: boolean = true,
+    runCompile: boolean = true,
+) {
     const ap = resolve(path);
     path = `${ap}/node_modules/@atomist/automation-client/cli/run.js`;
 
@@ -62,16 +68,12 @@ export function run(path: string,
     }
 }
 
-export function config() {
-    const script = p.resolve(__dirname, "config.js");
-    child_process.execSync(`node ${script}`,
-        { cwd: process.cwd(), stdio: "inherit", env: process.env });
+export function config(argv: any): Promise<number> {
+    return cliAtomistConfig(argv);
 }
 
-export function gitInfo(path: string) {
-    const script = p.resolve(__dirname, "git-info.js");
-    child_process.execSync(`node ${script}`,
-        { cwd: process.cwd(), stdio: "inherit", env: process.env });
+export function gitInfo(argv: any): Promise<number> {
+    return cliGitInfo(argv["change-dir"]);
 }
 
 export function install(path: string) {
@@ -79,7 +81,7 @@ export function install(path: string) {
     try {
         checkPackageJson(path);
         child_process.execSync(`npm install`,
-            {cwd: path, stdio: "inherit", env: process.env});
+            { cwd: path, stdio: "inherit", env: process.env });
     } catch (e) {
         process.exit(e.status);
     }
@@ -90,7 +92,7 @@ export function compile(path: string) {
     try {
         checkPackageJson(path);
         child_process.execSync(`npm run compile`,
-            {cwd: path, stdio: "inherit", env: process.env});
+            { cwd: path, stdio: "inherit", env: process.env });
     } catch (e) {
         process.exit(e.status);
     }
