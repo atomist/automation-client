@@ -25,14 +25,6 @@ export interface CommandResult<T = undefined> extends ActionResult<T> {
 export function runCommand(cmd: string, opts: ExecOptions): Promise<CommandResult> {
     logger.debug((opts.cwd ? opts.cwd : "") + " ==> " + cmd);
     return exec(cmd, opts)
-        .catch(err => {
-            const stderr = err.stderr || (err.childProcess && err.childProcess.stderr) || "empty";
-            logger.error(`${err} running <${cmd}> in ${opts.cwd} stderr: ${stderr}`);
-            if (err.stderr) {
-                logger.error(err.stderr);
-            }
-            throw err;
-            })
         .then(r => ({
             ...r,
             success: true,
