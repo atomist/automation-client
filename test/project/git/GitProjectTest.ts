@@ -4,7 +4,6 @@ import "mocha";
 import * as assert from "power-assert";
 import { tempProject } from "../utils";
 
-import * as exec from "child_process";
 import * as _ from "lodash";
 import { ActionResult } from "../../../src/action/ActionResult";
 import { GitHubDotComBase, GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
@@ -149,8 +148,8 @@ describe("GitProject", () => {
         getOwnerByToken().then(owner => gp.init()
             .then(() => gp.createAndSetGitHubRemote(owner, repo, "Thing1", TestRepositoryVisibility))
             .then(() => gp.commit("Added a Thing"))
-            .then(_ =>
-                gp.push().then(() => deleteRepoIfExists({owner, repo}).then(done)),
+            .then(() => gp.push()
+                    .then(() => deleteRepoIfExists({owner, repo}).then(done)),
             ).catch(() => deleteRepoIfExists({owner, repo}).then(done)),
         ).catch(done);
 
