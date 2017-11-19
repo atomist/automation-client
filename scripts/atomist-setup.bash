@@ -18,7 +18,7 @@
 set -o pipefail
 
 declare Pkg=atomist-setup
-declare Version=0.1.0
+declare Version=0.2.0
 
 # write message to standard out (stdout)
 # usage: msg MESSAGE
@@ -74,18 +74,6 @@ function main () {
         fi
     done
 
-    local config=$HOME/.atomist/client.config.json
-    if [[ $team && -f $config ]]; then
-        if ! grep -q "\"$team\"" "$config" > /dev/null 2>&1; then
-            err "You have an existing Atomist client config, '$config',"
-            err "but it does not contain the same team you supplied on"
-            err "the command line: $team."
-            err "Please use the same team or manually edit the config,"
-            err "adding/changing the team list as appropriate."
-            return 1
-        fi
-    fi
-
     if [[ -e $slug ]]; then
         local x=0 bad_slug=$slug-$$
         while [[ -e $bad_slug ]]; do
@@ -125,7 +113,7 @@ function main () {
     fi
 
     msg "configuring Atomist..."
-    if ! $(npm bin)/atomist-config $team; then
+    if ! $(npm bin)/atomist config $team; then
         err "failed to configure Atomist, our sincerest apologies"
         return 1
     fi
