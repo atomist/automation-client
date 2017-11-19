@@ -1,7 +1,7 @@
 import "mocha";
 import * as assert from "power-assert";
-import { ApolloGraphClient } from "../../../src/graph/ApolloGraphClient";
-import { allReposInTeam } from "../../../src/operations/common/allReposInTeamRepoFinder";
+import { ApolloGraphClient } from "../src/graph/ApolloGraphClient";
+import { allReposInTeam } from "../src/operations/common/allReposInTeamRepoFinder";
 
 import * as _ from "lodash";
 

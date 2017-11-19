@@ -390,6 +390,12 @@ If you find a problem, please create an [issue][].
 
 You will need to install [node][] to build and test this project.
 
+To run tests, define a GITHUB_TOKEN to any valid token that has repo access. The tests 
+will create and delete repositories.
+
+Define GITHUB_VISIBILITY=public if you want these to be public; default is private. 
+You'll get a 422 response from repo creation if you don't pay for private repos.
+
 ### Build and Test
 
 Command | Reason

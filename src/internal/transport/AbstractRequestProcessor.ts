@@ -1,4 +1,5 @@
 import { SlackMessage } from "@atomist/slack-messages";
+import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as serializeError from "serialize-error";
 import {
@@ -123,7 +124,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                             ctx: HandlerContext,
                             command: CommandIncoming,
                             callback: (result: Promise<HandlerResult>) => void) {
-        logger.debug("Incoming command '%s'", JSON.stringify(command, replacer));
+        logger.debug("Incoming command '%s'", stringify(command, replacer));
         try {
             this.automations.invokeCommand(ci, ctx)
                 .then(result => {
@@ -147,7 +148,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                     this.sendStatus(result.code === 0 ? true : false, result, command);
                     callback(Promise.resolve(result));
                     logger.info(`Finished invocation of command handler '%s': %s`,
-                        command.name, JSON.stringify(result));
+                        command.name, stringify(result));
                     clearNamespace();
                 })
                 .catch(err => {
@@ -164,7 +165,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                           ctx: HandlerContext,
                           event: EventIncoming,
                           callback: (results: Promise<HandlerResult[]>) => void) {
-        logger.debug("Incoming event '%s'", JSON.stringify(event, replacer));
+        logger.debug("Incoming event '%s'", stringify(event, replacer));
         try {
             this.automations.onEvent(ef, ctx)
                 .then(result => {
@@ -179,7 +180,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                     }
                     callback(Promise.resolve(result));
                     logger.info(`Finished invocation of event handler '%s': %s`,
-                        event.extensions.operationName, JSON.stringify(result));
+                        event.extensions.operationName, stringify(result));
                     clearNamespace();
                 })
                 .catch(err => {

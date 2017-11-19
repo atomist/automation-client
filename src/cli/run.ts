@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import * as stringify from "json-stringify-safe";
 
 import { LoggingConfig } from "../internal/util/logger";
 process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
@@ -73,11 +74,11 @@ function invokeOnConsole(automationServer: AutomationServer, ci: CommandInvocati
     try {
         automationServer.invokeCommand(invocation, ctx)
             .then(r => {
-                console.log(`Command succeeded: ${JSON.stringify(r, null, 2)}`);
+                console.log(`Command succeeded: ${stringify(r, null, 2)}`);
                 process.exit(0);
             })
             .catch(err => {
-                console.log(`Error: Command failed: ${JSON.stringify(err, null, 2)}`);
+                console.log(`Error: Command failed: ${stringify(err, null, 2)}`);
                 process.exit(1);
             });
     } catch (e) {

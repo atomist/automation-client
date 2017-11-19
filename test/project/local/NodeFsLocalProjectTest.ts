@@ -30,17 +30,19 @@ describe("NodeFsLocalProject", () => {
     it("rejects no such directory", done => {
         NodeFsLocalProject.fromExistingDirectory(new GitHubRepoRef("owner", "name"),
             "This/is/complete/nonsense")
-            .catch(err => done())
             .then(() => {
                 return Promise.reject("Should have failed due to invalid directory");
-            });
+            }, err => {
+                return;
+            })
+            .then(done, done);
     });
 
     it("copies in memory project", done => {
         const proj = InMemoryProject.from(
             new GitHubRepoRef("owner", "name"),
-            {path: "package.json", content: "{ node }"},
-            {path: "some/nested/thing", content: "{ node }"},
+            { path: "package.json", content: "{ node }" },
+            { path: "some/nested/thing", content: "{ node }" },
         );
         const baseDir: string = tmp.dirSync().name;
         NodeFsLocalProject.copy(proj, baseDir).then(p => {
@@ -49,31 +51,31 @@ describe("NodeFsLocalProject", () => {
             assert(f.getContentSync());
             assert(f.getContentSync().includes("node"));
             assert(p.findFileSync("some/nested/thing"));
-            done();
-        }).catch(done);
+        })
+            .then(done, done);
     });
 
     it("copies in memory project including empty directory", done => {
         const proj = InMemoryProject.from(
             new GitHubRepoRef("owner", "name"),
-            {path: "package.json", content: "{ node }"},
-            {path: "some/nested/thing", content: "{ node }"},
+            { path: "package.json", content: "{ node }" },
+            { path: "some/nested/thing", content: "{ node }" },
         );
         proj.addDirectory("emptyDir")
             .then(() => {
                 const baseDir: string = tmp.dirSync().name;
                 NodeFsLocalProject.copy(proj, baseDir).then(p => {
                     assert(fs.statSync(p.baseDir + "/emptyDir").isDirectory());
-                    done();
                 });
-            }).catch(done);
+            })
+            .then(done, done);
     });
 
     it.skip("copies in memory project including empty directory and copies back", done => {
         const proj = InMemoryProject.from(
             new GitHubRepoRef("owner", "name"),
-            {path: "package.json", content: "{ node }"},
-            {path: "some/nested/thing", content: "{ node }"},
+            { path: "package.json", content: "{ node }" },
+            { path: "some/nested/thing", content: "{ node }" },
         );
         proj.addDirectory("emptyDir")
             .then(() => {
@@ -85,10 +87,10 @@ describe("NodeFsLocalProject", () => {
                         assert(!!inm.findFileSync("package.json"));
                         assert(!!inm.findFileSync("some/nested/thing"));
                         assert(inm.addedDirectoryPaths.includes("emptyDir"));
-                        done();
                     });
                 });
-            }).catch(done);
+            })
+            .then(done, done);
     });
 
     it("copies other local project", done => {
@@ -104,8 +106,8 @@ describe("NodeFsLocalProject", () => {
                 assert(f.getContentSync());
                 assert(f.getContentSync().includes("node"));
                 assert(p.findFileSync("some/nested/thing"));
-                done();
-            }).catch(done);
+            })
+            .then(done, done);
     });
 
     it("findFileSync: existing file", () => {
@@ -130,9 +132,8 @@ describe("NodeFsLocalProject", () => {
         thisProject.findFile("package.json")
             .then(f => {
                 assert(f.path === "package.json");
-                done();
             })
-            .catch(done);
+            .then(done, done);
     });
 
     it("fileExistsSync: existing file", () => {
@@ -144,11 +145,11 @@ describe("NodeFsLocalProject", () => {
     });
 
     it("files returns enough files", done => {
-        assert(toPromise(thisProject.streamFiles(AllFiles, ExcludeNodeModules))
+        toPromise(thisProject.streamFiles(AllFiles, ExcludeNodeModules))
             .then(files => {
                 assert(files.length > 50);
-                done();
-            }).catch(done));
+            })
+            .then(done, done);
     });
 
     it("streamFiles returns enough files", done => {
@@ -169,9 +170,9 @@ describe("NodeFsLocalProject", () => {
     it("streamFiles excludes glob non-matches", done => {
         let count = 0;
         const files = [
-            {path: "config/thing.js", content: "{ node: true }"},
-            {path: "config/other.ts", content: "{ node: true }"},
-            {path: "notconfig/other.ts", content: "{ node: true }"},
+            { path: "config/thing.js", content: "{ node: true }" },
+            { path: "config/other.ts", content: "{ node: true }" },
+            { path: "notconfig/other.ts", content: "{ node: true }" },
         ];
         const p = tempProject();
         files.forEach(f => p.addFileSync(f.path, f.content));
@@ -190,15 +191,15 @@ describe("NodeFsLocalProject", () => {
         toPromise(thisProject.streamFiles("package.json"))
             .then(files => {
                 assert(files.some(f => f.name === "package.json"));
-                done();
-            }).catch(done);
+            })
+            .then(done, done);
     });
 
     it("file count", done => {
         thisProject.totalFileCount().then(num => {
             assert(num > 0);
-            done();
-        }).catch(done);
+        })
+            .then(done, done);
     }).timeout(7000);
 
     it("changes content", done => {
@@ -211,8 +212,8 @@ describe("NodeFsLocalProject", () => {
             .then(_ => {
                 const f2 = p.findFileSync("thing");
                 assert(f2.getContentSync() === "2");
-                done();
-            }).catch(done);
+            })
+            .then(done, done);
     });
 
     it("adds file", done => {
@@ -223,8 +224,8 @@ describe("NodeFsLocalProject", () => {
             .then(_ => {
                 const f2 = p.findFileSync("thing");
                 assert(f2);
-                done();
-            }).catch(done);
+            })
+            .then(done, done);
     });
 
     it("moves file that's there", done => {
@@ -235,11 +236,11 @@ describe("NodeFsLocalProject", () => {
             .then(flushed => {
                 const f2 = p.findFileSync("thing");
                 assert(f2);
-                p.moveFile(f2.path, "thing2").then(_ => {
+                return p.moveFile(f2.path, "thing2").then(_ => {
                     assert(_.findFileSync("thing2").getContentSync() === "1");
-                    done();
                 });
-            }).catch(done);
+            })
+            .then(done, done);
     });
 
     it("attempts to move file that's not there without error", done => {
@@ -250,11 +251,11 @@ describe("NodeFsLocalProject", () => {
             .then(flushed => {
                 const f2 = p.findFileSync("thing");
                 assert(f2);
-                p.moveFile("this/aint/there", "thing2").then(_ => {
+                return p.moveFile("this/aint/there", "thing2").then(_ => {
                     assert(_.findFileSync("thing").getContentSync() === "1");
-                    done();
                 });
-            }).catch(done);
+            })
+            .then(done, done);
     });
 
     it("adds nested file", done => {
@@ -265,8 +266,8 @@ describe("NodeFsLocalProject", () => {
             .then(_ => {
                 const f2 = p.findFileSync("config/thing");
                 assert(f2);
-                done();
-            }).catch(done);
+            })
+            .then(done, done);
     });
 
     it("adds deeply nested file", done => {
@@ -277,8 +278,8 @@ describe("NodeFsLocalProject", () => {
             .then(_ => {
                 const f2 = p.findFileSync("config/and/more/thing");
                 assert(f2);
-                done();
-            }).catch(done);
+            })
+            .then(done, done);
     });
 
     it("deletes file", done => {
@@ -293,8 +294,8 @@ describe("NodeFsLocalProject", () => {
             .then(_ => {
                 const f2 = p.findFileSync("thing");
                 assert(!f2);
-                done();
-            }).catch(done);
+            })
+            .then(done, done);
     });
 
     it("deletes non-empty directory", done => {
@@ -305,8 +306,8 @@ describe("NodeFsLocalProject", () => {
             .then(_ => {
                 const f2 = p.findFileSync("dir/thing");
                 assert(!f2);
-                done();
-            }).catch(done);
+            })
+            .then(done, done);
     });
 
     it("deletes directory with subdirectories", done => {
@@ -320,8 +321,8 @@ describe("NodeFsLocalProject", () => {
                 assert(!f2);
                 const f3 = p.findFileSync("dir/this/that");
                 assert(!f3);
-                done();
-            }).catch(done);
+            })
+            .then(done, done);
     });
 
 });

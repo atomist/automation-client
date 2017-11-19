@@ -1,3 +1,4 @@
+import * as stringify from "json-stringify-safe";
 import "mocha";
 
 import * as assert from "power-assert";
@@ -80,7 +81,7 @@ describe("editAll", () => {
             fromListRepoLoader(projects))
             .then(edits => {
                 assert(edits.length === projects.length);
-                assert(edits.some(e => !e.edited), JSON.stringify(edits));
+                assert(edits.some(e => !e.edited), stringify(edits));
                 assert(edits.some(e => !e.success));
                 assert.deepEqual(projectsEdited, projects);
                 done();

@@ -140,6 +140,7 @@
     "start:client": "node $NODE_DEBUG_OPTION build/src/start.client.js --open=true",
     "start:server": "node $NODE_DEBUG_OPTION --trace-warnings --expose_gc --optimize_for_size --always_compact --max_old_space_size=256 build/src/start.client.js",
     "test": "mocha --require espower-typescript/guess --exit 'test/**/*.ts'",
+    "test:api": "mocha --require espower-typescript/guess --exit 'api-test/**/*.ts'",
     "test:one": "mocha --require espower-typescript/guess \"test/**/${TEST:-*.ts}\"",
     "typedoc": "typedoc --mode modules --excludeExternals",
     "watch:compile": "tsc --project . --watch",
