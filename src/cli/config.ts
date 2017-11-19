@@ -1,4 +1,4 @@
-#!/usr/bin / env; node;
+#!/usr/bin/env node
 import * as stringify from "json-stringify-safe";
 
 import { LoggingConfig } from "../internal/util/logger";
