@@ -1,4 +1,5 @@
 import axios from "axios";
+import * as stringify from "json-stringify-safe";
 import * as promiseRetry from "promise-retry";
 import * as serializeError from "serialize-error";
 import * as WebSocket from "ws";
@@ -140,7 +141,7 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
     const registrationPayload = registrationCallback();
 
     logger.info(`Registering ${registrationPayload.name}@${registrationPayload.version} ` +
-        `with Atomist at '${options.registrationUrl}': ${JSON.stringify(registrationPayload)}`);
+        `with Atomist at '${options.registrationUrl}': ${stringify(registrationPayload)}`);
 
     const retryOptions = {
         retries,

@@ -1,3 +1,4 @@
+import * as stringify from "json-stringify-safe";
 import { Parameter, Secret } from "../../decorators";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
@@ -42,7 +43,7 @@ export abstract class ReviewerCommandSupport<RR extends ReviewResult<PR> = Revie
                 return Promise.resolve(this.repoFilter(id))
                     .then(relevant => {
                         if (relevant) {
-                            logger.debug("Attempting to review %s", JSON.stringify(id));
+                            logger.debug("Attempting to review %s", stringify(id));
                             return Promise.resolve(load(id))
                                 .then(p => {
                                     return projectReviewer(p, context, params);

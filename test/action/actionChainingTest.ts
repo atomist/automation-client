@@ -1,3 +1,4 @@
+import * as stringify from "json-stringify-safe";
 import "mocha";
 import * as assert from "power-assert";
 import { promisify } from "util";
@@ -151,7 +152,7 @@ describe("action chaining", () => {
                 done(result.error);
             }
             assert(result.success);
-            assert(report.length === 2, "Report was: " + JSON.stringify(report));
+            assert(report.length === 2, "Report was: " + stringify(report));
             assert(result.target === "Southwest and 1 and 2");
             done();
         }).catch(done);

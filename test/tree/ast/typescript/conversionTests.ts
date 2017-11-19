@@ -1,3 +1,4 @@
+import * as stringify from "json-stringify-safe";
 import "mocha";
 
 import { UnionPathExpression } from "@atomist/tree-path/path/pathExpression";
@@ -38,7 +39,7 @@ describe("path expression driven conversion", () => {
             "src/**/*.ts",
             "//VariableDeclaration//ColonToken[/following-sibling::*]")
             .then(values => {
-                console.log(JSON.stringify(values[0],
+                console.log(stringify(values[0],
                     (key, value) => ["$parent", "node", "sourceFile"].includes(key) ? undefined : value, 2));
                 assert(values.length === 1);
                 console.log(`Value is [${values[0].$value}]`);
