@@ -4,8 +4,8 @@ import * as assert from "power-assert";
 import { fail } from "power-assert";
 import { LockAcquired, pleaseLock } from "../../../src/spi/clone/CachingDirectoryManager";
 
-import lockfile = require("proper-lockfile");
 import stringify = require("json-stringify-safe");
+import lockfile = require("proper-lockfile");
 
 describe("exploratory tests for proper-locking", () => {
     it("should be able to release a lock", done => {
@@ -21,14 +21,14 @@ describe("exploratory tests for proper-locking", () => {
         });
     });
 
-    it("does not let you lock a file that does not exist, sadly", (done) => {
+    it("does not let you lock a file that does not exist, sadly", done => {
         pleaseLock("file-that-does-not-exist")
             .then(result => {
-                assert.fail("I didn't think that would work" + result)
+                assert.fail("I didn't think that would work" + result);
             }, err => {
                 assert(err.code === "ENOENT");
             })
-            .then(() => done(), done)
+            .then(() => done(), done);
     });
 
     it("should be able to release a lock in a promise", done => {

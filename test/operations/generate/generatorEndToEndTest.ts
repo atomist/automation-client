@@ -98,7 +98,7 @@ describe("generator end to end", () => {
                         return GitCommandGitProject.cloned({ token: GitHubToken },
                             targetRepo)
                             .then(verifyPermissions)
-                            .then(() => {});
+                            .then(() => { return; }); // done() doesn't want your stuff
                     });
             }).then(cleanupDone, cleanupDone);
     }).timeout(20000);

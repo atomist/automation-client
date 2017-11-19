@@ -145,20 +145,20 @@ function assureDirectoryExists(name: string): Promise<void> {
             if (!stats.isDirectory()) {
                 throw new Error(name + "exists but is not a directory.");
             }
-        }, err => {
-            if (err.code === "ENOENT") {
+        }, statErr => {
+            if (statErr.code === "ENOENT") {
                 logger.info("Creating " + name);
                 return fs.mkdir(name)
-                    .catch(err => {
-                            if (err.code === "EEXIST") {
+                    .catch(mkdirErr => {
+                            if (mkdirErr.code === "EEXIST") {
                                 logger.debug("race condition observed: two of us creating " + name + " as the same time. No bother");
                             } else {
-                                throw err;
+                                throw mkdirErr;
                             }
                         },
                     );
             }
-            throw err;
+            throw statErr;
         });
 }
 
