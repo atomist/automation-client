@@ -1,3 +1,4 @@
+import * as stringify from "json-stringify-safe";
 import * as NodeCache from "node-cache";
 import { ApolloGraphClient } from "../../../graph/ApolloGraphClient";
 import { GraphClient } from "../../../spi/graph/GraphClient";
@@ -41,7 +42,7 @@ export class GraphClientFactory {
             return graphClient;
         }
         logger.debug("Unable to create graph client for team '%s' and registration '$s'",
-            teamId, JSON.stringify(this.registration));
+            teamId, stringify(this.registration));
         return null;
     }
 }

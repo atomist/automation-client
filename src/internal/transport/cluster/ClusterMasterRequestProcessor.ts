@@ -1,5 +1,6 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import * as cluster from "cluster";
+import * as stringify from "json-stringify-safe";
 import * as WebSocket from "ws";
 import * as global from "../../../globals";
 import { EventFired } from "../../../HandleEvent";
@@ -64,7 +65,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
     }
 
     public onRegistration(registration: RegistrationConfirmation) {
-        logger.info("Registration successful: %s", JSON.stringify(registration));
+        logger.info("Registration successful: %s", stringify(registration));
         global.setJwtToken(registration.jwt);
         this.registration = registration;
 

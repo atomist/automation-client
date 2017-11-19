@@ -1,4 +1,5 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
+import * as stringify from "json-stringify-safe";
 import { EventFired } from "../../../HandleEvent";
 import { HandlerContext } from "../../../HandlerContext";
 import { HandlerResult } from "../../../HandlerResult";
@@ -45,7 +46,7 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
     }
 
     public setRegistration(registration: RegistrationConfirmation) {
-        logger.debug("Receiving registration: %s", JSON.stringify(registration));
+        logger.debug("Receiving registration: %s", stringify(registration));
         this.registration = registration;
         this.graphClients = new GraphClientFactory(this.registration, this._options);
     }

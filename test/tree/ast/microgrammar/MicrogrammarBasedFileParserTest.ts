@@ -1,3 +1,4 @@
+import * as stringify from "json-stringify-safe";
 import "mocha";
 import * as assert from "power-assert";
 
@@ -40,7 +41,7 @@ describe("MicrogrammarBasedFileParser", () => {
         new MicrogrammarBasedFileParser("people", "person", mg)
             .toAst(f)
             .then(root => {
-                // console.log(JSON.stringify(root, null, 2));
+                // console.log(stringify(root, null, 2));
                 assert(root.$name === "people");
                 assert(root.$children.length === 2);
                 const tom = root.$children[0] as Person & TreeNode;

@@ -1,3 +1,4 @@
+import * as stringify from "json-stringify-safe";
 import * as WebSocket from "ws";
 import * as global from "../../../globals";
 import { ApolloGraphClient } from "../../../graph/ApolloGraphClient";
@@ -48,7 +49,7 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
     }
 
     public onRegistration(registration: RegistrationConfirmation) {
-        logger.info("Registration successful: %s", JSON.stringify(registration));
+        logger.info("Registration successful: %s", stringify(registration));
         global.setJwtToken(registration.jwt);
         this.registration = registration;
         this.graphClients = new GraphClientFactory(this.registration, this.options);

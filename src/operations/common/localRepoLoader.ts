@@ -1,3 +1,4 @@
+import stringify = require("json-stringify-safe");
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
 import { isLocalRepoRef, RepoRef } from "./RepoId";
 import { RepoLoader } from "./repoLoader";
@@ -8,6 +9,6 @@ export const LocalRepoLoader: RepoLoader =
             // Find it from the file system
             return NodeFsLocalProject.fromExistingDirectory(repoId, repoId.baseDir);
         } else {
-            throw Promise.reject(`Not a local RepoId: [${JSON.stringify(repoId)}]`);
+            throw Promise.reject(`Not a local RepoId: [${stringify(repoId)}]`);
         }
     };

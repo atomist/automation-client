@@ -1,3 +1,4 @@
+import * as stringify from "json-stringify-safe";
 import "mocha";
 import * as assert from "power-assert";
 import { health, HealthStatus, Indicators, registerHealthIndicator } from "../../../src/internal/util/health";
@@ -77,6 +78,6 @@ describe("health", () => {
         /* tslint:disable */
         const ep = `{"status":"OUT_OF_SERVICE","detail":[{"status":"UP","detail":"up"},{"status":"OUT_OF_SERVICE","detail":"out"},{"status":"UP","detail":"up"},{"status":"OUT_OF_SERVICE","detail":"out"},{"status":"UP","detail":"up"}]}`;
         /* tslint:enable */
-        assert(JSON.stringify(h) === ep);
+        assert(stringify(h) === ep);
     });
 });
