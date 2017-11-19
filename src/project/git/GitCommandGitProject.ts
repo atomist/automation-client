@@ -86,7 +86,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                         p.provenance + "\ncopied into one with extra path " + id.path);
                     return gp;
                 } else {
-                    return p
+                    return p;
                 }
             });
     }

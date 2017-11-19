@@ -158,10 +158,10 @@ function assureDirectoryIsEmpty(name: string): Promise<void> {
         if (files.length > 0) {
             return fs.remove(name)
                 .then(() => fs.mkdir(name))
-                .catch(err=> {
+                .catch(err => {
                     throw new Error("I tried to make this directory be empty: " + name +
-                        " but it didn't work: " + err.message)
-                })
+                        " but it didn't work: " + err.message);
+                });
         }
     });
 }
