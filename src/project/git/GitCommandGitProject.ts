@@ -75,7 +75,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     public static cloned(credentials: ProjectOperationCredentials,
                          id: RemoteRepoRef,
                          opts: CloneOptions = DefaultCloneOptions,
-                         directoryManager: DirectoryManager = CachingDirectoryManager): Promise<GitCommandGitProject> {
+                         directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitCommandGitProject> {
         return clone(credentials, id, opts, directoryManager)
             .then(p => {
                 if (!!id.path) {

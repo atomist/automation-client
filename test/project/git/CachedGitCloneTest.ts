@@ -6,6 +6,8 @@ import { runCommand } from "../../../src/action/cli/commandLine";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitHubToken } from "../../atomist.config";
+import { DefaultCloneOptions } from "../../../src/spi/clone/DirectoryManager";
+import { CachingDirectoryManager } from "../../../src/spi/clone/CachingDirectoryManager";
 
 const Creds = { token: GitHubToken };
 const Owner = "atomist-travisorg";
@@ -17,7 +19,7 @@ describe("cached git clone projects", () => {
         const repoName = opts.repoName || RepoName;
         const repositoryThatExists =
             opts.branch ? new GitHubRepoRef(Owner, repoName, opts.branch) : new GitHubRepoRef(Owner, repoName);
-        return GitCommandGitProject.cloned(Creds, repositoryThatExists);
+        return GitCommandGitProject.cloned(Creds, repositoryThatExists, DefaultCloneOptions, CachingDirectoryManager);
     };
 
     it("never returns the same place on the filesystem twice at once", done => {

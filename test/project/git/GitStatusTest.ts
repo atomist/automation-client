@@ -17,18 +17,22 @@ const Creds = { token: GitHubToken };
 
 describe("git status analysis", () => {
 
+    function freshClone(): Promise<GitCommandGitProject> {
+        return GitCommandGitProject.cloned(Creds, ExistingRepoRef, {}, TmpDirectoryManager)
+    }
+
     it("should recognize a clean repository as clean", done => {
-        GitCommandGitProject.cloned(Creds, ExistingRepoRef, {}, TmpDirectoryManager)
+        freshClone()
             .then(project =>
                 project.gitStatus())
             .then(status => {
                 assert(status.isClean);
             })
             .then(done, done);
-    });
+    }).timeout(5000);
 
     it("should recognize a dirty project as not clean", done => {
-        GitCommandGitProject.cloned(Creds, ExistingRepoRef, {}, TmpDirectoryManager)
+        freshClone()
             .then(project =>
                 project.addFile("stuff", "oh yeah"))
             .then(project =>
@@ -37,10 +41,10 @@ describe("git status analysis", () => {
                 assert(!status.isClean);
             })
             .then(done, done);
-    });
+    }).timeout(5000);
 
     it("should recognize ignored files as not clean", done => {
-        GitCommandGitProject.cloned(Creds, ExistingRepoRef, {}, TmpDirectoryManager)
+        freshClone()
             .then(project =>
                 project.addFile("ignored-file", "this file is gonna be ignored"))
             .then(project =>
@@ -49,7 +53,7 @@ describe("git status analysis", () => {
                 assert(!status.isClean);
             })
             .then(done, done);
-    });
+    }).timeout(5000);
 
     it("should tell me the local sha", done => {
         function makeACommit(project: GitCommandGitProject): Promise<GitCommandGitProject> {
@@ -58,7 +62,7 @@ describe("git status analysis", () => {
                 .then(result => result.target);
         }
 
-        GitCommandGitProject.cloned(Creds, ExistingRepoRef)
+        freshClone()
             .then(project =>
                 project.gitStatus()
                     .then(status1 => makeACommit(project)
@@ -70,7 +74,7 @@ describe("git status analysis", () => {
                             }))))
             .then(done, done);
 
-    });
+    }).timeout(5000);
 
     it("should tell me the upstream sha", done => {
         function makeACommit(project: GitCommandGitProject): Promise<GitCommandGitProject> {
@@ -79,7 +83,7 @@ describe("git status analysis", () => {
                 .then(result => result.target);
         }
 
-        GitCommandGitProject.cloned(Creds, ExistingRepoRef)
+        freshClone()
             .then(project =>
                 project.gitStatus()
                     .then(status1 => {
@@ -94,7 +98,7 @@ describe("git status analysis", () => {
                     }))
             .then(done, done);
 
-    });
+    }).timeout(5000);
 
     // I didn't figure out how to test the branch name independently. It's tested in CachedGitCloneTest
 

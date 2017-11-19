@@ -156,8 +156,12 @@ function assureDirectoryExists(name: string): Promise<void> {
 function assureDirectoryIsEmpty(name: string): Promise<void> {
     return fs.readdir(name).then(files => {
         if (files.length > 0) {
-            throw new Error("This directory was supposed to be empty: " + name +
-                " but it contains: " + files.join("\n"));
+            return fs.remove(name)
+                .then(() => fs.mkdir(name))
+                .catch(err=> {
+                    throw new Error("I tried to make this directory be empty: " + name +
+                        " but it didn't work: " + err.message)
+                })
         }
     });
 }
