@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Improve `atomist config` handling of existing config file so it
     can be used to add additional teams
 -   Run `config` and `git` commands in same node process
+-   Added "repo" scope to GitHub personal access token created by
+    `config` since so many sample automations require it
 
 ## [0.3.2][] - 2017-11-13
 

@@ -21,7 +21,7 @@ function createGitHubToken(user: string, password: string, mfa?: string): Promis
     });
     const host = os.hostname();
     const params: GitHubApi.AuthorizationCreateParams = {
-        scopes: ["read:org"],
+        scopes: ["read:org", "repo"],
         note: `Atomist API on ${host}`,
         note_url: "http://www.atomist.com/",
     };
