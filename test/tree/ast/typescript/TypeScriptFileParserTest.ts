@@ -1,5 +1,6 @@
 import { evaluateScalar, evaluateScalarValue, evaluateScalarValues } from "@atomist/tree-path/path/expressionEngine";
 import { TreeVisitor, visit } from "@atomist/tree-path/visitor";
+import * as stringify from "json-stringify-safe";
 import "mocha";
 import * as assert from "power-assert";
 import { fail } from "power-assert";
@@ -20,7 +21,7 @@ describe("TypeScriptFileParser", () => {
         TypeScriptES6FileParser
             .toAst(f)
             .then(root => {
-                // console.log(JSON.stringify(root, null, 2));
+                // console.log(stringify(root, null, 2));
                 assert(root.$name === "SourceFile");
                 done();
             }).catch(done);
@@ -111,7 +112,7 @@ describe("TypeScriptFileParser", () => {
             "**/*.ts",
             "//VariableDeclaration/Identifier")
             .then(matchResults => {
-                // console.log(JSON.stringify(root, null, 2));
+                // console.log(stringify(root, null, 2));
                 assert(matchResults.length === 1);
                 assert(matchResults[0].$value === "x");
                 done();
@@ -124,7 +125,7 @@ describe("TypeScriptFileParser", () => {
             "**/*.ts",
             "//VariableDeclaration/Identifier")
             .then(matchResults => {
-                // console.log(JSON.stringify(root, null, 2));
+                // console.log(stringify(root, null, 2));
                 assert(matchResults.length === 1);
                 assert(matchResults[0].$value === "x");
                 matchResults[0].$value = "y";

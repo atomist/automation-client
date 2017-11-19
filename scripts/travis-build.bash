@@ -170,6 +170,25 @@ function main () {
         esac
     done
 
+
+    msg "compiling TypeScript"
+    if ! npm run compile; then
+        err "compilation failed"
+        return 1
+    fi
+
+    msg "running tests"
+    if ! npm run test; then
+        err "test failed"
+        return 1
+    fi
+
+    msg "running tests that hit the production API"
+    if ! npm run test:api; then
+        err "test failed"
+        return 1
+    fi
+
     msg "running lint"
     local lint_status
     npm run lint
@@ -185,18 +204,6 @@ function main () {
         fi
     else
         err "tslint errored"
-        return 1
-    fi
-
-    msg "compiling TypeScript"
-    if ! npm run compile; then
-        err "compilation failed"
-        return 1
-    fi
-
-    msg "running tests"
-    if ! npm test; then
-        err "test failed"
         return 1
     fi
 

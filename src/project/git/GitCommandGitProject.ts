@@ -1,4 +1,5 @@
 import { exec } from "child-process-promise";
+import * as stringify from "json-stringify-safe";
 
 import axios from "axios";
 import * as os from "os";
@@ -144,7 +145,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                     }
                 })
                 .catch(() => this.setUserConfig("Atomist Bot", "bot@atomist.com")) :
-            Promise.reject("Not a GitHub repo id: " + JSON.stringify(this.id));
+            Promise.reject("Not a GitHub repo id: " + stringify(this.id));
 
     }
 
@@ -206,7 +207,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                     return Promise.reject(err);
                 });
         } else {
-            return Promise.reject("Not a GitHub remote: " + JSON.stringify(this.id));
+            return Promise.reject("Not a GitHub remote: " + stringify(this.id));
         }
     }
 
@@ -270,7 +271,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             description,
             private: visibility === "private" ? true : false,
         };
-        logger.debug(`Request to '${url}' with '${JSON.stringify(payload)}' ` +
+        logger.debug(`Request to '${url}' with '${stringify(payload)}' ` +
             `and auth token '${hideString(this.credentials.token)}'`);
         return axios.post(url, payload, config)
             .then(res => {

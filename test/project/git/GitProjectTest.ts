@@ -4,14 +4,13 @@ import "mocha";
 import * as assert from "power-assert";
 import { tempProject } from "../utils";
 
-import * as exec from "child_process";
+import * as _ from "lodash";
 import { ActionResult } from "../../../src/action/ActionResult";
 import { GitHubDotComBase, GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../../src/project/git/GitProject";
-import { LocalProject } from "../../../src/project/local/LocalProject";
 import { Project } from "../../../src/project/Project";
-import { GitHubToken } from "../../atomist.config";
+import { GitHubToken, TestRepositoryVisibility } from "../../credentials";
 
 function checkProject(p: Project) {
     const f = p.findFileSync("package.json");
@@ -59,33 +58,37 @@ describe("GitProject", () => {
         const name = `test-repo-${new Date().getTime()}`;
         const description = "a thing";
         const url = `${GitHubDotComBase}/user/repos`;
-        return getOwnerByToken().then(owner => axios.post(url, {
-            name,
-            description,
-            private: true,
-            auto_init: true,
-        }, config).catch(error => {
-            throw new Error("Could not create repo: " + error.message);
-        }).then(() =>
-            ({owner, repo: name}),
-        ));
+        console.log("Visibility is " + TestRepositoryVisibility);
+        return getOwnerByToken()
+            .then(owner => axios.post(url, {
+                name,
+                description,
+                private: TestRepositoryVisibility === "private",
+                auto_init: true,
+            }, config)
+                .then(() =>
+                    ({ owner, repo: name })))
+            .catch(error => {
+                if (error.response.status === 422) {
+                    throw new Error("Could not create repository. GitHub says: " +
+                        _.get(error, "response.data.message", "nothing"));
+                } else {
+                    throw new Error("Could not create repo: " + error.message);
+                }
+            });
     }
 
     it("add a file, init and commit", done => {
         const p = tempProject();
         p.addFileSync("Thing", "1");
         const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
-        gp.init().then(() => gp.commit("Added a Thing").then(c => {
-            exec.exec("git status; git log", {cwd: p.baseDir}, (err, stdout, stderr) => {
-                if (err) {
-                    // node couldn't execute the command
-                    console.error(`Node err on dir [${p.baseDir}]: ${err}`);
-                    return;
-                }
-                done();
-            });
-        }))
-            .catch(done);
+        gp.init()
+            .then(() => gp.commit("Added a Thing"))
+            .then(c => {
+                // TODO: check that the SHA has changed.
+                // this will be easy after #58 is closed
+            })
+            .then(() => done(), done);
     });
 
     it("commit then add has uncommitted", done => {
@@ -111,8 +114,7 @@ describe("GitProject", () => {
         gp.init()
             .then(() => gp.isClean())
             .then(assertNotClean)
-            .then(done)
-            .catch(done);
+            .then(() => done(), done);
     });
 
     function assertNotClean(r: ActionResult<GitCommandGitProject>) {
@@ -129,9 +131,8 @@ describe("GitProject", () => {
             .then(() => gp.isClean())
             .then(clean => {
                 assert(clean);
-                done();
             })
-            .catch(done);
+            .then(() => done(), done);
     });
 
     it("add a file, init and commit, then push to new remote repo", function(done) {
@@ -145,30 +146,34 @@ describe("GitProject", () => {
         const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
 
         getOwnerByToken().then(owner => gp.init()
-            .then(_ => gp.createAndSetGitHubRemote(owner, repo, "Thing1", "private"))
+            .then(() => gp.createAndSetGitHubRemote(owner, repo, "Thing1", TestRepositoryVisibility))
             .then(() => gp.commit("Added a Thing"))
-            .then(_ =>
-                gp.push().then(() => deleteRepoIfExists({owner, repo}).then(done)),
+            .then(() => gp.push()
+                    .then(() => deleteRepoIfExists({owner, repo}).then(done)),
             ).catch(() => deleteRepoIfExists({owner, repo}).then(done)),
         ).catch(done);
+
     }).timeout(16000);
 
     it("add a file, then PR push to remote repo", function(done) {
         this.retries(1);
 
-        newRepo().then(ownerAndRepo => GitCommandGitProject.cloned(Creds,
-            new GitHubRepoRef(ownerAndRepo.owner, ownerAndRepo.repo))
-            .then(gp => {
-                gp.addFileSync("Cat", "hat");
-                const branch = "thing2";
-                return gp.createBranch(branch)
-                    .then(x => gp.commit("Added a Thing"))
-                    .then(x => gp.push())
-                    .then(x => {
-                        return gp.raisePullRequest("Thing2", "Adds another character");
-                    })
-                    .then(x => deleteRepoIfExists(ownerAndRepo).then(done));
-            }).catch(() => deleteRepoIfExists(ownerAndRepo).then(done)));
+        newRepo()
+            .then(ownerAndRepo => GitCommandGitProject.cloned(Creds,
+                new GitHubRepoRef(ownerAndRepo.owner, ownerAndRepo.repo))
+                .then(gp => {
+                    gp.addFileSync("Cat", "hat");
+                    const branch = "thing2";
+                    return gp.createBranch(branch)
+                        .then(() => gp.commit("Added a Thing"))
+                        .then(() => gp.push())
+                        .then(() => gp.raisePullRequest("Thing2", "Adds another character"))
+                        .then(() => deleteRepoIfExists(ownerAndRepo));
+                }).catch( err => {
+                    deleteRepoIfExists(ownerAndRepo).then(() => Promise.reject(err));
+                }))
+            .then(() => done(), done);
+
     }).timeout(20000);
 
     it("check out commit", done => {
@@ -177,24 +182,10 @@ describe("GitProject", () => {
             .then(p => {
                 checkProject(p);
                 const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
-                const baseDir = (p as LocalProject).baseDir;
-
-                gp.checkout(sha)
-                    .then(_ => {
-                        exec.exec("git status", {cwd: baseDir}, (err, stdout, stderr) => {
-                            if (err) {
-                                // node couldn't execute the command
-                                console.error(`Node err on dir [${baseDir}]: ${err}`);
-                                return;
-                            }
-
-                            // the *entire* stdout and stderr (buffered)
-                            console.log(`stdout: ${stdout}`);
-                            console.log(`stderr: ${stderr}`);
-                            done();
-                        });
-                    });
-            }).catch(done);
+                // TODO: check that it has the right sha
+                // this will be easy after cached-clones-58 is merged
+            })
+            .then(() => done(), done);
     }).timeout(5000);
 
     it.skip("clones a project subdirectory", done => {
