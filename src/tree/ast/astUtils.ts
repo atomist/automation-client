@@ -113,6 +113,11 @@ export function findValues(p: ProjectAsync,
             .map(m => m.$value));
 }
 
+export interface ZapMatchesOptions {
+
+    zapTrailingSpaces?: boolean;
+}
+
 /**
  * Integrate path expressions with project operations to find all matches
  * of a path expression and zap them. Use with care!
@@ -120,17 +125,27 @@ export function findValues(p: ProjectAsync,
  * @param globPattern file glob pattern
  * @param parserOrRegistry parser for files
  * @param pathExpression path expression string or parsed
+ * @param opts options for handling whitespace
  * @return {Promise<TreeNode[]>} hit record for each matching file
  */
 export function zapAllMatches<P extends ProjectAsync = ProjectAsync>(p: P,
                                                                      parserOrRegistry: FileParser | FileParserRegistry,
                                                                      globPattern: string,
-                                                                     pathExpression: string | PathExpression): Promise<P> {
-    return findMatches(p, parserOrRegistry, globPattern, pathExpression)
-        .then(values => {
-            if (!!values) {
-                values.forEach(v => v.$value = "");
-            }
+                                                                     pathExpression: string | PathExpression,
+                                                                     opts: ZapMatchesOptions = {}): Promise<P> {
+    return findFileMatches(p, parserOrRegistry, globPattern, pathExpression)
+        .then(fileHits => {
+            fileHits.forEach(fh => {
+                const sorted = fh.matches.sort((m1, m2) => m1.$offset - m2.$offset);
+                sorted.forEach(m => {
+                    if (opts.zapTrailingSpaces && m.$offset) {
+                        console.warn("Cannot remove trailing spaces: Not implemented");
+                        m.$value = "";
+                    } else {
+                        m.$value = "";
+                    }
+                });
+            });
             return p.flush();
         });
 }
