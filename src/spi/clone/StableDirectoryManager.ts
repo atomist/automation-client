@@ -150,7 +150,7 @@ function assureDirectoryExists(name: string): Promise<void> {
                 logger.info("Creating " + name);
                 return fs.mkdir(name)
                     .catch(err => {
-                            if (err.code === "EEXISTS") {
+                            if (err.code === "EEXIST") {
                                 logger.debug("race condition observed: two of us creating " + name + " as the same time. No bother");
                             } else {
                                 throw err;
@@ -166,7 +166,7 @@ function assureDirectoryIsEmpty(name: string): Promise<void> {
     return fs.readdir(name).then(files => {
         if (files.length > 0) {
             return fs.remove(name)
-                .then(() => fs.mkdir(name))
+                .then(() => assureDirectoryExists(name))
                 .catch(err => {
                     throw new Error("I tried to make this directory be empty: " + name +
                         " but it didn't work: " + err.message);
