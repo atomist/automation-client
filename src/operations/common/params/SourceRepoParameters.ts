@@ -14,7 +14,7 @@ export class SourceRepoParameters {
         description: "owner, i.e., user or organization, of seed repository",
         validInput: GitHubNameRegExp.validInput,
         minLength: 1,
-        maxLength: 50,
+        maxLength: 100,
         required: false,
         displayable: false,
     })
@@ -26,7 +26,7 @@ export class SourceRepoParameters {
         description: "name of the seed repository",
         validInput: GitHubNameRegExp.validInput,
         minLength: 1,
-        maxLength: 50,
+        maxLength: 100,
         required: false,
         displayable: false,
     })
@@ -38,7 +38,7 @@ export class SourceRepoParameters {
         description: "seed repository branch to clone for new project",
         validInput: GitBranchRegExp.validInput,
         minLength: 1,
-        maxLength: 50,
+        maxLength: 256,
         required: false,
         displayable: false,
     })

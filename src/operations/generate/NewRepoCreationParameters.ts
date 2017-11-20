@@ -20,7 +20,7 @@ export class NewRepoCreationParameters implements RepoId {
         description: "name of the target repository",
         validInput: GitHubNameRegExp.validInput,
         minLength: 1,
-        maxLength: 50,
+        maxLength: 100,
         required: true,
         order: 1,
     })
