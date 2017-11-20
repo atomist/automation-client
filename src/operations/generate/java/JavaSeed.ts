@@ -78,7 +78,7 @@ export class JavaSeed extends UniversalSeed implements VersionedArtifact {
         validInput: "a valid Java package name, which consists of period-separated identifiers which" +
         " have only alphanumeric characters, $ and _ and do not start with a number",
         minLength: 1,
-        maxLength: 50,
+        maxLength: 150,
         required: true,
         order: 53,
     })
