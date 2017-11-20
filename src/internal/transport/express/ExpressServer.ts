@@ -21,6 +21,7 @@ import {
 } from "../../util/health";
 import { info } from "../../util/info";
 import { logger } from "../../util/logger";
+import { gc, heapDump } from "../../util/memory";
 import { metrics } from "../../util/metric";
 import { guid } from "../../util/string";
 import { CommandIncoming } from "../RequestProcessor";
@@ -130,6 +131,18 @@ export class ExpressServer {
         exp.get(`${ApiBase}/metrics`, cors(), this.enforceSecure, this.authenticate, this.verifyAdminGroup,
             (req, res) => {
                 res.json(metrics());
+            });
+
+        exp.put(`${ApiBase}/memory/gc`, cors(), this.enforceSecure, this.authenticate, this.verifyAdminGroup,
+            (req, res) => {
+                gc();
+                res.sendStatus(201);
+            });
+
+        exp.put(`${ApiBase}/memory/heapdump`, cors(), this.enforceSecure, this.authenticate, this.verifyAdminGroup,
+            (req, res) => {
+                heapDump();
+                res.sendStatus(201);
             });
 
         exp.get(`${ApiBase}/log/events`, cors(), this.enforceSecure, this.authenticate, this.verifyAdminGroup,

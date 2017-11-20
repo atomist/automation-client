@@ -102,7 +102,7 @@ export const configuration: Configuration = {
         teamId: "T1L0VDKJP",
     },
     cluster: {
-        enabled: false,
-        workers: 1,
+        enabled: true,
+        workers: 2,
     },
 };

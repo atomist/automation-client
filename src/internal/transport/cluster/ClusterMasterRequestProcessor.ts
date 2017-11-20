@@ -12,6 +12,7 @@ import { GraphClient } from "../../../spi/graph/GraphClient";
 import { MessageClient } from "../../../spi/message/MessageClient";
 import { CommandInvocation } from "../../invoker/Payload";
 import * as namespace from "../../util/cls";
+import { Deferred } from "../../util/Deferred";
 import {
     HealthStatus,
     registerHealthIndicator,
@@ -34,6 +35,7 @@ import {
     RegistrationConfirmation,
     WebSocketRequestProcessor,
 } from "../websocket/WebSocketRequestProcessor";
+import { broadcast, MasterMessage, WorkerMessage } from "./messages";
 
 /**
  * A RequestProcessor that delegates to Node.JS Cluster workers to do the actual
@@ -45,7 +47,6 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
     private registration?: RegistrationConfirmation;
     private webSocket?: WebSocket;
-    private currentWorker: number = 1;
     private commands: Map<string, Dispatched<HandlerResult>> = new Map();
     private events: Map<string, Dispatched<HandlerResult[]>> = new Map();
 
@@ -69,17 +70,10 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         global.setJwtToken(registration.jwt);
         this.registration = registration;
 
-        const message = {
+        broadcast({
             type: "registration",
-            data: this.registration,
-        };
-
-        for (const id in cluster.workers) {
-            if (cluster.workers.hasOwnProperty(id)) {
-                const worker = cluster.workers[id];
-                worker.send(message);
-            }
-        }
+            registration: this.registration,
+        });
     }
 
     public onConnect(ws: WebSocket) {
@@ -101,7 +95,8 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
         function attachEvents(worker: cluster.Worker, deferred: Deferred<any>) {
 
-            worker.on("message", msg => {
+            worker.on("message", message => {
+                const msg = message as WorkerMessage;
 
                 // Wait for online message to come in
                 if (msg.type === "online") {
@@ -208,20 +203,11 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                             ctx: HandlerContext,
                             command: CommandIncoming,
                             callback: (result: Promise<HandlerResult>) => void) {
-        (command as any).ts = namespace.get().ts;
-        (command as any).invocationId = namespace.get().invocationId;
-
-        const message = {
+        const message: MasterMessage = {
             type: "command",
             registration: this.registration,
             cls: {
                 ...namespace.get(),
-            },
-            context: {
-                teamId: ctx.teamId,
-                correlationId: ctx.correlationId,
-                invocationId: ctx.invocationId,
-                ts: namespace.get().ts,
             },
             data: command,
         };
@@ -238,20 +224,11 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                           ctx: HandlerContext,
                           event: EventIncoming,
                           callback: (results: Promise<HandlerResult[]>) => void) {
-        (event.extensions as any).ts = namespace.get().ts;
-        (event.extensions as any).invocation_id = namespace.get().invocationId;
-
-        const message = {
+        const message: MasterMessage = {
             type: "event",
             registration: this.registration,
             cls: {
                 ...namespace.get(),
-            },
-            context: {
-                teamId: ctx.teamId,
-                correlationId: ctx.correlationId,
-                invocationId: ctx.invocationId,
-                ts: namespace.get().ts,
             },
             data: event,
         };
@@ -297,61 +274,4 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 class Dispatched<T> {
 
     constructor(public result: Deferred<T>, public context: HandlerContext) {}
-}
-
-class Deferred<T> {
-    public promise: Promise<T>;
-
-    private fate: "resolved" | "unresolved";
-    private state: "pending" | "fulfilled" | "rejected";
-
-    // tslint:disable-next-line:ban-types
-    private deferredResolve: Function;
-    // tslint:disable-next-line:ban-types
-    private deferredReject: Function;
-
-    constructor() {
-        this.state = "pending";
-        this.fate = "unresolved";
-        this.promise = new Promise((resolve, reject) => {
-            this.deferredResolve = resolve;
-            this.deferredReject = reject;
-        });
-        this.promise.then(
-            () => this.state = "fulfilled",
-            () => this.state = "rejected",
-        );
-    }
-
-    public resolve(value?: any) {
-        if (this.fate === "resolved") {
-            throw new Error("Deferred cannot be resolved twice");
-        }
-        this.fate = "resolved";
-        this.deferredResolve(value);
-    }
-
-    public reject(reason?: any) {
-        if (this.fate === "resolved") {
-            throw new Error("Deferred cannot be resolved twice");
-        }
-        this.fate = "resolved";
-        this.deferredReject(reason);
-    }
-
-    public isResolved() {
-        return this.fate === "resolved";
-    }
-
-    public isPending() {
-        return this.state === "pending";
-    }
-
-    public isFulfilled() {
-        return this.state === "fulfilled";
-    }
-
-    public isRejected() {
-        return this.state === "rejected";
-    }
 }

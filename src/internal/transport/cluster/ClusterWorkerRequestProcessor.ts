@@ -17,6 +17,7 @@ import { MessageClientSupport } from "../../../spi/message/MessageClientSupport"
 import { CommandInvocation } from "../../invoker/Payload";
 import * as namespace from "../../util/cls";
 import { logger } from "../../util/logger";
+import { gc, heapDump } from "../../util/memory";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
     CommandIncoming,
@@ -26,6 +27,8 @@ import {
 import { GraphClientFactory } from "../websocket/GraphClientFactory";
 import { WebSocketClientOptions } from "../websocket/WebSocketClient";
 import { RegistrationConfirmation } from "../websocket/WebSocketRequestProcessor";
+import { workerSend } from "./messages";
+import { AutomationContext } from "../../util/cls";
 
 /**
  * A RequestProcessor that is being run as Node.JS Cluster worker handling all the actual work.
@@ -42,7 +45,7 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
                 // tslint:disable-next-line:variable-name
                 private _listeners: AutomationEventListener[] = []) {
         super(_automations, [..._listeners, new ClusterWorkerAutomationEventListener()]);
-        process.send({type: "online" });
+        workerSend({ type: "online" });
     }
 
     public setRegistration(registration: RegistrationConfirmation) {
@@ -58,14 +61,13 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
     }
 
     protected sendMessage(payload: any): void {
-        const message = {
+        workerSend({
             type: "status",
             cls: {
                 ...namespace.get(),
             },
             data: payload,
-        };
-        process.send(message);
+        });
     }
 
     protected createGraphClient(event: CommandIncoming | EventIncoming): GraphClient {
@@ -85,9 +87,8 @@ class ClusterWorkerMessageClient extends MessageClientSupport {
 
     protected doSend(msg: string | SlackMessage, userNames: string | string[],
                      channelNames: string | string[], options?: MessageOptions): Promise<any> {
-        const message = {
+        workerSend({
             type: "message",
-            event: this.event,
             cls: {
                 ...namespace.get(),
             },
@@ -97,8 +98,7 @@ class ClusterWorkerMessageClient extends MessageClientSupport {
                 channelNames,
                 options,
             },
-        };
-        process.send(message);
+        });
         return Promise.resolve();
     }
 }
@@ -106,51 +106,47 @@ class ClusterWorkerMessageClient extends MessageClientSupport {
 class ClusterWorkerAutomationEventListener extends AutomationEventListenerSupport {
 
     public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): void {
-        const message = {
+       workerSend({
             type: "command_success",
             event: payload,
             cls: {
                 ...namespace.get(),
             },
             data: result,
-        };
-        process.send(message);
+        });
     }
 
     public commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): void {
-        const message = {
+        workerSend({
             type: "command_failure",
             event: payload,
             cls: {
                 ...namespace.get(),
             },
             data: err,
-        };
-        process.send(message);
+        });
     }
 
     public eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): void {
-        const message = {
+        workerSend({
             type: "event_success",
             event: payload,
             cls: {
                 ...namespace.get(),
             },
             data: result,
-        };
-        process.send(message);
+        });
     }
 
     public eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): void {
-        const message = {
+        workerSend({
             type: "event_failure",
             event: payload,
             cls: {
                 ...namespace.get(),
             },
             data: err,
-        };
-        process.send(message);
+        });
     }
 
 }
@@ -170,11 +166,21 @@ export function startWorker(automations: AutomationServer,
             worker.setRegistration(msg.data as RegistrationConfirmation);
         } else if (msg.type === "command") {
             worker.setRegistrationIfRequired(msg);
-            worker.processCommand(msg.data as CommandIncoming);
+            worker.processCommand(addContext(msg.data, msg.cls) as CommandIncoming);
         } else if (msg.type === "event") {
             worker.setRegistrationIfRequired(msg);
-            worker.processEvent(msg.data as EventIncoming);
+            worker.processEvent(addContext(msg.data, msg.cls) as EventIncoming);
+        } else if (msg.type === "gc") {
+            gc();
+        } else if (msg.type === "heapdump") {
+            heapDump();
         }
     });
     return worker;
+}
+
+function addContext(data: any, cls: AutomationContext): any {
+    data.invocationId = cls.invocationId;
+    data.ts = cls.ts;
+    return data;
 }
