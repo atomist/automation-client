@@ -1,6 +1,7 @@
 import "mocha";
 import * as assert from "power-assert";
 
+import { CommandHandler, Parameter } from "../../../src/decorators";
 import { SelfDescribingHandleCommand } from "../../../src/HandleCommand";
 import { consoleMessageClient } from "../../../src/internal/message/ConsoleMessageClient";
 import { succeed } from "../../../src/operations/support/contextUtils";
@@ -217,5 +218,41 @@ describe("BuildableAutomationServer", () => {
             done();
         });
     });
-})
-;
+
+    it("should register one single arg handler using nested parameters and invoke with valid parameter", done => {
+        const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
+        class Params {
+            @Parameter()
+            public one: string;
+        }
+
+        @CommandHandler("goo bar")
+        class Handler {
+            public nested = new Params();
+
+            public handle(ch, params) {
+                return Promise.resolve({
+                    code: 0,
+                    paramVal: params.nested.one,
+                });
+            }
+        }
+
+        s.registerCommandHandler(Handler);
+        registerOneSingleArgHandlerAndInvokeWithValidNestedParameter(s, done);
+    });
+
+    function registerOneSingleArgHandlerAndInvokeWithValidNestedParameter(s: AutomationServer, done) {
+        s.invokeCommand({
+            name: "Handler",
+            args: [{name: "nested.one", value: "value"}],
+        }, {
+            teamId: "T666",
+            correlationId: "555",
+            messageClient,
+        }).then(hr => {
+            assert((hr as any).paramVal === "value");
+            done();
+        }).catch(done);
+    }
+});

@@ -1,18 +1,12 @@
-import { Parameter } from "../../decorators";
-import { HandlerContext } from "../../index";
-import { Project } from "../../project/Project";
-import { GitHubRepoRef } from "../common/GitHubRepoRef";
-import { GitBranchRegExp, GitHubNameRegExp } from "../common/params/gitHubPatterns";
-import { AbstractGenerator } from "./AbstractGenerator";
+
+import { Parameter } from "../../../decorators";
+import { GitBranchRegExp, GitHubNameRegExp } from "./gitHubPatterns";
 
 /**
- * Support for all seed-driven generators, which start with content
- * in a given repo.
- *
- * Defines common parameters.
- *
+ * Parameters common to anything that works with a single source repo,
+ * such as a seed driven generator
  */
-export abstract class SeedDrivenGenerator extends AbstractGenerator {
+export class SourceRepoParameters {
 
     @Parameter({
         pattern: GitHubNameRegExp.pattern,
@@ -20,7 +14,7 @@ export abstract class SeedDrivenGenerator extends AbstractGenerator {
         description: "owner, i.e., user or organization, of seed repository",
         validInput: GitHubNameRegExp.validInput,
         minLength: 1,
-        maxLength: 50,
+        maxLength: 100,
         required: false,
         displayable: false,
     })
@@ -32,7 +26,7 @@ export abstract class SeedDrivenGenerator extends AbstractGenerator {
         description: "name of the seed repository",
         validInput: GitHubNameRegExp.validInput,
         minLength: 1,
-        maxLength: 50,
+        maxLength: 100,
         required: false,
         displayable: false,
     })
@@ -44,15 +38,10 @@ export abstract class SeedDrivenGenerator extends AbstractGenerator {
         description: "seed repository branch to clone for new project",
         validInput: GitBranchRegExp.validInput,
         minLength: 1,
-        maxLength: 50,
+        maxLength: 256,
         required: false,
         displayable: false,
     })
     public sourceBranch: string = "master";
-
-    public startingPoint(ctx: HandlerContext, params: this): Promise<Project> {
-        return this.repoLoader()(
-            new GitHubRepoRef(this.sourceOwner, this.sourceRepo, this.sourceBranch));
-    }
 
 }

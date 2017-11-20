@@ -9,15 +9,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.3.2...HEAD
 
+### Added
+
+-   Support for nested parameters via initialized object properties on parameters
+
 ### Changed
 
+-   `generate` utility function now takes `RepoId` argument before optional params
 -   Split out tests into test and test-api so non-Atomist developers
-    could run non-API tests
+    can run non-API tests
 -   Improve `atomist config` handling of existing config file so it
     can be used to add additional teams
 -   Run `config` and `git` commands in same node process
 -   Added "repo" scope to GitHub personal access token created by
     `config` since so many sample automations require it
+-   @Parameter() will default to empty options, so you don't have to pass {}
 
 ## [0.3.2][] - 2017-11-13
 
