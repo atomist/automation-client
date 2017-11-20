@@ -27,7 +27,30 @@ export interface CloneDirectoryInfo {
      * Directory type: either a parent directory into which we can clone,
      * or a distinct directory
      */
-    type: "parent-directory" | "actual-directory";
+    type: "empty-directory" | "existing-directory";
+
+    /**
+     * Call this when you're done with this clone. It lets other people use it
+     * @returns {Promise<void>}
+     */
+    release: () => Promise<void>;
+
+    /**
+     * Call this if you think this directory is not working for you.
+     * useful when a standard clone has become corrupted somehow and we should not
+     * use it again.
+     */
+    invalidate: () => Promise<void>;
+
+    /**
+     * Will this directory be deleted soon, or might it hang around a while?
+     */
+    transient: boolean;
+
+    /**
+     * for debugging, describe how this came to be constructed
+     */
+    provenance?: string;
 }
 
 /**

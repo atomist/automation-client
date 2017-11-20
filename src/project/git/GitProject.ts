@@ -1,5 +1,6 @@
 import { ActionResult } from "../../action/ActionResult";
 import { LocalProject } from "../local/LocalProject";
+import { GitStatus } from "./gitStatus";
 
 /**
  * Local project using git. Provides the ability to perform git operations
@@ -17,6 +18,11 @@ export interface GitProject extends LocalProject {
      * Init git for this project.
      */
     init(): Promise<ActionResult<this>>;
+
+    /**
+     * get some status information
+     */
+    gitStatus(): Promise<GitStatus>;
 
     /**
      * Remote is of form https://github.com/USERNAME/REPOSITORY.git

@@ -166,6 +166,11 @@ export interface ProjectAsync extends ProjectCore, ScriptedFlushable<Project> {
  */
 export interface Project extends ProjectAsync, ProjectSync {
 
+    /**
+     * For debugging: how was this project created?
+     */
+    provenance?: string;
+
 }
 
 export function isProject(a: any): a is Project {

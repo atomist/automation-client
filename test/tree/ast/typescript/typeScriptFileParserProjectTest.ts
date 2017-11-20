@@ -14,7 +14,7 @@ import { NodeFsLocalProject } from "../../../../src/project/local/NodeFsLocalPro
  */
 describe("TypeScriptFileParser real project parsing: TypeScript", () => {
 
-    const thisProject = new NodeFsLocalProject("automation-client", appRoot.path);
+    const thisProject = new NodeFsLocalProject("automation-client", appRoot.path, () => Promise.resolve());
 
     it("should parse sources from project and use a path expression to find values", done => {
         findMatches(thisProject, TypeScriptES6FileParser,
