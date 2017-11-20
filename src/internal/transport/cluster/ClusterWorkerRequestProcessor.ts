@@ -22,7 +22,7 @@ import { gc, heapDump } from "../../util/memory";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
     CommandIncoming,
-    EventIncoming,
+    EventIncoming, isCommandIncoming, isEventIncoming,
     RequestProcessor,
 } from "../RequestProcessor";
 import { GraphClientFactory } from "../websocket/GraphClientFactory";
@@ -163,7 +163,7 @@ export function startWorker(automations: AutomationServer,
     const worker = new ClusterWorkerRequestProcessor(automations, options, listeners);
     process.on("message", msg => {
         if (msg.type === "registration") {
-            worker.setRegistration(msg.data as RegistrationConfirmation);
+            worker.setRegistration(msg.registration as RegistrationConfirmation);
         } else if (msg.type === "command") {
             worker.setRegistrationIfRequired(msg);
             worker.processCommand(addContext(msg.data, msg.cls) as CommandIncoming);
@@ -180,7 +180,12 @@ export function startWorker(automations: AutomationServer,
 }
 
 function addContext(data: any, cls: AutomationContext): any {
-    data.invocationId = cls.invocationId;
-    data.ts = cls.ts;
+    if (isCommandIncoming(data)) {
+        (data.team as any).invocationId = cls.invocationId;
+        (data as any).ts = cls.ts;
+    } else if (isEventIncoming(data)) {
+        (data.extensions as any).invocationId = cls.invocationId;
+        (data.extensions as any).ts = cls.ts;
+    }
     return data;
 }
