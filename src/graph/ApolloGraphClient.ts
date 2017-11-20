@@ -45,12 +45,17 @@ export class ApolloGraphClient implements GraphClient {
         });
     }
 
-    public executeQueryFromFile<T, Q>(queryFile: string, variables?: Q, current?: string): Promise<T> {
+    public executeQueryFromFile<T, Q>(queryFile: string,
+                                      variables?: Q,
+                                      options?: any,
+                                      current?: string): Promise<T> {
         const graphql = resolveAndReadFileSync(queryFile, current);
-        return this.executeQuery<T, Q>(graphql, variables);
+        return this.executeQuery<T, Q>(graphql, variables, options);
     }
 
-    public executeQuery<T, Q>(graphql: string, variables?: Q): Promise<T> {
+    public executeQuery<T, Q>(graphql: string,
+                              variables?: Q,
+                              options?: any): Promise<T> {
         logger.debug(`Querying '%s' with variables '%s' and query: %s`,
             this.endpoint, stringify(variables), inlineQuery(graphql));
 
@@ -58,6 +63,7 @@ export class ApolloGraphClient implements GraphClient {
         return this.client.query<T>({
                 query,
                 variables,
+                ...options,
             })
             .then(response => {
                 // The following statement is needed for debugging; we can always disable that later
@@ -66,12 +72,17 @@ export class ApolloGraphClient implements GraphClient {
             });
     }
 
-    public executeMutationFromFile<T, Q>(mutationFile: string, variables?: Q, current?: string): Promise<T> {
+    public executeMutationFromFile<T, Q>(mutationFile: string,
+                                         variables?: Q,
+                                         options?: any,
+                                         current?: string): Promise<T> {
         const graphql = resolveAndReadFileSync(mutationFile, current);
-        return this.executeMutation<T, Q>(graphql, variables);
+        return this.executeMutation<T, Q>(graphql, variables, options);
     }
 
-    public executeMutation<T, Q>(graphql: string, variables?: Q): Promise<any> {
+    public executeMutation<T, Q>(graphql: string,
+                                 variables?: Q,
+                                 options?: any): Promise<any> {
         logger.debug(`Mutating '%s' with variables '%s' and mutation: %s`,
             this.endpoint, stringify(variables), inlineQuery(graphql));
 
@@ -79,6 +90,7 @@ export class ApolloGraphClient implements GraphClient {
         return this.client.mutate<T>({
                 mutation,
                 variables,
+                ...options,
             })
             .then(response => {
                 // The following statement is needed for debugging; we can always disable that later
