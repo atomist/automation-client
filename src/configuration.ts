@@ -73,11 +73,12 @@ export function writeUserConfig(cfg: UserConfig): Promise<void> {
  */
 export function getUserConfig(): UserConfig {
     try {
-        const userConfig = fs.readJsonSync(UserConfigFile) as UserConfig;
-        return userConfig;
+        if (fs.existsSync(UserConfigFile)) {
+            return fs.readJsonSync(UserConfigFile) as UserConfig;
+        }
     } catch (e) {
         const err = (e as Error).message;
-        logger.info(`Failed to read user config: ${err}`);
+        logger.warn(`Failed to read user config: ${err}`);
     }
     return {};
 }
