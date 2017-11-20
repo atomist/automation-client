@@ -12,23 +12,23 @@ import { ProjectPersister } from "./generatorUtils";
  * Persist project to GitHub, returning GitHub details. Use retry.
  * @param {Project} p project to persist
  * @param {ProjectOperationCredentials} creds
- * @param {RepoId} params
+ * @param targetId id of target repo to create
  * @return {Promise<ActionResult<GitProject>>}
  */
-export const GitHubProjectPersister: ProjectPersister<RepoId, Project, ActionResult<GitProject>> =
+export const GitHubProjectPersister: ProjectPersister<GitProject> =
     (p: Project,
      creds: ProjectOperationCredentials,
-     params: RepoId) => {
+     targetId: RepoId) => {
         const gp: GitProject =
             GitCommandGitProject.fromProject(p, creds);
         return gp.init()
             .then(() => gp.setGitHubUserConfig())
             .then(() => {
-                logger.debug(`Creating new repo '${params.owner}/${params.repo}'`);
-                return gp.createAndSetGitHubRemote(params.owner, params.repo,
+                logger.debug(`Creating new repo '${targetId.owner}/${targetId.repo}'`);
+                return gp.createAndSetGitHubRemote(targetId.owner, targetId.repo,
                     this.targetRepo, this.visibility)
                     .catch(err => {
-                        return Promise.reject(new Error(`Unable to create new repo '${params.owner}/${params.repo}': ` +
+                        return Promise.reject(new Error(`Unable to create new repo '${targetId.owner}/${targetId.repo}': ` +
                             `Probably exists: ${err}`));
                     });
             })

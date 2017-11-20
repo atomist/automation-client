@@ -1,18 +1,12 @@
-import { Parameter } from "../../decorators";
-import { HandlerContext } from "../../index";
-import { Project } from "../../project/Project";
-import { GitHubRepoRef } from "../common/GitHubRepoRef";
-import { GitBranchRegExp, GitHubNameRegExp } from "../common/params/gitHubPatterns";
-import { AbstractGenerator } from "./AbstractGenerator";
+
+import { Parameter } from "../../../decorators";
+import { GitBranchRegExp, GitHubNameRegExp } from "./gitHubPatterns";
 
 /**
- * Support for all seed-driven generators, which start with content
- * in a given repo.
- *
- * Defines common parameters.
- *
+ * Parameters common to anything that works with a single source repo,
+ * such as a seed driven generator
  */
-export abstract class SeedDrivenGenerator extends AbstractGenerator {
+export class SourceRepoParameters {
 
     @Parameter({
         pattern: GitHubNameRegExp.pattern,
@@ -49,10 +43,5 @@ export abstract class SeedDrivenGenerator extends AbstractGenerator {
         displayable: false,
     })
     public sourceBranch: string = "master";
-
-    public startingPoint(ctx: HandlerContext, params: this): Promise<Project> {
-        return this.repoLoader()(
-            new GitHubRepoRef(this.sourceOwner, this.sourceRepo, this.sourceBranch));
-    }
 
 }
