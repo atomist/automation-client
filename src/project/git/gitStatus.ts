@@ -22,8 +22,8 @@ export function runStatusIn(baseDir: string): Promise<GitStatus> {
                             branch,
                             ...cleanlinessData,
                             ...shaData,
-                            ...upstreamData
-                        })))))
+                            ...upstreamData,
+                        })))));
 }
 
 function determineBranch(baseDir: string): Promise<string> {
@@ -37,16 +37,15 @@ function collectCleanliness(baseDir: string): Promise<{ isClean: boolean }> {
     return runIn(baseDir, "git status --porcelain --ignored")
         .then(porcelainStatusResult => {
             const raw = porcelainStatusResult.stdout;
-            return { isClean: raw.length === 0 }
+            return { isClean: raw.length === 0 };
         });
 }
-
 
 function collectFullSha(baseDir: string, commit: string = "HEAD"): Promise<{ sha: string }> {
     return runIn(baseDir, `git rev-list -1 ${commit} --`).then(result => {
         return {
             sha: result.stdout.trim(),
-        }
+        };
     });
 }
 
