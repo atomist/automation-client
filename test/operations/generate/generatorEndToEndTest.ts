@@ -53,7 +53,7 @@ describe("generator end to end", () => {
     it("should create a new GitHub repo", function(done) {
         this.retries(3);
         const repoName = tempRepoName();
-        const cleanupDone = (err: Error | void) => {
+        const cleanupDone = (err: Error | void = null) => {
           deleteOrIgnore(repoName).then(done(err));
         };
 
@@ -68,11 +68,11 @@ describe("generator end to end", () => {
                 return hasFile(GitHubToken, TargetOwner, repoName, "pom.xml")
                     .then(r => {
                         assert(r);
-                        GitCommandGitProject.cloned({ token: GitHubToken },
+                        return GitCommandGitProject.cloned({ token: GitHubToken },
                             new GitHubRepoRef(TargetOwner, repoName))
                             .then(verifyPermissions);
                     });
-            }).then(cleanupDone, cleanupDone);
+            }).then(() => cleanupDone(), cleanupDone);
     }).timeout(20000);
 
     it("should create a new GitHub repo using generate function", function(done) {
@@ -95,9 +95,10 @@ describe("generator end to end", () => {
                 return hasFile(GitHubToken, TargetOwner, repoName, "pom.xml")
                     .then(r => {
                         assert(r);
-                        GitCommandGitProject.cloned({ token: GitHubToken },
+                        return GitCommandGitProject.cloned({ token: GitHubToken },
                             targetRepo)
-                            .then(verifyPermissions);
+                            .then(verifyPermissions)
+                            .then(() => { return; }); // done() doesn't want your stuff
                     });
             }).then(cleanupDone, cleanupDone);
     }).timeout(20000);
@@ -140,6 +141,10 @@ describe("Local project creation", () => {
         const cwd = tmp.dirSync().name;
         const repoName = tempRepoName();
         shell.cd(cwd);
+        function cleaningDone(err: Error | void) {
+            shell.cd("-");
+            done(err);
+        }
         const seed = new UniversalSeed();
         seed.targetRepo = repoName;
         seed.local = true;
@@ -154,7 +159,7 @@ describe("Local project creation", () => {
                     .then(created => {
                         assert(created.fileExistsSync("pom.xml"));
                     });
-            }).then(done, done);
+            }).then(cleaningDone, cleaningDone);
     }).timeout(10000);
 });
 

@@ -37,6 +37,7 @@ describe("GitProject", () => {
     }
 
     function deleteRepoIfExists(ownerAndRepo: { owner: string, repo: string }): Promise<any> {
+        console.log("Cleanup: deleting " + ownerAndRepo.repo);
         const config = {
             headers: {
                 Authorization: `token ${GitHubToken}`,
@@ -45,7 +46,7 @@ describe("GitProject", () => {
         const url = `${GitHubDotComBase}/repos/${ownerAndRepo.owner}/${ownerAndRepo.repo}`;
         return axios.delete(url, config)
             .catch(err => {
-                // console.log("IGNORING " + err);
+                console.log(`error deleting ${ownerAndRepo.repo}, ignoring. ${err.response.status}`);
             });
     }
 

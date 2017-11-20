@@ -6,5 +6,5 @@ import { NodeFsLocalProject } from "../../src/project/local/NodeFsLocalProject";
 
 export function tempProject(id?: RepoRef): LocalProject {
     const dir = tmp.dirSync();
-    return new NodeFsLocalProject(id, dir.name);
+    return new NodeFsLocalProject(id, dir.name, () => Promise.resolve()); // could delete the dir in release function
 }
