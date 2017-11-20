@@ -13,14 +13,10 @@ import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
 import { Project } from "../../project/Project";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { LocalOrRemote } from "../common/LocalOrRemote";
+import { GitHubNameRegExp } from "../common/params/gitHubPatterns";
 import { RepoLoader } from "../common/repoLoader";
 import { AnyProjectEditor, ProjectEditor, toEditor } from "../edit/projectEditor";
 import { push } from "./gitHubProjectPersister";
-
-export const GitHubNameRegExp = {
-    pattern: /^[-.\w]+$/,
-    validInput: "a valid GitHub identifier which consists of alphanumeric, ., -, and _ characters",
-};
 
 /**
  * Support for all generators.
