@@ -55,14 +55,13 @@ export class StableDirectoryManager implements DirectoryManager {
     public invalidate(existing: CloneDirectoryInfo): Promise<void> {
         return fs.remove(existing.path)
             .then(() => {
-                logger.info("deleted " + existing.path);
+                logger.info("Deleted " + existing.path);
             }, err => {
                 if (err.code === "ENOENT") {
-                    logger.info("It's already gone");
-                    // fine, it's already been removed
+                    logger.debug("Cleanup: deleting %s, but it's already gone", existing.path);
                     return;
                 } else {
-                    logger.error("unexpected error deleting directory:" + err);
+                    logger.error("Unexpected error deleting directory %s: %s", existing.path, err);
                     throw err;
                 }
             });
@@ -137,9 +136,6 @@ export class StableDirectoryManager implements DirectoryManager {
 }
 
 function assureDirectoryExists(name: string): Promise<void> {
-    // fyi, there is a race condition when the directory does not exist and
-    // two concurrent activities both try to create it.
-    // It's a transient error, not the end of the world. Works on second try.
     return fs.stat(name)
         .then(stats => {
             if (!stats.isDirectory()) {
