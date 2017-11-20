@@ -11,6 +11,7 @@ export interface Automations {
 
     name: string;
     version: string;
+    policy: "ephemeral" | "durable";
     team_ids: string[];
     groups?: string[];
 

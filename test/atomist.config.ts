@@ -48,6 +48,7 @@ class StartUpListener extends AutomationEventListenerSupport {
 export const configuration: Configuration = {
     name: "@atomist/automation-node-tests",
     version: "0.0.7",
+    // policy: "durable",
     teamIds: ["T1L0VDKJP"],
     token: GitHubToken,
     commands: [

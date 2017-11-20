@@ -9,6 +9,7 @@ describe("payloads", () => {
         const rugs: Automations = {
             name: "foo",
             version: "1.0.0",
+            policy: "durable",
             events: [{
                 name: "Foo",
                 description: "Some event description",
@@ -55,12 +56,15 @@ describe("payloads", () => {
         assert(!payload.keywords);
         assert(payload.ingesters);
         assert(!payload.groups);
+
+        assert.deepEqual(payload.policy, { name: "durable"} );
     });
 
     it("check registration for group = all is valid", () => {
         const rugs: Automations = {
             name: "foo",
             version: "1.0.0",
+            policy: null,
             team_ids: [],
             groups: ["all"],
             commands: [],
@@ -72,5 +76,6 @@ describe("payloads", () => {
         const payload = prepareRegistration(rugs);
         assert(!payload.team_ids);
         assert(payload.groups[0] = "all");
+        assert.deepEqual(payload.policy, { name: "ephemeral"});
     });
 });

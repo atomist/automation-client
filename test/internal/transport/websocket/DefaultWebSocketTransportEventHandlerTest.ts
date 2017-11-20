@@ -21,6 +21,7 @@ describe("DefaultWebSocketRequestProcessor", () => {
             public automations: Automations = {
                 name: "boo",
                 version: "1.0.0",
+                policy: "ephemeral",
                 keywords: [],
                 events: [],
                 commands: [],
@@ -90,6 +91,7 @@ function verifyCommandHandler(code: number, callback: (result) => void) {
         public automations: Automations = {
             name: "foo",
             version: "1.0.0",
+            policy: "ephemeral",
             events: [],
             commands: [],
             ingesters: [],

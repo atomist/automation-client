@@ -21,6 +21,7 @@ export interface RunOptions {
     teamIds?: string | string[];
     name: string;
     version: string;
+    policy?: "ephemeral" | "durable";
     token?: string;
     http?: {
         enabled: boolean;

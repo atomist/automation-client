@@ -254,6 +254,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         return {
             name: this.opts.name,
             version: this.opts.version,
+            policy: this.opts.policy,
             team_ids: toStringArray(this.opts.teamIds),
             groups: toStringArray((this.opts as any).groups),
             keywords: this.opts.keywords,

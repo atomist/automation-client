@@ -8,6 +8,7 @@ export function prepareRegistration(metadata: Automations): any {
     return {
         name: metadata.name,
         version: metadata.version,
+        policy: { name: (metadata.policy ? metadata.policy : "ephemeral") },
         team_ids: metadata.team_ids && metadata.team_ids.length > 0 ? metadata.team_ids : undefined,
         groups: metadata.groups && metadata.groups.length > 0 ? metadata.groups : undefined,
         commands: metadata.commands.map(prepareCommandRegistration),

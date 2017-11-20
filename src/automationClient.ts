@@ -61,6 +61,7 @@ export class AutomationClient {
             {
                 name: configuration.name,
                 version: configuration.version,
+                policy: this.configuration.policy,
                 teamIds: this.teamIds,
                 groups: this.groups,
                 keywords: [],
