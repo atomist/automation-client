@@ -3,7 +3,7 @@ import * as stringify from "json-stringify-safe";
 
 import axios from "axios";
 import * as os from "os";
-import { isLocalProject } from "../local/LocalProject";
+import { isLocalProject, ReleaseFunction } from "../local/LocalProject";
 import { Project } from "../Project";
 
 import { ActionResult } from "../../action/ActionResult";
@@ -13,13 +13,14 @@ import { hideString } from "../../internal/util/string";
 import { GitHubRepoRef, isGitHubRepoRef } from "../../operations/common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
 import { RemoteRepoRef, RepoRef } from "../../operations/common/RepoId";
-import { CachingDirectoryManager } from "../../spi/clone/CachingDirectoryManager";
 import {
-    CloneDirectoryInfo, CloneOptions, DefaultCloneOptions,
+    CloneDirectoryInfo,
+    CloneOptions,
+    DefaultCloneOptions,
     DirectoryManager,
 } from "../../spi/clone/DirectoryManager";
 import { StableDirectoryManager } from "../../spi/clone/StableDirectoryManager";
-import { NodeFsLocalProject, ReleaseFunction } from "../local/NodeFsLocalProject";
+import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
 import { GitProject } from "./GitProject";
 import { GitStatus, runStatusIn } from "./gitStatus";
 
@@ -75,7 +76,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     public static cloned(credentials: ProjectOperationCredentials,
                          id: RemoteRepoRef,
                          opts: CloneOptions = DefaultCloneOptions,
-                         directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitCommandGitProject> {
+                         directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitProject> {
         return clone(credentials, id, opts, directoryManager)
             .then(p => {
                 if (!!id.path) {
@@ -320,7 +321,7 @@ function clone(credentials: ProjectOperationCredentials,
                id: RemoteRepoRef,
                opts: CloneOptions,
                directoryManager: DirectoryManager,
-               secondTry: boolean = false): Promise<GitCommandGitProject> {
+               secondTry: boolean = false): Promise<GitProject> {
     return directoryManager.directoryFor(id.owner, id.repo, id.sha, opts)
         .then(cloneDirectoryInfo => {
             switch (cloneDirectoryInfo.type) {

@@ -8,6 +8,7 @@ import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProj
 import { CachingDirectoryManager } from "../../../src/spi/clone/CachingDirectoryManager";
 import { DefaultCloneOptions } from "../../../src/spi/clone/DirectoryManager";
 import { GitHubToken } from "../../atomist.config";
+import { GitProject } from "../../../src/project/git/GitProject";
 
 const Creds = { token: GitHubToken };
 const Owner = "atomist-travisorg";
@@ -98,7 +99,7 @@ describe("cached git clone projects", () => {
     it("should start with the branch in sync with origin", done => {
         const repoName = "this-repository-exists-to-test-cached-clones-2";
 
-        function makeACommit(project: GitCommandGitProject): Promise<GitCommandGitProject> {
+        function makeACommit(project: GitProject): Promise<GitProject> {
             return project.addFile("file-that-does-not-yet-exist", "something")
                 .then(p => p.commit("yassss"))
                 .then(result => result.target);

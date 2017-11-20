@@ -17,7 +17,7 @@ const Creds = { token: GitHubToken };
 
 describe("git status analysis", () => {
 
-    function freshClone(): Promise<GitCommandGitProject> {
+    function freshClone(): Promise<GitProject> {
         return GitCommandGitProject.cloned(Creds, ExistingRepoRef, {}, TmpDirectoryManager);
     }
 
@@ -56,7 +56,7 @@ describe("git status analysis", () => {
     }).timeout(5000);
 
     it("should tell me the local sha", done => {
-        function makeACommit(project: GitCommandGitProject): Promise<GitCommandGitProject> {
+        function makeACommit(project: GitProject): Promise<GitProject> {
             return project.addFile("file-that-does-not-yet-exist", "something")
                 .then(p => p.commit("yassss"))
                 .then(result => result.target);
@@ -77,7 +77,7 @@ describe("git status analysis", () => {
     }).timeout(5000);
 
     it("should tell me the upstream sha", done => {
-        function makeACommit(project: GitCommandGitProject): Promise<GitCommandGitProject> {
+        function makeACommit(project: GitProject): Promise<GitProject> {
             return project.addFile("file-that-does-not-yet-exist", "something")
                 .then(p => p.commit("yassss"))
                 .then(result => result.target);

@@ -11,14 +11,8 @@ import { RepoRef, SimpleRepoId } from "../../operations/common/RepoId";
 import { isInMemoryProject } from "../mem/InMemoryProject";
 import { AbstractProject } from "../support/AbstractProject";
 import { copyFiles } from "../support/projectUtils";
-import { isLocalProject, LocalProject } from "./LocalProject";
+import { isLocalProject, LocalProject, ReleaseFunction } from "./LocalProject";
 import { NodeFsLocalFile } from "./NodeFsLocalFile";
-
-/**
- * Implementation of LocalProject based on node file system.
- * Uses fs-extra vs raw fs.
- */
-export type ReleaseFunction = () => Promise<void>;
 
 export class NodeFsLocalProject extends AbstractProject implements LocalProject {
 
@@ -26,16 +20,17 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
      * Create a project from an existing directory. The directory must exist
      * @param {RepoRef} id
      * @param {string} baseDir
+     * @param cleanup
      * @return {Promise<LocalProject>}
      */
     public static fromExistingDirectory(id: RepoRef,
                                         baseDir: string,
-                                        release: ReleaseFunction = () => Promise.resolve()): Promise<LocalProject> {
+                                        cleanup: ReleaseFunction = () => Promise.resolve()): Promise<LocalProject> {
         return fs.stat(baseDir).then(stat => {
             if (!stat.isDirectory()) {
                 throw new Error(`No such directory: [${baseDir}] when trying to create LocalProject`);
             } else {
-                return new NodeFsLocalProject(id, baseDir, release);
+                return new NodeFsLocalProject(id, baseDir, cleanup);
             }
         });
     }
@@ -45,6 +40,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
      * @param {Project} other
      * @param {string} parentDir
      * @param newName new name of the project. Defaults to name of old project
+     * @param cleanup
      * @returns {LocalProject}
      */
     public static copy(other: Project, parentDir: string, newName: string = other.name,
@@ -94,9 +90,6 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
     }
 
     public release(): Promise<void> {
-        // clean up, clean up, everybody everywhere
-
-        // this will release locks and clean the cached project.
         return this.cleanup();
     }
 
