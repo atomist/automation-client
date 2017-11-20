@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.3.2...HEAD
 
+### Added
+
+-   Support for nested parameters via initialized object properties on parameters
+
 ### Changed
 
 -   Split out tests into test and test-api so non-Atomist developers

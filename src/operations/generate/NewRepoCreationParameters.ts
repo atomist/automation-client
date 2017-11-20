@@ -1,11 +1,12 @@
 
 import { MappedParameter, MappedParameters, Parameter, Secret, Secrets } from "../../decorators";
 import { GitHubNameRegExp } from "../common/params/gitHubPatterns";
+import { RepoId } from "../common/RepoId";
 
 /**
  * Parameters common to all generators that create new repositories
  */
-export class NewRepoCreationParameters {
+export class NewRepoCreationParameters implements RepoId {
 
     @Secret(Secrets.userToken(["repo", "user"]))
     public githubToken;
@@ -46,5 +47,13 @@ export class NewRepoCreationParameters {
         required: false,
     })
     public visibility: "public" | "private" = "public";
+
+    get owner() {
+        return this.targetOwner;
+    }
+
+    get repo() {
+        return this.targetRepo;
+    }
 
 }
