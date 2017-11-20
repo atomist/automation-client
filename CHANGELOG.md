@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Run `config` and `git` commands in same node process
 -   Added "repo" scope to GitHub personal access token created by
     `config` since so many sample automations require it
+-   @Parameter() will default to empty options, so you don't have to pass {}
 
 ## [0.3.2][] - 2017-11-13
 
