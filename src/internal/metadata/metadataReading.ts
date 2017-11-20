@@ -1,5 +1,6 @@
 import * as _ from "lodash";
 import * as GraphQL from "../../graph/graphQL";
+import { HandleCommand } from "../../HandleCommand";
 import {
     CommandHandlerMetadata,
     EventHandlerMetadata,
@@ -8,11 +9,7 @@ import {
     SecretDeclaration,
 } from "../../metadata/automationMetadata";
 import * as decorators from "./decoratorSupport";
-import {
-    isCommandHandlerMetadata,
-    isEventHandlerMetadata,
-} from "./metadata";
-import { HandleCommand } from "../../HandleCommand";
+import { isCommandHandlerMetadata, isEventHandlerMetadata } from "./metadata";
 
 /**
  * Extract metadata from a handler instance. We need an
@@ -52,17 +49,7 @@ function addName(r: CommandHandlerMetadata | EventHandlerMetadata):
 
 function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMetadata {
     switch (r.__kind) {
-        case "command-handler" :
-            return {
-                name: r.__name,
-                description: r.__description,
-                tags: r.__tags ? r.__tags : [],
-                intent: r.__intent ? r.__intent : [],
-                parameters: parametersFromInstance(r),
-                mapped_parameters: mappedParameterMetadataFromInstance(r),
-                secrets: secretsMetadataFromInstance(r),
-            };
-        case "parameters" :
+        case "command-handler" : case "parameters" :
             return {
                 name: r.__name,
                 description: r.__description,
@@ -90,10 +77,27 @@ function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMet
     }
 }
 
-function parametersFromInstance(r: any): Parameter[] {
-    const parameters = r.__parameters ? (r.__parameters as decorators.Parameter[]).map(p => {
+function parametersFromInstance(r: any, prefix: string = ""): Parameter[] {
+    const directParams = directParameters(r, prefix);
+    const nestedParameters = _.flatten(Object.keys(r)
+        .map(key => [key, r[key]])
+        .filter(nestedFieldInfo => typeof nestedFieldInfo[1] === "object")
+        .map(nestedFieldInfo => parametersFromInstance(nestedFieldInfo[1], prefix + nestedFieldInfo[0] + ".")),
+    );
+
+    const allParameters = directParams.concat(nestedParameters);
+    return allParameters.sort((p1, p2) => {
+        const o1 = p1.order || Number.MAX_SAFE_INTEGER;
+        const o2 = p2.order || Number.MAX_SAFE_INTEGER;
+        return o1 - o2;
+    });
+}
+
+function directParameters(r: any, prefix: string) {
+    return r.__parameters ? (r.__parameters as decorators.Parameter[]).map(p => {
+        const nameToUse = prefix + p.name;
         const parameter: Parameter = {
-            name: p.name,
+            name: nameToUse,
             pattern: p.pattern ? p.pattern.source : "^.*$",
             description: p.description,
             required: p.required,
@@ -104,7 +108,7 @@ function parametersFromInstance(r: any): Parameter[] {
             min_length: p.minLength,
             valid_input: p.validInput,
             default_value: r[p.name],
-            display_name: p.displayName ? p.displayName : p.name,
+            display_name: p.displayName ? p.displayName : nameToUse,
             order: p.order,
         };
 
@@ -115,19 +119,25 @@ function parametersFromInstance(r: any): Parameter[] {
         }
         return parameter;
     }) : [];
-
-    return parameters.sort((p1, p2) => {
-        const o1 = p1.order || Number.MAX_SAFE_INTEGER;
-        const o2 = p2.order || Number.MAX_SAFE_INTEGER;
-        return o1 - o2;
-    });
 }
 
-function secretsMetadataFromInstance(r: any): SecretDeclaration[] {
-    return r.__secrets ? r.__secrets.map(s => ({name: s.name, path: s.path })) : [];
+function secretsMetadataFromInstance(r: any, prefix: string = ""): SecretDeclaration[] {
+    const directSecrets = r.__secrets ? r.__secrets.map(s => ({name: prefix + s.name, path: s.path })) : [];
+    const nestedParameters = _.flatten(Object.keys(r)
+        .map(key => [key, r[key]])
+        .filter(nestedFieldInfo => typeof nestedFieldInfo[1] === "object")
+        .map(nestedFieldInfo => secretsMetadataFromInstance(nestedFieldInfo[1], prefix + nestedFieldInfo[0] + ".")),
+    );
+    return directSecrets.concat(nestedParameters);
 }
 
-function mappedParameterMetadataFromInstance(r: any): MappedParameterDeclaration[] {
-    return r.__mappedParameters ? r.__mappedParameters.map(mp =>
-        ({local_key: mp.localKey, foreign_key: mp.foreignKey})) : [];
+function mappedParameterMetadataFromInstance(r: any, prefix: string = ""): MappedParameterDeclaration[] {
+    const directMappedParams = r.__mappedParameters ? r.__mappedParameters.map(mp =>
+        ({local_key: prefix + mp.localKey, foreign_key: mp.foreignKey})) : [];
+    const nestedParameters = _.flatten(Object.keys(r)
+        .map(key => [key, r[key]])
+        .filter(nestedFieldInfo => typeof nestedFieldInfo[1] === "object")
+        .map(nestedFieldInfo => mappedParameterMetadataFromInstance(nestedFieldInfo[1], prefix + nestedFieldInfo[0] + ".")),
+    );
+    return directMappedParams.concat(nestedParameters);
 }
