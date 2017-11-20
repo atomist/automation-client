@@ -13,7 +13,7 @@ import { toStringArray } from "./internal/util/string";
 /**
  * Decorator for parameters. Adds to object properties
  */
-export function Parameter(details: BaseParameter) {
+export function Parameter(details: BaseParameter = {}) {
     return (target: any, propertyKey: string) => {
         declareParameter(target, propertyKey, details);
     };
