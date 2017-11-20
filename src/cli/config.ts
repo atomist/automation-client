@@ -148,27 +148,28 @@ nor your GitHub username and password.
 `);
     }
 
-    return inquirer.prompt(questions).then(answers => {
-        if (answers.teamId) {
-            userConfig.teamIds.push(answers.teamId);
-        }
+    return inquirer.prompt(questions)
+        .then(answers => {
+            if (answers.teamId) {
+                userConfig.teamIds.push(answers.teamId);
+            }
 
-        if (!userConfig.token) {
-            const user = (argGitHubUser) ? argGitHubUser : answers.user;
-            const password = (argGitHubPassword) ? argGitHubPassword : answers.password;
-            const mfa = (argGitHubMfaToken) ? argGitHubMfaToken : answers.mfa;
-            createGitHubToken(user, password, mfa)
-                .then(token => {
-                    userConfig.token = token;
-                });
-        }
-    })
+            if (!userConfig.token) {
+                const user = (argGitHubUser) ? argGitHubUser : answers.user;
+                const password = (argGitHubPassword) ? argGitHubPassword : answers.password;
+                const mfa = (argGitHubMfaToken) ? argGitHubMfaToken : answers.mfa;
+                return createGitHubToken(user, password, mfa)
+                    .then(token => {
+                        userConfig.token = token;
+                    });
+            }
+        })
         .then(() => writeUserConfig(userConfig))
         .then(() => {
             console.info(`Successfully created Atomist user configuration`);
             return 0;
         }, err => {
-            console.error(`Failed to create user config: ${JSON.stringify(err)}`);
+            console.error(`Failed to create user config: ${stringify(err)}`);
             return 1;
         });
 }
