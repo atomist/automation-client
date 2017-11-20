@@ -10,6 +10,7 @@ import { GitHubToken } from "../../atomist.config";
 
 const TargetOwner = "atomist-travisorg";
 const ExistingRepo = "this-repository-exists";
+const ExistingSha = "68ffbfaa4b6ddeff563541b4b08d3b53060a51d8";
 
 const ExistingRepoRef = new GitHubRepoRef(TargetOwner, ExistingRepo);
 
@@ -17,8 +18,8 @@ const Creds = { token: GitHubToken };
 
 describe("git status analysis", () => {
 
-    function freshClone(): Promise<GitProject> {
-        return GitCommandGitProject.cloned(Creds, ExistingRepoRef, {}, TmpDirectoryManager);
+    function freshClone(repoRef: GitHubRepoRef = ExistingRepoRef): Promise<GitProject> {
+        return GitCommandGitProject.cloned(Creds, repoRef, {}, TmpDirectoryManager);
     }
 
     it("should recognize a clean repository as clean", done => {
@@ -87,6 +88,8 @@ describe("git status analysis", () => {
             .then(project =>
                 project.gitStatus()
                     .then(status1 => {
+                        assert(status1.upstream.branch === "origin/master",
+                            `upstream: ${status1.upstream.branch}`);
                         assert(status1.upstream.inSync, "should be in sync to start with");
                         return makeACommit(project)
                             .then(() => project.gitStatus()
@@ -97,6 +100,19 @@ describe("git status analysis", () => {
                                 }));
                     }))
             .then(done, done);
+
+    }).timeout(5000);
+
+    it("should work in detached HEAD", done => {
+
+        freshClone(new GitHubRepoRef(TargetOwner, ExistingRepo, ExistingSha))
+            .then(project =>
+                project.gitStatus()
+                    .then(status1 => {
+                        assert(status1.sha === ExistingSha,
+                            `asked for ${ExistingSha}, got ${status1.sha}`);
+                    }))
+            .then(() => done(), done);
 
     }).timeout(5000);
 
