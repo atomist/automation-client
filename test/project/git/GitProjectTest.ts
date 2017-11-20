@@ -79,6 +79,13 @@ describe("GitProject", () => {
             });
     }
 
+    it("knows about the branch passed by the repo ref", () => {
+        const p = tempProject(new GitHubRepoRef("owneryo", "repoyo", "branchyo"));
+        const gp = GitCommandGitProject.fromProject(p, Creds);
+
+        assert(gp.branch === "branchyo", `Branch was <${gp.branch}>`);
+    });
+
     it("add a file, init and commit", done => {
         const p = tempProject();
         p.addFileSync("Thing", "1");

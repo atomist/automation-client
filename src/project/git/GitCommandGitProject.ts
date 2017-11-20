@@ -102,6 +102,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                         private credentials: ProjectOperationCredentials, release: ReleaseFunction,
                         public provenance?: string) {
         super(id, baseDir, release);
+        this.branch = id.sha;
         logger.debug(`Created GitProject with token '${hideString(this.credentials.token)}'`);
     }
 
