@@ -16,6 +16,7 @@ import {
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { CommandInvocation } from "../../invoker/Payload";
 import * as namespace from "../../util/cls";
+import { AutomationContext } from "../../util/cls";
 import { logger } from "../../util/logger";
 import { gc, heapDump } from "../../util/memory";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
@@ -28,7 +29,6 @@ import { GraphClientFactory } from "../websocket/GraphClientFactory";
 import { WebSocketClientOptions } from "../websocket/WebSocketClient";
 import { RegistrationConfirmation } from "../websocket/WebSocketRequestProcessor";
 import { workerSend } from "./messages";
-import { AutomationContext } from "../../util/cls";
 
 /**
  * A RequestProcessor that is being run as Node.JS Cluster worker handling all the actual work.
