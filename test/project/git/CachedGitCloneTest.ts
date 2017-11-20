@@ -72,7 +72,7 @@ describe("cached git clone projects", () => {
                             return clone2.release();
                         })))
             .then(done, done);
-    });
+    }).timeout(5000);
 
     it("should be on the correct branch when you get the directory again", done => {
         const repoName = "this-repository-exists-to-test-cached-clones-3";
@@ -128,7 +128,7 @@ describe("cached git clone projects", () => {
                             }));
                 }))
             .then(done, done);
-    });
+    }).timeout(5000);
 
     it("should default to the repository's default branch");
 
@@ -159,6 +159,6 @@ describe("cached git clone projects", () => {
                     });
             })
             .then(done, done);
-    });
+    }).timeout(5000);
 
 });
