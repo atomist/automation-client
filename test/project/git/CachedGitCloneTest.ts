@@ -5,10 +5,10 @@ import { fail } from "power-assert";
 import { runCommand } from "../../../src/action/cli/commandLine";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
+import { GitProject } from "../../../src/project/git/GitProject";
 import { CachingDirectoryManager } from "../../../src/spi/clone/CachingDirectoryManager";
 import { DefaultCloneOptions } from "../../../src/spi/clone/DirectoryManager";
 import { GitHubToken } from "../../atomist.config";
-import { GitProject } from "../../../src/project/git/GitProject";
 
 const Creds = { token: GitHubToken };
 const Owner = "atomist-travisorg";
