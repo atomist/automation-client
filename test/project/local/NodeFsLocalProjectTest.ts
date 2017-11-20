@@ -19,10 +19,11 @@ import { tempProject } from "../utils";
 
 describe("NodeFsLocalProject", () => {
 
-    const thisProject: LocalProject = new NodeFsLocalProject(new GitHubRepoRef("owner", "test"), appRoot.path);
+    const thisProject: LocalProject = new NodeFsLocalProject(
+        new GitHubRepoRef("owner", "test"), appRoot.path, () => Promise.resolve());
 
     it("can create from string", () => {
-        const p = new NodeFsLocalProject("thing", "/base/dir");
+        const p = new NodeFsLocalProject("thing", "/base/dir", () => Promise.resolve());
         assert(p.id.owner === undefined);
         assert(p.id.repo === "thing");
     });
@@ -150,7 +151,7 @@ describe("NodeFsLocalProject", () => {
                 assert(files.length > 50);
             })
             .then(done, done);
-    });
+    }).timeout(5000);
 
     it("streamFiles returns enough files", done => {
         let count = 0;
