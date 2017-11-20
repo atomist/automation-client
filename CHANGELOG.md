@@ -15,8 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+-   `generate` utility function now takes `RepoId` argument before optional params
 -   Split out tests into test and test-api so non-Atomist developers
-    could run non-API tests
+    can run non-API tests
 -   Improve `atomist config` handling of existing config file so it
     can be used to add additional teams
 -   Run `config` and `git` commands in same node process
