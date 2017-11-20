@@ -12,6 +12,7 @@ import {
     isCommandHandlerMetadata,
     isEventHandlerMetadata,
 } from "./metadata";
+import { HandleCommand } from "../../HandleCommand";
 
 /**
  * Extract metadata from a handler instance. We need an
@@ -26,7 +27,16 @@ export function metadataFromInstance(r: any): CommandHandlerMetadata | EventHand
     } else if (isCommandHandlerMetadata(r)) {
         md = addName(r);
     } else {
-        md = metadataFromDecorator(r);
+        // We need to find the instance from which to extract metadata.
+        // It will be the handler itself unless it implements the optional freshParametersInstance method
+        const knowsHowToMakeMyParams = r as HandleCommand;
+        if (!!knowsHowToMakeMyParams.freshParametersInstance) {
+            const newInstance = knowsHowToMakeMyParams.freshParametersInstance();
+            newInstance.__kind = "parameters";
+            md = metadataFromDecorator(newInstance);
+        } else {
+            md = metadataFromDecorator(r);
+        }
     }
     // Clone metadata as otherwise we mess with previous created instances
     return _.cloneDeep(md);
