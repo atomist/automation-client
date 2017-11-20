@@ -29,7 +29,6 @@ export class NewRepoCreationParameters implements RepoId {
     @Parameter({
         displayName: "Project Description",
         description: "short descriptive text describing the new project",
-        pattern: /.*/,
         validInput: "free text",
         minLength: 1,
         maxLength: 100,
