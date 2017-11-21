@@ -21,6 +21,7 @@ describe("class style metadata reading", () => {
     it("should extract metadataFromInstance from command handler", () => {
         const h = new AddAtomistSpringAgent();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        assert(!!md.name);
         assert(md.parameters.length === 1);
         assert(md.parameters[0].name === "slackTeam");
         assert(md.mapped_parameters.length === 2);

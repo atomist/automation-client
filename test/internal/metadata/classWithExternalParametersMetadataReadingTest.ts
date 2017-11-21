@@ -80,6 +80,7 @@ describe("class with external parameters metadata reading", () => {
     it("should extract metadata from command handler with direct composed parameters", () => {
         const h = new AddAtomistSpringAgentWithComposedExternalParameters();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        assert(md.name === "AddAtomistSpringAgentWithComposedExternalParameters");
         assert(md.parameters.length === 2);
         assert(md.parameters[0].name === "foo");
         assert(md.parameters[1].name === "args.params.slackTeam");
@@ -94,6 +95,7 @@ describe("class with external parameters metadata reading", () => {
     it("should extract metadata from command handler with inherited and composed parameters", () => {
         const h = new AddAtomistSpringAgentWithInheritedAndComposedParameters();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        assert(md.name = "AddAtomistSpringAgentWithInheritedAndComposedParameters");
         assert(md.parameters.length === 2);
         assert(md.parameters[0].name === "foo");
         assert(md.parameters[1].name === "args.slackTeam");
