@@ -206,6 +206,7 @@ export interface WebSocketClientOptions {
     registrationUrl: string;
     graphUrl: string;
     token: string;
+    waitTime: number;
 }
 
 function isPing(a: any): a is Ping {
