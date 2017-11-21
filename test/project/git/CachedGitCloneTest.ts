@@ -96,6 +96,28 @@ describe("cached git clone projects", () => {
             .then(done, done);
     }).timeout(5000);
 
+    it("should be on the correct branch even if the branch name overlaps with a file", done => {
+        const repoName = "this-repository-exists-to-test-cached-clones-3";
+        getAClone({ branch: "this-directory-exists", repoName })
+            .then(clone1 =>
+                clone1.gitStatus().then(status1 => {
+                    assert(status1.branch === "this-directory-exists", "branch is " + status1.branch);
+                    assert(status1.isClean);
+                    return clone1.release()
+                        .then(() => getAClone({ repoName }))
+                        .then(clone2 =>
+                            clone2.gitStatus()
+                                .then(status => {
+                                    assert(clone2.baseDir === clone1.baseDir,
+                                        "this test is pointless if not in the same spot");
+                                    assert(status.branch, "master"); // TODO: this needs to be the default branch
+                                    assert(status.isClean, status.raw);
+                                    return clone2.release();
+                                }));
+                }))
+            .then(done, done);
+    }).timeout(5000);
+
     it("should start with the branch in sync with origin", done => {
         const repoName = "this-repository-exists-to-test-cached-clones-2";
 
