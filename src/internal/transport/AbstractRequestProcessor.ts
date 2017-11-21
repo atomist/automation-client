@@ -125,7 +125,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                             command: CommandIncoming,
                             callback: (result: Promise<HandlerResult>) => void) {
 
-        const finish = (result: HandlerResult) => {
+        const finalize = (result: HandlerResult) => {
             this.sendStatus(result.code === 0 ? true : false, result, command);
             callback(Promise.resolve(result));
             logger.info(`Finished invocation of command handler '%s': %s`,
@@ -148,7 +148,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         };
                         this.listeners.map(l => () => l.commandSuccessful(ci, ctx, result))
                             .reduce((p, f) => p.then(f), Promise.resolve())
-                            .then(() => finish(result));
+                            .then(() => finalize(result));
                     } else {
                         result = {
                             ...defaultErrorResult(),
@@ -156,7 +156,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         };
                         this.listeners.map(l => () => l.commandFailed(ci, ctx, result))
                             .reduce((p, f) => p.then(f), Promise.resolve())
-                            .then(() => finish(result));
+                            .then(() => finalize(result));
                     }
                 })
                 .catch(err => {
@@ -172,7 +172,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                           event: EventIncoming,
                           callback: (results: Promise<HandlerResult[]>) => void) {
 
-        const finish = (result: HandlerResult[]) => {
+        const finalize = (result: HandlerResult[]) => {
             callback(Promise.resolve(result));
             logger.info(`Finished invocation of event handler '%s': %s`,
                 event.extensions.operationName, stringify(result));
@@ -190,11 +190,11 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                     if (!result.some(r => r.code !== 0)) {
                         this.listeners.map(l => () => l.eventSuccessful(ef, ctx, result))
                             .reduce((p, f) => p.then(f), Promise.resolve())
-                            .then(() => finish(result));
+                            .then(() => finalize(result));
                     } else {
                         this.listeners.map(l => () => l.eventFailed(ef, ctx, result))
                             .reduce((p, f) => p.then(f), Promise.resolve())
-                            .then(() => finish(result));
+                            .then(() => finalize(result));
                     }
                 })
                 .catch(err => {
@@ -343,7 +343,7 @@ export function setupNamespace(request: any, automations: AutomationServer, invo
 }
 
 export function clearNamespace() {
-    logger.debug("Clearning up namespace");
+    logger.debug("Clearing namespace");
     namespace.set({
         correlationId: null,
         teamId: null,
