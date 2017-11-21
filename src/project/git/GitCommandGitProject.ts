@@ -253,7 +253,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @return {any}
      */
     public checkout(sha: string): Promise<CommandResult<this>> {
-        return this.runCommandInCurrentWorkingDirectory(`git checkout ${sha}`);
+        return this.runCommandInCurrentWorkingDirectory(`git checkout ${sha} --`);
     }
 
     public push(): Promise<CommandResult<this>> {
@@ -275,7 +275,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     public createBranch(name: string): Promise<CommandResult<this>> {
         this.branch = name;
         return this.runCommandInCurrentWorkingDirectory(`git branch ${name}`).then(() =>
-            this.runCommandInCurrentWorkingDirectory(`git checkout ${name}`));
+            this.runCommandInCurrentWorkingDirectory(`git checkout ${name} --`));
     }
 
     private runCommandInCurrentWorkingDirectory(cmd: string): Promise<CommandResult<this>> {
@@ -357,7 +357,7 @@ function cloneInto(credentials: ProjectOperationCredentials,
     const command = (id.sha === "master" && targetDirectoryInfo.transient) ?
         runIn(".", `git clone --depth 1 ${id.cloneUrl(credentials)} ${repoDir}`) :
         runIn(".", `git clone ${id.cloneUrl(credentials)} ${repoDir}`)
-            .then(() => runIn(repoDir, `git checkout ${id.sha}`));
+            .then(() => runIn(repoDir, `git checkout ${id.sha} --`));
 
     logger.info(`Cloning repo '${id.url}' in '${repoDir}'`);
     return command
@@ -380,7 +380,7 @@ function checkout(repoDir: string, branch: string) {
 function clean(repoDir: string) {
     return pwd(repoDir)
         .then(() => runIn(repoDir, "git clean -dfx")) // also removes ignored files
-        .then(result => runIn(repoDir, "git checkout ."));
+        .then(result => runIn(repoDir, "git checkout -- ."));
 }
 
 function runIn(baseDir: string, command: string) {

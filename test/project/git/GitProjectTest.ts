@@ -177,9 +177,8 @@ describe("GitProject", () => {
                         .then(() => gp.push())
                         .then(() => gp.raisePullRequest("Thing2", "Adds another character"))
                         .then(() => deleteRepoIfExists(ownerAndRepo));
-                }).catch( err => {
-                    deleteRepoIfExists(ownerAndRepo).then(() => Promise.reject(err));
-                }))
+                }).catch( err => deleteRepoIfExists(ownerAndRepo)
+                    .then(() => Promise.reject(err))))
             .then(() => done(), done);
 
     }).timeout(20000);
