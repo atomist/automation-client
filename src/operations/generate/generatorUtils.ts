@@ -7,10 +7,10 @@ import { DefaultDirectoryManager } from "../../project/git/GitCommandGitProject"
 import { LocalProject } from "../../project/local/LocalProject";
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
 import { Project } from "../../project/Project";
+import { TmpDirectoryManager } from "../../spi/clone/tmpDirectoryManager";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { RepoId } from "../common/RepoId";
 import { AnyProjectEditor, ProjectEditor, toEditor } from "../edit/projectEditor";
-import { TmpDirectoryManager } from "../../spi/clone/tmpDirectoryManager";
 
 /**
  * Function that knows how to persist a project using the given credentials.
@@ -57,6 +57,6 @@ export function generate(startingPoint: Promise<Project> | Project,
                     logger.debug("Persisting repo at [%s]: owner/repo=%s:%s",
                         (populated as LocalProject).baseDir, targetId.owner, targetId.repo);
                     return persist(populated, credentials, targetId);
-                })
+                });
         });
 }
