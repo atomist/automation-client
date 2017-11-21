@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   `isBinary` method on `File` interface
 
+### Changed
+
+-   Moved `@types/graphql` to dependencies since its types are exported
+
 ## [0.3.3][] - 2017-11-20
 
 [0.3.3]: https://github.com/atomist/automation-client-ts/compare/0.3.2...0.3.3
