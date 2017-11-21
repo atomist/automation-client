@@ -1,16 +1,27 @@
 import * as appRoot from "app-root-path";
 import { Automations } from "../metadata/metadata";
 
-export function info(automations: Automations): any {
-    const i: any = {};
+export function info(automations: Automations): AutomationInfo {
+    const i: AutomationInfo = {
+        name: automations.name,
+        version: automations.version,
+    };
 
-    i.name = automations.name;
-    i.version = automations.version;
     if (automations.team_ids) {
         i.team_ids = automations.team_ids;
     }
     if (automations.groups) {
         i.groups = automations.groups;
+    }
+
+    try {
+        const pj = require(`${appRoot.path}/package.json`);
+        i.description = pj.description;
+        i.license = pj.license;
+        i.author = pj.author;
+        i.homepage = pj.homepage;
+    } catch (err) {
+        // Ignore missing app package.json
     }
 
     try {
@@ -33,7 +44,25 @@ export function info(automations: Automations): any {
         // Ignore the missing git-info.json
     }
 
-    i.pid = process.pid;
-
     return i;
+}
+
+export interface AutomationInfo {
+    name: string;
+    version: string;
+    team_ids?: string[];
+    groups?: string[];
+    description?: string;
+    license?: string;
+    author?: string;
+    homepage?: string;
+    client?: {
+        name: string;
+        version: string;
+    };
+    git?: {
+        sha: string;
+        branch: string;
+        repository: string;
+    };
 }

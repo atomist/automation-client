@@ -58,6 +58,12 @@ describe("payloads", () => {
         assert(!payload.groups);
 
         assert.deepEqual(payload.policy, { name: "durable"} );
+
+        assert(payload.metadata.labels);
+        assert(payload.metadata.labels["atomist.description"]);
+        assert(payload.metadata.labels["atomist.author"]);
+        assert(payload.metadata.labels["atomist.license"]);
+        assert(payload.metadata.labels["atomist.git.sha"]);
     });
 
     it("check registration for group = all is valid", () => {

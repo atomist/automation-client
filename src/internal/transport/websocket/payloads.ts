@@ -3,17 +3,33 @@ import {
     EventHandlerMetadata,
 } from "../../../metadata/automationMetadata";
 import { Automations } from "../../metadata/metadata";
+import { info } from "../../util/info";
 
-export function prepareRegistration(metadata: Automations): any {
+export function prepareRegistration(automations: Automations): any {
     return {
-        name: metadata.name,
-        version: metadata.version,
-        policy: { name: (metadata.policy ? metadata.policy : "ephemeral") },
-        team_ids: metadata.team_ids && metadata.team_ids.length > 0 ? metadata.team_ids : undefined,
-        groups: metadata.groups && metadata.groups.length > 0 ? metadata.groups : undefined,
-        commands: metadata.commands.map(prepareCommandRegistration),
-        events: metadata.events.map(prepareEventRegistration),
-        ingesters: metadata.ingesters,
+        name: automations.name,
+        version: automations.version,
+        policy: { name: (automations.policy ? automations.policy : "ephemeral") },
+        team_ids: automations.team_ids && automations.team_ids.length > 0 ? automations.team_ids : undefined,
+        groups: automations.groups && automations.groups.length > 0 ? automations.groups : undefined,
+        commands: automations.commands.map(prepareCommandRegistration),
+        events: automations.events.map(prepareEventRegistration),
+        ingesters: automations.ingesters,
+        metadata: { labels: prepareMetadata(automations) },
+    };
+}
+
+function prepareMetadata(automations: Automations) {
+    const i = info(automations);
+    return {
+        "atomist.description": i.description,
+        "atomist.license": i.license,
+        "atomist.author": i.author,
+        "atomist.homepage": i.homepage,
+        "atomist.client": i.client ? `${i.client.name}#${i.client.version}` : undefined,
+        "atomist.git.sha": i.git ? i.git.sha : undefined,
+        "atomist.git.branch": i.git ? i.git.branch : undefined,
+        "atomist.git.repository": i.git ? i.git.repository : undefined,
     };
 }
 

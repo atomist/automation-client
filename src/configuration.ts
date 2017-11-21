@@ -9,10 +9,10 @@ import {
 import { logger } from "./internal/util/logger";
 import { obfuscateJson } from "./internal/util/string";
 import { AutomationEventListener } from "./server/AutomationEventListener";
-import { RunOptions } from "./server/options";
+import { AutomationServerOptions, RunOptions } from "./server/options";
 import { Maker } from "./util/constructionUtils";
 
-export interface Configuration extends RunOptions {
+export interface Configuration extends AutomationServerOptions {
 
     commands?: Array<Maker<HandleCommand>>;
     events?: Array<Maker<HandleEvent<any>>>;

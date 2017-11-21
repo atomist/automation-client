@@ -51,6 +51,7 @@ export const configuration: Configuration = {
     // policy: "durable",
     teamIds: ["T1L0VDKJP"],
     token: GitHubToken,
+    keywords: ["test", "automation"],
     commands: [
         // ...scanCommands( ["**/metadata/addAtomistSpringAgent.js", "**/command/Search*.js"] ),
         HelloWorld,
