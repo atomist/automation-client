@@ -50,4 +50,8 @@ export class InMemoryFile extends AbstractFile {
         throw new Error("isReadable is not implemented here");
     }
 
+    public isBinary(): Promise<boolean> {
+        // InMemoryFile does not presently support binary files
+        return Promise.resolve(false);
+    }
 }

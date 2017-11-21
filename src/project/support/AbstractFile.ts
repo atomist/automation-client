@@ -64,4 +64,6 @@ export abstract class AbstractFile extends AbstractScriptedFlushable<File> imple
 
     public abstract isReadable(): Promise<boolean>;
 
+    public abstract isBinary(): Promise<boolean>;
+
 }
