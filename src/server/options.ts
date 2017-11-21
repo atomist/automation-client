@@ -52,6 +52,7 @@ export interface RunOptions {
     };
     ws?: {
         enabled: boolean,
+        waitTime?: number,
     };
     endpoints?: {
         graphql?: string,
@@ -61,5 +62,5 @@ export interface RunOptions {
 
 export interface AutomationServerOptions extends RunOptions {
 
-    keywords: string[];
+    keywords?: string[];
 }
