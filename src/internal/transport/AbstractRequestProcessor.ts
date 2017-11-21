@@ -124,6 +124,15 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                             ctx: HandlerContext,
                             command: CommandIncoming,
                             callback: (result: Promise<HandlerResult>) => void) {
+
+        const finish = (result: HandlerResult) => {
+            this.sendStatus(result.code === 0 ? true : false, result, command);
+            callback(Promise.resolve(result));
+            logger.info(`Finished invocation of command handler '%s': %s`,
+                command.name, stringify(result));
+            clearNamespace();
+        };
+
         logger.debug("Incoming command '%s'", stringify(command, replacer));
         try {
             this.automations.invokeCommand(ci, ctx)
@@ -137,27 +146,24 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                             ...defaultResult(),
                             ...result,
                         };
-                        this.listeners.forEach(l => l.commandSuccessful(ci, ctx, result));
+                        this.listeners.map(l => () => l.commandSuccessful(ci, ctx, result))
+                            .reduce((p, f) => p.then(f), Promise.resolve())
+                            .then(() => finish(result));
                     } else {
                         result = {
                             ...defaultErrorResult(),
                             ...result,
                         };
-                        this.listeners.forEach(l => l.commandFailed(ci, ctx, result));
+                        this.listeners.map(l => () => l.commandFailed(ci, ctx, result))
+                            .reduce((p, f) => p.then(f), Promise.resolve())
+                            .then(() => finish(result));
                     }
-                    this.sendStatus(result.code === 0 ? true : false, result, command);
-                    callback(Promise.resolve(result));
-                    logger.info(`Finished invocation of command handler '%s': %s`,
-                        command.name, stringify(result));
-                    clearNamespace();
                 })
                 .catch(err => {
                     this.handleCommandError(err, command, ci, ctx, callback);
-                    clearNamespace();
                 });
         } catch (err) {
             this.handleCommandError(err, command, ci, ctx, callback);
-            clearNamespace();
         }
     }
 
@@ -165,6 +171,14 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                           ctx: HandlerContext,
                           event: EventIncoming,
                           callback: (results: Promise<HandlerResult[]>) => void) {
+
+        const finish = (result: HandlerResult[]) => {
+            callback(Promise.resolve(result));
+            logger.info(`Finished invocation of event handler '%s': %s`,
+                event.extensions.operationName, stringify(result));
+            clearNamespace();
+        };
+
         logger.debug("Incoming event '%s'", stringify(event, replacer));
         try {
             this.automations.onEvent(ef, ctx)
@@ -174,22 +188,20 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                     }
 
                     if (!result.some(r => r.code !== 0)) {
-                        this.listeners.forEach(l => l.eventSuccessful(ef, ctx, result));
+                        this.listeners.map(l => () => l.eventSuccessful(ef, ctx, result))
+                            .reduce((p, f) => p.then(f), Promise.resolve())
+                            .then(() => finish(result));
                     } else {
-                        this.listeners.forEach(l => l.eventFailed(ef, ctx, result));
+                        this.listeners.map(l => () => l.eventFailed(ef, ctx, result))
+                            .reduce((p, f) => p.then(f), Promise.resolve())
+                            .then(() => finish(result));
                     }
-                    callback(Promise.resolve(result));
-                    logger.info(`Finished invocation of event handler '%s': %s`,
-                        event.extensions.operationName, stringify(result));
-                    clearNamespace();
                 })
                 .catch(err => {
                     this.handleEventError(err, event, ef, ctx, callback);
-                    clearNamespace();
                 });
         } catch (err) {
             this.handleEventError(err, event, ef, ctx, callback);
-            clearNamespace();
         }
     }
 
@@ -210,12 +222,16 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             ...failure(err),
         };
 
-        this.listeners.forEach(l => l.commandFailed(ci, ctx, err));
-        this.sendStatus(false, result as HandlerResult, command);
-        if (callback) {
-            callback(Promise.resolve(result));
-        }
-        logger.error(`Failed invocation of command handler '%s'`, command.name, serializeError(err));
+        this.listeners.map(l => () => l.commandFailed(ci, ctx, result))
+            .reduce((p, f) => p.then(f), Promise.resolve())
+            .then(() => {
+                this.sendStatus(false, result as HandlerResult, command);
+                if (callback) {
+                    callback(Promise.resolve(result));
+                }
+                logger.error(`Failed invocation of command handler '%s'`, command.name, serializeError(err));
+                clearNamespace();
+            });
     }
 
     private handleEventError(err: any, event: EventIncoming, ef: EventFired<any>,
@@ -225,12 +241,16 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             ...failure(err),
         };
 
-        this.listeners.forEach(l => l.eventFailed(ef, ctx, err));
-        if (callback) {
-            callback(Promise.resolve(result));
-        }
-        logger.error(`Failed invocation of command handler '%s'`,
-            event.extensions.operationName, serializeError(err));
+        this.listeners.map(l => () => l.eventFailed(ef, ctx, result))
+            .reduce((p, f) => p.then(f), Promise.resolve())
+            .then(() => {
+                if (callback) {
+                    callback(Promise.resolve(result));
+                }
+                logger.error(`Failed invocation of command handler '%s'`,
+                    event.extensions.operationName, serializeError(err));
+                clearNamespace();
+            });
     }
 }
 

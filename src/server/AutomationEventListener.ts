@@ -13,13 +13,13 @@ export interface AutomationEventListener {
 
     commandIncoming(payload: CommandIncoming): void;
     commandStarting(payload: CommandInvocation, ctx: HandlerContext): void;
-    commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): void;
-    commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): void;
+    commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<any>;
+    commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): Promise<any>;
 
     eventIncoming(payload: EventIncoming): void;
     eventStarting(payload: EventFired<any>, ctx: HandlerContext): void;
-    eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): void;
-    eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): void;
+    eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): Promise<any>;
+    eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): Promise<any>;
 
     messageSent(message: string | SlackMessage,
                 userNames: string | string[],
@@ -46,12 +46,12 @@ export class AutomationEventListenerSupport implements AutomationEventListener {
         // This is intentionally left empty
     }
 
-    public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult) {
-        // This is intentionally left empty
+    public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<any> {
+        return Promise.resolve();
     }
 
-    public commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any) {
-        // This is intentionally left empty
+    public commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): Promise<any> {
+        return Promise.resolve();
     }
 
     public eventIncoming(payload: EventIncoming) {
@@ -62,12 +62,12 @@ export class AutomationEventListenerSupport implements AutomationEventListener {
         // This is intentionally left empty
     }
 
-    public eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]) {
-        // This is intentionally left empty
+    public eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): Promise<any> {
+        return Promise.resolve();
     }
 
-    public eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any) {
-        // This is intentionally left empty
+    public eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): Promise<any> {
+        return Promise.resolve();
     }
 
     public messageSent(message: string | SlackMessage,

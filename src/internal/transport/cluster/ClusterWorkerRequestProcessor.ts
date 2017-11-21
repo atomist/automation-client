@@ -104,8 +104,8 @@ class ClusterWorkerMessageClient extends MessageClientSupport {
 
 class ClusterWorkerAutomationEventListener extends AutomationEventListenerSupport {
 
-    public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): void {
-       workerSend({
+    public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<any> {
+       return workerSend({
             type: "command_success",
             event: payload,
             cls: {
@@ -115,8 +115,8 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
         });
     }
 
-    public commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): void {
-        workerSend({
+    public commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): Promise<any> {
+        return workerSend({
             type: "command_failure",
             event: payload,
             cls: {
@@ -126,8 +126,8 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
         });
     }
 
-    public eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): void {
-        workerSend({
+    public eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): Promise<any> {
+        return workerSend({
             type: "event_success",
             event: payload,
             cls: {
@@ -137,8 +137,8 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
         });
     }
 
-    public eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): void {
-        workerSend({
+    public eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): Promise<any> {
+        return workerSend({
             type: "event_failure",
             event: payload,
             cls: {
