@@ -61,7 +61,7 @@ function invokeOnConsole(automationServer: AutomationServer, ci: CommandInvocati
         secrets: ci.args ? ci.args.filter(a => handler.secrets.some(p => p.name === a.name))
             .map(a => {
                 const s = handler.secrets.find(p => p.name === a.name);
-                return { name: s.path, value: a.value};
+                return { name: s.path, value: a.value };
             }) : undefined,
     };
 
@@ -82,7 +82,7 @@ function invokeOnConsole(automationServer: AutomationServer, ci: CommandInvocati
                 process.exit(1);
             });
     } catch (e) {
-        console.log("Error: Command failed: %s", e.message);
-        process.exit(1);
+        console.log("Unhandled Error: Command failed: %s", e.message);
+        process.exit(11);
     }
 }
