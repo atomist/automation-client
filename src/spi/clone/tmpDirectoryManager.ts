@@ -29,10 +29,9 @@ export const TmpDirectoryManager: DirectoryManager = {
  */
 function cleanup(path: string, keep: boolean): Promise<void> {
     if (keep) {
-        return Promise.resolve()
+        return Promise.resolve();
     } else {
         return fs.remove(path)
-            .then(() => Promise.resolve(),
-                (err) => Promise.resolve())
+            .then(() => Promise.resolve(), err => Promise.resolve());
     }
 }

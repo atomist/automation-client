@@ -20,11 +20,10 @@ import {
     DirectoryManager,
 } from "../../spi/clone/DirectoryManager";
 import { StableDirectoryManager } from "../../spi/clone/StableDirectoryManager";
+import { TmpDirectoryManager } from "../../spi/clone/tmpDirectoryManager";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
 import { GitProject } from "./GitProject";
 import { GitStatus, runStatusIn } from "./gitStatus";
-import { TmpDirectoryManager } from "../../spi/clone/tmpDirectoryManager";
-
 
 /**
  * Implements GitProject interface using the Git binary from the command line.
