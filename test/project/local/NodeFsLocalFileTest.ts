@@ -1,5 +1,7 @@
 import "mocha";
 
+import * as fs from "fs";
+
 import * as appRoot from "app-root-path";
 
 import * as assert from "power-assert";
@@ -185,6 +187,35 @@ describe("NodeFsLocalFile", () => {
                 done();
             })
             .catch(done);
+    });
+
+    it("should test nonbinary file", done => {
+        const p = tempProject();
+        p.addFile("Thing1", "The quick brown")
+            .then(() => {
+                const f = p.findFileSync("Thing1");
+                f.isBinary().then(bin => {
+                    assert(!bin);
+                    done();
+                });
+            })
+            .catch(done);
+    });
+
+    it("should test binary file", done => {
+        const p = tempProject();
+        const img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0"
+            + "NAAAAKElEQVQ4jWNgYGD4Twzu6FhFFGYYNXDUwGFpIAk2E4dHDRw1cDgaCAASFOffhEIO"
+            + "3gAAAABJRU5ErkJggg==";
+        // Strip off the data: url prefix to get just the base64-encoded bytes
+        const data = img.replace(/^data:image\/\w+;base64,/, "");
+        const buf = new Buffer(data, "base64");
+        fs.writeFileSync(p.baseDir + "/img", buf);
+        const f = p.findFileSync("img");
+        f.isBinary().then(bin => {
+            assert(bin);
+            done();
+        }).catch(done);
     });
 
     it("should make a file executable", done => {

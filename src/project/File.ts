@@ -66,6 +66,8 @@ export interface FileAsync extends FileCore {
 
     isReadable(): Promise<boolean>;
 
+    isBinary(): Promise<boolean>;
+
 }
 
 export interface FileNonBlocking extends FileScripting, FileAsync {
