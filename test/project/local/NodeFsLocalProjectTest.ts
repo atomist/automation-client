@@ -20,7 +20,7 @@ import { tempProject } from "../utils";
 describe("NodeFsLocalProject", () => {
 
     const thisProject: LocalProject = new NodeFsLocalProject(
-        new GitHubRepoRef("owner", "test"), appRoot.path, () => Promise.resolve());
+        new GitHubRepoRef("owner", "test"), appRoot.path);
 
     it("can create from string", () => {
         const p = new NodeFsLocalProject("thing", "/base/dir", () => Promise.resolve());

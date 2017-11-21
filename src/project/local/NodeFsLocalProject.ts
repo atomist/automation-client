@@ -83,7 +83,8 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
      * @param {string} baseDir
      * @param cleanup function that will release locks, delete temp directories etc
      */
-    public constructor(ident: RepoRef | string, baseDir: string, private cleanup: ReleaseFunction) {
+    public constructor(ident: RepoRef | string, baseDir: string,
+                       private cleanup: ReleaseFunction = () => Promise.resolve()) {
         super(typeof ident === "string" ? new SimpleRepoId(undefined, ident) : ident);
         // TODO not sure why app-root-path can return something weird and this coercion is necessary
         this.baseDir = "" + baseDir;
