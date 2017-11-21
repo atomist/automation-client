@@ -98,7 +98,7 @@ export abstract class AbstractGenerator extends LocalOrRemote implements HandleC
                     populated.then(p => {
                         const parentDir = shell.pwd() + "";
                         logger.debug(`Creating local project using cwd '${parentDir}': Other name '${p.name}'`);
-                        return NodeFsLocalProject.copy(p, parentDir, this.targetRepo);
+                        return NodeFsLocalProject.copy(p, parentDir + "/" + this.targetRepo);
                     }).then(p => {
                         return {code: 0, baseDir: p.baseDir} as HandlerResult;
                     }) :

@@ -48,7 +48,7 @@ export function generate(startingPoint: Promise<Project> | Project,
         .then(() => Promise.resolve(startingPoint)
             .then(seed =>
                 // Make a copy that we can work on
-                NodeFsLocalProject.copy(seed, parentDir, targetId.repo))
+                NodeFsLocalProject.copy(seed, parentDir + "/" + targetId.repo))
             // Let's be sure we didn't inherit any old git stuff
             .then(proj => proj.deleteDirectory(".git"))
             .then(independentCopy => toEditor<object>(editor)(independentCopy, ctx, params))
