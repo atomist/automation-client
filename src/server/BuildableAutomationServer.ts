@@ -214,7 +214,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         const secretResolver = invocation.mappedParameters ?
             new InvocationSecretResolver(invocation.mappedParameters) :
             this.fallbackSecretResolver;
-        logger.debug("Applying mapped parameters");
+        // logger.debug("Applying mapped parameters");
         const target = h as any;
         const mappedParameters: any[] =
             target.__mappedParameters ? target.__mappedParameters : [];
@@ -240,7 +240,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
 
         const secretResolver = invocationSecrets ? new InvocationSecretResolver(invocationSecrets) :
             this.fallbackSecretResolver;
-        logger.debug("Applying secrets");
+        // logger.debug("Applying secrets");
         const target = h as any;
         // why do we not get these from the metadata? ... because we don't pass it in, i guess
         const secrets: any[] =
