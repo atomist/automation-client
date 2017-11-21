@@ -11,6 +11,7 @@ import { TmpDirectoryManager } from "../../spi/clone/tmpDirectoryManager";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { RepoId } from "../common/RepoId";
 import { AnyProjectEditor, ProjectEditor, toEditor } from "../edit/projectEditor";
+import { DirectoryManager } from "../../spi/clone/DirectoryManager";
 
 /**
  * Function that knows how to persist a project using the given credentials.
@@ -34,6 +35,7 @@ export type ProjectPersister<P extends Project = Project,
  * for example, to GitHub
  * @param targetId id of target repo for persistence
  * @param params - optional parameters to be passed to persister
+ * @param directoryManager finds a directory for the new project; defaults to tmp
  */
 export function generate(startingPoint: Promise<Project> | Project,
                          ctx: HandlerContext,
@@ -41,9 +43,10 @@ export function generate(startingPoint: Promise<Project> | Project,
                          editor: AnyProjectEditor,
                          persist: ProjectPersister,
                          targetId: RepoId,
-                         params?: object): Promise<ActionResult<Project>> {
+                         params?: object,
+                         directoryManager: DirectoryManager = TmpDirectoryManager): Promise<ActionResult<Project>> {
 
-    return TmpDirectoryManager.directoryFor(targetId.owner, targetId.repo, "master", {})
+    return directoryManager.directoryFor(targetId.owner, targetId.repo, "master", {})
         .then(newRepoDirectoryInfo => {
             return Promise.resolve(startingPoint) // it might be a promise
                 .then(seed =>
