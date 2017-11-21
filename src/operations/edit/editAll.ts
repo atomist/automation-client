@@ -27,7 +27,7 @@ import { AnyProjectEditor, EditResult, ProjectEditor, toEditor } from "./project
  */
 export function editAll<R, P>(ctx: HandlerContext,
                               credentials: ProjectOperationCredentials,
-                              editor: ProjectEditor,
+                              editor: AnyProjectEditor,
                               editInfo: EditMode | EditModeFactory,
                               parameters?: P,
                               repoFinder: RepoFinder = allReposInTeam(),
@@ -35,7 +35,7 @@ export function editAll<R, P>(ctx: HandlerContext,
                               repoLoader: RepoLoader =
                                   defaultRepoLoader(credentials)): Promise<EditResult[]> {
     const edit = (p: Project, parms: P) =>
-        editRepo(ctx, p, editor, toEditModeFactory(editInfo)(p), parms);
+        editRepo(ctx, p, toEditor(editor), toEditModeFactory(editInfo)(p), parms);
     return doWithAllRepos<EditResult, P>(ctx, credentials, edit, parameters,
         repoFinder, repoFilter, repoLoader);
 }
