@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Moved `@types/graphql` to dependencies since its types are exported
+-   Command parameters now provided as PARAM=VALUE on `exec` command line
 
 ## [0.3.3][] - 2017-11-20
 
