@@ -181,7 +181,7 @@ export function startWorker(automations: AutomationServer,
 
 function addContext(data: any, cls: AutomationContext): any {
     if (isCommandIncoming(data)) {
-        (data.team as any).invocationId = cls.invocationId;
+        (data as any).invocationId = cls.invocationId;
         (data as any).ts = cls.ts;
     } else if (isEventIncoming(data)) {
         (data.extensions as any).invocation_id = cls.invocationId;
