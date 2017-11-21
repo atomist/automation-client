@@ -47,7 +47,7 @@ describe("NodeFsLocalProject", () => {
         );
         const baseDir: string = tmp.dirSync().name;
         NodeFsLocalProject.copy(proj, baseDir).then(p => {
-            assert(p.baseDir === baseDir + "/name");
+            assert(p.baseDir === baseDir);
             const f = p.findFileSync("package.json");
             assert(f.getContentSync());
             assert(f.getContentSync().includes("node"));
@@ -102,7 +102,7 @@ describe("NodeFsLocalProject", () => {
         const baseDir: string = tmp.dirSync().name;
         NodeFsLocalProject.copy(proj, baseDir)
             .then(p => {
-                assert(p.baseDir === baseDir + "/name", p.baseDir);
+                assert(p.baseDir === baseDir, p.baseDir);
                 const f = p.findFileSync("package.json");
                 assert(f.getContentSync());
                 assert(f.getContentSync().includes("node"));

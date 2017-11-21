@@ -38,14 +38,13 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
     /**
      * Copy the contents of the other project to this project
      * @param {Project} other
-     * @param {string} parentDir
+     * @param {string} baseDir
      * @param newName new name of the project. Defaults to name of old project
      * @param cleanup
      * @returns {LocalProject}
      */
-    public static copy(other: Project, parentDir: string, newName: string = other.name,
+    public static copy(other: Project, baseDir: string,
                        cleanup: ReleaseFunction = () => Promise.resolve()): Promise<LocalProject> {
-        const baseDir = parentDir + "/" + newName;
         if (!fs.existsSync(baseDir)) {
             fs.mkdirSync(baseDir);
         }

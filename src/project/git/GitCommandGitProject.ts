@@ -19,22 +19,12 @@ import {
     DefaultCloneOptions,
     DirectoryManager,
 } from "../../spi/clone/DirectoryManager";
-import { StableDirectoryManager } from "../../spi/clone/StableDirectoryManager";
+import { TmpDirectoryManager } from "../../spi/clone/tmpDirectoryManager";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
 import { GitProject } from "./GitProject";
 import { GitStatus, runStatusIn } from "./gitStatus";
 
-/**
- * Default Atomist working directory
- * @type {string}
- */
-const AtomistWorkingDirectory = ".atomist-working";
-
-export const DefaultDirectoryManager = new StableDirectoryManager({
-    baseDir: os.homedir() + "/" + AtomistWorkingDirectory,
-    cleanOnExit: false,
-    reuseDirectories: false,
-});
+export const DefaultDirectoryManager = TmpDirectoryManager;
 
 /**
  * Implements GitProject interface using the Git binary from the command line.
