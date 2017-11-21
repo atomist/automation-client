@@ -23,18 +23,8 @@ import { StableDirectoryManager } from "../../spi/clone/StableDirectoryManager";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
 import { GitProject } from "./GitProject";
 import { GitStatus, runStatusIn } from "./gitStatus";
+import { TmpDirectoryManager } from "../../spi/clone/tmpDirectoryManager";
 
-/**
- * Default Atomist working directory
- * @type {string}
- */
-const AtomistWorkingDirectory = ".atomist-working";
-
-export const DefaultDirectoryManager = new StableDirectoryManager({
-    baseDir: os.homedir() + "/" + AtomistWorkingDirectory,
-    cleanOnExit: false,
-    reuseDirectories: false,
-});
 
 /**
  * Implements GitProject interface using the Git binary from the command line.
@@ -76,7 +66,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     public static cloned(credentials: ProjectOperationCredentials,
                          id: RemoteRepoRef,
                          opts: CloneOptions = DefaultCloneOptions,
-                         directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitProject> {
+                         directoryManager: DirectoryManager = TmpDirectoryManager): Promise<GitProject> {
         return clone(credentials, id, opts, directoryManager)
             .then(p => {
                 if (!!id.path) {

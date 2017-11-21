@@ -21,7 +21,35 @@ function checkProject(p: Project) {
     assert(f.getContentSync());
 }
 
-const Creds = {token: GitHubToken};
+const Creds = { token: GitHubToken };
+const Owner = "atomist-travisorg";
+const RepoName = "this-repository-exists";
+
+describe("GitProject cloning on filesystem", () => {
+
+    const getAClone = (repoName: string = RepoName) => {
+        const repositoryThatExists = new GitHubRepoRef(Owner, repoName);
+        return GitCommandGitProject.cloned(Creds, repositoryThatExists);
+    };
+
+    it("never returns the same place on the filesystem twice at once", done => {
+        const clones = [getAClone(), getAClone()];
+        const cleaningDone = (err: Error | void) => {
+            Promise.all(clones)
+                .then(them =>
+                    them.forEach(clone => clone.release()))
+                .then(done(err));
+        };
+
+        Promise.all(clones)
+            .then(them => {
+                assert(them[0].baseDir !== them[1].baseDir,
+                    "Oh no! two simultaneous projects in " + them[0].baseDir);
+            })
+            .then(cleaningDone, cleaningDone);
+    }).timeout(5000);
+
+});
 
 describe("GitProject", () => {
 
