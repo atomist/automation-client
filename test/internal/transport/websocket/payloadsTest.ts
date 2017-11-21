@@ -63,7 +63,6 @@ describe("payloads", () => {
         assert(payload.metadata.labels["atomist.description"]);
         assert(payload.metadata.labels["atomist.author"]);
         assert(payload.metadata.labels["atomist.license"]);
-        assert(payload.metadata.labels["atomist.git.sha"]);
     });
 
     it("check registration for group = all is valid", () => {
