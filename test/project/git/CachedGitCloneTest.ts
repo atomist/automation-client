@@ -1,7 +1,6 @@
 import "mocha";
 
 import * as assert from "power-assert";
-import { fail } from "power-assert";
 import { runCommand } from "../../../src/action/cli/commandLine";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
