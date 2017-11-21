@@ -11,13 +11,11 @@ import {
 } from "./internal/transport/cluster/ClusterMasterRequestProcessor";
 import { startWorker } from "./internal/transport/cluster/ClusterWorkerRequestProcessor";
 import { EventStoringAutomationEventListener } from "./internal/transport/EventStoringAutomationEventListener";
-import { ExpressRequestProcessor } from "./internal/transport/express/ExpressRequestProcessor";
 import {
     ExpressServer,
     ExpressServerOptions,
 } from "./internal/transport/express/ExpressServer";
 import { MetricEnabledAutomationEventListener } from "./internal/transport/MetricEnabledAutomationEventListener";
-import { RequestProcessor } from "./internal/transport/RequestProcessor";
 import { DefaultWebSocketRequestProcessor } from "./internal/transport/websocket/DefaultWebSocketRequestProcessor";
 import { prepareRegistration } from "./internal/transport/websocket/payloads";
 import {
@@ -97,6 +95,7 @@ export class AutomationClient {
             graphUrl: _.get(this.configuration, "endpoints.graphql", DefaultGraphQLServer),
             registrationUrl: _.get(this.configuration, "endpoints.api", DefaultApiServer),
             token: this.configuration.token,
+            waitTime: _.get(this.configuration, "ws.waitTime", 20000),
         };
 
         if (this.configuration.logging && this.configuration.logging.level) {

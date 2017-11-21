@@ -323,6 +323,7 @@ export function setupNamespace(request: any, automations: AutomationServer, invo
 }
 
 export function clearNamespace() {
+    logger.debug("Clearning up namespace");
     namespace.set({
         correlationId: null,
         teamId: null,
