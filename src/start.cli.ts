@@ -2,72 +2,85 @@
 // unified Atomist CLI
 
 import { LoggingConfig } from "./internal/util/logger";
-process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
 LoggingConfig.format = "cli";
+process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
 
 import * as yargs from "yargs";
 import {
     config,
+    extractArgs,
     gitInfo,
+    readVersion,
     run,
     start,
 } from "./cli/commands";
-import {
-    CommandInvocation,
-} from "./internal/invoker/Payload";
+import { CommandInvocation } from "./internal/invoker/Payload";
 
 const Package = "atomist";
 
 // tslint:disable-next-line:no-unused-expression
 yargs.completion("completion")
     .command(["execute <name>", "exec <name>", "cmd <name>"], "Run a command", ya => {
-        // positional is not yet supported in @types/yargs
-        return (ya as any).positional("name", {
-            describe: "Name of command to run",
-            required: true,
-        })
+        return (ya as any) // positional is not yet supported in @types/yargs
+            .positional("name", {
+                describe: "Name of command to run, command parameters NAME=VALUE can follow",
+                required: true,
+            })
             .option("change-dir", {
                 alias: "C",
-                describe: "Path to automation client project",
                 default: process.cwd(),
+                describe: "Path to automation client project",
+                type: "string",
             })
-            .boolean("compile")
-            .default("compile", true)
-            .describe("compile", "Run 'npm run compile'")
-            .boolean("install")
-            .default("install", true)
-            .describe("install", "Run 'npm install'");
+            .option("compile", {
+                default: true,
+                describe: "Run 'npm run compile' before running",
+                type: "boolean",
+            })
+            .option("install", {
+                default: true,
+                describe: "Run 'npm install' before running/compiling",
+                type: "boolean",
+            });
     }, argv => {
-        const args = extractArgs(argv);
+        const args = extractArgs(argv._);
         const ci: CommandInvocation = {
             name: argv.name,
             args,
         };
         try {
-            run(argv["change-dir"], ci, argv.install, argv.compile);
+            const status = run(argv["change-dir"], ci, argv.install, argv.compile);
+            process.exit(status);
         } catch (e) {
-            console.error(`${Package}: Error: ${e.message}`);
-            process.exit(1);
+            console.error(`${Package}: Unhandled Error: ${e.message}`);
+            process.exit(101);
         }
     })
     .command(["start", "st", "run"], "Start an automation client", ya => {
-        return ya.option("change-dir", {
-            alias: "C",
-            describe: "Path to automation client project",
-            default: process.cwd(),
-        })
-            .boolean("compile")
-            .default("compile", true)
-            .describe("compile", "Run 'npm run compile' before starting")
-            .boolean("install")
-            .default("install", true)
-            .describe("install", "Run 'npm install' before starting/compiling");
+        return ya
+            .option("change-dir", {
+                alias: "C",
+                default: process.cwd(),
+                describe: "Path to automation client project",
+                type: "string",
+            })
+            .option("compile", {
+                default: true,
+                describe: "Run 'npm run compile' before starting",
+                type: "boolean",
+            })
+            .option("install", {
+                default: true,
+                describe: "Run 'npm install' before starting/compiling",
+                type: "boolean",
+            });
     }, argv => {
         try {
-            start(argv["change-dir"], argv.install, argv.compile);
+            const status = start(argv["change-dir"], argv.install, argv.compile);
+            process.exit(status);
         } catch (e) {
-            console.error(`${Package}: Error: ${e.message}`);
-            process.exit(1);
+            console.error(`${Package}: Unhandled Error: ${e.message}`);
+            process.exit(101);
         }
 
     })
@@ -122,20 +135,3 @@ yargs.completion("completion")
     .demandCommand(1, "Missing command")
     .strict()
     .argv;
-
-function extractArgs(args) {
-    return Object.getOwnPropertyNames(args)
-        // .filter(k => !(k.includes("$") || k.includes("_")))
-        .map(k => {
-            return { name: k, value: args[k] };
-        });
-}
-
-function readVersion(): string {
-    try {
-        const pj = require("../package.json");
-        return `${pj.name} ${pj.version}`;
-    } catch (e) {
-        return "@atomist/automation-client 0.0.0";
-    }
-}
