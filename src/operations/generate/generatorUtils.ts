@@ -7,6 +7,7 @@ import { DefaultDirectoryManager } from "../../project/git/GitCommandGitProject"
 import { LocalProject } from "../../project/local/LocalProject";
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
 import { Project } from "../../project/Project";
+import { TmpDirectoryManager } from "../../spi/clone/tmpDirectoryManager";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { RepoId } from "../common/RepoId";
 import { AnyProjectEditor, ProjectEditor, toEditor } from "../edit/projectEditor";
@@ -41,21 +42,21 @@ export function generate(startingPoint: Promise<Project> | Project,
                          persist: ProjectPersister,
                          targetId: RepoId,
                          params?: object): Promise<ActionResult<Project>> {
-    const parentDir = DefaultDirectoryManager.opts.baseDir;
-    logger.debug("Independent copy of seed will be at %s/%s: owner/repo=%s:%s",
-        parentDir, targetId.repo, targetId.owner, targetId.repo);
-    return fs.remove(parentDir + "/" + targetId.repo)
-        .then(() => Promise.resolve(startingPoint)
-            .then(seed =>
-                // Make a copy that we can work on
-                NodeFsLocalProject.copy(seed, parentDir, targetId.repo))
-            // Let's be sure we didn't inherit any old git stuff
-            .then(proj => proj.deleteDirectory(".git"))
-            .then(independentCopy => toEditor<object>(editor)(independentCopy, ctx, params))
-            .then(r => r.target)
-            .then(populated => {
-                logger.debug("Persisting repo at [%s]: owner/repo=%s:%s",
-                    (populated as LocalProject).baseDir, targetId.owner, targetId.repo);
-                return persist(populated, credentials, targetId);
-            }));
+
+    return TmpDirectoryManager.directoryFor(targetId.owner, targetId.repo, "master", {})
+        .then(newRepoDirectoryInfo => {
+            return Promise.resolve(startingPoint) // it might be a promise
+                .then(seed =>
+                    // Make a copy that we can work on
+                    NodeFsLocalProject.copy(seed, newRepoDirectoryInfo.path, newRepoDirectoryInfo.release))
+                // Let's be sure we didn't inherit any old git stuff
+                .then(independentCopy => independentCopy.deleteDirectory(".git"))
+                .then(independentCopy => toEditor<object>(editor)(independentCopy, ctx, params))
+                .then(r => r.target)
+                .then(populated => {
+                    logger.debug("Persisting repo at [%s]: owner/repo=%s:%s",
+                        (populated as LocalProject).baseDir, targetId.owner, targetId.repo);
+                    return persist(populated, credentials, targetId);
+                });
+        });
 }

@@ -1,7 +1,8 @@
-
 import * as tmp from "tmp-promise";
 
 import { CloneDirectoryInfo, CloneOptions, DirectoryManager } from "./DirectoryManager";
+
+import * as fs from "fs-extra";
 
 /**
  * Uses tmp-promise (built on tmp) to create clean temporary directories
@@ -10,14 +11,27 @@ import { CloneDirectoryInfo, CloneOptions, DirectoryManager } from "./DirectoryM
 export const TmpDirectoryManager: DirectoryManager = {
 
     directoryFor(owner: string, repo: string, branch: string, opts: CloneOptions): Promise<CloneDirectoryInfo> {
-        return tmp.dir({keep: opts.keep})// the lack of typings here causes lack of typechecking in this function
+        return tmp.dir({ keep: opts.keep })// the lack of typings here causes lack of typechecking in this function
             .then(fromTmp => ({
                 ...fromTmp,
                 type: "empty-directory",
-                release: () => Promise.resolve(), // opportunity: delete directory here
+                release: () => cleanup(fromTmp.path, opts.keep),
                 invalidate: () => Promise.resolve(), // and here
                 transient: true,
                 provenance: "created with tmp, keep = " + opts.keep,
             }));
     },
 };
+
+/*
+ * If !keep, attempts to delete directory. Swallows errors
+ * because it is not that important.
+ */
+function cleanup(path: string, keep: boolean): Promise<void> {
+    if (keep) {
+        return Promise.resolve();
+    } else {
+        return fs.remove(path)
+            .then(() => Promise.resolve(), err => Promise.resolve());
+    }
+}
