@@ -81,6 +81,7 @@ function parametersFromInstance(r: any, prefix: string = ""): Parameter[] {
     const directParams = directParameters(r, prefix);
     const nestedParameters = _.flatten(Object.keys(r)
         .map(key => [key, r[key]])
+        .filter(nestedFieldInfo => !!nestedFieldInfo[1])
         .filter(nestedFieldInfo => typeof nestedFieldInfo[1] === "object")
         .map(nestedFieldInfo => parametersFromInstance(nestedFieldInfo[1], prefix + nestedFieldInfo[0] + ".")),
     );
@@ -94,7 +95,7 @@ function parametersFromInstance(r: any, prefix: string = ""): Parameter[] {
 }
 
 function directParameters(r: any, prefix: string) {
-    return r.__parameters ? (r.__parameters as decorators.Parameter[]).map(p => {
+    return !!r && r.__parameters ? (r.__parameters as decorators.Parameter[]).map(p => {
         const nameToUse = prefix + p.name;
         const parameter: Parameter = {
             name: nameToUse,
@@ -122,9 +123,10 @@ function directParameters(r: any, prefix: string) {
 }
 
 function secretsMetadataFromInstance(r: any, prefix: string = ""): SecretDeclaration[] {
-    const directSecrets = r.__secrets ? r.__secrets.map(s => ({name: prefix + s.name, path: s.path })) : [];
+    const directSecrets = !!r && r.__secrets ? r.__secrets.map(s => ({name: prefix + s.name, path: s.path })) : [];
     const nestedParameters = _.flatten(Object.keys(r)
         .map(key => [key, r[key]])
+        .filter(nestedFieldInfo => !!nestedFieldInfo[1])
         .filter(nestedFieldInfo => typeof nestedFieldInfo[1] === "object")
         .map(nestedFieldInfo => secretsMetadataFromInstance(nestedFieldInfo[1], prefix + nestedFieldInfo[0] + ".")),
     );
@@ -132,10 +134,11 @@ function secretsMetadataFromInstance(r: any, prefix: string = ""): SecretDeclara
 }
 
 function mappedParameterMetadataFromInstance(r: any, prefix: string = ""): MappedParameterDeclaration[] {
-    const directMappedParams = r.__mappedParameters ? r.__mappedParameters.map(mp =>
+    const directMappedParams = !!r && r.__mappedParameters ? r.__mappedParameters.map(mp =>
         ({local_key: prefix + mp.localKey, foreign_key: mp.foreignKey})) : [];
     const nestedParameters = _.flatten(Object.keys(r)
         .map(key => [key, r[key]])
+        .filter(nestedFieldInfo => !!nestedFieldInfo[1])
         .filter(nestedFieldInfo => typeof nestedFieldInfo[1] === "object")
         .map(nestedFieldInfo => mappedParameterMetadataFromInstance(nestedFieldInfo[1], prefix + nestedFieldInfo[0] + ".")),
     );
