@@ -112,6 +112,8 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                 ses.run(() => {
                     namespace.set(msg.cls);
 
+                    logger.debug("Received incoming message from worker: %j", msg);
+
                     const invocationId = namespace.get().invocationId;
                     if (msg.type === "message") {
 

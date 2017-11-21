@@ -33,6 +33,6 @@ export function broadcast(message: MasterMessage | MasterManagementMessage) {
     }
 }
 
-export function workerSend(message: WorkerMessage) {
-    process.send(message);
+export function workerSend(message: WorkerMessage): Promise<any> {
+    return Promise.resolve(process.send(message));
 }

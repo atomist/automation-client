@@ -87,19 +87,18 @@ class ClusterWorkerMessageClient extends MessageClientSupport {
 
     protected doSend(msg: string | SlackMessage, userNames: string | string[],
                      channelNames: string | string[], options?: MessageOptions): Promise<any> {
-        workerSend({
-            type: "message",
-            cls: {
-                ...namespace.get(),
-            },
-            data: {
-                message: msg,
-                userNames,
-                channelNames,
-                options,
-            },
-        });
-        return Promise.resolve();
+        return workerSend({
+                type: "message",
+                cls: {
+                    ...namespace.get(),
+                },
+                data: {
+                    message: msg,
+                    userNames,
+                    channelNames,
+                    options,
+                },
+            });
     }
 }
 
