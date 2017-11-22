@@ -21,5 +21,7 @@ describe("function style metadata reading", () => {
         assert(md.secrets.length === 1);
         assert(md.secrets[0].name === "someSecret");
         assert(md.secrets[0].path === "atomist://some_secret");
+        assert.deepEqual(md.intent, ["add agent"]);
+        assert.deepEqual(md.tags.map(t => t.name), [ "atomist", "spring", "agent" ]);
     });
 });

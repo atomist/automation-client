@@ -43,12 +43,12 @@ export function editorHandler<PARAMS>(pe: AnyProjectEditor,
                                       factory: ParametersConstructor<PARAMS>,
                                       name: string,
                                       details: Partial<EditorCommandDetails> = {}): HandleCommand {
-    const detailsToUse = {
+    const detailsToUse: EditorCommandDetails = {
         ...defaultDetails(name),
-        details,
+            ...details,
     };
     return commandHandlerFrom(handleEditOneOrMany(pe, detailsToUse), factory, name,
-        details.description, detailsToUse.intent, detailsToUse.tags);
+        detailsToUse.description, detailsToUse.intent, detailsToUse.tags);
 }
 
 /**
