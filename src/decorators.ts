@@ -76,6 +76,7 @@ export function Tags(...tags: string[]) {
 
 export abstract class MappedParameters {
     public static readonly GitHubOwner: string = "atomist://github/repository/owner";
+    public static readonly GitHubOwnerWithUser: string = "atomist://github/repository/owner?user=true";
     public static readonly GitHubRepository: string = "atomist://github/repository";
     public static readonly GitHubWebHookUrl: string = "atomist://github_webhook_url";
     public static readonly GitHubUrl: string = "atomist://github_url";
