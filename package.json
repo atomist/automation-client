@@ -75,6 +75,7 @@
     "stream-spigot": "^3.0.6",
     "tmp-promise": "^1.0.4",
     "utf8": "^2.1.2",
+    "uuid": "^3.1.0",
     "winston": "^2.3.1",
     "ws": "^3.3.1",
     "yargs": "^10.0.3"
@@ -105,6 +106,7 @@
     "@types/power-assert": "^1.4.29",
     "@types/shelljs": "^0.7.6",
     "@types/utf8": "^2.1.6",
+    "@types/uuid": "^3.4.3",
     "@types/winston": "^2.3.6",
     "@types/yargs": "^8.0.2",
     "espower-typescript": "^8.1.2",
