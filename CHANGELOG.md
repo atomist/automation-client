@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Bug where a `SimpleProjectEditor` that did not return an `EditResult` and made
     no changes would fail due to unsuccessful git commit
+-   Add missing team ID to BuildableAutomationServer GraphQL endpoint
 
 ## [0.3.3][] - 2017-11-20
 
