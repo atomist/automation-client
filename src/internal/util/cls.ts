@@ -1,4 +1,8 @@
-import { createNamespace, getNamespace, Namespace } from "continuation-local-storage";
+import {
+    createNamespace,
+    getNamespace,
+    Namespace,
+} from "continuation-local-storage";
 
 // create the local storage namespace
 createNamespace("automation-client");
