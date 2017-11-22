@@ -16,8 +16,12 @@ The automation-client provide the ability to run a client that
 connects to the Atomist API so it can receive and act on commands and
 events.
 
+See [www.atomist.com][atomist] and [docs.atomist.com][docs] for more
+detailed information.
+
 [node]: https://nodejs.org/ (Node.js)
 [automation-client]: https://www.npmjs.com/package/@atomist/automation-client
+[docs]: https://docs.atomist.com/ (Atomist Documentation)
 
 ## Concepts
 
@@ -233,7 +237,7 @@ There are several ways you can run your automation-client and have it connect to
 To start up the client locally and have it listen to incoming events, just run:
 
 ```
-$ npm start
+$ atomist start
 ```
 
 ### Pushing to Cloud Foundry
@@ -276,11 +280,6 @@ Now you're ready to `cf push` your automation server to Cloud Foundry:
 ```
 $ cf push
 ```
-
-## Dashboard (experimental)
-
-The `automation-client` serves up a simple dashboard and GraphQL browser to explore data and author queries. When
-client is running head over to `http://localhost:2866/` or `http://localhost:2866/graphql`.
 
 ## REST APIs
 
@@ -390,10 +389,10 @@ If you find a problem, please create an [issue][].
 
 You will need to install [node][] to build and test this project.
 
-To run tests, define a GITHUB_TOKEN to any valid token that has repo access. The tests 
+To run tests, define a GITHUB_TOKEN to any valid token that has repo access. The tests
 will create and delete repositories.
 
-Define GITHUB_VISIBILITY=public if you want these to be public; default is private. 
+Define GITHUB_VISIBILITY=public if you want these to be public; default is private.
 You'll get a 422 response from repo creation if you don't pay for private repos.
 
 ### Build and Test
@@ -409,7 +408,7 @@ Command | Reason
 
 ### Release
 
-To create a new release of the project, update the version in package.json 
+To create a new release of the project, update the version in package.json
 and then push a tag for the version. The version must be of the form
 `M.N.P` where `M`, `N`, and `P` are integers that form the next
 appropriate [semantic version][semver] for release.  For
