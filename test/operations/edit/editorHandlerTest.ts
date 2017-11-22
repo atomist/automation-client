@@ -2,6 +2,7 @@ import "mocha";
 
 import * as assert from "power-assert";
 import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
+import { fromListRepoFinder } from "../../../src/operations/common/fromProjectList";
 import { BaseEditorParameters } from "../../../src/operations/edit/BaseEditorParameters";
 import { editorHandler } from "../../../src/operations/edit/editorToCommand";
 import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
@@ -18,10 +19,12 @@ describe("editorHandler", () => {
         done();
     });
 
-    /*
-    it("should use no op editor", done => {
-        const h = noDistinctParamsEditorHandler(p => Promise.resolve(p),
-            "editor");
+    it("should use no op editor against no repos", done => {
+        const h = editorHandler(p => Promise.resolve(p),
+            BaseEditorParameters,
+            "editor", {
+                repoFinder: fromListRepoFinder([]),
+            });
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
         s.registerCommandHandler(() => h);
         done();
@@ -36,6 +39,5 @@ describe("editorHandler", () => {
         })
             .then(_ => done());
     });
-    */
 
 });

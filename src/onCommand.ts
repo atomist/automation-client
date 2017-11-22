@@ -89,12 +89,7 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
         return new this.parametersFactory();
     }
 
-    public handle(ctx: HandlerContext, params: P): Promise<HandlerResult> {
-        const handlerResult = this.h(ctx, params);
-        if (!handlerResult) {
-            return Promise.reject(
-                `Error: Function Handler '${this.name}' returned null or undefined: Probably a user coding error`);
-        }
-        return handlerResult;
+    public handle(ctx: HandlerContext, params: P) {
+       return this.h(ctx, params);
     }
 }
