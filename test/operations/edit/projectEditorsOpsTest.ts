@@ -52,7 +52,7 @@ describe("editor chaining", () => {
         const editorChain = chainEditors(editor, NoOpEditor);
         editorChain(project, null)
             .then(r => {
-                assert(r.edited);
+                assert(r.edited === undefined);
                 assert(!!project.findFileSync("thing"));
                 done();
             }).catch(done);
@@ -111,7 +111,7 @@ describe("editor chaining", () => {
         const editorChain = chainEditors(projectFunction, NoOpEditor);
         editorChain(project, null)
             .then(r => {
-                assert(r.edited);
+                assert(r.edited === undefined);
                 done();
             }).catch(done);
     });
@@ -124,7 +124,7 @@ describe("editor chaining", () => {
         const editorChain = chainEditors(projectFunction, NoOpEditor, (p: Project) => Promise.resolve(p));
         editorChain(project, null)
             .then(r => {
-                assert(r.edited);
+                assert(r.edited === undefined);
                 done();
             }).catch(done);
     });

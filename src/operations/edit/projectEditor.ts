@@ -22,9 +22,10 @@ export type AnyProjectEditor<P = undefined> = ProjectEditor<P> | SimpleProjectEd
 export interface EditResult<P extends Project = Project> extends ActionResult<P> {
 
     /**
-     * Whether or not this project was edited
+     * Whether or not this project was edited.
+     * Undefined if we don't know, as not all editors keep track of their doings.
      */
-    readonly edited: boolean;
+    readonly edited?: boolean;
 }
 
 export function toEditor<P = undefined>(ed: (SimpleProjectEditor<P> | ProjectEditor<P>)): ProjectEditor<P> {
@@ -33,12 +34,12 @@ export function toEditor<P = undefined>(ed: (SimpleProjectEditor<P> | ProjectEdi
             .then(r =>
                 // See what it returns
                 isProject(r) ?
-                    successfulEdit(r) :
+                    successfulEdit(r, undefined) :
                     r as EditResult)
             .catch(err => failedEdit(proj, err));
 }
 
-export function successfulEdit<P extends Project>(p: P, edited: boolean = true): EditResult<P> {
+export function successfulEdit<P extends Project>(p: P, edited: boolean): EditResult<P> {
     return {
         target: p,
         success: true,
@@ -56,5 +57,5 @@ export function failedEdit<P extends Project>(p: P, error: Error, edited: boolea
 }
 
 export function flushAndSucceed<P extends Project>(p: P): Promise<EditResult<P>> {
-    return p.flush().then(successfulEdit);
+    return p.flush().then(pf => successfulEdit(pf, undefined));
 }
