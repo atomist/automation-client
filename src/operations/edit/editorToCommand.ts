@@ -47,7 +47,8 @@ export function editorHandler<PARAMS>(pe: AnyProjectEditor,
         ...defaultDetails(name),
         details,
     };
-    return commandHandlerFrom(handleEditOneOrMany(pe, detailsToUse), factory, name);
+    return commandHandlerFrom(handleEditOneOrMany(pe, detailsToUse), factory, name,
+        details.description, detailsToUse.intent, detailsToUse.tags);
 }
 
 /**
