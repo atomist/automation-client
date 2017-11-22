@@ -207,16 +207,11 @@ function main () {
         return 1
     fi
 
-    if [[ $TRAVIS_PULL_REQUEST != false ]] ; then
-        if [[ $TRAVIS_PULL_REQUEST_BRANCH != master ]]; then
-            if ! npm-publish-timestamp "$TRAVIS_PULL_REQUEST_BRANCH"; then
-                err "failed to publish PR build"
-                return 1
-            fi
-        else
-            msg "will not publish PR from $TRAVIS_PULL_REQUEST_BRANCH"
-        fi
-    elif [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+(-(m|rc)\.[0-9]+)?$ ]]; then
+    if ! npm-publish-timestamp "$TRAVIS_PULL_REQUEST_BRANCH"; then
+        err "failed to publish PR build"
+        return 1
+    fi
+    if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+(-(m|rc)\.[0-9]+)?$ ]]; then
         if ! npm-publish --access public; then
             err "failed to publish tag build: $TRAVIS_TAG"
             return 1
