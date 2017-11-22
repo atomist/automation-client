@@ -21,11 +21,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     editor didn't keep track of whether it made changes. This is the norm for simple functions
     taking `Project`.
 -   Moved `@types/graphql` to dependencies since its types are exported
+-   Command parameters now provided as PARAM=VALUE on `exec` command line
 
 ### Fixed
 
 -   Bug where a `SimpleProjectEditor` that did not return an `EditResult` and made
     no changes would fail due to unsuccessful git commit
+-   Add missing team ID to BuildableAutomationServer GraphQL endpoint
 
 ## [0.3.3][] - 2017-11-20
 
