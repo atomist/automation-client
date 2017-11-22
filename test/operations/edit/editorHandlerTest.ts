@@ -1,15 +1,16 @@
-
 import "mocha";
 
 import * as assert from "power-assert";
 import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
-import { noDistinctParamsEditorHandler } from "../../../src/operations/edit/editorToCommand";
+import { BaseEditorParameters } from "../../../src/operations/edit/BaseEditorParameters";
+import { editorHandler } from "../../../src/operations/edit/editorToCommand";
 import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
 
 describe("editorHandler", () => {
 
     it("should register editor", done => {
-        const h = noDistinctParamsEditorHandler(p => Promise.resolve(p),
+        const h = editorHandler(p => Promise.resolve(p),
+            BaseEditorParameters,
             "editor");
         assert(metadataFromInstance(h).name === "editor");
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});

@@ -1,7 +1,4 @@
-/**
- * If owner and repo are required, edit just one repo. Otherwise edit all repos
- * in the present team
- */
+
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { commandHandlerFrom, OnCommand, ParametersConstructor } from "../../onCommand";
@@ -10,16 +7,6 @@ import { BaseEditorParameters } from "./BaseEditorParameters";
 import { editAll, editOne } from "./editAll";
 import { EditMode, PullRequest } from "./editModes";
 import { AnyProjectEditor } from "./projectEditor";
-
-function handleEditOneOrMany<PARAMS extends BaseEditorParameters>(pe: AnyProjectEditor, em: EditMode): OnCommand<PARAMS> {
-    return (ctx: HandlerContext, parameters: PARAMS) => {
-        const credentials = {token: parameters.githubToken};
-        if (!!parameters.owner && !!parameters.repo) {
-            return editOne(ctx, credentials, pe, em, new SimpleRepoId(parameters.owner, parameters.repo));
-        }
-        return editAll(ctx, credentials, pe, em);
-    };
-}
 
 /**
  * Create a handle function that edits one or many repos, following BaseEditorParameters
@@ -41,18 +28,15 @@ export function editorHandler<PARAMS>(pe: AnyProjectEditor,
 }
 
 /**
- * Return a command handler that will run the given editor over either one or many repos
- * @param {ProjectEditor} pe
- * @param {EditMode} em
- * @param {string} name
- * @param {string} description
- * @param {string | string[]} intent
- * @param {string | string[]} tags
- * @return {HandleCommand}
+ * If owner and repo are required, edit just one repo. Otherwise edit all repos
+ * in the present team
  */
-export function noDistinctParamsEditorHandler(pe: AnyProjectEditor,
-                                              name: string, description: string = name,
-                                              em: EditMode = new PullRequest(name, description),
-                                              intent?: string | string[], tags?: string | string[]): HandleCommand {
-    return editorHandler(pe, BaseEditorParameters, name, description, em, intent, tags);
+function handleEditOneOrMany<PARAMS extends BaseEditorParameters>(pe: AnyProjectEditor, em: EditMode): OnCommand<PARAMS> {
+    return (ctx: HandlerContext, parameters: PARAMS) => {
+        const credentials = {token: parameters.githubToken};
+        if (!!parameters.owner && !!parameters.repo) {
+            return editOne(ctx, credentials, pe, em, new SimpleRepoId(parameters.owner, parameters.repo));
+        }
+        return editAll(ctx, credentials, pe, em);
+    };
 }
