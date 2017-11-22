@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.3.4...HEAD
 
+### Changed
+
+-   Moved `@types/continuation-local-storage` to dependencies since it
+    has exported types
+-   Added more types to default exports in index.ts
+
 ## [0.3.4][] - 2017-11-22
 
 [0.3.4]: https://github.com/atomist/automation-client-ts/compare/0.3.3...0.3.4

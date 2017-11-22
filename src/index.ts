@@ -29,3 +29,8 @@ export {
     Success,
     SuccessPromise,
 } from "./HandlerResult";
+
+import * as GraphQL from "./graph/graphQL";
+export { GraphQL };
+
+export { logger } from "./internal/util/logger";
