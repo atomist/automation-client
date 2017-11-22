@@ -3,6 +3,7 @@ import * as stringify from "json-stringify-safe";
 import * as promiseRetry from "promise-retry";
 import * as serializeError from "serialize-error";
 import * as WebSocket from "ws";
+import { Deferred } from "../../util/Deferred";
 import { logger } from "../../util/logger";
 import Timer = NodeJS.Timer;
 import { registerShutdownHook } from "../../util/shutdown";
@@ -34,13 +35,27 @@ export class WebSocketClient {
 
                 registerShutdownHook(() => {
                     reconnect = false;
-                    ws.close();
-                    logger.info("Closing WebSocket connection");
-                    return Promise.resolve(0);
+                    logger.info("Initiating WebSocket connection shutdown");
+
+                    // Send the control message to orderly stop this client
+                    sendMessage({ control: { name: "stop-sending" }}, ws, false);
+
+                    // Now wait for configured timeout to let in-flight messages finish processing
+                    const deferred = new Deferred<number>();
+                    setTimeout(() => {
+                        ws.close();
+                        logger.info("Closing WebSocket connection");
+                        deferred.resolve(0);
+                    }, this.options.gracePeriod);
+
+                    return deferred.promise
+                        .then(code => {
+                            return code;
+                        });
                 });
 
             }).catch(() => {
-                logger.error("Persistent error registering with Atomist. Exiting");
+                logger.error("Persistent error registering with Atomist. Exiting...");
                 process.exit(1);
             });
     }
@@ -98,6 +113,8 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
                     sendMessage({ pong: request.ping }, this, false);
                 } else if (isPong(request)) {
                     pong = request.pong;
+                } else if (isControl(request)) {
+                    logger.info("WebSocket connection stopped listening for incoming messages");
                 } else {
                     if (isCommandIncoming(request)) {
                         invokeCommandHandler(request);
@@ -206,7 +223,7 @@ export interface WebSocketClientOptions {
     registrationUrl: string;
     graphUrl: string;
     token: string;
-    waitTime: number;
+    gracePeriod: number;
 }
 
 function isPing(a: any): a is Ping {
@@ -217,10 +234,20 @@ function isPong(a: any): a is Pong {
     return a.pong != null;
 }
 
+function isControl(a: any): a is Control {
+    return a.control != null;
+}
+
 interface Ping {
     ping: string;
 }
 
 interface Pong {
     pong: string;
+}
+
+interface Control {
+    control: {
+        name: string;
+    };
 }

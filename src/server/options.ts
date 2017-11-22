@@ -52,7 +52,7 @@ export interface RunOptions {
     };
     ws?: {
         enabled: boolean,
-        waitTime?: number,
+        gracePeriod?: number,
     };
     endpoints?: {
         graphql?: string,
