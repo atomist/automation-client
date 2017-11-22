@@ -1,5 +1,6 @@
 
 import { Contextual } from "./internal/invoker/Payload";
+import { AutomationContext } from "./internal/util/cls";
 import { GraphClient } from "./spi/graph/GraphClient";
 import { MessageClient } from "./spi/message/MessageClient";
 
@@ -18,4 +19,9 @@ export interface HandlerContext extends Contextual {
      */
     messageClient: MessageClient;
 
+}
+
+export interface AutomationContextAware {
+
+    context: AutomationContext;
 }

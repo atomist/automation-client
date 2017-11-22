@@ -1,11 +1,13 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import * as cluster from "cluster";
 import * as stringify from "json-stringify-safe";
-import * as serializeError from "serialize-error";
 import * as WebSocket from "ws";
 import * as global from "../../../globals";
 import { EventFired } from "../../../HandleEvent";
-import { HandlerContext } from "../../../HandlerContext";
+import {
+    AutomationContextAware,
+    HandlerContext,
+} from "../../../HandlerContext";
 import { HandlerResult } from "../../../HandlerResult";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
@@ -21,7 +23,6 @@ import {
 import { logger } from "../../util/logger";
 import {
     AbstractRequestProcessor,
-    clearNamespace,
 } from "../AbstractRequestProcessor";
 import {
     CommandIncoming,
@@ -39,7 +40,11 @@ import {
     RegistrationConfirmation,
     WebSocketRequestProcessor,
 } from "../websocket/WebSocketRequestProcessor";
-import { broadcast, MasterMessage, WorkerMessage } from "./messages";
+import {
+    broadcast,
+    MasterMessage,
+    WorkerMessage,
+} from "./messages";
 
 /**
  * A RequestProcessor that delegates to Node.JS Cluster workers to do the actual
@@ -77,6 +82,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         broadcast({
             type: "registration",
             registration: this.registration,
+            context: null,
         });
     }
 
@@ -96,6 +102,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         const listeners = this.listeners;
         const commands = this.commands;
         const events = this.events;
+        const clearNamespace = this.clearNamespace;
 
         function attachEvents(worker: cluster.Worker, deferred: Deferred<any>) {
 
@@ -110,9 +117,9 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
                 const ses = namespace.init();
                 ses.run(() => {
-                    namespace.set(msg.cls);
+                    namespace.set(msg.context);
 
-                    logger.debug("Received incoming message from worker '%s': %j", worker.id, msg);
+                    logger.debug("Received '%s' message from worker '%s': %j", msg.type, worker.id, msg.context);
 
                     const invocationId = namespace.get().invocationId;
                     if (msg.type === "message") {
@@ -123,7 +130,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                         } else if (events.has(invocationId)) {
                             messageClient = events.get(invocationId).context.messageClient;
                         } else {
-                            logger.warn("Can't handle message from worker due to missing messageClient");
+                            logger.error("Can't handle message from worker due to missing messageClient");
                             clearNamespace();
                             return;
                         }
@@ -140,45 +147,56 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                             messageClient.respond(msg.data.message as string | SlackMessage, msg.data.options)
                                 .then(clearNamespace, clearNamespace);
                         }
-                        return;
-                    }
-
-                    try {
-                        if (msg.type === "status") {
-                            sendMessage(msg.data, ws());
-                        } else if (msg.type === "command_success") {
-                            listeners.forEach(l => l.commandSuccessful(msg.event as CommandInvocation,
-                                null, msg.data as HandlerResult));
-                            if (commands.has(invocationId)) {
-                                commands.get(invocationId).result.resolve(msg.data as HandlerResult);
-                                commands.delete(invocationId);
-                            }
-                        } else if (msg.type === "command_failure") {
-                            listeners.forEach(l => l.commandFailed(msg.event as CommandInvocation,
-                                null, msg.data));
-                            if (commands.has(invocationId)) {
-                                commands.get(invocationId).result.resolve(msg.data as HandlerResult);
-                                commands.delete(invocationId);
-                            }
-                        } else if (msg.type === "event_success") {
-                            listeners.forEach(l => l.eventSuccessful(msg.event as EventFired<any>,
-                                null, msg.data as HandlerResult[]));
-                            if (events.has(invocationId)) {
-                                events.get(invocationId).result.resolve(msg.data as HandlerResult[]);
-                                events.delete(invocationId);
-                            }
-                        } else if (msg.type === "event_failure") {
-                            listeners.forEach(l => l.eventFailed(msg.event as EventFired<any>,
-                                null, msg.data));
-                            if (events.has(invocationId)) {
-                                events.get(invocationId).result.resolve(msg.data as HandlerResult[]);
-                                events.delete(invocationId);
-                            }
-                        }
-                    } catch (err) {
-                        logger.error("Error occurred handling worker message: %s", serializeError(err));
-                    } finally {
-                        clearNamespace();
+                    } else if (msg.type === "status") {
+                        sendMessage(msg.data, ws());
+                    } else if (msg.type === "command_success") {
+                        listeners.map(l => () => l.commandSuccessful(msg.event as CommandInvocation,
+                            null, msg.data as HandlerResult))
+                            .reduce((p, f) => p.then(f), Promise.resolve())
+                            .then(() => {
+                                if (commands.has(invocationId)) {
+                                    commands.get(invocationId).result.resolve(msg.data as HandlerResult);
+                                    commands.delete(invocationId);
+                                }
+                                clearNamespace();
+                            })
+                            .catch(clearNamespace);
+                    } else if (msg.type === "command_failure") {
+                        listeners.map(l => () => l.commandFailed(msg.event as CommandInvocation,
+                            null, msg.data as HandlerResult))
+                            .reduce((p, f) => p.then(f), Promise.resolve())
+                            .then(() => {
+                                if (commands.has(invocationId)) {
+                                    commands.get(invocationId).result.resolve(msg.data as HandlerResult);
+                                    commands.delete(invocationId);
+                                }
+                                clearNamespace();
+                            })
+                            .catch(clearNamespace);
+                    } else if (msg.type === "event_success") {
+                        listeners.map(l => () => l.eventSuccessful(msg.event as EventFired<any>,
+                            null, msg.data as HandlerResult[]))
+                            .reduce((p, f) => p.then(f), Promise.resolve())
+                            .then(() => {
+                                if (events.has(invocationId)) {
+                                    events.get(invocationId).result.resolve(msg.data as HandlerResult[]);
+                                    events.delete(invocationId);
+                                }
+                                clearNamespace();
+                            })
+                            .catch(clearNamespace);
+                    } else if (msg.type === "event_failure") {
+                        listeners.map(l => () => l.eventFailed(msg.event as EventFired<any>,
+                            null, msg.data as HandlerResult[]))
+                            .reduce((p, f) => p.then(f), Promise.resolve())
+                            .then(() => {
+                                if (events.has(invocationId)) {
+                                    events.get(invocationId).result.resolve(msg.data as HandlerResult[]);
+                                    events.delete(invocationId);
+                                }
+                                clearNamespace();
+                            })
+                            .catch(clearNamespace);
                     }
                 });
             });
@@ -209,20 +227,18 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
     }
 
     protected invokeCommand(ci: CommandInvocation,
-                            ctx: HandlerContext,
+                            ctx: HandlerContext & AutomationContextAware,
                             command: CommandIncoming,
                             callback: (result: Promise<HandlerResult>) => void) {
         const message: MasterMessage = {
             type: "command",
             registration: this.registration,
-            cls: {
-                ...namespace.get(),
-            },
+            context: ctx.context,
             data: command,
         };
 
         const dispatched = new Dispatched(new Deferred<HandlerResult>(), ctx);
-        this.commands.set(namespace.get().invocationId, dispatched);
+        this.commands.set(ctx.context.invocationId, dispatched);
         const worker = this.assignWorker();
         logger.debug("Incoming command '%s' dispatching to worker '%s'", ci.name, worker.id);
         worker.send(message);
@@ -230,28 +246,28 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
     }
 
     protected invokeEvent(ef: EventFired<any>,
-                          ctx: HandlerContext,
+                          ctx: HandlerContext & AutomationContextAware,
                           event: EventIncoming,
                           callback: (results: Promise<HandlerResult[]>) => void) {
         const message: MasterMessage = {
             type: "event",
             registration: this.registration,
-            cls: {
-                ...namespace.get(),
-            },
+            context: ctx.context,
             data: event,
         };
 
         const dispatched = new Dispatched(new Deferred<HandlerResult[]>(), ctx);
-        this.events.set(namespace.get().invocationId, dispatched);
+        this.events.set(ctx.context.invocationId, dispatched);
         const worker = this.assignWorker();
         logger.debug("Incoming event '%s' dispatching to worker '%s'", ef.extensions.operationName, worker.id);
         worker.send(message);
         callback(dispatched.result.promise);
     }
 
-    protected sendMessage(payload: any) {
-        sendMessage(payload, this.webSocket);
+    protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {
+        return Promise.resolve(
+            sendMessage(payload, this.webSocket),
+        );
     }
 
     protected createGraphClient(event: CommandIncoming | EventIncoming): GraphClient {

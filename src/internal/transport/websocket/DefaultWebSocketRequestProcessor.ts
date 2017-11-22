@@ -1,7 +1,10 @@
 import * as stringify from "json-stringify-safe";
 import * as WebSocket from "ws";
 import * as global from "../../../globals";
-import { ApolloGraphClient } from "../../../graph/ApolloGraphClient";
+import {
+    AutomationContextAware,
+    HandlerContext,
+} from "../../../HandlerContext";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
@@ -66,8 +69,10 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
         this.registration = null;
     }
 
-    protected sendMessage(payload: any) {
-        sendMessage(payload, this.webSocket);
+    protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {
+        return Promise.resolve(
+            sendMessage(payload, this.webSocket),
+        );
     }
 
     protected createGraphClient(event: CommandIncoming | EventIncoming): GraphClient {

@@ -10,6 +10,7 @@ import { CircleCIPayload } from "./event/circleIngester";
 import { GitLabPushPayload } from "./event/gitLabIngester";
 import { GitLabPush } from "./event/GitLabPush";
 import { HelloCircle } from "./event/HelloCircle";
+import { initMemoryMonitoring } from "../src/internal/util/memory";
 
 export const GitHubToken = process.env.GITHUB_TOKEN || "<please set GITHUB_TOKEN env variable>";
 
@@ -79,7 +80,7 @@ export const configuration: Configuration = {
                 password: "test",
             },
             bearer: {
-                enabled: true,
+                enabled: false,
                 org: "atomisthq",
             },
             github: {
@@ -104,7 +105,9 @@ export const configuration: Configuration = {
         teamId: "T1L0VDKJP",
     },
     cluster: {
-        enabled: false,
+        enabled: true,
         workers: 2,
     },
 };
+
+initMemoryMonitoring();

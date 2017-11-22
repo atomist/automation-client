@@ -7,7 +7,7 @@ import { RegistrationConfirmation } from "../websocket/WebSocketRequestProcessor
 export interface MasterMessage {
     type: "registration" | "event" | "command";
     registration: RegistrationConfirmation;
-    cls?: AutomationContext;
+    context: AutomationContext;
     data?: any;
 }
 
@@ -18,7 +18,7 @@ export interface MasterManagementMessage {
 export interface WorkerMessage {
     type: "online" | "status" | "message" | "command_success" | "command_failure" | "event_success" | "event_failure";
     event?: EventFired<any> | CommandInvocation;
-    cls?: AutomationContext;
+    context: AutomationContext;
     data?: any;
 }
 

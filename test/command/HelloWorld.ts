@@ -30,13 +30,14 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
             }],
         };
 
-        let counter = 0;
+        /*let counter = 0;
         while (counter < 100000) {
             counter++;
-        }
+        }*/
 
+        // { fetchPolicy: "network-only" };
         return ctx.graphClient.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
-            {teamId: "T1L0VDKJP", offset: 0}, { fetchPolicy: "network-only" })
+            {teamId: "T1L0VDKJP", offset: 0}, {})
             .then(() => {
                 return ctx.messageClient.addressUsers(msg, "cd");
             })

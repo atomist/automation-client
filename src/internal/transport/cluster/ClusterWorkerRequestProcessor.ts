@@ -1,7 +1,10 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import * as stringify from "json-stringify-safe";
 import { EventFired } from "../../../HandleEvent";
-import { HandlerContext } from "../../../HandlerContext";
+import {
+    AutomationContextAware,
+    HandlerContext,
+} from "../../../HandlerContext";
 import { HandlerResult } from "../../../HandlerResult";
 import {
     AutomationEventListener,
@@ -15,20 +18,22 @@ import {
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { CommandInvocation } from "../../invoker/Payload";
-import * as namespace from "../../util/cls";
-import { AutomationContext } from "../../util/cls";
 import { logger } from "../../util/logger";
-import { gc, heapDump } from "../../util/memory";
+import {
+    gc,
+    heapDump,
+} from "../../util/memory";
+import { guid } from "../../util/string";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
     CommandIncoming,
-    EventIncoming, isCommandIncoming, isEventIncoming,
+    EventIncoming,
     RequestProcessor,
 } from "../RequestProcessor";
 import { GraphClientFactory } from "../websocket/GraphClientFactory";
 import { WebSocketClientOptions } from "../websocket/WebSocketClient";
 import { RegistrationConfirmation } from "../websocket/WebSocketRequestProcessor";
-import { workerSend } from "./messages";
+import { MasterMessage, workerSend } from "./messages";
 
 /**
  * A RequestProcessor that is being run as Node.JS Cluster worker handling all the actual work.
@@ -45,7 +50,7 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
                 // tslint:disable-next-line:variable-name
                 private _listeners: AutomationEventListener[] = []) {
         super(_automations, [..._listeners, new ClusterWorkerAutomationEventListener()]);
-        workerSend({ type: "online" });
+        workerSend({ type: "online", context: null });
     }
 
     public setRegistration(registration: RegistrationConfirmation) {
@@ -60,28 +65,37 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
         }
     }
 
-    protected sendMessage(payload: any): void {
-        workerSend({
+    protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {
+        return workerSend({
             type: "status",
-            cls: {
-                ...namespace.get(),
-            },
+            context: ctx.context,
             data: payload,
         });
     }
 
-    protected createGraphClient(event: CommandIncoming | EventIncoming): GraphClient {
+    protected createGraphClient(event: CommandIncoming | EventIncoming,
+                                context: AutomationContextAware): GraphClient {
         return this.graphClients.createGraphClient(event);
     }
 
-    protected createMessageClient(event: EventIncoming | CommandIncoming): MessageClient {
-        return new ClusterWorkerMessageClient(event);
+    protected createMessageClient(event: EventIncoming | CommandIncoming,
+                                  context: AutomationContextAware): MessageClient {
+        return new ClusterWorkerMessageClient(event, context);
+    }
+
+    protected setupNamespace(request: any,
+                             automations: AutomationServer,
+                             invocationId: string = guid(),
+                             ts: number = Date.now()) {
+        const context = request.__context;
+        delete request.__context;
+        return context;
     }
 }
 
 class ClusterWorkerMessageClient extends MessageClientSupport {
 
-    constructor(protected event: EventIncoming | CommandIncoming) {
+    constructor(protected event: EventIncoming | CommandIncoming, protected ctx: AutomationContextAware) {
         super();
     }
 
@@ -89,9 +103,7 @@ class ClusterWorkerMessageClient extends MessageClientSupport {
                      channelNames: string | string[], options?: MessageOptions): Promise<any> {
         return workerSend({
                 type: "message",
-                cls: {
-                    ...namespace.get(),
-                },
+                context: this.ctx.context,
                 data: {
                     message: msg,
                     userNames,
@@ -108,9 +120,7 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
        return workerSend({
             type: "command_success",
             event: payload,
-            cls: {
-                ...namespace.get(),
-            },
+            context: (ctx as any).context,
             data: result,
         });
     }
@@ -119,9 +129,7 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
         return workerSend({
             type: "command_failure",
             event: payload,
-            cls: {
-                ...namespace.get(),
-            },
+            context: (ctx as any).context,
             data: err,
         });
     }
@@ -130,9 +138,7 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
         return workerSend({
             type: "event_success",
             event: payload,
-            cls: {
-                ...namespace.get(),
-            },
+            context: (ctx as any).context,
             data: result,
         });
     }
@@ -141,9 +147,7 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
         return workerSend({
             type: "event_failure",
             event: payload,
-            cls: {
-                ...namespace.get(),
-            },
+            context: (ctx as any).context,
             data: err,
         });
     }
@@ -165,10 +169,10 @@ export function startWorker(automations: AutomationServer,
             worker.setRegistration(msg.registration as RegistrationConfirmation);
         } else if (msg.type === "command") {
             worker.setRegistrationIfRequired(msg);
-            worker.processCommand(addContext(msg.data, msg.cls) as CommandIncoming);
+            worker.processCommand(decorateContext(msg) as CommandIncoming);
         } else if (msg.type === "event") {
             worker.setRegistrationIfRequired(msg);
-            worker.processEvent(addContext(msg.data, msg.cls) as EventIncoming);
+            worker.processEvent(decorateContext(msg) as EventIncoming);
         } else if (msg.type === "gc") {
             gc();
         } else if (msg.type === "heapdump") {
@@ -178,13 +182,8 @@ export function startWorker(automations: AutomationServer,
     return worker;
 }
 
-function addContext(data: any, cls: AutomationContext): any {
-    if (isCommandIncoming(data)) {
-        (data as any).invocationId = cls.invocationId;
-        (data as any).ts = cls.ts;
-    } else if (isEventIncoming(data)) {
-        (data.extensions as any).invocation_id = cls.invocationId;
-        (data.extensions as any).ts = cls.ts;
-    }
-    return data;
+function decorateContext(msg: MasterMessage): any {
+    const event = msg.data;
+    event.__context = msg.context;
+    return event;
 }

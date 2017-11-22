@@ -2,6 +2,7 @@ import { SlackMessage } from "@atomist/slack-messages";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as serializeError from "serialize-error";
+import { AutomationContextAware } from "../../HandlerContext";
 import {
     EventFired,
     failure,
@@ -40,7 +41,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                           callback: (result: Promise<HandlerResult>) => void = () => { }) {
         // setup context
         const ses = namespace.init();
-        const cls = setupNamespace(command, this.automations);
+        const cls = this.setupNamespace(command, this.automations);
         ses.run(() => {
             namespace.set(cls);
 
@@ -53,12 +54,13 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 mappedParameters: command.mapped_parameters,
                 secrets: command.secrets,
             };
-            const ctx: HandlerContext = {
+            const ctx: HandlerContext & AutomationContextAware = {
                 teamId: command.team.id,
                 correlationId: command.corrid,
                 invocationId: np ? np.invocationId : undefined,
-                messageClient: this.createAndWrapMessageClient(command),
-                graphClient: this.createGraphClient(command),
+                messageClient: this.createAndWrapMessageClient(command, { context: cls}),
+                graphClient: this.createGraphClient(command, { context: cls}),
+                context: cls,
             };
 
             this.listeners.forEach(l => l.contextCreated(ctx));
@@ -73,7 +75,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         callback: (results: Promise<HandlerResult[]>) => void = () => { }) {
         // setup context
         const ses = namespace.init();
-        const cls = setupNamespace(event, this.automations);
+        const cls = this.setupNamespace(event, this.automations);
         ses.run(() => {
             namespace.set(cls);
 
@@ -87,12 +89,13 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 },
                 secrets: event.secrets,
             };
-            const ctx: HandlerContext = {
+            const ctx: HandlerContext & AutomationContextAware = {
                 teamId: event.extensions.team_id,
                 correlationId: event.extensions.correlation_id,
                 invocationId: np ? np.invocationId : undefined,
-                messageClient: this.createAndWrapMessageClient(event),
-                graphClient: this.createGraphClient(event),
+                messageClient: this.createAndWrapMessageClient(event, { context: cls}),
+                graphClient: this.createGraphClient(event, { context: cls}),
+                context: cls,
             };
 
             this.listeners.forEach(l => l.contextCreated(ctx));
@@ -102,7 +105,10 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         });
     }
 
-    public sendStatus(success: boolean, hr: HandlerResult, request: CommandIncoming) {
+    public sendStatus(success: boolean,
+                      hr: HandlerResult,
+                      request: CommandIncoming,
+                      ctx: HandlerContext & AutomationContextAware): Promise<any> {
         // send success message back
         const status: StatusMessage = {
             status: success ? "success" : "failure",
@@ -117,20 +123,22 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             content_type: "application/x-atomist-status+json",
             message: JSON.stringify(status),
         };
-        this.sendMessage(response);
+        return this.sendStatusMessage(response, ctx);
     }
 
     protected invokeCommand(ci: CommandInvocation,
-                            ctx: HandlerContext,
+                            ctx: HandlerContext & AutomationContextAware,
                             command: CommandIncoming,
                             callback: (result: Promise<HandlerResult>) => void) {
 
         const finalize = (result: HandlerResult) => {
-            this.sendStatus(result.code === 0 ? true : false, result, command);
-            callback(Promise.resolve(result));
-            logger.info(`Finished invocation of command handler '%s': %s`,
-                command.name, stringify(result));
-            clearNamespace();
+            this.sendStatus(result.code === 0 ? true : false, result, command, ctx)
+                .then(() => {
+                    callback(Promise.resolve(result));
+                    logger.info(`Finished invocation of command handler '%s': %s`,
+                        command.name, stringify(result));
+                    this.clearNamespace();
+                });
         };
 
         logger.debug("Incoming command '%s'", stringify(command, replacer));
@@ -168,7 +176,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
     }
 
     protected invokeEvent(ef: EventFired<any>,
-                          ctx: HandlerContext,
+                          ctx: HandlerContext & AutomationContextAware,
                           event: EventIncoming,
                           callback: (results: Promise<HandlerResult[]>) => void) {
 
@@ -176,7 +184,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             callback(Promise.resolve(result));
             logger.info(`Finished invocation of event handler '%s': %s`,
                 event.extensions.operationName, stringify(result));
-            clearNamespace();
+            this.clearNamespace();
         };
 
         logger.debug("Incoming event '%s'", stringify(event, replacer));
@@ -205,18 +213,55 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         }
     }
 
-    protected createAndWrapMessageClient(event: EventIncoming | CommandIncoming): MessageClient {
-        return new AutomationEventListenerEnabledMessageClient(this.createMessageClient(event), this.listeners);
+    protected createAndWrapMessageClient(event: EventIncoming | CommandIncoming,
+                                         context: AutomationContextAware): MessageClient {
+        return new AutomationEventListenerEnabledMessageClient(
+            this.createMessageClient(event, context), this.listeners);
     }
 
-    protected abstract sendMessage(payload: any): void;
+    protected setupNamespace(request: any,
+                             automations: AutomationServer,
+                             invocationId: string = guid(),
+                             ts: number = Date.now()) {
+        return {
+            correlationId: _.get(request, "corrid") || _.get(request, "extensions.correlation_id"),
+            teamId: _.get(request, "team.id") || _.get(request, "extensions.team_id"),
+            teamName: _.get(request, "team.name") || _.get(request, "extensions.team_name"),
+            operation: _.get(request, "name") || _.get(request, "extensions.operationName"),
+            name: automations.automations.name,
+            version: automations.automations.version,
+            invocationId,
+            ts,
+        };
+    }
 
-    protected abstract createGraphClient(event: EventIncoming | CommandIncoming): GraphClient;
+    protected clearNamespace() {
+        namespace.set({
+            correlationId: null,
+            teamId: null,
+            teamName: null,
+            operation: null,
+            name: null,
+            version: null,
+            invocationId: null,
+            ts: null,
+        });
+    }
 
-    protected abstract createMessageClient(event: EventIncoming | CommandIncoming): MessageClient;
+    protected abstract sendStatusMessage(payload: any,
+                                         ctx: HandlerContext & AutomationContextAware): Promise<any>;
 
-    private handleCommandError(err: any, command: CommandIncoming, ci: CommandInvocation,
-                               ctx: HandlerContext, callback: (error: any) => void) {
+    protected abstract createGraphClient(event: EventIncoming | CommandIncoming,
+                                         context: AutomationContextAware): GraphClient;
+
+    protected abstract createMessageClient(event: EventIncoming | CommandIncoming,
+                                           context: AutomationContextAware): MessageClient;
+
+    private handleCommandError(err: any,
+                               command: CommandIncoming,
+                               ci: CommandInvocation,
+                               ctx: HandlerContext & AutomationContextAware,
+                               callback: (error: any) => void) {
         const result = {
             ...defaultErrorResult(),
             ...failure(err),
@@ -225,12 +270,12 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         this.listeners.map(l => () => l.commandFailed(ci, ctx, result))
             .reduce((p, f) => p.then(f), Promise.resolve())
             .then(() => {
-                this.sendStatus(false, result as HandlerResult, command);
+                this.sendStatus(false, result as HandlerResult, command, ctx);
                 if (callback) {
                     callback(Promise.resolve(result));
                 }
                 logger.error(`Failed invocation of command handler '%s'`, command.name, serializeError(err));
-                clearNamespace();
+                this.clearNamespace();
             });
     }
 
@@ -249,7 +294,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 }
                 logger.error(`Failed invocation of command handler '%s'`,
                     event.extensions.operationName, serializeError(err));
-                clearNamespace();
+                this.clearNamespace();
             });
     }
 }
@@ -326,34 +371,6 @@ export function defaultErrorResult(): HandlerResult {
         message: `Command '${namespace.get().operation}' failed`,
     };
     return result as HandlerResult;
-}
-
-export function setupNamespace(request: any, automations: AutomationServer, invocationId: string = guid(),
-                               ts: number = Date.now()) {
-    return {
-        correlationId: _.get(request, "corrid") || _.get(request, "extensions.correlation_id"),
-        teamId: _.get(request, "team.id") || _.get(request, "extensions.team_id"),
-        teamName: _.get(request, "team.name") || _.get(request, "extensions.team_name"),
-        operation: _.get(request, "name") || _.get(request, "extensions.operationName"),
-        name: automations.automations.name,
-        version: automations.automations.version,
-        invocationId: _.get(request, "invocationId") || _.get(request, "extensions.invocation_id") || invocationId,
-        ts: _.get(request, "ts") || _.get(request, "extensions.ts") || ts,
-    };
-}
-
-export function clearNamespace() {
-    logger.debug("Clearing namespace");
-    namespace.set({
-        correlationId: null,
-        teamId: null,
-        teamName: null,
-        operation: null,
-        name: null,
-        version: null,
-        invocationId: null,
-        ts: null,
-    });
 }
 
 function replacer(key: string, value: any) {

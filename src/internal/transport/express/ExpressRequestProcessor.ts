@@ -1,6 +1,10 @@
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import { ApolloGraphClient } from "../../../graph/ApolloGraphClient";
+import {
+    AutomationContextAware,
+    HandlerContext,
+} from "../../../HandlerContext";
 import { HandlerResult } from "../../../HandlerResult";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
@@ -41,17 +45,19 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
         }
     }
 
-    protected sendMessage(payload: any) {
-        // don't need this
+    protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {
+        return Promise.resolve();
     }
 
-    protected createGraphClient(event: EventIncoming | CommandIncoming): GraphClient {
+    protected createGraphClient(event: EventIncoming | CommandIncoming,
+                                context: AutomationContextAware): GraphClient {
         const teamId = namespace.get().teamId;
         return new ApolloGraphClient(`${this.options.endpoint.graphql}/${teamId}`,
             { Authorization: `token ${this.token}`});
     }
 
-    protected createMessageClient(event: EventIncoming | CommandIncoming): MessageClient {
+    protected createMessageClient(event: EventIncoming | CommandIncoming,
+                                  context: AutomationContextAware): MessageClient {
         return new ExpressMessageClient(this.payload);
     }
 }
