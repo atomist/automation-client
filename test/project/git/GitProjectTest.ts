@@ -25,60 +25,6 @@ const Creds = {token: GitHubToken};
 
 describe("GitProject", () => {
 
-    function getOwnerByToken(): Promise<string> {
-        const config = {
-            headers: {
-                Authorization: `token ${GitHubToken}`,
-            },
-        };
-        return axios.get(`${GitHubDotComBase}/user`, config).then(response =>
-            response.data.login,
-        );
-    }
-
-    function deleteRepoIfExists(ownerAndRepo: { owner: string, repo: string }): Promise<any> {
-        console.log("Cleanup: deleting " + ownerAndRepo.repo);
-        const config = {
-            headers: {
-                Authorization: `token ${GitHubToken}`,
-            },
-        };
-        const url = `${GitHubDotComBase}/repos/${ownerAndRepo.owner}/${ownerAndRepo.repo}`;
-        return axios.delete(url, config)
-            .catch(err => {
-                console.log(`error deleting ${ownerAndRepo.repo}, ignoring. ${err.response.status}`);
-            });
-    }
-
-    function newRepo(): Promise<{ owner: string, repo: string }> {
-        const config = {
-            headers: {
-                Authorization: `token ${GitHubToken}`,
-            },
-        };
-        const name = `test-repo-${new Date().getTime()}`;
-        const description = "a thing";
-        const url = `${GitHubDotComBase}/user/repos`;
-        console.log("Visibility is " + TestRepositoryVisibility);
-        return getOwnerByToken()
-            .then(owner => axios.post(url, {
-                name,
-                description,
-                private: TestRepositoryVisibility === "private",
-                auto_init: true,
-            }, config)
-                .then(() =>
-                    ({ owner, repo: name })))
-            .catch(error => {
-                if (error.response.status === 422) {
-                    throw new Error("Could not create repository. GitHub says: " +
-                        _.get(error, "response.data.message", "nothing"));
-                } else {
-                    throw new Error("Could not create repo: " + error.message);
-                }
-            });
-    }
-
     it("knows about the branch passed by the repo ref", () => {
         const p = tempProject(new GitHubRepoRef("owneryo", "repoyo", "branchyo"));
         const gp = GitCommandGitProject.fromProject(p, Creds);
@@ -209,3 +155,61 @@ describe("GitProject", () => {
     }).timeout(10000);
 
 });
+
+/**
+ * Create a new repo we can use for tests
+ * @return {Promise<{owner: string; repo: string}>}
+ */
+export function newRepo(): Promise<{ owner: string, repo: string }> {
+    const config = {
+        headers: {
+            Authorization: `token ${GitHubToken}`,
+        },
+    };
+    const name = `test-repo-${new Date().getTime()}`;
+    const description = "a thing";
+    const url = `${GitHubDotComBase}/user/repos`;
+    console.log("Visibility is " + TestRepositoryVisibility);
+    return getOwnerByToken()
+        .then(owner => axios.post(url, {
+            name,
+            description,
+            private: TestRepositoryVisibility === "private",
+            auto_init: true,
+        }, config)
+            .then(() =>
+                ({ owner, repo: name })))
+        .catch(error => {
+            if (error.response.status === 422) {
+                throw new Error("Could not create repository. GitHub says: " +
+                    _.get(error, "response.data.message", "nothing"));
+            } else {
+                throw new Error("Could not create repo: " + error.message);
+            }
+        });
+}
+
+export function deleteRepoIfExists(ownerAndRepo: { owner: string, repo: string }): Promise<any> {
+    console.log("Cleanup: deleting " + ownerAndRepo.repo);
+    const config = {
+        headers: {
+            Authorization: `token ${GitHubToken}`,
+        },
+    };
+    const url = `${GitHubDotComBase}/repos/${ownerAndRepo.owner}/${ownerAndRepo.repo}`;
+    return axios.delete(url, config)
+        .catch(err => {
+            console.log(`error deleting ${ownerAndRepo.repo}, ignoring. ${err.response.status}`);
+        });
+}
+
+function getOwnerByToken(): Promise<string> {
+    const config = {
+        headers: {
+            Authorization: `token ${GitHubToken}`,
+        },
+    };
+    return axios.get(`${GitHubDotComBase}/user`, config).then(response =>
+        response.data.login,
+    );
+}

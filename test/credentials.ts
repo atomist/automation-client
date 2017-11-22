@@ -1,8 +1,14 @@
+import { GitHubRepoRef } from "../src/operations/common/GitHubRepoRef";
+
 function barf(): string {
     throw new Error("<please set GITHUB_TOKEN env variable>");
 }
 
 export const GitHubToken: string = process.env.GITHUB_TOKEN || barf();
+
+export const Creds = { token: GitHubToken };
+
+export const RepoThatExists = new GitHubRepoRef("atomist-travisorg", "this-repository-exists");
 
 function visibility(): "public" | "private" {
     const vis = process.env.GITHUB_VISIBILITY || "private";

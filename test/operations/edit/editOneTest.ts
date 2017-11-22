@@ -38,7 +38,7 @@ describe("editOne", () => {
             repoRef, undefined,
             fromListRepoLoader(projects))
             .then(editResult => {
-                assert(editResult.edited);
+                assert(editResult.edited === undefined, "Simple editors don't know what they did. They are truly simple");
                 assert.deepEqual(projectsEdited, projects);
                 return editResult.target.findFile("thing")
                     .then(f => f.getContent()

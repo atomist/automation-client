@@ -15,7 +15,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+-   **Breaking** `successfulEdit` function `edited` argument is now required instead of defaulting
+    to true
+-   `EditResult.edited` is now optional. An undefined value is valid and means that the
+    editor didn't keep track of whether it made changes. This is the norm for simple functions
+    taking `Project`.
 -   Moved `@types/graphql` to dependencies since its types are exported
+
+### Fixed
+
+-   Bug where a `SimpleProjectEditor` that did not return an `EditResult` and made
+    no changes would fail due to unsuccessful git commit
 
 ## [0.3.3][] - 2017-11-20
 

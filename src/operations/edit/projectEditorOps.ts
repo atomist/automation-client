@@ -9,7 +9,8 @@ import {
 function combineEditResults(r1: EditResult, r2: EditResult): EditResult {
     return {
         ...r1, ...r2,
-        edited: r1.edited || r2.edited,
+        edited: (r1.edited || r2.edited) ? true :
+            (r1.edited === false && r2.edited === false) ? false : undefined,
     };
 }
 
