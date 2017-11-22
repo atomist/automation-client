@@ -1,5 +1,6 @@
 import { Configuration } from "../src/configuration";
 import { RequestProcessor } from "../src/internal/transport/RequestProcessor";
+import { initMemoryMonitoring } from "../src/internal/util/memory";
 import { guid } from "../src/internal/util/string";
 import { SpringBootSeed } from "../src/operations/generate/java/SpringBootSeed";
 import { scanCommands, scanEvents } from "../src/scan";
@@ -10,7 +11,6 @@ import { CircleCIPayload } from "./event/circleIngester";
 import { GitLabPushPayload } from "./event/gitLabIngester";
 import { GitLabPush } from "./event/GitLabPush";
 import { HelloCircle } from "./event/HelloCircle";
-import { initMemoryMonitoring } from "../src/internal/util/memory";
 
 export const GitHubToken = process.env.GITHUB_TOKEN || "<please set GITHUB_TOKEN env variable>";
 
