@@ -63,11 +63,24 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                 private fallbackSecretResolver: SecretResolver = new NodeConfigSecretResolver()) {
         super();
         if (opts.endpoints && opts.endpoints.graphql) {
-            if (opts.token) {
-                this.graphClient = new ApolloGraphClient(opts.endpoints.graphql,
-                    {Authorization: `token ${opts.token}`});
-            } else {
-                logger.warn("Cannot create graph client due to missing token");
+            if (opts.teamIds) {
+                let teamId: string;
+                if (opts.teamIds.length === 1) {
+                    teamId = opts.teamIds[0];
+                } else if (opts.teamIds.length > 1) {
+                    teamId = opts.teamIds[0];
+                    logger.warn(`Provided ${opts.teamIds.length} team IDs, using the first: ${teamId}`);
+                }
+                if (teamId) {
+                    if (opts.token) {
+                        this.graphClient = new ApolloGraphClient(`${opts.endpoints.graphql}/${teamId}`,
+                            { Authorization: `token ${opts.token}` });
+                    } else {
+                        logger.warn("Cannot create graph client due to missing token");
+                    }
+                } else {
+                    logger.warn("Cannot create graph client because no team IDs provided");
+                }
             }
         } else {
             logger.warn("Cannot create graph client due to missing GraphQL URL");

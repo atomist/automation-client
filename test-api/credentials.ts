@@ -1,3 +1,6 @@
+import { LoggingConfig } from "../src/internal/util/logger";
+LoggingConfig.format = "cli";
+
 function barf(): string {
     throw new Error("<please set GITHUB_TOKEN env variable>");
 }
