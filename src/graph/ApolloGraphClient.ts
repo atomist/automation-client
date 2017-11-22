@@ -5,13 +5,13 @@ import { createHttpLink } from "apollo-link-http";
 import gql from "graphql-tag";
 import "isomorphic-fetch";
 import * as stringify from "json-stringify-safe";
+import * as namespace from "../internal/util/cls";
 import { logger } from "../internal/util/logger";
 import { GraphClient } from "../spi/graph/GraphClient";
 import {
     inlineQuery,
     resolveAndReadFileSync,
 } from "./graphQL";
-import * as namespace from "../internal/util/cls";
 
 /**
  * Implementation of GraphClient using Apollo Client.
