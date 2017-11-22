@@ -17,7 +17,6 @@ import { Project } from "../../../src/project/Project";
 describe("editAll", () => {
 
     it("should edit with simple function", done => {
-
         const editor: SimpleProjectEditor = p => {
             p.addFileSync("thing", "1");
             return Promise.resolve(p);
@@ -44,7 +43,7 @@ describe("editAll", () => {
             fromListRepoLoader(projects))
             .then(edits => {
                 assert(edits.length === projects.length);
-                assert(!edits.some(e => !e.edited));
+                assert(!edits.some(e => e.edited !== undefined));
                 assert.deepEqual(projectsEdited, projects);
                 return edits[0].target.findFile("thing")
                     .then(f => f.getContent()
