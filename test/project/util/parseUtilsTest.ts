@@ -4,8 +4,6 @@ import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { Integer } from "@atomist/microgrammar/Primitives";
 import * as assert from "power-assert";
 import { defer } from "../../../src/internal/common/Flushable";
-import { JavaPackageDeclaration } from "../../../src/operations/generate/java/JavaGrammars";
-import { AllJavaFiles } from "../../../src/operations/generate/java/javaProjectUtils";
 import { AllFiles } from "../../../src/project/fileGlobs";
 import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
@@ -313,3 +311,13 @@ interface Entry {
         age: number;
     };
 }
+
+const AllJavaFiles = "**/*.java";
+
+export const PACKAGE_NAME = /^[a-zA-Z0-9$.]+/;
+
+const JavaPackageDeclaration = Microgrammar.fromDefinitions<{name: string}>({
+    _pkg: "package",
+    name: PACKAGE_NAME,
+    _sc: ";",
+});

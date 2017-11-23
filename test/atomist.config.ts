@@ -2,7 +2,6 @@ import { Configuration } from "../src/configuration";
 import { RequestProcessor } from "../src/internal/transport/RequestProcessor";
 import { initMemoryMonitoring } from "../src/internal/util/memory";
 import { guid } from "../src/internal/util/string";
-import { SpringBootSeed } from "../src/operations/generate/java/SpringBootSeed";
 import { scanCommands, scanEvents } from "../src/scan";
 import * as secured from "../src/secured";
 import { AutomationEventListenerSupport } from "../src/server/AutomationEventListener";
@@ -56,7 +55,6 @@ export const configuration: Configuration = {
     commands: [
         // ...scanCommands( ["**/metadata/addAtomistSpringAgent.js", "**/command/Search*.js"] ),
         HelloWorld,
-        SpringBootSeed,
     ],
     events: [
         HelloCircle,

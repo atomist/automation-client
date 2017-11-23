@@ -3,8 +3,6 @@ import "mocha";
 import * as assert from "power-assert";
 import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
 import { CommandHandlerMetadata } from "../../../src/metadata/automationMetadata";
-import { JavaSeed } from "../../../src/operations/generate/java/JavaSeed";
-import { SpringBootSeed } from "../../../src/operations/generate/java/SpringBootSeed";
 import { UniversalSeed } from "../../../src/operations/generate/UniversalSeed";
 import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
@@ -34,18 +32,6 @@ describe("UniversalSeed metadata test", () => {
         const umd = new UniversalSeed();
         const md = metadataFromInstance(umd) as CommandHandlerMetadata;
         validateUniversalSeedMetadata(md);
-    });
-
-    it("supports metadata inheritance: one level", () => {
-        const umd = new JavaSeed();
-        const md = metadataFromInstance(umd) as CommandHandlerMetadata;
-        validateJavaSeedMetadata(md);
-    });
-
-    it("supports metadata inheritance: two levels", () => {
-        const umd = new SpringBootSeed();
-        const md = metadataFromInstance(umd) as CommandHandlerMetadata;
-        validateJavaSeedMetadata(md);
     });
 
     it("copies regular files", done => {
