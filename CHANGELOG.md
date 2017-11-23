@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+-   **Breaking** Removed Spring and Java related generators and support, 
+    which belongs in a language-specific module.
+    Now in `atomist/spring-automations`
 -   Moved `@types/continuation-local-storage` to dependencies since it
     has exported types
 -   Added more types to default exports in index.ts
