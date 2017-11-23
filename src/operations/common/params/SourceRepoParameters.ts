@@ -1,12 +1,13 @@
 
 import { Parameter } from "../../../decorators";
+import { RepoRef } from "../RepoId";
 import { GitBranchRegExp, GitHubNameRegExp } from "./gitHubPatterns";
 
 /**
  * Parameters common to anything that works with a single source repo,
  * such as a seed driven generator
  */
-export class SourceRepoParameters {
+export class SourceRepoParameters implements RepoRef {
 
     @Parameter({
         pattern: GitHubNameRegExp.pattern,
@@ -18,7 +19,7 @@ export class SourceRepoParameters {
         required: false,
         displayable: false,
     })
-    public sourceOwner: string;
+    public owner: string;
 
     @Parameter({
         pattern: GitHubNameRegExp.pattern,
@@ -30,7 +31,7 @@ export class SourceRepoParameters {
         required: false,
         displayable: false,
     })
-    public sourceRepo: string;
+    public repo: string;
 
     @Parameter({
         pattern: GitBranchRegExp.pattern,
@@ -42,6 +43,6 @@ export class SourceRepoParameters {
         required: false,
         displayable: false,
     })
-    public sourceBranch: string = "master";
+    public sha: string = "master";
 
 }

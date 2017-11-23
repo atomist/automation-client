@@ -12,7 +12,7 @@ export class NewRepoCreationParameters implements RepoId {
     public githubToken;
 
     @MappedParameter(MappedParameters.GitHubOwner)
-    public targetOwner: string;
+    public owner: string;
 
     @Parameter({
         pattern: GitHubNameRegExp.pattern,
@@ -24,7 +24,7 @@ export class NewRepoCreationParameters implements RepoId {
         required: true,
         order: 1,
     })
-    public targetRepo: string;
+    public repo: string;
 
     @Parameter({
         displayName: "Project Description",
@@ -46,13 +46,5 @@ export class NewRepoCreationParameters implements RepoId {
         required: false,
     })
     public visibility: "public" | "private" = "public";
-
-    get owner() {
-        return this.targetOwner;
-    }
-
-    get repo() {
-        return this.targetRepo;
-    }
 
 }
