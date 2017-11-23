@@ -12,7 +12,7 @@ import { fail } from "power-assert";
 import { HandlerContext } from "../../../src/HandlerContext";
 import { GitHubDotComBase, GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { generate } from "../../../src/operations/generate/generatorUtils";
-import { GenericGenerator } from "../../../src/operations/generate/GeneratorWithExternalParameters";
+import { GenericGenerator } from "../../../src/operations/generate/GenericGenerator";
 import { GitHubProjectPersister } from "../../../src/operations/generate/gitHubProjectPersister";
 import { BaseSeedDrivenGeneratorParameters } from "../../../src/operations/generate/SeedDrivenRepoGenerationParameters";
 import { UniversalSeed } from "../../../src/operations/generate/UniversalSeed";
