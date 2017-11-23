@@ -8,9 +8,9 @@ import { GitHubRepoRef } from "../common/GitHubRepoRef";
 import { RepoRef } from "../common/RepoId";
 import { RepoLoader } from "../common/repoLoader";
 import { AnyProjectEditor } from "../edit/projectEditor";
+import { BaseSeedDrivenGeneratorParameters } from "./BaseSeedDrivenGeneratorParameters";
 import { generate, ProjectPersister } from "./generatorUtils";
 import { GitHubProjectPersister } from "./gitHubProjectPersister";
-import { BaseSeedDrivenGeneratorParameters } from "./SeedDrivenRepoGenerationParameters";
 
 /**
  * Generator that uses external parameters. This decouples parameters from handle logic
