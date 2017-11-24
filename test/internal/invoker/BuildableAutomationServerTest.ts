@@ -1,17 +1,15 @@
+import stringify = require("json-stringify-safe");
 import "mocha";
 import * as assert from "power-assert";
-
-import stringify = require("json-stringify-safe");
 import { CommandHandler, MappedParameter, Parameter, Secret } from "../../../src/decorators";
 import { SelfDescribingHandleCommand } from "../../../src/HandleCommand";
 import { consoleMessageClient } from "../../../src/internal/message/ConsoleMessageClient";
 import { succeed } from "../../../src/operations/support/contextUtils";
 import { AutomationServer } from "../../../src/server/AutomationServer";
 import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
+import { SmartParameters, ValidationResult } from "../../../src/SmartParameters";
 import { SecretResolver } from "../../../src/spi/env/SecretResolver";
-import {
-    AddAtomistSpringAgent, AlwaysOkEventHandler, FooBarEventHandler, TrustMeIGaveMySecret,
-} from "./TestHandlers";
+import { AddAtomistSpringAgent, AlwaysOkEventHandler, FooBarEventHandler, TrustMeIGaveMySecret } from "./TestHandlers";
 
 const messageClient = consoleMessageClient;
 
@@ -222,6 +220,7 @@ describe("BuildableAutomationServer", () => {
 
     it("should register one single arg handler using nested parameters and invoke with valid parameter", done => {
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
+
         class Params {
             @Parameter()
             public one: string;
@@ -255,6 +254,7 @@ describe("BuildableAutomationServer", () => {
 
     it("should register single arg handler using nested mapped parameters and invoke with valid parameter", done => {
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
+
         class Params {
             @Parameter()
             public one: string;
@@ -292,6 +292,7 @@ describe("BuildableAutomationServer", () => {
 
     it("should register single arg handler using nested secrets and invoke with valid parameter", done => {
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
+
         class Params {
             @Parameter()
             public one: string;
@@ -327,4 +328,48 @@ describe("BuildableAutomationServer", () => {
         }).catch(done);
     });
 
+    it("should fail parameter validation", done => {
+        const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
+
+        class Params {
+            @Parameter({required: true})
+            public isSmart: string;
+            @Secret("pathOfMySecret")
+            public mySecret: string = "should_be_overwitten";
+        }
+
+        @CommandHandler("goo bar")
+        class Handler implements SmartParameters {
+            public nested = new Params();
+
+            public bindAndValidate() {
+                return {message: "The sploshing flange is invalid"};
+            }
+
+            public handle(ch, params) {
+                return Promise.resolve({
+                    code: 0,
+                    mappedVal: params.nested.mySecret,
+                });
+            }
+        }
+
+        s.registerCommandHandler(Handler);
+        s.invokeCommand({
+            name: "Handler",
+            args: [{name: "nested.isSmart", value: "value"}],
+            secrets: [{name: "pathOfMySecret", value: "resolved"}],
+        }, {
+            teamId: "T666",
+            correlationId: "555",
+            messageClient,
+        })
+            .then(ok => {
+                    done(new Error("Should have failed validation"));
+                },
+                err => {
+                    assert(err.includes("sploshing flange"));
+                    done();
+                });
+    });
 });
