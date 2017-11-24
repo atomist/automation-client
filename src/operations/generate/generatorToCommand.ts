@@ -79,7 +79,7 @@ function handle<P extends BaseSeedDrivenGeneratorParameters>(ctx: HandlerContext
         .then(() => generate(
             startingPoint(params, ctx, details.repoLoader(params))
                 .then(p => {
-                    return ctx.messageClient.respond(`Cloned seed project from ${params.source.owner}/${params.source.repo}`)
+                    return ctx.messageClient.respond(`Cloned seed project from \`${params.source.owner}/${params.source.repo}\``)
                         .then(() => p);
                 }),
             ctx,
