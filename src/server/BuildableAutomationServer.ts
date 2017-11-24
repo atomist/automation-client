@@ -25,6 +25,7 @@ import {
     CommandHandlerMetadata,
     EventHandlerMetadata, SecretsMetadata,
 } from "../metadata/automationMetadata";
+import { isSmartParameters, isValidationError, ValidationResult } from "../SmartParameters";
 import { SecretResolver } from "../spi/env/SecretResolver";
 import { GraphClient } from "../spi/graph/GraphClient";
 import {
@@ -77,7 +78,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                 if (teamId) {
                     if (opts.token) {
                         this.graphClient = new ApolloGraphClient(`${opts.endpoints.graphql}/${teamId}`,
-                            { Authorization: `token ${opts.token}` });
+                            {Authorization: `token ${opts.token}`});
                     } else {
                         logger.warn("Cannot create graph client due to missing token");
                     }
@@ -163,15 +164,28 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         populateParameters(params, md, invocation.args);
         this.populateMappedParameters(params, md, invocation);
         this.populateSecrets(params, md, invocation.secrets);
-        const handlerResult = h.handle(this.enrichContext(ctx), params);
-        if (!handlerResult) {
-            return Promise.reject(
-                `Error: Handler [${md.name}] returned null or undefined: Probably a user coding error`);
-        }
-        return handlerResult
-            .catch(err => {
-                logger.error("Rejecting promise on " + err);
-                return Promise.reject(err);
+
+        const bindAndValidate: Promise<ValidationResult> =
+            isSmartParameters(params) ?
+                Promise.resolve(params.bindAndValidate()) :
+                Promise.resolve();
+
+        return bindAndValidate
+            .then(vr => {
+                if (isValidationError(vr)) {
+                    return Promise.reject(`Validation failure invoking command handler '${md.name}': [${vr.message}]`);
+                }
+
+                const handlerResult = h.handle(this.enrichContext(ctx), params);
+                if (!handlerResult) {
+                    return Promise.reject(
+                        `Error: Handler [${md.name}] returned null or undefined: Probably a user coding error`);
+                }
+                return handlerResult
+                    .catch(err => {
+                        logger.error("Rejecting promise on " + err);
+                        return Promise.reject(err);
+                    });
             });
     }
 
