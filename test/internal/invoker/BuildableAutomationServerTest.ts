@@ -1,7 +1,8 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import { CommandHandler, Parameter } from "../../../src/decorators";
+import stringify = require("json-stringify-safe");
+import { CommandHandler, MappedParameter, Parameter, Secret } from "../../../src/decorators";
 import { SelfDescribingHandleCommand } from "../../../src/HandleCommand";
 import { consoleMessageClient } from "../../../src/internal/message/ConsoleMessageClient";
 import { succeed } from "../../../src/operations/support/contextUtils";
@@ -239,10 +240,6 @@ describe("BuildableAutomationServer", () => {
         }
 
         s.registerCommandHandler(Handler);
-        registerOneSingleArgHandlerAndInvokeWithValidNestedParameter(s, done);
-    });
-
-    function registerOneSingleArgHandlerAndInvokeWithValidNestedParameter(s: AutomationServer, done) {
         s.invokeCommand({
             name: "Handler",
             args: [{name: "nested.one", value: "value"}],
@@ -254,5 +251,80 @@ describe("BuildableAutomationServer", () => {
             assert((hr as any).paramVal === "value");
             done();
         }).catch(done);
-    }
+    });
+
+    it("should register single arg handler using nested mapped parameters and invoke with valid parameter", done => {
+        const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
+        class Params {
+            @Parameter()
+            public one: string;
+            @MappedParameter("fk")
+            public mapped: string = "should_be_overwitten";
+        }
+
+        @CommandHandler("goo bar")
+        class Handler {
+            public nested = new Params();
+
+            public handle(ch, params) {
+                return Promise.resolve({
+                    code: 0,
+                    paramVal: params.nested.one,
+                    mappedVal: params.nested.mapped,
+                });
+            }
+        }
+
+        s.registerCommandHandler(Handler);
+        s.invokeCommand({
+            name: "Handler",
+            args: [{name: "nested.one", value: "value"}],
+            mappedParameters: [{name: "nested.mapped", value: "resolved"}],
+        }, {
+            teamId: "T666",
+            correlationId: "555",
+            messageClient,
+        }).then(hr => {
+            assert((hr as any).mappedVal === "resolved", stringify(hr, null, 2));
+            done();
+        }).catch(done);
+    });
+
+    it("should register single arg handler using nested secrets and invoke with valid parameter", done => {
+        const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
+        class Params {
+            @Parameter()
+            public one: string;
+            @Secret("pathOfMySecret")
+            public mySecret: string = "should_be_overwitten";
+        }
+
+        @CommandHandler("goo bar")
+        class Handler {
+            public nested = new Params();
+
+            public handle(ch, params) {
+                return Promise.resolve({
+                    code: 0,
+                    paramVal: params.nested.one,
+                    mappedVal: params.nested.mySecret,
+                });
+            }
+        }
+
+        s.registerCommandHandler(Handler);
+        s.invokeCommand({
+            name: "Handler",
+            args: [{name: "nested.one", value: "value"}],
+            secrets: [{name: "pathOfMySecret", value: "resolved"}],
+        }, {
+            teamId: "T666",
+            correlationId: "555",
+            messageClient,
+        }).then(hr => {
+            assert((hr as any).mappedVal === "resolved", stringify(hr, null, 2));
+            done();
+        }).catch(done);
+    });
+
 });

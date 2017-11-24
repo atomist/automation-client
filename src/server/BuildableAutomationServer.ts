@@ -1,3 +1,5 @@
+import * as _ from "lodash";
+
 import * as stringify from "json-stringify-safe";
 import { ApolloGraphClient } from "../graph/ApolloGraphClient";
 import {
@@ -19,8 +21,9 @@ import { populateParameters } from "../internal/parameterPopulation";
 import { logger } from "../internal/util/logger";
 import { toStringArray } from "../internal/util/string";
 import {
+    AutomationMetadata,
     CommandHandlerMetadata,
-    EventHandlerMetadata,
+    EventHandlerMetadata, SecretsMetadata,
 } from "../metadata/automationMetadata";
 import { SecretResolver } from "../spi/env/SecretResolver";
 import { GraphClient } from "../spi/graph/GraphClient";
@@ -125,7 +128,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         }
         this.eventHandlers.push({
             metadata: md,
-            invoke: (e, ctx) => this.invokeFreshEventHandlerInstance(factory(), e, ctx),
+            invoke: (e, ctx) => this.invokeFreshEventHandlerInstance(factory(), md, e, ctx),
         });
         return this;
     }
@@ -135,17 +138,17 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         return this;
     }
 
-    protected invokeCommandHandler(invocation: CommandInvocation, h: CommandHandlerMetadata,
+    protected invokeCommandHandler(invocation: CommandInvocation, metadata: CommandHandlerMetadata,
                                    ctx: HandlerContext): Promise<HandlerResult> {
         const handler = this.commandHandlers.find(a => a.metadata.name === invocation.name);
-        logger.info("Invoking command handler '%s'", h.name);
+        logger.info("Invoking command handler '%s'", metadata.name);
         return handler.invoke(invocation, ctx);
     }
 
-    protected invokeEventHandler(e: EventFired<any>, h: EventHandlerMetadata,
+    protected invokeEventHandler(e: EventFired<any>, metadata: EventHandlerMetadata,
                                  ctx: HandlerContext): Promise<HandlerResult> {
-        const handler = this.eventHandlers.find(a => a.metadata.name === h.name);
-        logger.info("Invoking event handler '%s'", h.name);
+        const handler = this.eventHandlers.find(a => a.metadata.name === metadata.name);
+        logger.info("Invoking event handler '%s'", metadata.name);
         return handler.invoke(e, ctx);
     }
 
@@ -158,8 +161,8 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                                                                invocation: CommandInvocation,
                                                                ctx: HandlerContext): Promise<HandlerResult> {
         populateParameters(params, md, invocation.args);
-        this.populateMappedParameters(h, invocation);
-        this.populateSecrets(h, invocation.secrets);
+        this.populateMappedParameters(params, md, invocation);
+        this.populateSecrets(params, md, invocation.secrets);
         const handlerResult = h.handle(this.enrichContext(ctx), params);
         if (!handlerResult) {
             return Promise.reject(
@@ -173,9 +176,10 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
     }
 
     private invokeFreshEventHandlerInstance(h: HandleEvent<any>,
+                                            metadata: EventHandlerMetadata,
                                             e: EventFired<any>,
                                             ctx: HandlerContext): Promise<HandlerResult> {
-        this.populateSecrets(h, e.secrets);
+        this.populateSecrets(h, metadata, e.secrets);
         return h.handle(e, this.enrichContext(ctx), h)
             .catch(err => {
                 // these do not fire when the handler fails.
@@ -205,7 +209,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         };
     }
 
-    private populateMappedParameters(h: {}, invocation: Invocation) {
+    private populateMappedParameters(h: {}, metadata: CommandHandlerMetadata, invocation: Invocation) {
         // Resolve from the invocation, otherwise from our fallback
         class InvocationSecretResolver implements SecretResolver {
             constructor(private mp: Arg[]) {
@@ -224,19 +228,18 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         // it does not fallback for each parameter; all or nothing.
         // this is probably by design ... is there a test/dev circumstance where
         // mappedParameters is not populated?
-        const secretResolver = invocation.mappedParameters ?
+
+        const mrResolver = invocation.mappedParameters ?
             new InvocationSecretResolver(invocation.mappedParameters) :
             this.fallbackSecretResolver;
         // logger.debug("Applying mapped parameters");
-        const target = h as any;
-        const mappedParameters: any[] =
-            target.__mappedParameters ? target.__mappedParameters : [];
+        const mappedParameters = metadata.mapped_parameters || [];
         mappedParameters.forEach(mp => {
-            h[mp.localKey] = secretResolver.resolve(mp.localKey);
+            _.update(h, mp.local_key, () => mrResolver.resolve(mp.local_key));
         });
     }
 
-    private populateSecrets(h: {}, invocationSecrets: Arg[] | undefined) {
+    private populateSecrets(h: {}, metadata: SecretsMetadata, invocationSecrets: Arg[] | undefined) {
         // Resolve from the invocation, otherwise from our fallback
         class InvocationSecretResolver implements SecretResolver {
             constructor(private sec: Arg[]) {
@@ -254,12 +257,9 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         const secretResolver = invocationSecrets ? new InvocationSecretResolver(invocationSecrets) :
             this.fallbackSecretResolver;
         // logger.debug("Applying secrets");
-        const target = h as any;
-        // why do we not get these from the metadata? ... because we don't pass it in, i guess
-        const secrets: any[] =
-            target.__secrets ? target.__secrets : [];
+        const secrets = metadata.secrets || [];
         secrets.forEach(s => {
-            h[s.name] = secretResolver.resolve(s.path);
+            _.update(h, s.name, () => secretResolver.resolve(s.path));
         });
     }
 
