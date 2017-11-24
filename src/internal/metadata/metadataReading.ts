@@ -14,25 +14,27 @@ import { isCommandHandlerMetadata, isEventHandlerMetadata } from "./metadata";
 /**
  * Extract metadata from a handler instance. We need an
  * instance to pull the decorator data from
- * @param r handler instance
+ * @param h handler instance
  * @return {any}
  */
-export function metadataFromInstance(r: any): CommandHandlerMetadata | EventHandlerMetadata {
+export function metadataFromInstance(h: any): CommandHandlerMetadata | EventHandlerMetadata {
     let md = null;
-    if (isEventHandlerMetadata(r)) {
-        md = addName(r);
-    } else if (isCommandHandlerMetadata(r)) {
-        md = addName(r);
+    if (isEventHandlerMetadata(h)) {
+        md = addName(h);
+    } else if (isCommandHandlerMetadata(h)) {
+        md = addName(h);
     } else {
         // We need to find the instance from which to extract metadata.
         // It will be the handler itself unless it implements the optional freshParametersInstance method
-        const knowsHowToMakeMyParams = r as HandleCommand;
+        const knowsHowToMakeMyParams = h as HandleCommand;
         if (!!knowsHowToMakeMyParams.freshParametersInstance) {
-            const newInstance = knowsHowToMakeMyParams.freshParametersInstance();
-            newInstance.__kind = "parameters";
-            md = metadataFromDecorator(newInstance);
+            const paramsInstance = knowsHowToMakeMyParams.freshParametersInstance();
+            if (!paramsInstance.__kind) {
+                paramsInstance.__kind = "parameters";
+            }
+            md = metadataFromDecorator(h, paramsInstance);
         } else {
-            md = metadataFromDecorator(r);
+            md = metadataFromDecorator(h, h);
         }
     }
     // Clone metadata as otherwise we mess with previous created instances
@@ -47,33 +49,43 @@ function addName(r: CommandHandlerMetadata | EventHandlerMetadata):
      return r;
 }
 
-function metadataFromDecorator(r: any): CommandHandlerMetadata | EventHandlerMetadata {
-    switch (r.__kind) {
-        case "command-handler" : case "parameters" :
+function metadataFromDecorator(h: any, params: any): CommandHandlerMetadata | EventHandlerMetadata {
+    switch (params.__kind) {
+        case "command-handler" :
             return {
-                name: r.__name,
-                description: r.__description,
-                tags: r.__tags ? r.__tags : [],
-                intent: r.__intent ? r.__intent : [],
-                parameters: parametersFromInstance(r),
-                mapped_parameters: mappedParameterMetadataFromInstance(r),
-                secrets: secretsMetadataFromInstance(r),
+                name: params.__name,
+                description: params.__description,
+                tags: params.__tags ? params.__tags : [],
+                intent: params.__intent ? params.__intent : [],
+                parameters: parametersFromInstance(params),
+                mapped_parameters: mappedParameterMetadataFromInstance(params),
+                secrets: secretsMetadataFromInstance(params),
             };
+    case "parameters" :
+        return {
+            name: h.__name,
+            description: h.__description,
+            tags: h.__tags ? params.__tags : [],
+            intent: h.__intent ? params.__intent : [],
+            parameters: parametersFromInstance(params),
+            mapped_parameters: mappedParameterMetadataFromInstance(params),
+            secrets: secretsMetadataFromInstance(params),
+        };
         case "event-handler" :
             // Remove any linebreaks and spaces from those subscription
-            const subscription = GraphQL.inlineQuery(r.__subscription);
+            const subscription = GraphQL.inlineQuery(params.__subscription);
             const subscriptionName = GraphQL.operationName(subscription);
 
             return {
-                name: r.__name,
-                description: r.__description,
-                tags: r.__tags ? r.__tags : [],
+                name: h.__name,
+                description: h.__description,
+                tags: h.__tags ? h.__tags : [],
                 subscription,
                 subscriptionName,
-                secrets: secretsMetadataFromInstance(r),
+                secrets: secretsMetadataFromInstance(h),
             };
         default :
-            throw new Error(`Unsupported automation '${r.constructor.name}'`);
+            throw new Error(`Unsupported automation '${params.constructor.name}'`);
     }
 }
 
