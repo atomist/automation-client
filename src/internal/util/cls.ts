@@ -12,11 +12,16 @@ export function init(): Namespace {
 }
 
 export function set(context: AutomationContext) {
-    init().set("context", context);
+    if (init().active) {
+        init().set("context", context);
+    }
 }
 
 export function get(): AutomationContext {
-    return init().get("context");
+    if (init().active) {
+        return init().get("context");
+    }
+    return null;
 }
 
 export interface AutomationContext {
@@ -29,4 +34,5 @@ export interface AutomationContext {
     version: string;
     invocationId: string;
     ts: number;
+
 }
