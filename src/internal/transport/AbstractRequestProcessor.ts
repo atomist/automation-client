@@ -146,12 +146,12 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             this.automations.invokeCommand(ci, ctx)
                 .then(result => {
                     if (!result || !result.hasOwnProperty("code")) {
-                        result = defaultResult();
+                        result = defaultResult(ctx);
                     }
 
                     if (result.code === 0) {
                         result = {
-                            ...defaultResult(),
+                            ...defaultResult(ctx),
                             ...result,
                         };
                         this.listeners.map(l => () => l.commandSuccessful(ci, ctx, result))
@@ -159,7 +159,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                             .then(() => finalize(result));
                     } else {
                         result = {
-                            ...defaultErrorResult(),
+                            ...defaultErrorResult(ctx),
                             ...result,
                         };
                         this.listeners.map(l => () => l.commandFailed(ci, ctx, result))
@@ -192,7 +192,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             this.automations.onEvent(ef, ctx)
                 .then(result => {
                     if (!result || result.length === 0) {
-                        result = [defaultResult()];
+                        result = [defaultResult(ctx)];
                     }
 
                     if (!result.some(r => r.code !== 0)) {
@@ -263,7 +263,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                                ctx: HandlerContext & AutomationContextAware,
                                callback: (error: any) => void) {
         const result = {
-            ...defaultErrorResult(),
+            ...defaultErrorResult(ctx),
             ...failure(err),
         };
 
@@ -280,9 +280,9 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
     }
 
     private handleEventError(err: any, event: EventIncoming, ef: EventFired<any>,
-                             ctx: HandlerContext, callback: (error: any) => void) {
+                             ctx: HandlerContext & AutomationContextAware, callback: (error: any) => void) {
         const result = {
-            ...defaultErrorResult(),
+            ...defaultErrorResult(ctx),
             ...failure(err),
         };
 
@@ -354,21 +354,21 @@ class AutomationEventListenerEnabledMessageClient implements MessageClient {
     }
 }
 
-export function defaultResult(): HandlerResult {
+export function defaultResult(context: AutomationContextAware): HandlerResult {
     const result = {
         code: 0,
-        message: `Command '${namespace.get().operation}' completed successfully`,
-        correlation_id: namespace.get().correlationId,
-        invocation_id: namespace.get().invocationId,
+        message: `Command '${context.context.operation}' completed successfully`,
+        correlation_id: context.context.correlationId,
+        invocation_id: context.context.invocationId,
     };
     return result as HandlerResult;
 }
 
-export function defaultErrorResult(): HandlerResult {
+export function defaultErrorResult(context: AutomationContextAware): HandlerResult {
     const result = {
-        ...defaultResult(),
+        ...defaultResult(context),
         code: 1,
-        message: `Command '${namespace.get().operation}' failed`,
+        message: `Command '${context.context.operation}' failed`,
     };
     return result as HandlerResult;
 }
