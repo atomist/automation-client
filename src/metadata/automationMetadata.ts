@@ -99,12 +99,23 @@ export interface SecretDeclaration {
     path: string;
 }
 
-export interface EventHandlerMetadata extends AutomationMetadata {
+export interface SecretsMetadata {
+
+    secrets?: SecretDeclaration[];
+
+}
+
+export interface EventHandlerMetadata extends AutomationMetadata, SecretsMetadata {
 
     subscriptionName: string;
     subscription: string;
 
-    secrets?: SecretDeclaration[];
+}
+
+export interface ParameterMetadata extends SecretsMetadata {
+
+    parameters?: Parameter[];
+    mapped_parameters?: MappedParameterDeclaration[];
 }
 
 /**
@@ -112,11 +123,8 @@ export interface EventHandlerMetadata extends AutomationMetadata {
  * allowing invocation from both or by other methods such as command line
  * or REST
  */
-export interface CommandHandlerMetadata extends AutomationMetadata {
+export interface CommandHandlerMetadata extends AutomationMetadata, ParameterMetadata {
 
     intent?: string[];
-    parameters?: Parameter[];
 
-    mapped_parameters?: MappedParameterDeclaration[];
-    secrets?: SecretDeclaration[];
 }

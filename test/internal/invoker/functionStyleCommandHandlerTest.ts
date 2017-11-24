@@ -20,8 +20,10 @@ describe("function style command handler invocation", () => {
 
         const payload: CommandInvocation = {
             name: "AddAtomistSpringAgent",
-            mappedParameters: [],
-            secrets : [],
+            mappedParameters: [ {name: "githubWebUrl", value: "the restaurant at the end of the universe"}],
+            secrets : [{
+                name: "atomist://some_secret", value: "Vogons write the best poetry",
+            }],
             args: [{
                 name: "slackTeam",
                 value: "T1066",

@@ -53,7 +53,7 @@ describe("editorHandler", () => {
         s.invokeCommand({
             name: "editor",
             args: [{name: "slackTeam", value: "T1691"}],
-            secrets: [{name: "atomist://some_secret", value: "some_secret"}],
+            secrets: [{name: "github://user_token?scopes=repo,user", value: "antechinus"}],
         }, {
             teamId: "T666",
             correlationId: "555",
