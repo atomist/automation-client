@@ -21,7 +21,6 @@ import { populateParameters } from "../internal/parameterPopulation";
 import { logger } from "../internal/util/logger";
 import { toStringArray } from "../internal/util/string";
 import {
-    AutomationMetadata,
     CommandHandlerMetadata,
     EventHandlerMetadata, SecretsMetadata,
 } from "../metadata/automationMetadata";
@@ -102,7 +101,8 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
             metadata: md,
             invoke: (i, ctx) => {
                 const newHandler = factory();
-                return this.invokeCommandHandlerWithFreshParametersInstance(newHandler, md, newHandler, i, ctx);
+                const params = !!newHandler.freshParametersInstance ? newHandler.freshParametersInstance() : newHandler;
+                return this.invokeCommandHandlerWithFreshParametersInstance(newHandler, md, params, i, ctx);
             },
         });
         return this;

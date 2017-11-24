@@ -1,13 +1,13 @@
 import stringify = require("json-stringify-safe");
 import "mocha";
 import * as assert from "power-assert";
-import { CommandHandler, MappedParameter, Parameter, Secret } from "../../../src/decorators";
-import { SelfDescribingHandleCommand } from "../../../src/HandleCommand";
+import { CommandHandler, MappedParameter, Parameter, Parameters, Secret } from "../../../src/decorators";
+import { HandleCommand, SelfDescribingHandleCommand } from "../../../src/HandleCommand";
 import { consoleMessageClient } from "../../../src/internal/message/ConsoleMessageClient";
 import { succeed } from "../../../src/operations/support/contextUtils";
 import { AutomationServer } from "../../../src/server/AutomationServer";
 import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
-import { SmartParameters, ValidationResult } from "../../../src/SmartParameters";
+import { SmartParameters } from "../../../src/SmartParameters";
 import { SecretResolver } from "../../../src/spi/env/SecretResolver";
 import { AddAtomistSpringAgent, AlwaysOkEventHandler, FooBarEventHandler, TrustMeIGaveMySecret } from "./TestHandlers";
 
@@ -372,4 +372,100 @@ describe("BuildableAutomationServer", () => {
                     done();
                 });
     });
+
+    it("should use bind call to compute property", done => {
+        const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
+
+        class Params {
+            @Parameter({required: true})
+            public isSmart: string;
+            @Secret("pathOfMySecret")
+            public mySecret: string = "should_be_overwitten";
+        }
+
+        @CommandHandler("goo bar")
+        class Handler implements SmartParameters {
+            public nested = new Params();
+            private additional = "should_be_overwritten";
+
+            public bindAndValidate() {
+                this.additional = this.nested.isSmart;
+            }
+
+            public handle(ch, params) {
+                return Promise.resolve({
+                    code: 0,
+                    computed: params.additional,
+                });
+            }
+        }
+
+        s.registerCommandHandler(Handler);
+        s.invokeCommand({
+            name: "Handler",
+            args: [{name: "nested.isSmart", value: "value"}],
+            secrets: [{name: "pathOfMySecret", value: "resolved"}],
+        }, {
+            teamId: "T666",
+            correlationId: "555",
+            messageClient,
+        })
+            .then(hr => {
+                    assert((hr as any).computed === "value");
+                    done();
+                },
+                done);
+    });
+
+    it("should use bind call to compute on external parameters", done => {
+        const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
+
+        @Parameters()
+        class SParams implements SmartParameters {
+            @Parameter({required: true})
+            public isSmartExternal: string;
+            @Secret("pathOfMySecret")
+            public mySecret: string = "should_be_overwitten";
+
+            public random = "this is fine, leave it alone";
+
+            public computed = "should_be_overwritten";
+
+            public bindAndValidate() {
+                this.computed = this.isSmartExternal;
+            }
+        }
+
+        @CommandHandler("goo bar")
+        class Handler implements HandleCommand<SParams> {
+
+            public freshParametersInstance() {
+                return new SParams();
+            }
+
+            public handle(ch, params) {
+                return Promise.resolve({
+                    code: 0,
+                    computed: params.computed,
+                });
+            }
+        }
+
+        s.registerCommandHandler(Handler);
+        s.invokeCommand({
+            name: "Handler",
+            args: [{name: "isSmartExternal", value: "value1"}],
+            secrets: [{name: "pathOfMySecret", value: "resolved"}],
+        }, {
+            teamId: "T666",
+            correlationId: "555",
+            messageClient,
+        })
+            .then(hr => {
+                    assert((hr as any).computed === "value1", stringify(hr));
+                    done();
+                },
+                done);
+    });
+
 });
