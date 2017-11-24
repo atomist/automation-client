@@ -63,6 +63,8 @@ describe("payloads", () => {
         assert(payload.metadata.labels["atomist.description"]);
         assert(payload.metadata.labels["atomist.author"]);
         assert(payload.metadata.labels["atomist.license"]);
+
+        assert.deepEqual(payload.commands[0].tags, ["bar"]);
     });
 
     it("check registration for group = all is valid", () => {

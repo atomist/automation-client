@@ -37,7 +37,7 @@ function prepareCommandRegistration(c: CommandHandlerMetadata) {
     return {
         name: c.name,
         description: c.description,
-        tags: c.tags,
+        tags: c.tags.map(t => t.name),
         intent: c.intent,
         parameters: c.parameters,
         mapped_parameters: c.mapped_parameters,

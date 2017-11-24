@@ -193,7 +193,7 @@ export function declareEventHandler(
 }
 
 export function declareTags(target: any, tags: string[]) {
-    set_metadata(target, "__tags", tags);
+    set_metadata(target, "__tags", tags.map(t => ({ name: t, description: t})));
     return target;
 }
 

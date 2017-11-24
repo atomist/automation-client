@@ -106,7 +106,7 @@ describe("class style metadata reading", () => {
         const h = new TagsAndIntent();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
         assert.deepEqual(md.intent, ["universal", "generator"]);
-        assert.deepEqual(md.tags, ["universal", "generator"]);
+        assert.deepEqual(md.tags.map(t => t.name), ["universal", "generator"]);
     });
 
     it("should handle non-decorator command handler metadata", () => {
