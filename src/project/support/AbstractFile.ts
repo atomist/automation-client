@@ -12,6 +12,12 @@ export abstract class AbstractFile extends AbstractScriptedFlushable<File> imple
         return this.path.split("/").pop();
     }
 
+    get extension(): string {
+        return this.name.includes(".") ?
+            this.name.split(".").pop() :
+            "";
+    }
+
     public abstract getContentSync(): string;
 
     public abstract setContentSync(content: string): this;

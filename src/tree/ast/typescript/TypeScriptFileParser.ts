@@ -19,19 +19,20 @@ import { File } from "../../../project/File";
  * and the SyntaxKind type defined by
  * the TypeScript compiler. Invalid production names will be rejected
  * with a runtime error.
+ *
+ * Will try to determine TypeScript ScriptKind from the file extension.
  */
 export class TypeScriptFileParser implements FileParser {
 
     public rootName = ts.SyntaxKind[ts.SyntaxKind.SourceFile];
 
-    constructor(public scriptTarget: ts.ScriptTarget,
-                public scriptKind: ts.ScriptKind = ts.ScriptKind.TS) {
+    constructor(public scriptTarget: ts.ScriptTarget) {
     }
 
     public toAst(f: File): Promise<TreeNode> {
         return f.getContent()
             .then(content => {
-                const sourceFile = ts.createSourceFile(f.name, content, this.scriptTarget, false, this.scriptKind);
+                const sourceFile = ts.createSourceFile(f.name, content, this.scriptTarget, false, scriptKindFor(f));
                 const root = new TypeScriptAstNodeTreeNode(sourceFile, sourceFile, undefined);
                 return root;
             });
@@ -53,6 +54,27 @@ export class TypeScriptFileParser implements FileParser {
     }
 }
 
+/**
+ * Determine the script kind of the file from its extension
+ * @param {File} f
+ * @return {ts.ScriptKind}
+ */
+function scriptKindFor(f: File): ts.ScriptKind {
+    switch (f.extension) {
+        case "js" :
+            return ts.ScriptKind.JS;
+        case "jsx" :
+            return ts.ScriptKind.JSX;
+        case "ts" :
+            return ts.ScriptKind.TS;
+        case "tsx" :
+            return ts.ScriptKind.TSX;
+        default:
+            return ts.ScriptKind.Unknown;
+    }
+}
+
+// TODO coming from newer path expression support
 function locationSteps(pex: PathExpression): LocationStep[] {
     return isUnionPathExpression(pex) ?
         _.flatten(pex.unions.map(p => locationSteps(p))) :
@@ -124,4 +146,8 @@ function extractValue(sourceFile: ts.SourceFile, node: any): string {
     }
 }
 
+/**
+ * Parser for TypeScript and JavaScript
+ * @type {TypeScriptFileParser}
+ */
 export const TypeScriptES6FileParser = new TypeScriptFileParser(ts.ScriptTarget.ES2016);

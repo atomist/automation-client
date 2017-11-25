@@ -97,6 +97,11 @@ export interface FileSync extends FileCore {
  */
 export interface File extends FileScripting, FileSync, FileAsync {
 
+    /**
+     * Extension or the empty string if no extension can be determined
+     */
+    extension: string;
+
 }
 
 export function isFile(a: any): a is File {
