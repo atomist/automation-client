@@ -5,6 +5,23 @@ import { File } from "../../project/File";
 import { ProjectAsync } from "../../project/Project";
 
 /**
+ * Options for handling production replacements
+ */
+export interface NodeReplacementOptions {
+
+    replaceAfter?: { after: RegExp, replacement: string };
+}
+
+/**
+ * Replacement option to zap trailing whitespace
+ * @type {{replaceAfter: {after: RegExp; replacement: string}}}
+ */
+export const ZapTrailingWhitespace: NodeReplacementOptions = {
+
+    replaceAfter: {after: /\s*/, replacement: ""},
+};
+
+/**
  * Extension of TreeNode that allows convenient addition before
  * or after a node, without updating the node's value.
  */
@@ -13,6 +30,15 @@ export interface MatchResult extends TreeNode {
     append(content: string);
 
     prepend(content: string);
+
+    /**
+     * Delete the match. Same as setting $value to the empty string,
+     * but can zap trailing spaces also
+     * @param {NodeReplacementOptions} opts
+     */
+    zap(opts: NodeReplacementOptions);
+
+    replace(newContent: string, opts: NodeReplacementOptions);
 }
 
 /**
@@ -35,7 +61,8 @@ export class FileHit {
                 public file: File,
                 public fileNode: TreeNode,
                 public readonly nodes: TreeNode[]) {
-        interface Update {
+
+        interface Update extends NodeReplacementOptions {
             initialValue: string;
             currentValue: string;
             offset: number;
@@ -51,8 +78,15 @@ export class FileHit {
                     const sorted = updates.sort((a, b) => b.offset - a.offset);
                     for (const u of sorted) {
                         logger.debug("Applying update %j", u);
-                        newContent = newContent.substr(0, u.offset) +
-                            newContent.substr(u.offset).replace(u.initialValue, u.currentValue);
+                        if (!!u.replaceAfter) {
+                            newContent = newContent.substr(0, u.offset) +
+                                newContent.substr(u.offset).replace(u.initialValue, u.currentValue);
+                            newContent = newContent.substr(0, u.offset + u.currentValue.length) +
+                                newContent.substr(u.offset + u.currentValue.length).replace(u.replaceAfter.after, u.replaceAfter.replacement);
+                        } else {
+                            newContent = newContent.substr(0, u.offset) +
+                                newContent.substr(u.offset).replace(u.initialValue, u.currentValue);
+                        }
                     }
                     return file.setContent(newContent);
                 });
@@ -76,10 +110,13 @@ export class FileHit {
                 },
             });
             m.append = (content: string) => {
-                updates.push({ initialValue: "", currentValue: content, offset: m.$offset + currentValue.length });
+                updates.push({initialValue: "", currentValue: content, offset: m.$offset + currentValue.length});
             };
             m.prepend = (content: string) => {
-                updates.push({ initialValue: "", currentValue: content, offset: m.$offset });
+                updates.push({initialValue: "", currentValue: content, offset: m.$offset});
+            };
+            m.zap = (opts: NodeReplacementOptions) => {
+                updates.push({...opts, initialValue, currentValue: "", offset: m.$offset});
             };
         });
         project.recordAction(p => doReplace());

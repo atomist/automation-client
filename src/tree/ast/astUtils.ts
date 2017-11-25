@@ -8,7 +8,7 @@ import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { logger } from "../../internal/util/logger";
 import { ProjectAsync } from "../../project/Project";
 import { saveFromFilesAsync } from "../../project/util/projectUtils";
-import { FileHit, MatchResult } from "./FileHits";
+import { FileHit, MatchResult, NodeReplacementOptions } from "./FileHits";
 import { FileParser, isFileParser } from "./FileParser";
 import { FileParserRegistry } from "./FileParserRegistry";
 
@@ -113,11 +113,6 @@ export function findValues(p: ProjectAsync,
             .map(m => m.$value));
 }
 
-export interface ZapMatchesOptions {
-
-    zapTrailingSpaces?: boolean;
-}
-
 /**
  * Integrate path expressions with project operations to find all matches
  * of a path expression and zap them. Use with care!
@@ -132,18 +127,13 @@ export function zapAllMatches<P extends ProjectAsync = ProjectAsync>(p: P,
                                                                      parserOrRegistry: FileParser | FileParserRegistry,
                                                                      globPattern: string,
                                                                      pathExpression: string | PathExpression,
-                                                                     opts: ZapMatchesOptions = {}): Promise<P> {
+                                                                     opts: NodeReplacementOptions = {}): Promise<P> {
     return findFileMatches(p, parserOrRegistry, globPattern, pathExpression)
         .then(fileHits => {
             fileHits.forEach(fh => {
                 const sorted = fh.matches.sort((m1, m2) => m1.$offset - m2.$offset);
                 sorted.forEach(m => {
-                    if (opts.zapTrailingSpaces && m.$offset) {
-                        console.warn("Cannot remove trailing spaces: Not implemented");
-                        m.$value = "";
-                    } else {
-                        m.$value = "";
-                    }
+                    m.zap(opts);
                 });
             });
             return p.flush();
