@@ -7,7 +7,50 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.3.5...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.3.6...HEAD
+
+## [0.3.6][] - 2017-11-1
+
+[0.3.6]: https://github.com/atomist/automation-client-ts/compare/0.3.5...0.3.6
+
+### Added
+
+-   add missing test for tags
+-   Added test to prove compilation of simple project editor function
+-   Added SmartParameters interface for optional parameter validation
+-   Added SmartParameters interface for optional parameter validation
+-   Added generatorHandler function for functional style construction of generators
+-   Added GeneratorWithExternalParameters
+
+### Changed
+
+-   HandlerContext argument now optional for SimpleProjectEditor
+-   polish
+-   Merge pull request #126 from atomist/nortissej/mark-deprecated
+-   JSON editing using parsing and stringification
+-   Increase timeouts on cloning tests
+-   Comment AbstractGenerator as deprecated
+-   check if namespace is active
+-   remove dependency on cls
+-   Merge pull request #120 from atomist/move-out-java
+-   Moved CopyGenerator in from spring-automations
+-   Corrected filename of BaseSeedDrivenGeneratorParameters
+-   Corrected filename for GenericGenerator
+-   Remove Spring automations. Now in atomist/spring-automations
+-   
+
+### Fixed
+
+-   fix metadata reading bug for param classes
+-   Fixes #82: Parse and manipulate JSON
+-   Fixes #82: Handle JSON
+-   Fix #81: Automatically handle TS/JS extensions
+-   Fix #105: zapAllMatches should handle trailing whitespace
+-   fix tag extraction
+-   Fixes for nested parameter handling
+-   Fixes for nested parameter handling
+-   Fix nested mapped parameters and secrets handling
+-   Fixing nested mapped parameters issue
 
 ## [0.3.5][] - 2017-11-22
 
