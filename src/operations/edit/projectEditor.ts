@@ -12,7 +12,7 @@ export type ProjectEditor<P = undefined, ER extends EditResult = EditResult> =
     (p: Project, context: HandlerContext, params?: P) => Promise<ER>;
 
 export type SimpleProjectEditor<P = undefined> =
-    (p: Project, context: HandlerContext, params?: P) => Promise<Project>;
+    (p: Project, context?: HandlerContext, params?: P) => Promise<Project>;
 
 export type AnyProjectEditor<P = undefined> = ProjectEditor<P> | SimpleProjectEditor<P>;
 

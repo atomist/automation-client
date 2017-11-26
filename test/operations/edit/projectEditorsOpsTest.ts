@@ -8,9 +8,14 @@ import { tempProject } from "../../project/utils";
 
 describe("editor chaining", () => {
 
-    it("should allow simple ProjectEditor with single argument", () => {
+    it("should allow invoking simple ProjectEditor with single argument", done => {
         // Check for compilation
         const spe: SimpleProjectEditor = (p: Project) => Promise.resolve(p);
+        const np = InMemoryProject.of();
+        spe(np).then(r => {
+            assert(r === np);
+            done();
+        }).catch(done);
     });
 
     it("should make no op with empty chainEditors", done => {
