@@ -65,8 +65,8 @@ function metadataFromDecorator(h: any, params: any): CommandHandlerMetadata | Ev
         return {
             name: h.__name,
             description: h.__description,
-            tags: h.__tags ? params.__tags : [],
-            intent: h.__intent ? params.__intent : [],
+            tags: h.__tags ? h.__tags : [],
+            intent: h.__intent ? h.__intent : [],
             parameters: parametersFromInstance(params),
             mapped_parameters: mappedParameterMetadataFromInstance(params),
             secrets: secretsMetadataFromInstance(params),

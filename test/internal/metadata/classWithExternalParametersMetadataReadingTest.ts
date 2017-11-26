@@ -35,6 +35,7 @@ describe("class with external parameters metadata reading", () => {
         assert(md.secrets.length === 1);
         assert(md.secrets[0].name === "secrets.someSecret");
         assert(md.secrets[0].path === "atomist://some_secret");
+        assert.deepEqual(md.intent, ["some intent"]);
     });
 
     it("should extract metadata from command handler with direct nested parameters", () => {
@@ -181,7 +182,7 @@ class ComposedAddAtomistSpringAgentParameters {
 
 }
 
-@CommandHandler("add the Atomist Spring Boot agent to a Spring Boot project")
+@CommandHandler("add the Atomist Spring Boot agent to a Spring Boot project", "some intent")
 @Tags("atomist", "spring")
 class AddAtomistSpringAgentWithComposedParameters implements HandleCommand<ComposedAddAtomistSpringAgentParameters> {
 
