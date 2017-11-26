@@ -37,7 +37,7 @@ describe("cached git clone projects", () => {
                     "Oh no! two simultaneous projects in " + them[0].baseDir);
             })
             .then(cleaningDone, cleaningDone);
-    }).timeout(5000);
+    }).timeout(20000);
 
     it("returns the same place on the filesystem in sequence", done => {
         getAClone({ repoName: "this-repository-exists-to-test-cached-clones" }).then(clone1 => {
@@ -71,7 +71,7 @@ describe("cached git clone projects", () => {
                             return clone2.release();
                         })))
             .then(done, done);
-    }).timeout(5000);
+    }).timeout(20000);
 
     it("should be on the correct branch when you get the directory again", done => {
         const repoName = "this-repository-exists-to-test-cached-clones-3";
@@ -93,7 +93,7 @@ describe("cached git clone projects", () => {
                                 }));
                 }))
             .then(done, done);
-    }).timeout(5000);
+    }).timeout(20000);
 
     it("should be on the correct branch even if the branch name overlaps with a file", done => {
         const repoName = "this-repository-exists-to-test-cached-clones-3";
@@ -115,7 +115,7 @@ describe("cached git clone projects", () => {
                                 }));
                 }))
             .then(done, done);
-    }).timeout(5000);
+    }).timeout(20000);
 
     it("should start with the branch in sync with origin", done => {
         const repoName = "this-repository-exists-to-test-cached-clones-2";
@@ -149,7 +149,7 @@ describe("cached git clone projects", () => {
                             }));
                 }))
             .then(done, done);
-    }).timeout(5000);
+    }).timeout(20000);
 
     it("should default to the repository's default branch");
 
@@ -180,6 +180,6 @@ describe("cached git clone projects", () => {
                     });
             })
             .then(done, done);
-    }).timeout(5000);
+    }).timeout(20000);
 
 });

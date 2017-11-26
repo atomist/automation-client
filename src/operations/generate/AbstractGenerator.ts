@@ -19,6 +19,8 @@ import { AnyProjectEditor, ProjectEditor, toEditor } from "../edit/projectEditor
 import { push } from "./gitHubProjectPersister";
 
 /**
+ * Deprecated! use the functions in generateUtils instead.
+ *
  * Support for all generators.
  * Defines common parameters.
  *
