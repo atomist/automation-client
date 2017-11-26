@@ -21,8 +21,7 @@ describe("TypeScriptFileParser real project parsing: JavaScript", () => {
             "build/src/tree/ast/typescript/*.js",
             "//ClassDeclaration/Identifier")
             .then(matchResults => {
-                assert.deepEqual(matchResults.map(m => m.$value),
-                    ["TypeScriptFileParser", "TypeScriptAstNodeTreeNode"]);
+                assert(matchResults.map(m => m.$value).includes(TypeScriptFileParser.name));
                 done();
             }).catch(done);
     }).timeout(5000);
@@ -32,8 +31,7 @@ describe("TypeScriptFileParser real project parsing: JavaScript", () => {
             "build/src/tree/ast/typescript/*.js",
             "//ClassDeclaration/Identifier")
             .then(values => {
-                assert.deepEqual(values,
-                    ["TypeScriptFileParser", "TypeScriptAstNodeTreeNode"]);
+                assert(values.includes(TypeScriptFileParser.name));
                 done();
             }).catch(done);
     }).timeout(5000);
