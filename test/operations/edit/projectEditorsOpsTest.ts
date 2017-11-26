@@ -1,12 +1,17 @@
 import "mocha";
 import * as assert from "power-assert";
-import { ProjectEditor, successfulEdit } from "../../../src/operations/edit/projectEditor";
+import { ProjectEditor, SimpleProjectEditor, successfulEdit } from "../../../src/operations/edit/projectEditor";
 import { chainEditors, NoOpEditor } from "../../../src/operations/edit/projectEditorOps";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../src/project/Project";
 import { tempProject } from "../../project/utils";
 
 describe("editor chaining", () => {
+
+    it("should allow simple ProjectEditor with single argument", () => {
+        // Check for compilation
+        const spe: SimpleProjectEditor = (p: Project) => Promise.resolve(p);
+    });
 
     it("should make no op with empty chainEditors", done => {
         const project = tempProject();
