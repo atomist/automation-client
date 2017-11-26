@@ -6,8 +6,9 @@ import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../../src/project/git/GitProject";
 import { CachingDirectoryManager } from "../../../src/spi/clone/CachingDirectoryManager";
-import { DefaultCloneOptions } from "../../../src/spi/clone/DirectoryManager";
+import { CloneOptions, DefaultCloneOptions } from "../../../src/spi/clone/DirectoryManager";
 import { GitHubToken } from "../../atomist.config";
+import { TmpDirectoryManager } from "../../../src/spi/clone/tmpDirectoryManager";
 
 const Creds = { token: GitHubToken };
 const Owner = "atomist-travisorg";
@@ -61,7 +62,7 @@ describe("cached git clone projects", () => {
                 .then(file => file.setContent("This is something different"))
                 .then(() => project))
             .then(clone1 => clone1.release()
-                .then(() => getAClone( { repoName }))
+                .then(() => getAClone({ repoName }))
                 .then(clone2 =>
                     clone2.gitStatus()
                         .then(status => {
@@ -161,7 +162,6 @@ describe("cached git clone projects", () => {
             return runCommand("rm -rf .git", { cwd: repoRoot });
         }
 
-        console.log("hello there");
         getAClone({ repoName })
             .then(clone1 => {
                 const baseDir = clone1.baseDir;
@@ -172,8 +172,8 @@ describe("cached git clone projects", () => {
                         // we're in the same place
                         assert(clone2.baseDir === clone1.baseDir,
                             "this test is pointless if not in the same spot." +
-                        "\nclone 1 provenance: " + clone1.provenance +
-                        "\nclone 2 provenance: " + clone2.provenance);
+                            "\nclone 1 provenance: " + clone1.provenance +
+                            "\nclone 2 provenance: " + clone2.provenance);
                         // and it worked
                         return clone2.gitStatus()
                             .then(() => clone2.release());
@@ -182,4 +182,41 @@ describe("cached git clone projects", () => {
             .then(done, done);
     }).timeout(20000);
 
+
+});
+
+describe("even transient clones have some properties", () => {
+    function cloneTransiently(opts: CloneOptions = DefaultCloneOptions) {
+        const repositoryThatExists = new GitHubRepoRef(Owner, RepoName);
+        return GitCommandGitProject.cloned(Creds, repositoryThatExists, opts, TmpDirectoryManager)
+    }
+
+    it("clones to depth of 1 when transient", done => {
+        cloneTransiently()
+            .then(clone1 => {
+                const baseDir = clone1.baseDir;
+                return runCommand("git rev-list HEAD", { cwd: baseDir }).then(result => {
+                    assert(result.stdout.trim().split("\n").length === 1, result.stdout)
+                })
+            })
+            .then(() => done(), done);
+    }).timeout(20000);
+
+    it("clones fully when requested", done => {
+        cloneTransiently({ alwaysDeep: true })
+            .then(clone1 => {
+                const baseDir = clone1.baseDir;
+                return runCommand("git rev-list HEAD", { cwd: baseDir })
+                    .then(result => {
+                        // we can see all the commits
+                        assert(result.stdout.trim().split("\n").length > 1);
+                        return runCommand("git rev-list this-tag-exists", { cwd: baseDir })
+                            .then(branchResult => {
+                                // now we have access to branches
+                                assert(branchResult.stdout.trim().split("\n").length >= 1);
+                            })
+                    })
+            })
+            .then(done, done);
+    }).timeout(20000);
 });
