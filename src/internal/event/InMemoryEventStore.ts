@@ -12,7 +12,7 @@ export class InMemoryEventStore implements EventStore {
     private commandCache: LRUMap<CacheKey, CommandIncoming>;
     private messageCache: LRUMap<CacheKey, any>;
 
-    //                         5 mins for 3 hours
+    // 5 mins for 3 hours
     private eventSer = new RRD(60 * 5, 12 * 3);
     private commandSer = new RRD(60 * 5, 12 * 3);
 

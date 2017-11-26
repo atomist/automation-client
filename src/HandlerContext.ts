@@ -21,6 +21,9 @@ export interface HandlerContext extends Contextual {
 
 }
 
+/**
+ * Context of the currently running automation.
+ */
 export interface AutomationContextAware {
 
     context: AutomationContext;
