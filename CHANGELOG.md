@@ -9,10 +9,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.3.5...HEAD
 
-## [0.3.5][] - 2017-11-22
-
-[0.3.5]: https://github.com/atomist/automation-client-ts/compare/0.3.4...0.3.5
-
 ### Added
 
 -   Support for parsing and manipulating JavaScript, JSX and TSX via `TypeScriptFileParser`
@@ -23,6 +19,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   **Breaking** Removed Spring and Java related generators and support, 
     which belong in a language-specific module.
     Now in `atomist/spring-automations`
+
+## [0.3.5][] - 2017-11-22
+
+[0.3.5]: https://github.com/atomist/automation-client-ts/compare/0.3.4...0.3.5
+
+### Changed
+
 -   Moved `@types/continuation-local-storage` to dependencies since it
     has exported types
 -   Added more types to default exports in index.ts
