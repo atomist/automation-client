@@ -1,9 +1,6 @@
-import * as fs from "fs-extra";
-
 import { ActionResult } from "../../action/ActionResult";
 import { HandlerContext } from "../../HandlerContext";
 import { logger } from "../../internal/util/logger";
-import { DefaultDirectoryManager } from "../../project/git/GitCommandGitProject";
 import { LocalProject } from "../../project/local/LocalProject";
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
 import { Project } from "../../project/Project";
