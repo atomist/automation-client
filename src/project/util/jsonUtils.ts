@@ -1,6 +1,6 @@
+import { logger } from "../../internal/util/logger";
 import { ProjectAsync } from "../Project";
 import { doWithFiles } from "./projectUtils";
-import { logger } from "../../internal/util/logger";
 
 export type JsonManipulation = (jsonObj: any) => void;
 
