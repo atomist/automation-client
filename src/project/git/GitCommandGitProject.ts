@@ -2,7 +2,6 @@ import { exec } from "child-process-promise";
 import * as stringify from "json-stringify-safe";
 
 import axios from "axios";
-import * as os from "os";
 import { isLocalProject, ReleaseFunction } from "../local/LocalProject";
 import { Project } from "../Project";
 
@@ -317,7 +316,7 @@ function clone(credentials: ProjectOperationCredentials,
         .then(cloneDirectoryInfo => {
             switch (cloneDirectoryInfo.type) {
                 case "empty-directory" :
-                    return cloneInto(credentials, cloneDirectoryInfo, id);
+                    return cloneInto(credentials, cloneDirectoryInfo, opts, id);
                 case "existing-directory" :
                     const repoDir = cloneDirectoryInfo.path;
                     return checkout(repoDir, id.sha)
@@ -342,9 +341,11 @@ function clone(credentials: ProjectOperationCredentials,
 }
 
 function cloneInto(credentials: ProjectOperationCredentials,
-                   targetDirectoryInfo: CloneDirectoryInfo, id: RemoteRepoRef) {
+                   targetDirectoryInfo: CloneDirectoryInfo,
+                   opts: CloneOptions,
+                   id: RemoteRepoRef) {
     const repoDir = targetDirectoryInfo.path;
-    const command = (id.sha === "master" && targetDirectoryInfo.transient) ?
+    const command = (!opts.alwaysDeep && id.sha === "master" && targetDirectoryInfo.transient) ?
         runIn(".", `git clone --depth 1 ${id.cloneUrl(credentials)} ${repoDir}`) :
         runIn(".", `git clone ${id.cloneUrl(credentials)} ${repoDir}`)
             .then(() => runIn(repoDir, `git checkout ${id.sha} --`));

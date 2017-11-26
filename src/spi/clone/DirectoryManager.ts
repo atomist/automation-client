@@ -7,10 +7,18 @@ export interface CloneOptions {
      * in any way.
      */
     keep?: boolean;
+
+    /**
+     * If this is true, always make a full clone.
+     * If it's false, and we want the master branch, and we're cloning into a transient
+     * place, then clone with `--depth 1` to save time.
+     */
+    alwaysDeep?: boolean;
 }
 
 export const DefaultCloneOptions: CloneOptions = {
     keep: false,
+    alwaysDeep: false,
 };
 
 /**
