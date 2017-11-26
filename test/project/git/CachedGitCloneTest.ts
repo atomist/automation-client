@@ -7,8 +7,8 @@ import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProj
 import { GitProject } from "../../../src/project/git/GitProject";
 import { CachingDirectoryManager } from "../../../src/spi/clone/CachingDirectoryManager";
 import { CloneOptions, DefaultCloneOptions } from "../../../src/spi/clone/DirectoryManager";
-import { GitHubToken } from "../../atomist.config";
 import { TmpDirectoryManager } from "../../../src/spi/clone/tmpDirectoryManager";
+import { GitHubToken } from "../../atomist.config";
 
 const Creds = { token: GitHubToken };
 const Owner = "atomist-travisorg";
@@ -182,13 +182,12 @@ describe("cached git clone projects", () => {
             .then(done, done);
     }).timeout(20000);
 
-
 });
 
 describe("even transient clones have some properties", () => {
     function cloneTransiently(opts: CloneOptions = DefaultCloneOptions) {
         const repositoryThatExists = new GitHubRepoRef(Owner, RepoName);
-        return GitCommandGitProject.cloned(Creds, repositoryThatExists, opts, TmpDirectoryManager)
+        return GitCommandGitProject.cloned(Creds, repositoryThatExists, opts, TmpDirectoryManager);
     }
 
     it("clones to depth of 1 when transient", done => {
@@ -196,8 +195,8 @@ describe("even transient clones have some properties", () => {
             .then(clone1 => {
                 const baseDir = clone1.baseDir;
                 return runCommand("git rev-list HEAD", { cwd: baseDir }).then(result => {
-                    assert(result.stdout.trim().split("\n").length === 1, result.stdout)
-                })
+                    assert(result.stdout.trim().split("\n").length === 1, result.stdout);
+                });
             })
             .then(() => done(), done);
     }).timeout(20000);
@@ -214,8 +213,8 @@ describe("even transient clones have some properties", () => {
                             .then(branchResult => {
                                 // now we have access to branches
                                 assert(branchResult.stdout.trim().split("\n").length >= 1);
-                            })
-                    })
+                            });
+                    });
             })
             .then(done, done);
     }).timeout(20000);
