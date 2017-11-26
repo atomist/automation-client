@@ -36,6 +36,7 @@ describe("class with external parameters metadata reading", () => {
         assert(md.secrets[0].name === "secrets.someSecret");
         assert(md.secrets[0].path === "atomist://some_secret");
         assert.deepEqual(md.intent, ["some intent"]);
+        assert.deepEqual(md.tags.map(t => t.name), ["atomist", "spring"]);
     });
 
     it("should extract metadata from command handler with direct nested parameters", () => {
