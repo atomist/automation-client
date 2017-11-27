@@ -13,12 +13,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Support for parsing and manipulating JavaScript, JSX and TSX via `TypeScriptFileParser`
 -   Support for parsing and manipulating JSON via `jsonUtils` functions
+-   Support for specifying shutdown behavior with `configuration.ws.termination`
 
 ### Changed
 
 -   **Breaking** Removed Spring and Java related generators and support, 
     which belong in a language-specific module.
-    Now in `atomist/spring-automations`
+    Now in `atomist/spring-automation`
+-   **Breaking** Removed embedded dashboard web ui
 
 ## [0.3.5][] - 2017-11-22
 
