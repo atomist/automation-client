@@ -1,5 +1,6 @@
 
 import { Contextual } from "./internal/invoker/Payload";
+import { ResourceRecovery } from "./internal/invoker/resourceRecovery";
 import { AutomationContext } from "./internal/util/cls";
 import { GraphClient } from "./spi/graph/GraphClient";
 import { MessageClient } from "./spi/message/MessageClient";
@@ -7,7 +8,7 @@ import { MessageClient } from "./spi/message/MessageClient";
 /**
  * Context available to all handlers.
  */
-export interface HandlerContext extends Contextual {
+export interface HandlerContext extends Contextual, ResourceRecovery {
 
     /**
      * Client to use for GraphQL queries
