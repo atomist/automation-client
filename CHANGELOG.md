@@ -7,7 +7,36 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.3.5...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.3.6...HEAD
+
+## [0.3.6][] - 2017-11-1
+
+[0.3.6]: https://github.com/atomist/automation-client-ts/compare/0.3.5...0.3.6
+
+### Added
+
+-   Added SmartParameters interface for optional parameter validation
+-   Added generatorHandler function for functional style construction of generators
+-   Added GeneratorWithExternalParameters
+-   JSON editing using parsing and stringification
+-   Parameters can be requested in a class, and they can be nested.
+
+### Changed
+
+-   HandlerContext argument now optional for SimpleProjectEditor
+-   AbstractGenerator is now deprecated
+-   Merge pull request #120 from atomist/move-out-java
+-   Moved CopyGenerator in from spring-automations
+-   Corrected filename of BaseSeedDrivenGeneratorParameters
+-   Corrected filename for GenericGenerator
+-   Remove Spring automations. Now in atomist/spring-automations
+
+### Fixed
+
+-   fix metadata reading bug for param classes
+-   Fix #81: Automatically handle TS/JS extensions
+-   Fix #105: zapAllMatches should handle trailing whitespace
+-   fix tag extraction
 
 ### Added
 
