@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+-   **Breaking** `editorHandler` now takes a function to create a `ProjectEditor`
 -   **Breaking** Removed Spring and Java related generators and support, 
     which belong in a language-specific module.
     Now in `atomist/spring-automation`

@@ -38,21 +38,22 @@ function defaultDetails(name: string): EditorCommandDetails {
 
 /**
  * Create a handle function that edits one or many repos, following BaseEditorParameters
- * @param {AnyProjectEditor} pe
+ * @param pe function returning a project editor instance appropriate for the parameters
  * @param {ParametersConstructor<PARAMS>} factory
  * @param {string} name
  * @param {string} details object allowing customization beyond reasonable defaults
  * @return {HandleCommand}
  */
-export function editorHandler<PARAMS>(pe: AnyProjectEditor,
-                                      factory: ParametersConstructor<PARAMS>,
-                                      name: string,
-                                      details: Partial<EditorCommandDetails> = {}): HandleCommand {
+export function editorHandler<PARAMS extends BaseEditorParameters>(pe: (params: PARAMS) => AnyProjectEditor,
+                                                                   factory: ParametersConstructor<PARAMS>,
+                                                                   name: string,
+                                                                   details: Partial<EditorCommandDetails> = {}): HandleCommand {
     const detailsToUse: EditorCommandDetails = {
         ...defaultDetails(name),
-            ...details,
+        ...details,
     };
-    return commandHandlerFrom(handleEditOneOrMany(pe, detailsToUse), factory, name,
+    return commandHandlerFrom(handleEditOneOrMany(pe, detailsToUse),
+        factory, name,
         detailsToUse.description, detailsToUse.intent, detailsToUse.tags);
 }
 
@@ -60,16 +61,18 @@ export function editorHandler<PARAMS>(pe: AnyProjectEditor,
  * If owner and repo are required, edit just one repo. Otherwise edit all repos
  * in the present team
  */
-function handleEditOneOrMany<PARAMS extends BaseEditorParameters>(pe: AnyProjectEditor,
+function handleEditOneOrMany<PARAMS extends BaseEditorParameters>(pe: (params: PARAMS) => AnyProjectEditor,
                                                                   details: EditorCommandDetails): OnCommand<PARAMS> {
     return (ctx: HandlerContext, parameters: PARAMS) => {
         const credentials = {token: parameters.githubToken};
         if (!!parameters.owner && !!parameters.repo) {
-            return editOne(ctx, credentials, pe, editModeFor(details.editMode, parameters),
+            return editOne(ctx, credentials,
+                pe(parameters),
+                editModeFor(details.editMode, parameters),
                 new SimpleRepoId(parameters.owner, parameters.repo),
                 parameters, details.repoLoader);
         }
-        return editAll(ctx, credentials, pe, details.editMode, parameters,
+        return editAll(ctx, credentials, pe(parameters), details.editMode, parameters,
             details.repoFinder, details.repoFilter, details.repoLoader);
     };
 }

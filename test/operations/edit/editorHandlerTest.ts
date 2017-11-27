@@ -11,7 +11,7 @@ import { BuildableAutomationServer } from "../../../src/server/BuildableAutomati
 describe("editorHandler", () => {
 
     it("should verify default no intent", () => {
-        const h = editorHandler(p => Promise.resolve(p),
+        const h = editorHandler(() => p => Promise.resolve(p),
             BaseEditorParameters,
             "editor");
         const chm = metadataFromInstance(h) as CommandHandlerMetadata;
@@ -21,7 +21,7 @@ describe("editorHandler", () => {
     it("should verify specified intent", () => {
         const description = "custom description";
         const intent = "this is a very long intent to type";
-        const h = editorHandler(p => Promise.resolve(p),
+        const h = editorHandler(() => p => Promise.resolve(p),
             BaseEditorParameters,
             "editor", {
                 description,
@@ -33,7 +33,7 @@ describe("editorHandler", () => {
     });
 
     it("should register editor", done => {
-        const h = editorHandler(p => Promise.resolve(p),
+        const h = editorHandler(() => p => Promise.resolve(p),
             BaseEditorParameters,
             "editor");
         assert(metadataFromInstance(h).name === "editor");
@@ -43,7 +43,11 @@ describe("editorHandler", () => {
     });
 
     it("should use no op editor against no repos", done => {
-        const h = editorHandler(p => Promise.resolve(p),
+        const h = editorHandler(params => {
+                assert(!!params);
+                assert(params.owner === "foo");
+                return p => Promise.resolve(p);
+            },
             BaseEditorParameters,
             "editor", {
                 repoFinder: fromListRepoFinder([]),
@@ -52,7 +56,7 @@ describe("editorHandler", () => {
         s.registerCommandHandler(() => h);
         s.invokeCommand({
             name: "editor",
-            args: [{name: "slackTeam", value: "T1691"}],
+            args: [{name: "slackTeam", value: "T1691" }, {name: "owner", value: "foo"}],
             secrets: [{name: "github://user_token?scopes=repo,user", value: "antechinus"}],
         }, {
             teamId: "T666",
