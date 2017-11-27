@@ -133,6 +133,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
         const finalize = (result: HandlerResult) => {
             this.sendStatus(result.code === 0 ? true : false, result, command, ctx)
+                .catch(error => logger.warn("Unable to send status for command " + stringify(command)))
                 .then(() => {
                     callback(Promise.resolve(result));
                     logger.info(`Finished invocation of command handler '%s': %s`,
@@ -270,7 +271,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         this.listeners.map(l => () => l.commandFailed(ci, ctx, result))
             .reduce((p, f) => p.then(f), Promise.resolve())
             .then(() => {
-                this.sendStatus(false, result as HandlerResult, command, ctx);
+                this.sendStatus(false, result as HandlerResult, command, ctx)
+                    .catch(error => logger.warn("Unable to send status for command: " + stringify(command)));
                 if (callback) {
                     callback(Promise.resolve(result));
                 }
