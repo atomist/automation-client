@@ -64,7 +64,8 @@ function handleEditOneOrMany<PARAMS extends BaseEditorParameters>(pe: (params: P
                 pe(parameters),
                 editModeFor(details.editMode, parameters),
                 new SimpleRepoId(parameters.owner, parameters.repo),
-                parameters, details.repoLoader(parameters));
+                parameters,
+                !!details.repoLoader ? details.repoLoader(parameters) : undefined);
         }
         return editAll(ctx, credentials, pe(parameters), details.editMode, parameters,
             details.repoFinder, details.repoFilter,
