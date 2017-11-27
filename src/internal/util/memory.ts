@@ -4,20 +4,17 @@ import * as os from "os";
 import { broadcast } from "../transport/cluster/messages";
 import { logger } from "./logger";
 
-let DataDirectory = `${appRoot.path}/public/heap`;
+let DataDirectory = `${appRoot.path}/heap`;
 
 /**
  * Initialise memory monitoring. This is will set the data directory for heap dumps and
  * print the head usage to the connsole every 60 seconds.
  * @param {string} dataDirectory
  */
-export function initMemoryMonitoring(dataDirectory: string = `${appRoot.path}/public/heap`) {
+export function initMemoryMonitoring(dataDirectory: string = `${appRoot.path}/heap`) {
 
     logger.info("Initialising memory monitoring");
     DataDirectory = dataDirectory;
-    if (!fs.existsSync(DataDirectory)) {
-        fs.mkdirSync(DataDirectory);
-    }
 
     setInterval(() => {
         logger.debug("Memory statistics: %j", memoryUsage());
@@ -32,6 +29,9 @@ export function heapDump(): string {
     logger.debug("Memory statistics: %j", memoryUsage());
     const heapdump = require("heapdump");
     const name = `heapdump-${process.pid}-${Date.now()}.heapsnapshot`;
+    if (!fs.existsSync(DataDirectory)) {
+        fs.mkdirSync(DataDirectory);
+    }
     heapdump.writeSnapshot(`${DataDirectory}/${name}`, (err, filename) => {
         logger.warn("Heap dump written to '%s'", filename);
     });
