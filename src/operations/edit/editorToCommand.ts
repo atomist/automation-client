@@ -7,16 +7,21 @@ import { SimpleRepoId } from "../common/RepoId";
 import { RepoLoader } from "../common/repoLoader";
 import { BaseEditorParameters } from "./BaseEditorParameters";
 import { editAll, editOne } from "./editAll";
-import { EditMode, PullRequest } from "./editModes";
+import { EditMode, isEditMode, PullRequest } from "./editModes";
 import { AnyProjectEditor } from "./projectEditor";
+
+/**
+ * Either directly return an EditMode or a factory to return one from the context
+ */
+export type EditModeOrFactory<PARAMS> = EditMode | ((p: PARAMS) => EditMode);
 
 /**
  * Further details of an editor to allow selective customization
  */
-export interface EditorCommandDetails {
+export interface EditorCommandDetails<PARAMS = any> {
 
     description: string;
-    editMode: EditMode;
+    editMode: EditModeOrFactory<PARAMS>;
     intent?: string | string[];
     tags?: string | string[];
     repoFinder?: RepoFinder;
@@ -60,11 +65,17 @@ function handleEditOneOrMany<PARAMS extends BaseEditorParameters>(pe: AnyProject
     return (ctx: HandlerContext, parameters: PARAMS) => {
         const credentials = {token: parameters.githubToken};
         if (!!parameters.owner && !!parameters.repo) {
-            return editOne(ctx, credentials, pe, details.editMode,
+            return editOne(ctx, credentials, pe, editModeFor(details.editMode, parameters),
                 new SimpleRepoId(parameters.owner, parameters.repo),
                 parameters, details.repoLoader);
         }
         return editAll(ctx, credentials, pe, details.editMode, parameters,
             details.repoFinder, details.repoFilter, details.repoLoader);
     };
+}
+
+function editModeFor<PARAMS>(emf: EditModeOrFactory<PARAMS>, p: PARAMS): EditMode {
+    return isEditMode(emf) ?
+        emf :
+        emf(p);
 }
