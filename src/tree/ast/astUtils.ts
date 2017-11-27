@@ -48,20 +48,23 @@ export function findByExpression(p: ProjectAsync,
  * @param globPattern file glob pattern
  * @param parserOrRegistry parser for files
  * @param pathExpression path expression string or parsed
- * @return {Promise<TreeNode[]>} hit record for each matching file
+ * @param functionRegistry registry to look for path expression functions in
+ * @return {Promise<MatchResult[]>} hit records for each matching file
  */
 export function findMatches(p: ProjectAsync,
                             parserOrRegistry: FileParser | FileParserRegistry,
                             globPattern: string,
-                            pathExpression: string | PathExpression): Promise<MatchResult[]> {
-    return findFileMatches(p, parserOrRegistry, globPattern, pathExpression)
+                            pathExpression: string | PathExpression,
+                            functionRegistry?: object): Promise<MatchResult[]> {
+    return findFileMatches(p, parserOrRegistry, globPattern, pathExpression, functionRegistry)
         .then(fileHits => _.flatten(fileHits.map(f => f.matches)));
 }
 
 export function findFileMatches(p: ProjectAsync,
                                 parserOrRegistry: FileParser | FileParserRegistry,
                                 globPattern: string,
-                                pathExpression: string | PathExpression): Promise<FileHit[]> {
+                                pathExpression: string | PathExpression,
+                                functionRegistry?: object): Promise<FileHit[]> {
     const parsed: PathExpression = toPathExpression(pathExpression);
     const parser = findParser(parsed, parserOrRegistry);
     if (!parser) {
@@ -79,7 +82,7 @@ export function findFileMatches(p: ProjectAsync,
                     $name: file.name,
                     $children: [topLevelProduction],
                 };
-                const r = evaluateExpression(fileNode, parsed);
+                const r = evaluateExpression(fileNode, parsed, functionRegistry);
                 if (isSuccessResult(r)) {
                     logger.debug("%d matches in file '%s'", r.length, file.path);
                     return new FileHit(p, file, fileNode, r);
@@ -102,13 +105,15 @@ export function findFileMatches(p: ProjectAsync,
  * @param globPattern file glob pattern
  * @param parserOrRegistry parser for files
  * @param pathExpression path expression string or parsed
+ * @param functionRegistry registry to look for path expression functions in
  * @return {Promise<TreeNode[]>} hit record for each matching file
  */
 export function findValues(p: ProjectAsync,
                            parserOrRegistry: FileParser | FileParserRegistry,
                            globPattern: string,
-                           pathExpression: string | PathExpression): Promise<string[]> {
-    return findFileMatches(p, parserOrRegistry, globPattern, pathExpression)
+                           pathExpression: string | PathExpression,
+                           functionRegistry?: object): Promise<string[]> {
+    return findFileMatches(p, parserOrRegistry, globPattern, pathExpression, functionRegistry)
         .then(fileHits => _.flatten(fileHits.map(f => f.matches))
             .map(m => m.$value));
 }
