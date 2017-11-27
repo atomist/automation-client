@@ -35,23 +35,30 @@ export class WebSocketClient {
 
                 registerShutdownHook(() => {
                     reconnect = false;
-                    logger.info("Initiating WebSocket connection shutdown");
 
-                    // Send the control message to orderly stop this client
-                    sendMessage({ control: { name: "stop-sending" }}, ws, false);
+                    if (this.options.termination && this.options.termination.graceful === true) {
+                        logger.info("Initiating WebSocket connection shutdown");
 
-                    // Now wait for configured timeout to let in-flight messages finish processing
-                    const deferred = new Deferred<number>();
-                    setTimeout(() => {
+                        // Send the control message to orderly stop this client
+                        sendMessage({ control: { name: "stop-sending" }}, ws, false);
+
+                        // Now wait for configured timeout to let in-flight messages finish processing
+                        const deferred = new Deferred<number>();
+                        setTimeout(() => {
+                            ws.close();
+                            logger.info("Closing WebSocket connection");
+                            deferred.resolve(0);
+                        }, this.options.termination.gracePeriod || 15000);
+
+                        return deferred.promise
+                            .then(code => {
+                                return code;
+                            });
+                    } else {
                         ws.close();
                         logger.info("Closing WebSocket connection");
-                        deferred.resolve(0);
-                    }, this.options.gracePeriod);
-
-                    return deferred.promise
-                        .then(code => {
-                            return code;
-                        });
+                        return Promise.resolve(0);
+                    }
                 });
 
             }).catch(() => {
@@ -223,7 +230,10 @@ export interface WebSocketClientOptions {
     registrationUrl: string;
     graphUrl: string;
     token: string;
-    gracePeriod: number;
+    termination?: {
+        gracePeriod?: number;
+        graceful?: boolean;
+    };
 }
 
 function isPing(a: any): a is Ping {

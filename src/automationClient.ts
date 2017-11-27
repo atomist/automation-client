@@ -95,7 +95,7 @@ export class AutomationClient {
             graphUrl: _.get(this.configuration, "endpoints.graphql", DefaultGraphQLServer),
             registrationUrl: _.get(this.configuration, "endpoints.api", DefaultApiServer),
             token: this.configuration.token,
-            gracePeriod: _.get(this.configuration, "ws.gracePeriod", 15000),
+            termination: _.get(this.configuration, "ws.termination"),
         };
 
         if (this.configuration.logging && this.configuration.logging.level) {

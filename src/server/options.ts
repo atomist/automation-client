@@ -38,16 +38,19 @@ export interface RunOptions {
                 enabled: boolean;
                 org?: string;
                 adminOrg?: string;
-            },
-        }
+            };
+        };
     };
     ws?: {
-        enabled: boolean,
-        gracePeriod?: number,
+        enabled: boolean;
+        termination?: {
+            gracePeriod?: number;
+            graceful?: boolean;
+        };
     };
     endpoints?: {
-        graphql?: string,
-        api?: string,
+        graphql?: string;
+        api?: string;
     };
 }
 

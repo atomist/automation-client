@@ -57,7 +57,7 @@ describe("DefaultWebSocketRequestProcessor", () => {
         }
         const automations = new MockAutomationServer();
         const listener = new DefaultWebSocketRequestProcessor(automations,
-            { token: "xxx" , registrationUrl: "http://foo.com", graphUrl: "http://bar.com", gracePeriod: 10000});
+            { token: "xxx" , registrationUrl: "http://foo.com", graphUrl: "http://bar.com"});
         listener.onRegistration({url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
         listener.onConnect((new MockWebSocket() as any) as WebSocket);
         listener.processEvent({
@@ -128,7 +128,7 @@ function verifyCommandHandler(code: number, callback: (result) => void) {
     }
     const automations = new MockAutomationServer();
     const listener = new DefaultWebSocketRequestProcessor(automations,
-        { token: "xxx" , registrationUrl: "http://foo.com", graphUrl: "http://bar.com", gracePeriod: 10000});
+        { token: "xxx" , registrationUrl: "http://foo.com", graphUrl: "http://bar.com"});
     listener.onRegistration({url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
     listener.onConnect((new MockWebSocket() as any) as WebSocket);
     listener.processCommand({
