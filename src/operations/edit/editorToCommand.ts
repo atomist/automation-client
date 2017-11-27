@@ -3,9 +3,7 @@ import { HandlerContext } from "../../HandlerContext";
 import { commandHandlerFrom, OnCommand, ParametersConstructor } from "../../onCommand";
 import { CommandDetails } from "../CommandDetails";
 import { RepoFilter } from "../common/repoFilter";
-import { RepoFinder } from "../common/repoFinder";
 import { SimpleRepoId } from "../common/RepoId";
-import { RepoLoader } from "../common/repoLoader";
 import { BaseEditorParameters } from "./BaseEditorParameters";
 import { editAll, editOne } from "./editAll";
 import { EditMode, isEditMode, PullRequest } from "./editModes";
@@ -19,12 +17,10 @@ export type EditModeOrFactory<PARAMS> = EditMode | ((p: PARAMS) => EditMode);
 /**
  * Further details of an editor to allow selective customization
  */
-export interface EditorCommandDetails<PARAMS = any> extends CommandDetails {
+export interface EditorCommandDetails<PARAMS = any> extends CommandDetails<PARAMS> {
 
     editMode: EditModeOrFactory<PARAMS>;
-    repoFinder?: RepoFinder;
     repoFilter?: RepoFilter;
-    repoLoader?: RepoLoader;
 }
 
 function defaultDetails(name: string): EditorCommandDetails {
@@ -68,10 +64,11 @@ function handleEditOneOrMany<PARAMS extends BaseEditorParameters>(pe: (params: P
                 pe(parameters),
                 editModeFor(details.editMode, parameters),
                 new SimpleRepoId(parameters.owner, parameters.repo),
-                parameters, details.repoLoader);
+                parameters, details.repoLoader(parameters));
         }
         return editAll(ctx, credentials, pe(parameters), details.editMode, parameters,
-            details.repoFinder, details.repoFilter, details.repoLoader);
+            details.repoFinder, details.repoFilter,
+            !!details.repoLoader ? details.repoLoader(parameters) : undefined);
     };
 }
 

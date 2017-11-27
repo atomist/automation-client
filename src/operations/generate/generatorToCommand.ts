@@ -23,9 +23,6 @@ export type EditorFactory<P> = (params: P, ctx: HandlerContext) => AnyProjectEdi
  */
 export interface GeneratorCommandDetails<P extends BaseSeedDrivenGeneratorParameters> extends CommandDetails {
 
-    repoFinder: RepoFinder;
-    repoFilter: RepoFilter;
-    repoLoader: (p: P) => RepoLoader;
     redirecter: (r: RepoRef) => string;
     projectPersister?: ProjectPersister;
 }
@@ -34,7 +31,6 @@ function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: strin
     return {
         description: name,
         repoFinder: allReposInTeam(),
-        repoFilter: id => true,
         repoLoader: (p: P) => defaultRepoLoader({ token: p.target.githubToken}),
         projectPersister: GitHubProjectPersister,
         redirecter: () => undefined,
