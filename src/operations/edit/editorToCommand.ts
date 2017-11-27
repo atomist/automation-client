@@ -1,6 +1,7 @@
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { commandHandlerFrom, OnCommand, ParametersConstructor } from "../../onCommand";
+import { CommandDetails } from "../CommandDetails";
 import { RepoFilter } from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
 import { SimpleRepoId } from "../common/RepoId";
@@ -18,12 +19,9 @@ export type EditModeOrFactory<PARAMS> = EditMode | ((p: PARAMS) => EditMode);
 /**
  * Further details of an editor to allow selective customization
  */
-export interface EditorCommandDetails<PARAMS = any> {
+export interface EditorCommandDetails<PARAMS = any> extends CommandDetails {
 
-    description: string;
     editMode: EditModeOrFactory<PARAMS>;
-    intent?: string | string[];
-    tags?: string | string[];
     repoFinder?: RepoFinder;
     repoFilter?: RepoFilter;
     repoLoader?: RepoLoader;

@@ -3,6 +3,7 @@ import { HandlerContext } from "../../HandlerContext";
 import { RedirectResult } from "../../HandlerResult";
 import { commandHandlerFrom, OnCommand, ParametersConstructor } from "../../onCommand";
 import { Project } from "../../project/Project";
+import { CommandDetails } from "../CommandDetails";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { GitHubRepoRef } from "../common/GitHubRepoRef";
@@ -20,11 +21,8 @@ export type EditorFactory<P> = (params: P, ctx: HandlerContext) => AnyProjectEdi
 /**
  * Further details of a generator to allow selective customization
  */
-export interface GeneratorCommandDetails<P extends BaseSeedDrivenGeneratorParameters> {
+export interface GeneratorCommandDetails<P extends BaseSeedDrivenGeneratorParameters> extends CommandDetails {
 
-    description: string;
-    intent?: string | string[];
-    tags?: string | string[];
     repoFinder: RepoFinder;
     repoFilter: RepoFilter;
     repoLoader: (p: P) => RepoLoader;
