@@ -70,7 +70,6 @@ export const configuration: Configuration = {
     },
     http: {
         enabled: true,
-        forceSecure: false,
         auth: {
             basic: {
                 enabled: false,
@@ -78,15 +77,7 @@ export const configuration: Configuration = {
                 password: "test",
             },
             bearer: {
-                enabled: false,
-                org: "atomisthq",
-            },
-            github: {
-                enabled: false,
-                clientId: "092b3124ced86d5d1569",
-                clientSecret: "71d72f657d4402009bd8d728fc1967939c343793",
-                callbackUrl: "http://localhost:2866",
-                org: "atomisthqa",
+                enabled: true,
                 adminOrg: "atomisthq",
             },
         },

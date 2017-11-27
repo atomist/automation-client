@@ -191,12 +191,6 @@ export class AutomationClient {
                 bearer: {
                     enabled: true,
                 },
-                github: {
-                    enabled: false,
-                    clientId: "",
-                    clientSecret: "",
-                    callbackUrl: "",
-                },
             },
             endpoint: {
                 graphql: _.get(this.configuration, "endpoints.graphql")
@@ -205,7 +199,6 @@ export class AutomationClient {
         };
 
         if (http && http.enabled) {
-            expressOptions.forceSecure = http.forceSecure;
             // Set up auth options
             if (http.auth) {
                 if (http.auth.basic && http.auth.basic.enabled) {
@@ -220,15 +213,6 @@ export class AutomationClient {
                     expressOptions.auth.bearer.org = http.auth.bearer.org;
                 } else if (http.auth.bearer) {
                     expressOptions.auth.bearer.enabled = http.auth.bearer.enabled;
-                }
-                if (http.auth.github && http.auth.github.enabled) {
-                    expressOptions.auth.github.enabled = http.auth.github.enabled;
-                    expressOptions.auth.github.clientId = http.auth.github.clientId;
-                    expressOptions.auth.github.clientSecret = http.auth.github.clientSecret;
-                    expressOptions.auth.github.callbackUrl = http.auth.github.callbackUrl;
-                    expressOptions.auth.github.org = http.auth.github.org;
-                    expressOptions.auth.github.adminOrg = http.auth.github.adminOrg;
-                    expressOptions.auth.github.scopes = toStringArray(http.auth.github.scopes);
                 }
             }
         }

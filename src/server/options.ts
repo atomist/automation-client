@@ -27,7 +27,6 @@ export interface RunOptions {
         enabled: boolean;
         port?: number;
         host?: string;
-        forceSecure?: boolean;
         customizers?: ExpressCustomizer[],
         auth?: {
             basic?: {
@@ -38,15 +37,7 @@ export interface RunOptions {
             bearer?: {
                 enabled: boolean;
                 org?: string;
-            },
-            github?: {
-                enabled: boolean;
-                clientId?: string;
-                clientSecret?: string;
-                callbackUrl?: string;
-                org?: string;
                 adminOrg?: string;
-                scopes?: string | string[];
             },
         }
     };
