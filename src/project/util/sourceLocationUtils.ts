@@ -15,7 +15,8 @@ export function toSourceLocation(f: string | File, content: string, offset: numb
         return undefined;
     }
 
-    const lines = content.substr(0, offset).split("\n");
+    const lines = content.substr(0, offset)
+        .split("\n");
     return {
         path: isFile(f) ? f.path : f,
         lineFrom1: lines.length,

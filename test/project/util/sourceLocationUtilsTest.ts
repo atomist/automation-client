@@ -50,4 +50,10 @@ describe("sourceLocationUtils", () => {
         assert.deepEqual(pos, {lineFrom1: 4, columnFrom1: 2, offset: 5, path: f.path});
     });
 
+    it("should handle windows format", () => {
+        const f = new InMemoryFile("this/is/good", "");
+        const pos = toSourceLocation(f, "t\r\n\r\n\r\nhis is valid", 8);
+        assert.deepEqual(pos, {lineFrom1: 4, columnFrom1: 2, offset: 8, path: f.path});
+    });
+
 });
