@@ -6,6 +6,7 @@ import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
 import { Project } from "../../project/Project";
 import { DirectoryManager } from "../../spi/clone/DirectoryManager";
 import { TmpDirectoryManager } from "../../spi/clone/tmpDirectoryManager";
+import { ProjectAction } from "../common/projectAction";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { RepoId } from "../common/RepoId";
 import { AnyProjectEditor, ProjectEditor, toEditor } from "../edit/projectEditor";
@@ -36,15 +37,16 @@ export type ProjectPersister<P extends Project = Project,
  * @param afterAction action to perform after project persistence.
  * @param directoryManager finds a directory for the new project; defaults to tmp
  */
-export function generate<P extends Project = Project>(startingPoint: Promise<Project> | Project,
-                                                      ctx: HandlerContext,
-                                                      credentials: ProjectOperationCredentials,
-                                                      editor: AnyProjectEditor,
-                                                      persist: ProjectPersister<P>,
-                                                      targetId: RepoId,
-                                                      params?: object,
-                                                      afterAction?: (p: P) => Promise<ActionResult<P>>,
-                                                      directoryManager: DirectoryManager = TmpDirectoryManager): Promise<ActionResult<P>> {
+export function generate<P extends Project = Project, PARAMS = object>(startingPoint: Promise<Project> | Project,
+                                                                       ctx: HandlerContext,
+                                                                       credentials: ProjectOperationCredentials,
+                                                                       editor: AnyProjectEditor,
+                                                                       persist: ProjectPersister<P>,
+                                                                       targetId: RepoId,
+                                                                       params?: PARAMS,
+                                                                       afterAction?: ProjectAction<PARAMS, P>,
+                                                                       directoryManager: DirectoryManager =
+                                                                           TmpDirectoryManager): Promise<ActionResult<P>> {
 
     return directoryManager.directoryFor(targetId.owner, targetId.repo, "master", {})
         .then(newRepoDirectoryInfo => {
@@ -54,7 +56,7 @@ export function generate<P extends Project = Project>(startingPoint: Promise<Pro
                     NodeFsLocalProject.copy(seed, newRepoDirectoryInfo.path, newRepoDirectoryInfo.release))
                 // Let's be sure we didn't inherit any old git stuff
                 .then(independentCopy => independentCopy.deleteDirectory(".git"))
-                .then(independentCopy => toEditor<object>(editor)(independentCopy, ctx, params))
+                .then(independentCopy => toEditor<PARAMS>(editor)(independentCopy, ctx, params))
                 .then(r => r.target)
                 .then(populated => {
                     logger.debug("Persisting repo at [%s]: owner/repo=%s:%s",
@@ -63,7 +65,7 @@ export function generate<P extends Project = Project>(startingPoint: Promise<Pro
                 })
                 .then(persistenceResult => {
                     return afterAction ?
-                        afterAction(persistenceResult.target)
+                        afterAction(persistenceResult.target, params)
                             .then(r => {
                                 // Preserve any extra returned values from persister
                                 return {

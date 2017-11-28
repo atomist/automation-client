@@ -9,7 +9,7 @@ import { BaseSeedDrivenGeneratorParameters } from "../../../src/operations/gener
 import { generate } from "../../../src/operations/generate/generatorUtils";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 
-describe("generateUtils", () => {
+describe("generatorUtils", () => {
 
     it("succeeds with no op editor and empty project", done => {
         generate(InMemoryProject.of(),
@@ -39,19 +39,23 @@ describe("generateUtils", () => {
     });
 
     it("invokes after action", done => {
-        const thingToReturn = { what: "isthis"};
+        const thingToReturn = {what: "isthis"};
+        const params = new BaseSeedDrivenGeneratorParameters();
         generate(InMemoryProject.of(),
             null, null,
             p => Promise.resolve(p),
             p => Promise.resolve(successOn(p)),
             new SimpleRepoId("foo", "bar"),
-            undefined,
-            p => Promise.resolve({
-                target: p,
-                success: true,
-                thingToReturn,
-            }),
-            )
+            params,
+            (p, parms) => {
+                assert(parms === params);
+                return Promise.resolve({
+                    target: p,
+                    success: true,
+                    thingToReturn,
+                });
+            },
+        )
             .then(r => {
                 assert((r as any).thingToReturn === thingToReturn);
                 done();
@@ -81,7 +85,7 @@ describe("generateUtils", () => {
     });
 
     it("preserves persist extra data after after action", done => {
-        const thingToReturn = { what: "isthis"};
+        const thingToReturn = {what: "isthis"};
         generate(InMemoryProject.of(),
             null, null,
             p => Promise.resolve(p),
