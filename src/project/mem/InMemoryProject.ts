@@ -9,8 +9,8 @@ import { copyFiles } from "../support/projectUtils";
 import { InMemoryFile } from "./InMemoryFile";
 
 /**
- * In memory Project implementation. Used for testing
- * and high performance caching of small projects.
+ * In memory Project implementation. Primarily intended
+ * for testing. BE WARNED: Does not correctly handle permissions and binary files!
  */
 export class InMemoryProject extends AbstractProject {
 
