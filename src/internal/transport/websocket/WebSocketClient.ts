@@ -39,16 +39,13 @@ export class WebSocketClient {
                     if (this.options.termination && this.options.termination.graceful === true) {
                         logger.info("Initiating WebSocket connection shutdown");
 
-                        // Send the control message to orderly stop this client
-                        sendMessage({ control: { name: "stop-sending" }}, ws, false);
-
                         // Now wait for configured timeout to let in-flight messages finish processing
                         const deferred = new Deferred<number>();
                         setTimeout(() => {
                             ws.close();
                             logger.info("Closing WebSocket connection");
                             deferred.resolve(0);
-                        }, this.options.termination.gracePeriod || 15000);
+                        }, this.options.termination.gracePeriod || 60000);
 
                         return deferred.promise
                             .then(code => {
