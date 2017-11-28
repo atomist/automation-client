@@ -23,7 +23,8 @@ export type ProjectPersister<P extends Project = Project,
 
 /**
  * Generate a new project given the starting point project.
- * Do not change the starting point.
+ * Do not change the starting point. May perform additional
+ * action after persisting the project.
  * @param {Promise<Project>} startingPoint
  * @param {HandlerContext} ctx
  * @param {ProjectOperationCredentials} credentials
@@ -31,17 +32,19 @@ export type ProjectPersister<P extends Project = Project,
  * @param persist persist function to persist the new project:
  * for example, to GitHub
  * @param targetId id of target repo for persistence
- * @param params - optional parameters to be passed to persister
+ * @param params optional parameters to be passed to persister
+ * @param afterAction action to perform after project persistence.
  * @param directoryManager finds a directory for the new project; defaults to tmp
  */
-export function generate(startingPoint: Promise<Project> | Project,
-                         ctx: HandlerContext,
-                         credentials: ProjectOperationCredentials,
-                         editor: AnyProjectEditor,
-                         persist: ProjectPersister,
-                         targetId: RepoId,
-                         params?: object,
-                         directoryManager: DirectoryManager = TmpDirectoryManager): Promise<ActionResult<Project>> {
+export function generate<P extends Project = Project>(startingPoint: Promise<Project> | Project,
+                                                      ctx: HandlerContext,
+                                                      credentials: ProjectOperationCredentials,
+                                                      editor: AnyProjectEditor,
+                                                      persist: ProjectPersister<P>,
+                                                      targetId: RepoId,
+                                                      params?: object,
+                                                      afterAction?: (p: P) => Promise<ActionResult<P>>,
+                                                      directoryManager: DirectoryManager = TmpDirectoryManager): Promise<ActionResult<P>> {
 
     return directoryManager.directoryFor(targetId.owner, targetId.repo, "master", {})
         .then(newRepoDirectoryInfo => {
@@ -57,6 +60,18 @@ export function generate(startingPoint: Promise<Project> | Project,
                     logger.debug("Persisting repo at [%s]: owner/repo=%s:%s",
                         (populated as LocalProject).baseDir, targetId.owner, targetId.repo);
                     return persist(populated, credentials, targetId);
+                })
+                .then(persistenceResult => {
+                    return afterAction ?
+                        afterAction(persistenceResult.target)
+                            .then(r => {
+                                // Preserve any extra returned values from persister
+                                return {
+                                    ...persistenceResult,
+                                    ...r,
+                                };
+                            }) :
+                        persistenceResult;
                 });
         });
 }
