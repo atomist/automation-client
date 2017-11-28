@@ -50,7 +50,7 @@ function collectCleanliness(baseDir: string): Promise<{ isClean: boolean }> {
 
 function collectIgnoredChanges(baseDir: string): Promise<{
     ignoredChanges: string[],
-    raw: string
+    raw: string,
 }> {
     return runIn(baseDir, "git status --porcelain=v2 --ignored")
         .then(porcelainStatusResult => {

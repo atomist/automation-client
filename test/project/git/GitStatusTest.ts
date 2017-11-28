@@ -1,13 +1,13 @@
 import "mocha";
 
+import stringify = require("json-stringify-safe");
 import * as assert from "power-assert";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../../src/project/git/GitProject";
+import { isFullyClean } from "../../../src/project/git/gitStatus";
 import { TmpDirectoryManager } from "../../../src/spi/clone/tmpDirectoryManager";
 import { GitHubToken } from "../../atomist.config";
-import stringify = require("json-stringify-safe");
-import { isFullyClean } from "../../../src/project/git/gitStatus";
 
 const TargetOwner = "atomist-travisorg";
 const ExistingRepo = "this-repository-exists";
@@ -42,7 +42,7 @@ describe("git status analysis", () => {
                 project.gitStatus())
             .then(status => {
                 assert(!status.isClean);
-                assert(status.ignoredChanges.length === 0)
+                assert(status.ignoredChanges.length === 0);
             })
             .then(done, done);
     }).timeout(5000);
@@ -56,7 +56,7 @@ describe("git status analysis", () => {
             .then(status => {
                 assert(status.isClean);
                 assert(status.raw === "! ignored-file\n", status.raw);
-                assert.deepEqual(status.ignoredChanges,["ignored-file"], stringify(status.ignoredChanges))
+                assert.deepEqual(status.ignoredChanges, ["ignored-file"], stringify(status.ignoredChanges));
             })
             .then(done, done);
     }).timeout(5000);

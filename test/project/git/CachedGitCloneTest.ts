@@ -5,11 +5,11 @@ import { runCommand } from "../../../src/action/cli/commandLine";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../../src/project/git/GitProject";
+import { isFullyClean } from "../../../src/project/git/gitStatus";
 import { CachingDirectoryManager } from "../../../src/spi/clone/CachingDirectoryManager";
 import { CloneOptions, DefaultCloneOptions } from "../../../src/spi/clone/DirectoryManager";
 import { TmpDirectoryManager } from "../../../src/spi/clone/tmpDirectoryManager";
 import { GitHubToken } from "../../atomist.config";
-import { isFullyClean } from "../../../src/project/git/gitStatus";
 
 const Creds = { token: GitHubToken };
 const Owner = "atomist-travisorg";
