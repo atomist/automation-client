@@ -127,7 +127,7 @@ export class ExpressServer {
         }
 
         exp.listen(this.options.port, () => {
-            logger.info(`Atomist automation dashboard running at 'http://${this.options.host}:${this.options.port}'`);
+            logger.info(`Atomist automation client api running at 'http://${this.options.host}:${this.options.port}'`);
         });
     }
 
