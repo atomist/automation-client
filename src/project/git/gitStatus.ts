@@ -2,7 +2,8 @@ import { runCommand } from "../../action/cli/commandLine";
 
 export interface GitStatus {
     isClean: boolean;
-    raw?: string;
+    ignoredChanges: string[];
+    raw: string;
     sha: string;
     branch: string;
     upstream?: {
@@ -11,19 +12,25 @@ export interface GitStatus {
     };
 }
 
+export function isFullyClean(gs: GitStatus): boolean {
+    return gs.isClean && gs.ignoredChanges.length === 0;
+}
+
 export function runStatusIn(baseDir: string): Promise<GitStatus> {
 
     return determineBranch(baseDir)
         .then(branch => collectUpstream(baseDir, branch)
             .then(upstreamData => collectFullSha(baseDir)
                 .then(shaData => collectCleanliness(baseDir)
-                    .then(cleanlinessData =>
-                        Promise.resolve({
-                            branch,
-                            ...cleanlinessData,
-                            ...shaData,
-                            ...upstreamData,
-                        })))));
+                    .then(cleanlinessData => collectIgnoredChanges(baseDir)
+                        .then(ignoredChangeData =>
+                            Promise.resolve({
+                                branch,
+                                ...ignoredChangeData,
+                                ...cleanlinessData,
+                                ...shaData,
+                                ...upstreamData,
+                            }))))));
 }
 
 function determineBranch(baseDir: string): Promise<string> {
@@ -34,10 +41,28 @@ function determineBranch(baseDir: string): Promise<string> {
 }
 
 function collectCleanliness(baseDir: string): Promise<{ isClean: boolean }> {
-    return runIn(baseDir, "git status --porcelain --ignored")
+    return runIn(baseDir, "git status --porcelain=v2")
         .then(porcelainStatusResult => {
             const raw = porcelainStatusResult.stdout;
-            return { isClean: raw.length === 0 };
+            return { isClean: (raw.length) === 0 };
+        });
+}
+
+function collectIgnoredChanges(baseDir: string): Promise<{
+    ignoredChanges: string[],
+    raw: string
+}> {
+    return runIn(baseDir, "git status --porcelain=v2 --ignored")
+        .then(porcelainStatusResult => {
+            const raw = porcelainStatusResult.stdout;
+            const ignored = raw.trim()
+                .split("\n")
+                .filter(s => s.startsWith("!"))
+                .map(s => s.substring(2));
+            return {
+                raw,
+                ignoredChanges: ignored,
+            };
         });
 }
 

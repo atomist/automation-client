@@ -4,9 +4,10 @@ import * as assert from "power-assert";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../../src/project/git/GitProject";
-import { Project } from "../../../src/project/Project";
 import { TmpDirectoryManager } from "../../../src/spi/clone/tmpDirectoryManager";
 import { GitHubToken } from "../../atomist.config";
+import stringify = require("json-stringify-safe");
+import { isFullyClean } from "../../../src/project/git/gitStatus";
 
 const TargetOwner = "atomist-travisorg";
 const ExistingRepo = "this-repository-exists";
@@ -27,7 +28,8 @@ describe("git status analysis", () => {
             .then(project =>
                 project.gitStatus())
             .then(status => {
-                assert(status.isClean);
+                assert(status.isClean, "full: " + status.raw);
+                assert(isFullyClean(status));
             })
             .then(done, done);
     }).timeout(5000);
@@ -40,18 +42,21 @@ describe("git status analysis", () => {
                 project.gitStatus())
             .then(status => {
                 assert(!status.isClean);
+                assert(status.ignoredChanges.length === 0)
             })
             .then(done, done);
     }).timeout(5000);
 
-    it("should recognize ignored files as not clean", done => {
+    it("should recognize ignored files, but still call it clean", done => {
         freshClone()
             .then(project =>
                 project.addFile("ignored-file", "this file is gonna be ignored"))
             .then(project =>
                 project.gitStatus())
             .then(status => {
-                assert(!status.isClean);
+                assert(status.isClean);
+                assert(status.raw === "! ignored-file\n", status.raw);
+                assert.deepEqual(status.ignoredChanges,["ignored-file"], stringify(status.ignoredChanges))
             })
             .then(done, done);
     }).timeout(5000);

@@ -9,6 +9,7 @@ import { CachingDirectoryManager } from "../../../src/spi/clone/CachingDirectory
 import { CloneOptions, DefaultCloneOptions } from "../../../src/spi/clone/DirectoryManager";
 import { TmpDirectoryManager } from "../../../src/spi/clone/tmpDirectoryManager";
 import { GitHubToken } from "../../atomist.config";
+import { isFullyClean } from "../../../src/project/git/gitStatus";
 
 const Creds = { token: GitHubToken };
 const Owner = "atomist-travisorg";
@@ -68,7 +69,7 @@ describe("cached git clone projects", () => {
                         .then(status => {
                             assert(clone2.baseDir === clone1.baseDir,
                                 "this test is pointless if not in the same spot");
-                            assert(status.isClean, status.raw);
+                            assert(isFullyClean(status), status.raw);
                             return clone2.release();
                         })))
             .then(done, done);
@@ -80,7 +81,7 @@ describe("cached git clone projects", () => {
             .then(clone1 =>
                 clone1.gitStatus().then(status1 => {
                     assert(status1.branch === "some-branch", "branch is " + status1.branch);
-                    assert(status1.isClean);
+                    assert(isFullyClean(status1));
                     return clone1.release()
                         .then(() => getAClone({ repoName }))
                         .then(clone2 =>
@@ -89,7 +90,7 @@ describe("cached git clone projects", () => {
                                     assert(clone2.baseDir === clone1.baseDir,
                                         "this test is pointless if not in the same spot");
                                     assert(status.branch, "master"); // TODO: this needs to be the default branch
-                                    assert(status.isClean, status.raw);
+                                    assert(isFullyClean(status), status.raw);
                                     return clone2.release();
                                 }));
                 }))
@@ -102,7 +103,7 @@ describe("cached git clone projects", () => {
             .then(clone1 =>
                 clone1.gitStatus().then(status1 => {
                     assert(status1.branch === "this-directory-exists", "branch is " + status1.branch);
-                    assert(status1.isClean);
+                    assert(isFullyClean(status1));
                     return clone1.release()
                         .then(() => getAClone({ repoName }))
                         .then(clone2 =>
@@ -111,7 +112,7 @@ describe("cached git clone projects", () => {
                                     assert(clone2.baseDir === clone1.baseDir,
                                         "this test is pointless if not in the same spot");
                                     assert(status.branch, "master"); // TODO: this needs to be the default branch
-                                    assert(status.isClean, status.raw);
+                                    assert(isFullyClean(status), status.raw);
                                     return clone2.release();
                                 }));
                 }))
