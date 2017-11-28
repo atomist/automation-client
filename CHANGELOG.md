@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.3.5...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.4.0...HEAD
+
+## [0.4.0][] - 2017-11-28
+
+[0.4.0]: https://github.com/atomist/automation-client-ts/compare/0.3.5...0.4.0
+
+Less is more release
 
 ### Added
 
@@ -18,9 +24,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   **Breaking** `editorHandler` now takes a function to create a `ProjectEditor`
--   **Breaking** Removed Spring and Java related generators and support, 
-    which belong in a language-specific module.
-    Now in `atomist/spring-automation`
+
+### Removed
+
+-   **Breaking** Removed Spring and Java related generators and
+    support, which belong in a language-specific module.  Now in
+    `atomist/spring-automation`
 -   **Breaking** Removed embedded dashboard web ui
 
 ## [0.3.5][] - 2017-11-22
