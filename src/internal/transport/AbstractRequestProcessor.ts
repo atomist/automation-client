@@ -15,6 +15,7 @@ import { GraphClient } from "../../spi/graph/GraphClient";
 import { MessageClient, MessageOptions } from "../../spi/message/MessageClient";
 import { ScriptAction } from "../common/Flushable";
 import { CommandInvocation } from "../invoker/Payload";
+import { callReleaseSteps } from "../invoker/resourceRecovery";
 import * as namespace from "../util/cls";
 import { logger } from "../util/logger";
 import {
@@ -34,11 +35,13 @@ import {
 export abstract class AbstractRequestProcessor implements RequestProcessor {
 
     constructor(protected automations: AutomationServer,
-                protected listeners: AutomationEventListener[] = []) { }
+                protected listeners: AutomationEventListener[] = []) {
+    }
 
     public processCommand(command: CommandIncoming,
                           // tslint:disable-next-line:no-empty
-                          callback: (result: Promise<HandlerResult>) => void = () => { }) {
+                          callback: (result: Promise<HandlerResult>) => void = () => {
+                          }) {
         // setup context
         const ses = namespace.init();
         const cls = this.setupNamespace(command, this.automations);
@@ -58,8 +61,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 teamId: command.team.id,
                 correlationId: command.corrid,
                 invocationId: np ? np.invocationId : undefined,
-                messageClient: this.createAndWrapMessageClient(command, { context: cls}),
-                graphClient: this.createGraphClient(command, { context: cls}),
+                messageClient: this.createAndWrapMessageClient(command, { context: cls }),
+                graphClient: this.createGraphClient(command, { context: cls }),
                 context: cls,
             };
 
@@ -72,7 +75,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
     public processEvent(event: EventIncoming,
                         // tslint:disable-next-line:no-empty
-                        callback: (results: Promise<HandlerResult[]>) => void = () => { }) {
+                        callback: (results: Promise<HandlerResult[]>) => void = () => {
+                        }) {
         // setup context
         const ses = namespace.init();
         const cls = this.setupNamespace(event, this.automations);
@@ -93,8 +97,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 teamId: event.extensions.team_id,
                 correlationId: event.extensions.correlation_id,
                 invocationId: np ? np.invocationId : undefined,
-                messageClient: this.createAndWrapMessageClient(event, { context: cls}),
-                graphClient: this.createGraphClient(event, { context: cls}),
+                messageClient: this.createAndWrapMessageClient(event, { context: cls }),
+                graphClient: this.createGraphClient(event, { context: cls }),
                 context: cls,
             };
 
@@ -133,6 +137,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
         const finalize = (result: HandlerResult) => {
             this.sendStatus(result.code === 0 ? true : false, result, command, ctx)
+                .catch(error => logger.warn("Unable to send status for command " + stringify(command)))
                 .then(() => {
                     callback(Promise.resolve(result));
                     logger.info(`Finished invocation of command handler '%s': %s`,
@@ -146,9 +151,13 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             this.automations.invokeCommand(ci, ctx)
                 .then(result => {
                     if (!result || !result.hasOwnProperty("code")) {
-                        result = defaultResult(ctx);
+                        return defaultResult(ctx);
+                    } else {
+                        return result;
                     }
-
+                })
+                .then(result => callReleaseSteps(ctx).then(() => result))
+                .then(result => {
                     if (result.code === 0) {
                         result = {
                             ...defaultResult(ctx),
@@ -170,7 +179,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 .catch(err => {
                     this.handleCommandError(err, command, ci, ctx, callback);
                 });
-        } catch (err) {
+        } catch
+            (err) {
             this.handleCommandError(err, command, ci, ctx, callback);
         }
     }
@@ -192,8 +202,13 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             this.automations.onEvent(ef, ctx)
                 .then(result => {
                     if (!result || result.length === 0) {
-                        result = [defaultResult(ctx)];
+                        return [defaultResult(ctx)];
+                    } else {
+                        return result;
                     }
+                })
+                .then(result => callReleaseSteps(ctx).then(() => result))
+                .then(result => {
 
                     if (!result.some(r => r.code !== 0)) {
                         this.listeners.map(l => () => l.eventSuccessful(ef, ctx, result))
@@ -270,7 +285,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         this.listeners.map(l => () => l.commandFailed(ci, ctx, result))
             .reduce((p, f) => p.then(f), Promise.resolve())
             .then(() => {
-                this.sendStatus(false, result as HandlerResult, command, ctx);
+                this.sendStatus(false, result as HandlerResult, command, ctx)
+                    .catch(error => logger.warn("Unable to send status for command: " + stringify(command)));
                 if (callback) {
                     callback(Promise.resolve(result));
                 }
@@ -301,7 +317,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
 class AutomationEventListenerEnabledMessageClient implements MessageClient {
 
-    constructor(private delegate: MessageClient, private listeners: AutomationEventListener[] = []) {}
+    constructor(private delegate: MessageClient, private listeners: AutomationEventListener[] = []) {
+    }
 
     public respond(msg: string | SlackMessage,
                    options?: MessageOptions): Promise<any> {
