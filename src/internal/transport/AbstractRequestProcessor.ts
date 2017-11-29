@@ -59,7 +59,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 mappedParameters: command.mapped_parameters,
                 secrets: command.secrets,
             };
-            const ctx: any = {
+            const ctx: HandlerContext & AutomationContextAware = {
                 teamId: command.team.id,
                 correlationId: command.corrid,
                 invocationId: np ? np.invocationId : undefined,
@@ -98,7 +98,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 },
                 secrets: event.secrets,
             };
-            const ctx: any = {
+            const ctx: HandlerContext & AutomationContextAware = {
                 teamId: event.extensions.team_id,
                 correlationId: event.extensions.correlation_id,
                 invocationId: np ? np.invocationId : undefined,
