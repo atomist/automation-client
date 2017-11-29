@@ -101,6 +101,9 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         return this.runCommandInCurrentWorkingDirectory("git init");
     }
 
+    /**
+     * Deprecated; use gitStatus().then(status => status.isClean) instead
+     */
     public isClean(): Promise<CommandResult<this>> {
         return this.runCommandInCurrentWorkingDirectory("git status --porcelain")
             .then(commandResult => {
