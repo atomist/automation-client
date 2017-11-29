@@ -14,6 +14,10 @@ import { AutomationServer } from "../../server/AutomationServer";
 import { GraphClient } from "../../spi/graph/GraphClient";
 import { MessageClient, MessageOptions } from "../../spi/message/MessageClient";
 import { ScriptAction } from "../common/Flushable";
+import {
+    dispose,
+    registerDisposable,
+} from "../invoker/disposable";
 import { CommandInvocation } from "../invoker/Payload";
 import * as namespace from "../util/cls";
 import { logger } from "../util/logger";
@@ -34,7 +38,8 @@ import {
 export abstract class AbstractRequestProcessor implements RequestProcessor {
 
     constructor(protected automations: AutomationServer,
-                protected listeners: AutomationEventListener[] = []) { }
+                protected listeners: AutomationEventListener[] = []) {
+    }
 
     public processCommand(command: CommandIncoming,
                           // tslint:disable-next-line:no-empty
@@ -54,13 +59,17 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 mappedParameters: command.mapped_parameters,
                 secrets: command.secrets,
             };
-            const ctx: HandlerContext & AutomationContextAware = {
+            const ctx: any = {
                 teamId: command.team.id,
                 correlationId: command.corrid,
                 invocationId: np ? np.invocationId : undefined,
-                messageClient: this.createAndWrapMessageClient(command, { context: cls}),
-                graphClient: this.createGraphClient(command, { context: cls}),
+                messageClient: this.createAndWrapMessageClient(command, { context: cls }),
+                graphClient: this.createGraphClient(command, { context: cls }),
                 context: cls,
+            };
+            ctx.lifecycle = {
+                registerDisposable: registerDisposable(ctx),
+                dispose: dispose(ctx),
             };
 
             this.listeners.forEach(l => l.contextCreated(ctx));
@@ -89,13 +98,17 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 },
                 secrets: event.secrets,
             };
-            const ctx: HandlerContext & AutomationContextAware = {
+            const ctx: any = {
                 teamId: event.extensions.team_id,
                 correlationId: event.extensions.correlation_id,
                 invocationId: np ? np.invocationId : undefined,
-                messageClient: this.createAndWrapMessageClient(event, { context: cls}),
-                graphClient: this.createGraphClient(event, { context: cls}),
+                messageClient: this.createAndWrapMessageClient(event, { context: cls }),
+                graphClient: this.createGraphClient(event, { context: cls }),
                 context: cls,
+            };
+            ctx.lifecycle = {
+                registerDisposable: registerDisposable(ctx),
+                dispose: dispose(ctx),
             };
 
             this.listeners.forEach(l => l.contextCreated(ctx));
@@ -133,9 +146,11 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
         const finalize = (result: HandlerResult) => {
             this.sendStatus(result.code === 0 ? true : false, result, command, ctx)
+                .catch(err =>
+                    logger.warn("Unable to send status for command '%s': %s", command.name, err.message))
                 .then(() => {
                     callback(Promise.resolve(result));
-                    logger.info(`Finished invocation of command handler '%s': %s`,
+                    logger.info(`Finished invocation of command '%s': %s`,
                         command.name, stringify(result));
                     this.clearNamespace();
                 });
@@ -146,9 +161,13 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             this.automations.invokeCommand(ci, ctx)
                 .then(result => {
                     if (!result || !result.hasOwnProperty("code")) {
-                        result = defaultResult(ctx);
+                        return defaultResult(ctx);
+                    } else {
+                        return result;
                     }
-
+                })
+                .then(result => ctx.lifecycle ? ctx.lifecycle.dispose().then(() => result) : result)
+                .then(result => {
                     if (result.code === 0) {
                         result = {
                             ...defaultResult(ctx),
@@ -182,7 +201,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
         const finalize = (result: HandlerResult[]) => {
             callback(Promise.resolve(result));
-            logger.info(`Finished invocation of event handler '%s': %s`,
+            logger.info(`Finished invocation of event '%s': %s`,
                 event.extensions.operationName, stringify(result));
             this.clearNamespace();
         };
@@ -192,8 +211,13 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             this.automations.onEvent(ef, ctx)
                 .then(result => {
                     if (!result || result.length === 0) {
-                        result = [defaultResult(ctx)];
+                        return [defaultResult(ctx)];
+                    } else {
+                        return result;
                     }
+                })
+                .then(result => ctx.lifecycle ? ctx.lifecycle.dispose().then(() => result) : result)
+                .then(result => {
 
                     if (!result.some(r => r.code !== 0)) {
                         this.listeners.map(l => () => l.eventSuccessful(ef, ctx, result))
@@ -270,7 +294,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         this.listeners.map(l => () => l.commandFailed(ci, ctx, result))
             .reduce((p, f) => p.then(f), Promise.resolve())
             .then(() => {
-                this.sendStatus(false, result as HandlerResult, command, ctx);
+                this.sendStatus(false, result as HandlerResult, command, ctx)
+                    .catch(error => logger.warn("Unable to send status for command: " + stringify(command)));
                 if (callback) {
                     callback(Promise.resolve(result));
                 }
@@ -301,7 +326,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
 class AutomationEventListenerEnabledMessageClient implements MessageClient {
 
-    constructor(private delegate: MessageClient, private listeners: AutomationEventListener[] = []) {}
+    constructor(private delegate: MessageClient, private listeners: AutomationEventListener[] = []) {
+    }
 
     public respond(msg: string | SlackMessage,
                    options?: MessageOptions): Promise<any> {
