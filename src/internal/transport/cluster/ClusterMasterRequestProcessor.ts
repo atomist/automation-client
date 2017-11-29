@@ -151,7 +151,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                         sendMessage(msg.data, ws());
                     } else if (msg.type === "command_success") {
                         listeners.map(l => () => l.commandSuccessful(msg.event as CommandInvocation,
-                            null, msg.data as HandlerResult))
+                            this.hydrateContext(msg), msg.data as HandlerResult))
                             .reduce((p, f) => p.then(f), Promise.resolve())
                             .then(() => {
                                 if (commands.has(invocationId)) {
@@ -163,7 +163,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                             .catch(clearNamespace);
                     } else if (msg.type === "command_failure") {
                         listeners.map(l => () => l.commandFailed(msg.event as CommandInvocation,
-                            null, msg.data as HandlerResult))
+                            this.hydrateContext(msg), msg.data as HandlerResult))
                             .reduce((p, f) => p.then(f), Promise.resolve())
                             .then(() => {
                                 if (commands.has(invocationId)) {
@@ -175,7 +175,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                             .catch(clearNamespace);
                     } else if (msg.type === "event_success") {
                         listeners.map(l => () => l.eventSuccessful(msg.event as EventFired<any>,
-                            null, msg.data as HandlerResult[]))
+                            this.hydrateContext(msg), msg.data as HandlerResult[]))
                             .reduce((p, f) => p.then(f), Promise.resolve())
                             .then(() => {
                                 if (events.has(invocationId)) {
@@ -187,7 +187,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                             .catch(clearNamespace);
                     } else if (msg.type === "event_failure") {
                         listeners.map(l => () => l.eventFailed(msg.event as EventFired<any>,
-                            null, msg.data as HandlerResult[]))
+                            this.hydrateContext(msg), msg.data as HandlerResult[]))
                             .reduce((p, f) => p.then(f), Promise.resolve())
                             .then(() => {
                                 if (events.has(invocationId)) {
@@ -293,6 +293,15 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
             }
         }
         return workers[Math.floor(Math.random() * workers.length)];
+    }
+
+    private hydrateContext(msg: WorkerMessage): HandlerContext {
+        return {
+            invocationId: msg.context.invocationId,
+            correlationId: msg.context.correlationId,
+            teamId: msg.context.teamId,
+            context: msg.context,
+        } as any as HandlerContext;
     }
 }
 
