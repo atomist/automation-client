@@ -1,14 +1,16 @@
 
 /**
  * Identifies a location within a project.
- * Used in ProjectReviewers
+ * Used in project reviewers
  */
 export interface SourceLocation {
 
     readonly path: string;
 
-    readonly line?: number;
+    readonly lineFrom1?: number;
 
-    readonly column?: number;
+    readonly columnFrom1?: number;
+
+    readonly offset: number;
 
 }
