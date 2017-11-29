@@ -63,10 +63,12 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 teamId: command.team.id,
                 correlationId: command.corrid,
                 invocationId: np ? np.invocationId : undefined,
-                messageClient: this.createAndWrapMessageClient(command, { context: cls }),
-                graphClient: this.createGraphClient(command, { context: cls }),
+                messageClient: undefined,
                 context: cls,
             };
+
+            ctx.messageClient = this.createAndWrapMessageClient(command, ctx);
+            ctx.graphClient = this.createGraphClient(command, ctx);
             ctx.lifecycle = {
                 registerDisposable: registerDisposable(ctx),
                 dispose: dispose(ctx),
@@ -102,10 +104,12 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 teamId: event.extensions.team_id,
                 correlationId: event.extensions.correlation_id,
                 invocationId: np ? np.invocationId : undefined,
-                messageClient: this.createAndWrapMessageClient(event, { context: cls }),
-                graphClient: this.createGraphClient(event, { context: cls }),
+                messageClient: undefined,
                 context: cls,
             };
+
+            ctx.messageClient = this.createAndWrapMessageClient(event, ctx);
+            ctx.graphClient = this.createGraphClient(event, ctx);
             ctx.lifecycle = {
                 registerDisposable: registerDisposable(ctx),
                 dispose: dispose(ctx),
@@ -238,8 +242,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
     }
 
     protected createAndWrapMessageClient(event: EventIncoming | CommandIncoming,
-                                         context: AutomationContextAware): MessageClient {
-        return new AutomationEventListenerEnabledMessageClient(
+                                         context: HandlerContext & AutomationContextAware): MessageClient {
+        return new AutomationEventListenerEnabledMessageClient(context,
             this.createMessageClient(event, context), this.listeners);
     }
 
@@ -276,7 +280,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                                          ctx: HandlerContext & AutomationContextAware): Promise<any>;
 
     protected abstract createGraphClient(event: EventIncoming | CommandIncoming,
-                                         context: AutomationContextAware): GraphClient;
+                                         context: HandlerContext & AutomationContextAware): GraphClient;
 
     protected abstract createMessageClient(event: EventIncoming | CommandIncoming,
                                            context: AutomationContextAware): MessageClient;
@@ -326,26 +330,28 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
 class AutomationEventListenerEnabledMessageClient implements MessageClient {
 
-    constructor(private delegate: MessageClient, private listeners: AutomationEventListener[] = []) {
+    constructor(private ctx: HandlerContext,
+                private delegate: MessageClient,
+                private listeners: AutomationEventListener[] = []) {
     }
 
     public respond(msg: string | SlackMessage,
                    options?: MessageOptions): Promise<any> {
-        this.listeners.forEach(l => l.messageSent(msg, [], [], options));
+        this.listeners.forEach(l => l.messageSent(msg, [], [], options, this.ctx));
         return this.delegate.respond(msg, options);
     }
 
     public addressUsers(msg: string | SlackMessage,
                         userNames: string | string[],
                         options?: MessageOptions): Promise<any> {
-        this.listeners.forEach(l => l.messageSent(msg, userNames, [], options));
+        this.listeners.forEach(l => l.messageSent(msg, userNames, [], options, this.ctx));
         return this.delegate.addressUsers(msg, userNames, options);
     }
 
     public addressChannels(msg: string | SlackMessage,
                            channelNames: string | string[],
                            options?: MessageOptions): Promise<any> {
-        this.listeners.forEach(l => l.messageSent(msg, [], channelNames, options));
+        this.listeners.forEach(l => l.messageSent(msg, [], channelNames, options, this.ctx));
         return this.delegate.addressChannels(msg, channelNames, options);
     }
 

@@ -24,7 +24,8 @@ export interface AutomationEventListener {
     messageSent(message: string | SlackMessage,
                 userNames: string | string[],
                 channelName: string | string[],
-                options?: MessageOptions): void;
+                options: MessageOptions,
+                ctx: HandlerContext): void;
 
 }
 
@@ -73,7 +74,8 @@ export class AutomationEventListenerSupport implements AutomationEventListener {
     public messageSent(message: string | SlackMessage,
                        userNames: string | string[],
                        channelName: string | string[],
-                       options?: MessageOptions) {
+                       options: MessageOptions,
+                       ctx: HandlerContext) {
         // This is intentionally left empty
     }
 }
