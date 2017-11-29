@@ -5,12 +5,11 @@ import { HandleCommand } from "../../../src/HandleCommand";
 import { EventFired, HandleEvent } from "../../../src/HandleEvent";
 import { AutomationContextAware, HandlerContext } from "../../../src/HandlerContext";
 import { HandlerResult } from "../../../src/HandlerResult";
+import { dispose, registerDisposable } from "../../../src/internal/invoker/disposable";
 import { CommandInvocation } from "../../../src/internal/invoker/Payload";
-import { addReleaseStep } from "../../../src/internal/invoker/resourceRecovery";
 import { AbstractRequestProcessor } from "../../../src/internal/transport/AbstractRequestProcessor";
-import { CommandIncoming, EventIncoming, Team } from "../../../src/internal/transport/RequestProcessor";
+import { CommandIncoming, EventIncoming } from "../../../src/internal/transport/RequestProcessor";
 import { AutomationContext } from "../../../src/internal/util/cls";
-import { AutomationServer } from "../../../src/server/AutomationServer";
 import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
 import { AutomationServerOptions } from "../../../src/server/options";
 import { GraphClient } from "../../../src/spi/graph/GraphClient";
@@ -90,6 +89,12 @@ describe("the processCommand method", () => {
             correlationId: automationContext.correlationId,
             context: automationContext,
         };
+
+        context.lifecycle = {
+            registerDisposable: registerDisposable(context),
+            dispose: dispose(context),
+        };
+
         const command: CommandIncoming = {
             rug: "DoTheWave",
             correlation_context: null,
@@ -122,12 +127,12 @@ describe("the processCommand method", () => {
     it("should release resources allocated during a command", done => {
         let watchMe = "begin";
         const allocateResource = (ctx: HandlerContext) => {
-            addReleaseStep(ctx, {
-                how: () => {
+            ctx.lifecycle.registerDisposable(
+                () => {
                     watchMe = "changed";
                     return Promise.resolve();
-                }, what: "set watchMe to changed",
-            });
+                }, "set watchMe to changed",
+            );
         };
         invokeSomething(allocateResource)
             .then(() => {
@@ -139,12 +144,11 @@ describe("the processCommand method", () => {
     it("should release resources when the command failed", done => {
         let watchMe = "begin";
         const allocateResource = (ctx: HandlerContext) => {
-            addReleaseStep(ctx, {
-                how: () => {
+            ctx.lifecycle.registerDisposable(() => {
                     watchMe = "changed";
                     return Promise.resolve();
-                }, what: "set watchMe to changed",
-            });
+                }, "set watchMe to changed",
+            );
         };
         invokeSomething(allocateResource, { code: 1, more: "I did this on purpose" })
             .then(() => {
@@ -202,6 +206,12 @@ describe("the processEvent method", () => {
             correlationId: automationContext.correlationId,
             context: automationContext,
         };
+
+        context.lifecycle = {
+            registerDisposable: registerDisposable(context),
+            dispose: dispose(context),
+        };
+
         const incoming: EventIncoming = {
             extensions: {
                 team_id: "TEAM",
@@ -236,12 +246,11 @@ describe("the processEvent method", () => {
     it("should release resources allocated during an event", done => {
         let watchMe = "begin";
         const allocateResource = (ctx: HandlerContext) => {
-            addReleaseStep(ctx, {
-                how: () => {
+            ctx.lifecycle.registerDisposable(() => {
                     watchMe = "changed";
                     return Promise.resolve();
-                }, what: "set watchMe to changed",
-            });
+                }, "set watchMe to changed",
+            );
         };
         invokeSomething(allocateResource)
             .then(() => {
@@ -253,12 +262,11 @@ describe("the processEvent method", () => {
     it("should release resources when the event failed", done => {
         let watchMe = "begin";
         const allocateResource = (ctx: HandlerContext) => {
-            addReleaseStep(ctx, {
-                how: () => {
+            ctx.lifecycle.registerDisposable(() => {
                     watchMe = "changed";
                     return Promise.resolve();
-                }, what: "set watchMe to changed",
-            });
+                }, "set watchMe to changed",
+            );
         };
         invokeSomething(allocateResource, { code: 1, more: "I did this on purpose" })
             .then(() => {

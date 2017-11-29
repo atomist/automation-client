@@ -14,8 +14,11 @@ import { AutomationServer } from "../../server/AutomationServer";
 import { GraphClient } from "../../spi/graph/GraphClient";
 import { MessageClient, MessageOptions } from "../../spi/message/MessageClient";
 import { ScriptAction } from "../common/Flushable";
+import {
+    dispose,
+    registerDisposable,
+} from "../invoker/disposable";
 import { CommandInvocation } from "../invoker/Payload";
-import { callReleaseSteps } from "../invoker/resourceRecovery";
 import * as namespace from "../util/cls";
 import { logger } from "../util/logger";
 import {
@@ -40,8 +43,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
     public processCommand(command: CommandIncoming,
                           // tslint:disable-next-line:no-empty
-                          callback: (result: Promise<HandlerResult>) => void = () => {
-                          }) {
+                          callback: (result: Promise<HandlerResult>) => void = () => { }) {
         // setup context
         const ses = namespace.init();
         const cls = this.setupNamespace(command, this.automations);
@@ -57,13 +59,17 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 mappedParameters: command.mapped_parameters,
                 secrets: command.secrets,
             };
-            const ctx: HandlerContext & AutomationContextAware = {
+            const ctx: any = {
                 teamId: command.team.id,
                 correlationId: command.corrid,
                 invocationId: np ? np.invocationId : undefined,
                 messageClient: this.createAndWrapMessageClient(command, { context: cls }),
                 graphClient: this.createGraphClient(command, { context: cls }),
                 context: cls,
+            };
+            ctx.lifecycle = {
+                registerDisposable: registerDisposable(ctx),
+                dispose: dispose(ctx),
             };
 
             this.listeners.forEach(l => l.contextCreated(ctx));
@@ -75,8 +81,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
     public processEvent(event: EventIncoming,
                         // tslint:disable-next-line:no-empty
-                        callback: (results: Promise<HandlerResult[]>) => void = () => {
-                        }) {
+                        callback: (results: Promise<HandlerResult[]>) => void = () => { }) {
         // setup context
         const ses = namespace.init();
         const cls = this.setupNamespace(event, this.automations);
@@ -93,13 +98,17 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 },
                 secrets: event.secrets,
             };
-            const ctx: HandlerContext & AutomationContextAware = {
+            const ctx: any = {
                 teamId: event.extensions.team_id,
                 correlationId: event.extensions.correlation_id,
                 invocationId: np ? np.invocationId : undefined,
                 messageClient: this.createAndWrapMessageClient(event, { context: cls }),
                 graphClient: this.createGraphClient(event, { context: cls }),
                 context: cls,
+            };
+            ctx.lifecycle = {
+                registerDisposable: registerDisposable(ctx),
+                dispose: dispose(ctx),
             };
 
             this.listeners.forEach(l => l.contextCreated(ctx));
@@ -137,10 +146,11 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
         const finalize = (result: HandlerResult) => {
             this.sendStatus(result.code === 0 ? true : false, result, command, ctx)
-                .catch(error => logger.warn("Unable to send status for command " + stringify(command)))
+                .catch(err =>
+                    logger.warn("Unable to send status for command '%s': %s", command.name, err.message))
                 .then(() => {
                     callback(Promise.resolve(result));
-                    logger.info(`Finished invocation of command handler '%s': %s`,
+                    logger.info(`Finished invocation of command '%s': %s`,
                         command.name, stringify(result));
                     this.clearNamespace();
                 });
@@ -156,7 +166,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         return result;
                     }
                 })
-                .then(result => callReleaseSteps(ctx).then(() => result))
+                .then(result => ctx.lifecycle ? ctx.lifecycle.dispose().then(() => result) : result)
                 .then(result => {
                     if (result.code === 0) {
                         result = {
@@ -191,7 +201,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
         const finalize = (result: HandlerResult[]) => {
             callback(Promise.resolve(result));
-            logger.info(`Finished invocation of event handler '%s': %s`,
+            logger.info(`Finished invocation of event '%s': %s`,
                 event.extensions.operationName, stringify(result));
             this.clearNamespace();
         };
@@ -206,7 +216,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         return result;
                     }
                 })
-                .then(result => callReleaseSteps(ctx).then(() => result))
+                .then(result => ctx.lifecycle ? ctx.lifecycle.dispose().then(() => result) : result)
                 .then(result => {
 
                     if (!result.some(r => r.code !== 0)) {

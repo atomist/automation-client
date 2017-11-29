@@ -18,7 +18,11 @@ export {
     HandleEvent,
 } from "./HandleEvent";
 
-export { HandlerContext } from "./HandlerContext";
+export {
+    HandlerContext,
+    AutomationContextAware,
+    HandlerLifecycle,
+} from "./HandlerContext";
 
 export {
     Failure,
