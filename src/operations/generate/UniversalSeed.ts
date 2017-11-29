@@ -44,7 +44,7 @@ export class UniversalSeed extends SeedDrivenGenerator {
     }
 
     public projectEditor(ctx: HandlerContext, params: this): ProjectEditor {
-        return chainEditors(RemoveSeedFiles, curry(cleanReadMe)(this.description));
+        return chainEditors(curry(cleanReadMe)(this.description));
     }
 }
 
@@ -58,22 +58,7 @@ export function cleanReadMe(description: string, project: Project): Promise<Proj
     return doWithFiles(project, "README.md", readMe => {
         readMe.recordReplace(/^#[\\s\\S]*?## Development/, `# ${project.name}
 This project contains ${description}.
+
 ## Development`);
     });
 }
-
-export const RemoveSeedFiles: ProjectEditor = project => {
-    const filesToDelete: string[] = [
-        ".travis.yml",
-        "LICENSE",
-        "CHANGELOG.md",
-        "CODE_OF_CONDUCT.md",
-        "CONTRIBUTING.md",
-    ];
-    defer(project, deleteFiles(project, "/*", f => filesToDelete.includes(f.path)));
-    const deleteDirs: string[] = [
-        ".travis",
-    ];
-    deleteDirs.forEach(d => defer(project, project.deleteDirectory(d)));
-    return flushAndSucceed(project);
-};
