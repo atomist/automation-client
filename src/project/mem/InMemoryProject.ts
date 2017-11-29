@@ -94,11 +94,11 @@ export class InMemoryProject extends AbstractProject {
     }
 
     public deleteDirectorySync(path: string): void {
-        for (const f of this.memFiles) {
-            if (f.path.startsWith(path)) {
-                this.recordDeleteFile(path);
+        this.memFiles.forEach(f => {
+            if (f.path.startsWith(`${path}/`)) {
+                this.deleteFileSync(f.path);
             }
-        }
+        });
     }
 
     public deleteDirectory(path: string): Promise<this> {
@@ -121,7 +121,7 @@ export class InMemoryProject extends AbstractProject {
     }
 
     public directoryExistsSync(path: string): boolean {
-        return this.memFiles.some(f => f.path.startsWith(path));
+        return this.memFiles.some(f => f.path.startsWith(`${path}/`));
     }
 
     public fileExistsSync(path: string): boolean {
@@ -136,7 +136,7 @@ export class InMemoryProject extends AbstractProject {
         const matchingPaths =
             minimatch.match(this.memFiles.map(f => f.path), globPatterns[0]);
         this.memFiles.map(f => matchingPaths.includes(f.path));
-        return spigot.array({objectMode: true},
+        return spigot.array({ objectMode: true },
             this.memFiles.filter(f => matchingPaths.some(mp => mp === f.path)),
         );
     }

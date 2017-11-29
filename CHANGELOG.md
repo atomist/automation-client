@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.4.0...HEAD
 
+### Changed
+
+-   The `AllFiles` glob pattern was simplified to `**`
+
+### Fixed
+
+-   Issues with deleting files and directories in an InMemoryProject
+
+### Removed
+
+-   RemoveSeedFiles as it was not generic nor provided much convenience
+
 ## [0.4.0][] - 2017-11-28
 
 [0.4.0]: https://github.com/atomist/automation-client-ts/compare/0.3.5...0.4.0
