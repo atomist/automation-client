@@ -22,7 +22,7 @@ export function metadataFromInstance(h: any): CommandHandlerMetadata | EventHand
     if (isEventHandlerMetadata(h)) {
         md = addName(h);
     } else if (isCommandHandlerMetadata(h)) {
-        md = addName(h);
+        md = addName(h); // JESS: this seems mighty incomplete to me.
     } else {
         // We need to find the instance from which to extract metadata.
         // It will be the handler itself unless it implements the optional freshParametersInstance method
