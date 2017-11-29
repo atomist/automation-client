@@ -2,8 +2,21 @@ import axios, { AxiosPromise } from "axios";
 import { logger } from "../internal/util/logger";
 
 import { decode } from "../internal/util/base64";
-import { GitHubDotComBase, GitHubRepoRef } from "../operations/common/GitHubRepoRef";
+import { GitHubDotComBase, GitHubRepoRef, isGitHubRepoRef } from "../operations/common/GitHubRepoRef";
 import { RepoRef } from "../operations/common/RepoId";
+import { SourceLocation } from "../operations/common/SourceLocation";
+
+/**
+ * Return a deep link to the file location
+ * @param {GitHubRepoRef} grr
+ * @param {SourceLocation} sourceLocation
+ * @return {string}
+ */
+export function deepLink(grr: GitHubRepoRef, sourceLocation: SourceLocation) {
+    // TODO need to allow for GHE
+    return `https://github.com/${grr.owner}/${grr.repo}/blob/${grr.sha}/${sourceLocation.path}` +
+        `#L${sourceLocation.lineFrom1}`;
+}
 
 /**
  * Check whether the given file, including path, exists
@@ -42,16 +55,10 @@ export function fileContent(token: string, user: string, repo: string, path: str
 }
 
 function filePromise(token: string, user: string, repo: string, path: string): AxiosPromise {
-    const config = token ? {
-            headers: {
-                Authorization: `token ${token}`,
-            },
-        }
-        : {};
     const url = `${GitHubDotComBase}/repos/${user}/${repo}/contents/${path}`;
     logger.debug(`Request to '${url}' to check for file existence]`);
     // We only care if it returns 200. Otherwise it isn't there
-    return axios.get(url, config);
+    return axios.get(url, authHeaders(token));
 }
 
 export interface Issue {
@@ -63,13 +70,39 @@ export interface Issue {
     assignees?: string[];
 }
 
-export function raiseIssue(token: string, repoId: RepoRef, issue: Issue): AxiosPromise {
-    const config = {
-        headers: {
-            Authorization: `token ${token}`,
-        },
-    };
-    const url = `${GitHubDotComBase}/repos/${repoId.owner}/${repoId.repo}/issues`;
+export function raiseIssue(token: string, rr: RepoRef, issue: Issue): AxiosPromise {
+    const grr = isGitHubRepoRef(rr) ? rr : new GitHubRepoRef(rr.owner, rr.repo, rr.sha);
+    const url = `${grr.apiBase}/repos/${rr.owner}/${rr.repo}/issues`;
     logger.debug(`Request to '${url}' to raise issue`);
-    return axios.post(url, issue, config);
+    return axios.post(url, issue, authHeaders(token));
+}
+
+/**
+ * GitHub commit comment structure
+ */
+export interface Comment {
+
+    body: string;
+
+    path: string;
+
+    /**
+     * Line number in the diff
+     */
+    position: number;
+}
+
+export function createCommitComment(token: string, rr: GitHubRepoRef, comment: Comment): AxiosPromise {
+    const url = `${rr.apiBase}/repos/${rr.owner}/${rr.repo}/commits/${rr.sha}/comments`;
+    logger.debug(`Request to '${url}' to create comment`);
+    return axios.post(url, comment, authHeaders(token));
+}
+
+function authHeaders(token: string) {
+    return token ? {
+            headers: {
+                Authorization: `token ${token}`,
+            },
+        }
+        : {};
 }
