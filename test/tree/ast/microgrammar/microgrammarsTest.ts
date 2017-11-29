@@ -33,6 +33,28 @@ describe("microgrammar integration and path expression", () => {
             }).catch(done);
     });
 
+    it("exposes source locations", done => {
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
+            age: Integer,
+        });
+        const fpr = new DefaultFileParserRegistry().addParser(
+            new MicrogrammarBasedFileParser("people", "person", mg));
+        const p = InMemoryProject.of(
+            {path: "Thing", content: "Tom:16 Mary:25"});
+        findMatches(p, fpr, AllFiles, "/people/person/name")
+            .then(matches => {
+                assert(matches.length === 2);
+                assert(matches[0].$value === "Tom");
+                assert(matches[1].$value === "Mary");
+                matches.forEach(m => {
+                   assert(!!m.sourceLocation);
+                   assert(m.sourceLocation.path === "Thing");
+                   assert(m.sourceLocation.offset === m.$offset);
+                });
+                done();
+            }).catch(done);
+    });
+
     it("retains AST in file matches", done => {
         const mg = Microgrammar.fromString<Person>("${name}:${age}", {
             age: Integer,
