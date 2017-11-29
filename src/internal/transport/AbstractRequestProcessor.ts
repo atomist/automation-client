@@ -179,8 +179,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 .catch(err => {
                     this.handleCommandError(err, command, ci, ctx, callback);
                 });
-        } catch
-            (err) {
+        } catch (err) {
             this.handleCommandError(err, command, ci, ctx, callback);
         }
     }
