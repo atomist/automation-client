@@ -41,7 +41,7 @@ function determineBranch(baseDir: string): Promise<string> {
 }
 
 function collectCleanliness(baseDir: string): Promise<{ isClean: boolean }> {
-    return runIn(baseDir, "git status --porcelain=v2")
+    return runIn(baseDir, "git status --porcelain")
         .then(porcelainStatusResult => {
             const raw = porcelainStatusResult.stdout;
             return { isClean: (raw.length) === 0 };
@@ -52,13 +52,13 @@ function collectIgnoredChanges(baseDir: string): Promise<{
     ignoredChanges: string[],
     raw: string,
 }> {
-    return runIn(baseDir, "git status --porcelain=v2 --ignored")
+    return runIn(baseDir, "git status --porcelain --ignored")
         .then(porcelainStatusResult => {
             const raw = porcelainStatusResult.stdout;
             const ignored = raw.trim()
                 .split("\n")
                 .filter(s => s.startsWith("!"))
-                .map(s => s.substring(2));
+                .map(s => s.substring(3));
             return {
                 raw,
                 ignoredChanges: ignored,

@@ -55,7 +55,7 @@ describe("git status analysis", () => {
                 project.gitStatus())
             .then(status => {
                 assert(status.isClean);
-                assert(status.raw === "! ignored-file\n", status.raw);
+                assert(status.raw === "!! ignored-file\n", status.raw);
                 assert.deepEqual(status.ignoredChanges, ["ignored-file"], stringify(status.ignoredChanges));
             })
             .then(done, done);
