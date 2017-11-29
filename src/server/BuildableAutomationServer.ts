@@ -214,13 +214,8 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
     }
 
     private enrichContext(ctx: HandlerContext): HandlerContext {
-        return {
-            teamId: ctx.teamId,
-            correlationId: ctx.correlationId,
-            invocationId: ctx.invocationId,
-            messageClient: ctx.messageClient,
-            graphClient: ctx.graphClient ? ctx.graphClient : this.graphClient,
-        };
+        ctx.graphClient = ctx.graphClient || this.graphClient;
+        return ctx;
     }
 
     private populateMappedParameters(h: {}, metadata: CommandHandlerMetadata, invocation: Invocation) {
