@@ -11,7 +11,7 @@ describe("astUtils", () => {
 
     describe("function registry", () => {
 
-        it("works", done => {
+        it("runs custom check", done => {
             const f = new InMemoryFile("src/test.ts",
                 "const x: number = 10; const y = 13; const xylophone = 3;");
             const p = InMemoryProject.of(f);
@@ -22,6 +22,9 @@ describe("astUtils", () => {
                 { check: n => n.$value.includes("x")})
                 .then(matches => {
                     assert(matches.length === 2);
+                    assert(!!matches[0].sourceLocation);
+                    assert(matches[0].sourceLocation.offset === matches[0].$offset);
+                    assert(matches[0].sourceLocation.lineFrom1 > 0);
                     assert.deepEqual(matches.map(m => m.$value), ["x", "xylophone"]);
                     done();
                 }).catch(done);

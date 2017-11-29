@@ -8,9 +8,13 @@ import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { logger } from "../../internal/util/logger";
 import { ProjectAsync } from "../../project/Project";
 import { saveFromFilesAsync } from "../../project/util/projectUtils";
+import { LocatedTreeNode } from "../LocatedTreeNode";
 import { FileHit, MatchResult, NodeReplacementOptions } from "./FileHits";
 import { FileParser, isFileParser } from "./FileParser";
 import { FileParserRegistry } from "./FileParserRegistry";
+
+import { File } from "../../project/File";
+import { toSourceLocation } from "../../project/util/sourceLocationUtils";
 
 /**
  * Separates glob patterns from path expressions in unified expression syntax
@@ -85,7 +89,8 @@ export function findFileMatches(p: ProjectAsync,
                 const r = evaluateExpression(fileNode, parsed, functionRegistry);
                 if (isSuccessResult(r)) {
                     logger.debug("%d matches in file '%s'", r.length, file.path);
-                    return new FileHit(p, file, fileNode, r);
+                    return fillInSourceLocations(file, r)
+                        .then(locatedNodes => new FileHit(p, file, fileNode, locatedNodes));
                 } else {
                     logger.debug("No matches in file '%s'", file.path);
                     return undefined;
@@ -96,6 +101,28 @@ export function findFileMatches(p: ProjectAsync,
                 return undefined;
             });
     });
+
+}
+
+/**
+ * Use file content to fill in LocatedTreeNode.sourceLocation
+ * @param {File} f
+ * @param {TreeNode[]} nodes
+ * @return {Promise<LocatedTreeNode[]>}
+ */
+function fillInSourceLocations(f: File, nodes: TreeNode[]): Promise<LocatedTreeNode[]> {
+    if (nodes.length === 0) {
+        // Optimization.
+        // In this case, let's not read the file content and leave source locations undefined
+        return Promise.resolve(nodes as LocatedTreeNode[]);
+    }
+    return f.getContent()
+        .then(content => {
+            nodes.forEach(n => {
+                (n as LocatedTreeNode).sourceLocation = toSourceLocation(f, content, n.$offset);
+            });
+            return nodes as LocatedTreeNode[];
+        });
 }
 
 /**

@@ -3,6 +3,7 @@ import { logger } from "../../internal/util/logger";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { File } from "../../project/File";
 import { ProjectAsync } from "../../project/Project";
+import { LocatedTreeNode } from "../LocatedTreeNode";
 
 /**
  * Options for handling production replacements
@@ -25,7 +26,7 @@ export const ZapTrailingWhitespace: NodeReplacementOptions = {
  * Extension of TreeNode that allows convenient addition before
  * or after a node, without updating the node's value.
  */
-export interface MatchResult extends TreeNode {
+export interface MatchResult extends LocatedTreeNode {
 
     append(content: string);
 
@@ -60,7 +61,7 @@ export class FileHit {
     constructor(private project: ProjectAsync,
                 public file: File,
                 public fileNode: TreeNode,
-                public readonly nodes: TreeNode[]) {
+                public readonly nodes: LocatedTreeNode[]) {
 
         interface Update extends NodeReplacementOptions {
             initialValue: string;
