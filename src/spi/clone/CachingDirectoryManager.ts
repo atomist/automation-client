@@ -3,6 +3,11 @@ import { CloneDirectoryInfo, CloneOptions, DirectoryManager } from "./DirectoryM
 import { StableDirectoryManager } from "./StableDirectoryManager";
 import { TmpDirectoryManager } from "./tmpDirectoryManager";
 
+import { promisify } from "util";
+import { logger } from "../../internal/util/logger";
+
+import * as stringify from "json-stringify-safe";
+
 const AtomistWorkingDirectory = ".atomist-editing";
 
 const AbsoluteAtomistWorkingDirectory = os.homedir() + "/" + AtomistWorkingDirectory;
@@ -27,13 +32,14 @@ const cache = new StableDirectoryManager({
  * @type {{directoryFor:
  * ((owner: string, repo: string, branch: string, opts: CloneOptions) => Promise<CloneDirectoryInfo>)}}
  */
-export const CachingDirectoryManager: DirectoryManager = {
+export const CachingDirectoryManager: DirectoryManager & CachingOfClonesMetricsReporting = {
 
     directoryFor(owner: string, repo: string, branch: string, opts: CloneOptions): Promise<CloneDirectoryInfo> {
 
         return cache.directoryFor(owner, repo, branch, opts).then(existing =>
             pleaseLock(existing.path).then(lockResult => {
                 if (lockResult.success) {
+                    CachingOfClonesMetricsCacheImpl.incrementReuses({ owner, repo });
                     return {
                         ...existing,
                         release: () => {
@@ -52,6 +58,7 @@ export const CachingDirectoryManager: DirectoryManager = {
                     };
                 } else {
                     console.log("There is a lock on " + existing.path);
+                    CachingOfClonesMetricsCacheImpl.incrementFallbacks({ owner, repo });
                     return TmpDirectoryManager.directoryFor(owner, repo, branch, opts).then(cdi =>
                         ({
                             ...cdi,
@@ -60,13 +67,116 @@ export const CachingDirectoryManager: DirectoryManager = {
                 }
             }));
     },
+
+    reportMetrics(): CachingOfClonesMetrics {
+        return CachingOfClonesMetricsCacheImpl.report();
+    },
 };
+
+/*
+ * Metrics reporting
+ */
+
+const sleepPlease: (timeout: number) => Promise<void> =
+    promisify((a, b) => setTimeout(b, a));
+
+const MetricLogFrequency = 1000 * 60 * 10; // ten minutes
+
+/* This returns a promise that never finishes, unless it throws somehow
+ */
+export function logCachingDirectoryManagerMetricsAllDay(): Promise<void> {
+    return sleepPlease(MetricLogFrequency)
+        .then(() => logger.info(CachingOfClonesMetricsCacheImpl.report().print()))
+        .then(() => logCachingDirectoryManagerMetricsAllDay());
+}
+
+export interface PerRepoCachingMetrics {
+    reuses: number;
+    fallbacks: number;
+}
+
+class CachingOfClonesMetricsCache {
+
+    private reuseCounts: any = {};
+    private fallbackCounts: any = {};
+
+    public report() {
+        // this makes a copy each time so it doesn't update underneath you
+        // mainly useful in testing
+        return new CachingOfClonesMetrics(this.reuseCounts, this.fallbackCounts);
+    }
+
+    public incrementReuses(repoId): void {
+        if (!this.reuseCounts[keyFor(repoId)]) {
+            this.reuseCounts[keyFor(repoId)] = 1;
+            return;
+        }
+        this.reuseCounts[keyFor(repoId)]++;
+    }
+
+    public incrementFallbacks(repoId): void {
+        if (!this.fallbackCounts[keyFor(repoId)]) {
+            this.fallbackCounts[keyFor(repoId)] = 1;
+            return;
+        }
+        this.fallbackCounts[keyFor(repoId)]++;
+    }
+
+}
+
+function keyFor(repoId: RepoId) {
+    return `${repoId.owner}/${repoId.repo}`;
+}
+
+export class CachingOfClonesMetrics {
+
+    private reuseCounts: any = {};
+    private fallbackCounts: any = {};
+
+    constructor(reuseCounts: any, fallbackCounts: any) {
+        this.reuseCounts = {
+            ...reuseCounts,
+        };
+        this.fallbackCounts = {
+            ...fallbackCounts,
+        };
+    }
+
+    public forRepo(repoId: RepoId): PerRepoCachingMetrics {
+        return {
+            reuses: this.reuseCounts[keyFor(repoId)] || 0,
+            fallbacks: this.fallbackCounts[keyFor(repoId)] || 0,
+        };
+    }
+
+    public print(): string {
+        const useful = {
+            totalCachedCloneReuses: sumValues(this.reuseCounts),
+            totalCachedCloneFallbacks: sumValues(this.fallbackCounts),
+            reuses: this.reuseCounts,
+            fallbacks: this.fallbackCounts,
+        };
+        return stringify(useful);
+    }
+
+}
+
+function sumValues(o: object) {
+    return Object.keys(o).map(k => o[k]).reduce((a, b) => a + b, 0);
+}
+
+export interface CachingOfClonesMetricsReporting {
+    reportMetrics(): CachingOfClonesMetrics;
+}
+
+const CachingOfClonesMetricsCacheImpl = new CachingOfClonesMetricsCache();
 
 /*
  * file locking. only used here
  */
 
 import lockfile = require("proper-lockfile");
+import { RepoId } from "../../operations/common/RepoId";
 
 interface LockAcquired {
     success: true;

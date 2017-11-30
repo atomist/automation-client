@@ -28,6 +28,7 @@ import { toStringArray } from "./internal/util/string";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
 import { AutomationServerOptions } from "./server/options";
+import { logCachingDirectoryManagerMetricsAllDay } from "./spi/clone/CachingDirectoryManager";
 import { Maker } from "./util/constructionUtils";
 
 export const DefaultApiServer =
@@ -101,6 +102,9 @@ export class AutomationClient {
         if (this.configuration.logging && this.configuration.logging.level) {
             (logger as any).level = this.configuration.logging.level;
         }
+
+        logCachingDirectoryManagerMetricsAllDay()
+            .catch(error => logger.error("logging of clone-caching metrics failed: " + error));
 
         if (!(this.configuration.cluster && this.configuration.cluster.enabled)) {
             logger.info(`Starting Atomist automation client ${this.configuration.name}@${this.configuration.version}`);
