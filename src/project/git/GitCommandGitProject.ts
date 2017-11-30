@@ -366,7 +366,7 @@ function cloneInto(credentials: ProjectOperationCredentials,
 }
 
 function resetOrigin(repoDir: string, credentials: ProjectOperationCredentials, id: RemoteRepoRef) {
-    return runIn(repoDir, `git remote set origin ${id.cloneUrl(credentials)}`)
+    return runIn(repoDir, `git remote set origin ${id.cloneUrl(credentials)}`);
 }
 
 function checkout(repoDir: string, branch: string) {

@@ -67,9 +67,9 @@ describe("cached git clone projects", () => {
                             error => {
                                 // I did expect that to fail
                                 assert(0 <= error.message.indexOf("https://NOT-THE-SAME-YO@github.com"),
-                                    error.message)
+                                    error.message);
                             })
-                        .then(() => clone2.release()))
+                        .then(() => clone2.release()));
         }).then(done, done);
     }).timeout(20000);
 
