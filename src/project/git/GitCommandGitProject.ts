@@ -322,7 +322,8 @@ function clone(credentials: ProjectOperationCredentials,
                     return cloneInto(credentials, cloneDirectoryInfo, opts, id);
                 case "existing-directory" :
                     const repoDir = cloneDirectoryInfo.path;
-                    return checkout(repoDir, id.sha)
+                    return resetOrigin(repoDir, credentials, id)
+                        .then(() => checkout(repoDir, id.sha))
                         .then(() => clean(repoDir))
                         .then(() => {
                             return GitCommandGitProject.fromBaseDir(id,
@@ -362,6 +363,10 @@ function cloneInto(credentials: ProjectOperationCredentials,
                 targetDirectoryInfo.release,
                 targetDirectoryInfo.provenance + "\nfreshly cloned");
         });
+}
+
+function resetOrigin(repoDir: string, credentials: ProjectOperationCredentials, id: RemoteRepoRef) {
+    return runIn(repoDir, `git remote set origin ${id.cloneUrl(credentials)}`);
 }
 
 function checkout(repoDir: string, branch: string) {

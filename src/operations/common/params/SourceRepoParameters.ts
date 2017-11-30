@@ -1,4 +1,3 @@
-
 import { Parameter } from "../../../decorators";
 import { RepoRef } from "../RepoId";
 import { GitBranchRegExp, GitHubNameRegExp } from "./gitHubPatterns";

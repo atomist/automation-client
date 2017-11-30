@@ -122,6 +122,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                     logger.debug("Received '%s' message from worker '%s': %j", msg.type, worker.id, msg.context);
 
                     const invocationId = namespace.get().invocationId;
+                    const ctx = hydrateContext(msg);
                     if (msg.type === "message") {
 
                         let messageClient: MessageClient;
@@ -151,7 +152,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                         sendMessage(msg.data, ws());
                     } else if (msg.type === "command_success") {
                         listeners.map(l => () => l.commandSuccessful(msg.event as CommandInvocation,
-                            null, msg.data as HandlerResult))
+                            ctx, msg.data as HandlerResult))
                             .reduce((p, f) => p.then(f), Promise.resolve())
                             .then(() => {
                                 if (commands.has(invocationId)) {
@@ -163,7 +164,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                             .catch(clearNamespace);
                     } else if (msg.type === "command_failure") {
                         listeners.map(l => () => l.commandFailed(msg.event as CommandInvocation,
-                            null, msg.data as HandlerResult))
+                            ctx, msg.data as HandlerResult))
                             .reduce((p, f) => p.then(f), Promise.resolve())
                             .then(() => {
                                 if (commands.has(invocationId)) {
@@ -175,7 +176,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                             .catch(clearNamespace);
                     } else if (msg.type === "event_success") {
                         listeners.map(l => () => l.eventSuccessful(msg.event as EventFired<any>,
-                            null, msg.data as HandlerResult[]))
+                            ctx, msg.data as HandlerResult[]))
                             .reduce((p, f) => p.then(f), Promise.resolve())
                             .then(() => {
                                 if (events.has(invocationId)) {
@@ -187,7 +188,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                             .catch(clearNamespace);
                     } else if (msg.type === "event_failure") {
                         listeners.map(l => () => l.eventFailed(msg.event as EventFired<any>,
-                            null, msg.data as HandlerResult[]))
+                            ctx, msg.data as HandlerResult[]))
                             .reduce((p, f) => p.then(f), Promise.resolve())
                             .then(() => {
                                 if (events.has(invocationId)) {
@@ -299,4 +300,13 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 class Dispatched<T> {
 
     constructor(public result: Deferred<T>, public context: HandlerContext) {}
+}
+
+function hydrateContext(msg: WorkerMessage): HandlerContext {
+    return {
+        invocationId: msg.context.invocationId,
+        correlationId: msg.context.correlationId,
+        teamId: msg.context.teamId,
+        context: msg.context,
+    } as any as HandlerContext;
 }
