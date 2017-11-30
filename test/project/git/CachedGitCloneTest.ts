@@ -26,6 +26,7 @@ describe("cached git clone projects", () => {
 
     it("never returns the same place on the filesystem twice at once", done => {
         const clones = [getAClone(), getAClone()];
+        const beforeMetrics = CachingDirectoryManager.reportMetrics();
         const cleaningDone = (err: Error | void) => {
             Promise.all(clones)
                 .then(them =>
@@ -37,6 +38,14 @@ describe("cached git clone projects", () => {
             .then(them => {
                 assert(them[0].baseDir !== them[1].baseDir,
                     "Oh no! two simultaneous projects in " + them[0].baseDir);
+            })
+            .then(() => {
+                const afterMetrics = CachingDirectoryManager.reportMetrics();
+                const repoId = { owner: Owner, repo: RepoName};
+                const reusedBefore = beforeMetrics.forRepo(repoId).fallbacks;
+                const reusedAfter = afterMetrics.forRepo(repoId).fallbacks;
+                // we fell back to transient at least once
+                assert(reusedBefore < reusedAfter, `${reusedBefore} < ${reusedAfter}`);
             })
             .then(cleaningDone, cleaningDone);
     }).timeout(20000);
@@ -77,6 +86,7 @@ describe("cached git clone projects", () => {
 
     it("should be on the correct branch when you get the directory again", done => {
         const repoName = "this-repository-exists-to-test-cached-clones-3";
+        const beforeMetrics = CachingDirectoryManager.reportMetrics();
         getAClone({ branch: "some-branch", repoName })
             .then(clone1 =>
                 clone1.gitStatus().then(status1 => {
@@ -94,6 +104,14 @@ describe("cached git clone projects", () => {
                                     return clone2.release();
                                 }));
                 }))
+            .then(() => {
+                const afterMetrics = CachingDirectoryManager.reportMetrics();
+                const repoId = { owner: Owner, repo: repoName};
+                const reusedBefore = beforeMetrics.forRepo(repoId).reuses;
+                const reusedAfter = afterMetrics.forRepo(repoId).reuses;
+                // we at least re-used this once
+                assert(reusedBefore < reusedAfter, `${reusedBefore} < ${reusedAfter}`);
+            })
             .then(done, done);
     }).timeout(20000);
 
