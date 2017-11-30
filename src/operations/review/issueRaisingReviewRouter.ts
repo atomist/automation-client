@@ -1,10 +1,3 @@
-/**
- * Raise issue in this repo
- * @param pr ProjectReview
- * @param {BaseEditorParameters} params
- * @param name name of issue finder
- * @return {any}
- */
 
 import { failureOn, successOn } from "../../action/ActionResult";
 import { deepLink, Issue, raiseIssue } from "../../util/gitHub";
