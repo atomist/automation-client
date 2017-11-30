@@ -1,24 +1,19 @@
 import "mocha";
 import * as assert from "power-assert";
-
-import * as shell from "shelljs";
-import * as tmp from "tmp-promise";
+import { fail } from "power-assert";
 
 import axios from "axios";
 
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import * as fs from "fs";
-import { fail } from "power-assert";
 import { HandlerContext } from "../../../src/HandlerContext";
 import { GitHubDotComBase, GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { BaseSeedDrivenGeneratorParameters } from "../../../src/operations/generate/BaseSeedDrivenGeneratorParameters";
 import { generate } from "../../../src/operations/generate/generatorUtils";
 import { GenericGenerator } from "../../../src/operations/generate/GenericGenerator";
 import { GitHubProjectPersister } from "../../../src/operations/generate/gitHubProjectPersister";
-import { UniversalSeed } from "../../../src/operations/generate/UniversalSeed";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { LocalProject } from "../../../src/project/local/LocalProject";
-import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProject";
 import { Project } from "../../../src/project/Project";
 import { hasFile } from "../../../src/util/gitHub";
 import { GitHubToken } from "../../credentials";
@@ -51,31 +46,6 @@ describe("generator end to end", () => {
                 return;
             });
     }
-
-    it("should create a new GitHub repo using UniversalSeed", function(done) {
-        this.retries(3);
-        const repoName = tempRepoName();
-        const cleanupDone = (err: Error | void = null) => {
-            deleteOrIgnore(repoName).then(done(err));
-        };
-
-        const seed = new UniversalSeed();
-        seed.targetOwner = TargetOwner;
-        seed.targetRepo = repoName;
-        (seed as any).githubToken = GitHubToken;
-        seed.handle(MockHandlerContext as HandlerContext, seed)
-            .then(result => {
-                assert(result.code === 0);
-                // Check the repo
-                return hasFile(GitHubToken, TargetOwner, repoName, "pom.xml")
-                    .then(r => {
-                        assert(r);
-                        return GitCommandGitProject.cloned({token: GitHubToken},
-                            new GitHubRepoRef(TargetOwner, repoName))
-                            .then(verifyPermissions);
-                    });
-            }).then(() => cleanupDone(), cleanupDone);
-    }).timeout(20000);
 
     it("should create a new GitHub repo using GenericGenerator", function(done) {
         this.retries(3);
@@ -166,36 +136,6 @@ describe("generator end to end", () => {
         return Promise.resolve(p);
     }
 
-});
-
-describe("Local project creation", () => {
-
-    it("should create a new local project", done => {
-        const cwd = tmp.dirSync().name;
-        const repoName = tempRepoName();
-        shell.cd(cwd);
-
-        function cleaningDone(err: Error | void) {
-            shell.cd("-");
-            done(err);
-        }
-
-        const seed = new UniversalSeed();
-        seed.targetRepo = repoName;
-        seed.local = true;
-        (seed as any).githubToken = GitHubToken;
-        seed.handle(MockHandlerContext as HandlerContext, seed)
-            .then(r => {
-                const result = r as any;
-                assert(result.code === 0);
-                assert(result.baseDir);
-                NodeFsLocalProject.fromExistingDirectory(
-                    new GitHubRepoRef("owner", repoName), cwd + "/" + repoName)
-                    .then(created => {
-                        assert(created.fileExistsSync("pom.xml"));
-                    });
-            }).then(cleaningDone, cleaningDone);
-    }).timeout(10000);
 });
 
 export const MockHandlerContext = {
