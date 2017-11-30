@@ -3,6 +3,11 @@ import { CloneDirectoryInfo, CloneOptions, DirectoryManager } from "./DirectoryM
 import { StableDirectoryManager } from "./StableDirectoryManager";
 import { TmpDirectoryManager } from "./tmpDirectoryManager";
 
+import { promisify } from "util";
+import { logger } from "../../internal/util/logger";
+
+import * as stringify from "json-stringify-safe";
+
 const AtomistWorkingDirectory = ".atomist-editing";
 
 const AbsoluteAtomistWorkingDirectory = os.homedir() + "/" + AtomistWorkingDirectory;
@@ -72,6 +77,19 @@ export const CachingDirectoryManager: DirectoryManager & CachingOfClonesMetricsR
  * Metrics reporting
  */
 
+const sleepPlease: (timeout: number) => Promise<void> =
+    promisify((a, b) => setTimeout(b, a));
+
+const MetricLogFrequency = 1000 * 60 * 10; // ten minutes
+
+/* This returns a promise that never finishes, unless it throws somehow
+ */
+export function logCachingDirectoryManagerMetricsAllDay(): Promise<void> {
+    return sleepPlease(MetricLogFrequency)
+        .then(() => logger.info(CachingOfClonesMetricsCacheImpl.report().print()))
+        .then(() => logCachingDirectoryManagerMetricsAllDay());
+}
+
 export type PerRepoCachingMetrics = {
     reuses: number,
     fallbacks: number,
@@ -116,7 +134,7 @@ export class CachingOfClonesMetrics {
     private reuseCounts: any = {};
     private fallbackCounts: any = {};
 
-    constructor( reuseCounts: any, fallbackCounts: any) {
+    constructor(reuseCounts: any, fallbackCounts: any) {
         this.reuseCounts = {
             ...reuseCounts
         };
@@ -132,6 +150,20 @@ export class CachingOfClonesMetrics {
         }
     }
 
+    public print(): string {
+        const useful = {
+            totalCachedCloneReuses: sumValues(this.reuseCounts),
+            totalCachedCloneFallbacks: sumValues(this.fallbackCounts),
+            reuses: this.reuseCounts,
+            fallbacks: this.fallbackCounts,
+        };
+        return stringify(useful);
+    }
+
+}
+
+function sumValues(o: object) {
+    return Object.keys(o).map(k => o[k]).reduce((a, b) => a + b, 0);
 }
 
 export interface CachingOfClonesMetricsReporting {
