@@ -15,7 +15,7 @@ import { GitHubToken } from "../../atomist.config";
 
 const Creds = { token: GitHubToken };
 const Owner = "atomist-travisorg";
-const RepoName = "this-repository-exists"
+const RepoName = "this-repository-exists";
 
 function reuseKey(repo: string): string {
     return `${ReuseKey}.${Owner}/${repo}`;
