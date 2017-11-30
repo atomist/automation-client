@@ -28,8 +28,8 @@ import { toStringArray } from "./internal/util/string";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
 import { AutomationServerOptions } from "./server/options";
-import { Maker } from "./util/constructionUtils";
 import { logCachingDirectoryManagerMetricsAllDay } from "./spi/clone/CachingDirectoryManager";
+import { Maker } from "./util/constructionUtils";
 
 export const DefaultApiServer =
     "https://automation.atomist.com/registration";

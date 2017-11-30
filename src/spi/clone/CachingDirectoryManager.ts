@@ -90,9 +90,9 @@ export function logCachingDirectoryManagerMetricsAllDay(): Promise<void> {
         .then(() => logCachingDirectoryManagerMetricsAllDay());
 }
 
-export type PerRepoCachingMetrics = {
-    reuses: number,
-    fallbacks: number,
+export interface PerRepoCachingMetrics {
+    reuses: number;
+    fallbacks: number;
 }
 
 class CachingOfClonesMetricsCache {
@@ -122,7 +122,6 @@ class CachingOfClonesMetricsCache {
         this.fallbackCounts[keyFor(repoId)]++;
     }
 
-
 }
 
 function keyFor(repoId: RepoId) {
@@ -136,10 +135,10 @@ export class CachingOfClonesMetrics {
 
     constructor(reuseCounts: any, fallbackCounts: any) {
         this.reuseCounts = {
-            ...reuseCounts
+            ...reuseCounts,
         };
         this.fallbackCounts = {
-            ...fallbackCounts
+            ...fallbackCounts,
         };
     }
 
@@ -147,7 +146,7 @@ export class CachingOfClonesMetrics {
         return {
             reuses: this.reuseCounts[keyFor(repoId)] || 0,
             fallbacks: this.fallbackCounts[keyFor(repoId)] || 0,
-        }
+        };
     }
 
     public print(): string {
@@ -171,7 +170,6 @@ export interface CachingOfClonesMetricsReporting {
 }
 
 const CachingOfClonesMetricsCacheImpl = new CachingOfClonesMetricsCache();
-
 
 /*
  * file locking. only used here
