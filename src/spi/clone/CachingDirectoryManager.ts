@@ -1,5 +1,10 @@
 import * as os from "os";
-import { CloneDirectoryInfo, CloneOptions, DirectoryManager } from "./DirectoryManager";
+import { logger } from "../../internal/util/logger";
+import {
+    CloneDirectoryInfo,
+    CloneOptions,
+    DirectoryManager,
+} from "./DirectoryManager";
 import { StableDirectoryManager } from "./StableDirectoryManager";
 import { TmpDirectoryManager } from "./tmpDirectoryManager";
 
@@ -34,39 +39,58 @@ export const CachingDirectoryManager: DirectoryManager = {
         return cache.directoryFor(owner, repo, branch, opts).then(existing =>
             pleaseLock(existing.path).then(lockResult => {
                 if (lockResult.success) {
+                    incrementReuse(owner, repo);
                     return {
                         ...existing,
                         release: () => {
-                            console.log("Congratulations! You are releasing a lock!");
+                            logger.debug("Releasing lock on '%s'", existing.path);
                             return lockResult.release().then(existing.release);
                         },
                         invalidate: () => {
-                            console.log("Invalidating " + existing.path);
+                            logger.debug("Invalidating '%s'", existing.path);
                             return cache.invalidate(existing)
                                 .then(() => {
-                                    console.log("Invalidated. Now releasing lock");
+                                    logger.debug("Invalidated. Now releasing lock");
                                     return lockResult.release().then(existing.release);
                                 });
                         },
                         provenance: (existing.provenance || "") + " successfully locked",
                     };
                 } else {
-                    console.log("There is a lock on " + existing.path);
+                    logger.debug("Lock detected on '%s'", existing.path);
+                    incrementFallback(owner, repo);
                     return TmpDirectoryManager.directoryFor(owner, repo, branch, opts).then(cdi =>
                         ({
                             ...cdi,
-                            provenance: `Tried ${existing.path} but it was locked. ` + (cdi.provenance || ""),
+                            provenance: `Tried '${existing.path}' but it was locked. ` + (cdi.provenance || ""),
                         }));
                 }
             }));
     },
 };
 
+export const ReuseKey = "directory_cache.reuse";
+export const FallbackKey = "directory_cache.fallback";
+
+function incrementReuse(owner: string, repo: string): void {
+    increment(`${ReuseKey}.${keyFor(owner, repo)}`);
+    increment(ReuseKey);
+}
+
+function incrementFallback(owner: string, repo: string): void {
+    increment(`${FallbackKey}.${keyFor(owner, repo)}`);
+    increment(FallbackKey);
+}
+
+function keyFor(owner: string, repo: string): string {
+    return `${owner}/${repo}`;
+}
+
 /*
  * file locking. only used here
  */
-
 import lockfile = require("proper-lockfile");
+import { increment } from "../../internal/util/metric";
 
 interface LockAcquired {
     success: true;

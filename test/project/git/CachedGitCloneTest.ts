@@ -2,11 +2,13 @@ import "mocha";
 
 import * as assert from "power-assert";
 import { runCommand } from "../../../src/action/cli/commandLine";
+import { logger } from "../../../src/internal/util/logger";
+import { getCounter, metrics } from "../../../src/internal/util/metric";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../../src/project/git/GitProject";
 import { isFullyClean } from "../../../src/project/git/gitStatus";
-import { CachingDirectoryManager } from "../../../src/spi/clone/CachingDirectoryManager";
+import { CachingDirectoryManager, FallbackKey, ReuseKey } from "../../../src/spi/clone/CachingDirectoryManager";
 import { CloneOptions, DefaultCloneOptions } from "../../../src/spi/clone/DirectoryManager";
 import { TmpDirectoryManager } from "../../../src/spi/clone/tmpDirectoryManager";
 import { GitHubToken } from "../../atomist.config";
@@ -14,6 +16,14 @@ import { GitHubToken } from "../../atomist.config";
 const Creds = { token: GitHubToken };
 const Owner = "atomist-travisorg";
 const RepoName = "this-repository-exists";
+
+function reuseKey(repo: string): string {
+    return `${ReuseKey}.${Owner}/${repo}`;
+}
+
+function fallbackKey(repo: string): string {
+    return `${FallbackKey}.${Owner}/${repo}`;
+}
 
 describe("cached git clone projects", () => {
 
@@ -27,6 +37,7 @@ describe("cached git clone projects", () => {
 
     it("never returns the same place on the filesystem twice at once", done => {
         const clones = [getAClone(), getAClone()];
+        const reusedBefore = getCounter(fallbackKey(RepoName)).printObj().count;
         const cleaningDone = (err: Error | void) => {
             Promise.all(clones)
                 .then(them =>
@@ -38,7 +49,13 @@ describe("cached git clone projects", () => {
             .then(them => {
                 assert(them[0].baseDir !== them[1].baseDir,
                     "Oh no! two simultaneous projects in " + them[0].baseDir);
-            }).then(cleaningDone, cleaningDone);
+            })
+            .then(() => {
+                const reusedAfter = getCounter(fallbackKey(RepoName)).printObj().count;
+                // we fell back to transient at least once
+                assert(reusedBefore < reusedAfter, `${reusedBefore} < ${reusedAfter}`);
+            })
+            .then(cleaningDone, cleaningDone);
     }).timeout(20000);
 
     it("returns the same place on the filesystem in sequence", done => {
@@ -96,6 +113,7 @@ describe("cached git clone projects", () => {
 
     it("should be on the correct branch when you get the directory again", done => {
         const repoName = "this-repository-exists-to-test-cached-clones-3";
+        const reusedBefore = getCounter(reuseKey(repoName)).printObj().count;
         getAClone({ branch: "some-branch", repoName })
             .then(clone1 =>
                 clone1.gitStatus().then(status1 => {
@@ -113,6 +131,11 @@ describe("cached git clone projects", () => {
                                     return clone2.release();
                                 }));
                 }))
+            .then(() => {
+                const reusedAfter = getCounter(reuseKey(repoName)).printObj().count;
+                // we at least re-used this once
+                assert(reusedBefore < reusedAfter, `${reusedBefore} < ${reusedAfter}`);
+            })
             .then(done, done);
     }).timeout(20000);
 
