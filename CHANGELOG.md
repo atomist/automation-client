@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+-   **Breaking** Removed old class hierarchy for editors, generators and reviewers
+    (`AbstractGenerator/UniversalSeed etc). Use new functional style as in `spring-automation`.
 -   The `AllFiles` glob pattern was simplified to `**`
 
 ### Fixed
