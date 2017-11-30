@@ -17,11 +17,12 @@ const RepoName = "this-repository-exists";
 
 describe("cached git clone projects", () => {
 
-    const getAClone = (opts: { branch?: string, repoName?: string } = {}) => {
+    const getAClone = (opts: { branch?: string, repoName?: string, token?: string } = {}) => {
         const repoName = opts.repoName || RepoName;
         const repositoryThatExists =
             opts.branch ? new GitHubRepoRef(Owner, repoName, opts.branch) : new GitHubRepoRef(Owner, repoName);
-        return GitCommandGitProject.cloned(Creds, repositoryThatExists, DefaultCloneOptions, CachingDirectoryManager);
+        const creds = opts.token ? { token: opts.token } : Creds;
+        return GitCommandGitProject.cloned(creds, repositoryThatExists, DefaultCloneOptions, CachingDirectoryManager);
     };
 
     it("never returns the same place on the filesystem twice at once", done => {
@@ -37,8 +38,7 @@ describe("cached git clone projects", () => {
             .then(them => {
                 assert(them[0].baseDir !== them[1].baseDir,
                     "Oh no! two simultaneous projects in " + them[0].baseDir);
-            })
-            .then(cleaningDone, cleaningDone);
+            }).then(cleaningDone, cleaningDone);
     }).timeout(20000);
 
     it("returns the same place on the filesystem in sequence", done => {
@@ -52,7 +52,26 @@ describe("cached git clone projects", () => {
                     return clone2.release();
                 });
         }).then(done, done);
-    }).timeout(5000);
+    }).timeout(20000);
+
+    it("uses a new token the second time", done => {
+        const repoName = "this-repository-exists-to-test-cached-clones-6";
+        getAClone({ repoName }).then(clone1 => {
+            const baseDir1 = clone1.baseDir;
+            return clone1.release()
+                .then(() => getAClone({ repoName, token: "NOT-THE-SAME-YO" }))
+                .then(clone2 =>
+                    clone2.createBranch("banana")
+                        .then(() => clone2.push())
+                        .then(() => assert.fail("that shouldn't work with an invalid token"),
+                            error => {
+                                // I did expect that to fail
+                                assert(0 <= error.message.indexOf("https://NOT-THE-SAME-YO@github.com"),
+                                    error.message);
+                            })
+                        .then(() => clone2.release()));
+        }).then(done, done);
+    }).timeout(20000);
 
     it("should be clean when you get the directory again", done => {
         const repoName = "this-repository-exists-to-test-cached-clones-4";
@@ -98,7 +117,7 @@ describe("cached git clone projects", () => {
     }).timeout(20000);
 
     it("should be on the correct branch even if the branch name overlaps with a file", done => {
-        const repoName = "this-repository-exists-to-test-cached-clones-3";
+        const repoName = "this-repository-exists-to-test-cached-clones-5";
         getAClone({ branch: "this-directory-exists", repoName })
             .then(clone1 =>
                 clone1.gitStatus().then(status1 => {
