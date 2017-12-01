@@ -1,7 +1,8 @@
 import {
     evaluateExpression, evaluateScalar, evaluateScalarValue,
-    evaluateScalarValues
+    evaluateScalarValues,
 } from "@atomist/tree-path/path/expressionEngine";
+import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { TreeVisitor, visit } from "@atomist/tree-path/visitor";
 import "mocha";
 import * as assert from "power-assert";
@@ -13,7 +14,6 @@ import {
     TypeScriptES6FileParser,
     TypeScriptFileParser,
 } from "../../../../src/tree/ast/typescript/TypeScriptFileParser";
-import { TreeNode } from "@atomist/tree-path/TreeNode";
 
 describe("TypeScriptFileParser", () => {
 
