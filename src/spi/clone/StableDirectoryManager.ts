@@ -55,7 +55,7 @@ export class StableDirectoryManager implements DirectoryManager {
     public invalidate(existing: CloneDirectoryInfo): Promise<void> {
         return fs.remove(existing.path)
             .then(() => {
-                logger.info("Deleted " + existing.path);
+                logger.debug("Deleted " + existing.path);
             }, err => {
                 if (err.code === "ENOENT") {
                     logger.debug("Cleanup: deleting %s, but it's already gone", existing.path);

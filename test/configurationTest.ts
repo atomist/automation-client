@@ -2,9 +2,6 @@ import "mocha";
 import * as assert from "power-assert";
 
 import { resolveModuleConfig, UserConfig } from "../src/configuration";
-import { LoggingConfig } from "../src/internal/util/logger";
-
-LoggingConfig.format = "cli";
 
 describe("configuration", () => {
 

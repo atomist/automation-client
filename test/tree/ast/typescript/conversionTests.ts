@@ -39,10 +39,10 @@ describe("path expression driven conversion", () => {
             "src/**/*.ts",
             "//VariableDeclaration//ColonToken[/following-sibling::*]")
             .then(values => {
-                console.log(stringify(values[0],
-                    (key, value) => ["$parent", "node", "sourceFile"].includes(key) ? undefined : value, 2));
+                // console.log(stringify(values[0],
+                //    (key, value) => ["$parent", "node", "sourceFile"].includes(key) ? undefined : value, 2));
                 assert(values.length === 1);
-                console.log(`Value is [${values[0].$value}]`);
+                // console.log(`Value is [${values[0].$value}]`);
                 assert(values[0].$value === ":");
                 done();
             }).catch(done);
