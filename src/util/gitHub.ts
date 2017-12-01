@@ -1,4 +1,4 @@
-import axios, { AxiosPromise } from "axios";
+import axios, { AxiosPromise, AxiosRequestConfig } from "axios";
 import { logger } from "../internal/util/logger";
 
 import { decode } from "../internal/util/base64";
@@ -99,11 +99,32 @@ export function createCommitComment(token: string, rr: GitHubRepoRef, comment: C
     return axios.post(url, comment, authHeaders(token));
 }
 
-function authHeaders(token: string) {
+export function createRepo(token: string, rr: GitHubRepoRef, description: string, priv: boolean): AxiosPromise {
+    const config = authHeaders(token);
+    return axios.get(`${rr.apiBase}/orgs/${rr.owner}`, config)
+        .then(result => {
+            // We now know the owner is an org
+            return `${rr.apiBase}/orgs/${rr.owner}/repos`;
+        }, err => {
+            // We now know the owner is an user
+            return `${rr.apiBase}/user/repos`;
+        })
+        .then(url => {
+            const payload = {
+                name: rr.repo,
+                description,
+                private: priv,
+            };
+            logger.debug(`Request to '${url}' to create repo`);
+            return axios.post(url, payload, config);
+        });
+}
+
+function authHeaders(token: string): AxiosRequestConfig {
     return token ? {
-            headers: {
-                Authorization: `token ${token}`,
-            },
-        }
+        headers: {
+            Authorization: `token ${token}`,
+        },
+    }
         : {};
 }

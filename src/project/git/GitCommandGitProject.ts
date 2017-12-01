@@ -19,6 +19,7 @@ import {
     DirectoryManager,
 } from "../../spi/clone/DirectoryManager";
 import { TmpDirectoryManager } from "../../spi/clone/tmpDirectoryManager";
+import { createRepo } from "../../util/gitHub";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
 import { GitProject } from "./GitProject";
 import { GitStatus, runStatusIn } from "./gitStatus";
@@ -129,7 +130,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     public setGitHubRemote(owner: string, repo: string): Promise<CommandResult<this>> {
         this.id = new GitHubRepoRef(owner, repo);
-        return this.setRemote(`https://${this.credentials.token}@github.com/${owner}/${repo}.git`);
+        return this.setRemote((this.id as GitHubRepoRef).cloneUrl(this.credentials));
     }
 
     public setUserConfig(user: string, email: string): Promise<CommandResult<this>> {
@@ -146,7 +147,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
         return isGitHubRepoRef(this.id) ?
             Promise.all([axios.get(`${this.id.apiBase}/user`, config),
-                axios.get(`${this.id.apiBase}/user/emails`, config)])
+            axios.get(`${this.id.apiBase}/user/emails`, config)])
                 .then(results => {
                     const name = results[0].data.name;
                     let email = results[0].data.email;
@@ -166,8 +167,13 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     }
 
-    public createAndSetGitHubRemote(owner: string, name: string, description: string = name,
-                                    visibility: "private" | "public"): Promise<CommandResult<this>> {
+    public createAndSetGitHubRemote(
+        owner: string,
+        name: string,
+        description: string = name,
+        visibility: "private" | "public",
+    ): Promise<CommandResult<this>> {
+
         const config = {
             headers: {
                 Authorization: `token ${this.credentials.token}`,
@@ -175,17 +181,12 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         };
         const gid = new GitHubRepoRef(owner, name, "master");
         this.id = gid;
+        const priv = visibility === "private";
 
-        return axios.get(`${gid.apiBase}/orgs/${owner}`, config)
-            .then(result => {
-                // We now know the owner is an org
-                const url = `${gid.apiBase}/orgs/${owner}/repos`;
-                return this.createRepo(owner, url, name, description, visibility);
-            })
-            .catch(error => {
-                // We now know the owner is an user
-                const url = `${gid.apiBase}/user/repos`;
-                return this.createRepo(owner, url, name, description, visibility);
+        return createRepo(this.credentials.token, gid, description, priv)
+            .then(res => {
+                logger.debug(`Repo created ok: ${res.statusText}`);
+                return this.setRemote(gid.cloneUrl(this.credentials));
             });
     }
 
@@ -280,27 +281,6 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             });
     }
 
-    private createRepo(owner: string, url: string, name: string, description: string = name,
-                       visibility: "private" | "public"): Promise<any> {
-        const config = {
-            headers: {
-                Authorization: `token ${this.credentials.token}`,
-            },
-        };
-
-        const payload = {
-            name,
-            description,
-            private: visibility === "private" ? true : false,
-        };
-        logger.debug(`Request to '${url}' with '${stringify(payload)}' ` +
-            `and auth token '${hideString(this.credentials.token)}'`);
-        return axios.post(url, payload, config)
-            .then(res => {
-                logger.debug(`Repo created ok: ${res.statusText}`);
-                return this.setRemote(`https://${this.credentials.token}@github.com/${owner}/${name}.git`);
-            });
-    }
 }
 
 /**
@@ -318,9 +298,9 @@ function clone(credentials: ProjectOperationCredentials,
     return directoryManager.directoryFor(id.owner, id.repo, id.sha, opts)
         .then(cloneDirectoryInfo => {
             switch (cloneDirectoryInfo.type) {
-                case "empty-directory" :
+                case "empty-directory":
                     return cloneInto(credentials, cloneDirectoryInfo, opts, id);
-                case "existing-directory" :
+                case "existing-directory":
                     const repoDir = cloneDirectoryInfo.path;
                     return resetOrigin(repoDir, credentials, id)
                         .then(() => checkout(repoDir, id.sha))
