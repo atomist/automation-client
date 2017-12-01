@@ -1,7 +1,8 @@
 import {
     evaluateExpression, evaluateScalar, evaluateScalarValue,
-    evaluateScalarValues
+    evaluateScalarValues,
 } from "@atomist/tree-path/path/expressionEngine";
+import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { TreeVisitor, visit } from "@atomist/tree-path/visitor";
 import "mocha";
 import * as assert from "power-assert";
@@ -13,7 +14,6 @@ import {
     TypeScriptES6FileParser,
     TypeScriptFileParser,
 } from "../../../../src/tree/ast/typescript/TypeScriptFileParser";
-import { TreeNode } from "@atomist/tree-path/TreeNode";
 
 describe("TypeScriptFileParser", () => {
 
@@ -140,14 +140,13 @@ describe("TypeScriptFileParser", () => {
             }).catch(done);
     });
 
-    // This is not presently possible. Perhaps it should be.
-    it.skip("should parse project and use a path expression to find and update a value in an inner search", done => {
+    it("should parse project and use a path expression to find and update a value in an inner search", done => {
         const p = InMemoryProject.of({path: "script.ts", content: "const x = 1;"});
         findMatches(p, TypeScriptES6FileParser,
             "**/*.ts",
             "//VariableDeclaration")
             .then(outer => {
-                const matchResults = evaluateExpression(outer[0], "//Identifier") as TreeNode[];
+                const matchResults = outer[0].evaluateExpression("//Identifier") as TreeNode[];
 
                 // console.log(stringify(root, null, 2));
                 assert(matchResults.length === 1);
