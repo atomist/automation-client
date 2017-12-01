@@ -14,10 +14,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   **Breaking** Removed old class hierarchy for editors, generators and reviewers
     (`AbstractGenerator/UniversalSeed etc). Use new functional style as in `spring-automation`.
 -   The `AllFiles` glob pattern was simplified to `**`
+-   Move cache directory to ~/.atomist/cache
 
 ### Fixed
 
 -   Issues with deleting files and directories in an InMemoryProject
+-   Ensure GitHub sees a token in a clone URL as a token
 
 ### Removed
 

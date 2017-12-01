@@ -13,7 +13,7 @@ export interface RepoId {
 
 export class SimpleRepoId implements RepoId {
 
-    constructor(public owner: string, public repo: string) {}
+    constructor(public owner: string, public repo: string) { }
 }
 
 /**
@@ -82,7 +82,7 @@ export class RemoteRepoRefSupport implements RemoteRepoRef {
     }
 
     public cloneUrl(creds: ProjectOperationCredentials) {
-        return `https://${creds.token}@${this.remoteBase}/${this.pathComponent}.git`;
+        return `https://${creds.token}:x-oauth-basic@${this.remoteBase}/${this.pathComponent}.git`;
     }
 
     get pathComponent(): string {
