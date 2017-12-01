@@ -77,12 +77,10 @@ function handleReviewOneOrMany<PARAMS extends BaseEditorParameters>(reviewerFact
                 return Promise.all(projectReviews
                     .filter(pr => pr.comments.length > 0)
                     .map(pr => {
-                        return ctx.messageClient.respond(
-                            `Publishing review for ${pr.repoId.owner}/${pr.repoId.repo} with ${pr.comments.length} problems`)
-                            .then(() => details.reviewRouter(pr, parameters, name, ctx));
+                        return details.reviewRouter(pr, parameters, name, ctx);
                     }))
                     .then(persisted =>
-                        ctx.messageClient.respond(`${persisted.length} reviews completed and published`));
+                        ctx.messageClient.respond(`Reviewed ${projectReviews.length} repositories: Reported on ${persisted.length} with problems`));
             });
     };
 }
