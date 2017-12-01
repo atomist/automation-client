@@ -14,7 +14,7 @@ import { ProjectReviewer } from "./projectReviewer";
 import { reviewAll } from "./reviewAll";
 import { ProjectReview } from "./ReviewResult";
 
-export type ReviewRouter<PARAMS> = (pr: ProjectReview, params: PARAMS, title: string) =>
+export type ReviewRouter<PARAMS> = (pr: ProjectReview, params: PARAMS, title: string, ctx: HandlerContext) =>
     Promise<ActionResult<RepoRef>>;
 
 /**
@@ -79,7 +79,7 @@ function handleReviewOneOrMany<PARAMS extends BaseEditorParameters>(reviewerFact
                     .map(pr => {
                         return ctx.messageClient.respond(
                             `Publishing review for ${pr.repoId.owner}/${pr.repoId.repo} with ${pr.comments.length} problems`)
-                            .then(() => details.reviewRouter(pr, parameters, name));
+                            .then(() => details.reviewRouter(pr, parameters, name, ctx));
                     }))
                     .then(persisted =>
                         ctx.messageClient.respond(`${persisted.length} reviews completed and published`));
