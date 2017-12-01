@@ -3,7 +3,6 @@ import { HandlerContext } from "../../HandlerContext";
 import { commandHandlerFrom, OnCommand, ParametersConstructor } from "../../onCommand";
 import { CommandDetails } from "../CommandDetails";
 import { RepoFilter } from "../common/repoFilter";
-import { SimpleRepoId } from "../common/RepoId";
 import { BaseEditorParameters } from "./BaseEditorParameters";
 import { editAll, editOne } from "./editAll";
 import { EditMode, isEditMode, PullRequest } from "./editModes";
@@ -63,7 +62,7 @@ function handleEditOneOrMany<PARAMS extends BaseEditorParameters>(pe: (params: P
             return editOne(ctx, credentials,
                 pe(parameters),
                 editModeFor(details.editMode, parameters),
-                new SimpleRepoId(parameters.owner, parameters.repo),
+                parameters,
                 parameters,
                 !!details.repoLoader ? details.repoLoader(parameters) : undefined);
         }
