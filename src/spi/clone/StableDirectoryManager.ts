@@ -124,12 +124,12 @@ export class StableDirectoryManager implements DirectoryManager {
             });
     }
 
-    private pathFor(user: string, repo: string): string {
-        return `${this.opts.baseDir}/${user}/${repo}`;
+    private pathFor(owner: string, repo: string): string {
+        return path.join(this.opts.baseDir, "repos", "github.com", owner, repo);
     }
 
-    private createFreshDir(user: string, repo: string): Promise<string> {
-        const repoDir = path.join(this.opts.baseDir, user, repo, "repos", "github.com");
+    private createFreshDir(owner: string, repo: string): Promise<string> {
+        const repoDir = this.pathFor(owner, repo);
         return fs.ensureDir(repoDir)
             .then(() => assureDirectoryIsEmpty(repoDir))
             .then(() => repoDir);
