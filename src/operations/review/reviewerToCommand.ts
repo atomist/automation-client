@@ -1,4 +1,3 @@
-
 import { ActionResult } from "../../action/ActionResult";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
@@ -80,7 +79,8 @@ function handleReviewOneOrMany<PARAMS extends BaseEditorParameters>(reviewerFact
                         return details.reviewRouter(pr, parameters, name, ctx);
                     }))
                     .then(persisted =>
-                        ctx.messageClient.respond(`Reviewed ${projectReviews.length} repositories: Reported on ${persisted.length} with problems`));
+                        ctx.messageClient.respond(
+                            `${name} reviewed ${projectReviews.length} repositories: Reported on ${persisted.length} with problems`));
             });
     };
 }
