@@ -1,5 +1,7 @@
 import { logger } from "../../internal/util/logger";
 
+import { evaluateExpression } from "@atomist/tree-path/path/expressionEngine";
+import { isSuccessResult, PathExpression } from "@atomist/tree-path/path/pathExpression";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { File } from "../../project/File";
 import { ProjectAsync } from "../../project/Project";
@@ -40,6 +42,15 @@ export interface MatchResult extends LocatedTreeNode {
     zap(opts: NodeReplacementOptions);
 
     replace(newContent: string, opts: NodeReplacementOptions);
+
+    evaluateExpression(pex: string | PathExpression);
+}
+
+interface Update extends NodeReplacementOptions {
+
+    initialValue: string;
+    currentValue: string;
+    offset: number;
 }
 
 /**
@@ -62,12 +73,6 @@ export class FileHit {
                 public file: File,
                 public fileNode: TreeNode,
                 public readonly nodes: LocatedTreeNode[]) {
-
-        interface Update extends NodeReplacementOptions {
-            initialValue: string;
-            currentValue: string;
-            offset: number;
-        }
 
         const updates: Update[] = [];
 
@@ -94,32 +99,41 @@ export class FileHit {
         }
 
         this.matches = nodes as MatchResult[];
-
-        // Define a "value" property on each match that causes the project to be updated
-        this.matches.forEach(m => {
-            const initialValue = m.$value;
-            let currentValue = m.$value;
-            Object.defineProperty(m, "$value", {
-                get() {
-                    return currentValue;
-                },
-                set(v2) {
-                    logger.info("Updating value from '%s' to '%s' on '%s'", currentValue, v2, m.$name);
-                    // TODO allow only one
-                    currentValue = v2;
-                    updates.push({initialValue, currentValue, offset: m.$offset});
-                },
-            });
-            m.append = (content: string) => {
-                updates.push({initialValue: "", currentValue: content, offset: m.$offset + currentValue.length});
-            };
-            m.prepend = (content: string) => {
-                updates.push({initialValue: "", currentValue: content, offset: m.$offset});
-            };
-            m.zap = (opts: NodeReplacementOptions) => {
-                updates.push({...opts, initialValue, currentValue: "", offset: m.$offset});
-            };
-        });
+        makeUpdatable(this.matches, updates);
         project.recordAction(p => doReplace());
     }
+}
+
+function makeUpdatable(matches: MatchResult[], updates: Update[]) {
+    matches.forEach(m => {
+        const initialValue = m.$value;
+        let currentValue = m.$value;
+        Object.defineProperty(m, "$value", {
+            get() {
+                return currentValue;
+            },
+            set(v2) {
+                logger.info("Updating value from '%s' to '%s' on '%s'", currentValue, v2, m.$name);
+                // TODO allow only one
+                currentValue = v2;
+                updates.push({initialValue, currentValue, offset: m.$offset});
+            },
+        });
+        m.append = (content: string) => {
+            updates.push({initialValue: "", currentValue: content, offset: m.$offset + currentValue.length});
+        };
+        m.prepend = (content: string) => {
+            updates.push({initialValue: "", currentValue: content, offset: m.$offset});
+        };
+        m.zap = (opts: NodeReplacementOptions) => {
+            updates.push({...opts, initialValue, currentValue: "", offset: m.$offset});
+        };
+        m.evaluateExpression = (pex: PathExpression | string) => {
+            const r = evaluateExpression(m, pex);
+            if (isSuccessResult(r)) {
+                makeUpdatable(r as any, updates);
+            }
+            return r;
+        };
+    });
 }
