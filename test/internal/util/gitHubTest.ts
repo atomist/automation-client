@@ -9,7 +9,7 @@ describe("gitHubUtils", () => {
 
     describe("deepLink", () => {
 
-        it("creates a valid link", () => {
+        it("creates a valid link with line number", () => {
             const target = new GitHubRepoRef("atomist-seeds", "spring-rest-seed", "1c097a4897874b08e3b3ddb9675a1ac460ae46de");
             const href = deepLink(target, {
                 path: "pom.xml",
@@ -17,7 +17,24 @@ describe("gitHubUtils", () => {
                 offset: -1,
             });
             assert(!!href);
-            // console.log(href);
+            assert(href.includes("#L6"));
+        });
+
+        it("creates a valid link without line number", () => {
+            const target = new GitHubRepoRef("atomist-seeds", "spring-rest-seed", "1c097a4897874b08e3b3ddb9675a1ac460ae46de");
+            const href = deepLink(target, {
+                path: "pom.xml",
+                offset: -1,
+            });
+            assert(!!href);
+            assert(!href.includes("#L"));
+        });
+
+        it("copes without defined source location", () => {
+            const target = new GitHubRepoRef("atomist-seeds", "spring-rest-seed", "1c097a4897874b08e3b3ddb9675a1ac460ae46de");
+            const href = deepLink(target, undefined);
+            assert(!!href);
+            assert(!href.includes("#L"));
         });
 
     });

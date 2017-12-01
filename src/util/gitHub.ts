@@ -14,8 +14,9 @@ import { SourceLocation } from "../operations/common/SourceLocation";
  */
 export function deepLink(grr: GitHubRepoRef, sourceLocation: SourceLocation) {
     // TODO need to allow for GHE
-    return `https://github.com/${grr.owner}/${grr.repo}/blob/${grr.sha}/${sourceLocation.path}` +
-        `#L${sourceLocation.lineFrom1}`;
+    return `https://github.com/${grr.owner}/${grr.repo}/blob/${grr.sha}` +
+        (!!sourceLocation ? `/${sourceLocation.path}` : "") +
+        (!!sourceLocation && !!sourceLocation.lineFrom1 ? `#L${sourceLocation.lineFrom1}` : "");
 }
 
 /**
