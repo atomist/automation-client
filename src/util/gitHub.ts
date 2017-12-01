@@ -78,6 +78,26 @@ export function raiseIssue(token: string, rr: RepoRef, issue: Issue): AxiosPromi
     return axios.post(url, issue, authHeaders(token));
 }
 
+export interface GitHubRepoWebhookConfig {
+    url: string;
+    content_type: "json" | "form";
+    secret?: string;
+    insecure_ssl?: string;
+}
+
+export interface GitHubRepoWebhookPayload {
+    name: "web";
+    events: string[];
+    active: boolean;
+    config: GitHubRepoWebhookConfig;
+}
+
+export function addRepoWebhook(token: string, rr: GitHubRepoRef, webhookData: GitHubRepoWebhookPayload): AxiosPromise {
+    const url = `${rr.apiBase}/repos/${rr.owner}/${rr.repo}/hooks`;
+    logger.debug(`Request to '${url}' to create webhook`);
+    return axios.post(url, webhookData, authHeaders(token));
+}
+
 /**
  * GitHub commit comment structure
  */

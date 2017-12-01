@@ -11,8 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
--   **Breaking** Removed old class hierarchy for editors, generators and reviewers
-    (`AbstractGenerator/UniversalSeed etc). Use new functional style as in `spring-automation`.
+-   **Breaking** Removed old class hierarchy for editors, generators
+    and reviewers (`AbstractGenerator/UniversalSeed`, etc), use new
+    functional style as in [spring-automation][]
 -   The `AllFiles` glob pattern was simplified to `**`
 -   Move cache directory to ~/.atomist/cache
 
@@ -24,6 +25,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 -   RemoveSeedFiles as it was not generic nor provided much convenience
+
+### Added
+
+-   Optionally add Atomist webhook to create GitHub repo
+
+[spring-automation]: https://github.com/atomist/spring-automation (@atomist/spring-automation)
 
 ## [0.4.0][] - 2017-11-28
 
