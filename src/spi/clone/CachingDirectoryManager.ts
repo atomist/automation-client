@@ -1,4 +1,5 @@
 import * as os from "os";
+import * as path from "path";
 import { logger } from "../../internal/util/logger";
 import {
     CloneDirectoryInfo,
@@ -8,9 +9,9 @@ import {
 import { StableDirectoryManager } from "./StableDirectoryManager";
 import { TmpDirectoryManager } from "./tmpDirectoryManager";
 
-const AtomistWorkingDirectory = ".atomist-editing";
+const AtomistWorkingDirectory = path.join(".atomist", "cache");
 
-const AbsoluteAtomistWorkingDirectory = os.homedir() + "/" + AtomistWorkingDirectory;
+const AbsoluteAtomistWorkingDirectory = path.join(os.homedir(), AtomistWorkingDirectory);
 
 const cache = new StableDirectoryManager({
     reuseDirectories: true,
@@ -107,9 +108,9 @@ export { pleaseLock, LockResult, LockAcquired, NoLockForYou };
 
 type LockResult = LockAcquired | NoLockForYou;
 
-function pleaseLock(path: string): Promise<LockResult> {
+function pleaseLock(lockPath: string): Promise<LockResult> {
     return new Promise<LockResult>((resolve, reject) => {
-        lockfile.lock(path, (error, releaseCallback) => {
+        lockfile.lock(lockPath, (error, releaseCallback) => {
             if (error) {
                 if (error.code === "ELOCKED") {
                     resolve({ success: false, error });

@@ -43,31 +43,34 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
      * @param cleanup
      * @returns {LocalProject}
      */
-    public static copy(other: Project, baseDir: string,
-                       cleanup: ReleaseFunction = () => Promise.resolve()): Promise<LocalProject> {
-        if (!fs.existsSync(baseDir)) {
-            fs.mkdirSync(baseDir);
-        }
-        if (isLocalProject(other)) {
-            return fs.copy(other.baseDir, baseDir)
-                .then(() =>
-                    new NodeFsLocalProject(other.id, baseDir, cleanup));
-        } else {
-            // We don't know what kind of project the other one is,
-            // so we are going to need to copy the files one at a time
-            const p = new NodeFsLocalProject(other.id, baseDir, cleanup);
-            return copyFiles(other, p)
-                .then(() => {
-                    // Add empty directories if necessary
-                    let prom = Promise.resolve(p);
-                    if (isInMemoryProject(other)) {
-                        other.addedDirectoryPaths.forEach(path => {
-                            prom = prom.then(() => p.addDirectory(path));
+    public static copy(
+        other: Project,
+        baseDir: string,
+        cleanup: ReleaseFunction = () => Promise.resolve(),
+    ): Promise<LocalProject> {
+
+        return fs.ensureDir(baseDir)
+            .then(() => {
+                if (isLocalProject(other)) {
+                    return fs.copy(other.baseDir, baseDir)
+                        .then(() => new NodeFsLocalProject(other.id, baseDir, cleanup));
+                } else {
+                    // We don't know what kind of project the other one is,
+                    // so we are going to need to copy the files one at a time
+                    const p = new NodeFsLocalProject(other.id, baseDir, cleanup);
+                    return copyFiles(other, p)
+                        .then(() => {
+                            // Add empty directories if necessary
+                            let prom = Promise.resolve(p);
+                            if (isInMemoryProject(other)) {
+                                other.addedDirectoryPaths.forEach(path => {
+                                    prom = prom.then(() => p.addDirectory(path));
+                                });
+                            }
+                            return prom;
                         });
-                    }
-                    return prom;
-                });
-        }
+                }
+            });
     }
 
     /**
@@ -176,7 +179,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
             .then(exists => exists ?
                 Promise.resolve(new NodeFsLocalFile(this.baseDir, path)) :
                 Promise.reject(`File not found at ${path}`),
-            );
+        );
     }
 
     public findFileSync(path: string): File {
@@ -189,7 +192,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
     public streamFilesRaw(globPatterns: string[], opts: {}): FileStream {
         // Fight arrow function "this" issue
         const baseDir = this.baseDir;
-        const toFileTransform = new stream.Transform({objectMode: true});
+        const toFileTransform = new stream.Transform({ objectMode: true });
 
         toFileTransform._transform = function(chunk, encoding, done) {
             const f = new NodeFsLocalFile(baseDir, pathWithinArchive(baseDir, chunk.path));

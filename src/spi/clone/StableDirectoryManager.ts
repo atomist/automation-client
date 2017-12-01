@@ -1,8 +1,8 @@
-import { registerShutdownHook } from "../../internal/util/shutdown";
+import * as fs from "fs-extra";
+import * as path from "path";
 
 import { logger } from "../../internal/util/logger";
-
-import * as fs from "fs-extra";
+import { registerShutdownHook } from "../../internal/util/shutdown";
 import { CloneDirectoryInfo, CloneOptions, DirectoryManager } from "./DirectoryManager";
 
 export interface StableDirectoryManagerOpts {
@@ -102,15 +102,20 @@ export class StableDirectoryManager implements DirectoryManager {
             });
     }
 
-    private freshDirectoryFor(user: string, repo: string, branch: string,
-                              opts: CloneOptions): Promise<CloneDirectoryInfo> {
+    private freshDirectoryFor(
+        user: string,
+        repo: string,
+        branch: string,
+        opts: CloneOptions,
+    ): Promise<CloneDirectoryInfo> {
+
         return this.createFreshDir(user, repo)
-            .then((path): CloneDirectoryInfo => {
+            .then((cdi): CloneDirectoryInfo => {
                 this.directoriesUsed++;
                 logger.debug("%s directories used: Returning new path '%s'",
-                    this.directoriesUsed, path);
+                    this.directoriesUsed, cdi);
                 return {
-                    path,
+                    path: cdi,
                     type: "empty-directory",
                     release: () => Promise.resolve(),
                     invalidate: () => Promise.resolve(),
@@ -124,45 +129,18 @@ export class StableDirectoryManager implements DirectoryManager {
     }
 
     private createFreshDir(user: string, repo: string): Promise<string> {
-        // assume the baseDir exists
-        const userDir = `${this.opts.baseDir}/${user}`;
-        const repoDir = userDir + "/" + repo;
-        return assureDirectoryExists(this.opts.baseDir)
-            .then(() => assureDirectoryExists(userDir))
-            .then(() => assureDirectoryExists(repoDir))
+        const repoDir = path.join(this.opts.baseDir, user, repo, "repos", "github.com");
+        return fs.ensureDir(repoDir)
             .then(() => assureDirectoryIsEmpty(repoDir))
             .then(() => repoDir);
     }
-}
-
-function assureDirectoryExists(name: string): Promise<void> {
-    return fs.stat(name)
-        .then(stats => {
-            if (!stats.isDirectory()) {
-                throw new Error(name + "exists but is not a directory.");
-            }
-        }, statErr => {
-            if (statErr.code === "ENOENT") {
-                logger.info("Creating " + name);
-                return fs.mkdir(name)
-                    .catch(mkdirErr => {
-                            if (mkdirErr.code === "EEXIST") {
-                                logger.debug("race condition observed: two of us creating " + name + " as the same time. No bother");
-                            } else {
-                                throw mkdirErr;
-                            }
-                        },
-                    );
-            }
-            throw statErr;
-        });
 }
 
 function assureDirectoryIsEmpty(name: string): Promise<void> {
     return fs.readdir(name).then(files => {
         if (files.length > 0) {
             return fs.remove(name)
-                .then(() => assureDirectoryExists(name))
+                .then(() => fs.ensureDir(name))
                 .catch(err => {
                     throw new Error("I tried to make this directory be empty: " + name +
                         " but it didn't work: " + err.message);
