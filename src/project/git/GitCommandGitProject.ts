@@ -334,7 +334,7 @@ function cloneInto(credentials: ProjectOperationCredentials,
         runIn(".", `git clone ${id.cloneUrl(credentials)} ${repoDir}`)
             .then(() => runIn(repoDir, `git checkout ${id.sha} --`));
 
-    logger.info(`Cloning repo '${id.url}' in '${repoDir}'`);
+    logger.debug(`Cloning repo '${id.url}' in '${repoDir}'`);
     return command
         .then(_ => {
             logger.debug(`Clone succeeded with URL '${id.url}'`);

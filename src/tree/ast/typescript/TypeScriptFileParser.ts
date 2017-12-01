@@ -61,13 +61,13 @@ export class TypeScriptFileParser implements FileParser {
  */
 function scriptKindFor(f: File): ts.ScriptKind {
     switch (f.extension) {
-        case "js" :
+        case "js":
             return ts.ScriptKind.JS;
-        case "jsx" :
+        case "jsx":
             return ts.ScriptKind.JSX;
-        case "ts" :
+        case "ts":
             return ts.ScriptKind.TS;
-        case "tsx" :
+        case "tsx":
             return ts.ScriptKind.TSX;
         default:
             return ts.ScriptKind.Unknown;
@@ -98,7 +98,7 @@ class TypeScriptAstNodeTreeNode implements TreeNode {
             this.$offset = node.getStart(sourceFile, true);
         } catch (e) {
             // Ignore and continue
-            logger.warn("Cannot get start for node with kind %s", ts.SyntaxKind[node.kind]);
+            logger.debug("Cannot get start for node with kind %s", ts.SyntaxKind[node.kind]);
         }
 
         for (const n of node.getChildren(sourceFile)) {

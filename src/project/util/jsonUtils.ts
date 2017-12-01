@@ -14,9 +14,12 @@ export type JsonManipulation = (jsonObj: any) => void;
  * @param {JsonManipulation} manipulation
  * @return {Promise<P extends ProjectAsync>}
  */
-export function doWithJson<M, P extends ProjectAsync = ProjectAsync>(p: P,
-                                                                     jsonPath: string,
-                                                                     manipulation: JsonManipulation): Promise<P> {
+export function doWithJson<M, P extends ProjectAsync = ProjectAsync>(
+    p: P,
+    jsonPath: string,
+    manipulation: JsonManipulation,
+): Promise<P> {
+
     return doWithFiles(p, jsonPath, file => {
         return file.getContent()
             .then(content => {
@@ -27,7 +30,7 @@ export function doWithJson<M, P extends ProjectAsync = ProjectAsync>(p: P,
     });
 }
 
-const spacePossibilities = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, " ", "  ", "\t"];
+const spacePossibilities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, " ", "  ", "\t"];
 
 /**
  * Update the object form of the given JSON content and write
@@ -48,13 +51,13 @@ export function manipulate(jsonIn: string, manipulation: JsonManipulation, conte
         for (const sp of spacePossibilities) {
             const maybe = JSON.stringify(obj, null, sp);
             if (jsonIn === maybe) {
-                console.log(`Definitely inferred space as [${sp}]`);
+                logger.debug(`Definitely inferred space as [${sp}]`);
                 space = sp;
                 break;
             }
         }
 
-        console.log(`Inferred space is [${space}]`);
+        logger.debug(`Inferred space is [${space}]`);
 
         manipulation(obj);
         return JSON.stringify(obj, null, space);

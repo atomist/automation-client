@@ -47,13 +47,13 @@ function toAction<T>(link: Chainable<T>): TAction<T> {
             return oneOrTheOther
                 .catch(err => failureOn(p, err, link))
                 .then(r => {
-                // See what it returns
-                return isActionResult(r) ?
-                    r :
-                    successOn(r) as ActionResult<T>;
-            });
+                    // See what it returns
+                    return isActionResult(r) ?
+                        r :
+                        successOn(r) as ActionResult<T>;
+                });
         } catch (error) {
-            console.log("There was a failure yo!" + error.message);
+            console.error("Failure: " + error.message);
             return Promise.resolve(failureOn(p, error, link));
         }
     };

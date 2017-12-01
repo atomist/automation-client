@@ -21,9 +21,8 @@ describe("editorUtils", () => {
         GitCommandGitProject.cloned(Creds, RepoThatExists)
             .then(p => {
                 return editProjectUsingBranch(undefined, p, NoOpEditor,
-                    {branch: "dont-create-me-or-i-barf&&&####&&& we", message: "whocares"})
+                    { branch: "dont-create-me-or-i-barf&&&####&&& we", message: "whocares" })
                     .then(er => {
-                        console.log(p.baseDir);
                         assert(!er.edited);
                         done();
                     });
