@@ -4,13 +4,13 @@ import * as assert from "power-assert";
 import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
 import { CommandHandlerMetadata } from "../../../src/metadata/automationMetadata";
 import { fromListRepoFinder, fromListRepoLoader } from "../../../src/operations/common/fromProjectList";
+import { AlwaysAskRepoParameters } from "../../../src/operations/common/params/AlwaysAskRepoParameters";
 import { MappedRepoParameters } from "../../../src/operations/common/params/MappedRepoParameters";
 import { SimpleRepoId } from "../../../src/operations/common/RepoId";
 import { editorHandler } from "../../../src/operations/edit/editorToCommand";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
 import { VerifyEditMode } from "./VerifyEditMode";
-import { AlwaysAskRepoParameters } from "../../../src/operations/common/params/AlwaysAskRepoParameters";
 
 describe("editorHandler", () => {
 
