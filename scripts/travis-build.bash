@@ -207,7 +207,7 @@ function main () {
         return 1
     fi
 
-    [[ $TRAVIS_PULL_REQUEST == false ]] && return 0
+    [[ $TRAVIS_PULL_REQUEST != false ]] && return 0
 
     if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+(-(m|rc)\.[0-9]+)?$ ]]; then
         if ! npm-publish --access public; then
