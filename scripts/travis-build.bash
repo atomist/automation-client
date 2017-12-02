@@ -229,6 +229,11 @@ function main () {
             err "failed to publish master build"
             return 1
         fi
+    else
+        if ! npm-publish-timestamp "$TRAVIS_BRANCH"; then
+            err "failed to publish $TRAVIS_BRANCH build"
+            return 1
+        fi
     fi
 }
 
