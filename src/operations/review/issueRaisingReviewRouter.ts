@@ -2,7 +2,7 @@
 import { failureOn, successOn } from "../../action/ActionResult";
 import { deepLink, Issue, raiseIssue } from "../../util/gitHub";
 import { GitHubRepoRef, isGitHubRepoRef } from "../common/GitHubRepoRef";
-import { AllReposByDefaultParameters } from "../common/params/AllReposByDefaultParameters";
+import { GitHubParams } from "../common/params/GitHubParams";
 import { ReviewRouter } from "./reviewerToCommand";
 import { ProjectReview, ReviewComment } from "./ReviewResult";
 
@@ -13,8 +13,8 @@ import { ProjectReview, ReviewComment } from "./ReviewResult";
  * @param {string} name
  * @return {any}
  */
-export const issueRaisingReviewRouter: ReviewRouter<AllReposByDefaultParameters> =
-    (pr: ProjectReview, params: AllReposByDefaultParameters, name: string) => {
+export const issueRaisingReviewRouter: ReviewRouter<GitHubParams> =
+    (pr: ProjectReview, params: GitHubParams, name: string) => {
         if (isGitHubRepoRef(pr.repoId)) {
             const issue = toIssue(pr, name);
             return raiseIssue(params.githubToken, pr.repoId, issue)

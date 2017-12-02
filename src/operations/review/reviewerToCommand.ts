@@ -3,10 +3,8 @@ import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { commandHandlerFrom, OnCommand, ParametersConstructor } from "../../onCommand";
 import { CommandDetails } from "../CommandDetails";
-import { GitHubRepoRef } from "../common/GitHubRepoRef";
-import { AllReposByDefaultParameters } from "../common/params/AllReposByDefaultParameters";
 import { GitHubParams } from "../common/params/GitHubParams";
-import { RepoFilter } from "../common/repoFilter";
+import { andFilter, RepoFilter } from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
 import { RepoRef } from "../common/RepoId";
 import { issueRaisingReviewRouter } from "./issueRaisingReviewRouter";
@@ -20,7 +18,7 @@ export type ReviewRouter<PARAMS> = (pr: ProjectReview, params: PARAMS, title: st
 /**
  * Further details of an editor to allow selective customization
  */
-export interface ReviewerCommandDetails<PARAMS extends AllReposByDefaultParameters> extends CommandDetails<PARAMS> {
+export interface ReviewerCommandDetails<PARAMS extends GitHubParams> extends CommandDetails<PARAMS> {
 
     repoFilter?: RepoFilter;
 
@@ -28,7 +26,7 @@ export interface ReviewerCommandDetails<PARAMS extends AllReposByDefaultParamete
 
 }
 
-function defaultDetails(name: string): ReviewerCommandDetails<AllReposByDefaultParameters> {
+function defaultDetails(name: string): ReviewerCommandDetails<GitHubParams> {
     return {
         description: name,
         reviewRouter: issueRaisingReviewRouter,
@@ -43,11 +41,11 @@ function defaultDetails(name: string): ReviewerCommandDetails<AllReposByDefaultP
  * @param {string} details object allowing customization beyond reasonable defaults
  * @return {HandleCommand}
  */
-export function reviewerHandler<PARAMS extends AllReposByDefaultParameters>(reviewerFactory: (params: PARAMS) => ProjectReviewer<PARAMS>,
-                                                                            factory: ParametersConstructor<PARAMS>,
-                                                                            name: string,
-                                                                            details: Partial<ReviewerCommandDetails<PARAMS>> = {}): HandleCommand {
-    const detailsToUse: ReviewerCommandDetails<AllReposByDefaultParameters> = {
+export function reviewerHandler<PARAMS extends GitHubParams>(reviewerFactory: (params: PARAMS) => ProjectReviewer<PARAMS>,
+                                                             factory: ParametersConstructor<PARAMS>,
+                                                             name: string,
+                                                             details: Partial<ReviewerCommandDetails<PARAMS>> = {}): HandleCommand {
+    const detailsToUse: ReviewerCommandDetails<GitHubParams> = {
         ...defaultDetails(name),
         ...details,
     };
@@ -66,12 +64,12 @@ function handleReviewOneOrMany<PARAMS extends GitHubParams>(reviewerFactory: (pa
                                                             details: ReviewerCommandDetails<PARAMS>): OnCommand<PARAMS> {
     return (ctx: HandlerContext, parameters: PARAMS) => {
         const credentials = {token: parameters.githubToken};
-        const repoFinder: RepoFinder = (!!parameters.owner && !!parameters.repo) ?
-            // TODO will implement interface
-            () => Promise.resolve([new GitHubRepoRef(parameters.owner, parameters.repo)]) :
+        const repoFinder: RepoFinder = parameters.repoRef ?
+            () => Promise.resolve([parameters.repoRef]) :
             details.repoFinder;
         return reviewAll(ctx, credentials, reviewerFactory(parameters), parameters,
-            repoFinder, details.repoFilter,
+            repoFinder,
+            andFilter(parameters.test, details.repoFilter),
             !!details.repoLoader ? details.repoLoader(parameters) : undefined)
             .then(projectReviews => {
                 return Promise.all(projectReviews

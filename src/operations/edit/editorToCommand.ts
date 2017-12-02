@@ -2,8 +2,9 @@ import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { commandHandlerFrom, OnCommand, ParametersConstructor } from "../../onCommand";
 import { CommandDetails } from "../CommandDetails";
-import { AllReposByDefaultParameters } from "../common/params/AllReposByDefaultParameters";
-import { RepoFilter } from "../common/repoFilter";
+import { GitHubParams } from "../common/params/GitHubParams";
+import { MappedRepoParameters } from "../common/params/MappedRepoParameters";
+import { andFilter, RepoFilter } from "../common/repoFilter";
 import { editAll, editOne } from "./editAll";
 import { EditMode, isEditMode, PullRequest } from "./editModes";
 import { AnyProjectEditor } from "./projectEditor";
@@ -37,10 +38,10 @@ function defaultDetails(name: string): EditorCommandDetails {
  * @param {string} details object allowing customization beyond reasonable defaults
  * @return {HandleCommand}
  */
-export function editorHandler<PARAMS extends AllReposByDefaultParameters>(pe: (params: PARAMS) => AnyProjectEditor,
-                                                                          factory: ParametersConstructor<PARAMS>,
-                                                                          name: string,
-                                                                          details: Partial<EditorCommandDetails> = {}): HandleCommand {
+export function editorHandler<PARAMS extends MappedRepoParameters>(pe: (params: PARAMS) => AnyProjectEditor,
+                                                                   factory: ParametersConstructor<PARAMS>,
+                                                                   name: string,
+                                                                   details: Partial<EditorCommandDetails> = {}): HandleCommand {
     const detailsToUse: EditorCommandDetails = {
         ...defaultDetails(name),
         ...details,
@@ -54,20 +55,21 @@ export function editorHandler<PARAMS extends AllReposByDefaultParameters>(pe: (p
  * If owner and repo are required, edit just one repo. Otherwise edit all repos
  * in the present team
  */
-function handleEditOneOrMany<PARAMS extends AllReposByDefaultParameters>(pe: (params: PARAMS) => AnyProjectEditor,
-                                                                         details: EditorCommandDetails): OnCommand<PARAMS> {
+function handleEditOneOrMany<PARAMS extends GitHubParams>(pe: (params: PARAMS) => AnyProjectEditor,
+                                                          details: EditorCommandDetails): OnCommand<PARAMS> {
     return (ctx: HandlerContext, parameters: PARAMS) => {
         const credentials = {token: parameters.githubToken};
-        if (!!parameters.owner && !!parameters.repo) {
+        if (!!parameters.repoRef) {
             return editOne(ctx, credentials,
                 pe(parameters),
                 editModeFor(details.editMode, parameters),
-                parameters,
+                parameters.repoRef,
                 parameters,
                 !!details.repoLoader ? details.repoLoader(parameters) : undefined);
         }
         return editAll(ctx, credentials, pe(parameters), details.editMode, parameters,
-            details.repoFinder, details.repoFilter,
+            details.repoFinder,
+            andFilter(parameters.test, details.repoFilter),
             !!details.repoLoader ? details.repoLoader(parameters) : undefined);
     };
 }

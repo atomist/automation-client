@@ -5,8 +5,8 @@ import * as assert from "power-assert";
 
 import { fromListRepoFinder, fromListRepoLoader } from "../../../src/operations/common/fromProjectList";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
-import { AllReposByDefaultParameters } from "../../../src/operations/common/params/AllReposByDefaultParameters";
 import { AlwaysAskRepoParameters } from "../../../src/operations/common/params/AlwaysAskRepoParameters";
+import { MappedRepoParameters } from "../../../src/operations/common/params/MappedRepoParameters";
 import { editAll } from "../../../src/operations/edit/editAll";
 import { CustomExecutionEditMode } from "../../../src/operations/edit/editModes";
 import {
@@ -49,12 +49,12 @@ describe("editAll", () => {
                 assert.deepEqual(projectsEdited, projects);
                 return edits[0].target.findFile("thing")
                     .then(f => f.getContent()
-                        .then( content => assert(content === "1")));
+                        .then(content => assert(content === "1")));
             }).then(done, done);
     });
 
     it("should edit repo using params", done => {
-        class VerySpecialParams extends AllReposByDefaultParameters {
+        class VerySpecialParams extends MappedRepoParameters {
             constructor(public name: string) {
                 super();
             }
@@ -91,7 +91,7 @@ describe("editAll", () => {
                 assert.deepEqual(projectsEdited, projects);
                 return edits[0].target.findFile("thing")
                     .then(f => f.getContent()
-                        .then( content => assert(content === "1")));
+                        .then(content => assert(content === "1")));
             }).then(done, done);
     });
 

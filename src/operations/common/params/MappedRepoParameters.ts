@@ -1,5 +1,4 @@
 import { MappedParameter, MappedParameters, Parameter, Parameters } from "../../../decorators";
-import { RepoRef } from "../RepoId";
 import { GitHubParams } from "./GitHubParams";
 import { GitBranchRegExp } from "./gitHubPatterns";
 
@@ -9,7 +8,7 @@ import { GitBranchRegExp } from "./gitHubPatterns";
  * will be edited.
  */
 @Parameters()
-export class MappedRepoParameters extends GitHubParams implements RepoRef {
+export class MappedRepoParameters extends GitHubParams {
 
     @MappedParameter(MappedParameters.GitHubOwner)
     public owner: string;
