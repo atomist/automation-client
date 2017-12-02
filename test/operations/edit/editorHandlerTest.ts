@@ -10,6 +10,7 @@ import { editorHandler } from "../../../src/operations/edit/editorToCommand";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
 import { VerifyEditMode } from "./VerifyEditMode";
+import { AlwaysAskRepoParameters } from "../../../src/operations/common/params/AlwaysAskRepoParameters";
 
 describe("editorHandler", () => {
 
@@ -46,12 +47,18 @@ describe("editorHandler", () => {
     });
 
     it("should use no op editor against no repos", done => {
+        class MyParameters extends AlwaysAskRepoParameters {
+            constructor() {
+                super();
+                this.repo = "thowijeoriweoirwe";
+            }
+        }
         const h = editorHandler(params => {
                 assert(!!params);
                 assert(params.owner === "foo");
                 return p => Promise.resolve(p);
             },
-            MappedRepoParameters,
+            MyParameters,
             "editor", {
                 repoFinder: fromListRepoFinder([]),
             });
@@ -70,13 +77,19 @@ describe("editorHandler", () => {
     });
 
     it("should use custom repo loader and verify result", done => {
+        class MyParameters extends AlwaysAskRepoParameters {
+            constructor() {
+                super();
+                this.repo = ".*";
+            }
+        }
         const proj = InMemoryProject.from(new SimpleRepoId("a", "b"));
         const h = editorHandler(params => {
                 assert(!!params);
                 assert(params.owner === "foo");
                 return p => p.addFile("Thing", "1");
             },
-            MappedRepoParameters,
+            MyParameters,
             "editor", {
                 repoFinder: fromListRepoFinder([proj]),
                 repoLoader: () => fromListRepoLoader([proj]),
