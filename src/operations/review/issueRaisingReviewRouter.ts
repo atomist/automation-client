@@ -2,19 +2,19 @@
 import { failureOn, successOn } from "../../action/ActionResult";
 import { deepLink, Issue, raiseIssue } from "../../util/gitHub";
 import { GitHubRepoRef, isGitHubRepoRef } from "../common/GitHubRepoRef";
-import { BaseEditorParameters } from "../edit/BaseEditorParameters";
+import { AllReposByDefaultParameters } from "../common/params/AllReposByDefaultParameters";
 import { ReviewRouter } from "./reviewerToCommand";
 import { ProjectReview, ReviewComment } from "./ReviewResult";
 
 /**
  * Create an issue from a review, using Markdown
  * @param {ProjectReview} pr
- * @param {BaseEditorParameters} params
+ * @param {AllReposByDefaultParameters} params
  * @param {string} name
  * @return {any}
  */
-export const issueRaisingReviewRouter: ReviewRouter<BaseEditorParameters> =
-    (pr: ProjectReview, params: BaseEditorParameters, name: string) => {
+export const issueRaisingReviewRouter: ReviewRouter<AllReposByDefaultParameters> =
+    (pr: ProjectReview, params: AllReposByDefaultParameters, name: string) => {
         if (isGitHubRepoRef(pr.repoId)) {
             const issue = toIssue(pr, name);
             return raiseIssue(params.githubToken, pr.repoId, issue)

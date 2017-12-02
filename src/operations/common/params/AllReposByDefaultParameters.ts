@@ -1,6 +1,7 @@
-import { Parameter, Parameters, Secret, Secrets } from "../../decorators";
-import { GitBranchRegExp, GitHubNameRegExp } from "../common/params/gitHubPatterns";
-import { RepoRef } from "../common/RepoId";
+import { Parameter, Parameters } from "../../../decorators";
+import { RepoRef } from "../RepoId";
+import { GitHubParams } from "./GitHubParams";
+import { GitBranchRegExp, GitHubNameRegExp } from "./gitHubPatterns";
 
 /**
  * Basic editor params. If owner and repo are specified, only the given
@@ -8,10 +9,7 @@ import { RepoRef } from "../common/RepoId";
  * will be edited.
  */
 @Parameters()
-export class BaseEditorParameters implements RepoRef {
-
-    @Secret(Secrets.userToken(["repo", "user"]))
-    public githubToken: string;
+export class AllReposByDefaultParameters extends GitHubParams implements RepoRef {
 
     @Parameter({description: "Name of owner to edit repo in", ...GitHubNameRegExp, required: false})
     public owner: string;
