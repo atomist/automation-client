@@ -102,7 +102,7 @@ export function gitHubRepoLoader(credentials: ProjectOperationCredentials): Repo
         const gid = isGitHubRepoRef(repoId) ? repoId : new GitHubRepoRef(repoId.owner, repoId.repo, repoId.sha);
         return GitCommandGitProject.cloned(credentials, gid);
     };
-}`
+}`;
 
         const mutableProject = InMemoryProject.of({path: "src/gitHubRepoLoader.ts", content: Before});
 
@@ -141,7 +141,7 @@ export function gitHubRepoLoader(context: HandlerContext, credentials: ProjectOp
 
                 assert.equal(modified, After, modified);
 
-            }).then(() => done(), done)
+            }).then(() => done(), done);
 
-    }).timeout(20000)
+    }).timeout(20000);
 });
