@@ -42,7 +42,7 @@ export function findByExpression(p: ProjectAsync,
     }
     const globPattern = split[0];
     const pathExpression = _.drop(split, 1).join("");
-    logger.info("Glob is [%s], path expression [%s] from [%s]", globPattern, pathExpression, unifiedExpression);
+    logger.debug("Glob is [%s], path expression [%s] from [%s]", globPattern, pathExpression, unifiedExpression);
     return findMatches(p, parserOrRegistry, globPattern, pathExpression);
 }
 

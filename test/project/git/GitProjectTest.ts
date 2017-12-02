@@ -131,8 +131,8 @@ describe("GitProject", () => {
             .then(() => gp.createAndSetGitHubRemote(owner, repo, "Thing1", TestRepositoryVisibility))
             .then(() => gp.commit("Added a Thing"))
             .then(() => gp.push()
-                    .then(() => deleteRepoIfExists({owner, repo}).then(done)),
-            ).catch(() => deleteRepoIfExists({owner, repo}).then(done)),
+                .then(() => deleteRepoIfExists({ owner, repo }).then(done)),
+        ).catch(() => deleteRepoIfExists({ owner, repo }).then(done)),
         ).catch(done);
 
     }).timeout(16000);
@@ -151,7 +151,7 @@ describe("GitProject", () => {
                         .then(() => gp.push())
                         .then(() => gp.raisePullRequest("Thing2", "Adds another character"))
                         .then(() => deleteRepoIfExists(ownerAndRepo));
-                }).catch( err => deleteRepoIfExists(ownerAndRepo)
+                }).catch(err => deleteRepoIfExists(ownerAndRepo)
                     .then(() => Promise.reject(err))))
             .then(() => done(), done);
 
@@ -197,7 +197,7 @@ export function newRepo(): Promise<{ owner: string, repo: string }> {
     const name = `test-repo-${new Date().getTime()}`;
     const description = "a thing";
     const url = `${GitHubDotComBase}/user/repos`;
-    console.log("Visibility is " + TestRepositoryVisibility);
+    console.debug("Visibility is " + TestRepositoryVisibility);
     return getOwnerByToken()
         .then(owner => axios.post(url, {
             name,
@@ -218,7 +218,7 @@ export function newRepo(): Promise<{ owner: string, repo: string }> {
 }
 
 export function deleteRepoIfExists(ownerAndRepo: { owner: string, repo: string }): Promise<any> {
-    console.log("Cleanup: deleting " + ownerAndRepo.repo);
+    console.debug("Cleanup: deleting " + ownerAndRepo.repo);
     const config = {
         headers: {
             Authorization: `token ${GitHubToken}`,
@@ -227,7 +227,7 @@ export function deleteRepoIfExists(ownerAndRepo: { owner: string, repo: string }
     const url = `${GitHubDotComBase}/repos/${ownerAndRepo.owner}/${ownerAndRepo.repo}`;
     return axios.delete(url, config)
         .catch(err => {
-            console.log(`error deleting ${ownerAndRepo.repo}, ignoring. ${err.response.status}`);
+            console.error(`error deleting ${ownerAndRepo.repo}, ignoring. ${err.response.status}`);
         });
 }
 

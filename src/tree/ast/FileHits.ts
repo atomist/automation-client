@@ -21,7 +21,7 @@ export interface NodeReplacementOptions {
  */
 export const ZapTrailingWhitespace: NodeReplacementOptions = {
 
-    replaceAfter: {after: /\s*/, replacement: ""},
+    replaceAfter: { after: /\s*/, replacement: "" },
 };
 
 /**
@@ -113,20 +113,20 @@ function makeUpdatable(matches: MatchResult[], updates: Update[]) {
                 return currentValue;
             },
             set(v2) {
-                logger.info("Updating value from '%s' to '%s' on '%s'", currentValue, v2, m.$name);
+                logger.debug("Updating value from '%s' to '%s' on '%s'", currentValue, v2, m.$name);
                 // TODO allow only one
                 currentValue = v2;
-                updates.push({initialValue, currentValue, offset: m.$offset});
+                updates.push({ initialValue, currentValue, offset: m.$offset });
             },
         });
         m.append = (content: string) => {
-            updates.push({initialValue: "", currentValue: content, offset: m.$offset + currentValue.length});
+            updates.push({ initialValue: "", currentValue: content, offset: m.$offset + currentValue.length });
         };
         m.prepend = (content: string) => {
-            updates.push({initialValue: "", currentValue: content, offset: m.$offset});
+            updates.push({ initialValue: "", currentValue: content, offset: m.$offset });
         };
         m.zap = (opts: NodeReplacementOptions) => {
-            updates.push({...opts, initialValue, currentValue: "", offset: m.$offset});
+            updates.push({ ...opts, initialValue, currentValue: "", offset: m.$offset });
         };
         m.evaluateExpression = (pex: PathExpression | string) => {
             const r = evaluateExpression(m, pex);

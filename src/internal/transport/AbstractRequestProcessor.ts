@@ -42,7 +42,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
     }
 
     public processCommand(command: CommandIncoming,
-                          // tslint:disable-next-line:no-empty
+        // tslint:disable-next-line:no-empty
                           callback: (result: Promise<HandlerResult>) => void = () => { }) {
         // setup context
         const ses = namespace.init();
@@ -82,7 +82,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
     }
 
     public processEvent(event: EventIncoming,
-                        // tslint:disable-next-line:no-empty
+        // tslint:disable-next-line:no-empty
                         callback: (results: Promise<HandlerResult[]>) => void = () => { }) {
         // setup context
         const ses = namespace.init();

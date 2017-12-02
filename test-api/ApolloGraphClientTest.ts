@@ -19,7 +19,7 @@ describe("ApolloGraphClient", () => {
         agc.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
             { teamId, offset: 0 })
             .then(result => {
-                console.log("query took " + (Date.now() - start));
+                console.debug("query took " + (Date.now() - start));
                 const org = result.ChatTeam[0].orgs[0];
                 assert(org.repo.length > 0);
                 const repo1 = org.repo[0];
@@ -29,7 +29,7 @@ describe("ApolloGraphClient", () => {
                 agc.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
                     { teamId, offset: 0 })
                     .then(r1 => {
-                        console.log("query took " + (Date.now() - start));
+                        console.debug("query took " + (Date.now() - start));
                     });
             })
             .then(done, done);
@@ -49,7 +49,7 @@ describe("ApolloGraphClient", () => {
                     .then(p => {
                         const gitHead = p.findFileSync(".git/HEAD");
                         assert(gitHead);
-                        console.log(`.git/HEAD path=${gitHead.path}`);
+                        assert(gitHead.path === ".git/HEAD");
                     });
             })
             .then(done, done);
