@@ -2,10 +2,10 @@ import "mocha";
 
 import * as assert from "power-assert";
 import { GitHubRepoRef } from "../../../../src/operations/common/GitHubRepoRef";
-import { GitHubParams } from "../../../../src/operations/common/params/GitHubParams";
+import { GitHubTargetsParams } from "../../../../src/operations/common/params/GitHubTargetsParams";
 import { MappedRepoParameters } from "../../../../src/operations/common/params/MappedRepoParameters";
 
-describe("GitHubParams", () => {
+describe("GitHubTargetsParams", () => {
 
     it("should work with single repo", () => {
         const p = new MappedRepoParameters();

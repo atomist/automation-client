@@ -2,6 +2,7 @@ import { HandlerContext } from "../../HandlerContext";
 import { logger } from "../../internal/util/logger";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
+import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewerParameters";
 import { RepoRef } from "../common/RepoId";
 import {
     BranchCommit,
@@ -26,11 +27,11 @@ import { EditResult, ProjectEditor, successfulEdit } from "../edit/projectEditor
  * @param parameters to editor
  * @return EditResult instance that reports as to whether the project was actually edited
  */
-export function editRepo<P extends RepoRef>(context: HandlerContext,
-                                            repo: Project,
-                                            editor: ProjectEditor<P>,
-                                            ei: EditMode,
-                                            parameters?: P): Promise<EditResult> {
+export function editRepo<P extends EditorOrReviewerParameters>(context: HandlerContext,
+                                                               repo: Project,
+                                                               editor: ProjectEditor<P>,
+                                                               ei: EditMode,
+                                                               parameters?: P): Promise<EditResult> {
     if (isPullRequest(ei)) {
         return editProjectUsingPullRequest(context, repo as GitProject, editor, ei, parameters);
     } else if (isBranchCommit(ei)) {
