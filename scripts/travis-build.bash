@@ -91,7 +91,7 @@ function npm-publish-timestamp () {
     if [[ $branch ]]; then
         shift
         local safe_branch
-        safe_branch=$(echo -n "$branch" | tr -C -s '[:alnum:]-' . | sed -e 's/^-*//' -e 's/-*$//')
+        safe_branch=$(echo -n "$branch" | tr -C -s '[:alnum:]-' . | sed -e 's/^[-.]*//' -e 's/[-.]*$//')
         if [[ $? -ne 0 || ! $safe_branch ]]; then
             err "failed to create safe branch name from '$branch': $safe_branch"
             return 1
@@ -207,7 +207,7 @@ function main () {
         return 1
     fi
 
-    [[ $TRAVIS_PULL_REQUEST != false ]] && return 0
+    [[ $TRAVIS_PULL_REQUEST == false ]] || return 0
 
     if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+(-(m|rc)\.[0-9]+)?$ ]]; then
         if ! npm-publish --access public; then
