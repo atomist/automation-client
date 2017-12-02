@@ -18,7 +18,7 @@ const EditorThatChangesProject = toEditor(p => p.addFile("thing", "thing"));
 describe("editorUtils", () => {
 
     it("doesn't attempt to commit without changes", done => {
-        GitCommandGitProject.cloned(Creds, RepoThatExists)
+        GitCommandGitProject.cloned({} as HandlerContext, Creds, RepoThatExists)
             .then(p => {
                 return editProjectUsingBranch(undefined, p, NoOpEditor,
                     { branch: "dont-create-me-or-i-barf&&&####&&& we", message: "whocares" })
@@ -32,7 +32,7 @@ describe("editorUtils", () => {
     it("creates branch with changes in simple editor", done => {
         newRepo()
             .then(repo => {
-                return GitCommandGitProject.cloned(Creds, new GitHubRepoRef(repo.owner, repo.repo))
+                return GitCommandGitProject.cloned({} as HandlerContext, Creds, new GitHubRepoRef(repo.owner, repo.repo))
                     .then(p => {
                         return editProjectUsingBranch(undefined, p, EditorThatChangesProject,
                             new PullRequest("x", "y"))
@@ -45,7 +45,7 @@ describe("editorUtils", () => {
     }).timeout(15000);
 
     it("doesn't attempt to create PR without changes", done => {
-        GitCommandGitProject.cloned(Creds, RepoThatExists)
+        GitCommandGitProject.cloned({} as HandlerContext, Creds, RepoThatExists)
             .then(p => p.gitStatus().then(status => {
                 assert(status.isClean);
                 return p;
@@ -62,7 +62,7 @@ describe("editorUtils", () => {
     it("creates PR with changes in simple editor", done => {
         newRepo()
             .then(repo => {
-                return GitCommandGitProject.cloned(Creds, new GitHubRepoRef(repo.owner, repo.repo))
+                return GitCommandGitProject.cloned({} as HandlerContext, Creds, new GitHubRepoRef(repo.owner, repo.repo))
                     .then(p => {
                         return editProjectUsingPullRequest(undefined, p, EditorThatChangesProject,
                             new PullRequest("x", "y"))
