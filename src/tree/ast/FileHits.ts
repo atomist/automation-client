@@ -83,6 +83,9 @@ export class FileHit {
                     let newContent = content;
                     const sorted = updates.sort((a, b) => b.offset - a.offset);
                     for (const u of sorted) {
+                        if (!u.offset) {
+                            throw new Error(`Cannot update as offset is not set: ${JSON.stringify(u)}`);
+                        }
                         logger.debug("Applying update %j", u);
                         if (!!u.replaceAfter) {
                             newContent = newContent.substr(0, u.offset) +

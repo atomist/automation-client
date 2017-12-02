@@ -1,5 +1,6 @@
 import * as assert from "power-assert";
 
+import stringify = require("json-stringify-safe");
 import "mocha";
 import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
@@ -19,7 +20,7 @@ describe("astUtils", () => {
                 TypeScriptES6FileParser,
                 "src/**/*.ts",
                 "//VariableDeclaration[?check]/Identifier",
-                { check: n => n.$value.includes("x")})
+                {check: n => n.$value.includes("x")})
                 .then(matches => {
                     assert(matches.length === 2);
                     assert(!!matches[0].sourceLocation);
@@ -126,7 +127,7 @@ export function gitHubRepoLoader(context: HandlerContext, credentials: ProjectOp
     };
 }`;
 
-        return findMatches(mutableProject, TypeScriptES6FileParser, "**/" + "src/gitHubRepoLoader.ts",
+        findMatches(mutableProject, TypeScriptES6FileParser, "**/" + "src/gitHubRepoLoader.ts",
             `//FunctionDeclaration[/Identifier[@value='gitHubRepoLoader']]`)
             .then(matches => {
                 const enclosingFunction = matches[0];
@@ -138,7 +139,6 @@ export function gitHubRepoLoader(context: HandlerContext, credentials: ProjectOp
             .then(() => mutableProject.flush())
             .then(() => {
                 const modified = mutableProject.findFileSync("src/gitHubRepoLoader.ts").getContentSync();
-
                 assert.equal(modified, After, modified);
 
             }).then(() => done(), done);
