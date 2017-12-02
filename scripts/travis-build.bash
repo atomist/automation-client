@@ -91,7 +91,7 @@ function npm-publish-timestamp () {
     if [[ $branch ]]; then
         shift
         local safe_branch
-        safe_branch=$(echo -n "$branch" | tr -C -s '[:alnum:]-' .)
+        safe_branch=$(echo -n "$branch" | tr -C -s '[:alnum:]-' . | sed -e 's/^-*//' -e 's/-*$//')
         if [[ $? -ne 0 || ! $safe_branch ]]; then
             err "failed to create safe branch name from '$branch': $safe_branch"
             return 1
@@ -207,16 +207,9 @@ function main () {
         return 1
     fi
 
-    if [[ $TRAVIS_PULL_REQUEST != false ]] ; then
-        if [[ $TRAVIS_PULL_REQUEST_BRANCH != master ]]; then
-            if ! npm-publish-timestamp "$TRAVIS_PULL_REQUEST_BRANCH"; then
-                err "failed to publish PR build"
-                return 1
-            fi
-        else
-            msg "will not publish PR from $TRAVIS_PULL_REQUEST_BRANCH"
-        fi
-    elif [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+(-(m|rc)\.[0-9]+)?$ ]]; then
+    [[ $TRAVIS_PULL_REQUEST == false ]] && return 0
+
+    if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+(-(m|rc)\.[0-9]+)?$ ]]; then
         if ! npm-publish --access public; then
             err "failed to publish tag build: $TRAVIS_TAG"
             return 1
@@ -227,6 +220,11 @@ function main () {
     elif [[ $TRAVIS_BRANCH == master ]]; then
         if ! npm-publish-timestamp; then
             err "failed to publish master build"
+            return 1
+        fi
+    else
+        if ! npm-publish-timestamp "$TRAVIS_BRANCH"; then
+            err "failed to publish $TRAVIS_BRANCH build"
             return 1
         fi
     fi
