@@ -181,7 +181,6 @@ describe("microgrammar integration and path expression", () => {
                     .then(_ => {
                         const f = p.findFileSync("Thing");
                         assert(f.getContentSync() === firstPerson + " " + newContent + secondPerson);
-                        done();
                     });
             }).then(() => done(), done);
     });
