@@ -20,7 +20,7 @@ const Creds = { token: GitHubToken };
 describe("git status analysis", () => {
 
     function freshClone(repoRef: GitHubRepoRef = ExistingRepoRef): Promise<GitProject> {
-        return GitCommandGitProject.cloned(Creds, repoRef, {}, TmpDirectoryManager);
+        return GitCommandGitProject.cloned({} as HandlerContext, Creds, repoRef, {}, TmpDirectoryManager);
     }
 
     it("should recognize a clean repository as clean", done => {
