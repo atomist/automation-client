@@ -38,9 +38,9 @@ function defaultDetails(name: string): EditorCommandDetails {
  * @return {HandleCommand}
  */
 export function editorHandler<PARAMS extends GitHubParams>(pe: (params: PARAMS) => AnyProjectEditor,
-                                                                   factory: ParametersConstructor<PARAMS>,
-                                                                   name: string,
-                                                                   details: Partial<EditorCommandDetails> = {}): HandleCommand {
+                                                           factory: ParametersConstructor<PARAMS>,
+                                                           name: string,
+                                                           details: Partial<EditorCommandDetails> = {}): HandleCommand {
     const detailsToUse: EditorCommandDetails = {
         ...defaultDetails(name),
         ...details,
