@@ -2,7 +2,10 @@ import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { commandHandlerFrom, OnCommand, ParametersConstructor } from "../../onCommand";
 import { CommandDetails } from "../CommandDetails";
-import { GitHubParams } from "../common/params/GitHubParams";
+import {
+    BaseEditorOrReviewerParameters,
+    EditorOrReviewerParameters,
+} from "../common/params/BaseEditorOrReviewerParameters";
 import { andFilter, RepoFilter } from "../common/repoFilter";
 import { editAll, editOne } from "./editAll";
 import { EditMode, isEditMode, PullRequest } from "./editModes";
@@ -37,10 +40,10 @@ function defaultDetails(name: string): EditorCommandDetails {
  * @param {string} details object allowing customization beyond reasonable defaults
  * @return {HandleCommand}
  */
-export function editorHandler<PARAMS extends GitHubParams>(pe: (params: PARAMS) => AnyProjectEditor,
-                                                           factory: ParametersConstructor<PARAMS>,
-                                                           name: string,
-                                                           details: Partial<EditorCommandDetails> = {}): HandleCommand {
+export function editorHandler<PARAMS extends EditorOrReviewerParameters>(pe: (params: PARAMS) => AnyProjectEditor,
+                                                                         factory: ParametersConstructor<PARAMS>,
+                                                                         name: string,
+                                                                         details: Partial<EditorCommandDetails> = {}): HandleCommand {
     const detailsToUse: EditorCommandDetails = {
         ...defaultDetails(name),
         ...details,
@@ -54,21 +57,21 @@ export function editorHandler<PARAMS extends GitHubParams>(pe: (params: PARAMS) 
  * If owner and repo are required, edit just one repo. Otherwise edit all repos
  * in the present team
  */
-function handleEditOneOrMany<PARAMS extends GitHubParams>(pe: (params: PARAMS) => AnyProjectEditor,
-                                                          details: EditorCommandDetails): OnCommand<PARAMS> {
+function handleEditOneOrMany<PARAMS extends BaseEditorOrReviewerParameters>(pe: (params: PARAMS) => AnyProjectEditor,
+                                                                            details: EditorCommandDetails): OnCommand<PARAMS> {
     return (ctx: HandlerContext, parameters: PARAMS) => {
-        const credentials = {token: parameters.githubToken};
-        if (!!parameters.repoRef) {
+        const credentials = {token: parameters.targets.githubToken};
+        if (!!parameters.targets.repoRef) {
             return editOne(ctx, credentials,
                 pe(parameters),
                 editModeFor(details.editMode, parameters),
-                parameters.repoRef,
+                parameters.targets.repoRef,
                 parameters,
                 !!details.repoLoader ? details.repoLoader(parameters) : undefined);
         }
         return editAll(ctx, credentials, pe(parameters), details.editMode, parameters,
             details.repoFinder,
-            andFilter(parameters.test, details.repoFilter),
+            andFilter(parameters.targets.test, details.repoFilter),
             !!details.repoLoader ? details.repoLoader(parameters) : undefined);
     };
 }

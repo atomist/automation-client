@@ -1,14 +1,12 @@
 import { MappedParameter, MappedParameters, Parameter, Parameters } from "../../../decorators";
-import { GitHubParams } from "./GitHubParams";
 import { GitBranchRegExp } from "./gitHubPatterns";
+import { GitHubTargetsParams } from "./GitHubTargetsParams";
 
 /**
- * Basic editor params. If owner and repo are specified, only the given
- * repo will be edited. Otherwise all repos accessible to the current team
- * will be edited.
+ * Get target from channel mapping
  */
 @Parameters()
-export class MappedRepoParameters extends GitHubParams {
+export class MappedRepoParameters extends GitHubTargetsParams {
 
     @MappedParameter(MappedParameters.GitHubOwner)
     public owner: string;

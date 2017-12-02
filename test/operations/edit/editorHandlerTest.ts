@@ -5,6 +5,7 @@ import { metadataFromInstance } from "../../../src/internal/metadata/metadataRea
 import { CommandHandlerMetadata } from "../../../src/metadata/automationMetadata";
 import { fromListRepoFinder, fromListRepoLoader } from "../../../src/operations/common/fromProjectList";
 import { AlwaysAskRepoParameters } from "../../../src/operations/common/params/AlwaysAskRepoParameters";
+import { BaseEditorOrReviewerParameters } from "../../../src/operations/common/params/BaseEditorOrReviewerParameters";
 import { MappedRepoParameters } from "../../../src/operations/common/params/MappedRepoParameters";
 import { SimpleRepoId } from "../../../src/operations/common/RepoId";
 import { editorHandler } from "../../../src/operations/edit/editorToCommand";
@@ -16,7 +17,7 @@ describe("editorHandler", () => {
 
     it("should verify default no intent", () => {
         const h = editorHandler(() => p => Promise.resolve(p),
-            MappedRepoParameters,
+            BaseEditorOrReviewerParameters,
             "editor");
         const chm = metadataFromInstance(h) as CommandHandlerMetadata;
         assert(!!chm.intent);
@@ -26,7 +27,7 @@ describe("editorHandler", () => {
         const description = "custom description";
         const intent = "this is a very long intent to type";
         const h = editorHandler(() => p => Promise.resolve(p),
-            MappedRepoParameters,
+            BaseEditorOrReviewerParameters,
             "editor", {
                 description,
                 intent,
@@ -38,7 +39,7 @@ describe("editorHandler", () => {
 
     it("should register editor", done => {
         const h = editorHandler(() => p => Promise.resolve(p),
-            MappedRepoParameters,
+            BaseEditorOrReviewerParameters,
             "editor");
         assert(metadataFromInstance(h).name === "editor");
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
@@ -47,15 +48,16 @@ describe("editorHandler", () => {
     });
 
     it("should use no op editor against no repos", done => {
-        class MyParameters extends AlwaysAskRepoParameters {
+        class MyParameters extends BaseEditorOrReviewerParameters {
             constructor() {
-                super();
-                this.repo = "thowijeoriweoirwe";
+                super(new AlwaysAskRepoParameters());
+                this.targets.owner = "foo";
+                this.targets.repo = "thowijeoriweoirwe";
             }
         }
         const h = editorHandler(params => {
                 assert(!!params);
-                assert(params.owner === "foo");
+                assert(params.targets.owner === "foo");
                 return p => Promise.resolve(p);
             },
             MyParameters,
@@ -77,16 +79,17 @@ describe("editorHandler", () => {
     });
 
     it("should use custom repo loader and verify result", done => {
-        class MyParameters extends AlwaysAskRepoParameters {
+        class MyParameters extends BaseEditorOrReviewerParameters {
             constructor() {
-                super();
-                this.repo = ".*";
+                super(new AlwaysAskRepoParameters());
+                this.targets.repo = ".*";
+                this.targets.owner = "foo";
             }
         }
         const proj = InMemoryProject.from(new SimpleRepoId("a", "b"));
         const h = editorHandler(params => {
                 assert(!!params);
-                assert(params.owner === "foo");
+                assert(params.targets.owner === "foo");
                 return p => p.addFile("Thing", "1");
             },
             MyParameters,

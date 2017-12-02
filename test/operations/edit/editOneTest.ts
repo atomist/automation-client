@@ -4,6 +4,7 @@ import * as assert from "power-assert";
 
 import { fromListRepoLoader } from "../../../src/operations/common/fromProjectList";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
+import { BaseEditorOrReviewerParameters } from "../../../src/operations/common/params/BaseEditorOrReviewerParameters";
 import { MappedRepoParameters } from "../../../src/operations/common/params/MappedRepoParameters";
 import { editOne } from "../../../src/operations/edit/editAll";
 import { CustomExecutionEditMode } from "../../../src/operations/edit/editModes";
@@ -71,7 +72,7 @@ describe("editOne", () => {
         };
 
         editOne(null, null, editor, cei, repoRef,
-            new MappedRepoParameters(),
+            new BaseEditorOrReviewerParameters(new MappedRepoParameters()),
             fromListRepoLoader(projects))
             .then(editResult => {
                 assert(!editResult.edited);
