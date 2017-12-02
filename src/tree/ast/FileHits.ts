@@ -119,16 +119,28 @@ function makeUpdatable(matches: MatchResult[], updates: Update[]) {
                 logger.debug("Updating value from '%s' to '%s' on '%s'", currentValue, v2, m.$name);
                 // TODO allow only one
                 currentValue = v2;
+                if (!m.$offset) {
+                    throw new Error("Sorry, you can't update this because I don't know its offset");
+                }
                 updates.push({ initialValue, currentValue, offset: m.$offset });
             },
         });
         m.append = (content: string) => {
+            if (!m.$offset) {
+                throw new Error("Sorry, you can't update this because I don't know its offset");
+            }
             updates.push({ initialValue: "", currentValue: content, offset: m.$offset + currentValue.length });
         };
         m.prepend = (content: string) => {
+            if (!m.$offset) {
+                throw new Error("Sorry, you can't update this because I don't know its offset");
+            }
             updates.push({ initialValue: "", currentValue: content, offset: m.$offset });
         };
         m.zap = (opts: NodeReplacementOptions) => {
+            if (!m.$offset) {
+                throw new Error("Sorry, you can't update this because I don't know its offset. " + m.$name + "=" + m.$value);
+            }
             updates.push({ ...opts, initialValue, currentValue: "", offset: m.$offset });
         };
         m.evaluateExpression = (pex: PathExpression | string) => {
