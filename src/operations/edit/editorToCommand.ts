@@ -3,7 +3,6 @@ import { HandlerContext } from "../../HandlerContext";
 import { commandHandlerFrom, OnCommand, ParametersConstructor } from "../../onCommand";
 import { CommandDetails } from "../CommandDetails";
 import { GitHubParams } from "../common/params/GitHubParams";
-import { MappedRepoParameters } from "../common/params/MappedRepoParameters";
 import { andFilter, RepoFilter } from "../common/repoFilter";
 import { editAll, editOne } from "./editAll";
 import { EditMode, isEditMode, PullRequest } from "./editModes";
@@ -38,7 +37,7 @@ function defaultDetails(name: string): EditorCommandDetails {
  * @param {string} details object allowing customization beyond reasonable defaults
  * @return {HandleCommand}
  */
-export function editorHandler<PARAMS extends MappedRepoParameters>(pe: (params: PARAMS) => AnyProjectEditor,
+export function editorHandler<PARAMS extends GitHubParams>(pe: (params: PARAMS) => AnyProjectEditor,
                                                                    factory: ParametersConstructor<PARAMS>,
                                                                    name: string,
                                                                    details: Partial<EditorCommandDetails> = {}): HandleCommand {
