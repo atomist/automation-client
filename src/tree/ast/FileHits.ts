@@ -107,6 +107,12 @@ export class FileHit {
     }
 }
 
+function requireOffset(m: MatchResult) {
+    if (!m.$offset) {
+        throw new Error("Sorry, you can't update this because I don't know its offset. " + m.$name + "=" + m.$value);
+    }
+}
+
 function makeUpdatable(matches: MatchResult[], updates: Update[]) {
     matches.forEach(m => {
         const initialValue = m.$value;
@@ -119,28 +125,20 @@ function makeUpdatable(matches: MatchResult[], updates: Update[]) {
                 logger.debug("Updating value from '%s' to '%s' on '%s'", currentValue, v2, m.$name);
                 // TODO allow only one
                 currentValue = v2;
-                if (!m.$offset) {
-                    throw new Error("Sorry, you can't update this because I don't know its offset");
-                }
+                requireOffset(m);
                 updates.push({ initialValue, currentValue, offset: m.$offset });
             },
         });
         m.append = (content: string) => {
-            if (!m.$offset) {
-                throw new Error("Sorry, you can't update this because I don't know its offset");
-            }
+            requireOffset(m);
             updates.push({ initialValue: "", currentValue: content, offset: m.$offset + currentValue.length });
         };
         m.prepend = (content: string) => {
-            if (!m.$offset) {
-                throw new Error("Sorry, you can't update this because I don't know its offset");
-            }
+            requireOffset(m);
             updates.push({ initialValue: "", currentValue: content, offset: m.$offset });
         };
         m.zap = (opts: NodeReplacementOptions) => {
-            if (!m.$offset) {
-                throw new Error("Sorry, you can't update this because I don't know its offset. " + m.$name + "=" + m.$value);
-            }
+            requireOffset(m);
             updates.push({ ...opts, initialValue, currentValue: "", offset: m.$offset });
         };
         m.evaluateExpression = (pex: PathExpression | string) => {
