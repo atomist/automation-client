@@ -22,6 +22,24 @@ export interface ReviewComment {
     readonly detail: string;
 
     readonly sourceLocation?: SourceLocation;
+
+    /**
+     * Command invocation that will fix this problem
+     */
+    readonly fix?: Fix;
+}
+
+/**
+ * Coordinates of an Atomist command handler to fix a specific problem
+ */
+export interface Fix {
+
+    command: string;
+
+    params: {
+        [propName: string]: string | number,
+    };
+
 }
 
 export class DefaultReviewComment implements ReviewComment {
@@ -29,7 +47,8 @@ export class DefaultReviewComment implements ReviewComment {
     constructor(public severity: Severity,
                 public category: string,
                 public detail: string,
-                public sourceLocation: SourceLocation) {
+                public sourceLocation: SourceLocation,
+                public fix?: Fix) {
     }
 }
 
