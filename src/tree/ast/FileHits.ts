@@ -83,7 +83,7 @@ export class FileHit {
                     let newContent = content;
                     const sorted = updates.sort((a, b) => b.offset - a.offset);
                     for (const u of sorted) {
-                        if (!u.offset) {
+                        if (u.offset === undefined) {
                             throw new Error(`Cannot update as offset is not set: ${JSON.stringify(u)}`);
                         }
                         logger.debug("Applying update %j", u);
@@ -108,7 +108,7 @@ export class FileHit {
 }
 
 function requireOffset(m: MatchResult) {
-    if (!m.$offset) {
+    if (m.$offset === undefined) {
         throw new Error("Sorry, you can't update this because I don't know its offset. " + m.$name + "=" + m.$value);
     }
 }
