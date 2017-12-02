@@ -5,6 +5,8 @@ import * as assert from "power-assert";
 
 import { fromListRepoFinder, fromListRepoLoader } from "../../../src/operations/common/fromProjectList";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
+import { AllReposByDefaultParameters } from "../../../src/operations/common/params/AllReposByDefaultParameters";
+import { AlwaysAskRepoParameters } from "../../../src/operations/common/params/AlwaysAskRepoParameters";
 import { editAll } from "../../../src/operations/edit/editAll";
 import { CustomExecutionEditMode } from "../../../src/operations/edit/editModes";
 import {
@@ -52,11 +54,13 @@ describe("editAll", () => {
     });
 
     it("should edit repo using params", done => {
-        class Params {
-            constructor(public name: string) {}
+        class VerySpecialParams extends AllReposByDefaultParameters {
+            constructor(public name: string) {
+                super();
+            }
         }
 
-        const editor: ProjectEditor<Params> = (p, ctx, params) => {
+        const editor: ProjectEditor<VerySpecialParams> = (p, ctx, params) => {
             p.addFileSync("thing", "1");
             assert(!!params.name);
             return Promise.resolve(successfulEdit(p, true));
@@ -77,7 +81,7 @@ describe("editAll", () => {
         };
 
         editAll(null, null, editor, cei,
-            new Params("antechinus"),
+            new VerySpecialParams("thing"),
             fromListRepoFinder(projects),
             p => true,
             fromListRepoLoader(projects))
@@ -111,7 +115,7 @@ describe("editAll", () => {
         };
 
         editAll(null, null, editor, cei,
-            {},
+            new AlwaysAskRepoParameters(),
             fromListRepoFinder(projects),
             p => true,
             fromListRepoLoader(projects))
