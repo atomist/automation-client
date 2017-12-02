@@ -33,5 +33,5 @@ function toIssue(pr: ProjectReview, name: string): Issue {
 }
 
 function toMarkdown(grr: GitHubRepoRef, rc: ReviewComment) {
-    return `-\t**${rc.severity}** - [${rc.comment}](${deepLink(grr, rc.sourceLocation)})`;
+    return `-\t**${rc.severity}** - ${rc.category}: [${rc.detail}](${deepLink(grr, rc.sourceLocation)})`;
 }

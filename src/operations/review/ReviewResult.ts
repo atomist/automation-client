@@ -1,23 +1,36 @@
 import { HandlerResult } from "../../HandlerResult";
-import { Issue } from "../../util/gitHub";
 import { RepoRef } from "../common/RepoId";
 import { SourceLocation } from "../common/SourceLocation";
 
 export type Severity = "error" | "warn" | "info";
 
+/**
+ * A single comment on a project, with optional source location.
+ */
 export interface ReviewComment {
 
     readonly severity: Severity;
 
-    readonly comment: string;
-
-    readonly sourceLocation?: SourceLocation;
+    /**
+     * Name of the category to which this comment applies: E.g. "Usage of Foobar API"
+     */
+    readonly category: string;
 
     /**
-     * If this is set, the information that should
-     * be used to raise an Issue.
+     * Details of the problem
      */
-    issue?: Issue;
+    readonly detail: string;
+
+    readonly sourceLocation?: SourceLocation;
+}
+
+export class DefaultReviewComment implements ReviewComment {
+
+    constructor(public severity: Severity,
+                public category: string,
+                public detail: string,
+                public sourceLocation: SourceLocation) {
+    }
 }
 
 /**
