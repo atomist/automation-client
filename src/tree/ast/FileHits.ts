@@ -83,6 +83,9 @@ export class FileHit {
                     let newContent = content;
                     const sorted = updates.sort((a, b) => b.offset - a.offset);
                     for (const u of sorted) {
+                        if (u.offset === undefined) {
+                            throw new Error(`Cannot update as offset is not set: ${JSON.stringify(u)}`);
+                        }
                         logger.debug("Applying update %j", u);
                         if (!!u.replaceAfter) {
                             newContent = newContent.substr(0, u.offset) +
@@ -104,6 +107,12 @@ export class FileHit {
     }
 }
 
+function requireOffset(m: MatchResult) {
+    if (m.$offset === undefined) {
+        throw new Error("Sorry, you can't update this because I don't know its offset. " + m.$name + "=" + m.$value);
+    }
+}
+
 function makeUpdatable(matches: MatchResult[], updates: Update[]) {
     matches.forEach(m => {
         const initialValue = m.$value;
@@ -116,16 +125,20 @@ function makeUpdatable(matches: MatchResult[], updates: Update[]) {
                 logger.debug("Updating value from '%s' to '%s' on '%s'", currentValue, v2, m.$name);
                 // TODO allow only one
                 currentValue = v2;
+                requireOffset(m);
                 updates.push({ initialValue, currentValue, offset: m.$offset });
             },
         });
         m.append = (content: string) => {
+            requireOffset(m);
             updates.push({ initialValue: "", currentValue: content, offset: m.$offset + currentValue.length });
         };
         m.prepend = (content: string) => {
+            requireOffset(m);
             updates.push({ initialValue: "", currentValue: content, offset: m.$offset });
         };
         m.zap = (opts: NodeReplacementOptions) => {
+            requireOffset(m);
             updates.push({ ...opts, initialValue, currentValue: "", offset: m.$offset });
         };
         m.evaluateExpression = (pex: PathExpression | string) => {

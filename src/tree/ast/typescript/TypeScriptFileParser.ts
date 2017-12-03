@@ -98,7 +98,11 @@ class TypeScriptAstNodeTreeNode implements TreeNode {
             this.$offset = node.getStart(sourceFile, true);
         } catch (e) {
             // Ignore and continue
-            logger.debug("Cannot get start for node with kind %s", ts.SyntaxKind[node.kind]);
+            if (!!node.pos) {
+                this.$offset = node.pos;
+            } else {
+                logger.debug("Cannot get start for node with kind %s", ts.SyntaxKind[node.kind]);
+            }
         }
 
         for (const n of node.getChildren(sourceFile)) {

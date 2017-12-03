@@ -29,8 +29,7 @@ describe("microgrammar integration and path expression", () => {
                 assert(matches.length === 2);
                 assert(matches[0].$value === "Tom");
                 assert(matches[1].$value === "Mary");
-                done();
-            }).catch(done);
+            }).then(() => done(), done);
     });
 
     it("exposes source locations", done => {
@@ -51,8 +50,7 @@ describe("microgrammar integration and path expression", () => {
                    assert(m.sourceLocation.path === "Thing");
                    assert(m.sourceLocation.offset === m.$offset);
                 });
-                done();
-            }).catch(done);
+            }).then(() => done(), done);
     });
 
     it("retains AST in file matches", done => {
@@ -71,8 +69,7 @@ describe("microgrammar integration and path expression", () => {
                 assert(matches[0].matches[1].$value === "Mary");
                 assert(matches[0].fileNode.$children.length === 1);
                 assert(matches[0].fileNode.$children[0].$name === "people");
-                done();
-            }).catch(done);
+            }).then(() => done(), done);
     });
 
     it("should get into AST and update single terminal", done => {
@@ -88,12 +85,11 @@ describe("microgrammar integration and path expression", () => {
                 assert(matches.length === 2);
                 assert(matches[0].$value === "Tom");
                 matches[1].$value = "Mark";
-                p.flush()
+                return p.flush()
                     .then(_ => {
                         assert(p.findFileSync("Thing").getContentSync() === "Tom:16 Mark:25");
-                        done();
                     });
-            }).catch(done);
+            }).then(() => done(), done);
     });
 
     it("should get into AST and update two terminals", done => {
@@ -110,12 +106,11 @@ describe("microgrammar integration and path expression", () => {
                 assert(matches[0].$value === "Tom");
                 matches[0].$value = "Jose";
                 matches[1].$value = "Mark";
-                p.flush()
+                return p.flush()
                     .then(_ => {
                         assert(p.findFileSync("Thing").getContentSync() === "Jose:16 Mark:25");
-                        done();
                     });
-            }).catch(done);
+            }).then(() => done(), done);
     });
 
     it("should get into AST and update single non-terminal", done => {
@@ -134,13 +129,12 @@ describe("microgrammar integration and path expression", () => {
                 assert(matches[0].$value === firstPerson, `[${matches[0].$value}]`);
                 const secondPerson = "Abigail:44";
                 matches[0].$value = secondPerson;
-                p.flush()
+                return p.flush()
                     .then(_ => {
                         const f = p.findFileSync("Thing");
                         assert(f.getContentSync() === content.replace(firstPerson, secondPerson));
-                        done();
                     });
-            }).catch(done);
+            }).then(() => done(), done);
     });
 
     it("should get into AST and add content after non-terminal", done => {
@@ -159,13 +153,12 @@ describe("microgrammar integration and path expression", () => {
                 assert(matches[0].$value === firstPerson, `[${matches[0].$value}]`);
                 const newContent = "this is junk";
                 matches[0].append(newContent);
-                p.flush()
+                return p.flush()
                     .then(_ => {
                         const f = p.findFileSync("Thing");
                         assert(f.getContentSync() === content.replace(firstPerson, firstPerson + newContent));
-                        done();
                     });
-            }).catch(done);
+            }).then(() => done(), done);
     });
 
     it("should get into AST and add content before non-terminal", done => {
@@ -184,13 +177,12 @@ describe("microgrammar integration and path expression", () => {
                 assert(matches.length === 2);
                 const newContent = "this is junk";
                 matches[1].prepend(newContent);
-                p.flush()
+                return p.flush()
                     .then(_ => {
                         const f = p.findFileSync("Thing");
                         assert(f.getContentSync() === firstPerson + " " + newContent + secondPerson);
-                        done();
                     });
-            }).catch(done);
+            }).then(() => done(), done);
     });
 
     it("should allow predicate on file", done => {
@@ -208,8 +200,7 @@ describe("microgrammar integration and path expression", () => {
                 assert(matches.length === 2);
                 assert(matches[0].$value === "Tom");
                 assert(matches[1].$value === "Mary");
-                done();
-            }).catch(done);
+            }).then(() => done(), done);
     });
 
     it("handles multiple updates to same property");
@@ -228,12 +219,11 @@ describe("microgrammar integration and path expression", () => {
                 assert(matches.length === 2);
                 assert(matches[0].$value === "Tom");
                 matches[1].$value = "Mark";
-                p.flush()
+                return p.flush()
                     .then(_ => {
                         assert(p.findFileSync("Thing1").getContentSync() === "Tom:16 Mark:25");
-                        done();
                     });
-            }).catch(done);
+            }).then(() => done(), done);
     });
 
 });
