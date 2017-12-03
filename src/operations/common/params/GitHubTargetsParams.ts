@@ -10,7 +10,7 @@ import { RepoFilter } from "../repoFilter";
  * Allows use of regex.
  */
 @Parameters()
-export abstract class GitHubParams {
+export abstract class GitHubTargetsParams {
 
     @Secret(Secrets.userToken(["repo", "user"]))
     public githubToken: string;

@@ -2,6 +2,10 @@ import { HandlerContext } from "../../HandlerContext";
 import { Project } from "../../project/Project";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
+import {
+    BaseEditorOrReviewerParameters,
+    EditorOrReviewerParameters,
+} from "../common/params/BaseEditorOrReviewerParameters";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { AllRepos, RepoFilter } from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
@@ -25,17 +29,18 @@ import { AnyProjectEditor, EditResult, ProjectEditor, toEditor } from "./project
  * @param {RepoLoader} repoLoader
  * @return {Promise<Array<EditResult>>}
  */
-export function editAll<R, P extends RepoRef>(ctx: HandlerContext,
-                                              credentials: ProjectOperationCredentials,
-                                              editor: AnyProjectEditor,
-                                              editInfo: EditMode | EditModeFactory,
-                                              parameters?: P,
-                                              repoFinder: RepoFinder = allReposInTeam(),
-                                              repoFilter: RepoFilter = AllRepos,
-                                              repoLoader: RepoLoader =
-                                                  defaultRepoLoader(credentials)): Promise<EditResult[]> {
+export function editAll<R, P extends EditorOrReviewerParameters>(ctx: HandlerContext,
+                                                                 credentials: ProjectOperationCredentials,
+                                                                 editor: AnyProjectEditor,
+                                                                 editInfo: EditMode | EditModeFactory,
+                                                                 parameters?: P,
+                                                                 repoFinder: RepoFinder = allReposInTeam(),
+                                                                 repoFilter: RepoFilter = AllRepos,
+                                                                 repoLoader: RepoLoader =
+                                                                     defaultRepoLoader(credentials)): Promise<EditResult[]> {
     const edit = (p: Project, parms: P) =>
-        editRepo(ctx, p, toEditor(editor), toEditModeFactory(editInfo)(p), parms);
+        editRepo(ctx, p, toEditor(editor), toEditModeFactory(editInfo)(p),
+            parms);
     return doWithAllRepos<EditResult, P>(ctx, credentials, edit, parameters,
         repoFinder, repoFilter, repoLoader);
 }
@@ -51,13 +56,13 @@ export function editAll<R, P extends RepoRef>(ctx: HandlerContext,
  * @param {RepoLoader} repoLoader (optional, useful in testing)
  * @return {Promise<EditResult>}
  */
-export function editOne<P extends RepoRef>(ctx: HandlerContext,
-                                           credentials: ProjectOperationCredentials,
-                                           editor: AnyProjectEditor,
-                                           editInfo: EditMode,
-                                           singleRepository: RepoRef,
-                                           parameters?: P,
-                                           repoLoader: RepoLoader = defaultRepoLoader(credentials)): Promise<EditResult> {
+export function editOne<P extends EditorOrReviewerParameters>(ctx: HandlerContext,
+                                                              credentials: ProjectOperationCredentials,
+                                                              editor: AnyProjectEditor,
+                                                              editInfo: EditMode,
+                                                              singleRepository: RepoRef,
+                                                              parameters?: P,
+                                                              repoLoader: RepoLoader = defaultRepoLoader(credentials)): Promise<EditResult> {
     const singleRepoFinder: RepoFinder = () => Promise.resolve([singleRepository]);
     return editAll(ctx, credentials, toEditor(editor), editInfo, parameters,
         singleRepoFinder, AllRepos, repoLoader)

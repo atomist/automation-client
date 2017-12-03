@@ -6,6 +6,7 @@ import * as assert from "power-assert";
 import { fromListRepoFinder, fromListRepoLoader } from "../../../src/operations/common/fromProjectList";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { AlwaysAskRepoParameters } from "../../../src/operations/common/params/AlwaysAskRepoParameters";
+import { BaseEditorOrReviewerParameters } from "../../../src/operations/common/params/BaseEditorOrReviewerParameters";
 import { MappedRepoParameters } from "../../../src/operations/common/params/MappedRepoParameters";
 import { editAll } from "../../../src/operations/edit/editAll";
 import { CustomExecutionEditMode } from "../../../src/operations/edit/editModes";
@@ -54,7 +55,7 @@ describe("editAll", () => {
     });
 
     it("should edit repo using params", done => {
-        class VerySpecialParams extends MappedRepoParameters {
+        class VerySpecialParams extends BaseEditorOrReviewerParameters {
             constructor(public name: string) {
                 super();
             }
@@ -115,7 +116,7 @@ describe("editAll", () => {
         };
 
         editAll(null, null, editor, cei,
-            new AlwaysAskRepoParameters(),
+            new BaseEditorOrReviewerParameters(new AlwaysAskRepoParameters()),
             fromListRepoFinder(projects),
             p => true,
             fromListRepoLoader(projects))
