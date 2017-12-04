@@ -13,3 +13,6 @@ npm-debug.log
 graphql.config.json
 git-info.json
 /.vscode
+
+/*-v8.log
+/profile.txt

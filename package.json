@@ -117,6 +117,7 @@
   "scripts": {
     "autostart": "npm-run-all --print-label --parallel watch:compile watch:server",
     "autotest": "supervisor --watch src,test --extensions ts --no-restart-on exit --quiet --exec npm -- test",
+    "benchmark": "mocha --prof --compilers ts:espower-typescript/guess \"test-perf/**/*Benchmark.ts\"; node --prof-process isolate-* > profile.txt",
     "build": "npm-run-all lint compile test test:api",
     "clean": "npm-run-all clean:js clean:build",
     "clean:build": "rimraf *-v8.log profile.txt build",
