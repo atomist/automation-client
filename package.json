@@ -117,7 +117,6 @@
   "scripts": {
     "autostart": "npm-run-all --print-label --parallel watch:compile watch:server",
     "autotest": "supervisor --watch src,test --extensions ts --no-restart-on exit --quiet --exec npm -- test",
-    "benchmark": "mocha --prof --compilers ts:espower-typescript/guess \"test-perf/**/*Benchmark.ts\"; node --prof-process isolate-* > profile.txt",
     "build": "npm-run-all lint compile test test:api",
     "clean": "npm-run-all clean:js clean:build",
     "clean:build": "rimraf *-v8.log profile.txt build",
@@ -137,6 +136,7 @@
     "start:server": "node $NODE_DEBUG_OPTION --trace-warnings --expose_gc --optimize_for_size --always_compact --max_old_space_size=256 build/src/start.client.js",
     "test": "mocha --require espower-typescript/guess --exit 'test/**/*.ts'",
     "test:api": "mocha --require espower-typescript/guess --exit 'test-api/**/*.ts'",
+    "test:benchmark": "mocha --prof --compilers ts:espower-typescript/guess \"test-perf/**/*.ts\"; node --prof-process isolate-* > profile.txt",
     "test:one": "mocha --require espower-typescript/guess \"test/**/${TEST:-*.ts}\"",
     "typedoc": "typedoc --mode modules --excludeExternals",
     "watch:compile": "tsc --project . --watch",

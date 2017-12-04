@@ -30,15 +30,11 @@ describe("generator benchmark", () => {
                     assert.deepEqual(fileCount, numberOfSeedProjectFiles),
                 ).then(
                     () => {
-                        let lastGeneration: Promise<any>;
+                        const generationPromises: Array<Promise<any>> = [];
                         for (let i = 1; i < numberOfTimesToGenerate ; i++) {
-                            lastGeneration = generateFromSeed(seed, repoName);
+                            generationPromises.push(generateFromSeed(seed, repoName));
                         }
-                        if (lastGeneration) {
-                            lastGeneration.then(() => done());
-                        } else {
-                            done();
-                        }
+                        Promise.all(generationPromises).then(() => done());
                     },
                     e => done(e),
                 );
