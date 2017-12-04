@@ -76,7 +76,7 @@ class ExpressMessageClient extends MessageClientSupport {
 
 function raiseEvent(payload: any, incomingPayload: CommandIncoming, type: string): Promise<any> {
     // TODO cd this url should change
-    return axios.put("https://api.atomist.com/dashboard/v1/event", {
+    return axios.put("https://app.atomist.com/v1/event", {
             team_id: incomingPayload.team.id,
             correlation_id: incomingPayload.corrid,
             message: payload,
