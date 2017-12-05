@@ -32,7 +32,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                            channelNames: string | string[], options: MessageOptions = {}): Promise<any> {
         const ts = this.ts(options);
         if (isSlackMessage(msg)) {
-            const actions = mapActions(msg, this.automations.automations.version);
+            const actions = mapActions(msg, this.automations.automations.name, this.automations.automations.version);
             const response: HandlerResponse = {
                 rug: this.rug,
                 corrid: this.correlationId,
@@ -120,7 +120,7 @@ export class WebSocketEventMessageClient extends AbstractWebSocketMessageClient 
     }
 }
 
-export function mapActions(msg: SlackMessage, version: string): Action[] {
+export function mapActions(msg: SlackMessage, artifact: string, version: string): Action[] {
     const actions: Action[] = [];
 
     let counter = 0;
@@ -146,7 +146,7 @@ export function mapActions(msg: SlackMessage, version: string): Action[] {
                         rug: {
                             type: "command_handler",
                             group: "atomist",
-                            artifact: "node",
+                            artifact,
                             version,
                             name: cra.command.name,
                         },
@@ -228,7 +228,7 @@ export interface Action {
 export interface Rug {
     type: "command_handler";
     group: "atomist";
-    artifact: "node";
+    artifact: string;
     name: string;
     version: string;
 }
