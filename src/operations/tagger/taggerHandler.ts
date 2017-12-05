@@ -9,7 +9,7 @@ import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewerParameters";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
-import { AllRepos, andFilter, RepoFilter } from "../common/RepoFilter";
+import { AllRepos, andFilter, RepoFilter } from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
 import { RepoLoader } from "../common/repoLoader";
 import { doWithAllRepos } from "../common/repoUtils";
