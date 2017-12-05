@@ -1,7 +1,10 @@
 import "mocha";
 import * as assert from "power-assert";
 
+import * as winston from "winston";
+
 import { ActionResult, successOn } from "../src/action/ActionResult";
+import { logger, LoggingConfig } from "../src/internal/util/logger";
 import { GitHubRepoRef } from "../src/operations/common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../src/operations/common/ProjectOperationCredentials";
 import { RepoId } from "../src/operations/common/RepoId";
@@ -10,6 +13,9 @@ import { LocalProject } from "../src/project/local/LocalProject";
 import { NodeFsLocalProject } from "../src/project/local/NodeFsLocalProject";
 import { InMemoryProject } from "../src/project/mem/InMemoryProject";
 import { Project } from "../src/project/Project";
+
+LoggingConfig.format = "cli";
+(logger as winston.LoggerInstance).level = process.env.LOG_LEVEL || "info";
 
 describe("generator benchmark", () => {
 
@@ -22,24 +28,24 @@ describe("generator benchmark", () => {
 
         const seed = constructProject(numberOfSeedProjectFiles, numberOfLipsumInFile);
         generateFromSeed(seed, repoName)
-        .then(r => {
-            const result = r as ActionResult<LocalProject>;
-            NodeFsLocalProject.fromExistingDirectory(new GitHubRepoRef("atomist", repoName), result.target.baseDir)
-            .then(created => {
-                created.totalFileCount().then(fileCount =>
-                    assert.deepEqual(fileCount, numberOfSeedProjectFiles),
-                ).then(
-                    () => {
-                        const generationPromises: Array<Promise<any>> = [];
-                        for (let i = 1; i < numberOfTimesToGenerate ; i++) {
-                            generationPromises.push(generateFromSeed(seed, repoName));
-                        }
-                        Promise.all(generationPromises).then(() => done());
-                    },
-                    e => done(e),
-                );
+            .then(r => {
+                const result = r as ActionResult<LocalProject>;
+                NodeFsLocalProject.fromExistingDirectory(new GitHubRepoRef("atomist", repoName), result.target.baseDir)
+                    .then(created => {
+                        created.totalFileCount().then(fileCount =>
+                            assert.deepEqual(fileCount, numberOfSeedProjectFiles),
+                        ).then(
+                            () => {
+                                const generationPromises: Array<Promise<any>> = [];
+                                for (let i = 1; i < numberOfTimesToGenerate; i++) {
+                                    generationPromises.push(generateFromSeed(seed, repoName));
+                                }
+                                Promise.all(generationPromises).then(() => done());
+                            },
+                            e => done(e),
+                        );
+                    });
             });
-        });
     }).timeout(90000);
 });
 
@@ -68,11 +74,11 @@ Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deseru
 
 const constructProject = (fileCount: number, lipsumCountPerFile: number): Project => {
     let fileContent: string = "";
-    for (let i = 0; i < lipsumCountPerFile ; i++) {
+    for (let i = 0; i < lipsumCountPerFile; i++) {
         fileContent = fileContent.concat(lipsum);
     }
     const files = [];
-    for (let i = 0; i < fileCount ; i++) {
+    for (let i = 0; i < fileCount; i++) {
         files.push({
             path: "file" + i + ".txt",
             content: fileContent,
