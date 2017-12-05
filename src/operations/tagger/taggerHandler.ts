@@ -9,7 +9,7 @@ import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewerParameters";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
-import { AllRepos, andFilter, RepoFilter } from "../common/RepoFilter";
+import { AllRepos, andFilter, RepoFilter } from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
 import { RepoLoader } from "../common/repoLoader";
 import { doWithAllRepos } from "../common/repoUtils";
@@ -22,7 +22,8 @@ export interface Tags {
 export type Tagger<P extends EditorOrReviewerParameters = EditorOrReviewerParameters> =
     (p: Project, context: HandlerContext, params?: P) => Promise<Tags>;
 
-export type TagRouter = (tags: Tags, ctx: HandlerContext) => Promise<ActionResult<Tags>>;
+export type TagRouter<PARAMS extends EditorOrReviewerParameters = EditorOrReviewerParameters> =
+    (tags: Tags, ctx: HandlerContext, params: PARAMS) => Promise<ActionResult<Tags>>;
 
 export interface TaggerCommandDetails<PARAMS extends EditorOrReviewerParameters> extends CommandDetails<PARAMS> {
 
@@ -83,7 +84,7 @@ function tagOneOrMany<PARAMS extends EditorOrReviewerParameters>(tagger: Tagger<
             .then((tags: Tags[]) => {
                 return Promise.all(tags
                     .filter(pr => tags.length > 0)
-                    .map(t => details.tagRouter(t, ctx)));
+                    .map(t => details.tagRouter(t, ctx, parameters)));
             });
     };
 }
