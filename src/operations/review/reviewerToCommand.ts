@@ -4,7 +4,6 @@ import { HandlerContext } from "../../HandlerContext";
 import { commandHandlerFrom, OnCommand, ParametersConstructor } from "../../onCommand";
 import { CommandDetails } from "../CommandDetails";
 import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewerParameters";
-import { GitHubTargetsParams } from "../common/params/GitHubTargetsParams";
 import { andFilter, RepoFilter } from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
 import { RepoRef } from "../common/RepoId";
@@ -13,6 +12,9 @@ import { ProjectReviewer } from "./projectReviewer";
 import { reviewAll } from "./reviewAll";
 import { ProjectReview } from "./ReviewResult";
 
+/**
+ * Function signature to route ProjectReviews, for example to GitHub issues or MessageClient
+ */
 export type ReviewRouter<PARAMS> = (pr: ProjectReview, params: PARAMS, title: string, ctx: HandlerContext) =>
     Promise<ActionResult<RepoRef>>;
 
@@ -80,7 +82,11 @@ function handleReviewOneOrMany<PARAMS extends EditorOrReviewerParameters>(review
                     }))
                     .then(persisted =>
                         ctx.messageClient.respond(
-                            `${name} reviewed ${projectReviews.length} repositories: Reported on ${persisted.length} with problems`));
+                            `${name} reviewed ${projectReviews.length} repositories: Reported on ${persisted.length} with problems`)
+                            .then(() => ({
+                                projectsReviewed: projectReviews.length,
+                                projectReviews: persisted,
+                            })));
             });
     };
 }

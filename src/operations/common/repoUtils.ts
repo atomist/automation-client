@@ -30,8 +30,8 @@ export function doWithAllRepos<R, P>(ctx: HandlerContext,
                                      repoLoader: RepoLoader =
                                          defaultRepoLoader(credentials)): Promise<R[]> {
     return relevantRepos(ctx, repoFinder, repoFilter)
-        .then(ids =>
-            Promise.all(
+        .then(ids => {
+            return Promise.all(
                 ids.map(id =>
                     repoLoader(id)
                         .catch(err => {
@@ -43,8 +43,8 @@ export function doWithAllRepos<R, P>(ctx: HandlerContext,
                                 return action(p, parameters);
                             }
                         })))
-                .then(proms => proms.filter(prom => prom)),
-        );
+                .then(proms => proms.filter(prom => prom));
+        });
 }
 
 export function relevantRepos(ctx: HandlerContext,
