@@ -3,6 +3,7 @@ import { HandlerContext } from "../../HandlerContext";
 import { RedirectResult } from "../../HandlerResult";
 import { commandHandlerFrom, OnCommand, ParametersConstructor } from "../../onCommand";
 import { Project } from "../../project/Project";
+import { CachingDirectoryManager } from "../../spi/clone/CachingDirectoryManager";
 import { CommandDetails } from "../CommandDetails";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
@@ -31,7 +32,7 @@ function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: strin
     return {
         description: name,
         repoFinder: allReposInTeam(),
-        repoLoader: (p: P) => defaultRepoLoader({ token: p.target.githubToken}),
+        repoLoader: (p: P) => defaultRepoLoader({ token: p.target.githubToken}, CachingDirectoryManager),
         projectPersister: GitHubProjectPersister,
         redirecter: () => undefined,
 
