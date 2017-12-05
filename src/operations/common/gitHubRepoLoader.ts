@@ -1,9 +1,9 @@
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
+import { DefaultCloneOptions, DirectoryManager } from "../../spi/clone/DirectoryManager";
 import { GitHubRepoRef, isGitHubRepoRef } from "./GitHubRepoRef";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import { RepoLoader } from "./repoLoader";
-import { DefaultCloneOptions, DirectoryManager } from "../../spi/clone/DirectoryManager";
 
 /**
  * Materialize from github

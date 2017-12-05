@@ -1,6 +1,7 @@
 import { ActionResult } from "../../action/ActionResult";
 import { HandlerContext } from "../../HandlerContext";
 import { logger } from "../../internal/util/logger";
+import { GitProject } from "../../project/git/GitProject";
 import { LocalProject } from "../../project/local/LocalProject";
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
 import { Project } from "../../project/Project";
@@ -10,7 +11,6 @@ import { ProjectAction } from "../common/projectAction";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { RepoId } from "../common/RepoId";
 import { AnyProjectEditor, ProjectEditor, toEditor } from "../edit/projectEditor";
-import { GitProject } from "../../project/git/GitProject";
 
 /**
  * Function that knows how to persist a project using the given credentials.

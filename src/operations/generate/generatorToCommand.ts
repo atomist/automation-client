@@ -3,6 +3,7 @@ import { HandlerContext } from "../../HandlerContext";
 import { RedirectResult } from "../../HandlerResult";
 import { commandHandlerFrom, OnCommand, ParametersConstructor } from "../../onCommand";
 import { Project } from "../../project/Project";
+import { CachingDirectoryManager } from "../../spi/clone/CachingDirectoryManager";
 import { CommandDetails } from "../CommandDetails";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
@@ -15,7 +16,6 @@ import { AnyProjectEditor } from "../edit/projectEditor";
 import { BaseSeedDrivenGeneratorParameters } from "./BaseSeedDrivenGeneratorParameters";
 import { generate, ProjectPersister } from "./generatorUtils";
 import { GitHubProjectPersister } from "./gitHubProjectPersister";
-import { CachingDirectoryManager } from "../../spi/clone/CachingDirectoryManager";
 
 export type EditorFactory<P> = (params: P, ctx: HandlerContext) => AnyProjectEditor<P>;
 
