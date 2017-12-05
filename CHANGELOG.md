@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Move cache directory to ~/.atomist/cache
 -   Generators now cache seed
 -   Several improvements to reviewer interfaces
+-   Scan all commands and events directories for command and event
+    handlers, respectively
 
 ### Fixed
 

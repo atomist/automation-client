@@ -61,7 +61,7 @@ export function registerEvent(event: any) {
  * Optional glob patterns can be specified to narrow the search.
  */
 export function scanCommands(patterns: string | string[] =
-                                 [ "**/handlers/commands/**/*.js" ]): Array<Maker<HandleCommand>> {
+                                 [ "**/commands/**/*.js" ]): Array<Maker<HandleCommand>> {
     registry.start(true, false);
     // tslint:disable-next-line:variable-name
     const _patterns = toStringArray(patterns);
@@ -76,7 +76,7 @@ export function scanCommands(patterns: string | string[] =
  * Optional glob patterns can be specified to narrow the search.
  */
 export function scanEvents(patterns: string | string[] =
-                               [ "**/handlers/events/**/*.js" ]): Array<Maker<HandleEvent<any>>> {
+                               [ "**/events/**/*.js" ]): Array<Maker<HandleEvent<any>>> {
     registry.start(false, true);
     // tslint:disable-next-line:variable-name
     const _patterns = toStringArray(patterns);
