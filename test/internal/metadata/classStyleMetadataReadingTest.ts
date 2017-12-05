@@ -27,6 +27,7 @@ describe("class style metadata reading", () => {
         assert(md.mapped_parameters.length === 2);
         assert(md.mapped_parameters[0].local_key === "githubWebUrl");
         assert(md.mapped_parameters[0].foreign_key === "atomist://github_url");
+        assert(md.mapped_parameters[0].required);
         assert(md.secrets.length === 1);
         assert(md.secrets[0].name === "someSecret");
         assert(md.secrets[0].path === "atomist://some_secret");
@@ -88,7 +89,7 @@ describe("class style metadata reading", () => {
         const h = new HasSomeChoicesParam();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
         populateParameters(h, md, [{name: "pets", value: ["pig"]}]);
-        assert.deepEqual(h.pets, [ "pig"]);
+        assert.deepEqual(h.pets, ["pig"]);
         populateParameters(h, md, [{name: "pets", value: ["dog", "cat"]}]);
         assert.deepEqual(h.pets, ["dog", "cat"]);
     });
@@ -96,8 +97,8 @@ describe("class style metadata reading", () => {
     it("should convert to explicit type: some free choices", () => {
         const h = new HasSomeFreeChoicesParam();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
-        populateParameters(h, md, [{name: "pets", value: ["pig", "heffalump" ]}]);
-        assert.deepEqual(h.pets, [ "pig", "heffalump"]);
+        populateParameters(h, md, [{name: "pets", value: ["pig", "heffalump"]}]);
+        assert.deepEqual(h.pets, ["pig", "heffalump"]);
         populateParameters(h, md, [{name: "pets", value: ["dog", "cat"]}]);
         assert.deepEqual(h.pets, ["dog", "cat"]);
     });
@@ -154,6 +155,13 @@ describe("class style metadata reading", () => {
         const h = new HasNumberParam();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
         assert(md.tags.length === 0);
+    });
+
+    it("should handle @MappedParameter with required=false", () => {
+        const h = new OptionalMappedParameter();
+        const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        const mp = md.mapped_parameters[0];
+        assert(mp.required === false);
     });
 });
 
@@ -362,6 +370,18 @@ export class NoDecoratorEventHandlerWithoutInterface implements HandleEvent<any>
     public subscription = "subscription Foo { Issue { name } }";
 
     public handle(event: EventFired<any>, context: HandlerContext): Promise<HandlerResult> {
+        throw new Error("not relevant");
+    }
+}
+
+@CommandHandler("description", "universal", "generator")
+@Tags("universal", "generator")
+export class OptionalMappedParameter implements HandleCommand {
+
+    @MappedParameter("lookup", false)
+    public foo: string;
+
+    public handle(context: HandlerContext): Promise<HandlerResult> {
         throw new Error("not relevant");
     }
 }

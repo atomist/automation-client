@@ -22,9 +22,9 @@ export function Parameter(details: BaseParameter = {}) {
 /**
  * Map a local field to some other configuration item in a different system
  */
-export function MappedParameter(foreignKey: string) {
+export function MappedParameter(foreignKey: string, required: boolean = true) {
     return (target: any, localKey: string) => {
-        declareMappedParameter(target, localKey, foreignKey);
+        declareMappedParameter(target, localKey, foreignKey, required);
     };
 }
 

@@ -40,7 +40,7 @@ const UnAuthorizedResult = Promise.resolve({ code: 403, message: "Access denied"
 export function slackUser(maker: Maker<HandleCommand>, ...users: string[]): () => HandleCommand {
     return () => {
         const command = toFactory(maker)();
-        declareMappedParameter(command, "__atomist_slack_user_name", MappedParameters.SlackUserName);
+        declareMappedParameter(command, "__atomist_slack_user_name", MappedParameters.SlackUserName, true);
         const handleMethod = command.handle;
         command.handle = (ctx: HandlerContext) => {
             if (users.indexOf((command as any).__atomist_slack_user_name) < 0) {
@@ -62,8 +62,8 @@ export function slackUser(maker: Maker<HandleCommand>, ...users: string[]): () =
 export function githubTeam(maker: Maker<HandleCommand>, team: string): () => HandleCommand {
     return () => {
         const command = toFactory(maker)();
-        declareMappedParameter(command, "__atomist_slack_user", MappedParameters.SlackUser);
-        declareMappedParameter(command, "__atomist_github_owner", MappedParameters.GitHubOwner);
+        declareMappedParameter(command, "__atomist_slack_user", MappedParameters.SlackUser, true);
+        declareMappedParameter(command, "__atomist_github_owner", MappedParameters.GitHubOwner, true);
         declareSecret(command, "__atomist_user_token", Secrets.userToken("read:org"));
         const handleMethod = command.handle;
         command.handle = (ctx: HandlerContext) => {

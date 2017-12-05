@@ -41,12 +41,11 @@ export function metadataFromInstance(h: any): CommandHandlerMetadata | EventHand
     return _.cloneDeep(md);
 }
 
-function addName(r: CommandHandlerMetadata | EventHandlerMetadata):
-    CommandHandlerMetadata | EventHandlerMetadata {
-     if (!r.name) {
-         r.name = r.constructor.name;
-     }
-     return r;
+function addName(r: CommandHandlerMetadata | EventHandlerMetadata): CommandHandlerMetadata | EventHandlerMetadata {
+    if (!r.name) {
+        r.name = r.constructor.name;
+    }
+    return r;
 }
 
 function metadataFromDecorator(h: any, params: any): CommandHandlerMetadata | EventHandlerMetadata {
@@ -61,16 +60,16 @@ function metadataFromDecorator(h: any, params: any): CommandHandlerMetadata | Ev
                 mapped_parameters: mappedParameterMetadataFromInstance(params),
                 secrets: secretsMetadataFromInstance(params),
             };
-    case "parameters" :
-        return {
-            name: h.__name,
-            description: h.__description,
-            tags: h.__tags ? h.__tags : [],
-            intent: h.__intent ? h.__intent : [],
-            parameters: parametersFromInstance(params),
-            mapped_parameters: mappedParameterMetadataFromInstance(params),
-            secrets: secretsMetadataFromInstance(params),
-        };
+        case "parameters" :
+            return {
+                name: h.__name,
+                description: h.__description,
+                tags: h.__tags ? h.__tags : [],
+                intent: h.__intent ? h.__intent : [],
+                parameters: parametersFromInstance(params),
+                mapped_parameters: mappedParameterMetadataFromInstance(params),
+                secrets: secretsMetadataFromInstance(params),
+            };
         case "event-handler" :
             // Remove any linebreaks and spaces from those subscription
             const subscription = GraphQL.inlineQuery(params.__subscription);
@@ -135,7 +134,7 @@ function directParameters(r: any, prefix: string) {
 }
 
 function secretsMetadataFromInstance(r: any, prefix: string = ""): SecretDeclaration[] {
-    const directSecrets = !!r && r.__secrets ? r.__secrets.map(s => ({name: prefix + s.name, path: s.path })) : [];
+    const directSecrets = !!r && r.__secrets ? r.__secrets.map(s => ({name: prefix + s.name, path: s.path})) : [];
     const nestedParameters = _.flatten(Object.keys(r)
         .map(key => [key, r[key]])
         .filter(nestedFieldInfo => !!nestedFieldInfo[1])
@@ -147,7 +146,11 @@ function secretsMetadataFromInstance(r: any, prefix: string = ""): SecretDeclara
 
 function mappedParameterMetadataFromInstance(r: any, prefix: string = ""): MappedParameterDeclaration[] {
     const directMappedParams = !!r && r.__mappedParameters ? r.__mappedParameters.map(mp =>
-        ({local_key: prefix + mp.localKey, foreign_key: mp.foreignKey})) : [];
+        ({
+            local_key: prefix + mp.localKey,
+            foreign_key: mp.foreignKey,
+            required: mp.required !== false,
+        })) : [];
     const nestedParameters = _.flatten(Object.keys(r)
         .map(key => [key, r[key]])
         .filter(nestedFieldInfo => !!nestedFieldInfo[1])
