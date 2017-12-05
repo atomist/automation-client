@@ -11,10 +11,13 @@ import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewe
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { AllRepos, andFilter, RepoFilter } from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
+import { RepoRef } from "../common/RepoId";
 import { RepoLoader } from "../common/repoLoader";
 import { doWithAllRepos } from "../common/repoUtils";
 
 export interface Tags {
+
+    repoId: RepoRef;
 
     tags: string[];
 }
@@ -23,7 +26,7 @@ export type Tagger<P extends EditorOrReviewerParameters = EditorOrReviewerParame
     (p: Project, context: HandlerContext, params?: P) => Promise<Tags>;
 
 export type TagRouter<PARAMS extends EditorOrReviewerParameters = EditorOrReviewerParameters> =
-    (tags: Tags, ctx: HandlerContext, params: PARAMS) => Promise<ActionResult<Tags>>;
+    (tags: Tags, params: PARAMS, ctx: HandlerContext) => Promise<ActionResult<Tags>>;
 
 export interface TaggerCommandDetails<PARAMS extends EditorOrReviewerParameters> extends CommandDetails<PARAMS> {
 
@@ -40,7 +43,7 @@ function defaultDetails(name: string): TaggerCommandDetails<EditorOrReviewerPara
     };
 }
 
-export const MessageClientTagRouter: TagRouter = (tags, ctx) =>
+export const MessageClientTagRouter: TagRouter = (tags, params, ctx) =>
     ctx.messageClient.respond("Tags: " + tags.tags.join());
 
 /**
@@ -84,7 +87,7 @@ function tagOneOrMany<PARAMS extends EditorOrReviewerParameters>(tagger: Tagger<
             .then((tags: Tags[]) => {
                 return Promise.all(tags
                     .filter(pr => tags.length > 0)
-                    .map(t => details.tagRouter(t, ctx, parameters)));
+                    .map(t => details.tagRouter(t, parameters, ctx)));
             });
     };
 }
