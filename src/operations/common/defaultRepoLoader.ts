@@ -4,6 +4,8 @@ import { LocalRepoLoader } from "./localRepoLoader";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import { isLocalRepoRef, RepoRef } from "./RepoId";
 import { RepoLoader } from "./repoLoader";
+import { DirectoryManager } from "../../spi/clone/DirectoryManager";
+import { DefaultDirectoryManager } from "../../project/git/GitCommandGitProject";
 
 /**
  * Materialize from github
@@ -11,12 +13,12 @@ import { RepoLoader } from "./repoLoader";
  * @return function to materialize repos
  * @constructor
  */
-export function defaultRepoLoader(credentials: ProjectOperationCredentials): RepoLoader<GitProject> {
+export function defaultRepoLoader(credentials: ProjectOperationCredentials, directoryManager: DirectoryManager = DefaultDirectoryManager): RepoLoader<GitProject> {
     return (repoId: RepoRef) => {
         if (isLocalRepoRef(repoId)) {
             return LocalRepoLoader(repoId) as Promise<GitProject>;
         } else {
-           return gitHubRepoLoader(credentials)(repoId);
+           return gitHubRepoLoader(credentials, directoryManager)(repoId);
         }
     };
 }

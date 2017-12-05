@@ -10,6 +10,7 @@ import { ProjectAction } from "../common/projectAction";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { RepoId } from "../common/RepoId";
 import { AnyProjectEditor, ProjectEditor, toEditor } from "../edit/projectEditor";
+import { GitProject } from "../../project/git/GitProject";
 
 /**
  * Function that knows how to persist a project using the given credentials.
@@ -53,7 +54,8 @@ export function generate<P extends Project = Project, PARAMS = object>(startingP
             return Promise.resolve(startingPoint) // it might be a promise
                 .then(seed =>
                     // Make a copy that we can work on
-                    NodeFsLocalProject.copy(seed, newRepoDirectoryInfo.path, newRepoDirectoryInfo.release))
+                    NodeFsLocalProject.copy(seed, newRepoDirectoryInfo.path, newRepoDirectoryInfo.release)
+                        .then(independentCopy => release(seed).then(() => independentCopy)))
                 // Let's be sure we didn't inherit any old git stuff
                 .then(independentCopy => independentCopy.deleteDirectory(".git"))
                 .then(independentCopy => toEditor<PARAMS>(editor)(independentCopy, ctx, params))
@@ -76,4 +78,11 @@ export function generate<P extends Project = Project, PARAMS = object>(startingP
                         persistenceResult;
                 });
         });
+}
+
+function release(project: Project): Promise<void> {
+    if ((project as GitProject).release) {
+        return (project as GitProject).release();
+    }
+    return Promise.resolve();
 }

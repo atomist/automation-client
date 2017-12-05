@@ -15,6 +15,7 @@ import { AnyProjectEditor } from "../edit/projectEditor";
 import { BaseSeedDrivenGeneratorParameters } from "./BaseSeedDrivenGeneratorParameters";
 import { generate, ProjectPersister } from "./generatorUtils";
 import { GitHubProjectPersister } from "./gitHubProjectPersister";
+import { CachingDirectoryManager } from "../../spi/clone/CachingDirectoryManager";
 
 export type EditorFactory<P> = (params: P, ctx: HandlerContext) => AnyProjectEditor<P>;
 
@@ -31,7 +32,7 @@ function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: strin
     return {
         description: name,
         repoFinder: allReposInTeam(),
-        repoLoader: (p: P) => defaultRepoLoader({ token: p.target.githubToken}),
+        repoLoader: (p: P) => defaultRepoLoader({ token: p.target.githubToken}, CachingDirectoryManager),
         projectPersister: GitHubProjectPersister,
         redirecter: () => undefined,
 
