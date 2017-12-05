@@ -1,6 +1,3 @@
-import { Project } from "../../project/Project";
-
-import { ActionResult } from "../../action/ActionResult";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { commandHandlerFrom, OnCommand, ParametersConstructor } from "../../onCommand";
@@ -11,22 +8,9 @@ import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewe
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { AllRepos, andFilter, RepoFilter } from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
-import { RepoRef } from "../common/RepoId";
 import { RepoLoader } from "../common/repoLoader";
 import { doWithAllRepos } from "../common/repoUtils";
-
-export interface Tags {
-
-    repoId: RepoRef;
-
-    tags: string[];
-}
-
-export type Tagger<P extends EditorOrReviewerParameters = EditorOrReviewerParameters> =
-    (p: Project, context: HandlerContext, params?: P) => Promise<Tags>;
-
-export type TagRouter<PARAMS extends EditorOrReviewerParameters = EditorOrReviewerParameters> =
-    (tags: Tags, params: PARAMS, ctx: HandlerContext) => Promise<ActionResult<Tags>>;
+import { Tagger, TagRouter, Tags } from "./Tagger";
 
 export interface TaggerCommandDetails<PARAMS extends EditorOrReviewerParameters> extends CommandDetails<PARAMS> {
 
