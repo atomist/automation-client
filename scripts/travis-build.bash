@@ -189,6 +189,12 @@ function main () {
         return 1
     fi
 
+    msg "running benchmark tests"
+    if ! npm run test:benchmark; then
+        err "test failed"
+        return 1
+    fi
+
     msg "running lint"
     local lint_status
     npm run lint

@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     functional style as in [spring-automation][]
 -   The `AllFiles` glob pattern was simplified to `**`
 -   Move cache directory to ~/.atomist/cache
+-   Generators now cache seed
+-   Several improvements to reviewer interfaces
 
 ### Fixed
 
@@ -29,6 +31,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 -   Optionally add Atomist webhook to create GitHub repo
+-   Generator benchmark tests
+-   Caching metrics
+-   afterAction to generate
 
 [spring-automation]: https://github.com/atomist/spring-automation (@atomist/spring-automation)
 
