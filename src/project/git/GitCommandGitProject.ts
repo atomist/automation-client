@@ -239,7 +239,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             .then(() => {
                 const escapedMessage = JSON.stringify(message);
                 const command = `git commit -a -m ${escapedMessage}`;
-                return this.runCommandInCurrentWorkingDirectory(command)
+                return this.runCommandInCurrentWorkingDirectory(command);
             });
     }
 
