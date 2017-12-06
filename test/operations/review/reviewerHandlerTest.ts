@@ -1,5 +1,6 @@
 import "mocha";
 
+import {SlackMessage} from "@atomist/slack-messages";
 import * as assert from "power-assert";
 import { fromListRepoFinder, fromListRepoLoader } from "../../../src/operations/common/fromProjectList";
 import { BaseEditorOrReviewerParameters } from "../../../src/operations/common/params/BaseEditorOrReviewerParameters";
@@ -7,7 +8,6 @@ import { SimpleRepoId } from "../../../src/operations/common/RepoId";
 import { reviewerHandler } from "../../../src/operations/review/reviewerToCommand";
 import { DefaultReviewComment, ReviewResult } from "../../../src/operations/review/ReviewResult";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { MockHandlerContext } from "../generate/generatorEndToEndTest";
 
 describe("reviewerHandler", () => {
 
@@ -37,3 +37,16 @@ describe("reviewerHandler", () => {
     });
 
 });
+
+const MockHandlerContext = {
+    messageClient: {
+        respond(msg: string | SlackMessage) {
+            return Promise.resolve();
+        },
+    },
+    graphClient: {
+        executeMutationFromFile(file: string, variables?: any): Promise<any> {
+            return Promise.resolve({createSlackChannel: [{id: "stts"}]});
+        },
+    },
+};

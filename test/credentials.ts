@@ -6,11 +6,7 @@ import { GitHubRepoRef } from "../src/operations/common/GitHubRepoRef";
 LoggingConfig.format = "cli";
 (logger as winston.LoggerInstance).level = process.env.LOG_LEVEL || "info";
 
-function barf(): string {
-    throw new Error("<please set GITHUB_TOKEN env variable>");
-}
-
-export const GitHubToken: string = process.env.GITHUB_TOKEN || barf();
+export const GitHubToken: string = "NOT_A_LEGIT_TOKEN";
 
 export const Creds = { token: GitHubToken };
 
