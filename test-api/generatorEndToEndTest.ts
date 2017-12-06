@@ -6,17 +6,17 @@ import axios from "axios";
 
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import * as fs from "fs";
-import { HandlerContext } from "../../../src/HandlerContext";
-import { GitHubDotComBase, GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
-import { BaseSeedDrivenGeneratorParameters } from "../../../src/operations/generate/BaseSeedDrivenGeneratorParameters";
-import { generate } from "../../../src/operations/generate/generatorUtils";
-import { GenericGenerator } from "../../../src/operations/generate/GenericGenerator";
-import { GitHubProjectPersister } from "../../../src/operations/generate/gitHubProjectPersister";
-import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
-import { LocalProject } from "../../../src/project/local/LocalProject";
-import { Project } from "../../../src/project/Project";
-import { hasFile } from "../../../src/util/gitHub";
-import { GitHubToken } from "../../credentials";
+import { HandlerContext } from "../src/HandlerContext";
+import { GitHubDotComBase, GitHubRepoRef } from "../src/operations/common/GitHubRepoRef";
+import { BaseSeedDrivenGeneratorParameters } from "../src/operations/generate/BaseSeedDrivenGeneratorParameters";
+import { generate } from "../src/operations/generate/generatorUtils";
+import { GenericGenerator } from "../src/operations/generate/GenericGenerator";
+import { GitHubProjectPersister } from "../src/operations/generate/gitHubProjectPersister";
+import { GitCommandGitProject } from "../src/project/git/GitCommandGitProject";
+import { LocalProject } from "../src/project/local/LocalProject";
+import { Project } from "../src/project/Project";
+import { hasFile } from "../src/util/gitHub";
+import {GitHubToken} from "./gitHubTest";
 
 function tempRepoName() {
     return `test-repo-${new Date().getTime()}`;
