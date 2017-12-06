@@ -13,7 +13,7 @@ import { Creds, GitHubToken } from "./gitHubTest";
 
 describe("GitProject remote", () => {
 
-    it("add a file, init and commit, then push to new remote repo", function (done) {
+    it("add a file, init and commit, then push to new remote repo", function(done) {
         this.retries(5);
 
         const p = tempProject();
@@ -34,7 +34,7 @@ describe("GitProject remote", () => {
 
     }).timeout(16000);
 
-    it("add a file, then PR push to remote repo", function (done) {
+    it("add a file, then PR push to remote repo", function(done) {
         this.retries(1);
 
         newRepo()
