@@ -25,7 +25,7 @@ describe("payloads", () => {
                 secrets: [{ name: "secret", path: "atomist://secret1" }],
                 description: "Some command description",
                 parameters: [{ name: "name", required: true }],
-                mapped_parameters: [{ foreign_key: "atomist://repo", local_key: "repo" }],
+                mapped_parameters: [{ foreign_key: "atomist://repo", local_key: "repo", required: true }],
             }],
             ingesters: [{
                 name: "Foo",

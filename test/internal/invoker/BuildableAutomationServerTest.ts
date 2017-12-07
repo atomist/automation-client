@@ -252,13 +252,19 @@ describe("BuildableAutomationServer", () => {
         }).catch(done);
     });
 
-    it("should register single arg handler using nested mapped parameters and invoke with valid parameter", done => {
+    it("should register single arg handler using nested mapped parameters and invoke with valid parameter", done =>
+        mappedParameterTest(done, true));
+
+    it("should register single arg handler using nested optional mapped parameters and invoke with valid parameter", done =>
+        mappedParameterTest(done, false));
+
+    function mappedParameterTest(done: any, required: boolean) {
         const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
 
         class Params {
             @Parameter()
             public one: string;
-            @MappedParameter("fk")
+            @MappedParameter("fk", required)
             public mapped: string = "should_be_overwitten";
         }
 
@@ -286,6 +292,44 @@ describe("BuildableAutomationServer", () => {
             messageClient,
         }).then(hr => {
             assert((hr as any).mappedVal === "resolved", stringify(hr, null, 2));
+            done();
+        }).catch(done);
+    }
+
+    it("should register single arg handler using nested optional mapped parameters and invoke with valid parameter", done => {
+        const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
+
+        class Params {
+            @Parameter()
+            public one: string;
+            @MappedParameter("fk", false)
+            public mapped: string = "should_not_be_overwitten";
+        }
+
+        @CommandHandler("goo bar")
+        class Handler {
+            public nested = new Params();
+
+            public handle(ch, params) {
+                return Promise.resolve({
+                    code: 0,
+                    paramVal: params.nested.one,
+                    mappedVal: params.nested.mapped,
+                });
+            }
+        }
+
+        s.registerCommandHandler(Handler);
+        s.invokeCommand({
+            name: "Handler",
+            args: [{name: "nested.one", value: "value"}],
+            mappedParameters: [],
+        }, {
+            teamId: "T666",
+            correlationId: "555",
+            messageClient,
+        }).then(hr => {
+            assert((hr as any).mappedVal === "should_not_be_overwitten", stringify(hr, null, 2));
             done();
         }).catch(done);
     });

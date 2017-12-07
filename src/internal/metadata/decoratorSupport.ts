@@ -93,7 +93,7 @@ export function declareParameter(target: any, propertyKey: string, details: Base
     return target;
 }
 
-export function declareMappedParameter(target: any, localKey: string, foreignKey: string) {
+export function declareMappedParameter(target: any, localKey: string, foreignKey: string, required: boolean) {
     let params = get_metadata(target, "__mappedParameters");
     if (params == null) {
         params = [];
@@ -106,7 +106,7 @@ export function declareMappedParameter(target: any, localKey: string, foreignKey
             params.splice(index, 1);
         }
     }
-    const param = { localKey, foreignKey };
+    const param = { localKey, foreignKey, required };
     params.push(param);
 
     // merge mapped_parameters from parent if it has some

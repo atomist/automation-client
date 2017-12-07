@@ -77,7 +77,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                 if (teamId) {
                     if (opts.token) {
                         this.graphClient = new ApolloGraphClient(`${opts.endpoints.graphql}/${teamId}`,
-                            { Authorization: `token ${opts.token}` });
+                            {Authorization: `token ${opts.token}`});
                     } else {
                         logger.warn("Cannot create graph client due to missing token");
                     }
@@ -243,8 +243,11 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
             this.fallbackSecretResolver;
         // logger.debug("Applying mapped parameters");
         const mappedParameters = metadata.mapped_parameters || [];
+        const invMps = invocation.mappedParameters || [];
         mappedParameters.forEach(mp => {
-            _.update(h, mp.local_key, () => mrResolver.resolve(mp.local_key));
+            if (invMps.some(im => im.name === mp.local_key) || mp.required) {
+                _.update(h, mp.local_key, () => mrResolver.resolve(mp.local_key));
+            }
         });
     }
 

@@ -91,6 +91,7 @@ export interface MappedParameterDeclaration {
 
     local_key: string;
     foreign_key: string;
+    required: boolean;
 }
 
 export interface SecretDeclaration {
