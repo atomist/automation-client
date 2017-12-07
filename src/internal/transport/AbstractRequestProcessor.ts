@@ -165,7 +165,10 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             this.automations.invokeCommand(ci, ctx)
                 .then(result => {
                     if (!result || !result.hasOwnProperty("code")) {
-                        return defaultResult(ctx);
+                        return {
+                            ...defaultResult(ctx),
+                            ...result,
+                        };
                     } else {
                         return result;
                     }
