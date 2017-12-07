@@ -98,7 +98,8 @@ function doWithEditResult(r: EditResult<GitProject>, gitop: () => Promise<EditRe
  * @param {BranchCommit} ci
  */
 export function createAndPushBranch(gp: GitProject, ci: BranchCommit): Promise<EditResult> {
-    return gp.createBranch(ci.branch)
+    return gp.setGitHubUserConfig()
+        .then(() => gp.createBranch(ci.branch))
         .then(x => gp.commit(ci.message))
         .then(x => gp.push())
         .then(r => successfulEdit(r.target, true));
