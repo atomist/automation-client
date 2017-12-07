@@ -85,7 +85,7 @@ function handleReviewOneOrMany<PARAMS extends EditorOrReviewerParameters>(review
                             `${name} reviewed ${projectReviews.length} repositories: Reported on ${persisted.length} with problems`)
                             .then(() => ({
                                 projectsReviewed: projectReviews.length,
-                                projectReviews: persisted,
+                                projectReviews,
                             })));
             });
     };

@@ -8,8 +8,8 @@ import { CommandDetails } from "../CommandDetails";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { GitHubRepoRef } from "../common/GitHubRepoRef";
+import { ProjectAction } from "../common/projectAction";
 import { RepoFilter } from "../common/repoFilter";
-import { RepoFinder } from "../common/repoFinder";
 import { RepoRef } from "../common/RepoId";
 import { RepoLoader } from "../common/repoLoader";
 import { AnyProjectEditor } from "../edit/projectEditor";
@@ -26,6 +26,7 @@ export interface GeneratorCommandDetails<P extends BaseSeedDrivenGeneratorParame
 
     redirecter: (r: RepoRef) => string;
     projectPersister?: ProjectPersister;
+    afterAction?: ProjectAction<P>;
 }
 
 function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: string): GeneratorCommandDetails<P> {
@@ -35,7 +36,6 @@ function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: strin
         repoLoader: (p: P) => defaultRepoLoader({ token: p.target.githubToken}, CachingDirectoryManager),
         projectPersister: GitHubProjectPersister,
         redirecter: () => undefined,
-
     };
 }
 
@@ -81,7 +81,9 @@ function handle<P extends BaseSeedDrivenGeneratorParameters>(ctx: HandlerContext
             {token: params.target.githubToken},
             editorFactory(params, ctx),
             details.projectPersister,
-            params.target)
+            params.target,
+            params,
+            details.afterAction)
             .then(r => {
                 return ctx.messageClient.respond(`Created and pushed new project`)
                     .then(() => r);

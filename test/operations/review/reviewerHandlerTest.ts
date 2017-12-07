@@ -32,6 +32,7 @@ describe("reviewerHandler", () => {
                 const rr = r as ReviewResult;
                 assert(!!rr);
                 assert(rr.projectsReviewed === 1);
+                assert(rr.projectReviews[0].comments.length === 1);
                 done();
             }).catch(done);
     });

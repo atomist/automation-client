@@ -4,5 +4,5 @@ import { Project } from "../../project/Project";
 /**
  * Action on a project, given parameters
  */
-export type ProjectAction<PARAMS, P extends Project> =
+export type ProjectAction<PARAMS, P extends Project = Project> =
     (p: P, params: PARAMS) => Promise<ActionResult<P>>;
