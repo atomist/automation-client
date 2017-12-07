@@ -17,7 +17,7 @@ The automation-client provide the ability to run a client that
 connects to the Atomist API so it can receive and act on commands and
 events.
 
-See [www.atomist.com][atomist] and [docs.atomist.com][docs] for more
+See [atomist.com][atomist] and [docs.atomist.com][docs] for more
 detailed information.
 
 [node]: https://nodejs.org/ (Node.js)
@@ -400,26 +400,30 @@ You'll get a 422 response from repo creation if you don't pay for private repos.
 
 Command | Reason
 ------- | ------
-`npm install` | to install all the required packages
-`npm run lint` | to run tslint against the TypeScript
-`npm run compile` | to compile all TypeScript into JavaScript
-`npm test` | to run tests and ensure everything is working
-`npm run autotest` | run tests continuously (you may also need to run `tsc -w`)
+`npm install` | install all the required packages
+`npm run build` | lint, compile, and test
+`npm start` | start the Atomist automation client
+`npm run autostart` | run the client, refreshing when files change
+`npm run lint` | run tslint against the TypeScript
+`npm run compile` | compile all TypeScript into JavaScript
+`npm test` | run tests and ensure everything is working
+`npm run autotest` | run tests continuously
 `npm run clean` | remove stray compiled JavaScript files and build directory
 
 ### Release
 
-To create a new release of the project, update the version in package.json
-and then push a tag for the version. The version must be of the form
-`M.N.P` where `M`, `N`, and `P` are integers that form the next
-appropriate [semantic version][semver] for release.  For
-example:
+To create a new release of the project, update the version in
+package.json and then push a tag for the version.  The version must be
+of the form `M.N.P` where `M`, `N`, and `P` are integers that form the
+next appropriate [semantic version][semver] for release.  The version
+in the package.json must be the same as the tag.  For example:
 
 [semver]: http://semver.org
 
 ```
-$ git tag -a 1.2.3
-$ git push --tags
+$ npm version 1.2.3
+$ git tag -a -m 'The ABC release' 1.2.3
+$ git push origin 1.2.3
 ```
 
 The Travis CI build (see badge at the top of this page) will publish
@@ -428,8 +432,9 @@ name for the release and the comment provided on the annotated tag as
 the contents of the release notes.
 
 ---
+
 Created by [Atomist][atomist].
 Need Help?  [Join our Slack team][slack].
 
-[atomist]: https://www.atomist.com/
-[slack]: https://join.atomist.com
+[atomist]: https://atomist.com/ (Atomist - Development Automation)
+[slack]: https://join.atomist.com/ (Atomist Community Slack)
