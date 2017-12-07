@@ -73,6 +73,24 @@ describe("GitProject", () => {
             .then(() => done(), done);
     });
 
+    it("properly escape commit message", done => {
+        const p = tempProject();
+        p.addFileSync("Thing", "1");
+        const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
+        gp.init()
+            .then(() => gp.commit(`Added a "Thing a ding"`))
+            .then(() => done(), done);
+    });
+
+    it("properly escape an already escaped commit message", done => {
+        const p = tempProject();
+        p.addFileSync("Thing", "1");
+        const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
+        gp.init()
+            .then(() => gp.commit(`Added a \"Thing a ding\"`))
+            .then(() => done(), done);
+    });
+
     it("commit then add has uncommitted", done => {
         const p = tempProject(new GitHubRepoRef("owner", "repo"));
         p.addFileSync("Thing", "1");

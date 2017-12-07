@@ -8,8 +8,8 @@ import { GitHubDotComBase, GitHubRepoRef } from "../src/operations/common/GitHub
 import { GitCommandGitProject } from "../src/project/git/GitCommandGitProject";
 import { GitProject } from "../src/project/git/GitProject";
 import { TestRepositoryVisibility } from "../test/credentials";
-import {tempProject} from "../test/project/utils";
-import {Creds, GitHubToken} from "./gitHubTest";
+import { tempProject } from "../test/project/utils";
+import { Creds, GitHubToken } from "./gitHubTest";
 
 describe("GitProject remote", () => {
 
@@ -27,9 +27,10 @@ describe("GitProject remote", () => {
             .then(() => gp.createAndSetGitHubRemote(owner, repo, "Thing1", TestRepositoryVisibility))
             .then(() => gp.commit("Added a Thing"))
             .then(() => gp.push()
-                .then(() => deleteRepoIfExists({ owner, repo }).then(done)),
-        ).catch(() => deleteRepoIfExists({ owner, repo }).then(done)),
-        ).catch(done);
+                .then(() => deleteRepoIfExists({ owner, repo })),
+            ).catch(err => deleteRepoIfExists({ owner, repo })
+                .then(() => Promise.reject(err))),
+        ).then(() => done(), done);
 
     }).timeout(16000);
 
