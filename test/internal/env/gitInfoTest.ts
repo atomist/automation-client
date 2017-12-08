@@ -10,22 +10,22 @@ describe("gitInfo", () => {
     it("verify correct git info", done => {
         obtainGitInfo(appRoot.path)
             .then(info => {
-                console.log(stringify(info));
                 assert(info.branch);
                 assert(info.repository);
                 assert(info.sha);
-                done();
-            });
+            }).then(() => done(), done);
 
-    }).timeout(5000);
+    });
 
     it("verify git info fails for non-git repo path", done => {
-        tmp.dir()
+        tmp.dir({ unsafeCleanup: true })
             .then(dir => {
-                return obtainGitInfo(dir);
+                return obtainGitInfo(dir.path)
+                    .then(() => assert(false, "succeeded"), err => assert(true, `failed: ${err.message}`))
+                    .then(() => dir.cleanup());
             })
-            .catch(err => done());
+            .then(() => done(), done);
 
-    }).timeout(5000);
+    });
 
 });
