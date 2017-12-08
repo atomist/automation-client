@@ -54,6 +54,8 @@ function addWebhook(p: GitProject, params: BaseSeedDrivenGeneratorParameters): P
     };
     return addRepoWebhook(params.target.githubToken, p.id, payload)
         .then(() => Promise.resolve(successOn(p)), err => {
-            return logAndFail("Failed to install Atomist webhook on %s/%s: %j", p.id.owner, p.id.repo, err);
+            const status: number = (err.response && err.response.status) ? err.response.status : -1;
+            return logAndFail("Failed to install Atomist webhook on %s/%s [%d]: %s", p.id.owner, p.id.repo, status,
+                err.message);
         });
 }
