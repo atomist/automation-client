@@ -36,7 +36,7 @@ describe("NodeFsLocalProject", () => {
             }, err => {
                 return;
             })
-            .then(done, done);
+            .then(() => done(), done);
     });
 
     it("copies in memory project", done => {
@@ -45,7 +45,8 @@ describe("NodeFsLocalProject", () => {
             { path: "package.json", content: "{ node }" },
             { path: "some/nested/thing", content: "{ node }" },
         );
-        const baseDir: string = tmp.dirSync().name;
+        const tmpDir = tmp.dirSync({ unsafeCleanup: true });
+        const baseDir: string = tmpDir.name;
         NodeFsLocalProject.copy(proj, baseDir).then(p => {
             assert(p.baseDir === baseDir);
             const f = p.findFileSync("package.json");
@@ -53,7 +54,8 @@ describe("NodeFsLocalProject", () => {
             assert(f.getContentSync().includes("node"));
             assert(p.findFileSync("some/nested/thing"));
         })
-            .then(done, done);
+            .then(() => tmpDir.removeCallback())
+            .then(() => done(), done);
     });
 
     it("copies in memory project including empty directory", done => {
@@ -64,12 +66,14 @@ describe("NodeFsLocalProject", () => {
         );
         proj.addDirectory("emptyDir")
             .then(() => {
-                const baseDir: string = tmp.dirSync().name;
-                NodeFsLocalProject.copy(proj, baseDir).then(p => {
+                const tmpDir = tmp.dirSync({ unsafeCleanup: true });
+                const baseDir: string = tmpDir.name;
+                return NodeFsLocalProject.copy(proj, baseDir).then(p => {
                     assert(fs.statSync(p.baseDir + "/emptyDir").isDirectory());
-                });
+                })
+                    .then(() => tmpDir.removeCallback());
             })
-            .then(done, done);
+            .then(() => done(), done);
     });
 
     it.skip("copies in memory project including empty directory and copies back", done => {
@@ -80,8 +84,9 @@ describe("NodeFsLocalProject", () => {
         );
         proj.addDirectory("emptyDir")
             .then(() => {
-                const baseDir: string = tmp.dirSync().name;
-                NodeFsLocalProject.copy(proj, baseDir).then(p => {
+                const tmpDir = tmp.dirSync({ unsafeCleanup: true });
+                const baseDir: string = tmpDir.name;
+                return NodeFsLocalProject.copy(proj, baseDir).then(p => {
                     assert(fs.statSync(p.baseDir + "/emptyDir").isDirectory());
                     const inmp = InMemoryProject.cache(proj);
                     inmp.then(inm => {
@@ -89,9 +94,10 @@ describe("NodeFsLocalProject", () => {
                         assert(!!inm.findFileSync("some/nested/thing"));
                         assert(inm.addedDirectoryPaths.includes("emptyDir"));
                     });
-                });
+                })
+                    .then(() => tmpDir.removeCallback());
             })
-            .then(done, done);
+            .then(() => done(), done);
     });
 
     it("copies other local project", done => {
@@ -99,7 +105,8 @@ describe("NodeFsLocalProject", () => {
         proj.addFileSync("package.json", "{ node }");
         proj.addFileSync("some/nested/thing", "{ node }");
 
-        const baseDir: string = tmp.dirSync().name;
+        const tmpDir = tmp.dirSync({ unsafeCleanup: true });
+        const baseDir: string = tmpDir.name;
         NodeFsLocalProject.copy(proj, baseDir)
             .then(p => {
                 assert(p.baseDir === baseDir, p.baseDir);
@@ -108,7 +115,8 @@ describe("NodeFsLocalProject", () => {
                 assert(f.getContentSync().includes("node"));
                 assert(p.findFileSync("some/nested/thing"));
             })
-            .then(done, done);
+            .then(() => tmpDir.removeCallback())
+            .then(() => done(), done);
     });
 
     it("findFileSync: existing file", () => {
@@ -124,9 +132,8 @@ describe("NodeFsLocalProject", () => {
 
     it("findFile: no such file", done => {
         thisProject.findFile("xxxxpackage.json")
-            .catch(err => {
-                done();
-            });
+            .then(() => assert(false, "found nonexistant file"), err => assert(true, "no file"))
+            .then(() => done(), done);
     });
 
     it("findFile: existing file", done => {
@@ -134,7 +141,7 @@ describe("NodeFsLocalProject", () => {
             .then(f => {
                 assert(f.path === "package.json");
             })
-            .then(done, done);
+            .then(() => done(), done);
     });
 
     it("fileExistsSync: existing file", () => {
@@ -150,23 +157,24 @@ describe("NodeFsLocalProject", () => {
             .then(files => {
                 assert(files.length > 50);
             })
-            .then(done, done);
-    }).timeout(5000);
+            .then(() => done(), done);
+    });
 
     it("streamFiles returns enough files", done => {
         let count = 0;
         thisProject.streamFiles(AllFiles, ExcludeNodeModules)
             .on("data", (f: File) => {
-                    assert(f.name.length > 0);
-                    assert(f.getContentSync() !== undefined);
-                    count++;
-                },
-            )
+                assert(f.name.length > 0);
+                assert(f.getContentSync() !== undefined);
+                count++;
+            },
+        )
             .on("end", () => {
                 assert(count > 0);
                 done();
-            });
-    }).timeout(5000);
+            })
+            .on("error", done);
+    });
 
     it("streamFiles excludes glob non-matches", done => {
         let count = 0;
@@ -179,13 +187,13 @@ describe("NodeFsLocalProject", () => {
         files.forEach(f => p.addFileSync(f.path, f.content));
         p.streamFiles("config/**")
             .on("data", (f: File) => {
-                    assert(f.name);
-                    count++;
-                },
-            ).on("end", () => {
+                assert(f.name);
+                count++;
+            },
+        ).on("end", () => {
             assert(count === 2, "Found " + count);
             done();
-        });
+        }).on("error", done);
     });
 
     it("glob returns well-known file", done => {
@@ -193,15 +201,15 @@ describe("NodeFsLocalProject", () => {
             .then(files => {
                 assert(files.some(f => f.name === "package.json"));
             })
-            .then(done, done);
+            .then(() => done(), done);
     });
 
     it("file count", done => {
         thisProject.totalFileCount().then(num => {
             assert(num > 0);
         })
-            .then(done, done);
-    }).timeout(7000);
+            .then(() => done(), done);
+    });
 
     it("changes content", done => {
         const p = tempProject();
@@ -214,7 +222,7 @@ describe("NodeFsLocalProject", () => {
                 const f2 = p.findFileSync("thing");
                 assert(f2.getContentSync() === "2");
             })
-            .then(done, done);
+            .then(() => done(), done);
     });
 
     it("adds file", done => {
@@ -226,7 +234,7 @@ describe("NodeFsLocalProject", () => {
                 const f2 = p.findFileSync("thing");
                 assert(f2);
             })
-            .then(done, done);
+            .then(() => done(), done);
     });
 
     it("moves file that's there", done => {
@@ -241,7 +249,7 @@ describe("NodeFsLocalProject", () => {
                     assert(_.findFileSync("thing2").getContentSync() === "1");
                 });
             })
-            .then(done, done);
+            .then(() => done(), done);
     });
 
     it("attempts to move file that's not there without error", done => {
@@ -256,7 +264,7 @@ describe("NodeFsLocalProject", () => {
                     assert(_.findFileSync("thing").getContentSync() === "1");
                 });
             })
-            .then(done, done);
+            .then(() => done(), done);
     });
 
     it("adds nested file", done => {
@@ -268,7 +276,7 @@ describe("NodeFsLocalProject", () => {
                 const f2 = p.findFileSync("config/thing");
                 assert(f2);
             })
-            .then(done, done);
+            .then(() => done(), done);
     });
 
     it("adds deeply nested file", done => {
@@ -280,7 +288,7 @@ describe("NodeFsLocalProject", () => {
                 const f2 = p.findFileSync("config/and/more/thing");
                 assert(f2);
             })
-            .then(done, done);
+            .then(() => done(), done);
     });
 
     it("deletes file", done => {
@@ -296,7 +304,7 @@ describe("NodeFsLocalProject", () => {
                 const f2 = p.findFileSync("thing");
                 assert(!f2);
             })
-            .then(done, done);
+            .then(() => done(), done);
     });
 
     it("deletes non-empty directory", done => {
@@ -308,7 +316,7 @@ describe("NodeFsLocalProject", () => {
                 const f2 = p.findFileSync("dir/thing");
                 assert(!f2);
             })
-            .then(done, done);
+            .then(() => done(), done);
     });
 
     it("deletes directory with subdirectories", done => {
@@ -323,7 +331,7 @@ describe("NodeFsLocalProject", () => {
                 const f3 = p.findFileSync("dir/this/that");
                 assert(!f3);
             })
-            .then(done, done);
+            .then(() => done(), done);
     });
 
 });
