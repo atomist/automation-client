@@ -1,9 +1,7 @@
 import "mocha";
-
 import * as assert from "power-assert";
 
 import { successOn } from "../../../src/action/ActionResult";
-
 import { SimpleRepoId } from "../../../src/operations/common/RepoId";
 import { BaseSeedDrivenGeneratorParameters } from "../../../src/operations/generate/BaseSeedDrivenGeneratorParameters";
 import { generate } from "../../../src/operations/generate/generatorUtils";
@@ -16,10 +14,9 @@ describe("generatorUtils", () => {
             null, null,
             p => Promise.resolve(p),
             p => Promise.resolve(successOn(p)),
-            new SimpleRepoId("foo", "bar"))
-            .then(r => {
-                done();
-            }).catch(done);
+            new SimpleRepoId("foo", "bar"),
+        )
+            .then(() => done(), done);
     });
 
     it("passes parameters", done => {
@@ -32,14 +29,13 @@ describe("generatorUtils", () => {
             },
             p => Promise.resolve(successOn(p)),
             new SimpleRepoId("foo", "bar"),
-            params)
-            .then(r => {
-                done();
-            }).catch(done);
+            params,
+        )
+            .then(() => done(), done);
     });
 
     it("invokes after action", done => {
-        const thingToReturn = {what: "isthis"};
+        const thingToReturn = { what: "isthis" };
         const params = new BaseSeedDrivenGeneratorParameters();
         generate(InMemoryProject.of(),
             null, null,
@@ -58,8 +54,7 @@ describe("generatorUtils", () => {
         )
             .then(r => {
                 assert((r as any).thingToReturn === thingToReturn);
-                done();
-            }).catch(done);
+            }).then(() => done(), done);
     });
 
     it("preserves persist extra data", done => {
@@ -80,12 +75,11 @@ describe("generatorUtils", () => {
         )
             .then(r => {
                 assert((r as any).extraThing === true);
-                done();
-            }).catch(done);
+            }).then(() => done(), done);
     });
 
     it("preserves persist extra data after after action", done => {
-        const thingToReturn = {what: "isthis"};
+        const thingToReturn = { what: "isthis" };
         generate(InMemoryProject.of(),
             null, null,
             p => Promise.resolve(p),
@@ -105,8 +99,7 @@ describe("generatorUtils", () => {
             .then(r => {
                 assert((r as any).extraThing === true);
                 assert((r as any).thingToReturn === thingToReturn);
-                done();
-            }).catch(done);
+            }).then(() => done(), done);
     });
 
 });
