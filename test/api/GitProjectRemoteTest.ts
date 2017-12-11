@@ -1,14 +1,14 @@
-import axios from "axios";
 import "mocha";
-
 import * as assert from "power-assert";
 
+import axios from "axios";
 import * as _ from "lodash";
-import { GitHubDotComBase, GitHubRepoRef } from "../src/operations/common/GitHubRepoRef";
-import { GitCommandGitProject } from "../src/project/git/GitCommandGitProject";
-import { GitProject } from "../src/project/git/GitProject";
-import { TestRepositoryVisibility } from "../test/credentials";
-import { tempProject } from "../test/project/utils";
+
+import { GitHubDotComBase, GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
+import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
+import { GitProject } from "../../src/project/git/GitProject";
+import { TestRepositoryVisibility } from "../credentials";
+import { tempProject } from "../project/utils";
 import { Creds, GitHubToken } from "./gitHubTest";
 
 describe("GitProject remote", () => {
@@ -28,8 +28,8 @@ describe("GitProject remote", () => {
             .then(() => gp.commit("Added a Thing"))
             .then(() => gp.push()
                 .then(() => deleteRepoIfExists({ owner, repo })),
-            ).catch(err => deleteRepoIfExists({ owner, repo })
-                .then(() => Promise.reject(err))),
+        ).catch(err => deleteRepoIfExists({ owner, repo })
+            .then(() => Promise.reject(err))),
         ).then(() => done(), done);
 
     }).timeout(16000);

@@ -1,13 +1,13 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import { GitHubRepoRef } from "../src/operations/common/GitHubRepoRef";
-import { PullRequest } from "../src/operations/edit/editModes";
-import { toEditor } from "../src/operations/edit/projectEditor";
-import { editProjectUsingBranch, editProjectUsingPullRequest } from "../src/operations/support/editorUtils";
-import { GitCommandGitProject } from "../src/project/git/GitCommandGitProject";
-import {Creds} from "./gitHubTest";
-import {deleteRepoIfExists, newRepo} from "./GitProjectRemoteTest";
+import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
+import { PullRequest } from "../../src/operations/edit/editModes";
+import { toEditor } from "../../src/operations/edit/projectEditor";
+import { editProjectUsingBranch, editProjectUsingPullRequest } from "../../src/operations/support/editorUtils";
+import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
+import { Creds } from "./gitHubTest";
+import { deleteRepoIfExists, newRepo } from "./GitProjectRemoteTest";
 
 const EditorThatChangesProject = toEditor(p => p.addFile("thing", "thing"));
 

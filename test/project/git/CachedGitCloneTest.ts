@@ -1,8 +1,7 @@
 import "mocha";
-
 import * as assert from "power-assert";
+
 import { runCommand } from "../../../src/action/cli/commandLine";
-import { logger } from "../../../src/internal/util/logger";
 import { getCounter, metrics } from "../../../src/internal/util/metric";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
@@ -11,7 +10,7 @@ import { isFullyClean } from "../../../src/project/git/gitStatus";
 import { CachingDirectoryManager, FallbackKey, ReuseKey } from "../../../src/spi/clone/CachingDirectoryManager";
 import { CloneOptions, DefaultCloneOptions } from "../../../src/spi/clone/DirectoryManager";
 import { TmpDirectoryManager } from "../../../src/spi/clone/tmpDirectoryManager";
-import { GitHubToken } from "../../atomist.config";
+import { GitHubToken } from "../../credentials";
 
 const Creds = { token: GitHubToken };
 const Owner = "atomist-travisorg";

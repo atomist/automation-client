@@ -16,8 +16,7 @@ import { AnyProjectEditor, ProjectEditor, toEditor } from "../edit/projectEditor
  * Function that knows how to persist a project using the given credentials.
  * Can take parameters and return a subclass of action result.
  */
-export type ProjectPersister<P extends Project = Project,
-    R extends ActionResult<P> = ActionResult<P>> =
+export type ProjectPersister<P extends Project = Project, R extends ActionResult<P> = ActionResult<P>> =
     (p: Project,
      credentials: ProjectOperationCredentials,
      targetId: RepoId,
@@ -38,16 +37,17 @@ export type ProjectPersister<P extends Project = Project,
  * @param afterAction action to perform after project persistence.
  * @param directoryManager finds a directory for the new project; defaults to tmp
  */
-export function generate<P extends Project = Project, PARAMS = object>(startingPoint: Promise<Project> | Project,
-                                                                       ctx: HandlerContext,
-                                                                       credentials: ProjectOperationCredentials,
-                                                                       editor: AnyProjectEditor,
-                                                                       persist: ProjectPersister<P>,
-                                                                       targetId: RepoId,
-                                                                       params?: PARAMS,
-                                                                       afterAction?: ProjectAction<PARAMS, P>,
-                                                                       directoryManager: DirectoryManager =
-                                                                           TmpDirectoryManager): Promise<ActionResult<P>> {
+export function generate<P extends Project = Project, PARAMS = object>(
+    startingPoint: Promise<Project> | Project,
+    ctx: HandlerContext,
+    credentials: ProjectOperationCredentials,
+    editor: AnyProjectEditor,
+    persist: ProjectPersister<P>,
+    targetId: RepoId,
+    params?: PARAMS,
+    afterAction?: ProjectAction<PARAMS, P>,
+    directoryManager: DirectoryManager = TmpDirectoryManager,
+): Promise<ActionResult<P>> {
 
     return directoryManager.directoryFor(targetId.owner, targetId.repo, "master", {})
         .then(newRepoDirectoryInfo => {

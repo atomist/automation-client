@@ -1,26 +1,24 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import * as winston from "winston";
-
-import { ActionResult, successOn } from "../src/action/ActionResult";
-import { logger, LoggingConfig } from "../src/internal/util/logger";
-import { GitHubRepoRef } from "../src/operations/common/GitHubRepoRef";
-import { ProjectOperationCredentials } from "../src/operations/common/ProjectOperationCredentials";
-import { RepoId } from "../src/operations/common/RepoId";
-import { generate, ProjectPersister } from "../src/operations/generate/generatorUtils";
-import { LocalProject } from "../src/project/local/LocalProject";
-import { NodeFsLocalProject } from "../src/project/local/NodeFsLocalProject";
-import { InMemoryProject } from "../src/project/mem/InMemoryProject";
-import { Project } from "../src/project/Project";
+import { ActionResult, successOn } from "../../src/action/ActionResult";
+import { logger, LoggingConfig } from "../../src/internal/util/logger";
+import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
+import { ProjectOperationCredentials } from "../../src/operations/common/ProjectOperationCredentials";
+import { RepoId } from "../../src/operations/common/RepoId";
+import { generate, ProjectPersister } from "../../src/operations/generate/generatorUtils";
+import { LocalProject } from "../../src/project/local/LocalProject";
+import { NodeFsLocalProject } from "../../src/project/local/NodeFsLocalProject";
+import { InMemoryProject } from "../../src/project/mem/InMemoryProject";
+import { Project } from "../../src/project/Project";
 
 LoggingConfig.format = "cli";
-(logger as winston.LoggerInstance).level = process.env.LOG_LEVEL || "info";
+(logger as any).level = process.env.LOG_LEVEL || "info";
 
 describe("generator benchmark", () => {
 
     const numberOfTimesToGenerate = 500;
-    const numberOfSeedProjectFiles = 100;
+    const numberOfSeedProjectFiles = 50;
     const numberOfLipsumInFile = 10;
 
     it("should create a new GitHub repo using GenericGenerator", done => {

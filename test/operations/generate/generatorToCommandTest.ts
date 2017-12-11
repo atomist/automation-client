@@ -13,6 +13,7 @@ import { BaseSeedDrivenGeneratorParameters } from "../../../src/operations/gener
 import { generatorHandler } from "../../../src/operations/generate/generatorToCommand";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../src/project/Project";
+import { mockProjectPersister } from "./generatorUtilsTest";
 
 describe("generatorToCommand", () => {
 
@@ -54,13 +55,7 @@ describe("generatorToCommand", () => {
             (pars, context) => (p, x, px) => Promise.resolve(p),
             BaseSeedDrivenGeneratorParameters,
             "AddWebhookTest",
-            {
-                projectPersister: (p, c, t) => {
-                    p.id.owner = t.owner;
-                    p.id.repo = t.repo;
-                    return Promise.resolve(successOn(p));
-                },
-            },
+            { projectPersister: mockProjectPersister },
         );
 
         let responseMessage: string;
@@ -116,13 +111,7 @@ describe("generatorToCommand", () => {
             (pars, context) => (p, x, px) => Promise.resolve(p),
             BaseSeedDrivenGeneratorParameters,
             "AddWebhookTest",
-            {
-                projectPersister: (p, c, t) => {
-                    p.id.owner = t.owner;
-                    p.id.repo = t.repo;
-                    return Promise.resolve(successOn(p));
-                },
-            },
+            { projectPersister: mockProjectPersister },
         );
 
         let responseMessage: string;

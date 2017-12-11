@@ -1,11 +1,10 @@
 import { Configuration } from "../src/configuration";
 import { HelloWorld } from "./command/HelloWorld";
+import { GitHubToken } from "./credentials";
 import { CircleCIPayload } from "./event/circleIngester";
 import { GitLabPushPayload } from "./event/gitLabIngester";
 import { GitLabPush } from "./event/GitLabPush";
 import { HelloCircle } from "./event/HelloCircle";
-
-export const GitHubToken = process.env.GITHUB_TOKEN || "<please set GITHUB_TOKEN env variable>";
 
 // const host = "https://automation.atomist.com";
 const host = "https://automation-staging.atomist.services";

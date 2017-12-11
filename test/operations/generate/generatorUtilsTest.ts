@@ -1,11 +1,27 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import { successOn } from "../../../src/action/ActionResult";
-import { SimpleRepoId } from "../../../src/operations/common/RepoId";
+import { ActionResult, successOn } from "../../../src/action/ActionResult";
+import { ProjectOperationCredentials } from "../../../src/operations/common/ProjectOperationCredentials";
+import { RepoId, SimpleRepoId } from "../../../src/operations/common/RepoId";
 import { BaseSeedDrivenGeneratorParameters } from "../../../src/operations/generate/BaseSeedDrivenGeneratorParameters";
-import { generate } from "../../../src/operations/generate/generatorUtils";
+import { generate, ProjectPersister } from "../../../src/operations/generate/generatorUtils";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
+import { Project } from "../../../src/project/Project";
+
+export const mockProjectPersister: ProjectPersister<Project, ActionResult<Project>> =
+    (p: Project, c: ProjectOperationCredentials, t: RepoId) => {
+        if (p.id) {
+            p.id.owner = t.owner;
+            p.id.repo = t.repo;
+        } else {
+            p.id = {
+                owner: t.owner,
+                repo: t.repo,
+            };
+        }
+        return Promise.resolve(successOn(p));
+    };
 
 describe("generatorUtils", () => {
 
@@ -13,7 +29,7 @@ describe("generatorUtils", () => {
         generate(InMemoryProject.of(),
             null, null,
             p => Promise.resolve(p),
-            p => Promise.resolve(successOn(p)),
+            mockProjectPersister,
             new SimpleRepoId("foo", "bar"),
         )
             .then(() => done(), done);
@@ -27,7 +43,7 @@ describe("generatorUtils", () => {
                 assert(parms === params);
                 return Promise.resolve(p);
             },
-            p => Promise.resolve(successOn(p)),
+            mockProjectPersister,
             new SimpleRepoId("foo", "bar"),
             params,
         )
@@ -40,7 +56,7 @@ describe("generatorUtils", () => {
         generate(InMemoryProject.of(),
             null, null,
             p => Promise.resolve(p),
-            p => Promise.resolve(successOn(p)),
+            mockProjectPersister,
             new SimpleRepoId("foo", "bar"),
             params,
             (p, parms) => {

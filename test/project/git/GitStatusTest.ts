@@ -1,13 +1,14 @@
 import "mocha";
-
-import stringify = require("json-stringify-safe");
 import * as assert from "power-assert";
+
+import * as stringify from "json-stringify-safe";
+
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../../src/project/git/GitProject";
 import { isFullyClean } from "../../../src/project/git/gitStatus";
 import { TmpDirectoryManager } from "../../../src/spi/clone/tmpDirectoryManager";
-import { GitHubToken } from "../../atomist.config";
+import { GitHubToken } from "../../credentials";
 
 const TargetOwner = "atomist-travisorg";
 const ExistingRepo = "this-repository-exists";
