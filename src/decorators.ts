@@ -61,7 +61,7 @@ export function EventHandler(
     description: string,
     subscription?: string) {
     return (obj: object) => {
-            declareEventHandler(obj, description, subscription);
+        declareEventHandler(obj, description, subscription);
     };
 }
 
@@ -82,12 +82,15 @@ export abstract class MappedParameters {
     public static readonly GitHubUrl: string = "atomist://github_url";
     public static readonly GitHubApiUrl: string = "atomist://github_api_url";
     public static readonly GitHubDefaultRepositoryVisibility: string = "atomist://github/default_repo_visibility";
+    public static readonly GitHubUserLogin: string = "atomist://github/username";
 
     public static readonly SlackChannel: string = "atomist://slack/channel";
     public static readonly SlackChannelName: string = "atomist://slack/channel_name";
     public static readonly SlackTeam: string = "atomist://slack/team";
     public static readonly SlackUser: string = "atomist://slack/user";
     public static readonly SlackUserName: string = "atomist://slack/user_name";
+
+    public static readonly AtomistWebhookUrlBase: string = "atomist://base_webhook_url";
 }
 
 export abstract class Secrets {
