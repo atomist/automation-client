@@ -2,15 +2,17 @@ dist: trusty
 sudo: false
 language: node_js
 node_js:
-- 8.4.0
+- 8.7.0
 branches:
   except:
   - "/\\+travis\\.\\d+$/"
+  - "/^\\d+\\.\\d+\\.\\d+-.*\\d+$/"
 env:
   global:
   - NPM_REGISTRY=https://atomist.jfrog.io/atomist/api/npm/npm-dev-local
   - secure: rpnkEWZqvHEd0Iy0jtXU4CyI1Qe1kVF9yaR1ykgYokQIaUCidUxKdD0Gv7fpZrWl2ClT48UOksd9BUyhBVk1kfYbR0vCTjH8AE/j+cEflmzJhwAzpswHW0xp6g17lzx8J+nc8K28gsvmb7zLd+O1HR40zjBbjssLJ7pNzHfoVt6Gua7ZZsGFJZfxuqPAjVY/jP1ppO00WrDznEVL93ekak0uYxxuWUnoNKMV+2DSK8he7IOVQfrnZv2FHwIHAX9ozGpltMvCRHKkjQo7vwgkaRpcbZDgXp0sezhRvibAy+uqcixrIujXaRfD00O0kRnKF4mhZ8TL/xjeiyDAhmnUPyq/SJvHM2s0cttKWTMWcwnfRXMHtLqwomgVKDhobkymxCTgwRvFKixjAxPCxiUnlr9GX35nEl6ti2JUsic7dpM9081mddHzZsrst1Cps5l4N+jitROnEc1K4/NHMvM4WPgQAnY2WjgRaX6YzGrMRWH/RSfwSw8FhIVJFO+GihbOzBBhJlNG5z4X8M95dqpmfYmggAfoCy8GNMOH7P8k/Fsj4EWcIR5vcTsIGShMT56KDr4nMszal7dcHBzMx+UbJVGK1gzq/h486J6fvzYnYtZmHSbBxLCZkcNMwL6ILzjYz9w1y+BVfdIi+o3QvRTklF/3NONGdHsRFMzBDha2uKQ=
 before_install:
+- "rm -f $HOME/.npm/_logs/*-debug.log"
 - openssl aes-256-cbc -K $encrypted_e466dd0f1e03_key -iv $encrypted_e466dd0f1e03_iv
   -in scripts/.npmrc.enc -out $HOME/.npmrc -d
 script: bash scripts/travis-build.bash
@@ -28,11 +30,15 @@ cache:
   directories:
   - "$HOME/.npm"
 deploy:
-  provider: releases
-  api_key:
-    secure: M8yF6uIEmOJ56KV286PlM9cNph4ZRohDhkOKiuSob5P65GLMmjy88oZ8njppPnn8u76lJH2o0jCgznlcE+UZHtoWRdTFxaPD3xWbvgwGuScdnKz2wDe2EsC42jkjsr1c1daPjQ9bvF9IbHBknLDhZLs4vOl5ny2jsO8SDW94S2GwqmjQ6XiDKVGHBi4o7xieR67oGlxbsH10+OgIBfXUe8wZh3jGKB6Moc5Ln01l/JR/8ic3CCm6JhvaMooLHoxgGatwx/YOztn5MrrMXthOia2MAGX2yMMyPE5lZKjqw42LdU/yTtJhP9bRU+GNVx9MCGNhiMTCzM1pJkCizLx4+dYRepqdvnWq3P6qbn1vgAk6PR/Re6rMPDj1q7SZ4MKSoCtB5OpkI7Ld2mR7b8tz63ybcsdm/YWRDAfxTXdrAmp22IY4U3kRvQj7MrETHb+hBVosumiZb7XrVKp1QWqevHNS1be93Fdj9Gs+aH+r7ucRxxn9a2bvYBdIdmpeUgHijds5qEx5PV3C4AvtCqvwM22xIUr3DcTm5DbMtsf+6Uc+BQEKBg/++o9MRnjARhhekOwHpwp+Ce+5VmF2tcvSH448unzYccpImfkedP5f0tI4De/b3v6dntUr8ZBDItxTkN0OFljBzli2gbjwlCv9wwWTHx0uqFVIyYZ1DniFIE0=
+- provider: pages
+  skip_cleanup: true
+  github_token: "$GITHUB_TOKEN"
+  local_dir: build/typedoc
   on:
     tags: true
     condition: "$TRAVIS_TAG =~ ^[0-9]+\\.[0-9]+\\.[0-9]+(-(m|rc)\\.[0-9]+)?$"
-after_deploy:
-- bash scripts/gh-publish.bash $TRAVIS_REPO_SLUG
+- provider: releases
+  api_key: "$GITHUB_TOKEN"
+  on:
+    tags: true
+    condition: "$TRAVIS_TAG =~ ^[0-9]+\\.[0-9]+\\.[0-9]+(-(m|rc)\\.[0-9]+)?$"
