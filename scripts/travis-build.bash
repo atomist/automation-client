@@ -4,7 +4,7 @@
 set -o pipefail
 
 declare Pkg=travis-build-node
-declare Version=1.0.0-client
+declare Version=1.1.0-client
 
 # write message to standard out (stdout)
 # usage: msg MESSAGE
@@ -49,40 +49,6 @@ function git-tag () {
         err "failed to push git tag(s): $*"
         return 1
     fi
-}
-
-# generate TypeDoc HTML
-# usage: typedoc-gen
-function typedoc-gen () {
-    local out_dir=.
-    local tsconfig=tsconfig.json td_tsconfig=tsconfig-typedoc.json
-    if [[ -f $tsconfig ]]; then
-        out_dir=$(jq -er '.compilerOptions.outDir' "$tsconfig")
-        if [[ $? -ne 0 || ! $out_dir ]]; then
-            out_dir=.
-            msg "outDir not set in $tsconfig, using '$out_dir'"
-        fi
-
-        if ! jq '.compilerOptions.rootDir = "src" | .exclude[.exclude | length] |= . + "test"' "$tsconfig" > "$td_tsconfig"
-        then
-            err "failed to modify tsconfig for typedoc"
-            return 1
-        fi
-    else
-        if ! echo '{"compilerOptions":{"outDir":"build","rootDir":"src"},"exclude":["build","node_modules","test"]}' | jq . > "$td_tsconfig"
-        then
-            err "failed to create tsconfig for typedoc"
-            return 1
-        fi
-    fi
-
-    local td_dir=$out_dir/typedoc
-    rm -rf "$td_dir"
-    if ! npm run typedoc -- --tsconfig "$td_tsconfig" --out "$td_dir"; then
-        err "failed to create typedoc"
-        return 1
-    fi
-    rm -f "$td_tsconfig"
 }
 
 # create and set a prerelease timestamped, and optionally branched, version
@@ -330,7 +296,7 @@ function main () {
     fi
 
     msg "running typedoc"
-    if ! typedoc-gen; then
+    if ! npm run typedoc; then
         err "failed to generate TypeDoc"
         return 1
     fi
