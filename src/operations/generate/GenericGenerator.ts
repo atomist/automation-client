@@ -74,6 +74,6 @@ export class GenericGenerator<P extends BaseSeedDrivenGeneratorParameters>
     }
 
     protected repoLoader(context: HandlerContext, params: P): RepoLoader {
-        return defaultRepoLoader({token: params.target.githubToken});
+        return defaultRepoLoader(context, {token: params.target.githubToken});
     }
 }

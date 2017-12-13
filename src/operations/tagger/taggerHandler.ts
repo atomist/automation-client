@@ -83,7 +83,7 @@ function tagAll<P extends EditorOrReviewerParameters>(ctx: HandlerContext,
                                                       repoFinder: RepoFinder = allReposInTeam(),
                                                       repoFilter: RepoFilter = AllRepos,
                                                       repoLoader: RepoLoader =
-                                                          defaultRepoLoader(
+                                                          defaultRepoLoader(ctx, 
                                                               credentials)): Promise<Tags[]> {
     return doWithAllRepos(ctx, credentials,
         p => tagger(p, ctx, parameters), parameters,

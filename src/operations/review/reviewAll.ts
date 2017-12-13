@@ -30,7 +30,7 @@ export function reviewAll<P,
                                              repoFinder: RepoFinder = allReposInTeam(),
                                              repoFilter: RepoFilter = AllRepos,
                                              repoLoader: RepoLoader =
-                                                 defaultRepoLoader(
+                                                 defaultRepoLoader(ctx, 
                                                      credentials)): Promise<ProjectReview[]> {
     return doWithAllRepos(ctx, credentials,
         p => reviewer(p, ctx, parameters), parameters,
@@ -45,7 +45,7 @@ export function review<P,
                                              repoFinder: RepoFinder = allReposInTeam(),
                                              repoFilter: RepoFilter = AllRepos,
                                              repoLoader: RepoLoader =
-                                                 defaultRepoLoader(credentials)): Promise<ReviewResult> {
+                                                 defaultRepoLoader(ctx, credentials)): Promise<ReviewResult> {
     let projectsReviewed = 0;
     const countingRepoFilter: RepoFilter = id => {
         const include = repoFilter(id);
