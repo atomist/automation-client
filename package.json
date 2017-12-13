@@ -142,7 +142,7 @@
     "test:benchmark:process": "node --prof-process isolate-*-v8.log > profile.txt",
     "test:benchmark:run": "mocha --prof --require espower-typescript/guess 'test/benchmark/**/*.ts'",
     "test:one": "mocha --require espower-typescript/guess \"test/**/${TEST:-*.ts}\"",
-    "typedoc": "typedoc --mode modules --excludeExternals",
+    "typedoc": "typedoc --mode modules --excludeExternals --out build/typedoc src",
     "watch:compile": "tsc --project . --watch",
     "watch:server": "supervisor --watch build --quiet --exec npm -- run start:server"
   },
