@@ -1,3 +1,4 @@
+import { HandlerContext } from "../../../src/HandlerContext";
 import axios from "axios";
 import "mocha";
 
@@ -29,7 +30,7 @@ describe("GitProject cloning on filesystem", () => {
 
     const getAClone = (repoName: string = RepoName) => {
         const repositoryThatExists = new GitHubRepoRef(Owner, repoName);
-        return GitCommandGitProject.cloned(Creds, repositoryThatExists);
+        return GitCommandGitProject.cloned({} as HandlerContext, Creds, repositoryThatExists);
     };
 
     it("never returns the same place on the filesystem twice at once", done => {
@@ -137,7 +138,7 @@ describe("GitProject", () => {
 
     it("check out commit", done => {
         const sha = "590ed8f7a2430d45127ea04cc5bdf736fe698712";
-        GitCommandGitProject.cloned(Creds, new GitHubRepoRef("atomist", "microgrammar", sha))
+        GitCommandGitProject.cloned({} as HandlerContext, Creds, new GitHubRepoRef("atomist", "microgrammar", sha))
             .then(p => {
                 checkProject(p);
                 const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
@@ -148,7 +149,7 @@ describe("GitProject", () => {
     }).timeout(5000);
 
     it("clones a project subdirectory", done => {
-        GitCommandGitProject.cloned(Creds, new GitHubRepoRef("pallets", "flask", "master",
+        GitCommandGitProject.cloned({} as HandlerContext, Creds, new GitHubRepoRef("pallets", "flask", "master",
             GitHubDotComBase, "examples/flaskr"))
             .then(gp => {
                 assert(!!gp.findFileSync("flaskr/__init__.py"), "Should be able to find file under subdirectory");

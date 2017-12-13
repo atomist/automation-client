@@ -1,3 +1,4 @@
+import { HandlerContext } from "../../../src/HandlerContext";
 import "mocha";
 import * as assert from "power-assert";
 
@@ -31,7 +32,7 @@ describe("cached git clone projects", () => {
         const repositoryThatExists =
             opts.branch ? new GitHubRepoRef(Owner, repoName, opts.branch) : new GitHubRepoRef(Owner, repoName);
         const creds = opts.token ? { token: opts.token } : Creds;
-        return GitCommandGitProject.cloned(creds, repositoryThatExists, DefaultCloneOptions, CachingDirectoryManager);
+        return GitCommandGitProject.cloned({} as HandlerContext, creds, repositoryThatExists, DefaultCloneOptions, CachingDirectoryManager);
     };
 
     it("never returns the same place on the filesystem twice at once", done => {
@@ -229,7 +230,7 @@ describe("cached git clone projects", () => {
 describe("even transient clones have some properties", () => {
     function cloneTransiently(opts: CloneOptions = DefaultCloneOptions) {
         const repositoryThatExists = new GitHubRepoRef(Owner, RepoName);
-        return GitCommandGitProject.cloned(Creds, repositoryThatExists, opts, TmpDirectoryManager);
+        return GitCommandGitProject.cloned({} as HandlerContext, Creds, repositoryThatExists, opts, TmpDirectoryManager);
     }
 
     it("clones to depth of 1 when transient", done => {

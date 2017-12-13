@@ -1,3 +1,4 @@
+import { HandlerContext } from "../../src/HandlerContext";
 import "mocha";
 import * as assert from "power-assert";
 
@@ -16,7 +17,7 @@ describe("editorUtils tests with GitHub pull requests", () => {
     it("creates branch with changes in simple editor", done => {
         newRepo()
             .then(repo => {
-                return GitCommandGitProject.cloned(Creds, new GitHubRepoRef(repo.owner, repo.repo))
+                return GitCommandGitProject.cloned({} as HandlerContext, Creds, new GitHubRepoRef(repo.owner, repo.repo))
                     .then(p => {
                         return editProjectUsingBranch(undefined, p, EditorThatChangesProject,
                             new PullRequest("x", "y"))
@@ -31,7 +32,7 @@ describe("editorUtils tests with GitHub pull requests", () => {
     it("creates PR with changes in simple editor", done => {
         newRepo()
             .then(repo => {
-                return GitCommandGitProject.cloned(Creds, new GitHubRepoRef(repo.owner, repo.repo))
+                return GitCommandGitProject.cloned({} as HandlerContext, Creds, new GitHubRepoRef(repo.owner, repo.repo))
                     .then(p => {
                         return editProjectUsingPullRequest(undefined, p, EditorThatChangesProject,
                             new PullRequest("x", "y"))

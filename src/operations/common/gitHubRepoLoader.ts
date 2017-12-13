@@ -17,6 +17,6 @@ export function gitHubRepoLoader(context: HandlerContext, credentials: ProjectOp
     return repoId => {
         // Default it if it isn't already a GitHub repo ref
         const gid = isGitHubRepoRef(repoId) ? repoId : new GitHubRepoRef(repoId.owner, repoId.repo, repoId.sha);
-        return GitCommandGitProject.cloned(credentials, gid, DefaultCloneOptions, directoryManager);
+        return GitCommandGitProject.cloned(context, credentials, gid, DefaultCloneOptions, directoryManager);
     };
 }
