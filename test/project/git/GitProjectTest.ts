@@ -6,6 +6,7 @@ import { tempProject } from "../utils";
 
 import * as _ from "lodash";
 import { ActionResult } from "../../../src/action/ActionResult";
+import { runCommand } from "../../../src/action/cli/commandLine";
 import { GitHubDotComBase, GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../../src/project/git/GitProject";
@@ -88,6 +89,25 @@ describe("GitProject", () => {
         const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
         gp.init()
             .then(() => gp.commit(`Added a \"Thing a ding\"`))
+            .then(() => done(), done);
+    });
+
+    it("leaves newlines alone", done => {
+        const p = tempProject();
+        p.addFileSync("Thing", "1");
+        const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
+        gp.init()
+            .then(() => gp.commit(`Added a Thing
+
+ding dong ding
+`))
+            .then(() => runCommand("git log -1 --pretty=format:'%B'", { cwd: gp.baseDir}))
+            .then(commandResult => {
+                assert.equal(commandResult.stdout, `Added a Thing
+
+ding dong ding
+`);
+            })
             .then(() => done(), done);
     });
 
