@@ -9,6 +9,7 @@ import {
     HandlerContext,
     HandlerResult,
 } from "../index";
+import { Ingester } from "../ingesters";
 import { NodeConfigSecretResolver } from "../internal/env/NodeConfigSecretResolver";
 import {
     Arg,
@@ -60,7 +61,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
 
     private eventHandlers: EventHandlerRegistration[] = [];
 
-    private ingesters: any[] = [];
+    private ingesters: Ingester[] = [];
 
     constructor(public opts: AutomationServerOptions,
                 private fallbackSecretResolver: SecretResolver = new NodeConfigSecretResolver()) {
