@@ -6,6 +6,7 @@ import {
     HandleCommand,
     HandleEvent,
 } from "./index";
+import { Ingester, IngesterBuilder } from "./ingesters";
 import { logger } from "./internal/util/logger";
 import { obfuscateJson } from "./internal/util/string";
 import { AutomationEventListener } from "./server/AutomationEventListener";
@@ -16,7 +17,7 @@ export interface Configuration extends AutomationServerOptions {
 
     commands?: Array<Maker<HandleCommand>>;
     events?: Array<Maker<HandleEvent<any>>>;
-    ingesters?: any[];
+    ingesters?: Array<Ingester | IngesterBuilder>;
     listeners?: AutomationEventListener[];
 
     applicationEvents?: {
