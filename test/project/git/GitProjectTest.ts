@@ -6,12 +6,12 @@ import { tempProject } from "../utils";
 
 import * as _ from "lodash";
 import { ActionResult } from "../../../src/action/ActionResult";
+import { runCommand } from "../../../src/action/cli/commandLine";
 import { GitHubDotComBase, GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../../src/project/git/GitProject";
 import { Project } from "../../../src/project/Project";
 import { GitHubToken, TestRepositoryVisibility } from "../../credentials";
-import { runCommand } from "../../../src/action/cli/commandLine";
 
 function checkProject(p: Project) {
     const f = p.findFileSync("package.json");
@@ -106,7 +106,7 @@ ding dong ding
                 assert.equal(commandResult.stdout, `Added a Thing
 
 ding dong ding
-`)
+`);
             })
             .then(() => done(), done);
     });
