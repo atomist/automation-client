@@ -1,6 +1,6 @@
-import { HandlerContext } from "../../HandlerContext";
 import { exec } from "child-process-promise";
 import * as stringify from "json-stringify-safe";
+import { HandlerContext } from "../../HandlerContext";
 
 import axios from "axios";
 import { isLocalProject, ReleaseFunction } from "../local/LocalProject";

@@ -1,6 +1,6 @@
-import { HandlerContext } from "../../../src/HandlerContext";
 import "mocha";
 import * as assert from "power-assert";
+import { HandlerContext } from "../../../src/HandlerContext";
 
 import * as stringify from "json-stringify-safe";
 

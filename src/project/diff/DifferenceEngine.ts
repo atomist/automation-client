@@ -1,5 +1,5 @@
-import { HandlerContext } from "../../HandlerContext";
 import * as _ from "lodash";
+import { HandlerContext } from "../../HandlerContext";
 
 import { Chain } from "./Chain";
 
@@ -40,7 +40,7 @@ export class DifferenceEngine {
     }
 
     private cloneRepo(context: HandlerContext, githubIssueAuth: GithubIssueAuth, sha: string): Promise<GitProject> {
-        return GitCommandGitProject.cloned(context, 
+        return GitCommandGitProject.cloned(context,
             {token: githubIssueAuth.githubToken},
                 new GitHubRepoRef(githubIssueAuth.owner, githubIssueAuth.repo, githubIssueAuth.sha));
     }

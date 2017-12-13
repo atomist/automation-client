@@ -1,6 +1,6 @@
-import { HandlerContext } from "../../../src/HandlerContext";
 import "mocha";
 import * as assert from "power-assert";
+import { HandlerContext } from "../../../src/HandlerContext";
 
 import { runCommand } from "../../../src/action/cli/commandLine";
 import { getCounter, metrics } from "../../../src/internal/util/metric";

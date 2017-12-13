@@ -1,6 +1,6 @@
-import { HandlerContext } from "../../../src/HandlerContext";
 import axios from "axios";
 import "mocha";
+import { HandlerContext } from "../../../src/HandlerContext";
 
 import * as assert from "power-assert";
 import { tempProject } from "../utils";
