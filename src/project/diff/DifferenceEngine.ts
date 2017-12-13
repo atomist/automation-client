@@ -22,7 +22,7 @@ export class DifferenceEngine {
      * @param headSha
      */
     public run(context: HandlerContext, baseSha: string, headSha: string) {
-        const baseProjectPromise = this.cloneRepo(this.githubIssueAuth, baseSha);
+        const baseProjectPromise = this.cloneRepo(context, this.githubIssueAuth, baseSha);
         baseProjectPromise.then(project => {
             const baseFingerprintPromises: Array<Promise<any>> = _.map(this.chains, c => c.extractor.extract(project));
             Promise.all(baseFingerprintPromises).then(baseFps => {
@@ -39,7 +39,7 @@ export class DifferenceEngine {
         });
     }
 
-    private cloneRepo(githubIssueAuth: GithubIssueAuth, sha: string): Promise<GitProject> {
+    private cloneRepo(context: HandlerContext, githubIssueAuth: GithubIssueAuth, sha: string): Promise<GitProject> {
         return GitCommandGitProject.cloned(
             {token: githubIssueAuth.githubToken},
                 new GitHubRepoRef(githubIssueAuth.owner, githubIssueAuth.repo, githubIssueAuth.sha));
