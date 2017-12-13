@@ -1,4 +1,6 @@
-export const CircleCIPayload = {
+import { Ingester } from "../../src/ingesters";
+
+export const CircleCIPayload: Ingester = {
     root_type: "CircleCIPayload",
     types: [{
         kind: "OBJECT",

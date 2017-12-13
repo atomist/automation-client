@@ -1,10 +1,11 @@
 import { Configuration } from "../src/configuration";
+import { ingester, type } from "../src/ingesters";
 import { HelloWorld } from "./command/HelloWorld";
-import { GitHubToken } from "./credentials";
 import { CircleCIPayload } from "./event/circleIngester";
 import { GitLabPushPayload } from "./event/gitLabIngester";
 import { GitLabPush } from "./event/GitLabPush";
 import { HelloCircle } from "./event/HelloCircle";
+import { HelloWorldIngester } from "./event/HelloWorld";
 
 // const host = "https://automation.atomist.com";
 const host = "https://automation-staging.atomist.services";
@@ -13,8 +14,6 @@ export const configuration: Configuration = {
     name: "@atomist/automation-node-tests",
     version: "0.0.7",
     // policy: "durable",
-    teamIds: ["T1L0VDKJP"],
-    token: GitHubToken,
     keywords: ["test", "automation"],
     commands: [
         // ...scanCommands( ["**/metadata/addAtomistSpringAgent.js", "**/command/Search*.js"] ),
@@ -23,11 +22,17 @@ export const configuration: Configuration = {
     events: [
         HelloCircle,
         GitLabPush,
+        HelloWorldIngester,
         // ...scanEvents("**/event/*.js"),
     ],
     ingesters: [
         CircleCIPayload,
         GitLabPushPayload,
+        ingester(
+            type("HelloWorld")
+                .withObjectField("sender", "HelloWorldPerson")
+                .withObjectField("recipient", "HelloWorldPerson"))
+            .withType(type("HelloWorldPerson").withStringField("name")),
     ],
     ws: {
         enabled: true,

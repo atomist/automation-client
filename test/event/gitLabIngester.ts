@@ -1,4 +1,6 @@
-export const GitLabPushPayload = {
+import { Ingester } from "../../src/ingesters";
+
+export const GitLabPushPayload: Ingester = {
   root_type: "GitLabPush",
   types: [
     {

@@ -5,6 +5,10 @@ import {
     HandleCommand,
     HandleEvent,
 } from "./index";
+import {
+    Ingester,
+    IngesterBuilder,
+} from "./ingesters";
 import { registerApplicationEvents } from "./internal/env/applicationEvent";
 import {
     ClusterMasterRequestProcessor,
@@ -85,7 +89,7 @@ export class AutomationClient {
         return this;
     }
 
-    public withIngester(ingester: any): AutomationClient {
+    public withIngester(ingester: Ingester): AutomationClient {
         this.automations.registerIngester(ingester);
         return this;
     }
@@ -237,7 +241,11 @@ export function automationClient(configuration: Configuration): AutomationClient
 
     if (configuration.ingesters) {
         configuration.ingesters.forEach(e => {
-            client.withIngester(e);
+            if ((e as any).build) {
+                client.withIngester((e as IngesterBuilder).build());
+            } else {
+                client.withIngester(e as Ingester);
+            }
         });
     }
     return client;
