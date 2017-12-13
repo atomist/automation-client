@@ -11,6 +11,7 @@ import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProj
 import { GitProject } from "../../../src/project/git/GitProject";
 import { Project } from "../../../src/project/Project";
 import { GitHubToken, TestRepositoryVisibility } from "../../credentials";
+import { runCommand } from "../../../src/action/cli/commandLine";
 
 function checkProject(p: Project) {
     const f = p.findFileSync("package.json");
@@ -88,6 +89,25 @@ describe("GitProject", () => {
         const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
         gp.init()
             .then(() => gp.commit(`Added a \"Thing a ding\"`))
+            .then(() => done(), done);
+    });
+
+    it("leaves newlines alone", done => {
+        const p = tempProject();
+        p.addFileSync("Thing", "1");
+        const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
+        gp.init()
+            .then(() => gp.commit(`Added a Thing
+
+ding dong ding
+`))
+            .then(() => runCommand("git log -1 --pretty=format:'%B'", { cwd: gp.baseDir}))
+            .then(commandResult => {
+                assert.equal(commandResult.stdout, `Added a Thing
+
+ding dong ding
+`)
+            })
             .then(() => done(), done);
     });
 
