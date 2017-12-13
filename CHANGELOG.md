@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.5.0...HEAD
 
+### Changed
+
 ### Added
 
 -   GitHubUserLogin and AtomistWebhookUrlBase mapped parameter helpers
