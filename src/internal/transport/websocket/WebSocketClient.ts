@@ -129,7 +129,7 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
                     }
                 }
             } catch (err) {
-                console.error("Failed processing of message payload with: %s", serializeError(err));
+                console.error("Failed processing of message payload with: %s", JSON.stringify(serializeError(err)));
             }
         });
 
