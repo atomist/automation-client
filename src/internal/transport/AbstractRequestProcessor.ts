@@ -61,6 +61,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             };
             const ctx: HandlerContext & AutomationContextAware = {
                 teamId: command.team.id,
+                userId: command.user ? command.user.id : undefined,
                 correlationId: command.corrid,
                 invocationId: np ? np.invocationId : undefined,
                 messageClient: undefined,

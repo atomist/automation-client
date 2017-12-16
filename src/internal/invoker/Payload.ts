@@ -4,6 +4,7 @@
 export interface Contextual {
 
     teamId: string;
+    userId?: string;
     correlationId: string;
     invocationId?: string;
 }

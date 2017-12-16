@@ -55,7 +55,13 @@ export interface CommandIncoming {
     name: string;
     corrid: string;
     team: Team;
+    user?: User;
     atomist_type: string;
+}
+
+export interface User {
+
+    id: string;
 }
 
 export interface Team {
