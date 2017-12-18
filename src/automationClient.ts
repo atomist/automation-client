@@ -48,12 +48,13 @@ export class AutomationClient {
 
     public httpPort: number;
 
-    private automations: BuildableAutomationServer;
-    private webSocketClient: WebSocketClient;
-    private httpServer: ExpressServer;
+    public automations: BuildableAutomationServer;
+    public webSocketClient: WebSocketClient;
+    public httpServer: ExpressServer;
+    public wsHandler: WebSocketRequestProcessor;
 
-    private teamIds: string[];
-    private groups: string[];
+    public teamIds: string[];
+    public groups: string[];
 
     constructor(private configuration: Configuration) {
         this.teamIds = toStringArray(this.configuration.teamIds);
@@ -109,8 +110,9 @@ export class AutomationClient {
         if (!(this.configuration.cluster && this.configuration.cluster.enabled)) {
             logger.info(`Starting Atomist automation client ${this.configuration.name}@${this.configuration.version}`);
             if ((this.configuration.ws && this.configuration.ws.enabled) || !this.configuration.ws) {
+                this.wsHandler = this.setupWebSocketRequestHandler(webSocketOptions);
                 return Promise.all([
-                    this.runWs(this.setupWebSocketRequestHandler(webSocketOptions), webSocketOptions),
+                    this.runWs(this.wsHandler, webSocketOptions),
                     Promise.resolve(this.runHttp()),
                     this.setupApplicationEvents(),
                 ]);
@@ -123,11 +125,11 @@ export class AutomationClient {
         } else if (cluster.isMaster || !(this.configuration.cluster && this.configuration.cluster.enabled)) {
             logger.info(
                 `Starting Atomist automation client master ${this.configuration.name}@${this.configuration.version}`);
-            const wsHandler = this.setupWebSocketClusterRequestHandler(webSocketOptions);
-            return wsHandler.run()
+            this.wsHandler = this.setupWebSocketClusterRequestHandler(webSocketOptions);
+            return (this.wsHandler as ClusterMasterRequestProcessor).run()
                 .then(() => {
                     return Promise.all([
-                        this.runWs(wsHandler, webSocketOptions),
+                        this.runWs(this.wsHandler, webSocketOptions),
                         Promise.resolve(this.runHttp()),
                         this.setupApplicationEvents(),
                     ]);
@@ -226,6 +228,8 @@ export class AutomationClient {
     }
 }
 
+export let runningAutomationClient: AutomationClient;
+
 export function automationClient(configuration: Configuration): AutomationClient {
     const client = new AutomationClient(configuration);
     if (configuration.commands) {
@@ -248,5 +252,6 @@ export function automationClient(configuration: Configuration): AutomationClient
             }
         });
     }
+    runningAutomationClient = client;
     return client;
 }
