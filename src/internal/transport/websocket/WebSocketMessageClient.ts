@@ -2,6 +2,7 @@ import {
     render,
     SlackMessage,
 } from "@atomist/slack-messages/SlackMessages";
+import * as _ from "lodash";
 import * as WebSocket from "ws";
 import { AutomationServer } from "../../../server/AutomationServer";
 import {
@@ -31,12 +32,19 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
     protected async doSend(msg: string | SlackMessage, userNames: string | string[],
                            channelNames: string | string[], options: MessageOptions = {}): Promise<any> {
         const ts = this.ts(options);
+
+        let correlationContext = this.correlationContext;
+        if (options.teamId) {
+           correlationContext = _.cloneDeep(this.correlationContext);
+           correlationContext.team.id = options.teamId;
+        }
+
         if (isSlackMessage(msg)) {
             const actions = mapActions(msg, this.automations.automations.name, this.automations.automations.version);
             const response: HandlerResponse = {
                 rug: this.rug,
                 corrid: this.correlationId,
-                correlation_context: this.correlationContext,
+                correlation_context: correlationContext,
                 content_type: MessageMimeTypes.SLACK_JSON,
                 message: render(msg, false),
                 channels: channelNames as string[],
@@ -53,7 +61,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             const response: HandlerResponse = {
                 rug: this.rug,
                 corrid: this.correlationId,
-                correlation_context: this.correlationContext,
+                correlation_context: correlationContext,
                 content_type: MessageMimeTypes.PLAIN_TEXT,
                 message: msg as string,
                 channels: channelNames as string[],

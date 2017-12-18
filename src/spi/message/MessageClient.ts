@@ -56,6 +56,11 @@ export interface MessageOptions {
      * if a previous message with the same id exists.
      */
     post?: "update_only" | "always";
+
+    /**
+     * Team Id for the message to send to.
+     */
+    teamId?: string;
 }
 
 export class MessageMimeTypes {
