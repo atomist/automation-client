@@ -1,17 +1,14 @@
-import axios from "axios";
 import "mocha";
 
 import * as assert from "power-assert";
-import { tempProject } from "../utils";
-
-import * as _ from "lodash";
 import { ActionResult } from "../../../src/action/ActionResult";
 import { runCommand } from "../../../src/action/cli/commandLine";
 import { GitHubDotComBase, GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../../src/project/git/GitProject";
 import { Project } from "../../../src/project/Project";
-import { GitHubToken, TestRepositoryVisibility } from "../../credentials";
+import { GitHubToken } from "../../credentials";
+import { tempProject } from "../utils";
 
 function checkProject(p: Project) {
     const f = p.findFileSync("package.json");
@@ -22,7 +19,7 @@ function checkProject(p: Project) {
     assert(f.getContentSync());
 }
 
-const Creds = { token: GitHubToken };
+const Creds = {token: GitHubToken};
 const Owner = "atomist-travisorg";
 const RepoName = "this-repository-exists";
 
@@ -101,7 +98,7 @@ describe("GitProject", () => {
 
 ding dong ding
 `))
-            .then(() => runCommand("git log -1 --pretty=format:'%B'", { cwd: gp.baseDir}))
+            .then(() => runCommand("git log -1 --pretty=format:'%B'", {cwd: gp.baseDir}))
             .then(commandResult => {
                 assert.equal(commandResult.stdout, `Added a Thing
 

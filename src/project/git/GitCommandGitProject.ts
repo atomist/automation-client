@@ -5,13 +5,13 @@ import axios from "axios";
 import { isLocalProject, ReleaseFunction } from "../local/LocalProject";
 import { Project } from "../Project";
 
-import { ActionResult } from "../../action/ActionResult";
+import { ActionResult, successOn } from "../../action/ActionResult";
 import { CommandResult, runCommand } from "../../action/cli/commandLine";
 import { logger } from "../../internal/util/logger";
 import { hideString } from "../../internal/util/string";
-import { GitHubRepoRef, isGitHubRepoRef } from "../../operations/common/GitHubRepoRef";
+import { isGitHubRepoRef } from "../../operations/common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
-import { RemoteRepoRef, RepoRef } from "../../operations/common/RepoId";
+import { isRemoteRepoRef, RemoteRepoRef, RepoRef } from "../../operations/common/RepoId";
 import {
     CloneDirectoryInfo,
     CloneOptions,
@@ -19,7 +19,6 @@ import {
     DirectoryManager,
 } from "../../spi/clone/DirectoryManager";
 import { TmpDirectoryManager } from "../../spi/clone/tmpDirectoryManager";
-import { createRepo } from "../../util/gitHub";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
 import { GitProject } from "./GitProject";
 import { GitStatus, runStatusIn } from "./gitStatus";
@@ -128,66 +127,31 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         return this.runCommandInCurrentWorkingDirectory(`git remote add origin ${remote}`);
     }
 
-    public setGitHubRemote(owner: string, repo: string): Promise<CommandResult<this>> {
-        this.id = new GitHubRepoRef(owner, repo);
-        return this.setRemote((this.id as GitHubRepoRef).cloneUrl(this.credentials));
-    }
-
     public setUserConfig(user: string, email: string): Promise<CommandResult<this>> {
         return this.runCommandInCurrentWorkingDirectory(`git config user.name "${user}"`)
             .then(() => this.runCommandInCurrentWorkingDirectory(`git config user.email "${email}"`));
     }
 
-    public setGitHubUserConfig(): Promise<CommandResult<this>> {
-        const config = {
-            headers: {
-                Authorization: `token ${this.credentials.token}`,
-            },
-        };
-
-        return isGitHubRepoRef(this.id) ?
-            Promise.all([axios.get(`${this.id.apiBase}/user`, config),
-            axios.get(`${this.id.apiBase}/user/emails`, config)])
-                .then(results => {
-                    const name = results[0].data.name;
-                    let email = results[0].data.email;
-
-                    if (!email) {
-                        email = results[1].data.find(e => e.primary === true).email;
-                    }
-
-                    if (name && email) {
-                        return this.setUserConfig(name, email);
-                    } else {
-                        return this.setUserConfig("Atomist Bot", "bot@atomist.com");
-                    }
-                })
-                .catch(() => this.setUserConfig("Atomist Bot", "bot@atomist.com")) :
-            Promise.reject("Not a GitHub repo id: " + stringify(this.id));
-
-    }
-
-    public createAndSetGitHubRemote(
-        owner: string,
-        name: string,
+    public createAndSetRemote(
+        gid: RemoteRepoRef,
         description: string = name,
         visibility: "private" | "public",
     ): Promise<CommandResult<this>> {
-
-        const config = {
-            headers: {
-                Authorization: `token ${this.credentials.token}`,
-            },
-        };
-        const gid = new GitHubRepoRef(owner, name, "master");
         this.id = gid;
         const priv = visibility === "private";
 
-        return createRepo(this.credentials.token, gid, description, priv)
+        return gid.create(this.credentials, description, priv as any)
             .then(res => {
-                logger.debug(`Repo created ok: ${res.statusText}`);
+                logger.debug(`Repo created ok`);
                 return this.setRemote(gid.cloneUrl(this.credentials));
             });
+    }
+
+    public configureFromRemote(): Promise<ActionResult<this>> {
+        if (isRemoteRepoRef(this.id)) {
+            return this.id.setUserConfig(this.credentials, this);
+        }
+        return Promise.resolve(successOn(this));
     }
 
     /**
@@ -225,6 +189,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                     return Promise.reject(err);
                 });
         } else {
+            // TODO factor into RemoterepoRef
             return Promise.reject("Not a GitHub remote: " + stringify(this.id));
         }
     }

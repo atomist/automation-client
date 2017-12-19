@@ -1,6 +1,8 @@
 /**
  * Identifies a git repo
  */
+import { ActionResult } from "../../action/ActionResult";
+import { Configurable } from "../../project/git/Configurable";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 
 export interface RepoId {
@@ -13,7 +15,8 @@ export interface RepoId {
 
 export class SimpleRepoId implements RepoId {
 
-    constructor(public owner: string, public repo: string) { }
+    constructor(public owner: string, public repo: string) {
+    }
 }
 
 /**
@@ -52,6 +55,18 @@ export interface RemoteRepoRef extends RepoRef {
      */
     cloneUrl(creds: ProjectOperationCredentials): string;
 
+    create(creds: ProjectOperationCredentials,
+           description: string,
+           visibility: "private" | "public"): Promise<ActionResult<this>>;
+
+    setUserConfig(credentials: ProjectOperationCredentials,
+                  configurable: Configurable): Promise<ActionResult<any>>;
+
+}
+
+export function isRemoteRepoRef(r: RepoRef): r is RemoteRepoRef {
+    const q = r as RemoteRepoRef;
+    return !!q.setUserConfig;
 }
 
 /**
@@ -68,7 +83,7 @@ export function isLocalRepoRef(r: RepoRef): r is LocalRepoRef {
     return !!maybeLocalRR.baseDir;
 }
 
-export class RemoteRepoRefSupport implements RemoteRepoRef {
+export abstract class RemoteRepoRefSupport implements RemoteRepoRef {
 
     constructor(public remoteBase: string,
                 public owner: string,
@@ -88,4 +103,8 @@ export class RemoteRepoRefSupport implements RemoteRepoRef {
     get pathComponent(): string {
         return this.owner + "/" + this.repo;
     }
+
+    public abstract create(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>>;
+
+    public abstract setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>>;
 }
