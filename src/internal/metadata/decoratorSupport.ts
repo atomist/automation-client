@@ -163,9 +163,12 @@ export function declareSecret(target: any, name: string, path: string) {
     return target;
 }
 
-export function declareCommandHandler(obj: any, description: string, intent?: string[]) {
+export function declareCommandHandler(obj: any, description: string, autoSubmit: boolean, intent?: string[]) {
     declareRug(obj, "command-handler", description);
     declareIntent(obj, intent);
+    if (autoSubmit) {
+        declareAutoSubmit(obj, autoSubmit);
+    }
     registerCommand(obj);
     return obj;
 }
@@ -199,5 +202,10 @@ export function declareTags(target: any, tags: string[]) {
 
 export function declareIntent(target: any, intent: string[]) {
     set_metadata(target, "__intent", intent);
+    return target;
+}
+
+export function declareAutoSubmit(target: any, autoSubmit: boolean) {
+    set_metadata(target, "__autoSubmit", autoSubmit);
     return target;
 }

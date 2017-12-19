@@ -45,7 +45,21 @@ export function Secret(path: string) {
  * @constructor
  */
 export function CommandHandler(description: string, ...intent: string[]) {
-    return (obj: any) => { declareCommandHandler(obj, description, intent); };
+    return (obj: any) => { declareCommandHandler(obj, description, null, intent); };
+}
+
+/**
+ * Decorator for a configurable command handler class. Implements HandleCommand
+ * @param {string} description
+ * @param {string[] | string} intent
+ * @return {(obj: any) => any}
+ * @constructor
+ */
+export function ConfigurableCommandHandler(description: string,
+                                           options: { intent?: string | string[], autoSubmit?: boolean }) {
+    const intent = options.intent ? toStringArray(options.intent) : [];
+    const autoSubmit = options.autoSubmit ? options.autoSubmit : false;
+    return (obj: any) => { declareCommandHandler(obj, description, autoSubmit, intent); };
 }
 
 /**

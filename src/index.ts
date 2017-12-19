@@ -2,6 +2,7 @@ export { Configuration } from "./configuration";
 
 export {
     CommandHandler,
+    ConfigurableCommandHandler,
     EventHandler,
     MappedParameter,
     MappedParameters,

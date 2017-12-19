@@ -48,6 +48,7 @@ describe("payloads", () => {
         assert(payload.events[0].secrets[0] === "atomist://secret2", "event has a secret");
         assert(payload.commands[0].secrets, "commands have secrets");
         assert(payload.commands[0].secrets[0] === "atomist://secret1", "command has a secret");
+        assert(payload.commands[0].auto_submit === false);
 
         assert(payload.name === "foo");
         assert(payload.version === "1.0.0");

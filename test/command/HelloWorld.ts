@@ -1,10 +1,11 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
-import { CommandHandler, Failure, HandleCommand, HandlerContext, HandlerResult, Parameter } from "../../src/index";
+import { ConfigurableCommandHandler } from "../../src/decorators";
+import { Failure, HandleCommand, HandlerContext, HandlerResult, Parameter } from "../../src/index";
 import { ReposQuery, ReposQueryVariables } from "../../src/schema/schema";
 import { buttonForCommand, menuForCommand } from "../../src/spi/message/MessageClient";
 import { SecretBaseHandler } from "./SecretBaseHandler";
 
-@CommandHandler("Send a hello back to the client", "hello cd")
+@ConfigurableCommandHandler("Send a hello back to the client", { intent: "hello cd", autoSubmit: true })
 export class HelloWorld extends SecretBaseHandler implements HandleCommand {
 
     @Parameter({description: "Name of person the greeting should be send to", pattern: /^.*$/})

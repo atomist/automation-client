@@ -2,7 +2,10 @@ import "mocha";
 import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
 
 import * as assert from "power-assert";
-import { CommandHandler, MappedParameter, Parameter, Secret, Tags } from "../../../src/decorators";
+import {
+    CommandHandler, ConfigurableCommandHandler, MappedParameter, Parameter, Secret,
+    Tags,
+} from "../../../src/decorators";
 import { HandleCommand } from "../../../src/HandleCommand";
 import { EventFired, HandleEvent } from "../../../src/HandleEvent";
 import { HandlerContext } from "../../../src/HandlerContext";
@@ -43,6 +46,7 @@ describe("class style metadata reading", () => {
         assert(md.secrets.length === 2);
         assert(md.secrets.some(p => p.name === "subSecret"), "Subclass secret should be found");
         assert(md.secrets.some(p => p.name === "superSecret"), "Secret should be inherited");
+        assert(md.auto_submit);
     });
 
     it("should handle inherited parameters through the entire hierarchy", () => {
@@ -56,6 +60,7 @@ describe("class style metadata reading", () => {
         assert(md.secrets.some(p => p.name === "subSecret"), "Subclass secret should be found");
         assert(md.secrets.some(p => p.name === "subSubSecret"), "SubSubclass secret should be found");
         assert(md.secrets.some(p => p.name === "superSecret"), "Secret should be inherited");
+        assert(md.auto_submit);
     });
 
     it("should convert to explicit type: boolean", () => {
@@ -187,7 +192,7 @@ export class Superclass implements HandleCommand {
     }
 }
 
-@CommandHandler("Some sub class")
+@ConfigurableCommandHandler("Some sub class", {  autoSubmit: true })
 @Tags("atomist", "spring")
 class Subclass extends Superclass {
 
@@ -307,7 +312,7 @@ export class HasSomeFreeChoicesParam implements HandleCommand {
     }
 }
 
-@CommandHandler("description", "universal", "generator")
+@ConfigurableCommandHandler("description", {intent: ["universal", "generator"], autoSubmit: true })
 @Tags("universal", "generator")
 export class TagsAndIntent implements HandleCommand {
 

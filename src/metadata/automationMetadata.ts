@@ -127,5 +127,5 @@ export interface ParameterMetadata extends SecretsMetadata {
 export interface CommandHandlerMetadata extends AutomationMetadata, ParameterMetadata {
 
     intent?: string[];
-
+    auto_submit?: boolean;
 }

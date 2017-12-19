@@ -39,6 +39,7 @@ function prepareCommandRegistration(c: CommandHandlerMetadata) {
         description: c.description,
         tags: c.tags.map(t => t.name),
         intent: c.intent,
+        auto_submit: c.auto_submit ? c.auto_submit : false,
         parameters: c.parameters,
         mapped_parameters: c.mapped_parameters,
         secrets: c.secrets ? c.secrets.map(s => s.path) : [],
