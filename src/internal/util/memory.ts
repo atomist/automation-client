@@ -17,7 +17,7 @@ export function initMemoryMonitoring(dataDirectory: string = `${appRoot.path}/he
         require("heapdump");
     } catch (err) {
         logger.warn("Failed to initialise memory monitoring. Required 'heapdump' module is missing or can't be" +
-            " loaded. Please install with 'npm install --save headdump'");
+            " loaded. Please install with 'npm install --save heapdump'");
     }
 
     logger.info("Initialising memory monitoring");
