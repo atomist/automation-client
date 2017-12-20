@@ -15,43 +15,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
--   add github org security check
+-   GitHubUserLogin and AtomistWebhookUrlBase mapped parameter helpers
 -   add support for configurable command handlers
--   allow message addressing
--   add userId to HandlerContext
--   add support for declaring custom ingestor payloads
--   Add missing mapped parameter
--   Merge pull request #172 from atomist/add-webhook-wiring
--   Wire up addAtomistWebhook
 
 ### Changed
 
--   remove hard dependency to heapdump
--   expose current running processor
--   properly serialize errors
--   Auto merge pull request #177 from atomist/automation-client-ts
--   Auto merge pull request #176 from atomist/automation-client-ts
--   Update build script, run tests w/o GITHUB_TOKEN
--   Merge pull request #174 from atomist/nortissej/keep-newlines
--   Automatic de-linting [atomist:auto-delint]
--   sign
--   Update change log
--   Auto merge pull request #173 from atomist/automation-client-ts
--   update deps
--   Move all tests under test directory
--   Merge pull request #171 from atomist/tmp-delete
+-   remove hard dependency to heapdump; this will make `npm install` easier on Windows
+-   add userId to HandlerContext
+-   Run all tests without GITHUB_TOKEN
 -   Reduce tmp directory retention
--   Increment version
--   
 
 ### Fixed
 
--   fix typo
--   Fixes #170
-
-### Added
-
--   GitHubUserLogin and AtomistWebhookUrlBase mapped parameter helpers
+-   keep newlines in commit messages
 
 ## [0.5.0][] - 2017-12-07
 
