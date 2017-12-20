@@ -13,6 +13,13 @@ let DataDirectory = `${appRoot.path}/heap`;
  */
 export function initMemoryMonitoring(dataDirectory: string = `${appRoot.path}/heap`) {
 
+    try {
+        require("heapdump");
+    } catch (err) {
+        logger.warn("Failed to initialise memory monitoring. Required 'heapdump' module is missing or can't be" +
+            " loaded. Please install with 'npm install --save headdump'");
+    }
+
     logger.info("Initialising memory monitoring");
     DataDirectory = dataDirectory;
 

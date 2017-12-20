@@ -1,5 +1,6 @@
 import { Configuration } from "../src/configuration";
 import { ingester, type } from "../src/ingesters";
+import { initMemoryMonitoring } from "../src/internal/util/memory";
 import { HelloWorld } from "./command/HelloWorld";
 import { CircleCIPayload } from "./event/circleIngester";
 import { GitLabPushPayload } from "./event/gitLabIngester";
@@ -68,3 +69,5 @@ export const configuration: Configuration = {
         workers: 2,
     },
 };
+
+initMemoryMonitoring();
