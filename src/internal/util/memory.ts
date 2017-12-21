@@ -12,14 +12,6 @@ let DataDirectory = `${appRoot.path}/heap`;
  * @param {string} dataDirectory
  */
 export function initMemoryMonitoring(dataDirectory: string = `${appRoot.path}/heap`) {
-
-    try {
-        require("heapdump");
-    } catch (err) {
-        logger.warn("Failed to initialise memory monitoring. Required 'heapdump' module is missing or can't be" +
-            " loaded. Please install with 'npm install --save heapdump'");
-    }
-
     logger.info("Initialising memory monitoring");
     DataDirectory = dataDirectory;
 
@@ -33,17 +25,22 @@ export function initMemoryMonitoring(dataDirectory: string = `${appRoot.path}/he
  * @returns {string}
  */
 export function heapDump(): string {
-    logger.debug("Memory statistics: %j", memoryUsage());
-    const heapdump = require("heapdump");
-    const name = `heapdump-${process.pid}-${Date.now()}.heapsnapshot`;
-    if (!fs.existsSync(DataDirectory)) {
-        fs.mkdirSync(DataDirectory);
+    try {
+        logger.debug("Memory statistics: %j", memoryUsage());
+        const heapdump = require("heapdump");
+        const name = `heapdump-${process.pid}-${Date.now()}.heapsnapshot`;
+        if (!fs.existsSync(DataDirectory)) {
+            fs.mkdirSync(DataDirectory);
+        }
+        heapdump.writeSnapshot(`${DataDirectory}/${name}`, (err, filename) => {
+            logger.warn("Heap dump written to '%s'", filename);
+        });
+        broadcast({ type: "heapdump" });
+        return name;
+    } catch (err) {
+        logger.error("Failed to initialise memory monitoring. Required 'heapdump' module is missing or can't be" +
+            " loaded. Please install with 'npm install --save heapdump'");
     }
-    heapdump.writeSnapshot(`${DataDirectory}/${name}`, (err, filename) => {
-        logger.warn("Heap dump written to '%s'", filename);
-    });
-    broadcast({ type: "heapdump" });
-    return name;
 }
 
 /**
