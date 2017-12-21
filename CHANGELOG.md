@@ -7,11 +7,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.5.2...HEAD
+
+## [0.5.2][] - 2017-12-4
+
+[0.5.2]: https://github.com/atomist/automation-client-ts/compare/0.5.0...0.5.2
 
 ### Added
 
 -   GitHubUserLogin and AtomistWebhookUrlBase mapped parameter helpers
+-   add support for configurable command handlers
+
+### Changed
+
+-   remove hard dependency to heapdump; this will make `npm install` easier on Windows
+-   add userId to HandlerContext
+-   Run all tests without GITHUB_TOKEN
+-   Reduce tmp directory retention
+
+### Fixed
+
+-   keep newlines in commit messages
 
 ## [0.5.0][] - 2017-12-07
 
