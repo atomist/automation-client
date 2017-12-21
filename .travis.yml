@@ -29,6 +29,8 @@ notifications:
 cache:
   directories:
   - "$HOME/.npm"
+before_deploy:
+- touch build/typedoc/.nojekyll
 deploy:
 - provider: pages
   skip_cleanup: true
