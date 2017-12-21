@@ -101,7 +101,7 @@ function execNode(
     logger.info(`${message} in '${ap}'`);
     try {
         const nodeOptions = process.env.ATOMIST_NODE_OPTIONS || "";
-        child_process.execSync(`node ${nodeOptions} '${path}' ${args}`,
+        child_process.execSync(`node ${nodeOptions} \"${path}\" ${args}`,
             { cwd: ap, stdio: "inherit", env: process.env });
     } catch (e) {
         console.error(`Node command ${cmd} failed`);
