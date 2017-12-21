@@ -1,6 +1,7 @@
 import { Configuration } from "../src/configuration";
 import { ingester, type } from "../src/ingesters";
 import { initMemoryMonitoring } from "../src/internal/util/memory";
+import { githubOrg } from "../src/secured";
 import { HelloWorld } from "./command/HelloWorld";
 import { CircleCIPayload } from "./event/circleIngester";
 import { GitLabPushPayload } from "./event/gitLabIngester";
@@ -19,7 +20,7 @@ export const configuration: Configuration = {
     keywords: ["test", "automation"],
     commands: [
         // ...scanCommands( ["**/metadata/addAtomistSpringAgent.js", "**/command/Search*.js"] ),
-        HelloWorld,
+        githubOrg(HelloWorld, "atomisthqas"),
     ],
     events: [
         HelloCircle,

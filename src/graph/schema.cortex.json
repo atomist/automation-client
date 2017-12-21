@@ -2009,16 +2009,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "deleted",
-                  "description": "deleted of Branch",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
                   "name": "timestamp",
                   "description": "timestamp of Branch",
                   "type": {
@@ -2051,20 +2041,6 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "deleteds",
-                  "description": "deleteds is list variant of deleted of Branch",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -2149,6 +2125,153 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "Branch",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DeletedBranch",
+              "description": null,
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of DeletedBranch",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of DeletedBranch",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "timestamp",
+                  "description": "timestamp of DeletedBranch",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of DeletedBranch",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of DeletedBranch",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "timestamps",
+                  "description": "timestamps is list variant of timestamp of DeletedBranch",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_DeletedBranchOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DeletedBranch",
                   "ofType": null
                 }
               },
@@ -7427,19 +7550,79 @@
               "deprecationReason": null
             },
             {
-              "name": "Presence",
-              "description": "Query for the presence of a user ",
+              "name": "CircleCIPayload",
+              "description": "Auto-generated query for CircleCIPayload",
               "type": {
-                "kind": "OBJECT",
-                "name": "Presence"
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CircleCIPayload"
+                }
               },
               "args": [
                 {
-                  "name": "screenName",
-                  "description": "The screen name of the user",
+                  "name": "id",
+                  "description": "The ID of this CircleCIPayload",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "GitLabPush",
+              "description": "Auto-generated query for GitLabPush",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "GitLabPush"
+                }
+              },
+              "args": [
+                {
+                  "name": "id",
+                  "description": "The ID of this GitLabPush",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "HelloWorld",
+              "description": "Auto-generated query for HelloWorld",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "HelloWorld"
+                }
+              },
+              "args": [
+                {
+                  "name": "id",
+                  "description": "The ID of this HelloWorld",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID"
+                    }
                   }
                 }
               ]
@@ -10249,16 +10432,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "deleted",
-                  "description": "deleted of Branch",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
                   "name": "timestamp",
                   "description": "timestamp of Branch",
                   "type": {
@@ -10291,20 +10464,6 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "deleteds",
-                  "description": "deleteds is list variant of deleted of Branch",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -19221,16 +19380,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "deleted",
-                  "description": "deleted of Branch",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
                   "name": "timestamp",
                   "description": "timestamp of Branch",
                   "type": {
@@ -19263,20 +19412,6 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "deleteds",
-                  "description": "deleteds is list variant of deleted of Branch",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -25057,6 +25192,12 @@
             {
               "name": "tag",
               "description": "Value for tag",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "cron",
+              "description": "Value for cron",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -33153,18 +33294,6 @@
               "deprecationReason": null
             },
             {
-              "name": "deleted",
-              "description": "deleted of  Branch",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "timestamp",
               "description": "timestamp of  Branch",
               "args": [],
@@ -33976,18 +34105,6 @@
             {
               "name": "name_desc",
               "description": "Descending sort for name",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "deleted_asc",
-              "description": "Ascending sort for deleted",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "deleted_desc",
-              "description": "Descending sort for deleted",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -36298,6 +36415,877 @@
             {
               "name": "commentType_desc",
               "description": "Descending sort for commentType",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DeletedBranch",
+          "description": "DeletedBranch-Node",
+          "fields": [
+            {
+              "name": "_id",
+              "description": "internal node id",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Long",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "id of  DeletedBranch",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "name of  DeletedBranch",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "timestamp",
+              "description": "timestamp of  DeletedBranch",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "repo",
+              "description": "DeletedBranch repo Repo",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "owner",
+                  "description": "owner of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowRebaseMerge",
+                  "description": "allowRebaseMerge of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowSquashMerge",
+                  "description": "allowSquashMerge of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowMergeCommit",
+                  "description": "allowMergeCommit of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubId",
+                  "description": "gitHubId of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "defaultBranch",
+                  "description": "defaultBranch of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "owners",
+                  "description": "owners is list variant of owner of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowRebaseMerges",
+                  "description": "allowRebaseMerges is list variant of allowRebaseMerge of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowSquashMerges",
+                  "description": "allowSquashMerges is list variant of allowSquashMerge of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowMergeCommits",
+                  "description": "allowMergeCommits is list variant of allowMergeCommit of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubIds",
+                  "description": "gitHubIds is list variant of gitHubId of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "defaultBranchs",
+                  "description": "defaultBranchs is list variant of defaultBranch of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_RepoOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Repo",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "commit",
+              "description": "DeletedBranch commit Commit",
+              "args": [
+                {
+                  "name": "sha",
+                  "description": "sha of Commit",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "message",
+                  "description": "message of Commit",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "timestamp",
+                  "description": "timestamp of Commit",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "shas",
+                  "description": "shas is list variant of sha of Commit",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "messages",
+                  "description": "messages is list variant of message of Commit",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "timestamps",
+                  "description": "timestamps is list variant of timestamp of Commit",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_CommitOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Commit",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pullRequests",
+              "description": "DeletedBranch pullRequests PullRequest",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "number",
+                  "description": "number of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Float",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "prId",
+                  "description": "prId of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "body",
+                  "description": "body of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "state",
+                  "description": "state of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "merged",
+                  "description": "merged of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "timestamp",
+                  "description": "timestamp of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "baseBranchName",
+                  "description": "baseBranchName of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "branchName",
+                  "description": "branchName of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "title",
+                  "description": "title of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "createdAt",
+                  "description": "createdAt of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "updatedAt",
+                  "description": "updatedAt of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "closedAt",
+                  "description": "closedAt of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "mergedAt",
+                  "description": "mergedAt of PullRequest",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "numbers",
+                  "description": "numbers is list variant of number of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Float",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "prIds",
+                  "description": "prIds is list variant of prId of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "bodys",
+                  "description": "bodys is list variant of body of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "states",
+                  "description": "states is list variant of state of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "mergeds",
+                  "description": "mergeds is list variant of merged of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "timestamps",
+                  "description": "timestamps is list variant of timestamp of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "baseBranchNames",
+                  "description": "baseBranchNames is list variant of baseBranchName of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "branchNames",
+                  "description": "branchNames is list variant of branchName of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "titles",
+                  "description": "titles is list variant of title of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "createdAts",
+                  "description": "createdAts is list variant of createdAt of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "updatedAts",
+                  "description": "updatedAts is list variant of updatedAt of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "closedAts",
+                  "description": "closedAts is list variant of closedAt of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "mergedAts",
+                  "description": "mergedAts is list variant of mergedAt of PullRequest",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_PullRequestOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PullRequest",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "_DeletedBranchOrdering",
+          "description": "Ordering Enum for DeletedBranch",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "atmTeamId_asc",
+              "description": "Ascending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "atmTeamId_desc",
+              "description": "Descending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_asc",
+              "description": "Ascending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_desc",
+              "description": "Descending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name_asc",
+              "description": "Ascending sort for name",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name_desc",
+              "description": "Descending sort for name",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "timestamp_asc",
+              "description": "Ascending sort for timestamp",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "timestamp_desc",
+              "description": "Descending sort for timestamp",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -40671,16 +41659,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "deleted",
-                  "description": "deleted of Branch",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
                   "name": "timestamp",
                   "description": "timestamp of Branch",
                   "type": {
@@ -40713,20 +41691,6 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "deleteds",
-                  "description": "deleteds is list variant of deleted of Branch",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -40811,6 +41775,153 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "Branch",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DeletedBranch",
+              "description": null,
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of DeletedBranch",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of DeletedBranch",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "timestamp",
+                  "description": "timestamp of DeletedBranch",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of DeletedBranch",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of DeletedBranch",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "timestamps",
+                  "description": "timestamps is list variant of timestamp of DeletedBranch",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_DeletedBranchOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DeletedBranch",
                   "ofType": null
                 }
               },
@@ -46089,22 +47200,43 @@
               "deprecationReason": null
             },
             {
-              "name": "Presence",
-              "description": "Query for the presence of a user ",
+              "name": "CircleCIPayload",
+              "description": "Auto-generated subscription for CircleCIPayload",
               "type": {
-                "kind": "OBJECT",
-                "name": "Presence"
-              },
-              "args": [
-                {
-                  "name": "screenName",
-                  "description": "The screen name of the user",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
-                  }
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CircleCIPayload"
                 }
-              ]
+              },
+              "args": []
+            },
+            {
+              "name": "GitLabPush",
+              "description": "Auto-generated subscription for GitLabPush",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "GitLabPush"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "HelloWorld",
+              "description": "Auto-generated subscription for HelloWorld",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "HelloWorld"
+                }
+              },
+              "args": []
             }
           ],
           "inputFields": null,
@@ -46140,108 +47272,280 @@
         },
         {
           "kind": "OBJECT",
-          "name": "Presence",
-          "description": "A user's current Presence State",
-          "interfaces": [],
+          "name": "CircleCIPayload",
           "fields": [
             {
-              "name": "lastSeen",
-              "description": "last seen (number of minutes)",
-              "args": [],
+              "name": "payload",
+              "type": {
+                "kind": "OBJECT",
+                "name": "CircleCIBuild"
+              },
+              "args": []
+            },
+            {
+              "name": "id",
+              "description": "The ID of this CircleCIPayload",
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CircleCIBuild",
+          "fields": [
+            {
+              "name": "build_num",
               "type": {
                 "kind": "SCALAR",
                 "name": "Int"
-              }
+              },
+              "directives": [
+                {
+                  "name": "compositeId"
+                }
+              ],
+              "args": []
             },
             {
-              "name": "state",
-              "description": "current state of user's presence",
-              "args": [],
+              "name": "vcs_revision",
               "type": {
                 "kind": "SCALAR",
                 "name": "String"
-              }
+              },
+              "args": []
             },
             {
-              "name": "user",
-              "description": "User",
-              "args": [],
+              "name": "reponame",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "directives": [
+                {
+                  "name": "compositeId"
+                }
+              ],
+              "args": []
+            },
+            {
+              "name": "branch",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "directives": [
+                {
+                  "name": "compositeId"
+                }
+              ],
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "GitLabPush",
+          "fields": [
+            {
+              "name": "user_username",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "checkout_sha",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "directives": [
+                {
+                  "name": "compositeId"
+                }
+              ],
+              "args": []
+            },
+            {
+              "name": "user_avatar",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "repository",
               "type": {
                 "kind": "OBJECT",
-                "name": "ChatId"
-              }
+                "name": "GitLabRepository"
+              },
+              "args": []
+            },
+            {
+              "name": "commits",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "GitLabLabCommit"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "id",
+              "description": "The ID of this GitLabPush",
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID"
+              },
+              "args": []
             }
-          ]
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "GitLabLabCommit",
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "message",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "url",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "author",
+              "type": {
+                "kind": "OBJECT",
+                "name": "GitLabAuthor"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "GitLabAuthor",
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "email",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "GitLabRepository",
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "git_http_url",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "HelloWorld",
+          "fields": [
+            {
+              "name": "sender",
+              "type": {
+                "kind": "OBJECT",
+                "name": "HelloWorldPerson"
+              },
+              "args": []
+            },
+            {
+              "name": "recipient",
+              "type": {
+                "kind": "OBJECT",
+                "name": "HelloWorldPerson"
+              },
+              "args": []
+            },
+            {
+              "name": "id",
+              "description": "The ID of this HelloWorld",
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "HelloWorldPerson",
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
         }
       ],
       "directives": [
-        {
-          "name": "relation",
-          "description": "Relationship",
-          "locations": [
-            "FIELD"
-          ],
-          "args": []
-        },
-        {
-          "name": "defaultValue",
-          "description": "default value",
-          "locations": [
-            "FIELD"
-          ],
-          "args": []
-        },
-        {
-          "name": "isUnique",
-          "description": "field is unique in type",
-          "locations": [
-            "FIELD"
-          ],
-          "args": []
-        },
-        {
-          "name": "cypher",
-          "description": "Cypher query to run",
-          "locations": [
-            "FIELD"
-          ],
-          "args": []
-        },
-        {
-          "name": "profile",
-          "description": "Enable query profiling",
-          "locations": [
-            "QUERY"
-          ],
-          "args": []
-        },
-        {
-          "name": "explain",
-          "description": "Enable query explanation",
-          "locations": [
-            "QUERY"
-          ],
-          "args": []
-        },
-        {
-          "name": "version",
-          "description": "Specify Cypher version",
-          "locations": [
-            "QUERY"
-          ],
-          "args": [
-            {
-              "name": "version",
-              "description": "Cypher Version (3.0, 3.1, 3.2)",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": "\"3.1\""
-            }
-          ]
-        },
         {
           "name": "skip",
           "description": "Directs the executor to skip this field or fragment when the `if`'argument is true.",
@@ -46285,6 +47589,60 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ]
+        },
+        {
+          "name": "required",
+          "description": "Requires this field to be present and not null or empty",
+          "locations": [
+            "FIELD"
+          ],
+          "args": []
+        },
+        {
+          "name": "ne",
+          "description": "Ensures a field's value does not equal 'value'",
+          "locations": [
+            "FIELD"
+          ],
+          "args": [
+            {
+              "name": "value",
+              "description": "Value to match with fields value (after .toString)",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ]
+        },
+        {
+          "name": "matches",
+          "description": "Ensures a field's value matches the supplied regular expression",
+          "locations": [
+            "FIELD"
+          ],
+          "args": [
+            {
+              "name": "re",
+              "description": "Re to match with fields value (after .toString)",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
                   "ofType": null
                 }
               },
