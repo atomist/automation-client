@@ -55,7 +55,6 @@
     "lru_map": "^0.3.3",
     "metrics": "^0.1.14",
     "minimatch": "^3.0.4",
-    "node": "^8.9.2",
     "node-cache": "^4.1.1",
     "passport": "^0.4.0",
     "passport-http": "^0.3.0",
