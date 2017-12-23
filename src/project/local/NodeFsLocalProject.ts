@@ -178,7 +178,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         return fs.pathExists(this.baseDir + "/" + path)
             .then(exists => exists ?
                 Promise.resolve(new NodeFsLocalFile(this.baseDir, path)) :
-                Promise.reject(`File not found at ${path}`),
+                Promise.reject(fileNotFound(path)),
         );
     }
 
@@ -220,4 +220,11 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
 
 function pathWithinArchive(baseDir: string, rawPath: string): string {
     return rawPath.substr(baseDir.length);
+}
+
+// construct a useful exception
+function fileNotFound(path: string): Error {
+    const error = new Error(`File not found at ${path}`);
+    (error as any).code = "ENOENT";
+    return error;
 }
