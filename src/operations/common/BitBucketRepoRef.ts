@@ -1,10 +1,13 @@
 import { ActionResult, successOn } from "../../action/ActionResult";
+import { logger } from "../../internal/util/logger";
 import { Configurable } from "../../project/git/Configurable";
 import { AbstractRepoRef } from "./AbstractRemoteRepoRef";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
-import { RepoRef } from "./RepoId";
 
-export const BitBucketDotComBase = "https://api.github.com";
+import axios from "axios";
+import { encode } from "../../internal/util/base64";
+
+export const BitBucketDotComBase = "https://bitbucket.org/api/2.0";
 
 export interface BitBucketCredentials extends ProjectOperationCredentials {
 
@@ -44,13 +47,44 @@ export class BitBucketRepoRef extends AbstractRepoRef {
         return Promise.resolve(successOn(this));
     }
 
-    public raisePullRequest(creds: ProjectOperationCredentials,
+    public raisePullRequest(credentials: ProjectOperationCredentials,
                             title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
-        throw new Error("Not implemented");
+        const url = `${this.apiBase}/repositories/${this.owner}/${this.repo}/pullrequests`;
+        logger.debug(`Making request to '${url}' to raise PR`);
+        return axios.post(url, {
+            title,
+            description: body,
+            source: {
+                branch: {
+                    name: head,
+                },
+            },
+            destination: {
+                branch: {
+                    name: base,
+                },
+            },
+        }, this.headers(credentials))
+            .then(axiosResponse => {
+                return {
+                    target: this,
+                    success: true,
+                    axiosResponse,
+                };
+            })
+            .catch(err => {
+                logger.error("Error attempting to raise PR: " + err);
+                return Promise.reject(err);
+            });
     }
-}
 
-export function isBitBucketRepoRef(rr: RepoRef): rr is BitBucketRepoRef {
-    const maybe = rr as BitBucketRepoRef;
-    return maybe && !!maybe.apiBase;
+    private headers(credentials: ProjectOperationCredentials) {
+        const upwd = `${this.owner}:${credentials.token}`;
+        const encoded = encode(upwd);
+        return {
+            headers: {
+                Authorization: `Basic ${encoded}`,
+            },
+        };
+    }
 }
