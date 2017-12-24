@@ -1,17 +1,19 @@
 import { ActionResult, successOn } from "../../action/ActionResult";
 import { createRepo } from "../../util/gitHub";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
-import { RemoteRepoRefSupport, RepoRef } from "./RepoId";
+import { RepoRef } from "./RepoId";
 
 import axios from "axios";
+import { logger } from "../../internal/util/logger";
 import { Configurable } from "../../project/git/Configurable";
+import { AbstractRepoRef } from "./AbstractRemoteRepoRef";
 
 export const GitHubDotComBase = "https://api.github.com";
 
 /**
  * GitHub repo ref
  */
-export class GitHubRepoRef extends RemoteRepoRefSupport {
+export class GitHubRepoRef extends AbstractRepoRef {
 
     constructor(owner: string,
                 repo: string,
@@ -50,6 +52,34 @@ export class GitHubRepoRef extends RemoteRepoRefSupport {
                 }
             })
             .catch(() => project.setUserConfig("Atomist Bot", "bot@atomist.com"));
+    }
+
+    public raisePullRequest(credentials: ProjectOperationCredentials,
+                            title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
+        const url = `${this.apiBase}/repos/${this.owner}/${this.repo}/pulls`;
+        const config = {
+            headers: {
+                Authorization: `token ${credentials.token}`,
+            },
+        };
+        logger.debug(`Making request to '${url}' to raise PR`);
+        return axios.post(url, {
+            title,
+            body,
+            head,
+            base,
+        }, config)
+            .then(axiosResponse => {
+                return {
+                    target: this,
+                    success: true,
+                    axiosResponse,
+                };
+            })
+            .catch(err => {
+                logger.error("Error attempting to raise PR: " + err);
+                return Promise.reject(err);
+            });
     }
 }
 

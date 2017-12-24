@@ -34,7 +34,9 @@ export interface RepoRef extends RepoId {
 }
 
 /**
- * Identifies a git repo with a remote
+ * Identifies a git repo with a remote.
+ * Also defines behavior for working with remote, such as
+ * raising a pull request or equivalent
  */
 export interface RemoteRepoRef extends RepoRef {
 
@@ -59,8 +61,17 @@ export interface RemoteRepoRef extends RepoRef {
            description: string,
            visibility: "private" | "public"): Promise<ActionResult<this>>;
 
+    /**
+     * Configure the local remote based on information from remote
+     * @param {ProjectOperationCredentials} credentials
+     * @param {Configurable} configurable
+     * @return {Promise<ActionResult<any>>}
+     */
     setUserConfig(credentials: ProjectOperationCredentials,
                   configurable: Configurable): Promise<ActionResult<any>>;
+
+    raisePullRequest(credentials: ProjectOperationCredentials,
+                     title: string, body: string, head: string, base: string): Promise<ActionResult<this>>;
 
 }
 
@@ -81,30 +92,4 @@ export interface LocalRepoRef extends RepoRef {
 export function isLocalRepoRef(r: RepoRef): r is LocalRepoRef {
     const maybeLocalRR = r as LocalRepoRef;
     return !!maybeLocalRR.baseDir;
-}
-
-export abstract class RemoteRepoRefSupport implements RemoteRepoRef {
-
-    constructor(public remoteBase: string,
-                public owner: string,
-                public repo: string,
-                public sha: string = "master",
-                public path?: string) {
-    }
-
-    get url() {
-        return `https://${this.remoteBase}/${this.owner}/${this.repo}`;
-    }
-
-    public cloneUrl(creds: ProjectOperationCredentials) {
-        return `https://${creds.token}:x-oauth-basic@${this.remoteBase}/${this.pathComponent}.git`;
-    }
-
-    get pathComponent(): string {
-        return this.owner + "/" + this.repo;
-    }
-
-    public abstract create(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>>;
-
-    public abstract setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>>;
 }

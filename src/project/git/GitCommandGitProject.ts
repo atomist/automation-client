@@ -1,7 +1,5 @@
 import { exec } from "child-process-promise";
-import * as stringify from "json-stringify-safe";
 
-import axios from "axios";
 import { isLocalProject, ReleaseFunction } from "../local/LocalProject";
 import { Project } from "../Project";
 
@@ -9,7 +7,6 @@ import { ActionResult, successOn } from "../../action/ActionResult";
 import { CommandResult, runCommand } from "../../action/cli/commandLine";
 import { logger } from "../../internal/util/logger";
 import { hideString } from "../../internal/util/string";
-import { isGitHubRepoRef } from "../../operations/common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
 import { isRemoteRepoRef, RemoteRepoRef, RepoRef } from "../../operations/common/RepoId";
 import {
@@ -132,11 +129,9 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             .then(() => this.runCommandInCurrentWorkingDirectory(`git config user.email "${email}"`));
     }
 
-    public createAndSetRemote(
-        gid: RemoteRepoRef,
-        description: string = name,
-        visibility: "private" | "public",
-    ): Promise<CommandResult<this>> {
+    public createAndSetRemote(gid: RemoteRepoRef,
+                              description: string = name,
+                              visibility: "private" | "public"): Promise<CommandResult<this>> {
         this.id = gid;
         const priv = visibility === "private";
 
@@ -163,35 +158,17 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         if (!(this.branch)) {
             throw new Error("Cannot create a PR: no branch has been created");
         }
-        const config = {
-            headers: {
-                Authorization: `token ${this.credentials.token}`,
-            },
-        };
-        if (isGitHubRepoRef(this.id)) {
-            const url = `${this.id.apiBase}/repos/${this.id.owner}/${this.id.repo}/pulls`;
-            logger.debug(`Making request to '${url}' to raise PR`);
-            return axios.post(url, {
-                title,
-                body,
-                head: this.branch,
-                base: "master",
-            }, config)
-                .then(axiosResponse => {
-                    return {
-                        target: this,
-                        success: true,
-                        axiosResponse,
-                    };
-                })
-                .catch(err => {
-                    logger.error("Error attempting to raise PR: " + err);
-                    return Promise.reject(err);
-                });
-        } else {
-            // TODO factor into RemoterepoRef
-            return Promise.reject("Not a GitHub remote: " + stringify(this.id));
+        if (!isRemoteRepoRef(this.id)) {
+            throw new Error("No remote in " + JSON.stringify(this.id));
         }
+
+        return this.id.raisePullRequest(
+            this.credentials,
+            title,
+            body,
+            this.branch,
+            "master")
+            .then(() => successOn(this));
     }
 
     /**
@@ -240,7 +217,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     private runCommandInCurrentWorkingDirectory(cmd: string): Promise<CommandResult<this>> {
-        return runCommand(cmd, { cwd: this.baseDir })
+        return runCommand(cmd, {cwd: this.baseDir})
             .then(result => {
                 return {
                     target: this,
@@ -331,10 +308,10 @@ function clean(repoDir: string) {
 }
 
 function runIn(baseDir: string, command: string) {
-    return runCommand(command, { cwd: baseDir });
+    return runCommand(command, {cwd: baseDir});
 }
 
 function pwd(baseDir) {
-    return runCommand("pwd", { cwd: baseDir }).then(result =>
+    return runCommand("pwd", {cwd: baseDir}).then(result =>
         console.log(result.stdout));
 }
