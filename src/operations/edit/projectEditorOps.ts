@@ -19,8 +19,7 @@ function combineEditResults(r1: EditResult, r2: EditResult): EditResult {
  * @param {ProjectEditor} projectEditors
  * @return {ProjectEditor}
  */
-export function chainEditors(
-    ...projectEditors: AnyProjectEditor[]): ProjectEditor {
+export function chainEditors(...projectEditors: AnyProjectEditor[]): ProjectEditor {
     const alwaysReturnEditResult =
         projectEditors.map(toEditor);
 
@@ -35,6 +34,11 @@ export function chainEditors(
 function toEditor(pop: AnyProjectEditor): ProjectEditor {
     return (proj, ctx, params) => (pop as SimpleProjectEditor)(proj, ctx, params)
         .then(r => {
+            if (!r) {
+                const editorName = pop.name || "";
+                return Promise.reject(
+                    `Invalid return from ${editorName}. Should be EditResult or Project, got: <${r}>`);
+            }
             // See what it returns
             return isActionResult(r) ?
                 r as any as EditResult :
