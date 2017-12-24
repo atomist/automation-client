@@ -19,9 +19,6 @@ export function isBitBucketCredentials(o: any): o is BitBucketCredentials {
     return c.basic !== undefined;
 }
 
-/**
- * GitHub repo ref
- */
 export class BitBucketRepoRef extends AbstractRepoRef {
 
     constructor(owner: string,
@@ -40,7 +37,23 @@ export class BitBucketRepoRef extends AbstractRepoRef {
     }
 
     public create(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
-        throw new Error("Not implemented");
+        const url = `${this.apiBase}/repositories/${this.owner}/${this.repo}`;
+        logger.debug(`Making request to '${url}' to create repo`);
+        return axios.post(url, {
+            scm: "git",
+            is_private: visibility === "private",
+        }, this.headers(creds))
+            .then(axiosResponse => {
+                return {
+                    target: this,
+                    success: true,
+                    axiosResponse,
+                };
+            })
+            .catch(err => {
+                logger.error("Error attempting to create repository: " + err);
+                return Promise.reject(err);
+            });
     }
 
     public setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>> {
