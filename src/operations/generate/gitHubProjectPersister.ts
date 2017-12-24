@@ -6,7 +6,7 @@ import { Project } from "../../project/Project";
 import { doWithRetry, RetryOptions } from "../../util/retry";
 import { GitHubRepoRef } from "../common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
-import { RepoId } from "../common/RepoId";
+import { isRemoteRepoRef, RepoId } from "../common/RepoId";
 import { ProjectPersister } from "./generatorUtils";
 
 /**
@@ -20,6 +20,8 @@ export const GitHubProjectPersister: ProjectPersister<GitProject> =
     (p: Project,
      creds: ProjectOperationCredentials,
      targetId: RepoId) => {
+        // Default to github.com if we don't have more information
+        const gid = isRemoteRepoRef(targetId) ? targetId : new GitHubRepoRef(targetId.owner, targetId.repo);
         const gp: GitProject =
             GitCommandGitProject.fromProject(p, creds);
         return gp.init()
@@ -27,7 +29,7 @@ export const GitHubProjectPersister: ProjectPersister<GitProject> =
             .then(() => {
                 logger.debug(`Creating new repo '${targetId.owner}/${targetId.repo}'`);
                 return gp.createAndSetRemote(
-                    new GitHubRepoRef(targetId.owner, targetId.repo),
+                    gid,
                     this.targetRepo, this.visibility)
                     .catch(err => {
                         return Promise.reject(new Error(`Unable to create new repo '${targetId.owner}/${targetId.repo}': ` +
