@@ -23,7 +23,7 @@ export class GitHubRepoRef extends AbstractRepoRef {
         super("github.com", owner, repo, sha, path);
     }
 
-    public create(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
+    public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
         return createRepo(creds.token, this, description, visibility)
             .then(() => successOn(this));
     }

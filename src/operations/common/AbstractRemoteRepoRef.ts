@@ -25,7 +25,7 @@ export abstract class AbstractRepoRef implements RemoteRepoRef {
         return this.owner + "/" + this.repo;
     }
 
-    public abstract create(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>>;
+    public abstract createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>>;
 
     public abstract setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>>;
 

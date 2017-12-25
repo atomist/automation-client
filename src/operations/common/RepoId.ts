@@ -57,9 +57,9 @@ export interface RemoteRepoRef extends RepoRef {
      */
     cloneUrl(creds: ProjectOperationCredentials): string;
 
-    create(creds: ProjectOperationCredentials,
-           description: string,
-           visibility: "private" | "public"): Promise<ActionResult<this>>;
+    createRemote(creds: ProjectOperationCredentials,
+                 description: string,
+                 visibility: "private" | "public"): Promise<ActionResult<this>>;
 
     /**
      * Configure the local remote based on information from remote

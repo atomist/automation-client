@@ -36,7 +36,7 @@ export class BitBucketRepoRef extends AbstractRepoRef {
         return `https://${this.owner}:${creds.token}@${this.remoteBase}/${this.pathComponent}.git`;
     }
 
-    public create(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
+    public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
         const url = `${this.apiBase}/repositories/${this.owner}/${this.repo}`;
         logger.debug(`Making request to '${url}' to create repo`);
         return axios.post(url, {
@@ -52,6 +52,23 @@ export class BitBucketRepoRef extends AbstractRepoRef {
             })
             .catch(err => {
                 logger.error("Error attempting to create repository: " + err);
+                return Promise.reject(err);
+            });
+    }
+
+    public deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>> {
+        const url = `${this.apiBase}/repositories/${this.owner}/${this.repo}`;
+        logger.debug(`Making request to '${url}' to create repo`);
+        return axios.delete(url, this.headers(creds))
+            .then(axiosResponse => {
+                return {
+                    target: this,
+                    success: true,
+                    axiosResponse,
+                };
+            })
+            .catch(err => {
+                logger.error("Error attempting to delete repository: " + err);
                 return Promise.reject(err);
             });
     }
@@ -100,4 +117,5 @@ export class BitBucketRepoRef extends AbstractRepoRef {
             },
         };
     }
+
 }
