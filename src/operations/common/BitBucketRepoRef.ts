@@ -54,7 +54,7 @@ export class BitBucketRepoRef extends AbstractRepoRef {
 
     public deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>> {
         const url = `${this.apiBase}/repositories/${this.owner}/${this.repo}`;
-        logger.debug(`Making request to '${url}' to create repo`);
+        logger.debug(`Making request to '${url}' to delete repo`);
         return axios.delete(url, headers(creds))
             .then(axiosResponse => {
                 return {
