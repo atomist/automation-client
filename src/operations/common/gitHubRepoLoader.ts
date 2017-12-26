@@ -1,3 +1,4 @@
+import { HandlerContext } from "../../HandlerContext";
 import { DefaultDirectoryManager, GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
 import { DefaultCloneOptions, DirectoryManager } from "../../spi/clone/DirectoryManager";
@@ -11,11 +12,11 @@ import { RepoLoader } from "./repoLoader";
  * @return function to materialize repos
  * @constructor
  */
-export function gitHubRepoLoader(credentials: ProjectOperationCredentials,
+export function gitHubRepoLoader(context: HandlerContext, credentials: ProjectOperationCredentials,
                                  directoryManager: DirectoryManager = DefaultDirectoryManager): RepoLoader<GitProject> {
     return repoId => {
         // Default it if it isn't already a GitHub repo ref
         const gid = isGitHubRepoRef(repoId) ? repoId : new GitHubRepoRef(repoId.owner, repoId.repo, repoId.sha);
-        return GitCommandGitProject.cloned(credentials, gid, DefaultCloneOptions, directoryManager);
+        return GitCommandGitProject.cloned(context, credentials, gid, DefaultCloneOptions, directoryManager);
     };
 }

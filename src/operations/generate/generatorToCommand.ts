@@ -31,11 +31,11 @@ export interface GeneratorCommandDetails<P extends BaseSeedDrivenGeneratorParame
     afterAction?: ProjectAction<P>;
 }
 
-function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: string): GeneratorCommandDetails<P> {
+function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(context: HandlerContext, name: string): GeneratorCommandDetails<P> {
     return {
         description: name,
         repoFinder: allReposInTeam(),
-        repoLoader: (p: P) => defaultRepoLoader({ token: p.target.githubToken }, CachingDirectoryManager),
+        repoLoader: (p: P) => defaultRepoLoader(context, { token: p.target.githubToken }, CachingDirectoryManager),
         projectPersister: GitHubProjectPersister,
         redirecter: () => undefined,
     };
@@ -49,15 +49,15 @@ function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: strin
  * @param {string} details object allowing customization beyond reasonable defaults
  * @return {HandleCommand}
  */
-export function generatorHandler<P extends BaseSeedDrivenGeneratorParameters>(
-    editorFactory: EditorFactory<P>,
-    factory: ParametersConstructor<P>,
-    name: string,
-    details: Partial<GeneratorCommandDetails<P>> = {},
+export function generatorHandler<P extends BaseSeedDrivenGeneratorParameters>(context: HandlerContext,
+                                                                              editorFactory: EditorFactory<P>,
+                                                                              factory: ParametersConstructor<P>,
+                                                                              name: string,
+                                                                              details: Partial<GeneratorCommandDetails<P>> = {},
 ): HandleCommand {
 
     const detailsToUse: GeneratorCommandDetails<P> = {
-        ...defaultDetails(name),
+        ...defaultDetails(context, name),
         ...details,
     };
     return commandHandlerFrom(handleGenerate(editorFactory, detailsToUse), factory, name,

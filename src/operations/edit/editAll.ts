@@ -37,7 +37,7 @@ export function editAll<R, P extends EditorOrReviewerParameters>(ctx: HandlerCon
                                                                  repoFinder: RepoFinder = allReposInTeam(),
                                                                  repoFilter: RepoFilter = AllRepos,
                                                                  repoLoader: RepoLoader =
-                                                                     defaultRepoLoader(credentials)): Promise<EditResult[]> {
+                                                                     defaultRepoLoader(ctx, credentials)): Promise<EditResult[]> {
     const edit = (p: Project, parms: P) =>
         editRepo(ctx, p, toEditor(editor), toEditModeFactory(editInfo)(p),
             parms);
@@ -62,7 +62,7 @@ export function editOne<P extends EditorOrReviewerParameters>(ctx: HandlerContex
                                                               editInfo: EditMode,
                                                               singleRepository: RepoRef,
                                                               parameters?: P,
-                                                              repoLoader: RepoLoader = defaultRepoLoader(credentials)): Promise<EditResult> {
+                                                              repoLoader: RepoLoader = defaultRepoLoader(ctx, credentials)): Promise<EditResult> {
     const singleRepoFinder: RepoFinder = () => Promise.resolve([singleRepository]);
     return editAll(ctx, credentials, toEditor(editor), editInfo, parameters,
         singleRepoFinder, AllRepos, repoLoader)

@@ -68,12 +68,12 @@ export class GenericGenerator<P extends BaseSeedDrivenGeneratorParameters>
     }
 
     protected startingPoint(params: P, ctx: HandlerContext ): Promise<Project> {
-        return this.repoLoader(params)(
+        return this.repoLoader(ctx, params)(
             new GitHubRepoRef(params.source.owner, params.source.repo,
                 params.source.sha));
     }
 
-    protected repoLoader(params: P): RepoLoader {
-        return defaultRepoLoader({token: params.target.githubToken});
+    protected repoLoader(context: HandlerContext, params: P): RepoLoader {
+        return defaultRepoLoader(context, {token: params.target.githubToken});
     }
 }

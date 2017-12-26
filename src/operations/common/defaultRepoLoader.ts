@@ -1,3 +1,4 @@
+import { HandlerContext } from "../../HandlerContext";
 import { DefaultDirectoryManager } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
 import { DirectoryManager } from "../../spi/clone/DirectoryManager";
@@ -13,13 +14,13 @@ import { RepoLoader } from "./repoLoader";
  * @return function to materialize repos
  * @constructor
  */
-export function defaultRepoLoader(credentials: ProjectOperationCredentials,
+export function defaultRepoLoader(context: HandlerContext, credentials: ProjectOperationCredentials,
                                   directoryManager: DirectoryManager = DefaultDirectoryManager): RepoLoader<GitProject> {
     return (repoId: RepoRef) => {
         if (isLocalRepoRef(repoId)) {
             return LocalRepoLoader(repoId) as Promise<GitProject>;
         } else {
-           return gitHubRepoLoader(credentials, directoryManager)(repoId);
+           return gitHubRepoLoader(context, credentials, directoryManager)(repoId);
         }
     };
 }
