@@ -68,7 +68,6 @@ function doWithNewRemote(testAndVerify: (p: GitProject) => Promise<any>) {
         .then(() => gp.push())
         .then(() => GitCommandGitProject.cloned(bbCreds, bbid))
         .then(clonedp => {
-            console.log("Cloned OK...");
             return testAndVerify(clonedp);
         })
         .then(() => bbid.deleteRemote(bbCreds),
