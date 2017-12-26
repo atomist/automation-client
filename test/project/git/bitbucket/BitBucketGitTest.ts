@@ -16,7 +16,7 @@ describe("BitBucket support", () => {
         GitCommandGitProject.cloned(bbCreds,
             new BitBucketRepoRef("stefika", "sodbeans", "master"))
             .then(bp => bp.gitStatus())
-            .then(() => done(), done)
+            .then(() => done(), done);
     }).timeout(15000);
 
     it("should clone and add file in new branch", () => {

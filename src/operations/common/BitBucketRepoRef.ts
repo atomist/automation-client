@@ -47,7 +47,7 @@ export class BitBucketRepoRef extends AbstractRepoRef {
                 return Promise.resolve({
                     target: this,
                     success: false,
-                    error
+                    error,
                 });
             });
     }
