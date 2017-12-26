@@ -1,9 +1,9 @@
-import { BasicAuthCredentials } from "../../../../src/operations/common/BasicAuthCredentials";
-import { BitBucketRepoRef } from "../../../../src/operations/common/BitBucketRepoRef";
-import { GitCommandGitProject } from "../../../../src/project/git/GitCommandGitProject";
-import { GitProject } from "../../../../src/project/git/GitProject";
-import { TestRepositoryVisibility } from "../../../credentials";
-import { tempProject } from "../../utils";
+import { BasicAuthCredentials } from "../../src/operations/common/BasicAuthCredentials";
+import { BitBucketRepoRef } from "../../src/operations/common/BitBucketRepoRef";
+import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
+import { GitProject } from "../../src/project/git/GitProject";
+import { TestRepositoryVisibility } from "../credentials";
+import { tempProject } from "../project/utils";
 
 const BitBucketUser = process.env.ATLASSIAN_USER;
 const BitBucketPassword = process.env.ATLASSIAN_PASSWORD;
@@ -14,7 +14,7 @@ describe("BitBucket support", () => {
 
     it("should clone", done => {
         GitCommandGitProject.cloned(bbCreds,
-            new BitBucketRepoRef("stefika", "sodbeans", "master"))
+            new BitBucketRepoRef("jessitron", "poetry", "master"))
             .then(bp => bp.gitStatus())
             .then(() => done(), done);
     }).timeout(15000);
