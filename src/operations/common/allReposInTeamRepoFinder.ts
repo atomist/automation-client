@@ -1,10 +1,10 @@
+import * as _ from "lodash";
 import { HandlerContext } from "../../HandlerContext";
 import { ReposQuery, ReposQueryVariables } from "../../schema/schema";
 import { GitHubRepoRef } from "./GitHubRepoRef";
 import { twoTierDirectoryRepoFinder } from "./localRepoFinder";
 import { RepoFinder } from "./repoFinder";
 import { RepoRef } from "./RepoId";
-import * as _ from "lodash";
 
 // Hard-coded limit in GraphQL queries. Not sure why we can't pass this
 const PageSize = 100;
