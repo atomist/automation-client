@@ -6,7 +6,6 @@ import { Project } from "../Project";
 import { ActionResult, successOn } from "../../action/ActionResult";
 import { CommandResult, runCommand } from "../../action/cli/commandLine";
 import { logger } from "../../internal/util/logger";
-import { hideString } from "../../internal/util/string";
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
 import { isRemoteRepoRef, RemoteRepoRef, RepoRef } from "../../operations/common/RepoId";
 import {
@@ -89,7 +88,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                         public provenance?: string) {
         super(id, baseDir, release);
         this.branch = id.sha;
-        logger.debug(`Created GitProject with token '${hideString(this.credentials.token)}'`);
+        logger.debug(`Created GitProject`);
     }
 
     public init(): Promise<CommandResult<this>> {

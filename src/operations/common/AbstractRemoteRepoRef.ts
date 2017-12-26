@@ -1,7 +1,7 @@
 
 import { ActionResult } from "../../action/ActionResult";
 import { Configurable } from "../../project/git/Configurable";
-import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
+import { isTokenCredentials, ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import { RemoteRepoRef } from "./RepoId";
 
 export abstract class AbstractRepoRef implements RemoteRepoRef {
@@ -18,6 +18,9 @@ export abstract class AbstractRepoRef implements RemoteRepoRef {
     }
 
     public cloneUrl(creds: ProjectOperationCredentials) {
+        if (!isTokenCredentials(creds)) {
+            throw new Error("Only tokens supported: ");
+        }
         return `https://${creds.token}:x-oauth-basic@${this.remoteBase}/${this.pathComponent}.git`;
     }
 

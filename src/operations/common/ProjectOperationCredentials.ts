@@ -1,7 +1,16 @@
 /**
- * Credentials for working with projects
+ * Tag interface for credentials for working with projects
  */
 export interface ProjectOperationCredentials {
 
-    token?: string;
+}
+
+export interface TokenCredentials extends ProjectOperationCredentials {
+
+    token: string;
+}
+
+export function isTokenCredentials(poc: ProjectOperationCredentials): poc is TokenCredentials {
+    const q = poc as TokenCredentials;
+    return q.token !== undefined;
 }

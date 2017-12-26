@@ -1,13 +1,14 @@
-import { BitBucketCredentials, BitBucketRepoRef } from "../../../../src/operations/common/BitBucketRepoRef";
+import { BitBucketRepoRef } from "../../../../src/operations/common/BitBucketRepoRef";
 import { GitCommandGitProject } from "../../../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../../../src/project/git/GitProject";
 import { TestRepositoryVisibility } from "../../../credentials";
 import { tempProject } from "../../utils";
+import { BasicAuthCredentials } from "../../../../src/operations/common/BasicAuthCredentials";
 
 const BitBucketUser = process.env.ATLASSIAN_USER;
 const BitBucketPassword = process.env.ATLASSIAN_PASSWORD;
 
-const bbCreds = {token: BitBucketPassword, basic: true} as BitBucketCredentials;
+const bbCreds = {username: BitBucketUser, password: BitBucketPassword} as BasicAuthCredentials;
 
 describe("BitBucket support", () => {
 
@@ -58,7 +59,7 @@ describe("BitBucket support", () => {
 
 });
 
-function doWithNewRemote(what: (p: GitProject) => Promise<any>) {
+function doWithNewRemote(testAndVerify: (p: GitProject) => Promise<any>) {
     const p = tempProject();
     p.addFileSync("README.md", "Here's the readme for my new repo");
 
@@ -77,13 +78,14 @@ function doWithNewRemote(what: (p: GitProject) => Promise<any>) {
         .then(() => gp.push())
         .then(() => GitCommandGitProject.cloned(bbCreds, bbid))
         .then(clonedp => {
-            return what(clonedp)
+            console.log("Cloned OK...");
+            return testAndVerify(clonedp)
                 .then(() => {
                     return bbid.deleteRemote(bbCreds);
                 });
         })
         .catch(err => {
-            bbid.deleteRemote(bbCreds).then(() => {
+            return bbid.deleteRemote(bbCreds).then(() => {
                 throw new Error(err);
             });
         });

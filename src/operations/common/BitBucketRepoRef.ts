@@ -7,18 +7,9 @@ import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import axios from "axios";
 import stringify = require("json-stringify-safe");
 import { encode } from "../../internal/util/base64";
+import { isBasicAuthCredentials } from "./BasicAuthCredentials";
 
 export const BitBucketDotComBase = "https://bitbucket.org/api/2.0";
-
-export interface BitBucketCredentials extends ProjectOperationCredentials {
-
-    basic: boolean;
-}
-
-export function isBitBucketCredentials(o: any): o is BitBucketCredentials {
-    const c = o as BitBucketCredentials;
-    return c.basic !== undefined;
-}
 
 export class BitBucketRepoRef extends AbstractRepoRef {
 
@@ -31,10 +22,10 @@ export class BitBucketRepoRef extends AbstractRepoRef {
     }
 
     public cloneUrl(creds: ProjectOperationCredentials) {
-        if (!isBitBucketCredentials(creds)) {
-            throw new Error("Not BitBucket credentials: " + stringify(creds));
+        if (!isBasicAuthCredentials(creds)) {
+            throw new Error("Only basic credentials supported: " + stringify(creds));
         }
-        return `https://${this.owner}:${creds.token}@${this.remoteBase}/${this.pathComponent}.git`;
+        return `https://${creds.username}:${creds.password}@${this.remoteBase}/${this.pathComponent}.git`;
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
@@ -109,8 +100,11 @@ export class BitBucketRepoRef extends AbstractRepoRef {
             });
     }
 
-    private headers(credentials: ProjectOperationCredentials) {
-        const upwd = `${this.owner}:${credentials.token}`;
+    private headers(creds: ProjectOperationCredentials) {
+        if (!isBasicAuthCredentials(creds)) {
+            throw new Error("Only Basic auth supported: Had " + JSON.stringify(creds));
+        }
+        const upwd = `${creds.username}:${creds.password}`;
         const encoded = encode(upwd);
         return {
             headers: {

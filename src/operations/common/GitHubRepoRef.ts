@@ -1,6 +1,6 @@
 import { ActionResult, successOn } from "../../action/ActionResult";
 import { createRepo } from "../../util/gitHub";
-import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
+import { isTokenCredentials, ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import { RepoRef } from "./RepoId";
 
 import axios from "axios";
@@ -24,11 +24,17 @@ export class GitHubRepoRef extends AbstractRepoRef {
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
+        if (!isTokenCredentials(creds)) {
+            throw new Error("Only token auth supported");
+        }
         return createRepo(creds.token, this, description, visibility)
             .then(() => successOn(this));
     }
 
     public setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>> {
+        if (!isTokenCredentials(credentials)) {
+            throw new Error("Only token auth supported");
+        }
         const config = {
             headers: {
                 Authorization: `token ${credentials.token}`,
@@ -57,6 +63,9 @@ export class GitHubRepoRef extends AbstractRepoRef {
     public raisePullRequest(credentials: ProjectOperationCredentials,
                             title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
         const url = `${this.apiBase}/repos/${this.owner}/${this.repo}/pulls`;
+        if (!isTokenCredentials(credentials)) {
+            throw new Error("Only token auth supported");
+        }
         const config = {
             headers: {
                 Authorization: `token ${credentials.token}`,
