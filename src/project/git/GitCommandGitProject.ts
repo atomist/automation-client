@@ -129,7 +129,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     public createAndSetRemote(gid: RemoteRepoRef,
-                              description: string = name,
+                              description: string = gid.repo,
                               visibility: "private" | "public"): Promise<CommandResult<this>> {
         this.id = gid;
         return gid.createRemote(this.credentials, description, visibility)
