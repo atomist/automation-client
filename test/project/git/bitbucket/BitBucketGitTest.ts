@@ -14,7 +14,7 @@ describe("BitBucket support", () => {
 
     it("should clone", done => {
         GitCommandGitProject.cloned(bbCreds,
-            new BitBucketRepoRef("springrod", "austin", "master"))
+            new BitBucketRepoRef("stefika", "sodbeans", "master"))
             .then(bp => bp.gitStatus())
             .then(() => done(), done)
     }).timeout(15000);
