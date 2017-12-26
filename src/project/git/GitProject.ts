@@ -1,12 +1,14 @@
 import { ActionResult } from "../../action/ActionResult";
+import { RemoteRepoRef } from "../../operations/common/RepoId";
 import { LocalProject } from "../local/LocalProject";
+import { Configurable } from "./Configurable";
 import { GitStatus } from "./gitStatus";
 
 /**
  * Local project using git. Provides the ability to perform git operations
  * such as commit, and to set and push to a remote.
  */
-export interface GitProject extends LocalProject {
+export interface GitProject extends LocalProject, Configurable {
 
     branch: string;
 
@@ -30,8 +32,6 @@ export interface GitProject extends LocalProject {
      */
     setRemote(remote: string): Promise<ActionResult<this>>;
 
-    setGitHubRemote(owner: string, repo: string): Promise<ActionResult<this>>;
-
     /**
      * Sets the given user and email as the running git commands
      * @param {string} user
@@ -43,7 +43,7 @@ export interface GitProject extends LocalProject {
      * Sets the user config by using GitHub user information. Make sure to use a token that
      * has user scope.
      */
-    setGitHubUserConfig(): Promise<ActionResult<this>>;
+    configureFromRemote(): Promise<ActionResult<this>>;
 
     /**
      * Does the project have uncommitted changes in Git? Success means it's clean
@@ -52,12 +52,11 @@ export interface GitProject extends LocalProject {
 
     /**
      * Create a remote repository and set this repository's remote to it.
-     * @param {string} owner
-     * @param {string} name
+     * @param gid: RemoteRepoRef
      * @param {string} description
      * @param {"private" | "public"} visibility
      */
-    createAndSetGitHubRemote(owner: string, name: string, description: string, visibility: "private" | "public"):
+    createAndSetRemote(gid: RemoteRepoRef, description: string, visibility: "private" | "public"):
         Promise<ActionResult<this>>;
 
     /**

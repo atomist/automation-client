@@ -1,6 +1,8 @@
 /**
  * Identifies a git repo
  */
+import { ActionResult } from "../../action/ActionResult";
+import { Configurable } from "../../project/git/Configurable";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 
 export interface RepoId {
@@ -13,7 +15,8 @@ export interface RepoId {
 
 export class SimpleRepoId implements RepoId {
 
-    constructor(public owner: string, public repo: string) { }
+    constructor(public owner: string, public repo: string) {
+    }
 }
 
 /**
@@ -31,7 +34,9 @@ export interface RepoRef extends RepoId {
 }
 
 /**
- * Identifies a git repo with a remote
+ * Identifies a git repo with a remote.
+ * Also defines behavior for working with remote, such as
+ * raising a pull request or equivalent
  */
 export interface RemoteRepoRef extends RepoRef {
 
@@ -52,6 +57,27 @@ export interface RemoteRepoRef extends RepoRef {
      */
     cloneUrl(creds: ProjectOperationCredentials): string;
 
+    createRemote(creds: ProjectOperationCredentials,
+                 description: string,
+                 visibility: "private" | "public"): Promise<ActionResult<this>>;
+
+    /**
+     * Configure the local remote based on information from remote
+     * @param {ProjectOperationCredentials} credentials
+     * @param {Configurable} configurable
+     * @return {Promise<ActionResult<any>>}
+     */
+    setUserConfig(credentials: ProjectOperationCredentials,
+                  configurable: Configurable): Promise<ActionResult<any>>;
+
+    raisePullRequest(credentials: ProjectOperationCredentials,
+                     title: string, body: string, head: string, base: string): Promise<ActionResult<this>>;
+
+}
+
+export function isRemoteRepoRef(r: RepoRef): r is RemoteRepoRef {
+    const q = r as RemoteRepoRef;
+    return !!q.setUserConfig;
 }
 
 /**
@@ -66,26 +92,4 @@ export interface LocalRepoRef extends RepoRef {
 export function isLocalRepoRef(r: RepoRef): r is LocalRepoRef {
     const maybeLocalRR = r as LocalRepoRef;
     return !!maybeLocalRR.baseDir;
-}
-
-export class RemoteRepoRefSupport implements RemoteRepoRef {
-
-    constructor(public remoteBase: string,
-                public owner: string,
-                public repo: string,
-                public sha: string = "master",
-                public path?: string) {
-    }
-
-    get url() {
-        return `https://${this.remoteBase}/${this.owner}/${this.repo}`;
-    }
-
-    public cloneUrl(creds: ProjectOperationCredentials) {
-        return `https://${creds.token}:x-oauth-basic@${this.remoteBase}/${this.pathComponent}.git`;
-    }
-
-    get pathComponent(): string {
-        return this.owner + "/" + this.repo;
-    }
 }
