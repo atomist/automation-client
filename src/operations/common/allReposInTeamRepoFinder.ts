@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import { HandlerContext } from "../../HandlerContext";
 import { ReposQuery, ReposQueryVariables } from "../../schema/schema";
 import { GitHubRepoRef } from "./GitHubRepoRef";
@@ -45,10 +46,10 @@ query Repos($teamId: ID!, $offset: Int!) {
 function queryForPage(context: HandlerContext, offset: number): Promise<RepoRef[]> {
     return context.graphClient.executeQuery<ReposQuery, ReposQueryVariables>(
         RepoQuery,
-        {teamId: context.teamId, offset})
+        { teamId: context.teamId, offset })
         .then(result => {
-            const org = result.ChatTeam[0].orgs[0];
-            return org.repo.map(r => new GitHubRepoRef(r.owner, r.name));
+            return _.flatMap(result.ChatTeam[0].orgs, org =>
+                org.repo.map(r => new GitHubRepoRef(r.owner, r.name)));
         })
         .then((repos: RepoRef[]) => {
             return (repos.length < PageSize) ?
