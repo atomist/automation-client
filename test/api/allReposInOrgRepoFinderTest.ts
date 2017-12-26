@@ -16,7 +16,7 @@ describe("allReposInOrgRepoFinder", () => {
         allReposInTeam()({ graphClient, teamId: SlackTeamId } as any)
             .then(repos => {
                 assert(repos.length > 100, `Expected over 100 repos, not ${repos.length}`);
-                const names = repos.map(r => r.repo).sort();
+                const names = repos.map(r => `${r.owner}/${r.repo}`).sort();
                 assert(_.uniq(names).length === names.length);
             }).then(() => done(), done);
     }).timeout(10000);
