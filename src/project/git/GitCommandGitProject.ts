@@ -134,8 +134,12 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         this.id = gid;
         return gid.createRemote(this.credentials, description, visibility)
             .then(res => {
-                logger.debug(`Repo created ok`);
-                return this.setRemote(gid.cloneUrl(this.credentials));
+                if (res.success) {
+                    logger.debug(`Repo created ok`);
+                    return this.setRemote(gid.cloneUrl(this.credentials));
+                } else {
+                    return Promise.reject(res.error);
+                }
             });
     }
 

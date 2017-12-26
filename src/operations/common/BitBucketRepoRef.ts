@@ -25,7 +25,7 @@ export class BitBucketRepoRef extends AbstractRepoRef {
         if (!isBasicAuthCredentials(creds)) {
             throw new Error("Only basic credentials supported: " + stringify(creds));
         }
-        return `https://${creds.username}:${creds.password}@${this.remoteBase}/${this.pathComponent}.git`;
+        return `https://${encodeURIComponent(creds.username)}:${encodeURIComponent(creds.password)}@${this.remoteBase}/${this.pathComponent}.git`;
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
@@ -42,9 +42,13 @@ export class BitBucketRepoRef extends AbstractRepoRef {
                     axiosResponse,
                 };
             })
-            .catch(err => {
-                logger.error("Error attempting to create repository %j: %s", this, err);
-                return Promise.reject(err);
+            .catch(error => {
+                logger.error("Error attempting to create repository %j: %s", this, error);
+                return Promise.resolve({
+                    target: this,
+                    success: false,
+                    error
+                });
             });
     }
 
