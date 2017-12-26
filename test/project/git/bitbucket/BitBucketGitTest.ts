@@ -8,19 +8,15 @@ import { tempProject } from "../../utils";
 const BitBucketUser = process.env.ATLASSIAN_USER;
 const BitBucketPassword = process.env.ATLASSIAN_PASSWORD;
 
-const bbCreds = {username: BitBucketUser, password: BitBucketPassword} as BasicAuthCredentials;
+const bbCreds = { username: BitBucketUser, password: BitBucketPassword } as BasicAuthCredentials;
 
 describe("BitBucket support", () => {
 
     it("should clone", done => {
         GitCommandGitProject.cloned(bbCreds,
             new BitBucketRepoRef("springrod", "austin", "master"))
-            .then(bp => {
-                bp.isClean()
-                    .then(r => {
-                        done();
-                    });
-            }).catch(done);
+            .then(bp => bp.gitStatus())
+            .then(() => done(), done)
     }).timeout(15000);
 
     it("should clone and add file in new branch", () => {
@@ -38,16 +34,9 @@ describe("BitBucket support", () => {
         return doWithNewRemote(bp => {
             bp.addFileSync("Thing", "1");
             return bp.commit("Added Thing1")
-                .then(ar => {
-                    return bp.createBranch("thing1")
-                        .then(() => {
-                            return bp.push()
-                                .then(() => {
-                                    return bp.raisePullRequest("Add a thing", "Dr Seuss is fun");
-                                });
-                        });
-
-                });
+                .then(ar => bp.createBranch("thing1"))
+                .then(() => bp.push())
+                .then(() => bp.raisePullRequest("Add a thing", "Dr Seuss is fun"));
         });
     }).timeout(15000);
 
@@ -57,7 +46,8 @@ describe("BitBucket support", () => {
         });
     }).timeout(16000);
 
-});
+})
+;
 
 function doWithNewRemote(testAndVerify: (p: GitProject) => Promise<any>) {
     const p = tempProject();
@@ -79,14 +69,9 @@ function doWithNewRemote(testAndVerify: (p: GitProject) => Promise<any>) {
         .then(() => GitCommandGitProject.cloned(bbCreds, bbid))
         .then(clonedp => {
             console.log("Cloned OK...");
-            return testAndVerify(clonedp)
-                .then(() => {
-                    return bbid.deleteRemote(bbCreds);
-                });
+            return testAndVerify(clonedp);
         })
-        .catch(err => {
-            return bbid.deleteRemote(bbCreds).then(() => {
-                throw new Error(err);
-            });
-        });
+        .then(() => bbid.deleteRemote(bbCreds),
+            err => bbid.deleteRemote(bbCreds)
+                .then(() => Promise.reject(new Error(err))));
 }

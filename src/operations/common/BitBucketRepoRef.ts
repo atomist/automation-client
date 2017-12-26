@@ -31,7 +31,7 @@ export class BitBucketRepoRef extends AbstractRepoRef {
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
         const url = `${this.apiBase}/repositories/${this.owner}/${this.repo}`;
         logger.info("Making request to %s to create repo with creds %j", url, creds);
-        return axios.put(url, {
+        return axios.post(url, {
             scm: "git",
             is_private: visibility === "private",
         }, headers(creds))
