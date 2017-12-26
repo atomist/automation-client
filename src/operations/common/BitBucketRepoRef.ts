@@ -30,11 +30,11 @@ export class BitBucketRepoRef extends AbstractRepoRef {
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
         const url = `${this.apiBase}/repositories/${this.owner}/${this.repo}`;
-        logger.debug(`Making request to '${url}' to create repo`);
-        return axios.post(url, {
+        logger.info("Making request to %s to create repo with creds %j", url, creds);
+        return axios.put(url, {
             scm: "git",
             is_private: visibility === "private",
-        }, this.headers(creds))
+        }, headers(creds))
             .then(axiosResponse => {
                 return {
                     target: this,
@@ -43,7 +43,7 @@ export class BitBucketRepoRef extends AbstractRepoRef {
                 };
             })
             .catch(err => {
-                logger.error("Error attempting to create repository: " + err);
+                logger.error("Error attempting to create repository %j: %s", this, err);
                 return Promise.reject(err);
             });
     }
@@ -51,7 +51,7 @@ export class BitBucketRepoRef extends AbstractRepoRef {
     public deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>> {
         const url = `${this.apiBase}/repositories/${this.owner}/${this.repo}`;
         logger.debug(`Making request to '${url}' to create repo`);
-        return axios.delete(url, this.headers(creds))
+        return axios.delete(url, headers(creds))
             .then(axiosResponse => {
                 return {
                     target: this,
@@ -86,7 +86,7 @@ export class BitBucketRepoRef extends AbstractRepoRef {
                     name: base,
                 },
             },
-        }, this.headers(credentials))
+        }, headers(credentials))
             .then(axiosResponse => {
                 return {
                     target: this,
@@ -100,17 +100,17 @@ export class BitBucketRepoRef extends AbstractRepoRef {
             });
     }
 
-    private headers(creds: ProjectOperationCredentials) {
-        if (!isBasicAuthCredentials(creds)) {
-            throw new Error("Only Basic auth supported: Had " + JSON.stringify(creds));
-        }
-        const upwd = `${creds.username}:${creds.password}`;
-        const encoded = encode(upwd);
-        return {
-            headers: {
-                Authorization: `Basic ${encoded}`,
-            },
-        };
-    }
+}
 
+function headers(creds: ProjectOperationCredentials) {
+    if (!isBasicAuthCredentials(creds)) {
+        throw new Error("Only Basic auth supported: Had " + JSON.stringify(creds));
+    }
+    const upwd = `${creds.username}:${creds.password}`;
+    const encoded = encode(upwd);
+    return {
+        headers: {
+            Authorization: `Basic ${encoded}`,
+        },
+    };
 }

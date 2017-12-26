@@ -1,6 +1,7 @@
 /**
  * Tag interface for credentials for working with projects
  */
+// tslint:disable-next-line
 export interface ProjectOperationCredentials {
 
 }

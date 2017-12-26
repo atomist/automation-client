@@ -1,9 +1,9 @@
+import { BasicAuthCredentials } from "../../../../src/operations/common/BasicAuthCredentials";
 import { BitBucketRepoRef } from "../../../../src/operations/common/BitBucketRepoRef";
 import { GitCommandGitProject } from "../../../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../../../src/project/git/GitProject";
 import { TestRepositoryVisibility } from "../../../credentials";
 import { tempProject } from "../../utils";
-import { BasicAuthCredentials } from "../../../../src/operations/common/BasicAuthCredentials";
 
 const BitBucketUser = process.env.ATLASSIAN_USER;
 const BitBucketPassword = process.env.ATLASSIAN_PASSWORD;
@@ -63,7 +63,7 @@ function doWithNewRemote(testAndVerify: (p: GitProject) => Promise<any>) {
     const p = tempProject();
     p.addFileSync("README.md", "Here's the readme for my new repo");
 
-    const repo = `test-repo-2-${new Date().getTime()}`;
+    const repo = `test-${new Date().getTime()}`;
 
     const gp: GitProject = GitCommandGitProject.fromProject(p, bbCreds);
     const owner = BitBucketUser;

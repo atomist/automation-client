@@ -132,9 +132,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                               description: string = name,
                               visibility: "private" | "public"): Promise<CommandResult<this>> {
         this.id = gid;
-        const priv = visibility === "private";
-
-        return gid.createRemote(this.credentials, description, priv as any)
+        return gid.createRemote(this.credentials, description, visibility)
             .then(res => {
                 logger.debug(`Repo created ok`);
                 return this.setRemote(gid.cloneUrl(this.credentials));
