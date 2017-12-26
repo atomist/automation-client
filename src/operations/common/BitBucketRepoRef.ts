@@ -5,6 +5,7 @@ import { AbstractRepoRef } from "./AbstractRemoteRepoRef";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 
 import axios from "axios";
+import stringify = require("json-stringify-safe");
 import { encode } from "../../internal/util/base64";
 
 export const BitBucketDotComBase = "https://bitbucket.org/api/2.0";
@@ -31,7 +32,7 @@ export class BitBucketRepoRef extends AbstractRepoRef {
 
     public cloneUrl(creds: ProjectOperationCredentials) {
         if (!isBitBucketCredentials(creds)) {
-            throw new Error("Not BitBucket credentials: " + JSON.stringify(creds));
+            throw new Error("Not BitBucket credentials: " + stringify(creds));
         }
         return `https://${this.owner}:${creds.token}@${this.remoteBase}/${this.pathComponent}.git`;
     }
