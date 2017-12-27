@@ -8,8 +8,9 @@ import { CachingDirectoryManager } from "../../spi/clone/CachingDirectoryManager
 import { CommandDetails } from "../CommandDetails";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
-import { GitHubRepoRef, isGitHubRepoRef } from "../common/GitHubRepoRef";
+import { isGitHubRepoRef } from "../common/GitHubRepoRef";
 import { ProjectAction } from "../common/projectAction";
+import { GitHubDotComRemoteFactory, RemoteFactory } from "../common/RemoteFactory";
 import { RepoFilter } from "../common/repoFilter";
 import { RepoRef } from "../common/RepoId";
 import { RepoLoader } from "../common/repoLoader";
@@ -29,15 +30,19 @@ export interface GeneratorCommandDetails<P extends BaseSeedDrivenGeneratorParame
     redirecter: (r: RepoRef) => string;
     projectPersister?: ProjectPersister;
     afterAction?: ProjectAction<P>;
+
+    // TODO will probably get pulled up
+    remoteFactory: RemoteFactory;
 }
 
 function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: string): GeneratorCommandDetails<P> {
     return {
         description: name,
         repoFinder: allReposInTeam(),
-        repoLoader: (p: P) => defaultRepoLoader({ token: p.target.githubToken }, CachingDirectoryManager),
+        repoLoader: (p: P) => defaultRepoLoader({token: p.target.githubToken}, CachingDirectoryManager),
         projectPersister: RemoteGitProjectPersister,
         redirecter: () => undefined,
+        remoteFactory: GitHubDotComRemoteFactory,
     };
 }
 
@@ -49,12 +54,10 @@ function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: strin
  * @param {string} details object allowing customization beyond reasonable defaults
  * @return {HandleCommand}
  */
-export function generatorHandler<P extends BaseSeedDrivenGeneratorParameters>(
-    editorFactory: EditorFactory<P>,
-    factory: ParametersConstructor<P>,
-    name: string,
-    details: Partial<GeneratorCommandDetails<P>> = {},
-): HandleCommand {
+export function generatorHandler<P extends BaseSeedDrivenGeneratorParameters>(editorFactory: EditorFactory<P>,
+                                                                              factory: ParametersConstructor<P>,
+                                                                              name: string,
+                                                                              details: Partial<GeneratorCommandDetails<P>> = {}): HandleCommand {
 
     const detailsToUse: GeneratorCommandDetails<P> = {
         ...defaultDetails(name),
@@ -64,33 +67,29 @@ export function generatorHandler<P extends BaseSeedDrivenGeneratorParameters>(
         detailsToUse.description, detailsToUse.intent, detailsToUse.tags);
 }
 
-function handleGenerate<P extends BaseSeedDrivenGeneratorParameters>(
-    editorFactory: EditorFactory<P>,
-    details: GeneratorCommandDetails<P>,
-): OnCommand<P> {
+function handleGenerate<P extends BaseSeedDrivenGeneratorParameters>(editorFactory: EditorFactory<P>,
+                                                                     details: GeneratorCommandDetails<P>): OnCommand<P> {
 
     return (ctx: HandlerContext, parameters: P) => {
         return handle(ctx, editorFactory, parameters, details);
     };
 }
 
-function handle<P extends BaseSeedDrivenGeneratorParameters>(
-    ctx: HandlerContext,
-    editorFactory: EditorFactory<P>,
-    params: P,
-    details: GeneratorCommandDetails<P>,
-): Promise<RedirectResult> {
+function handle<P extends BaseSeedDrivenGeneratorParameters>(ctx: HandlerContext,
+                                                             editorFactory: EditorFactory<P>,
+                                                             params: P,
+                                                             details: GeneratorCommandDetails<P>): Promise<RedirectResult> {
 
     return ctx.messageClient.respond(`Starting project generation for ${params.target.owner}/${params.target.repo}`)
         .then(() => {
             return generate(
-                startingPoint(params, ctx, details.repoLoader(params))
+                startingPoint(params, ctx, details.repoLoader(params), details)
                     .then(p => {
                         return ctx.messageClient.respond(`Cloned seed project from \`${params.source.owner}/${params.source.repo}\``)
                             .then(() => p);
                     }),
                 ctx,
-                { token: params.target.githubToken },
+                {token: params.target.githubToken},
                 editorFactory(params, ctx),
                 details.projectPersister,
                 // IT'S A REPO ID
@@ -120,13 +119,13 @@ function handle<P extends BaseSeedDrivenGeneratorParameters>(
  * @param {HandlerContext} ctx
  * @param {RepoLoader} repoLoader
  * @param {P} params
+ * @param details command details
  * @return {Promise<Project>}
  */
-function startingPoint<P extends BaseSeedDrivenGeneratorParameters>(
-    params: P,
-    ctx: HandlerContext,
-    repoLoader: RepoLoader,
-): Promise<Project> {
+function startingPoint<P extends BaseSeedDrivenGeneratorParameters>(params: P,
+                                                                    ctx: HandlerContext,
+                                                                    repoLoader: RepoLoader,
+                                                                    details: GeneratorCommandDetails<any>): Promise<Project> {
 
-    return repoLoader(new GitHubRepoRef(params.source.owner, params.source.repo, params.source.sha));
+    return repoLoader(details.remoteFactory(params.source));
 }
