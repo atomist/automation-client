@@ -134,7 +134,7 @@
     "start": "npm-run-all git:info start:server",
     "start:client": "node $NODE_DEBUG_OPTION build/src/start.client.js --open=true",
     "start:server": "node $NODE_DEBUG_OPTION --trace-warnings --expose_gc --optimize_for_size --always_compact --max_old_space_size=256 build/src/start.client.js",
-    "test": "mocha --require espower-typescript/guess --exit 'test/{*.ts,!(api|benchmark)/**/*.ts}'",
+    "test": "mocha --require espower-typescript/guess --exit 'test/{*.ts,!(api|benchmark|bitbucket-api)/**/*.ts}'",
     "test:api": "mocha --require espower-typescript/guess --exit 'test/api/**/*.ts'",
     "test:bitbucket-api": "mocha --require espower-typescript/guess --exit 'test/bitbucket-api/**/*.ts'",
     "test:benchmark": "npm-run-all test:benchmark:run test:benchmark:process clean:benchmark",
