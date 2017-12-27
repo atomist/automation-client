@@ -15,6 +15,8 @@ export const GitHubDotComBase = "https://api.github.com";
  */
 export class GitHubRepoRef extends AbstractRepoRef {
 
+    public kind = "github";
+
     constructor(owner: string,
                 repo: string,
                 sha: string = "master",
@@ -32,15 +34,7 @@ export class GitHubRepoRef extends AbstractRepoRef {
     }
 
     public setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>> {
-        if (!isTokenCredentials(credentials)) {
-            throw new Error("Only token auth supported");
-        }
-        const config = {
-            headers: {
-                Authorization: `token ${credentials.token}`,
-            },
-        };
-
+        const config = headers(credentials);
         return Promise.all([axios.get(`${this.apiBase}/user`, config),
             axios.get(`${this.apiBase}/user/emails`, config)])
             .then(results => {
@@ -63,14 +57,7 @@ export class GitHubRepoRef extends AbstractRepoRef {
     public raisePullRequest(credentials: ProjectOperationCredentials,
                             title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
         const url = `${this.apiBase}/repos/${this.owner}/${this.repo}/pulls`;
-        if (!isTokenCredentials(credentials)) {
-            throw new Error("Only token auth supported");
-        }
-        const config = {
-            headers: {
-                Authorization: `token ${credentials.token}`,
-            },
-        };
+        const config = headers(credentials);
         logger.debug(`Making request to '${url}' to raise PR`);
         return axios.post(url, {
             title,
@@ -90,9 +77,27 @@ export class GitHubRepoRef extends AbstractRepoRef {
                 return Promise.reject(err);
             });
     }
+
+    public deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>> {
+        const url = `${this.apiBase}/repos/${this.owner}/${this.repo}`;
+        return axios.delete(url, headers(creds))
+            .then(r => successOn(this));
+    }
+
 }
 
 export function isGitHubRepoRef(rr: RepoRef): rr is GitHubRepoRef {
     const maybe = rr as GitHubRepoRef;
-    return maybe && !!maybe.apiBase;
+    return maybe && !!maybe.apiBase && maybe.kind === "github";
+}
+
+function headers(credentials: ProjectOperationCredentials): { headers: any } {
+    if (!isTokenCredentials(credentials)) {
+        throw new Error("Only token auth supported");
+    }
+    return {
+        headers: {
+            Authorization: `token ${credentials.token}`,
+        },
+    };
 }

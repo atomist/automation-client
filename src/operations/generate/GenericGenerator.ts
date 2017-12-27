@@ -10,7 +10,7 @@ import { RepoLoader } from "../common/repoLoader";
 import { AnyProjectEditor } from "../edit/projectEditor";
 import { BaseSeedDrivenGeneratorParameters } from "./BaseSeedDrivenGeneratorParameters";
 import { generate, ProjectPersister } from "./generatorUtils";
-import { GitHubProjectPersister } from "./gitHubProjectPersister";
+import { RemoteGitProjectPersister } from "./remoteGitProjectPersister";
 
 /**
  * Generator that uses external parameters. This decouples parameters from handle logic
@@ -31,7 +31,7 @@ export class GenericGenerator<P extends BaseSeedDrivenGeneratorParameters>
     constructor(private factory: ParametersConstructor<P>,
                 private editorFactory: (params: P, ctx: HandlerContext) => AnyProjectEditor<P>,
                 private redirecter: (r: RepoRef) => string = () => undefined,
-                private projectPersister: ProjectPersister = GitHubProjectPersister) {
+                private projectPersister: ProjectPersister = RemoteGitProjectPersister) {
     }
 
     public freshParametersInstance(): P {

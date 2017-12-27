@@ -7,15 +7,19 @@ import * as fs from "fs";
 
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import { HandlerContext } from "../../src/HandlerContext";
+import { BitBucketRepoRef } from "../../src/operations/common/BitBucketRepoRef";
 import { GitHubDotComBase, GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
+import { ProjectOperationCredentials } from "../../src/operations/common/ProjectOperationCredentials";
+import { RemoteRepoRef } from "../../src/operations/common/RepoId";
 import { BaseSeedDrivenGeneratorParameters } from "../../src/operations/generate/BaseSeedDrivenGeneratorParameters";
 import { generate } from "../../src/operations/generate/generatorUtils";
 import { GenericGenerator } from "../../src/operations/generate/GenericGenerator";
-import { GitHubProjectPersister } from "../../src/operations/generate/gitHubProjectPersister";
+import { RemoteGitProjectPersister } from "../../src/operations/generate/remoteGitProjectPersister";
 import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
 import { LocalProject } from "../../src/project/local/LocalProject";
 import { Project } from "../../src/project/Project";
 import { hasFile } from "../../src/util/gitHub";
+import { BitBucketCredentials, BitBucketUser } from "../bitbucket-api/BitBucketGitTest";
 import { GitHubToken } from "./gitHubTest";
 
 function tempRepoName() {
@@ -37,12 +41,10 @@ describe("generator end to end", () => {
         }).then(() => done(), done);
     });
 
-    function deleteOrIgnore(repoName: string) {
-
-        const url = `${GitHubDotComBase}/repos/${TargetOwner}/${repoName}`;
-        return axios.delete(url, config)
+    function deleteOrIgnore(rr: RemoteRepoRef, creds: ProjectOperationCredentials) {
+        return rr.deleteRemote(creds)
             .catch(err => {
-                console.log(`cleanup: deleting ${repoName} failed with ${err}. oh well`);
+                console.log(`cleanup: deleting ${JSON.stringify(rr)} failed with ${err}. oh well`);
                 return;
             });
     }
@@ -50,8 +52,9 @@ describe("generator end to end", () => {
     it("should create a new GitHub repo using GenericGenerator", function(done) {
         this.retries(3);
         const repoName = tempRepoName();
+        const rr = new GitHubRepoRef(TargetOwner, repoName);
         const cleanupDone = (err: Error | void = null) => {
-            deleteOrIgnore(repoName).then(done(err));
+            deleteOrIgnore(rr, { token: GitHubToken}).then(done(err));
         };
 
         const generator = new GenericGenerator(BaseSeedDrivenGeneratorParameters,
@@ -69,7 +72,7 @@ describe("generator end to end", () => {
                 return hasFile(GitHubToken, TargetOwner, repoName, "pom.xml")
                     .then(r => {
                         assert(r);
-                        return GitCommandGitProject.cloned({ token: GitHubToken },
+                        return GitCommandGitProject.cloned({token: GitHubToken},
                             new GitHubRepoRef(TargetOwner, repoName))
                             .then(verifyPermissions);
                     });
@@ -79,16 +82,17 @@ describe("generator end to end", () => {
     it("should create a new GitHub repo using generate function", function(done) {
         this.retries(3);
         const repoName = tempRepoName();
+        const rr = new GitHubRepoRef(TargetOwner, repoName);
         const cleanupDone = (err: Error | void = null) => {
-            deleteOrIgnore(repoName).then(done(err));
+            deleteOrIgnore(rr, { token: GitHubToken}).then(done(err));
         };
 
-        const clonedSeed = GitCommandGitProject.cloned({ token: GitHubToken },
+        const clonedSeed = GitCommandGitProject.cloned({token: GitHubToken},
             new GitHubRepoRef("atomist-seeds", "spring-rest-seed"));
         const targetRepo = new GitHubRepoRef(TargetOwner, repoName);
 
-        generate(clonedSeed, undefined, { token: GitHubToken },
-            p => Promise.resolve(p), GitHubProjectPersister,
+        generate(clonedSeed, undefined, {token: GitHubToken},
+            p => Promise.resolve(p), RemoteGitProjectPersister,
             targetRepo)
             .then(result => {
                 assert(result.success);
@@ -96,7 +100,7 @@ describe("generator end to end", () => {
                 return hasFile(GitHubToken, TargetOwner, repoName, "pom.xml")
                     .then(r => {
                         assert(r);
-                        return GitCommandGitProject.cloned({ token: GitHubToken },
+                        return GitCommandGitProject.cloned({token: GitHubToken},
                             targetRepo)
                             .then(verifyPermissions)
                             .then(() => {
@@ -106,15 +110,39 @@ describe("generator end to end", () => {
             }).then(() => cleanupDone(), cleanupDone);
     }).timeout(20000);
 
+    it("should create a new BitBucket repo using generate function", function(done) {
+        this.retries(3);
+        const repoName = tempRepoName();
+        const targetRepo = new BitBucketRepoRef(BitBucketUser, repoName);
+        const cleanupDone = (err: Error | void = null) => {
+            deleteOrIgnore(targetRepo, BitBucketCredentials).then(done(err));
+        };
+
+        const clonedSeed = GitCommandGitProject.cloned(BitBucketCredentials,
+            new BitBucketRepoRef("springrod", "spring-rest-seed"));
+
+        generate(clonedSeed, undefined, BitBucketCredentials,
+            p => Promise.resolve(p), RemoteGitProjectPersister,
+            targetRepo)
+            .then(result => {
+                assert(result.success);
+                // Check the repo
+                GitCommandGitProject.cloned(BitBucketCredentials, targetRepo)
+                    .then(p => {
+                        assert(p.findFileSync("pom.xml") !== undefined);
+                    });
+            }).then(() => cleanupDone(), cleanupDone);
+    }).timeout(20000);
+
     it("should refuse to create a new GitHub repo using existing repo name", function(done) {
         this.retries(5);
 
-        const clonedSeed = GitCommandGitProject.cloned({ token: GitHubToken },
+        const clonedSeed = GitCommandGitProject.cloned({token: GitHubToken},
             new GitHubRepoRef("atomist-seeds", "spring-rest-seed"));
         const targetRepo = new GitHubRepoRef("atomist-travisorg", "this-repository-exists");
 
-        generate(clonedSeed, undefined, { token: GitHubToken },
-            p => Promise.resolve(p), GitHubProjectPersister,
+        generate(clonedSeed, undefined, {token: GitHubToken},
+            p => Promise.resolve(p), RemoteGitProjectPersister,
             targetRepo)
             .then(() => {
                 fail("Should not have succeeded");
@@ -146,7 +174,7 @@ export const MockHandlerContext = {
     },
     graphClient: {
         executeMutationFromFile(file: string, variables?: any): Promise<any> {
-            return Promise.resolve({ createSlackChannel: [{ id: "stts" }] });
+            return Promise.resolve({createSlackChannel: [{id: "stts"}]});
         },
     },
 };

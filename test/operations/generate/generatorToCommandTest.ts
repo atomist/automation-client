@@ -3,16 +3,10 @@ import * as assert from "power-assert";
 
 import axios from "axios";
 import MockAdapter = require("axios-mock-adapter");
-
-import { successOn } from "../../../src/action/ActionResult";
-import { HandleCommand } from "../../../src/HandleCommand";
 import { HandlerContext } from "../../../src/HandlerContext";
 import { RedirectResult } from "../../../src/HandlerResult";
-import { SimpleRepoId } from "../../../src/operations/common/RepoId";
 import { BaseSeedDrivenGeneratorParameters } from "../../../src/operations/generate/BaseSeedDrivenGeneratorParameters";
 import { generatorHandler } from "../../../src/operations/generate/generatorToCommand";
-import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { Project } from "../../../src/project/Project";
 import { mockProjectPersister } from "./generatorUtilsTest";
 
 describe("generatorToCommand", () => {
@@ -73,7 +67,7 @@ describe("generatorToCommand", () => {
             assert(postedHook, "posted Atomist webhook to api.github.com");
             assert(responseMessage === "Successfully created new project");
         }).then(() => done(), done);
-    });
+    }).timeout(15000);
 
     it("does not add Atomist webhook to repo", done => {
         const owner = "metric";
@@ -129,6 +123,6 @@ describe("generatorToCommand", () => {
             assert(postedHook === false, "posted Atomist webhook when it should not have");
             assert(responseMessage === "Successfully created new project");
         }).then(() => done(), done);
-    });
+    }).timeout(10000);
 
 });
