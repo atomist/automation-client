@@ -28,7 +28,7 @@ describe("BitBucket support", () => {
                         .then(() => bp.push());
                 });
         });
-    }).timeout(15000);
+    }).timeout(20000);
 
     it("should clone and add file in new branch then raise PR", () => {
         return doWithNewRemote(bp => {
@@ -38,16 +38,15 @@ describe("BitBucket support", () => {
                 .then(() => bp.push())
                 .then(() => bp.raisePullRequest("Add a thing", "Dr Seuss is fun"));
         });
-    }).timeout(15000);
+    }).timeout(20000);
 
     it("add a file, init and commit, then push to new remote repo", () => {
         return doWithNewRemote(bp => {
             return bp.gitStatus();
         });
-    }).timeout(16000);
+    }).timeout(20000);
 
-})
-;
+});
 
 function doWithNewRemote(testAndVerify: (p: GitProject) => Promise<any>) {
     const p = tempProject();

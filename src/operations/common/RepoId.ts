@@ -73,6 +73,8 @@ export interface RemoteRepoRef extends RepoRef {
     raisePullRequest(credentials: ProjectOperationCredentials,
                      title: string, body: string, head: string, base: string): Promise<ActionResult<this>>;
 
+    deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>>;
+
 }
 
 export function isRemoteRepoRef(r: RepoRef): r is RemoteRepoRef {

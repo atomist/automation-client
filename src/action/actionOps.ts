@@ -53,7 +53,7 @@ function toAction<T>(link: Chainable<T>): TAction<T> {
                         successOn(r) as ActionResult<T>;
                 });
         } catch (error) {
-            console.error("Failure: " + error.message);
+            // console.error("Failure: " + error.message);
             return Promise.resolve(failureOn(p, error, link));
         }
     };

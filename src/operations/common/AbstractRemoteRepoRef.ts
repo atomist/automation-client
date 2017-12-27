@@ -35,4 +35,5 @@ export abstract class AbstractRepoRef implements RemoteRepoRef {
     public abstract raisePullRequest(creds: ProjectOperationCredentials,
                                      title: string, body: string, head: string, base: string): Promise<ActionResult<this>>;
 
+    public abstract deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>>;
 }
