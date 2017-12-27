@@ -16,7 +16,7 @@ import { RepoLoader } from "../common/repoLoader";
 import { AnyProjectEditor } from "../edit/projectEditor";
 import { BaseSeedDrivenGeneratorParameters } from "./BaseSeedDrivenGeneratorParameters";
 import { generate, ProjectPersister } from "./generatorUtils";
-import { GitHubProjectPersister } from "./gitHubProjectPersister";
+import { RemoteGitProjectPersister } from "./remoteGitProjectPersister";
 import { addAtomistWebhook } from "./support/addAtomistWebhook";
 
 export type EditorFactory<P> = (params: P, ctx: HandlerContext) => AnyProjectEditor<P>;
@@ -36,7 +36,7 @@ function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: strin
         description: name,
         repoFinder: allReposInTeam(),
         repoLoader: (p: P) => defaultRepoLoader({ token: p.target.githubToken }, CachingDirectoryManager),
-        projectPersister: GitHubProjectPersister,
+        projectPersister: RemoteGitProjectPersister,
         redirecter: () => undefined,
     };
 }

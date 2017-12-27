@@ -15,6 +15,8 @@ export const GitHubDotComBase = "https://api.github.com";
  */
 export class GitHubRepoRef extends AbstractRepoRef {
 
+    public kind = "github";
+
     constructor(owner: string,
                 repo: string,
                 sha: string = "master",
@@ -86,7 +88,7 @@ export class GitHubRepoRef extends AbstractRepoRef {
 
 export function isGitHubRepoRef(rr: RepoRef): rr is GitHubRepoRef {
     const maybe = rr as GitHubRepoRef;
-    return maybe && !!maybe.apiBase;
+    return maybe && !!maybe.apiBase && maybe.kind === "github";
 }
 
 function headers(credentials: ProjectOperationCredentials): { headers: any } {
