@@ -1,39 +1,31 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
-import { AbstractScriptedFlushable } from "../../internal/common/AbstractScriptedFlushable";
 import { MessageClient, MessageOptions } from "./MessageClient";
 
-export abstract class MessageClientSupport extends AbstractScriptedFlushable<MessageClient>
-    implements MessageClient {
+export abstract class MessageClientSupport implements MessageClient {
 
-    public respond(msg: string | SlackMessage, options?: MessageOptions): Promise<any> {
-        return this.doSend(msg, [], [], options);
+    public respond(msg: string | SlackMessage,
+                   options?: MessageOptions): Promise<any> {
+        return this.doSend(msg, null, [], [], options);
     }
 
-    public addressUsers(msg: string | SlackMessage, userNames: string | string[],
+    public addressUsers(msg: string | SlackMessage,
+                        team: string,
+                        users: string | string[],
                         options?: MessageOptions): Promise<any> {
-        return this.doSend(msg, userNames, [], options);
+        return this.doSend(msg, team, users, [], options);
     }
 
-    public addressChannels(msg: string | SlackMessage, channelNames: string | string[],
+    public addressChannels(msg: string | SlackMessage,
+                           team: string,
+                           channels: string | string[],
                            options?: MessageOptions): Promise<any> {
-        return this.doSend(msg, [], channelNames, options);
+        return this.doSend(msg, team, [], channels, options);
     }
 
-    public recordRespond(msg: string | SlackMessage, options?: MessageOptions): this {
-        return this.recordAction(ms => ms.respond(msg, options));
-    }
-
-    public recordAddressUsers(msg: string | SlackMessage, userNames: string | string[],
-                              options?: MessageOptions): this {
-        return this.recordAction(ms => ms.addressUsers(msg, userNames, options));
-    }
-
-    public recordAddressChannels(msg: string | SlackMessage, channelNames: string | string[],
-                                 options?: MessageOptions): this {
-        return this.recordAction(ms => ms.addressChannels(msg, channelNames, options));
-    }
-
-    protected abstract doSend(msg: string | SlackMessage, userNames: string | string[],
-                              channelNames: string | string[], options?: MessageOptions): Promise<any>;
+    protected abstract doSend(msg: string | SlackMessage,
+                              team: string,
+                              users: string | string[],
+                              channels: string | string[],
+                              options?: MessageOptions): Promise<any>;
 
 }

@@ -23,7 +23,7 @@ export interface RequestProcessor {
 }
 
 export function isCommandIncoming(event: any): event is CommandIncoming {
-    return event.atomist_type === "command_handler_request";
+    return !!event.command;
 }
 
 export function isEventIncoming(event: any): event is EventIncoming {
@@ -34,7 +34,7 @@ export interface EventIncoming {
 
     data: any;
     extensions: Extensions;
-    secrets: Arg[];
+    secrets: Secret[];
 }
 
 export interface Extensions {
@@ -47,36 +47,46 @@ export interface Extensions {
 
 export interface CommandIncoming {
 
-    rug: any;
-    correlation_context: any;
+    api_version?: string;
+    correlation_id: string;
+    command: string;
+    team: Team;
+    source: Source;
     parameters: Arg[];
     mapped_parameters: Arg[];
-    secrets: Arg[];
-    name: string;
-    corrid: string;
-    team: Team;
-    user?: User;
-    atomist_type: string;
+    secrets: Secret[];
 }
 
-export interface User {
-
-    id: string;
+export interface Source {
+    user_agent: "slack";
+    slack?: {
+        team: {
+            id: string;
+        };
+        channel?: {
+            id: string;
+        };
+        user?: {
+            id: string;
+        };
+        thread_ts?: string;
+    };
 }
 
 export interface Team {
 
     id: string;
     name?: string;
-    owner?: string;
-    provider?: {
-        id: string,
-        api_url: string,
-    };
 }
 
 export interface Arg {
 
     name: string;
+    value: string;
+}
+
+export interface Secret {
+
+    uri: string;
     value: string;
 }

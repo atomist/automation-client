@@ -97,7 +97,7 @@ describe("MicrogrammarBasedFileParser", () => {
                 const evelyn = (root as any).kids[1] as Kid & TreeNode;
                 assert(evelyn.name === "Evelyn", "Name=" + evelyn.name);
                 // this Integer-matcher should be converting it to a number automatically. microgrammar#34
-                assert(+evelyn.fact.birthYear === 2005, "birth year " + evelyn.fact.birthYear );
+                assert(+evelyn.fact.birthYear === 2005, "birth year " + evelyn.fact.birthYear);
                 assert(evelyn.fact.food === "sugar");
                 done();
             }).catch(done);

@@ -50,7 +50,7 @@ export class GenericGenerator<P extends BaseSeedDrivenGeneratorParameters>
                             .then(() => p);
                     }),
                 ctx,
-                {token: params.target.githubToken},
+                { token: params.target.githubToken },
                 editorFactory(params, ctx),
                 projectPersister,
                 params.target)
@@ -67,13 +67,13 @@ export class GenericGenerator<P extends BaseSeedDrivenGeneratorParameters>
             }));
     }
 
-    protected startingPoint(params: P, ctx: HandlerContext ): Promise<Project> {
+    protected startingPoint(params: P, ctx: HandlerContext): Promise<Project> {
         return this.repoLoader(params)(
             new GitHubRepoRef(params.source.owner, params.source.repo,
                 params.source.sha));
     }
 
     protected repoLoader(params: P): RepoLoader {
-        return defaultRepoLoader({token: params.target.githubToken});
+        return defaultRepoLoader({ token: params.target.githubToken });
     }
 }

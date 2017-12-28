@@ -25,11 +25,11 @@ function computeValue(parameter: Parameter, arg: Arg) {
     let value;
     // Convert type if necessary
     switch (parameter.type) {
-        case undefined :
+        case undefined:
             // It's a string. Keep the value the same
             value = arg.value;
             break;
-        case FreeChoices :
+        case FreeChoices:
             // It's a string array. Keep the value the same
             value = arg.value;
             break;

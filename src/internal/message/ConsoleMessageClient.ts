@@ -8,27 +8,27 @@ import { logger } from "../util/logger";
  */
 export class ConsoleMessageClient extends MessageClientSupport implements MessageClient {
 
-    protected async doSend(msg: string | SlackMessage, userNames: string | string[],
-                           channelNames: string | string[], options?: MessageOptions) {
+    protected async doSend(msg: string | SlackMessage, team: string, users: string | string[],
+                           channels: string | string[], options?: MessageOptions) {
         let s = "";
-        if (channelNames && channelNames.length > 0) {
-            if (Array.isArray(channelNames)) {
-                s += channelNames
-                        .map(n => "#" + n)
-                        .join(", ")
+        if (channels && channels.length > 0) {
+            if (Array.isArray(channels)) {
+                s += channels
+                    .map(n => "#" + n)
+                    .join(", ")
                     + " ";
             } else {
-                s += "#" + channelNames;
+                s += "#" + channels;
             }
         }
-        if (userNames && userNames.length > 0) {
-            if (Array.isArray(userNames)) {
-                s += userNames
-                        .map(n => "@" + n)
-                        .join(", ")
+        if (users && users.length > 0) {
+            if (Array.isArray(users)) {
+                s += users
+                    .map(n => "@" + n)
+                    .join(", ")
                     + " ";
             } else {
-                s += "@" + userNames;
+                s += "@" + users;
             }
         }
 

@@ -33,35 +33,35 @@ export class WebSocketClient {
                 connect(this.registrationCallback, registration, this.options, this.requestProcessor));
         return connection.then(() => {
 
-                registerShutdownHook(() => {
-                    reconnect = false;
+            registerShutdownHook(() => {
+                reconnect = false;
 
-                    if (this.options.termination && this.options.termination.graceful === true) {
-                        logger.info("Initiating WebSocket connection shutdown");
+                if (this.options.termination && this.options.termination.graceful === true) {
+                    logger.info("Initiating WebSocket connection shutdown");
 
-                        // Now wait for configured timeout to let in-flight messages finish processing
-                        const deferred = new Deferred<number>();
-                        setTimeout(() => {
-                            ws.close();
-                            logger.info("Closing WebSocket connection");
-                            deferred.resolve(0);
-                        }, this.options.termination.gracePeriod || 60000);
-
-                        return deferred.promise
-                            .then(code => {
-                                return code;
-                            });
-                    } else {
+                    // Now wait for configured timeout to let in-flight messages finish processing
+                    const deferred = new Deferred<number>();
+                    setTimeout(() => {
                         ws.close();
                         logger.info("Closing WebSocket connection");
-                        return Promise.resolve(0);
-                    }
-                });
+                        deferred.resolve(0);
+                    }, this.options.termination.gracePeriod || 60000);
 
-            }).catch(() => {
-                logger.error("Persistent error registering with Atomist. Exiting...");
-                process.exit(1);
+                    return deferred.promise
+                        .then(code => {
+                            return code;
+                        });
+                } else {
+                    ws.close();
+                    logger.info("Closing WebSocket connection");
+                    return Promise.resolve(0);
+                }
             });
+
+        }).catch(() => {
+            logger.error("Persistent error registering with Atomist. Exiting...");
+            process.exit(1);
+        });
     }
 }
 

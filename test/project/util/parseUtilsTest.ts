@@ -78,14 +78,14 @@ describe("parseUtils", () => {
             age: number;
         }
 
-        const mg = Microgrammar.fromString <Person>(
+        const mg = Microgrammar.fromString<Person>(
             "${name}:${age}",
             {
                 name: /[a-z]+/,
                 age: Integer,
             });
         const t = InMemoryProject.of(
-            {path: "thing", content: "tony:50"});
+            { path: "thing", content: "tony:50" });
         findFileMatches<Person>(t, AllFiles, mg, {
             ...DefaultOpts,
             contentTransformer: content => content.replace("tony", "gordon"),
@@ -316,7 +316,7 @@ const AllJavaFiles = "**/*.java";
 
 export const PACKAGE_NAME = /^[a-zA-Z0-9$.]+/;
 
-const JavaPackageDeclaration = Microgrammar.fromDefinitions<{name: string}>({
+const JavaPackageDeclaration = Microgrammar.fromDefinitions<{ name: string }>({
     _pkg: "package",
     name: PACKAGE_NAME,
     _sc: ";",

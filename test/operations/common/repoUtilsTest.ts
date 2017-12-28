@@ -27,7 +27,7 @@ describe("doWithAllRepos", () => {
             }).catch(done);
     });
 
-    it ("should skip over filtered repos without error", done => {
+    it("should skip over filtered repos without error", done => {
         const good = new InMemoryProject(new GitHubRepoRef("org", "good"));
         const bad = new InMemoryProject(new GitHubRepoRef("org", "bad"));
         const redeemed = new InMemoryProject(new GitHubRepoRef("org", "redeemed"));
@@ -66,11 +66,11 @@ describe("doWithAllRepos", () => {
         const blowUpLoader: RepoLoader = id => {
             ++loadCount;
             switch (id.repo) {
-                case "good" :
+                case "good":
                     return Promise.resolve(good);
-                case "bad" :
+                case "bad":
                     return Promise.reject("error");
-                case "redeemed" :
+                case "redeemed":
                     return Promise.resolve(redeemed);
             }
         };

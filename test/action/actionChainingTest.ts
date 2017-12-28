@@ -132,20 +132,22 @@ describe("action chaining", () => {
     });
 
     const sleepPlease: (timeout: number) => Promise<void> =
-        promisify( (a, b) => setTimeout(b, a));
+        promisify((a, b) => setTimeout(b, a));
 
     it("runs all of them for realz", done => {
         const report = [];
         const f1 = (s: string) => {
             return sleepPlease(50).then(_ => {
                 report.push("f1");
-                return Promise.resolve({ success: true, target: s + " and 1"});
-            }); };
+                return Promise.resolve({ success: true, target: s + " and 1" });
+            });
+        };
         const f2 = (s: string) => {
             return sleepPlease(50).then(_ => {
                 report.push("f2");
-                return Promise.resolve({ success: true, target: s + " and 2"});
-            }); };
+                return Promise.resolve({ success: true, target: s + " and 2" });
+            });
+        };
         const chain = actionChain<string>(f1, f2);
         chain("Southwest").then(result => {
             if (!result.success) {

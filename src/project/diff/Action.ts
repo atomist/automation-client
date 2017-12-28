@@ -1,4 +1,4 @@
-import {Changes} from "./Changes";
+import { Changes } from "./Changes";
 
 /**
  * Performs some side effect based on the compared fingerprints and diff

@@ -19,8 +19,9 @@ export class EventStoringAutomationEventListener extends AutomationEventListener
     }
 
     public messageSent(message: string | SlackMessage,
-                       userNames: string | string[],
-                       channelName: string | string[],
+                       team: string,
+                       users: string | string[],
+                       channels: string | string[],
                        options?: MessageOptions) {
         eventStore().recordMessage(options && options.id ? options.id : guid(), message);
     }

@@ -47,18 +47,18 @@ describe("DefaultWebSocketRequestProcessor", () => {
                 assert(ctx.correlationId === "555");
                 assert(ctx.messageClient);
 
-                return Promise.resolve([{code: 0}]);
+                return Promise.resolve([{ code: 0 }]);
             }
         }
         class MockWebSocket {
             public send(data: any, cb?: (err: Error) => void) {
-                fail();
+                assert(JSON.parse(data).status.code === 0);
             }
         }
         const automations = new MockAutomationServer();
         const listener = new DefaultWebSocketRequestProcessor(automations,
-            { token: "xxx" , registrationUrl: "http://foo.com", graphUrl: "http://bar.com"});
-        listener.onRegistration({url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
+            { token: "xxx", registrationUrl: "http://foo.com", graphUrl: "http://bar.com" });
+        listener.onRegistration({ url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
         listener.onConnect((new MockWebSocket() as any) as WebSocket);
         listener.processEvent({
             data: {
@@ -71,13 +71,13 @@ describe("DefaultWebSocketRequestProcessor", () => {
                 operationName: "FooOp",
                 team_id: "x-team",
                 correlation_id: "555",
-            }}, () => done());
+            },
+        }, () => done());
 
     }).timeout(5000);
 
     it("check successful command received and processed", done => {
         verifyCommandHandler(0, () => done());
-
     }).timeout(5000);
 
     it("check unsuccessful command received and processed", done => {
@@ -113,7 +113,7 @@ function verifyCommandHandler(code: number, callback: (result) => void) {
             assert(ctx.correlationId === "555");
             assert(ctx.messageClient);
 
-            return Promise.resolve({ code});
+            return Promise.resolve({ code });
         }
 
         public onEvent(payload: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult[]> {
@@ -123,36 +123,34 @@ function verifyCommandHandler(code: number, callback: (result) => void) {
     }
     class MockWebSocket {
         public send(data: any, cb?: (err: Error) => void) {
-            assert(JSON.parse(JSON.parse(data).message).code === code);
+            assert(JSON.parse(data).status.code === code);
         }
     }
     const automations = new MockAutomationServer();
     const listener = new DefaultWebSocketRequestProcessor(automations,
-        { token: "xxx" , registrationUrl: "http://foo.com", graphUrl: "http://bar.com"});
-    listener.onRegistration({url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
+        { token: "xxx", registrationUrl: "http://foo.com", graphUrl: "http://bar.com" });
+    listener.onRegistration({ url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
     listener.onConnect((new MockWebSocket() as any) as WebSocket);
     listener.processCommand({
         secrets: [],
         mapped_parameters: [],
-        name: "FooOp",
+        command: "FooOp",
         parameters: [
-            { name: "foo", value: "bar"},
+            { name: "foo", value: "bar" },
         ],
-        rug: {
-
-        },
-        correlation_context: {},
-        corrid: "555",
+        correlation_id: "555",
         team: {
-            owner: "atomisthqa",
             id: "x-team",
             name: "atomista",
-            provider: {
-                api_url: "",
-                id: "",
+        },
+        source: {
+            user_agent: "slack",
+            slack: {
+                team: {
+                    id: "x-team",
+                },
             },
         },
-        atomist_type: "command_handler_request",
     }, callback);
 
 }

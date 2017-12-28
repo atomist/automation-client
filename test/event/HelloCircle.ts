@@ -27,6 +27,7 @@ export class HelloCircle implements HandleEvent<any> {
         const b = e.data.CircleCIPayload[0];
         return ctx.messageClient.addressChannels(
             `*#${b.payload.build_num} ${b.payload.reponame}*`,
+            "FIXME",
             "general")
             .then(() => Success, failure);
     }

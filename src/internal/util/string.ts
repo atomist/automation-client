@@ -29,7 +29,7 @@ export function findLine(str, idx) {
 
     let secondNewLine = last.indexOf("\n");
 
-    if ( secondNewLine === -1 ) {
+    if (secondNewLine === -1) {
         secondNewLine = last.length;
     }
     return str.substring(firstNewLine + 1, idx + secondNewLine);
@@ -40,7 +40,7 @@ export function toStringArray(strings: string | string[]): string[] {
         if (Array.isArray(strings)) {
             return strings as string[];
         } else {
-            return [ strings as string ];
+            return [strings as string];
         }
     } else {
         return null;

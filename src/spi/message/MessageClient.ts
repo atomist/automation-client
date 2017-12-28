@@ -10,21 +10,19 @@ import { metadataFromInstance } from "../../internal/metadata/metadataReading";
  * Implemented by classes that can send bot messages, whether to
  * channels or individuals, including actions and updates.
  */
-export interface MessageClient extends ScriptedFlushable<MessageClient> {
+export interface MessageClient {
 
     respond(msg: string | SlackMessage, options?: MessageOptions): Promise<any>;
 
-    addressUsers(msg: string | SlackMessage, userNames: string | string[], options?: MessageOptions): Promise<any>;
+    addressUsers(msg: string | SlackMessage,
+                 team: string,
+                 users: string | string[],
+                 options?: MessageOptions): Promise<any>;
 
-    addressChannels(msg: string | SlackMessage, channelNames: string | string[],
+    addressChannels(msg: string | SlackMessage,
+                    team: string,
+                    channels: string | string[],
                     options?: MessageOptions): Promise<any>;
-
-    recordRespond(msg: string | SlackMessage, options?: MessageOptions): this;
-
-    recordAddressUsers(msg: string | SlackMessage, userNames: string | string[], options?: MessageOptions): this;
-
-    recordAddressChannels(msg: string | SlackMessage, channelNames: string | string[],
-                          options?: MessageOptions): this;
 }
 
 export interface MessageOptions {
@@ -56,19 +54,14 @@ export interface MessageOptions {
      * if a previous message with the same id exists.
      */
     post?: "update_only" | "always";
-
-    /**
-     * Team Id for the message to send to.
-     */
-    teamId?: string;
 }
 
 export class MessageMimeTypes {
 
     public static SLACK_JSON: "application/x-atomist-slack+json" | "text/plain"
-        = "application/x-atomist-slack+json";
+    = "application/x-atomist-slack+json";
     public static PLAIN_TEXT: "application/x-atomist-slack+json" | "text/plain"
-        = "text/plain";
+    = "text/plain";
 }
 
 export interface CommandReferencingAction extends Action {
@@ -160,8 +153,7 @@ function rugButtonFrom(action: ButtonSpecification, command: any): Action {
     const button: Action = {
         text: action.text,
         type: "button",
-        name: "rug",
-        value: command.id,
+        name: `atm-automation::${command.id}`,
     };
     _.forOwn(action, (v, k) => {
         (button as any)[k] = v;
@@ -182,7 +174,7 @@ function rugMenuFrom(action: MenuSpecification, command: any): Action {
     const select: Action = {
         text: action.text,
         type: "select",
-        name: `rug::${command.id}`,
+        name: `atm-automation::${command.id}`,
     };
 
     if (typeof action.options === "string") {

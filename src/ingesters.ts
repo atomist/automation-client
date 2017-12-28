@@ -75,7 +75,7 @@ export class TypeBuilder {
 
     private fields: FieldType[] = [];
 
-    constructor(public name) {}
+    constructor(public name) { }
 
     public withScalarField(name: string, kind: "String" | "Int" | "Float" | "Boolean", directives: string[] = []): TypeBuilder {
         const field: FieldType = {

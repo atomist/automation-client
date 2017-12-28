@@ -18,8 +18,8 @@ export function assertContent(p: Project, path: string,
                     Promise.resolve(p) :
                     Promise.reject(
                         err ? err : `Assertion failed about project ${p.name}: ${assertion}`),
-            ),
-        );
+        ),
+    );
 }
 
 export function assertContentIncludes(p: Project, path: string, what: string): Promise<Project> {

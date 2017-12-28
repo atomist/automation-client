@@ -45,9 +45,9 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
 
     // tslint:disable-next-line:variable-name
     constructor(private _automations: AutomationServer,
-                // tslint:disable-next-line:variable-name
+        // tslint:disable-next-line:variable-name
                 private _options: WebSocketClientOptions,
-                // tslint:disable-next-line:variable-name
+        // tslint:disable-next-line:variable-name
                 private _listeners: AutomationEventListener[] = []) {
         super(_automations, [..._listeners, new ClusterWorkerAutomationEventListener()]);
         workerSend({ type: "online", context: null });
@@ -99,25 +99,28 @@ class ClusterWorkerMessageClient extends MessageClientSupport {
         super();
     }
 
-    protected doSend(msg: string | SlackMessage, userNames: string | string[],
-                     channelNames: string | string[], options?: MessageOptions): Promise<any> {
+    protected doSend(msg: string | SlackMessage,
+                     team: string,
+                     users: string | string[],
+                     channels: string | string[], options?: MessageOptions): Promise<any> {
         return workerSend({
-                type: "message",
-                context: this.ctx.context,
-                data: {
-                    message: msg,
-                    userNames,
-                    channelNames,
-                    options,
-                },
-            });
+            type: "message",
+            context: this.ctx.context,
+            data: {
+                message: msg,
+                team,
+                users,
+                channels,
+                options,
+            },
+        });
     }
 }
 
 class ClusterWorkerAutomationEventListener extends AutomationEventListenerSupport {
 
     public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<any> {
-       return workerSend({
+        return workerSend({
             type: "command_success",
             event: payload,
             context: (ctx as any).context,

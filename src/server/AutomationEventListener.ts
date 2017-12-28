@@ -22,8 +22,9 @@ export interface AutomationEventListener {
     eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): Promise<any>;
 
     messageSent(message: string | SlackMessage,
-                userNames: string | string[],
-                channelName: string | string[],
+                team: string,
+                users: string | string[],
+                channels: string | string[],
                 options: MessageOptions,
                 ctx: HandlerContext): void;
 
@@ -72,8 +73,9 @@ export class AutomationEventListenerSupport implements AutomationEventListener {
     }
 
     public messageSent(message: string | SlackMessage,
-                       userNames: string | string[],
-                       channelName: string | string[],
+                       team: string,
+                       users: string | string[],
+                       channels: string | string[],
                        options: MessageOptions,
                        ctx: HandlerContext) {
         // This is intentionally left empty

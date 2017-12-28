@@ -14,7 +14,7 @@ describe("payloads", () => {
                 name: "Foo",
                 description: "Some event description",
                 tags: [{ name: "bar", description: "bar" }],
-                secrets: [{ name: "secret", path: "atomist://secret2" }],
+                secrets: [{ name: "secret", uri: "atomist://secret2" }],
                 subscription: "subscription FooSub{}",
                 subscriptionName: "FooSub",
             }],
@@ -22,10 +22,10 @@ describe("payloads", () => {
                 name: "Bar",
                 tags: [{ name: "bar", description: "bar" }],
                 intent: ["intent1"],
-                secrets: [{ name: "secret", path: "atomist://secret1" }],
+                secrets: [{ name: "secret", uri: "atomist://secret1" }],
                 description: "Some command description",
                 parameters: [{ name: "name", required: true }],
-                mapped_parameters: [{ foreign_key: "atomist://repo", local_key: "repo", required: true }],
+                mapped_parameters: [{ uri: "atomist://repo", name: "repo", required: true }],
             }],
             ingesters: [{
                 name: "Foo",
@@ -38,6 +38,10 @@ describe("payloads", () => {
         };
 
         const payload = prepareRegistration(rugs);
+
+        console.log(JSON.stringify(payload, null, 2));
+
+        assert(payload.api_version === "1");
         assert(payload.events, "there are events");
         assert(!payload.events[0].subscriptionName, "event does not have subscription name");
         assert(!payload.events[0].name, "event does not have name");
@@ -45,9 +49,9 @@ describe("payloads", () => {
         assert(!payload.events[0].tags, "event does not have tags");
         assert(payload.events[0].subscription === "subscription FooSub{}", "event has subscription");
         assert(payload.events[0].secrets, "events have secrets");
-        assert(payload.events[0].secrets[0] === "atomist://secret2", "event has a secret");
+        assert(payload.events[0].secrets[0].uri === "atomist://secret2", "event has a secret");
         assert(payload.commands[0].secrets, "commands have secrets");
-        assert(payload.commands[0].secrets[0] === "atomist://secret1", "command has a secret");
+        assert(payload.commands[0].secrets[0].uri === "atomist://secret1", "command has a secret");
         assert(payload.commands[0].auto_submit === false);
 
         assert(payload.name === "foo");
@@ -58,7 +62,7 @@ describe("payloads", () => {
         assert(payload.ingesters);
         assert(!payload.groups);
 
-        assert.deepEqual(payload.policy, { name: "durable"} );
+        assert.deepEqual(payload.policy, { name: "durable" });
 
         assert(payload.metadata.labels);
         assert(payload.metadata.labels["atomist.description"]);
@@ -84,6 +88,6 @@ describe("payloads", () => {
         const payload = prepareRegistration(rugs);
         assert(!payload.team_ids);
         assert(payload.groups[0] = "all");
-        assert.deepEqual(payload.policy, { name: "ephemeral"});
+        assert.deepEqual(payload.policy, { name: "ephemeral" });
     });
 });

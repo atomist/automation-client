@@ -15,14 +15,14 @@ describe("function style command handler invocation", () => {
                 },
             },
         } as HandlerContext;
-        const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         s.fromCommandHandler(addAtomistSpringAgent);
 
         const payload: CommandInvocation = {
             name: "AddAtomistSpringAgent",
-            mappedParameters: [ {name: "githubWebUrl", value: "the restaurant at the end of the universe"}],
-            secrets : [{
-                name: "atomist://some_secret", value: "Vogons write the best poetry",
+            mappedParameters: [{ name: "githubWebUrl", value: "the restaurant at the end of the universe" }],
+            secrets: [{
+                uri: "atomist://some_secret", value: "Vogons write the best poetry",
             }],
             args: [{
                 name: "slackTeam",

@@ -45,10 +45,10 @@ export class GitLabPush implements HandleEvent<any> {
                 text: push.commits.map(c => `\`${url(c.url, c.id.slice(0, 7))}\` ${c.message.slice(0, 49)}`).join("\n"),
                 mrkdwn_in: ["text"],
                 color: "#00a5ff",
-                },
+            },
             ],
         };
-        return ctx.messageClient.addressChannels(msg, "gitlab")
+        return ctx.messageClient.addressChannels(msg,  "FIXME", "gitlab")
             .then(() => Success, failure);
     }
 }

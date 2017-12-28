@@ -32,7 +32,7 @@ describe("exploratory tests for proper-locking", () => {
     });
 
     it("should be able to release a lock in a promise", done => {
-        pleaseLock("docs").then( result => {
+        pleaseLock("docs").then(result => {
             if (result.success) {
                 console.log("let me now release the lock");
                 return result.release();
@@ -42,7 +42,7 @@ describe("exploratory tests for proper-locking", () => {
 
     it("should not be able to lock a file twice", done => {
         pleaseLock("docs")
-            .then( result => {
+            .then(result => {
                 assert(result.success);
                 return pleaseLock("docs")
                     .then(releaseAgain => {

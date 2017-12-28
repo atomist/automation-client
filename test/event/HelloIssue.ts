@@ -41,15 +41,15 @@ export class HelloIssue implements HandleEvent<any> {
         }
 
         return ctx.messageClient.addressChannels(`Got a new issue \`${issue.number}# ${issue.title}\``,
-                issue.repo.channels.map(c => c.name ))
+            "FIXME", issue.repo.channels.map(c => c.name))
             .then(() => {
                 return axios.post(
                     `${apiUrl}repos/${issue.repo.owner}/${issue.repo.name}/issues/${issue.number}/comments`,
                     { body: "Hey, I saw your issue!" },
-                    { headers: { Authorization: `token ${this.githubToken}`}});
+                    { headers: { Authorization: `token ${this.githubToken}` } });
             })
             .then(() => {
-                return Promise.resolve({code: 0});
+                return Promise.resolve({ code: 0 });
             });
     }
 }

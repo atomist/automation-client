@@ -138,11 +138,11 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
                         if (msg.data.userNames && msg.data.userNames.length > 0) {
                             messageClient.addressUsers(msg.data.message as string | SlackMessage,
-                                msg.data.userNames, msg.data.options)
+                                msg.data.team, msg.data.userNames, msg.data.options)
                                 .then(clearNamespace, clearNamespace);
                         } else if (msg.data.channelNames && msg.data.channelNames.length > 0) {
                             messageClient.addressChannels(msg.data.message as string | SlackMessage,
-                                msg.data.channelNames, msg.data.options)
+                                msg.data.team, msg.data.channelNames, msg.data.options)
                                 .then(clearNamespace, clearNamespace);
                         } else {
                             messageClient.respond(msg.data.message as string | SlackMessage, msg.data.options)
@@ -299,7 +299,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
 class Dispatched<T> {
 
-    constructor(public result: Deferred<T>, public context: HandlerContext) {}
+    constructor(public result: Deferred<T>, public context: HandlerContext) { }
 }
 
 function hydrateContext(msg: WorkerMessage): HandlerContext {

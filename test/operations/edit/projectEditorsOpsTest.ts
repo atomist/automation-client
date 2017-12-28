@@ -91,7 +91,7 @@ describe("editor chaining", () => {
     }
 
     it("should handle a series of project transforms", done => {
-        const chain = chainEditors( happyOp, happyOp, happyOp);
+        const chain = chainEditors(happyOp, happyOp, happyOp);
 
         const project = new InMemoryProject();
 
@@ -102,7 +102,7 @@ describe("editor chaining", () => {
     });
 
     it("should fail when project transforms fail a series of project transforms", done => {
-        const chain = chainEditors( happyOp, failingOp, happyOp);
+        const chain = chainEditors(happyOp, failingOp, happyOp);
 
         const project = new InMemoryProject();
 

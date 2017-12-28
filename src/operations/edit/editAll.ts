@@ -37,7 +37,7 @@ export function editAll<R, P extends EditorOrReviewerParameters>(ctx: HandlerCon
                                                                  repoFinder: RepoFinder = allReposInTeam(),
                                                                  repoFilter: RepoFilter = AllRepos,
                                                                  repoLoader: RepoLoader =
-                                                                     defaultRepoLoader(credentials)): Promise<EditResult[]> {
+        defaultRepoLoader(credentials)): Promise<EditResult[]> {
     const edit = (p: Project, parms: P) =>
         editRepo(ctx, p, toEditor(editor), toEditModeFactory(editInfo)(p),
             parms);

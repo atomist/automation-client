@@ -16,7 +16,7 @@ import { logger } from "../../util/logger";
 import { toStringArray } from "../../util/string";
 import {
     CommandIncoming,
-    EventIncoming,
+    EventIncoming, Source,
 } from "../RequestProcessor";
 
 export abstract class AbstractWebSocketMessageClient extends MessageClientSupport {
@@ -24,52 +24,78 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
     constructor(private automations: AutomationServer,
                 private ws: WebSocket,
                 private correlationId: string,
-                private correlationContext: any,
-                private rug: any = {}) {
+                private team: { id: string, name?: string },
+                private source: Source) {
         super();
     }
 
-    protected async doSend(msg: string | SlackMessage, userNames: string | string[],
-                           channelNames: string | string[], options: MessageOptions = {}): Promise<any> {
+    protected async doSend(msg: string | SlackMessage,
+                           team: string,
+                           users: string | string[],
+                           channels: string | string[],
+                           options: MessageOptions = {}): Promise<any> {
         const ts = this.ts(options);
+        const destinations: Destination[] = [];
 
-        let correlationContext = this.correlationContext;
-        if (options.teamId) {
-           correlationContext = _.cloneDeep(this.correlationContext);
-           correlationContext.team.id = options.teamId;
+        (users as string[]).forEach(user => {
+           destinations.push({
+               user_agent: "slack",
+               slack: {
+                   team: {
+                       id: team,
+                   },
+                   user: {
+                       name: user,
+                   },
+               },
+           });
+        });
+        (channels as string[]).forEach(channel => {
+            destinations.push({
+                user_agent: "slack",
+                slack: {
+                    team: {
+                        id: team,
+                    },
+                    channel: {
+                        name: channel,
+                    },
+                },
+            });
+        });
+        if (destinations.length === 0 && this.source) {
+            destinations.push(this.source);
         }
 
         if (isSlackMessage(msg)) {
             const actions = mapActions(msg, this.automations.automations.name, this.automations.automations.version);
             const response: HandlerResponse = {
-                rug: this.rug,
-                corrid: this.correlationId,
-                correlation_context: correlationContext,
+                api_version: "1",
+                correlation_id: this.correlationId,
                 content_type: MessageMimeTypes.SLACK_JSON,
-                message: render(msg, false),
-                channels: channelNames as string[],
-                users: userNames as string[],
-                message_id: options.id,
+                team: this.team,
+                body: render(msg, false),
+                destinations,
+                id: options.id,
                 timestamp: ts ? ts.toString() : undefined,
                 ttl: ts && options.ttl ? (ts + options.ttl).toString() : undefined,
-                post: options.post,
+                updates_only: options.post === "update_only",
                 actions,
             };
             sendMessage(response, this.ws);
             return Promise.resolve(response);
         } else {
             const response: HandlerResponse = {
-                rug: this.rug,
-                corrid: this.correlationId,
-                correlation_context: correlationContext,
+                api_version: "1",
+                correlation_id: this.correlationId,
                 content_type: MessageMimeTypes.PLAIN_TEXT,
-                message: msg as string,
-                channels: channelNames as string[],
-                users: userNames as string[],
-                message_id: options.id,
+                team: this.team,
+                body: msg as string,
+                destinations,
+                id: options.id,
                 timestamp: ts ? ts.toString() : undefined,
                 ttl: ts && options.ttl ? (ts + options.ttl).toString() : undefined,
-                post: options.post,
+                updates_only: options.post === "update_only",
             };
             sendMessage(response, this.ws);
             return Promise.resolve(response);
@@ -92,38 +118,40 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
 export class WebSocketCommandMessageClient extends AbstractWebSocketMessageClient {
 
     constructor(request: CommandIncoming, automations: AutomationServer, ws: WebSocket) {
-        super(automations, ws, request.corrid, request.correlation_context, request.rug);
+        super(automations, ws, request.correlation_id, request.team, request.source);
     }
 
-    protected async doSend(msg: string | SlackMessage, userNames: string | string[],
-                           channelNames: string | string[], options: MessageOptions = {}): Promise<any> {
+    protected async doSend(msg: string | SlackMessage,
+                           team: string,
+                           userNames: string | string[],
+                           channelNames: string | string[],
+                           options: MessageOptions = {}): Promise<any> {
         const users = clean(userNames);
         const channels = clean(channelNames);
 
-        return super.doSend(msg, users, channels, options);
+        return super.doSend(msg, team, users, channels, options);
     }
 }
 
 export class WebSocketEventMessageClient extends AbstractWebSocketMessageClient {
 
     constructor(request: EventIncoming, automations: AutomationServer, ws: WebSocket) {
-        super(automations, ws, request.extensions.correlation_id, { team: { id: request.extensions.team_id }}, {
-            type: "event_handler",
-            group: automations.automations.name,
-            version: automations.automations.version,
-            name: request.extensions.operationName,
-        });
+        super(automations, ws, request.extensions.correlation_id,
+            { id: request.extensions.team_id, name: request.extensions.team_name }, null);
     }
 
-    protected async doSend(msg: string | SlackMessage, userNames: string | string[],
-                           channelNames: string | string[], options: MessageOptions = {}): Promise<any> {
+    protected async doSend(msg: string | SlackMessage,
+                           team: string,
+                           userNames: string | string[],
+                           channelNames: string | string[],
+                           options: MessageOptions = {}): Promise<any> {
         const users = clean(userNames);
         const channels = clean(channelNames);
 
         if (users.length === 0 && channels.length === 0) {
             throw new Error("Response messages are not supported for event handlers");
         } else {
-            return super.doSend(msg, users, channels, options);
+            return super.doSend(msg, team, users, channels, options);
         }
     }
 }
@@ -141,23 +169,13 @@ export function mapActions(msg: SlackMessage, artifact: string, version: string)
 
                     const id = counter++;
                     cra.command.id = `${cra.command.id}-${id}`;
-                    if (cra.command.parameterName) {
-                        a.name = `${a.name}-${id}`;
-                    } else {
-                        a.value = `${a.value}-${id}`;
-                    }
+                    a.name = `${a.name}-${id}`;
 
                     const action: Action = {
                         id: cra.command.id,
                         parameter_name: cra.command.parameterName,
+                        command: cra.command.name,
                         parameters: mapParameters(cra.command.parameters),
-                        rug: {
-                            type: "command_handler",
-                            group: "atomist",
-                            artifact,
-                            version,
-                            name: cra.command.name,
-                        },
                     };
 
                     actions.push(action);
@@ -206,48 +224,61 @@ export function clean(addresses: string[] | string): string[] {
 }
 
 export interface HandlerResponse {
-    // Response messages
-    rug?: any;
-    corrid: string;
-    correlation_context?: any;
-    content_type: string;
-    message: string;
+    api_version: "1";
 
-    // Directed messages
-    channels?: string[];
-    users?: string[];
+    correlation_id: any;
+
+    team: {
+        id: string;
+        name?: string;
+    };
+
+    status?: {
+        code: number;
+        reason: string;
+    };
+
+    destinations?: Destination[];
+
+    content_type?: "application/x-atomist-slack+json" | "text/plain";
+
+    body?: string;
 
     // Updatable messages
-    message_id?: string;
     timestamp?: string;
+    id?: string;
     ttl?: string;
-    post?: string;
+    updates_only?: boolean;
 
     actions?: Action[];
+}
+
+export interface Destination {
+    user_agent: "slack";
+    slack?: {
+        team: {
+            id: string;
+        };
+        channel?: {
+            id?: string;
+            name?: string;
+        };
+        user?: {
+            id?: string;
+            name?: string;
+        };
+        thread_ts?: string;
+    };
 }
 
 export interface Action {
     id: string;
     parameter_name?: string;
-    rug: Rug;
+    command: string;
     parameters: Parameter[];
-}
-
-export interface Rug {
-    type: "command_handler";
-    group: "atomist";
-    artifact: string;
-    name: string;
-    version: string;
 }
 
 export interface Parameter {
     name: string;
     value: string;
-}
-
-export interface StatusMessage {
-    status: "success" | "failure";
-    code: number;
-    message: string;
 }

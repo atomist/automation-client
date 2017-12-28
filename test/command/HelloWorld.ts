@@ -8,7 +8,7 @@ import { SecretBaseHandler } from "./SecretBaseHandler";
 @ConfigurableCommandHandler("Send a hello back to the client", { intent: "hello cd", autoSubmit: true })
 export class HelloWorld extends SecretBaseHandler implements HandleCommand {
 
-    @Parameter({description: "Name of person the greeting should be send to", pattern: /^.*$/})
+    @Parameter({ description: "Name of person the greeting should be send to", pattern: /^.*$/ })
     public name: string;
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
@@ -23,9 +23,11 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
             attachments: [{
                 fallback: "Some buttons",
                 actions: [
-                    buttonForCommand({text: "yes"}, "HelloWorld", { name: this.name }),
-                    menuForCommand({text: "select name", options:
-                            [ { value: "cd", text: "cd" }, { value: "kipz", text: "kipz"}]},
+                    buttonForCommand({ text: "yes" }, "HelloWorld", { name: this.name }),
+                    menuForCommand({
+                        text: "select name", options:
+                            [{ value: "cd", text: "cd" }, { value: "kipz", text: "kipz" }],
+                    },
                         "HelloWorld", "name"),
                 ],
             }],
@@ -38,9 +40,9 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
 
         // { fetchPolicy: "network-only" };
         return ctx.graphClient.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
-            {teamId: "T1L0VDKJP", offset: 0}, {})
+            { teamId: "T1L0VDKJP", offset: 0 }, {})
             .then(() => {
-                return ctx.messageClient.addressUsers(msg, "cd");
+                return ctx.messageClient.addressUsers(msg, ctx.source.slack.team.id, "cd");
             })
             .then(() => ({ code: 0, redirect: "http://google.com" }));
     }

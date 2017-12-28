@@ -8,5 +8,5 @@ export function copyFiles<P extends Project = Project>(from: Project, to: P): Pr
                 files.map(f =>
                     f.getContent().then(content => to.addFile(f.path, content))),
             ),
-        ).then(() => to);
+    ).then(() => to);
 }

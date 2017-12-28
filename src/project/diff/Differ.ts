@@ -1,4 +1,4 @@
-import {Changes} from "./Changes";
+import { Changes } from "./Changes";
 
 /**
  * Diffs two fingerprints

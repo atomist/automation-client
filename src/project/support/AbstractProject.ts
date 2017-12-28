@@ -55,7 +55,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
         return this.findFile(oldPath)
             .then(f =>
                 f.setPath(newPath).then(() => this),
-            )
+        )
             // Not an error if no such file
             .catch(err => this);
     }
