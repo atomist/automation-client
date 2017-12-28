@@ -27,10 +27,10 @@ export class AddAtomistSpringAgentParams {
 // Alternatively, if it's not exported it's fine
 export const addAtomistSpringAgent: HandleCommand =
     commandHandlerFrom((ctx, params) =>
-            ctx.messageClient.respond("I got your message: slackTeam=" + params.slackTeam)
-                .then(succeed),
+        ctx.messageClient.respond("I got your message: slackTeam=" + params.slackTeam)
+            .then(succeed),
         AddAtomistSpringAgentParams,
         "AddAtomistSpringAgent",
         "add the Atomist Agent to a Spring Boot project",
         "add agent",
-        [ "atomist", "spring", "agent" ]);
+        ["atomist", "spring", "agent"]);

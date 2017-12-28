@@ -85,10 +85,10 @@ describe("NodeFsLocalFile", () => {
         f.recordSetContent("The slow brown")
             .flush()
             .then(() => {
-                    assert(f.getContentSync() === "The slow brown");
-                    done();
-                },
-            );
+                assert(f.getContentSync() === "The slow brown");
+                done();
+            },
+        );
     });
 
     it("should set content and read back from disk", done => {
@@ -98,10 +98,10 @@ describe("NodeFsLocalFile", () => {
         assert(f.getContentSync() === "The quick brown");
         f.setContent("The slow brown")
             .then(() => {
-                    assert(f.getContentSync() === "The slow brown");
-                    done();
-                },
-            );
+                assert(f.getContentSync() === "The slow brown");
+                done();
+            },
+        );
     });
 
     it("should recordReplace content and read back", done => {
@@ -126,10 +126,10 @@ describe("NodeFsLocalFile", () => {
         f.recordReplace(/(The )([a-z]+)( brown)/, "$1slow$3")
             .flush()
             .then(() => {
-                    assert(f.getContentSync() === "The slow brown");
-                    done();
-                },
-            ).catch(done);
+                assert(f.getContentSync() === "The slow brown");
+                done();
+            },
+        ).catch(done);
     });
 
     it("should recordReplaceAll and read back from disk", done => {
@@ -140,10 +140,10 @@ describe("NodeFsLocalFile", () => {
         f.recordReplaceAll("e", "z")
             .flush()
             .then(() => {
-                    assert(f.getContentSync() === "Onz two thrzz");
-                    done();
-                },
-            ).catch(done);
+                assert(f.getContentSync() === "Onz two thrzz");
+                done();
+            },
+        ).catch(done);
     });
 
     it("should set path and read back", done => {

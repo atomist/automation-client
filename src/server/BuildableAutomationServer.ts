@@ -14,7 +14,7 @@ import { NodeConfigSecretResolver } from "../internal/env/NodeConfigSecretResolv
 import {
     Arg,
     CommandInvocation,
-    Invocation,
+    Invocation, Secret,
 } from "../internal/invoker/Payload";
 import { Automations, isCommandHandlerMetadata } from "../internal/metadata/metadata";
 import { metadataFromInstance } from "../internal/metadata/metadataReading";
@@ -78,7 +78,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                 if (teamId) {
                     if (opts.token) {
                         this.graphClient = new ApolloGraphClient(`${opts.endpoints.graphql}/${teamId}`,
-                            {Authorization: `token ${opts.token}`});
+                            { Authorization: `token ${opts.token}` });
                     } else {
                         logger.warn("Cannot create graph client due to missing token");
                     }
@@ -246,20 +246,20 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         const mappedParameters = metadata.mapped_parameters || [];
         const invMps = invocation.mappedParameters || [];
         mappedParameters.forEach(mp => {
-            if (invMps.some(im => im.name === mp.local_key) || mp.required) {
-                _.update(h, mp.local_key, () => mrResolver.resolve(mp.local_key));
+            if (invMps.some(im => im.name === mp.name) || mp.required) {
+                _.update(h, mp.name, () => mrResolver.resolve(mp.name));
             }
         });
     }
 
-    private populateSecrets(h: {}, metadata: SecretsMetadata, invocationSecrets: Arg[] | undefined) {
+    private populateSecrets(h: {}, metadata: SecretsMetadata, invocationSecrets: Secret[] | undefined) {
         // Resolve from the invocation, otherwise from our fallback
         class InvocationSecretResolver implements SecretResolver {
-            constructor(private sec: Arg[]) {
+            constructor(private sec: Secret[]) {
             }
 
             public resolve(key: string): string {
-                const value = this.sec.find(a => a.name === key);
+                const value = this.sec.find(a => a.uri === key);
                 if (value) {
                     return String(value.value);
                 }
@@ -272,7 +272,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         // logger.debug("Applying secrets");
         const secrets = metadata.secrets || [];
         secrets.forEach(s => {
-            _.update(h, s.name, () => secretResolver.resolve(s.path));
+            _.update(h, s.name, () => secretResolver.resolve(s.uri));
         });
     }
 

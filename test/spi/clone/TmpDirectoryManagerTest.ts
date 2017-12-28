@@ -37,7 +37,7 @@ describe("the TmpDirectoryManager", () => {
                 return fs.stat(suppliedDirectory)
                     .then(stats => cdi.release())
                     .then(() => fs.stat(suppliedDirectory))
-                    .catch( err => {
+                    .catch(err => {
                         if (err.code === "ENOENT") {
                             assert.fail("directory has been deleted boo " + suppliedDirectory);
                         } else {

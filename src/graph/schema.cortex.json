@@ -5033,6 +5033,129 @@
               "deprecationReason": null
             },
             {
+              "name": "Team",
+              "description": null,
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of Team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Team",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Team",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_TeamOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Team",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "ChatTeam",
               "description": null,
               "args": [
@@ -7548,84 +7671,6 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
-            },
-            {
-              "name": "CircleCIPayload",
-              "description": "Auto-generated query for CircleCIPayload",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CircleCIPayload"
-                }
-              },
-              "args": [
-                {
-                  "name": "id",
-                  "description": "The ID of this CircleCIPayload",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID"
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "name": "GitLabPush",
-              "description": "Auto-generated query for GitLabPush",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "GitLabPush"
-                }
-              },
-              "args": [
-                {
-                  "name": "id",
-                  "description": "The ID of this GitLabPush",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID"
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "name": "HelloWorld",
-              "description": "Auto-generated query for HelloWorld",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "HelloWorld"
-                }
-              },
-              "args": [
-                {
-                  "name": "id",
-                  "description": "The ID of this HelloWorld",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID"
-                    }
-                  }
-                }
-              ]
             }
           ],
           "inputFields": null,
@@ -14494,6 +14539,81 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "team",
+              "description": "GitHubProvider team Team",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of Team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Team",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Team",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_TeamOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Team",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -14502,121 +14622,758 @@
           "possibleTypes": null
         },
         {
-          "kind": "ENUM",
-          "name": "_GitHubProviderOrdering",
-          "description": "Ordering Enum for GitHubProvider",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
+          "kind": "OBJECT",
+          "name": "Team",
+          "description": "Team-Node",
+          "fields": [
             {
-              "name": "atmTeamId_asc",
-              "description": "Ascending sort for atmTeamId",
+              "name": "_id",
+              "description": "internal node id",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Long",
+                "ofType": null
+              },
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "atmTeamId_desc",
-              "description": "Descending sort for atmTeamId",
+              "name": "id",
+              "description": "id of  Team",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "id_asc",
-              "description": "Ascending sort for id",
+              "name": "name",
+              "description": "name of  Team",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "id_desc",
-              "description": "Descending sort for id",
+              "name": "persons",
+              "description": "Team persons Person",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Person",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "forename",
+                  "description": "forename of Person",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "surname",
+                  "description": "surname of Person",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Person",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "forenames",
+                  "description": "forenames is list variant of forename of Person",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "surnames",
+                  "description": "surnames is list variant of surname of Person",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_PersonOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Person",
+                  "ofType": null
+                }
+              },
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "url_asc",
-              "description": "Ascending sort for url",
+              "name": "orgs",
+              "description": "Team orgs Org",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Org",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "owner",
+                  "description": "owner of Org",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ownerType",
+                  "description": "ownerType of Org",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OwnerType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Org",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "owners",
+                  "description": "owners is list variant of owner of Org",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ownerTypes",
+                  "description": "ownerTypes is list variant of ownerType of Org",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "OwnerType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_OrgOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Org",
+                  "ofType": null
+                }
+              },
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "url_desc",
-              "description": "Descending sort for url",
+              "name": "providers",
+              "description": "Team providers GitHubProvider",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "url",
+                  "description": "url of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerId",
+                  "description": "providerId of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "apiUrl",
+                  "description": "apiUrl of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitUrl",
+                  "description": "gitUrl of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "urls",
+                  "description": "urls is list variant of url of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerIds",
+                  "description": "providerIds is list variant of providerId of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "apiUrls",
+                  "description": "apiUrls is list variant of apiUrl of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitUrls",
+                  "description": "gitUrls is list variant of gitUrl of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_GitHubProviderOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "GitHubProvider",
+                  "ofType": null
+                }
+              },
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "providerId_asc",
-              "description": "Ascending sort for providerId",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "providerId_desc",
-              "description": "Descending sort for providerId",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "apiUrl_asc",
-              "description": "Ascending sort for apiUrl",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "apiUrl_desc",
-              "description": "Descending sort for apiUrl",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "gitUrl_asc",
-              "description": "Ascending sort for gitUrl",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "gitUrl_desc",
-              "description": "Descending sort for gitUrl",
+              "name": "chatTeams",
+              "description": "Team chatTeams ChatTeam",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of ChatTeam",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of ChatTeam",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "provider",
+                  "description": "provider of ChatTeam",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "domain",
+                  "description": "domain of ChatTeam",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "messageCount",
+                  "description": "messageCount of ChatTeam",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Float",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "emailDomain",
+                  "description": "emailDomain of ChatTeam",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of ChatTeam",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of ChatTeam",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providers",
+                  "description": "providers is list variant of provider of ChatTeam",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "domains",
+                  "description": "domains is list variant of domain of ChatTeam",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "messageCounts",
+                  "description": "messageCounts is list variant of messageCount of ChatTeam",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Float",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "emailDomains",
+                  "description": "emailDomains is list variant of emailDomain of ChatTeam",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_ChatTeamOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ChatTeam",
+                  "ofType": null
+                }
+              },
               "isDeprecated": false,
               "deprecationReason": null
             }
           ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "_EmailOrdering",
-          "description": "Ordering Enum for Email",
-          "fields": null,
           "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "atmTeamId_asc",
-              "description": "Ascending sort for atmTeamId",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "atmTeamId_desc",
-              "description": "Descending sort for atmTeamId",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "address_asc",
-              "description": "Ascending sort for address",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "address_desc",
-              "description": "Descending sort for address",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
+          "interfaces": [],
+          "enumValues": null,
           "possibleTypes": null
         },
         {
@@ -15112,6 +15869,81 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "team",
+              "description": "Person team Team",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of Team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Team",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Team",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_TeamOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Team",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -15311,6 +16143,88 @@
         },
         {
           "kind": "ENUM",
+          "name": "_EmailOrdering",
+          "description": "Ordering Enum for Email",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "atmTeamId_asc",
+              "description": "Ascending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "atmTeamId_desc",
+              "description": "Descending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "address_asc",
+              "description": "Ascending sort for address",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "address_desc",
+              "description": "Descending sort for address",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "_TeamOrdering",
+          "description": "Ordering Enum for Team",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "atmTeamId_asc",
+              "description": "Ascending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "atmTeamId_desc",
+              "description": "Descending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_asc",
+              "description": "Ascending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_desc",
+              "description": "Descending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name_asc",
+              "description": "Ascending sort for name",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name_desc",
+              "description": "Descending sort for name",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
           "name": "_PersonOrdering",
           "description": "Ordering Enum for Person",
           "fields": null,
@@ -15362,6 +16276,1277 @@
             {
               "name": "surname_desc",
               "description": "Descending sort for surname",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Org",
+          "description": "Org-Node",
+          "fields": [
+            {
+              "name": "_id",
+              "description": "internal node id",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Long",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "id of  Org",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "owner",
+              "description": "owner of  Org",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ownerType",
+              "description": "ownerType of  Org",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "OwnerType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "provider",
+              "description": "Org provider GitHubProvider",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "url",
+                  "description": "url of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerId",
+                  "description": "providerId of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "apiUrl",
+                  "description": "apiUrl of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitUrl",
+                  "description": "gitUrl of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "urls",
+                  "description": "urls is list variant of url of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerIds",
+                  "description": "providerIds is list variant of providerId of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "apiUrls",
+                  "description": "apiUrls is list variant of apiUrl of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitUrls",
+                  "description": "gitUrls is list variant of gitUrl of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_GitHubProviderOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "GitHubProvider",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "repo",
+              "description": "Org repo Repo",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "owner",
+                  "description": "owner of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowRebaseMerge",
+                  "description": "allowRebaseMerge of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowSquashMerge",
+                  "description": "allowSquashMerge of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowMergeCommit",
+                  "description": "allowMergeCommit of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubId",
+                  "description": "gitHubId of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "defaultBranch",
+                  "description": "defaultBranch of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "owners",
+                  "description": "owners is list variant of owner of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowRebaseMerges",
+                  "description": "allowRebaseMerges is list variant of allowRebaseMerge of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowSquashMerges",
+                  "description": "allowSquashMerges is list variant of allowSquashMerge of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowMergeCommits",
+                  "description": "allowMergeCommits is list variant of allowMergeCommit of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubIds",
+                  "description": "gitHubIds is list variant of gitHubId of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "defaultBranchs",
+                  "description": "defaultBranchs is list variant of defaultBranch of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_RepoOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Repo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webhook",
+              "description": "Org webhook GitHubOrgWebhook",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of GitHubOrgWebhook",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "url",
+                  "description": "url of GitHubOrgWebhook",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "webhookType",
+                  "description": "webhookType of GitHubOrgWebhook",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "WebhookType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of GitHubOrgWebhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "urls",
+                  "description": "urls is list variant of url of GitHubOrgWebhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "webhookTypes",
+                  "description": "webhookTypes is list variant of webhookType of GitHubOrgWebhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "WebhookType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_GitHubOrgWebhookOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "GitHubOrgWebhook",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "chatTeam",
+              "description": "Org chatTeam ChatTeam",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of ChatTeam",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of ChatTeam",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "provider",
+                  "description": "provider of ChatTeam",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "domain",
+                  "description": "domain of ChatTeam",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "messageCount",
+                  "description": "messageCount of ChatTeam",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Float",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "emailDomain",
+                  "description": "emailDomain of ChatTeam",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of ChatTeam",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of ChatTeam",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providers",
+                  "description": "providers is list variant of provider of ChatTeam",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "domains",
+                  "description": "domains is list variant of domain of ChatTeam",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "messageCounts",
+                  "description": "messageCounts is list variant of messageCount of ChatTeam",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Float",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "emailDomains",
+                  "description": "emailDomains is list variant of emailDomain of ChatTeam",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_ChatTeamOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ChatTeam",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "team",
+              "description": "Org team Team",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of Team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Team",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Team",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_TeamOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Team",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "OwnerType",
+          "description": "Enum for OwnerType",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "user",
+              "description": "Value for user",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "organization",
+              "description": "Value for organization",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "_GitHubProviderOrdering",
+          "description": "Ordering Enum for GitHubProvider",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "atmTeamId_asc",
+              "description": "Ascending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "atmTeamId_desc",
+              "description": "Descending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_asc",
+              "description": "Ascending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_desc",
+              "description": "Descending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "url_asc",
+              "description": "Ascending sort for url",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "url_desc",
+              "description": "Descending sort for url",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "providerId_asc",
+              "description": "Ascending sort for providerId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "providerId_desc",
+              "description": "Descending sort for providerId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "apiUrl_asc",
+              "description": "Ascending sort for apiUrl",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "apiUrl_desc",
+              "description": "Descending sort for apiUrl",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "gitUrl_asc",
+              "description": "Ascending sort for gitUrl",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "gitUrl_desc",
+              "description": "Descending sort for gitUrl",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "GitHubOrgWebhook",
+          "description": "GitHubOrgWebhook-Node",
+          "fields": [
+            {
+              "name": "_id",
+              "description": "internal node id",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Long",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "id of  GitHubOrgWebhook",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "url",
+              "description": "url of  GitHubOrgWebhook",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webhookType",
+              "description": "webhookType of  GitHubOrgWebhook",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "WebhookType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "org",
+              "description": "GitHubOrgWebhook org Org",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Org",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "owner",
+                  "description": "owner of Org",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ownerType",
+                  "description": "ownerType of Org",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OwnerType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Org",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "owners",
+                  "description": "owners is list variant of owner of Org",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ownerTypes",
+                  "description": "ownerTypes is list variant of ownerType of Org",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "OwnerType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_OrgOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Org",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "WebhookType",
+          "description": "Enum for WebhookType",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "organization",
+              "description": "Value for organization",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "repository",
+              "description": "Value for repository",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "_OrgOrdering",
+          "description": "Ordering Enum for Org",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "atmTeamId_asc",
+              "description": "Ascending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "atmTeamId_desc",
+              "description": "Descending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_asc",
+              "description": "Ascending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_desc",
+              "description": "Descending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "owner_asc",
+              "description": "Ascending sort for owner",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "owner_desc",
+              "description": "Descending sort for owner",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ownerType_asc",
+              "description": "Ascending sort for ownerType",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ownerType_desc",
+              "description": "Descending sort for ownerType",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "_GitHubOrgWebhookOrdering",
+          "description": "Ordering Enum for GitHubOrgWebhook",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "atmTeamId_asc",
+              "description": "Ascending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "atmTeamId_desc",
+              "description": "Descending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_asc",
+              "description": "Ascending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_desc",
+              "description": "Descending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "url_asc",
+              "description": "Ascending sort for url",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "url_desc",
+              "description": "Descending sort for url",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webhookType_asc",
+              "description": "Ascending sort for webhookType",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webhookType_desc",
+              "description": "Descending sort for webhookType",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -16358,8 +18543,83 @@
               "deprecationReason": null
             },
             {
+              "name": "team",
+              "description": "ChatTeam team Team",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of Team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Team",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Team",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_TeamOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Team",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "preferences",
-              "description": "Return a team's preferences",
+              "description": "Return a chat team's preferences",
               "args": [],
               "type": {
                 "kind": "LIST",
@@ -16373,1119 +18633,6 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "Org",
-          "description": "Org-Node",
-          "fields": [
-            {
-              "name": "_id",
-              "description": "internal node id",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Long",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "id of  Org",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "owner",
-              "description": "owner of  Org",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ownerType",
-              "description": "ownerType of  Org",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "OwnerType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "provider",
-              "description": "Org provider GitHubProvider",
-              "args": [
-                {
-                  "name": "id",
-                  "description": "id of GitHubProvider",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "url",
-                  "description": "url of GitHubProvider",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "providerId",
-                  "description": "providerId of GitHubProvider",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "apiUrl",
-                  "description": "apiUrl of GitHubProvider",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "gitUrl",
-                  "description": "gitUrl of GitHubProvider",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "ids",
-                  "description": "ids is list variant of id of GitHubProvider",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "urls",
-                  "description": "urls is list variant of url of GitHubProvider",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "providerIds",
-                  "description": "providerIds is list variant of providerId of GitHubProvider",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "apiUrls",
-                  "description": "apiUrls is list variant of apiUrl of GitHubProvider",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "gitUrls",
-                  "description": "gitUrls is list variant of gitUrl of GitHubProvider",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "orderBy",
-                  "description": null,
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "ENUM",
-                      "name": "_GitHubProviderOrdering",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "GitHubProvider",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "repo",
-              "description": "Org repo Repo",
-              "args": [
-                {
-                  "name": "id",
-                  "description": "id of Repo",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "owner",
-                  "description": "owner of Repo",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "name",
-                  "description": "name of Repo",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "allowRebaseMerge",
-                  "description": "allowRebaseMerge of Repo",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "allowSquashMerge",
-                  "description": "allowSquashMerge of Repo",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "allowMergeCommit",
-                  "description": "allowMergeCommit of Repo",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "gitHubId",
-                  "description": "gitHubId of Repo",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "defaultBranch",
-                  "description": "defaultBranch of Repo",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "ids",
-                  "description": "ids is list variant of id of Repo",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "owners",
-                  "description": "owners is list variant of owner of Repo",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "names",
-                  "description": "names is list variant of name of Repo",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "allowRebaseMerges",
-                  "description": "allowRebaseMerges is list variant of allowRebaseMerge of Repo",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "Boolean",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "allowSquashMerges",
-                  "description": "allowSquashMerges is list variant of allowSquashMerge of Repo",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "Boolean",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "allowMergeCommits",
-                  "description": "allowMergeCommits is list variant of allowMergeCommit of Repo",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "Boolean",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "gitHubIds",
-                  "description": "gitHubIds is list variant of gitHubId of Repo",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "defaultBranchs",
-                  "description": "defaultBranchs is list variant of defaultBranch of Repo",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "orderBy",
-                  "description": null,
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "ENUM",
-                      "name": "_RepoOrdering",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "_id",
-                  "description": null,
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Long",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "_ids",
-                  "description": null,
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "Long",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "first",
-                  "description": null,
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "offset",
-                  "description": null,
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Repo",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "webhook",
-              "description": "Org webhook GitHubOrgWebhook",
-              "args": [
-                {
-                  "name": "id",
-                  "description": "id of GitHubOrgWebhook",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "url",
-                  "description": "url of GitHubOrgWebhook",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "webhookType",
-                  "description": "webhookType of GitHubOrgWebhook",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "WebhookType",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "ids",
-                  "description": "ids is list variant of id of GitHubOrgWebhook",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "urls",
-                  "description": "urls is list variant of url of GitHubOrgWebhook",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "webhookTypes",
-                  "description": "webhookTypes is list variant of webhookType of GitHubOrgWebhook",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "ENUM",
-                      "name": "WebhookType",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "orderBy",
-                  "description": null,
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "ENUM",
-                      "name": "_GitHubOrgWebhookOrdering",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "_id",
-                  "description": null,
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Long",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "_ids",
-                  "description": null,
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "Long",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "first",
-                  "description": null,
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "offset",
-                  "description": null,
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "GitHubOrgWebhook",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "chatTeam",
-              "description": "Org chatTeam ChatTeam",
-              "args": [
-                {
-                  "name": "id",
-                  "description": "id of ChatTeam",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "name",
-                  "description": "name of ChatTeam",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "provider",
-                  "description": "provider of ChatTeam",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "domain",
-                  "description": "domain of ChatTeam",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "messageCount",
-                  "description": "messageCount of ChatTeam",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Float",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "emailDomain",
-                  "description": "emailDomain of ChatTeam",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "ids",
-                  "description": "ids is list variant of id of ChatTeam",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "names",
-                  "description": "names is list variant of name of ChatTeam",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "providers",
-                  "description": "providers is list variant of provider of ChatTeam",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "domains",
-                  "description": "domains is list variant of domain of ChatTeam",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "messageCounts",
-                  "description": "messageCounts is list variant of messageCount of ChatTeam",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "Float",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "emailDomains",
-                  "description": "emailDomains is list variant of emailDomain of ChatTeam",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "orderBy",
-                  "description": null,
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "ENUM",
-                      "name": "_ChatTeamOrdering",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "ChatTeam",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "OwnerType",
-          "description": "Enum for OwnerType",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "user",
-              "description": "Value for user",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "organization",
-              "description": "Value for organization",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "GitHubOrgWebhook",
-          "description": "GitHubOrgWebhook-Node",
-          "fields": [
-            {
-              "name": "_id",
-              "description": "internal node id",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Long",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "id of  GitHubOrgWebhook",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "url",
-              "description": "url of  GitHubOrgWebhook",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "webhookType",
-              "description": "webhookType of  GitHubOrgWebhook",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "WebhookType",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "org",
-              "description": "GitHubOrgWebhook org Org",
-              "args": [
-                {
-                  "name": "id",
-                  "description": "id of Org",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "owner",
-                  "description": "owner of Org",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "ownerType",
-                  "description": "ownerType of Org",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "OwnerType",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "ids",
-                  "description": "ids is list variant of id of Org",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "owners",
-                  "description": "owners is list variant of owner of Org",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "ownerTypes",
-                  "description": "ownerTypes is list variant of ownerType of Org",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "ENUM",
-                      "name": "OwnerType",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "orderBy",
-                  "description": null,
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "ENUM",
-                      "name": "_OrgOrdering",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "Org",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "WebhookType",
-          "description": "Enum for WebhookType",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "organization",
-              "description": "Value for organization",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "repository",
-              "description": "Value for repository",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "_OrgOrdering",
-          "description": "Ordering Enum for Org",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "atmTeamId_asc",
-              "description": "Ascending sort for atmTeamId",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "atmTeamId_desc",
-              "description": "Descending sort for atmTeamId",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id_asc",
-              "description": "Ascending sort for id",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id_desc",
-              "description": "Descending sort for id",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "owner_asc",
-              "description": "Ascending sort for owner",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "owner_desc",
-              "description": "Descending sort for owner",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ownerType_asc",
-              "description": "Ascending sort for ownerType",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "ownerType_desc",
-              "description": "Descending sort for ownerType",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "_GitHubOrgWebhookOrdering",
-          "description": "Ordering Enum for GitHubOrgWebhook",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "atmTeamId_asc",
-              "description": "Ascending sort for atmTeamId",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "atmTeamId_desc",
-              "description": "Descending sort for atmTeamId",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id_asc",
-              "description": "Ascending sort for id",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id_desc",
-              "description": "Descending sort for id",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "url_asc",
-              "description": "Ascending sort for url",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "url_desc",
-              "description": "Descending sort for url",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "webhookType_asc",
-              "description": "Ascending sort for webhookType",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "webhookType_desc",
-              "description": "Descending sort for webhookType",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
           "possibleTypes": null
         },
         {
@@ -38651,7 +39798,7 @@
           "fields": [
             {
               "name": "setTeamPreference",
-              "description": "Set the value of a team preferences. Returns what was set",
+              "description": "Set the value of a team preference. Returns what was set",
               "type": {
                 "kind": "LIST",
                 "ofType": {
@@ -38660,6 +39807,43 @@
                 }
               },
               "args": [
+                {
+                  "name": "name",
+                  "description": "The name of the preference",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "value",
+                  "description": "The value of the preference",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "setChatTeamPreference",
+              "description": "Set the value of a chat team preference. Returns what was set",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "TeamPreference"
+                }
+              },
+              "args": [
+                {
+                  "name": "chatTeamId",
+                  "description": "The ID of the chat team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID"
+                  }
+                },
                 {
                   "name": "name",
                   "description": "The name of the preference",
@@ -44683,6 +45867,129 @@
               "deprecationReason": null
             },
             {
+              "name": "Team",
+              "description": null,
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of Team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Team",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Team",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_TeamOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Team",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "ChatTeam",
               "description": null,
               "args": [
@@ -47198,45 +48505,6 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
-            },
-            {
-              "name": "CircleCIPayload",
-              "description": "Auto-generated subscription for CircleCIPayload",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CircleCIPayload"
-                }
-              },
-              "args": []
-            },
-            {
-              "name": "GitLabPush",
-              "description": "Auto-generated subscription for GitLabPush",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "GitLabPush"
-                }
-              },
-              "args": []
-            },
-            {
-              "name": "HelloWorld",
-              "description": "Auto-generated subscription for HelloWorld",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "HelloWorld"
-                }
-              },
-              "args": []
             }
           ],
           "inputFields": null,
@@ -47269,286 +48537,12 @@
               }
             }
           ]
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CircleCIPayload",
-          "fields": [
-            {
-              "name": "payload",
-              "type": {
-                "kind": "OBJECT",
-                "name": "CircleCIBuild"
-              },
-              "args": []
-            },
-            {
-              "name": "id",
-              "description": "The ID of this CircleCIPayload",
-              "type": {
-                "kind": "SCALAR",
-                "name": "ID"
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CircleCIBuild",
-          "fields": [
-            {
-              "name": "build_num",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int"
-              },
-              "directives": [
-                {
-                  "name": "compositeId"
-                }
-              ],
-              "args": []
-            },
-            {
-              "name": "vcs_revision",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "reponame",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "directives": [
-                {
-                  "name": "compositeId"
-                }
-              ],
-              "args": []
-            },
-            {
-              "name": "branch",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "directives": [
-                {
-                  "name": "compositeId"
-                }
-              ],
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "GitLabPush",
-          "fields": [
-            {
-              "name": "user_username",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "checkout_sha",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "directives": [
-                {
-                  "name": "compositeId"
-                }
-              ],
-              "args": []
-            },
-            {
-              "name": "user_avatar",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "repository",
-              "type": {
-                "kind": "OBJECT",
-                "name": "GitLabRepository"
-              },
-              "args": []
-            },
-            {
-              "name": "commits",
-              "type": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "GitLabLabCommit"
-                }
-              },
-              "args": []
-            },
-            {
-              "name": "id",
-              "description": "The ID of this GitLabPush",
-              "type": {
-                "kind": "SCALAR",
-                "name": "ID"
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "GitLabLabCommit",
-          "fields": [
-            {
-              "name": "id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "message",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "url",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "author",
-              "type": {
-                "kind": "OBJECT",
-                "name": "GitLabAuthor"
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "GitLabAuthor",
-          "fields": [
-            {
-              "name": "name",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "email",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "GitLabRepository",
-          "fields": [
-            {
-              "name": "name",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "git_http_url",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "HelloWorld",
-          "fields": [
-            {
-              "name": "sender",
-              "type": {
-                "kind": "OBJECT",
-                "name": "HelloWorldPerson"
-              },
-              "args": []
-            },
-            {
-              "name": "recipient",
-              "type": {
-                "kind": "OBJECT",
-                "name": "HelloWorldPerson"
-              },
-              "args": []
-            },
-            {
-              "name": "id",
-              "description": "The ID of this HelloWorld",
-              "type": {
-                "kind": "SCALAR",
-                "name": "ID"
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "HelloWorldPerson",
-          "fields": [
-            {
-              "name": "name",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
         }
       ],
       "directives": [
         {
-          "name": "skip",
-          "description": "Directs the executor to skip this field or fragment when the `if`'argument is true.",
+          "name": "include",
+          "description": "Directs the executor to include this field or fragment only when the `if` argument is true",
           "locations": [
             "FIELD",
             "FRAGMENT_SPREAD",
@@ -47557,7 +48551,7 @@
           "args": [
             {
               "name": "if",
-              "description": "Skipped when true.",
+              "description": "Included when true.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -47572,8 +48566,8 @@
           ]
         },
         {
-          "name": "include",
-          "description": "Directs the executor to include this field or fragment only when the `if` argument is true",
+          "name": "skip",
+          "description": "Directs the executor to skip this field or fragment when the `if`'argument is true.",
           "locations": [
             "FIELD",
             "FRAGMENT_SPREAD",
@@ -47582,7 +48576,7 @@
           "args": [
             {
               "name": "if",
-              "description": "Included when true.",
+              "description": "Skipped when true.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,

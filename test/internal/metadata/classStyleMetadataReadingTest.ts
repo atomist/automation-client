@@ -28,12 +28,12 @@ describe("class style metadata reading", () => {
         assert(md.parameters.length === 1);
         assert(md.parameters[0].name === "slackTeam");
         assert(md.mapped_parameters.length === 2);
-        assert(md.mapped_parameters[0].local_key === "githubWebUrl");
-        assert(md.mapped_parameters[0].foreign_key === "atomist://github_url");
+        assert(md.mapped_parameters[0].name === "githubWebUrl");
+        assert(md.mapped_parameters[0].uri === "atomist://github_url");
         assert(md.mapped_parameters[0].required);
         assert(md.secrets.length === 1);
         assert(md.secrets[0].name === "someSecret");
-        assert(md.secrets[0].path === "atomist://some_secret");
+        assert(md.secrets[0].uri === "atomist://some_secret");
     });
 
     it("should handle inherited parameters", () => {
@@ -66,45 +66,45 @@ describe("class style metadata reading", () => {
     it("should convert to explicit type: boolean", () => {
         const h = new HasDefaultedBooleanParam();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
-        populateParameters(h, md, [{name: "booleanParam", value: "true"}]);
+        populateParameters(h, md, [{ name: "booleanParam", value: "true" }]);
         assert(h.booleanParam === true);
-        populateParameters(h, md, [{name: "booleanParam", value: "false"}]);
+        populateParameters(h, md, [{ name: "booleanParam", value: "false" }]);
         assert(h.booleanParam === false);
     });
 
     it("should convert to explicit type: number", () => {
         const h = new HasNumberParam();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
-        populateParameters(h, md, [{name: "numberParam", value: "1"}]);
+        populateParameters(h, md, [{ name: "numberParam", value: "1" }]);
         assert(h.numberParam === 1);
-        populateParameters(h, md, [{name: "numberParam", value: "100"}]);
+        populateParameters(h, md, [{ name: "numberParam", value: "100" }]);
         assert(h.numberParam === 100);
     });
 
     it("should convert to explicit type: single choice", () => {
         const h = new HasOneChoiceParam();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
-        populateParameters(h, md, [{name: "animal", value: "pig"}]);
+        populateParameters(h, md, [{ name: "animal", value: "pig" }]);
         assert(h.animal === "pig");
-        populateParameters(h, md, [{name: "animal", value: "dog"}]);
+        populateParameters(h, md, [{ name: "animal", value: "dog" }]);
         assert(h.animal === "dog");
     });
 
     it("should convert to explicit type: some choices", () => {
         const h = new HasSomeChoicesParam();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
-        populateParameters(h, md, [{name: "pets", value: ["pig"]}]);
+        populateParameters(h, md, [{ name: "pets", value: ["pig"] }]);
         assert.deepEqual(h.pets, ["pig"]);
-        populateParameters(h, md, [{name: "pets", value: ["dog", "cat"]}]);
+        populateParameters(h, md, [{ name: "pets", value: ["dog", "cat"] }]);
         assert.deepEqual(h.pets, ["dog", "cat"]);
     });
 
     it("should convert to explicit type: some free choices", () => {
         const h = new HasSomeFreeChoicesParam();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
-        populateParameters(h, md, [{name: "pets", value: ["pig", "heffalump"]}]);
+        populateParameters(h, md, [{ name: "pets", value: ["pig", "heffalump"] }]);
         assert.deepEqual(h.pets, ["pig", "heffalump"]);
-        populateParameters(h, md, [{name: "pets", value: ["dog", "cat"]}]);
+        populateParameters(h, md, [{ name: "pets", value: ["dog", "cat"] }]);
         assert.deepEqual(h.pets, ["dog", "cat"]);
     });
 
@@ -192,7 +192,7 @@ export class Superclass implements HandleCommand {
     }
 }
 
-@ConfigurableCommandHandler("Some sub class", {  autoSubmit: true })
+@ConfigurableCommandHandler("Some sub class", { autoSubmit: true })
 @Tags("atomist", "spring")
 class Subclass extends Superclass {
 
@@ -312,7 +312,7 @@ export class HasSomeFreeChoicesParam implements HandleCommand {
     }
 }
 
-@ConfigurableCommandHandler("description", {intent: ["universal", "generator"], autoSubmit: true })
+@ConfigurableCommandHandler("description", { intent: ["universal", "generator"], autoSubmit: true })
 @Tags("universal", "generator")
 export class TagsAndIntent implements HandleCommand {
 
@@ -324,7 +324,7 @@ export class TagsAndIntent implements HandleCommand {
 export class NoDecoratorCommandHandler implements HandleCommand, CommandHandlerMetadata {
 
     protected static params() {
-        return [{name: "foo", description: "Some param", required: false, pattern: /^.*$/.source}];
+        return [{ name: "foo", description: "Some param", required: false, pattern: /^.*$/.source }];
     }
 
     public name = "NoDecoratorCommandHandler";
@@ -343,7 +343,7 @@ export class NoDecoratorCommandHandlerSubClass
 
     protected static params() {
         return [...NoDecoratorCommandHandler.params(),
-            {name: "bar", description: "Some param", required: false, pattern: /^.*$/.source}];
+        { name: "bar", description: "Some param", required: false, pattern: /^.*$/.source }];
     }
 
     public parameters = NoDecoratorCommandHandlerSubClass.params();

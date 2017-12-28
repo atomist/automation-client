@@ -19,7 +19,7 @@ function checkProject(p: Project) {
     assert(f.getContentSync());
 }
 
-const Creds = {token: GitHubToken};
+const Creds = { token: GitHubToken };
 const Owner = "atomist-travisorg";
 const RepoName = "this-repository-exists";
 
@@ -98,7 +98,7 @@ describe("GitProject", () => {
 
 ding dong ding
 `))
-            .then(() => runCommand("git log -1 --pretty=format:'%B'", {cwd: gp.baseDir}))
+            .then(() => runCommand("git log -1 --pretty=format:'%B'", { cwd: gp.baseDir }))
             .then(commandResult => {
                 assert.equal(commandResult.stdout, `Added a Thing
 

@@ -6,7 +6,7 @@ export function obtainGitInfo(directory: string): Promise<GitInformation> {
         runCommand("git rev-parse HEAD", { cwd: directory }),
         runCommand("git rev-parse --abbrev-ref HEAD", { cwd: directory }),
         runCommand("git remote get-url origin", { cwd: directory }),
-        ])
+    ])
         .then(results => {
             return Promise.resolve({
                 sha: results[0].stdout.trim(),

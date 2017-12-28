@@ -4,8 +4,8 @@ import * as GitHubApi from "github";
 import * as _ from "lodash";
 import * as passport from "passport";
 import * as http from "passport-http";
-import * as bearer from "passport-http-bearer";
 import { IStrategyOptions } from "passport-http-bearer";
+import * as bearer from "passport-http-bearer";
 import * as globals from "../../../globals";
 import { CommandHandlerMetadata } from "../../../metadata/automationMetadata";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
@@ -24,6 +24,7 @@ import {
 import { metrics } from "../../util/metric";
 import { guid } from "../../util/string";
 import { CommandIncoming } from "../RequestProcessor";
+import { prepareRegistration } from "../websocket/payloads";
 import { ExpressRequestProcessor } from "./ExpressRequestProcessor";
 
 /**
@@ -61,9 +62,9 @@ export class ExpressServer {
                 res.json(info(automations.automations));
             });
 
-        exp.get(`${ApiBase}/automations`, cors(), this.adminRoute, this.authenticate,
+        exp.get(`${ApiBase}/registration`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
-                res.json(automations.automations);
+                res.json(prepareRegistration(automations.automations));
             });
 
         exp.get(`${ApiBase}/metrics`, cors(), this.adminRoute, this.authenticate,
@@ -117,7 +118,8 @@ export class ExpressServer {
                             res.redirect(result.redirect);
                         } else {
                             res.status(result.code === 0 ? 200 : 500).json(result);
-                        }});
+                        }
+});
             },
         );
 
@@ -139,14 +141,14 @@ export class ExpressServer {
 
         exp.post(url, cors(), this.authenticate,
             (req, res) => {
-                const id =  this.automations.automations.team_ids
+                const id = this.automations.automations.team_ids
                     ? this.automations.automations.team_ids[0] : "Txxxxxxxx";
 
                 const payload: CommandIncoming = {
                     atomist_type: "command_handler_request",
                     name: h.name,
                     rug: {},
-                    correlation_context: {team: { id }},
+                    correlation_context: { team: { id } },
                     corrid: guid(),
                     team: {
                         id,
@@ -169,33 +171,38 @@ export class ExpressServer {
                     const value = req.query[p.name];
                     return value && value.length > 0;
                 }).map(p => {
-                    return {name: p.name, value: req.query[p.name]};
+                    return { name: p.name, value: req.query[p.name] };
                 });
                 const mappedParameters = (h.mapped_parameters || []).filter(p => {
-                    const value = req.query[`mp_${p.local_key}`];
+                    const value = req.query[`mp_${p.name}`];
                     return value && value.length > 0;
                 }).map(p => {
-                    return {name: p.local_key, value: req.query[`mp_${p.local_key}`]};
+                    return { name: p.name, value: req.query[`mp_${p.name}`] };
                 });
                 const secrets = h.secrets.map(p => {
-                    const value = req.query[`s_${p.path}`];
-                    return {name: p.path, value };
+                    const value = req.query[`s_${p.uri}`];
+                    return { uri: p.uri, value };
                 });
 
-                const id =  this.automations.automations.team_ids
+                const id = this.automations.automations.team_ids
                     ? this.automations.automations.team_ids[0] : "Txxxxxxxx";
 
                 const payload: CommandIncoming = {
-                    atomist_type: "command_handler_request",
-                    name: h.name,
+                    command: h.name,
                     parameters,
-                    rug: {},
                     mapped_parameters: mappedParameters,
                     secrets,
-                    correlation_context: { team: { id } },
-                    corrid: guid(),
+                    correlation_id: guid(),
                     team: {
                         id,
+                    },
+                    source: {
+                        user_agent: "slack",
+                        slack: {
+                            team: {
+                                id,
+                            },
+                        },
                     },
                 };
 
@@ -235,40 +242,40 @@ export class ExpressServer {
             const adminOrg = this.options.auth.bearer.adminOrg;
 
             passport.use(new bearer.Strategy({
-                        passReqToCallback: true,
-                    } as IStrategyOptions,
-                    (req, token, done) => {
-                        const api = new GitHubApi();
-                        api.authenticate({ type: "token", token });
-                        api.users.get({} )
-                            .then(user => {
-                                if (adminOrg && req.__admin === true) {
-                                    return api.orgs.checkMembership({
-                                        username: user.data.login,
-                                        org: adminOrg,
-                                    })
+                passReqToCallback: true,
+            } as IStrategyOptions,
+                (req, token, done) => {
+                    const api = new GitHubApi();
+                    api.authenticate({ type: "token", token });
+                    api.users.get({})
+                        .then(user => {
+                            if (adminOrg && req.__admin === true) {
+                                return api.orgs.checkMembership({
+                                    username: user.data.login,
+                                    org: adminOrg,
+                                })
                                     .then(() => {
                                         return user.data;
                                     });
-                                } else if (org) {
-                                    return api.orgs.checkMembership({
-                                        username: user.data.login,
-                                        org,
-                                    })
+                            } else if (org) {
+                                return api.orgs.checkMembership({
+                                    username: user.data.login,
+                                    org,
+                                })
                                     .then(() => {
                                         return user.data;
                                     });
-                                } else {
-                                    return user.data;
-                                }
-                            })
-                            .then(user => {
-                                done(null, { token, user });
-                            })
-                            .catch(err => {
-                                console.log(err);
-                                done(null, false);
-                            });
+                            } else {
+                                return user.data;
+                            }
+                        })
+                        .then(user => {
+                            done(null, { token, user });
+                        })
+                        .catch(err => {
+                            console.log(err);
+                            done(null, false);
+                        });
                 },
             ));
         }

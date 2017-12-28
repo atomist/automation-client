@@ -218,7 +218,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     private runCommandInCurrentWorkingDirectory(cmd: string): Promise<CommandResult<this>> {
-        return runCommand(cmd, {cwd: this.baseDir})
+        return runCommand(cmd, { cwd: this.baseDir })
             .then(result => {
                 return {
                     target: this,
@@ -309,10 +309,10 @@ function clean(repoDir: string) {
 }
 
 function runIn(baseDir: string, command: string) {
-    return runCommand(command, {cwd: baseDir});
+    return runCommand(command, { cwd: baseDir });
 }
 
 function pwd(baseDir) {
-    return runCommand("pwd", {cwd: baseDir}).then(result =>
+    return runCommand("pwd", { cwd: baseDir }).then(result =>
         console.log(result.stdout));
 }

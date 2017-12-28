@@ -5,11 +5,11 @@ import {
     AutomationContextAware,
     HandlerContext,
 } from "../../../HandlerContext";
-import { HandlerResult } from "../../../HandlerResult";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
 import {
+    Destination,
     MessageClient,
     MessageOptions,
 } from "../../../spi/message/MessageClient";
@@ -37,11 +37,14 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
         super(automations, listeners);
     }
 
-    public sendStatus(success: boolean, hr: HandlerResult, request: CommandIncoming) {
+    public sendCommandStatus(success: boolean,
+                             code: number,
+                             request: CommandIncoming,
+                             ctx: HandlerContext & AutomationContextAware) {
         if (success) {
-            return raiseEvent(`Successfully invoked ${request.name}`, request, "success");
+            return raiseEvent(`Successfully invoked ${request.command}`, request, "success");
         } else {
-            return raiseEvent(`Unsuccessfully invoked ${request.name}`, request, "failure");
+            return raiseEvent(`Unsuccessfully invoked ${request.command}`, request, "failure");
         }
     }
 
@@ -53,7 +56,7 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
                                 context: AutomationContextAware): GraphClient {
         const teamId = namespace.get().teamId;
         return new ApolloGraphClient(`${this.options.endpoint.graphql}/${teamId}`,
-            { Authorization: `token ${this.token}`});
+            { Authorization: `token ${this.token}` });
     }
 
     protected createMessageClient(event: EventIncoming | CommandIncoming,
@@ -68,8 +71,9 @@ class ExpressMessageClient extends MessageClientSupport {
         super();
     }
 
-    protected doSend(msg: string | SlackMessage, userNames: string | string[],
-                     channelNames: string | string[], options?: MessageOptions): Promise<any> {
+    protected doSend(msg: string | SlackMessage,
+                     destinations: Destination | Destination[],
+                     options?: MessageOptions): Promise<any> {
         return raiseEvent(msg, this.payload, "message");
     }
 }
@@ -77,11 +81,11 @@ class ExpressMessageClient extends MessageClientSupport {
 function raiseEvent(payload: any, incomingPayload: CommandIncoming, type: string): Promise<any> {
     // TODO cd this url should change
     return axios.put("https://app.atomist.com/v1/event", {
-            team_id: incomingPayload.team.id,
-            correlation_id: incomingPayload.corrid,
-            message: payload,
-            type,
-        })
+        team_id: incomingPayload.team.id,
+        correlation_id: incomingPayload.correlation_id,
+        message: payload,
+        type,
+    })
         .catch(err => {
             logger.warn(err);
         });

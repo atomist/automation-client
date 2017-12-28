@@ -4,7 +4,7 @@ import { logger } from "./logger";
 const shutdownHooks: Array<() => Promise<number>> = [];
 
 export function registerShutdownHook(cb: () => Promise<number>) {
-      shutdownHooks.push(cb);
+    shutdownHooks.push(cb);
 }
 
 exitHook.forceExitTimeout(60000 * 2);

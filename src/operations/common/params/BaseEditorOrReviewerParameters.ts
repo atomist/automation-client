@@ -19,5 +19,5 @@ export interface EditorOrReviewerParameters {
 @Parameters()
 export class BaseEditorOrReviewerParameters implements EditorOrReviewerParameters {
 
-    constructor(public targets: GitHubTargetsParams = new MappedRepoParameters()) {}
+    constructor(public targets: GitHubTargetsParams = new MappedRepoParameters()) { }
 }

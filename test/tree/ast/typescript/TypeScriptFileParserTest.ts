@@ -110,7 +110,7 @@ describe("TypeScriptFileParser", () => {
     });
 
     it("should parse project and use a path expression to find a value", done => {
-        const p = InMemoryProject.of({path: "script.ts", content: "const x = 1;"});
+        const p = InMemoryProject.of({ path: "script.ts", content: "const x = 1;" });
         findMatches(p, TypeScriptES6FileParser,
             "**/*.ts",
             "//VariableDeclaration/Identifier")
@@ -123,7 +123,7 @@ describe("TypeScriptFileParser", () => {
     });
 
     it("should parse project and use a path expression to find and update a value", done => {
-        const p = InMemoryProject.of({path: "script.ts", content: "const x = 1;"});
+        const p = InMemoryProject.of({ path: "script.ts", content: "const x = 1;" });
         findMatches(p, TypeScriptES6FileParser,
             "**/*.ts",
             "//VariableDeclaration/Identifier")
@@ -141,7 +141,7 @@ describe("TypeScriptFileParser", () => {
     });
 
     it("should parse project and use a path expression to find and update a value in an inner search", done => {
-        const p = InMemoryProject.of({path: "script.ts", content: "const x = 1;"});
+        const p = InMemoryProject.of({ path: "script.ts", content: "const x = 1;" });
         findMatches(p, TypeScriptES6FileParser,
             "**/*.ts",
             "//VariableDeclaration")

@@ -93,20 +93,20 @@ export function declareParameter(target: any, propertyKey: string, details: Base
     return target;
 }
 
-export function declareMappedParameter(target: any, localKey: string, foreignKey: string, required: boolean) {
+export function declareMappedParameter(target: any, name: string, uri: string, required: boolean) {
     let params = get_metadata(target, "__mappedParameters");
     if (params == null) {
         params = [];
     } else {
         // remove any that have the same name already (i.e. if folk are calling declareParameter)
         // use a cheeky method so that we can reuse the same array
-        const found: any[] = params.filter(p => p.localKey === localKey);
+        const found: any[] = params.filter(p => p.localKey === name);
         if (found != null && found.length > 0) {
             const index = params.indexOf(found[0]);
             params.splice(index, 1);
         }
     }
-    const param = { localKey, foreignKey, required };
+    const param = { name, uri, required };
     params.push(param);
 
     // merge mapped_parameters from parent if it has some
@@ -116,7 +116,7 @@ export function declareMappedParameter(target: any, localKey: string, foreignKey
         if (protoParams != null) {
             protoParams.forEach(protoParam => {
                 // if we don't already have a parameter with the same name
-                if (!params.some(p => p.localKey === protoParam.localKey)) {
+                if (!params.some(p => p.name === protoParam.name)) {
                     params.push(protoParam);
                 }
             });
@@ -128,7 +128,7 @@ export function declareMappedParameter(target: any, localKey: string, foreignKey
     return target;
 }
 
-export function declareSecret(target: any, name: string, path: string) {
+export function declareSecret(target: any, name: string, uri: string) {
     let params = get_metadata(target, "__secrets");
     if (params == null) {
         params = [];
@@ -141,7 +141,7 @@ export function declareSecret(target: any, name: string, path: string) {
             params.splice(index, 1);
         }
     }
-    const param = { name, path };
+    const param = { name, uri };
     params.push(param);
 
     // merge secrets from parent if it has some
@@ -196,7 +196,7 @@ export function declareEventHandler(
 }
 
 export function declareTags(target: any, tags: string[]) {
-    set_metadata(target, "__tags", tags.map(t => ({ name: t, description: t})));
+    set_metadata(target, "__tags", tags.map(t => ({ name: t, description: t })));
     return target;
 }
 

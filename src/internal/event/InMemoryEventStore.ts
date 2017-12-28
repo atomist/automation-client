@@ -24,14 +24,14 @@ export class InMemoryEventStore implements EventStore {
 
     public recordEvent(event: EventIncoming) {
         const id = event.extensions.correlation_id ? event.extensions.correlation_id : guid();
-        this.eventCache.set({guid: id, ts: new Date().getTime() }, event);
+        this.eventCache.set({ guid: id, ts: new Date().getTime() }, event);
         this.eventSer.update(1);
         return id;
     }
 
     public recordCommand(command: CommandIncoming) {
-        const id = command.corrid ? command.corrid : guid();
-        this.commandCache.set({guid: id, ts: new Date().getTime() }, command);
+        const id = command.correlation_id ? command.correlation_id : guid();
+        this.commandCache.set({ guid: id, ts: new Date().getTime() }, command);
         this.commandSer.update(1);
         return id;
     }
@@ -43,7 +43,7 @@ export class InMemoryEventStore implements EventStore {
 
     public events(from: number = -1): any[] {
         const entries: any[] = [];
-        this.eventCache.forEach((v, k) => k.ts > from ? entries.push({key: k, value: hideSecrets(v)}) : null);
+        this.eventCache.forEach((v, k) => k.ts > from ? entries.push({ key: k, value: hideSecrets(v) }) : null);
         return entries;
     }
 
@@ -54,7 +54,7 @@ export class InMemoryEventStore implements EventStore {
 
     public commands(from: number = -1): any[] {
         const entries: any[] = [];
-        this.commandCache.forEach((v, k) => k.ts > from ? entries.push({key: k, value: hideSecrets(v)}) : null);
+        this.commandCache.forEach((v, k) => k.ts > from ? entries.push({ key: k, value: hideSecrets(v) }) : null);
         return entries;
     }
 
@@ -65,14 +65,14 @@ export class InMemoryEventStore implements EventStore {
 
     public messages(from: number = -1): any[] {
         const entries: any[] = [];
-        this.messageCache.forEach((v, k) => k.ts > from ? entries.push({key: k, value: v}) : null);
+        this.messageCache.forEach((v, k) => k.ts > from ? entries.push({ key: k, value: v }) : null);
         return entries;
     }
 }
 
 function hideSecrets(event: EventIncoming | CommandIncoming) {
     event.secrets = event.secrets
-        ? event.secrets.map(s => ({ name: s.name, value: hideString(s.value) })) : undefined;
+        ? event.secrets.map(s => ({ uri: s.uri, value: hideString(s.value) })) : undefined;
     return event;
 }
 
@@ -107,24 +107,24 @@ class RRD {
 
     constructor(interval, count) {
         this.buckets = new Array(count).fill(0);
-        this.buckets[0] = { ts: Math.floor( Date.now() / 1000 ), value: 0 };
+        this.buckets[0] = { ts: Math.floor(Date.now() / 1000), value: 0 };
         this.index = 1;
         this.interval = interval * 1000;
-        this.iid = setInterval( this.increment.bind( this ), this.interval );
+        this.iid = setInterval(this.increment.bind(this), this.interval);
     }
 
     public increment() {
-        if ( this.index < this.buckets.length ) {
-            this.buckets[ this.index ] = { ts: Math.floor( Date.now() / 1000 ), value: this.dataFunc.result() };
+        if (this.index < this.buckets.length) {
+            this.buckets[this.index] = { ts: Math.floor(Date.now() / 1000), value: this.dataFunc.result() };
             this.index += 1;
         } else {
-            this.buckets.push( { ts: Math.floor( Date.now() / 1000 ), value: this.dataFunc.result() } );
+            this.buckets.push({ ts: Math.floor(Date.now() / 1000), value: this.dataFunc.result() });
             this.buckets.shift();
         }
     }
 
     public update(data: any) {
-        this.buckets[ this.index ] = { ts: Math.floor( Date.now() / 1000 ), value: this.dataFunc.update(data) };
+        this.buckets[this.index] = { ts: Math.floor(Date.now() / 1000), value: this.dataFunc.update(data) };
     }
 
     public fetch(): any[] {

@@ -16,12 +16,12 @@ describe("function style metadata reading", () => {
         assert(md.parameters.length === 1);
         assert(md.parameters[0].name === "slackTeam");
         assert(md.mapped_parameters.length === 1);
-        assert(md.mapped_parameters[0].local_key === "githubWebUrl");
-        assert(md.mapped_parameters[0].foreign_key === "atomist://github_url");
+        assert(md.mapped_parameters[0].name === "githubWebUrl");
+        assert(md.mapped_parameters[0].uri === "atomist://github_url");
         assert(md.secrets.length === 1);
         assert(md.secrets[0].name === "someSecret");
-        assert(md.secrets[0].path === "atomist://some_secret");
+        assert(md.secrets[0].uri === "atomist://some_secret");
         assert.deepEqual(md.intent, ["add agent"]);
-        assert.deepEqual(md.tags.map(t => t.name), [ "atomist", "spring", "agent" ]);
+        assert.deepEqual(md.tags.map(t => t.name), ["atomist", "spring", "agent"]);
     });
 });

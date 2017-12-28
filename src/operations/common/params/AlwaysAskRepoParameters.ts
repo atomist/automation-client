@@ -9,13 +9,13 @@ import { GitHubTargetsParams } from "./GitHubTargetsParams";
 @Parameters()
 export class AlwaysAskRepoParameters extends GitHubTargetsParams {
 
-    @Parameter({description: "Name of owner to edit repo in", ...GitHubNameRegExp, required: true})
+    @Parameter({ description: "Name of owner to edit repo in", ...GitHubNameRegExp, required: true })
     public owner: string;
 
-    @Parameter({description: "Name of repo to edit or regex", pattern: /.+/, required: true})
+    @Parameter({ description: "Name of repo to edit or regex", pattern: /.+/, required: true })
     public repo: string;
 
-    @Parameter({description: "Branch or ref. Defaults to 'master'", ...GitBranchRegExp, required: false})
+    @Parameter({ description: "Branch or ref. Defaults to 'master'", ...GitBranchRegExp, required: false })
     public sha: string;
 
 }

@@ -1,4 +1,4 @@
-import {ProjectAsync} from "../Project";
+import { ProjectAsync } from "../Project";
 
 /**
  * Extracts the fingerprint from the project

@@ -1,7 +1,7 @@
 /**
  * Enum value expressing the state of a health check.
  */
-export enum HealthStatus  { Up = "UP", Down = "DOWN", OutOfService = "OUT_OF_SERVICE" }
+export enum HealthStatus { Up = "UP", Down = "DOWN", OutOfService = "OUT_OF_SERVICE" }
 
 export interface Health<P> {
     status: HealthStatus;

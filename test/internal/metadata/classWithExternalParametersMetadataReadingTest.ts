@@ -17,11 +17,11 @@ describe("class with external parameters metadata reading", () => {
         assert(md.parameters.length === 1);
         assert(md.parameters[0].name === "slackTeam");
         assert(md.mapped_parameters.length === 2);
-        assert(md.mapped_parameters[0].local_key === "githubWebUrl");
-        assert(md.mapped_parameters[0].foreign_key === "atomist://github_url");
+        assert(md.mapped_parameters[0].name === "githubWebUrl");
+        assert(md.mapped_parameters[0].uri === "atomist://github_url");
         assert(md.secrets.length === 1);
         assert(md.secrets[0].name === "someSecret");
-        assert(md.secrets[0].path === "atomist://some_secret");
+        assert(md.secrets[0].uri === "atomist://some_secret");
     });
 
     it("should extract metadata from command handler with external nested parameters", () => {
@@ -30,11 +30,11 @@ describe("class with external parameters metadata reading", () => {
         assert(md.parameters.length === 1);
         assert(md.parameters[0].name === "params.slackTeam");
         assert(md.mapped_parameters.length === 2);
-        assert(md.mapped_parameters[0].local_key === "params.githubWebUrl");
-        assert(md.mapped_parameters[0].foreign_key === "atomist://github_url");
+        assert(md.mapped_parameters[0].name === "params.githubWebUrl");
+        assert(md.mapped_parameters[0].uri === "atomist://github_url");
         assert(md.secrets.length === 1);
         assert(md.secrets[0].name === "secrets.someSecret");
-        assert(md.secrets[0].path === "atomist://some_secret");
+        assert(md.secrets[0].uri === "atomist://some_secret");
         assert.deepEqual(md.intent, ["some intent"]);
         assert.deepEqual(md.tags.map(t => t.name), ["atomist", "spring"]);
     });
@@ -45,11 +45,11 @@ describe("class with external parameters metadata reading", () => {
         assert(md.parameters.length === 1);
         assert(md.parameters[0].name === "params.slackTeam");
         assert(md.mapped_parameters.length === 2);
-        assert(md.mapped_parameters[0].local_key === "params.githubWebUrl");
-        assert(md.mapped_parameters[0].foreign_key === "atomist://github_url");
+        assert(md.mapped_parameters[0].name === "params.githubWebUrl");
+        assert(md.mapped_parameters[0].uri === "atomist://github_url");
         assert(md.secrets.length === 1);
         assert(md.secrets[0].name === "secrets.someSecret");
-        assert(md.secrets[0].path === "atomist://some_secret");
+        assert(md.secrets[0].uri === "atomist://some_secret");
     });
 
     it("should extract metadata from command handler with direct nested parameters and irrelevant fields", () => {
@@ -58,11 +58,11 @@ describe("class with external parameters metadata reading", () => {
         assert(md.parameters.length === 1);
         assert(md.parameters[0].name === "params.slackTeam");
         assert(md.mapped_parameters.length === 2);
-        assert(md.mapped_parameters[0].local_key === "params.githubWebUrl");
-        assert(md.mapped_parameters[0].foreign_key === "atomist://github_url");
+        assert(md.mapped_parameters[0].name === "params.githubWebUrl");
+        assert(md.mapped_parameters[0].uri === "atomist://github_url");
         assert(md.secrets.length === 1);
         assert(md.secrets[0].name === "secrets.someSecret");
-        assert(md.secrets[0].path === "atomist://some_secret");
+        assert(md.secrets[0].uri === "atomist://some_secret");
     });
 
     it("should extract metadata from command handler with direct nested parameters and additional simple parameter", () => {
@@ -72,11 +72,11 @@ describe("class with external parameters metadata reading", () => {
         assert(md.parameters[0].name === "foo");
         assert(md.parameters[1].name === "params.slackTeam");
         assert(md.mapped_parameters.length === 2);
-        assert(md.mapped_parameters[0].local_key === "params.githubWebUrl");
-        assert(md.mapped_parameters[0].foreign_key === "atomist://github_url");
+        assert(md.mapped_parameters[0].name === "params.githubWebUrl");
+        assert(md.mapped_parameters[0].uri === "atomist://github_url");
         assert(md.secrets.length === 1);
         assert(md.secrets[0].name === "secrets.someSecret");
-        assert(md.secrets[0].path === "atomist://some_secret");
+        assert(md.secrets[0].uri === "atomist://some_secret");
     });
 
     it("should extract metadata from command handler with direct composed parameters", () => {
@@ -87,11 +87,11 @@ describe("class with external parameters metadata reading", () => {
         assert(md.parameters[0].name === "foo");
         assert(md.parameters[1].name === "args.params.slackTeam");
         assert(md.mapped_parameters.length === 2);
-        assert(md.mapped_parameters[0].local_key === "args.params.githubWebUrl");
-        assert(md.mapped_parameters[0].foreign_key === "atomist://github_url");
+        assert(md.mapped_parameters[0].name === "args.params.githubWebUrl");
+        assert(md.mapped_parameters[0].uri === "atomist://github_url");
         assert(md.secrets.length === 1);
         assert(md.secrets[0].name === "args.secrets.someSecret");
-        assert(md.secrets[0].path === "atomist://some_secret");
+        assert(md.secrets[0].uri === "atomist://some_secret");
     });
 
     it("should extract metadata from command handler with inherited and composed parameters", () => {
@@ -102,11 +102,11 @@ describe("class with external parameters metadata reading", () => {
         assert(md.parameters[0].name === "foo");
         assert(md.parameters[1].name === "args.slackTeam");
         assert(md.mapped_parameters.length === 2);
-        assert(md.mapped_parameters[0].local_key === "args.githubWebUrl");
-        assert(md.mapped_parameters[0].foreign_key === "atomist://github_url");
+        assert(md.mapped_parameters[0].name === "args.githubWebUrl");
+        assert(md.mapped_parameters[0].uri === "atomist://github_url");
         assert(md.secrets.length === 1);
         assert(md.secrets[0].name === "args.someSecret");
-        assert(md.secrets[0].path === "atomist://some_secret");
+        assert(md.secrets[0].uri === "atomist://some_secret");
     });
 
 });
@@ -147,7 +147,7 @@ class AddAtomistSpringAgentWithExternalParameters implements HandleCommand<AddAt
         assert(params.slackTeam);
         assert(params.repo !== undefined,
             `this.repo=[${params.repo}],this.slackTeam=[${params.slackTeam}],this.githubWebUrl=[${params.githubWebUrl}]`);
-        return Promise.resolve({code: 0});
+        return Promise.resolve({ code: 0 });
     }
 }
 
@@ -197,7 +197,7 @@ class AddAtomistSpringAgentWithComposedParameters implements HandleCommand<Compo
         assert(params.params.slackTeam);
         assert(params.params.repo !== undefined,
             `this.repo=[${params.params.repo}],this.slackTeam=[${params.params.slackTeam}],this.githubWebUrl=[${params.params.githubWebUrl}]`);
-        return Promise.resolve({code: 0});
+        return Promise.resolve({ code: 0 });
     }
 }
 
@@ -215,7 +215,7 @@ class AddAtomistSpringAgentWithComposedParametersDirectlyOnHandler implements Ha
         assert(params.params.slackTeam);
         assert(params.params.repo !== undefined,
             `this.repo=[${params.params.repo}],this.slackTeam=[${params.params.slackTeam}],this.githubWebUrl=[${params.params.githubWebUrl}]`);
-        return Promise.resolve({code: 0});
+        return Promise.resolve({ code: 0 });
     }
 }
 
@@ -237,7 +237,7 @@ class AddAtomistSpringAgentWithComposedParametersDirectlyOnHandlerAndIrrelevantF
         assert(params.params.slackTeam);
         assert(params.params.repo !== undefined,
             `this.repo=[${params.params.repo}],this.slackTeam=[${params.params.slackTeam}],this.githubWebUrl=[${params.params.githubWebUrl}]`);
-        return Promise.resolve({code: 0});
+        return Promise.resolve({ code: 0 });
     }
 }
 
@@ -258,7 +258,7 @@ class AddAtomistSpringAgentWithComposedParametersDirectlyOnHandlerAndStringParam
         assert(params.params.slackTeam);
         assert(params.params.repo !== undefined,
             `this.repo=[${params.params.repo}],this.slackTeam=[${params.params.slackTeam}],this.githubWebUrl=[${params.params.githubWebUrl}]`);
-        return Promise.resolve({code: 0});
+        return Promise.resolve({ code: 0 });
     }
 }
 
@@ -284,7 +284,7 @@ class AddAtomistSpringAgentWithComposedExternalParameters implements HandleComma
         assert(params.args.secrets.someSecret);
         assert(params.args.params.slackTeam);
         assert(params.args.params.repo !== undefined);
-        return Promise.resolve({code: 0});
+        return Promise.resolve({ code: 0 });
     }
 }
 
@@ -308,6 +308,6 @@ class AddAtomistSpringAgentWithInheritedAndComposedParameters implements HandleC
         assert(params.args.someSecret);
         assert(params.args.slackTeam);
         assert(params.args.repo !== undefined);
-        return Promise.resolve({code: 0});
+        return Promise.resolve({ code: 0 });
     }
 }

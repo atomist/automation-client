@@ -60,7 +60,7 @@ function tagOneOrMany<PARAMS extends EditorOrReviewerParameters>(tagger: Tagger<
                                                                  name: string,
                                                                  details: TaggerCommandDetails<PARAMS>): OnCommand<PARAMS> {
     return (ctx: HandlerContext, parameters: PARAMS) => {
-        const credentials = {token: parameters.targets.githubToken};
+        const credentials = { token: parameters.targets.githubToken };
         const repoFinder: RepoFinder = parameters.targets.repoRef ?
             () => Promise.resolve([parameters.targets.repoRef]) :
             details.repoFinder;
@@ -83,8 +83,8 @@ function tagAll<P extends EditorOrReviewerParameters>(ctx: HandlerContext,
                                                       repoFinder: RepoFinder = allReposInTeam(),
                                                       repoFilter: RepoFilter = AllRepos,
                                                       repoLoader: RepoLoader =
-                                                          defaultRepoLoader(
-                                                              credentials)): Promise<Tags[]> {
+        defaultRepoLoader(
+            credentials)): Promise<Tags[]> {
     return doWithAllRepos(ctx, credentials,
         p => tagger(p, ctx, parameters), parameters,
         repoFinder, repoFilter, repoLoader);

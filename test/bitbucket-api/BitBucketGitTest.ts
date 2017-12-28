@@ -70,6 +70,6 @@ function doWithNewRemote(testAndVerify: (p: GitProject) => Promise<any>) {
             return testAndVerify(clonedp);
         })
         .then(() => bbid.deleteRemote(BitBucketCredentials),
-            err => bbid.deleteRemote(BitBucketCredentials)
-                .then(() => Promise.reject(new Error(err))));
+        err => bbid.deleteRemote(BitBucketCredentials)
+            .then(() => Promise.reject(new Error(err))));
 }

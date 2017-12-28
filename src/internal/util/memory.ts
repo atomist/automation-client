@@ -53,7 +53,7 @@ export function memoryUsage() {
         heap: {
             rss: (mem.rss / 1024 / 1024).toFixed(2),
             total: (mem.heapTotal / 1024 / 1024).toFixed(2),
-            used: (mem.heapUsed / 1024 / 1024 ).toFixed(2),
+            used: (mem.heapUsed / 1024 / 1024).toFixed(2),
         },
         memory: {
             free: (os.freemem() / 1024 / 1024).toFixed(2),

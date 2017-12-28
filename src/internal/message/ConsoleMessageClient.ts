@@ -1,6 +1,11 @@
-import { render, SlackMessage } from "@atomist/slack-messages/SlackMessages";
-import { isSlackMessage, MessageClient, MessageOptions } from "../../spi/message/MessageClient";
-import { MessageClientSupport } from "../../spi/message/MessageClientSupport";
+import { render } from "@atomist/slack-messages/SlackMessages";
+import {
+    Destination,
+    isSlackMessage,
+    MessageClient,
+    MessageOptions,
+} from "../../spi/message/MessageClient";
+import { DefaultSlackMessageClient, MessageClientSupport } from "../../spi/message/MessageClientSupport";
 import { logger } from "../util/logger";
 
 /**
@@ -8,29 +13,10 @@ import { logger } from "../util/logger";
  */
 export class ConsoleMessageClient extends MessageClientSupport implements MessageClient {
 
-    protected async doSend(msg: string | SlackMessage, userNames: string | string[],
-                           channelNames: string | string[], options?: MessageOptions) {
+    protected async doSend(msg: any,
+                           destinations: Destination | Destination[],
+                           options?: MessageOptions) {
         let s = "";
-        if (channelNames && channelNames.length > 0) {
-            if (Array.isArray(channelNames)) {
-                s += channelNames
-                        .map(n => "#" + n)
-                        .join(", ")
-                    + " ";
-            } else {
-                s += "#" + channelNames;
-            }
-        }
-        if (userNames && userNames.length > 0) {
-            if (Array.isArray(userNames)) {
-                s += userNames
-                        .map(n => "@" + n)
-                        .join(", ")
-                    + " ";
-            } else {
-                s += "@" + userNames;
-            }
-        }
 
         if (isSlackMessage(msg)) {
             s += `@atomist: ${render(msg, true)}`;
@@ -42,4 +28,4 @@ export class ConsoleMessageClient extends MessageClientSupport implements Messag
     }
 }
 
-export const consoleMessageClient = new ConsoleMessageClient();
+export const consoleMessageClient = new DefaultSlackMessageClient(new ConsoleMessageClient(), null);
