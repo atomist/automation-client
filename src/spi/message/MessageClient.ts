@@ -27,8 +27,8 @@ export class SlackDestination implements Destination {
 
     public userAgent: "slack";
 
-    public users: string[];
-    public channels: string[];
+    public users: string[] = [];
+    public channels: string[] = [];
 
     constructor(public team: string) {}
 
