@@ -1,4 +1,3 @@
-import { SlackMessage } from "@atomist/slack-messages";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as serializeError from "serialize-error";
@@ -12,7 +11,11 @@ import {
 import { AutomationEventListener } from "../../server/AutomationEventListener";
 import { AutomationServer } from "../../server/AutomationServer";
 import { GraphClient } from "../../spi/graph/GraphClient";
-import { MessageClient, MessageOptions } from "../../spi/message/MessageClient";
+import {
+    Destination,
+    MessageClient,
+    MessageOptions,
+} from "../../spi/message/MessageClient";
 import {
     dispose,
     registerDisposable,
@@ -365,26 +368,17 @@ class AutomationEventListenerEnabledMessageClient implements MessageClient {
                 private listeners: AutomationEventListener[] = []) {
     }
 
-    public respond(msg: string | SlackMessage,
+    public respond(msg: any,
                    options?: MessageOptions): Promise<any> {
-        this.listeners.forEach(l => l.messageSent(msg, null, [], [], options, this.ctx));
+        this.listeners.forEach(l => l.messageSent(msg, [], options, this.ctx));
         return this.delegate.respond(msg, options);
     }
 
-    public addressUsers(msg: string | SlackMessage,
-                        team: string,
-                        users: string | string[],
-                        options?: MessageOptions): Promise<any> {
-        this.listeners.forEach(l => l.messageSent(msg, team, users, [], options, this.ctx));
-        return this.delegate.addressUsers(msg, team, users, options);
-    }
-
-    public addressChannels(msg: string | SlackMessage,
-                           team: string,
-                           channels: string | string[],
-                           options?: MessageOptions): Promise<any> {
-        this.listeners.forEach(l => l.messageSent(msg, team, [], channels, options, this.ctx));
-        return this.delegate.addressChannels(msg, team, channels, options);
+    public send(msg: any,
+                destinations: Destination | Destination[],
+                options?: MessageOptions): Promise<any> {
+        this.listeners.forEach(l => l.messageSent(msg, destinations, options, this.ctx));
+        return this.delegate.send(msg, destinations, options);
     }
 }
 

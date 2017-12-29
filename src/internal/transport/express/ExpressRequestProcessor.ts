@@ -5,11 +5,11 @@ import {
     AutomationContextAware,
     HandlerContext,
 } from "../../../HandlerContext";
-import { HandlerResult } from "../../../HandlerResult";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
 import {
+    Destination,
     MessageClient,
     MessageOptions,
 } from "../../../spi/message/MessageClient";
@@ -72,9 +72,7 @@ class ExpressMessageClient extends MessageClientSupport {
     }
 
     protected doSend(msg: string | SlackMessage,
-                     team: string,
-                     userNames: string | string[],
-                     channelNames: string | string[],
+                     destinations: Destination | Destination[],
                      options?: MessageOptions): Promise<any> {
         return raiseEvent(msg, this.payload, "message");
     }

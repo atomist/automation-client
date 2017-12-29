@@ -2,27 +2,27 @@ import {
     render,
     SlackMessage,
 } from "@atomist/slack-messages/SlackMessages";
-import * as _ from "lodash";
 import * as WebSocket from "ws";
-import { AutomationServer } from "../../../server/AutomationServer";
 import {
     CommandReferencingAction,
+    Destination,
     isSlackMessage,
     MessageMimeTypes,
     MessageOptions,
+    SlackDestination,
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { logger } from "../../util/logger";
 import { toStringArray } from "../../util/string";
 import {
     CommandIncoming,
-    EventIncoming, Source,
+    EventIncoming,
+    Source,
 } from "../RequestProcessor";
 
 export abstract class AbstractWebSocketMessageClient extends MessageClientSupport {
 
-    constructor(private automations: AutomationServer,
-                private ws: WebSocket,
+    constructor(private ws: WebSocket,
                 private correlationId: string,
                 private team: { id: string, name?: string },
                 private source: Source) {
@@ -30,52 +30,62 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
     }
 
     protected async doSend(msg: string | SlackMessage,
-                           team: string,
-                           users: string | string[],
-                           channels: string | string[],
+                           destinations: Destination | Destination[],
                            options: MessageOptions = {}): Promise<any> {
         const ts = this.ts(options);
-        const destinations: Destination[] = [];
 
-        (users as string[]).forEach(user => {
-           destinations.push({
-               user_agent: "slack",
-               slack: {
-                   team: {
-                       id: team,
-                   },
-                   user: {
-                       name: user,
-                   },
-               },
-           });
+        if (!Array.isArray(destinations)) {
+            destinations = [ destinations ];
+        }
+
+        const responseDestinations = [];
+        destinations.forEach(d => {
+            if (d.userAgent === "slack") {
+                const sd = d as SlackDestination;
+
+                toStringArray(sd.channels).forEach(c => {
+                    responseDestinations.push({
+                        user_agent: "slack",
+                        slack: {
+                            team: {
+                                id: sd.team,
+                            },
+                            channel: {
+                                name: c,
+                            },
+                        },
+                    });
+                });
+
+                toStringArray(sd.users).forEach(c => {
+                    responseDestinations.push({
+                        user_agent: "slack",
+                        slack: {
+                            team: {
+                                id: sd.team,
+                            },
+                            user: {
+                                name: c,
+                            },
+                        },
+                    });
+                });
+            }
         });
-        (channels as string[]).forEach(channel => {
-            destinations.push({
-                user_agent: "slack",
-                slack: {
-                    team: {
-                        id: team,
-                    },
-                    channel: {
-                        name: channel,
-                    },
-                },
-            });
-        });
-        if (destinations.length === 0 && this.source) {
-            destinations.push(this.source);
+
+        if (responseDestinations.length === 0) {
+            responseDestinations.push(this.source);
         }
 
         if (isSlackMessage(msg)) {
-            const actions = mapActions(msg, this.automations.automations.name, this.automations.automations.version);
+            const actions = mapActions(msg);
             const response: HandlerResponse = {
                 api_version: "1",
                 correlation_id: this.correlationId,
                 content_type: MessageMimeTypes.SLACK_JSON,
                 team: this.team,
                 body: render(msg, false),
-                destinations,
+                destinations: responseDestinations,
                 id: options.id,
                 timestamp: ts ? ts.toString() : undefined,
                 ttl: ts && options.ttl ? (ts + options.ttl).toString() : undefined,
@@ -91,7 +101,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 content_type: MessageMimeTypes.PLAIN_TEXT,
                 team: this.team,
                 body: msg as string,
-                destinations,
+                destinations: responseDestinations,
                 id: options.id,
                 timestamp: ts ? ts.toString() : undefined,
                 ttl: ts && options.ttl ? (ts + options.ttl).toString() : undefined,
@@ -117,46 +127,40 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
 
 export class WebSocketCommandMessageClient extends AbstractWebSocketMessageClient {
 
-    constructor(request: CommandIncoming, automations: AutomationServer, ws: WebSocket) {
-        super(automations, ws, request.correlation_id, request.team, request.source);
+    constructor(request: CommandIncoming, ws: WebSocket) {
+        super(ws, request.correlation_id, request.team, request.source);
     }
 
     protected async doSend(msg: string | SlackMessage,
-                           team: string,
-                           userNames: string | string[],
-                           channelNames: string | string[],
+                           destinations: Destination | Destination[],
                            options: MessageOptions = {}): Promise<any> {
-        const users = clean(userNames);
-        const channels = clean(channelNames);
-
-        return super.doSend(msg, team, users, channels, options);
+        return super.doSend(msg, destinations, options);
     }
 }
 
 export class WebSocketEventMessageClient extends AbstractWebSocketMessageClient {
 
-    constructor(request: EventIncoming, automations: AutomationServer, ws: WebSocket) {
-        super(automations, ws, request.extensions.correlation_id,
+    constructor(request: EventIncoming, ws: WebSocket) {
+        super(ws, request.extensions.correlation_id,
             { id: request.extensions.team_id, name: request.extensions.team_name }, null);
     }
 
     protected async doSend(msg: string | SlackMessage,
-                           team: string,
-                           userNames: string | string[],
-                           channelNames: string | string[],
+                           destinations: Destination | Destination[],
                            options: MessageOptions = {}): Promise<any> {
-        const users = clean(userNames);
-        const channels = clean(channelNames);
+        if (!Array.isArray(destinations)) {
+            destinations = [ destinations ];
+        }
 
-        if (users.length === 0 && channels.length === 0) {
+        if (destinations.length === 0) {
             throw new Error("Response messages are not supported for event handlers");
         } else {
-            return super.doSend(msg, team, users, channels, options);
+            return super.doSend(msg, destinations, options);
         }
     }
 }
 
-export function mapActions(msg: SlackMessage, artifact: string, version: string): Action[] {
+export function mapActions(msg: SlackMessage): Action[] {
     const actions: Action[] = [];
 
     let counter = 0;
@@ -238,7 +242,7 @@ export interface HandlerResponse {
         reason: string;
     };
 
-    destinations?: Destination[];
+    destinations?: any[];
 
     content_type?: "application/x-atomist-slack+json" | "text/plain";
 
@@ -251,24 +255,6 @@ export interface HandlerResponse {
     updates_only?: boolean;
 
     actions?: Action[];
-}
-
-export interface Destination {
-    user_agent: "slack";
-    slack?: {
-        team: {
-            id: string;
-        };
-        channel?: {
-            id?: string;
-            name?: string;
-        };
-        user?: {
-            id?: string;
-            name?: string;
-        };
-        thread_ts?: string;
-    };
 }
 
 export interface Action {

@@ -1,7 +1,10 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import { eventStore } from "../../globals";
 import { AutomationEventListenerSupport } from "../../server/AutomationEventListener";
-import { MessageOptions } from "../../spi/message/MessageClient";
+import {
+    Destination,
+    MessageOptions,
+} from "../../spi/message/MessageClient";
 import { guid } from "../util/string";
 import {
     CommandIncoming,
@@ -19,9 +22,7 @@ export class EventStoringAutomationEventListener extends AutomationEventListener
     }
 
     public messageSent(message: string | SlackMessage,
-                       team: string,
-                       users: string | string[],
-                       channels: string | string[],
+                       destinations: Destination | Destination[],
                        options?: MessageOptions) {
         eventStore().recordMessage(options && options.id ? options.id : guid(), message);
     }

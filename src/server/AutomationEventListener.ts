@@ -1,9 +1,19 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
-import { EventFired } from "../HandleEvent";
-import { HandlerContext, HandlerResult } from "../index";
+import {
+    EventFired,
+    HandlerContext,
+    HandlerResult,
+} from "../index";
 import { CommandInvocation } from "../internal/invoker/Payload";
-import { CommandIncoming, EventIncoming, RequestProcessor } from "../internal/transport/RequestProcessor";
-import { MessageOptions } from "../spi/message/MessageClient";
+import {
+    CommandIncoming,
+    EventIncoming,
+    RequestProcessor,
+} from "../internal/transport/RequestProcessor";
+import {
+    Destination,
+    MessageOptions,
+} from "../spi/message/MessageClient";
 
 export interface AutomationEventListener {
 
@@ -22,9 +32,7 @@ export interface AutomationEventListener {
     eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): Promise<any>;
 
     messageSent(message: string | SlackMessage,
-                team: string,
-                users: string | string[],
-                channels: string | string[],
+                destinations: Destination | Destination[],
                 options: MessageOptions,
                 ctx: HandlerContext): void;
 
@@ -73,9 +81,7 @@ export class AutomationEventListenerSupport implements AutomationEventListener {
     }
 
     public messageSent(message: string | SlackMessage,
-                       team: string,
-                       users: string | string[],
-                       channels: string | string[],
+                       destinations: Destination | Destination[],
                        options: MessageOptions,
                        ctx: HandlerContext) {
         // This is intentionally left empty

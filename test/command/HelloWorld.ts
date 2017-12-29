@@ -2,7 +2,10 @@ import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import { ConfigurableCommandHandler } from "../../src/decorators";
 import { Failure, HandleCommand, HandlerContext, HandlerResult, Parameter } from "../../src/index";
 import { ReposQuery, ReposQueryVariables } from "../../src/schema/schema";
-import { buttonForCommand, menuForCommand } from "../../src/spi/message/MessageClient";
+import {
+    addressSlackUsers, buttonForCommand, menuForCommand,
+    SlackDestination,
+} from "../../src/spi/message/MessageClient";
 import { SecretBaseHandler } from "./SecretBaseHandler";
 
 @ConfigurableCommandHandler("Send a hello back to the client", { intent: "hello cd", autoSubmit: true })
@@ -42,7 +45,7 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
         return ctx.graphClient.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
             { teamId: "T1L0VDKJP", offset: 0 }, {})
             .then(() => {
-                return ctx.messageClient.addressUsers(msg, ctx.source.slack.team.id, "cd");
+                return ctx.messageClient.send(msg, addressSlackUsers(ctx.source.slack.team.id, "cd"));
             })
             .then(() => ({ code: 0, redirect: "http://google.com" }));
     }

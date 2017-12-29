@@ -1,31 +1,27 @@
-import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
-import { MessageClient, MessageOptions } from "./MessageClient";
+import {
+    Destination,
+    MessageClient,
+    MessageOptions,
+} from "./MessageClient";
 
 export abstract class MessageClientSupport implements MessageClient {
 
-    public respond(msg: string | SlackMessage,
+    public respond(msg: any,
                    options?: MessageOptions): Promise<any> {
-        return this.doSend(msg, null, [], [], options);
+        return this.doSend(msg, [], options);
     }
 
-    public addressUsers(msg: string | SlackMessage,
-                        team: string,
-                        users: string | string[],
-                        options?: MessageOptions): Promise<any> {
-        return this.doSend(msg, team, users, [], options);
+    public send(msg: any,
+                destinations: Destination | Destination[],
+                options?: MessageOptions): Promise<any> {
+        if (!Array.isArray(destinations)) {
+            destinations = [ destinations ];
+        }
+        return this.doSend(msg, destinations as Destination[], options);
     }
 
-    public addressChannels(msg: string | SlackMessage,
-                           team: string,
-                           channels: string | string[],
-                           options?: MessageOptions): Promise<any> {
-        return this.doSend(msg, team, [], channels, options);
-    }
-
-    protected abstract doSend(msg: string | SlackMessage,
-                              team: string,
-                              users: string | string[],
-                              channels: string | string[],
+    protected abstract doSend(msg: any,
+                              destinations: Destination[],
                               options?: MessageOptions): Promise<any>;
 
 }

@@ -43,7 +43,7 @@ export function toStringArray(strings: string | string[]): string[] {
             return [strings as string];
         }
     } else {
-        return null;
+        return [];
     }
 }
 

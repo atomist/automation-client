@@ -8,8 +8,7 @@ import {
     WebSocketEventMessageClient,
 } from "../../../../src/internal/transport/websocket/WebSocketMessageClient";
 import { guid } from "../../../../src/internal/util/string";
-import { AutomationServer } from "../../../../src/server/AutomationServer";
-import { buttonForCommand } from "../../../../src/spi/message/MessageClient";
+import { buttonForCommand, SlackDestination } from "../../../../src/spi/message/MessageClient";
 
 describe("WebSocketMessageClient", () => {
 
@@ -19,18 +18,7 @@ describe("WebSocketMessageClient", () => {
                 data: {},
                 extensions: { team_id: "Txxxxxxx", correlation_id: guid(), operationName: "Foor" },
                 secrets: [],
-            },
-            {
-                automations: {
-                    name: "test",
-                    version: "0.1.0",
-                    team_ids: ["sfsf"],
-                    commands: [],
-                    events: [],
-                    groups: [],
-                    keywords: [],
-                },
-            } as any as AutomationServer, null);
+            }, null);
         client.respond("Some test message")
             .catch(err => {
                 assert(err.message === "Response messages are not supported for event handlers");
@@ -52,18 +40,7 @@ describe("WebSocketMessageClient", () => {
                 data: {},
                 extensions: { team_id: "Txxxxxxx", correlation_id: corrId, operationName: "Foor" },
                 secrets: [],
-            },
-            {
-                automations: {
-                    name: "test",
-                    version: "0.1.0",
-                    team_ids: ["sfsf"],
-                    commands: [],
-                    events: [],
-                    groups: [],
-                    keywords: [],
-                },
-            } as any as AutomationServer, { send: () => { //
+            }, { send: () => { //
                 // Intentionally left empty
             } } as any as WebSocket );
 
@@ -77,7 +54,7 @@ describe("WebSocketMessageClient", () => {
             }],
         };
 
-        client.addressUsers(msg, "Txxxxxxx", ["cd", "rod"], {id: "123456"})
+        client.send(msg, { userAgent: "slack", team: "Txxxxxxx", users: ["cd", "rod"] } as SlackDestination, { id: "123456"})
             .then(fm => {
                 assert(fm.api_version === "1");
                 assert(fm.correlation_id === corrId);
@@ -109,18 +86,7 @@ describe("WebSocketMessageClient", () => {
                 data: {},
                 extensions: { team_id: "Txxxxxxx", correlation_id: corrId, operationName: "Foor" },
                 secrets: [],
-            },
-            {
-                automations: {
-                    name: "test",
-                    version: "0.1.0",
-                    team_ids: ["sfsf"],
-                    commands: [],
-                    events: [],
-                    groups: [],
-                    keywords: [],
-                },
-            } as any as AutomationServer, { send: () => { //
+            }, { send: () => { //
                 // Intentionally left empty
             } } as any as WebSocket );
 
@@ -134,7 +100,7 @@ describe("WebSocketMessageClient", () => {
             }],
         };
 
-        client.addressChannels(msg, "Txxxxxxx", ["general", "test"], {id: "123456"})
+        client.send(msg, { userAgent: "slack", team: "Txxxxxxx", channels: ["general", "test"] } as SlackDestination, {id: "123456"})
             .then(fm => {
                 assert(fm.api_version === "1");
                 assert(fm.correlation_id === corrId);
@@ -184,18 +150,7 @@ describe("WebSocketMessageClient", () => {
                 parameters: [],
                 mapped_parameters: [],
                 secrets: [],
-            },
-            {
-                automations: {
-                    name: "test",
-                    version: "0.1.0",
-                    team_ids: ["sfsf"],
-                    commands: [],
-                    events: [],
-                    groups: [],
-                    keywords: [],
-                },
-            } as any as AutomationServer, { send: () => { //
+            }, { send: () => { //
                 // Intentionally left empty
             } } as any as WebSocket );
 

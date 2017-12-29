@@ -3,7 +3,6 @@ import {
     SlackMessage,
 } from "@atomist/slack-messages/SlackMessages";
 import * as _ from "lodash";
-import { ScriptedFlushable } from "../../internal/common/Flushable";
 import { metadataFromInstance } from "../../internal/metadata/metadataReading";
 
 /**
@@ -12,17 +11,48 @@ import { metadataFromInstance } from "../../internal/metadata/metadataReading";
  */
 export interface MessageClient {
 
-    respond(msg: string | SlackMessage, options?: MessageOptions): Promise<any>;
+    respond(msg: any, options?: MessageOptions): Promise<any>;
 
-    addressUsers(msg: string | SlackMessage,
-                 team: string,
-                 users: string | string[],
-                 options?: MessageOptions): Promise<any>;
+    send(msg: any,
+         destinations: Destination | Destination[],
+         options?: MessageOptions): Promise<any>;
+}
 
-    addressChannels(msg: string | SlackMessage,
-                    team: string,
-                    channels: string | string[],
-                    options?: MessageOptions): Promise<any>;
+export interface Destination {
+
+    userAgent: string;
+}
+
+export class SlackDestination implements Destination {
+
+    public userAgent: "slack";
+
+    public users: string[];
+    public channels: string[];
+
+    constructor(public team: string) {}
+
+    public addressUser(user: string): SlackDestination {
+        this.users.push(user);
+        return this;
+    }
+
+    public addressChannel(channel: string): SlackDestination {
+        this.channels.push(channel);
+        return this;
+    }
+}
+
+export function addressSlackUsers(team: string, ...users: string[]): SlackDestination {
+    const sd = new SlackDestination(team);
+    users.forEach(u => sd.addressUser(u));
+    return sd;
+}
+
+export function addressSlackChannels(team: string, ...channels: string[]): SlackDestination {
+    const sd = new SlackDestination(team);
+    channels.forEach(c => sd.addressChannel(c));
+    return sd;
 }
 
 export interface MessageOptions {
@@ -58,10 +88,8 @@ export interface MessageOptions {
 
 export class MessageMimeTypes {
 
-    public static SLACK_JSON: "application/x-atomist-slack+json" | "text/plain"
-    = "application/x-atomist-slack+json";
-    public static PLAIN_TEXT: "application/x-atomist-slack+json" | "text/plain"
-    = "text/plain";
+    public static SLACK_JSON: "application/x-atomist-slack+json" | "text/plain" = "application/x-atomist-slack+json";
+    public static PLAIN_TEXT: "application/x-atomist-slack+json" | "text/plain" = "text/plain";
 }
 
 export interface CommandReferencingAction extends Action {

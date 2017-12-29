@@ -13,6 +13,7 @@ import {
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
 import {
+    Destination,
     MessageClient,
     MessageOptions,
 } from "../../../spi/message/MessageClient";
@@ -100,17 +101,14 @@ class ClusterWorkerMessageClient extends MessageClientSupport {
     }
 
     protected doSend(msg: string | SlackMessage,
-                     team: string,
-                     users: string | string[],
-                     channels: string | string[], options?: MessageOptions): Promise<any> {
+                     destinations: Destination | Destination[],
+                     options?: MessageOptions): Promise<any> {
         return workerSend({
             type: "message",
             context: this.ctx.context,
             data: {
                 message: msg,
-                team,
-                users,
-                channels,
+                destinations,
                 options,
             },
         });

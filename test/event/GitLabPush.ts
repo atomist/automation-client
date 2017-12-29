@@ -8,6 +8,7 @@ import {
     HandlerResult,
     Success,
 } from "../../src/index";
+import { addressSlackChannels } from "../../src/spi/message/MessageClient";
 
 @EventHandler("Notify on GitLab pushes", `subscription GitLabPush {
   GitLabPush {
@@ -48,7 +49,7 @@ export class GitLabPush implements HandleEvent<any> {
             },
             ],
         };
-        return ctx.messageClient.addressChannels(msg,  "FIXME", "gitlab")
+        return ctx.messageClient.send(msg, addressSlackChannels("FIXME", "gitlab"))
             .then(() => Success, failure);
     }
 }
