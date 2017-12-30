@@ -33,16 +33,19 @@ export class GitHubRepoRef extends AbstractRepoRef {
             .then(() => successOn(this));
     }
 
-    public setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>> {
+    public setUserConfig(credentials: ProjectOperationCredentials,
+                         project: Configurable): Promise<ActionResult<any>> {
         const config = headers(credentials);
-        return Promise.all([axios.get(`${this.apiBase}/user`, config),
-            axios.get(`${this.apiBase}/user/emails`, config)])
+        return Promise.all(
+            [axios.get(`${this.apiBase}/user`, config),
+                axios.get(`${this.apiBase}/user/emails`, config)])
             .then(results => {
-                const name = results[0].data.name;
-                let email = results[0].data.email;
+                const [userResult, emailsResult] = results;
+                const name = userResult.data.name;
+                let email = userResult.data.email;
 
                 if (!email) {
-                    email = results[1].data.find(e => e.primary === true).email;
+                    email = emailsResult.data.find(e => e.primary === true).email;
                 }
 
                 if (name && email) {
