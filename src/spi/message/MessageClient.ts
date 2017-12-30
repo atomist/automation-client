@@ -181,7 +181,7 @@ function rugButtonFrom(action: ButtonSpecification, command: any): Action {
     const button: Action = {
         text: action.text,
         type: "button",
-        name: `atm-automation::${command.id}`,
+        name: `automation-command::${command.id}`,
     };
     _.forOwn(action, (v, k) => {
         (button as any)[k] = v;
@@ -202,7 +202,7 @@ function rugMenuFrom(action: MenuSpecification, command: any): Action {
     const select: Action = {
         text: action.text,
         type: "select",
-        name: `atm-automation::${command.id}`,
+        name: `automation-command::${command.id}`,
     };
 
     if (typeof action.options === "string") {
