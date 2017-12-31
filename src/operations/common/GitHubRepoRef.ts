@@ -54,7 +54,7 @@ export class GitHubRepoRef extends AbstractRepoRef {
                             .then(emailsResult => {
                                 email = emailsResult.data.find(e => e.primary === true).email || "bot@atomist.com";
                                 return project.setUserConfig("Atomist Bot", "bot@atomist.com");
-                            })
+                            });
                     }
                 }).catch(() => project.setUserConfig("Atomist Bot", "bot@atomist.com"));
         }
