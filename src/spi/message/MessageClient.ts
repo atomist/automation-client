@@ -11,18 +11,38 @@ import { metadataFromInstance } from "../../internal/metadata/metadataReading";
  */
 export interface MessageClient {
 
-    respond(msg: any, options?: MessageOptions): Promise<any>;
+    /**
+     * Send a response back to where this command request originated.
+     * @param msg
+     * @param {MessageOptions} options
+     * @returns {Promise<any>}
+     */
+    respond(msg: any,
+            options?: MessageOptions): Promise<any>;
 
+    /**
+     * Send a message to any given destination.
+     * @param msg
+     * @param {Destination | Destination[]} destinations
+     * @param {MessageOptions} options
+     * @returns {Promise<any>}
+     */
     send(msg: any,
          destinations: Destination | Destination[],
          options?: MessageOptions): Promise<any>;
 }
 
+/**
+ * Basic message destination.
+ */
 export interface Destination {
 
     userAgent: string;
 }
 
+/**
+ * Message Destination for Slack.
+ */
 export class SlackDestination implements Destination {
 
     public userAgent: "slack";
@@ -32,23 +52,45 @@ export class SlackDestination implements Destination {
 
     constructor(public team: string) {}
 
+    /**
+     * Address certain users by their user name.
+     * @param {string} user
+     * @returns {SlackDestination}
+     */
     public addressUser(user: string): SlackDestination {
         this.users.push(user);
         return this;
     }
 
+    /**
+     * Address certains channels by their channel name.
+     * @param {string} channel
+     * @returns {SlackDestination}
+     */
     public addressChannel(channel: string): SlackDestination {
         this.channels.push(channel);
         return this;
     }
 }
 
+/**
+ * Shortcut for creating a SlackDestination which addresses the given users.
+ * @param {string} team
+ * @param {string} users
+ * @returns {SlackDestination}
+ */
 export function addressSlackUsers(team: string, ...users: string[]): SlackDestination {
     const sd = new SlackDestination(team);
     users.forEach(u => sd.addressUser(u));
     return sd;
 }
 
+/**
+ * Shortcut for creating a SlackDestination which addresses the given channels.
+ * @param {string} team
+ * @param {string} channels
+ * @returns {SlackDestination}
+ */
 export function addressSlackChannels(team: string, ...channels: string[]): SlackDestination {
     const sd = new SlackDestination(team);
     channels.forEach(c => sd.addressChannel(c));
@@ -165,7 +207,7 @@ export function commandName(command: any): string {
 }
 
 export function mergeParameters(command: any, parameters: any): any {
-    // Resue parameters defined on the instance
+    // Reuse parameters defined on the instance
     if (typeof command !== "string" && typeof command !== "function") {
         parameters = {
             ...command,
