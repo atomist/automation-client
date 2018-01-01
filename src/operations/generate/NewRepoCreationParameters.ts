@@ -1,12 +1,13 @@
-
 import { MappedParameter, MappedParameters, Parameter, Secret, Secrets } from "../../decorators";
+import { GitHubRepoRef } from "../common/GitHubRepoRef";
 import { GitHubNameRegExp } from "../common/params/gitHubPatterns";
-import { RepoId } from "../common/RepoId";
+import { RemoteLocator } from "../common/params/RemoteLocator";
+import { RemoteRepoRef, RepoId } from "../common/RepoId";
 
 /**
  * Parameters common to all generators that create new repositories
  */
-export class NewRepoCreationParameters implements RepoId {
+export class NewRepoCreationParameters implements RepoId, RemoteLocator {
 
     @Secret(Secrets.userToken(["repo", "user"]))
     public githubToken;
@@ -46,5 +47,17 @@ export class NewRepoCreationParameters implements RepoId {
         required: false,
     })
     public visibility: "public" | "private" = "public";
+
+    /**
+     * Return a single RepoRef or undefined if we're not identifying a single repo
+     * This implementation returns a GitHub.com repo but it can be overriden
+     * to return any kind of repo
+     * @return {RepoRef}
+     */
+    get repoRef(): RemoteRepoRef {
+        return (!!this.owner && !!this.repo) ?
+            new GitHubRepoRef(this.owner, this.repo) :
+            undefined;
+    }
 
 }
