@@ -1,12 +1,14 @@
 import { Parameter } from "../../../decorators";
-import { RepoRef } from "../RepoId";
+import { GitHubRepoRef } from "../GitHubRepoRef";
+import { RemoteRepoRef, RepoRef } from "../RepoId";
 import { GitBranchRegExp, GitHubNameRegExp } from "./gitHubPatterns";
+import { RemoteLocator } from "./RemoteLocator";
 
 /**
  * Parameters common to anything that works with a single source repo,
  * such as a seed driven generator
  */
-export class SourceRepoParameters implements RepoRef {
+export class SourceRepoParameters implements RepoRef, RemoteLocator {
 
     @Parameter({
         pattern: GitHubNameRegExp.pattern,
@@ -43,5 +45,17 @@ export class SourceRepoParameters implements RepoRef {
         displayable: false,
     })
     public sha: string = "master";
+
+    /**
+     * Return a single RepoRef
+     * This implementation returns a GitHub.com repo but it can be overridden
+     * to return any kind of repo
+     * @return {RepoRef}
+     */
+    get repoRef(): RemoteRepoRef {
+        return (!!this.owner && !!this.repo) ?
+            new GitHubRepoRef(this.owner, this.repo) :
+            undefined;
+    }
 
 }

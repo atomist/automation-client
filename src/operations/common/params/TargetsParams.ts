@@ -3,12 +3,13 @@ import { GitHubNameRegExp } from "./gitHubPatterns";
 
 import { ProjectOperationCredentials } from "../ProjectOperationCredentials";
 import { RepoFilter } from "../repoFilter";
+import { RemoteLocator } from "./RemoteLocator";
 
 /**
  * Base parameters for working with repo(s).
  * Allows use of regex.
  */
-export abstract class TargetsParams {
+export abstract class TargetsParams implements RemoteLocator {
 
     public abstract owner;
 
@@ -21,15 +22,11 @@ export abstract class TargetsParams {
 
     public abstract credentials: ProjectOperationCredentials;
 
-    /**
-     * Return a single RepoRef or undefined if we're not identifying a single repo
-     * @return {RepoRef}
-     */
-    public abstract repoRef: RemoteRepoRef;
-
     get usesRegex() {
         return !!this.repo && !GitHubNameRegExp.pattern.test(this.repo);
     }
+
+    public abstract repoRef: RemoteRepoRef;
 
     /**
      * If we're not tied to a single repo ref, test this RepoRef
