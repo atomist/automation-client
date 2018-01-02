@@ -93,13 +93,19 @@ function doWithEditResult(r: EditResult<GitProject>, gitop: () => Promise<EditRe
 }
 
 /**
- * Create a branch, commit with current content and push
+ * Create a branch (if it doesn't exist), commit with current content and push
  * @param {GitProject} gp
  * @param {BranchCommit} ci
  */
 export function createAndPushBranch(gp: GitProject, ci: BranchCommit): Promise<EditResult> {
     return gp.configureFromRemote()
-        .then(() => gp.createBranch(ci.branch))
+        .then(() => gp.hasBranch(ci.branch).then(branchExists => {
+            if (branchExists) {
+                return gp.checkout(ci.branch)
+            } else {
+                return gp.createBranch(ci.branch) // this also checks it out
+            }
+        }))
         .then(x => gp.commit(ci.message))
         .then(x => gp.push())
         .then(r => successfulEdit(r.target, true));

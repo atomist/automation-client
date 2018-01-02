@@ -2,7 +2,6 @@ import { Parameters, Secret, Secrets } from "../../../decorators";
 
 import { GitHubRepoRef } from "../GitHubRepoRef";
 import { ProjectOperationCredentials } from "../ProjectOperationCredentials";
-import { RepoFilter } from "../repoFilter";
 import { TargetsParams } from "./TargetsParams";
 
 /**
