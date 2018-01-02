@@ -101,9 +101,9 @@ export function createAndPushBranch(gp: GitProject, ci: BranchCommit): Promise<E
     return gp.configureFromRemote()
         .then(() => gp.hasBranch(ci.branch).then(branchExists => {
             if (branchExists) {
-                return gp.checkout(ci.branch)
+                return gp.checkout(ci.branch);
             } else {
-                return gp.createBranch(ci.branch) // this also checks it out
+                return gp.createBranch(ci.branch); // this also checks it out
             }
         }))
         .then(x => gp.commit(ci.message))

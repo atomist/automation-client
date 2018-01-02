@@ -162,8 +162,8 @@ ding dong ding
                         const p2 = GitCommandGitProject.fromProject(p, Creds);
                         return p2.gitStatus().then(gs2 => {
                             assert(gs1.sha === gs2.sha);
-                        })
-                    })
+                        });
+                    });
             })
             .then(() => done(), done);
     }).timeout(5000);

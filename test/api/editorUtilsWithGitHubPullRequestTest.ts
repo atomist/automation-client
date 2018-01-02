@@ -6,9 +6,9 @@ import { PullRequest } from "../../src/operations/edit/editModes";
 import { ProjectEditor, successfulEdit, toEditor } from "../../src/operations/edit/projectEditor";
 import { editProjectUsingBranch, editProjectUsingPullRequest } from "../../src/operations/support/editorUtils";
 import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
+import { Project } from "../../src/project/Project";
 import { Creds } from "./gitHubTest";
 import { deleteRepoIfExists, newRepo } from "./GitProjectRemoteTest";
-import { Project } from "../../src/project/Project";
 
 const EditorThatChangesProject = toEditor(p => p.addFile("thing", "thing"));
 
@@ -51,7 +51,7 @@ const TinyChangeEditor: ProjectEditor = (p: Project) => {
         .then(f => f.getContent()
                 .then(fileContent => f.setContent(fileContent + "\nmore stuff\n")),
             err => p.addFile("README.md", "stuff"))
-        .then(() => successfulEdit(p, true))
+        .then(() => successfulEdit(p, true));
 };
 
 describe("editorUtils with branch commit", () => {
@@ -65,7 +65,7 @@ describe("editorUtils with branch commit", () => {
                         TinyChangeEditor, { branch: "hello", message: "thanks" })))
                 .then(() => deleteRepoIfExists(rr),
                     err => deleteRepoIfExists(rr).then(() => Promise.reject(err))))
-            .then(() => done(), done)
-    }).timeout(20000)
+            .then(() => done(), done);
+    }).timeout(20000);
 
 });
