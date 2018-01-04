@@ -62,7 +62,6 @@ export class BitBucketServerRepoRef extends AbstractRepoRef {
         logger.debug(`Making request to '${url}' to delete repo`);
         return axios.delete(url, headers(creds))
             .then(axiosResponse => {
-                logger.info(JSON.stringify(axiosResponse.data));
                 return {
                     target: this,
                     success: true,
@@ -82,7 +81,7 @@ export class BitBucketServerRepoRef extends AbstractRepoRef {
     public raisePullRequest(credentials: ProjectOperationCredentials,
                             title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
         const url = `${this.apiBase}${this.apiPathComponent}/pull-requests`;
-        logger.info(`Making request to '${url}' to raise PR`);
+        logger.debug(`Making request to '${url}' to raise PR`);
         return axios.post(url, {
             title,
             description: body,
@@ -126,7 +125,7 @@ export class BitBucketServerRepoRef extends AbstractRepoRef {
         return apiPath;
     }
 
-    private get apiPathComponent(): string {
+    get apiPathComponent(): string {
         return this.apiBasePathComponent + this.repo;
     }
 
