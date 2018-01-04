@@ -1,3 +1,4 @@
+import axios from "axios";
 import MockAdapter = require("axios-mock-adapter");
 import * as assert from "power-assert";
 import {BasicAuthCredentials} from "../../src/operations/common/BasicAuthCredentials";
@@ -39,42 +40,36 @@ describe("BitBucketServer support", () => {
         });
     });
 
-    it("should create repo", done => {
-        const axios = require("axios");
+    it("should create repo", () => {
         const mock = new MockAdapter(axios);
 
-        mock.onPost("https://bitbucket.organistation.co.za/rest/api/1.0/projects/a-project/repos/test-app")
+        mock.onPost("https://bitbucket.organistation.co.za/rest/api/1.0/projects/a-project/repos/")
             .reply(200, {});
 
         const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organistation.co.za", "a-project", "test-app");
-        bitbucketServerRepoRef.createRemote(BitBucketServerCredentials, "a description", "true")
-            .then(() => done(), done);
+        return bitbucketServerRepoRef.createRemote(BitBucketServerCredentials, "a description", "true");
     });
 
-    it("should delete repo", done => {
-        const axios = require("axios");
+    it("should delete repo", () => {
         const mock = new MockAdapter(axios);
 
         mock.onDelete("https://bitbucket.organistation.co.za/rest/api/1.0/projects/a-project/repos/test-app")
             .reply(200, {});
 
         const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organistation.co.za", "a-project", "test-app");
-        bitbucketServerRepoRef.deleteRemote(BitBucketServerCredentials)
-            .then(() => done(), done);
+        return bitbucketServerRepoRef.deleteRemote(BitBucketServerCredentials);
     });
 
-    it("should create pr", done => {
-        const axios = require("axios");
+    it("should create pr", () => {
         const mock = new MockAdapter(axios);
 
         mock.onPost("https://bitbucket.organistation.co.za/rest/api/1.0/projects/a-project/repos/test-app/pull-requests")
             .reply(200, {});
 
         const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organistation.co.za", "a-project", "test-app");
-        bitbucketServerRepoRef.raisePullRequest(
+        return bitbucketServerRepoRef.raisePullRequest(
             BitBucketServerCredentials, "Add a thing",
             "Dr Seuss is fun", "refs/heads/thing1",
-            "refs/heads/master")
-            .then(() => done(), done);
+            "refs/heads/master");
     });
 });
