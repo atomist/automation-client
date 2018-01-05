@@ -21,7 +21,7 @@ describe("BitBucketServer support", () => {
         });
         it("for user", () => {
             const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organistation.co.za", "a-user", "test-app", false);
-            assert(bitbucketServerRepoRef.cloneUrl(BitBucketServerCredentials) === "https://username:password@bitbucket.organistation.co.za/scm/a-user/test-app.git");
+            assert(bitbucketServerRepoRef.cloneUrl(BitBucketServerCredentials) === "https://username:password@bitbucket.organistation.co.za/scm/~a-user/test-app.git");
         });
     });
 
