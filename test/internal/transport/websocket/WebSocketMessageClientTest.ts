@@ -60,6 +60,7 @@ describe("WebSocketMessageClient", () => {
                 assert(fm.correlation_id === corrId);
                 assert(fm.content_type === "application/x-atomist-slack+json");
                 assert(fm.team.id === "Txxxxxxx");
+                assert(fm.event === "Foor");
                 assert(fm.id === "123456");
                 assert(fm.destinations.length === 2);
                 assert(fm.destinations[0].user_agent === "slack");
@@ -106,6 +107,7 @@ describe("WebSocketMessageClient", () => {
                 assert(fm.correlation_id === corrId);
                 assert(fm.content_type === "application/x-atomist-slack+json");
                 assert(fm.team.id === "Txxxxxxx");
+                assert(fm.event === "Foor");
                 assert(fm.id === "123456");
                 assert(fm.destinations.length === 2);
                 assert(fm.destinations[0].user_agent === "slack");
@@ -170,6 +172,7 @@ describe("WebSocketMessageClient", () => {
                 assert(fm.correlation_id === corrId);
                 assert(fm.content_type === "application/x-atomist-slack+json");
                 assert(fm.team.id === "Txxxxxxx");
+                assert(fm.command === "Foor");
                 assert(fm.id === "123456");
                 assert(fm.destinations.length === 1);
                 assert(fm.destinations[0].user_agent === "slack");

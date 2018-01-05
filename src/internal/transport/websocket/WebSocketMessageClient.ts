@@ -17,12 +17,15 @@ import { toStringArray } from "../../util/string";
 import {
     CommandIncoming,
     EventIncoming,
+    isCommandIncoming,
+    isEventIncoming,
     Source,
 } from "../RequestProcessor";
 
 export abstract class AbstractWebSocketMessageClient extends MessageClientSupport {
 
     constructor(private ws: WebSocket,
+                private request: CommandIncoming | EventIncoming,
                 private correlationId: string,
                 private team: { id: string, name?: string },
                 private source: Source) {
@@ -73,7 +76,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             }
         });
 
-        if (responseDestinations.length === 0) {
+        if (responseDestinations.length === 0 && this.source) {
             responseDestinations.push(this.source);
         }
 
@@ -84,12 +87,14 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 correlation_id: this.correlationId,
                 content_type: MessageMimeTypes.SLACK_JSON,
                 team: this.team,
+                command: isCommandIncoming(this.request) ? this.request.command : undefined,
+                event: isEventIncoming(this.request) ? this.request.extensions.operationName : undefined,
                 body: render(msg, false),
                 destinations: responseDestinations,
                 id: options.id,
                 timestamp: ts ? ts.toString() : undefined,
                 ttl: ts && options.ttl ? (ts + options.ttl).toString() : undefined,
-                updates_only: options.post === "update_only",
+                updates_only: options.post === "update_only" ? true : undefined,
                 actions,
             };
             sendMessage(response, this.ws);
@@ -100,12 +105,14 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 correlation_id: this.correlationId,
                 content_type: MessageMimeTypes.PLAIN_TEXT,
                 team: this.team,
+                command: isCommandIncoming(this.request) ? this.request.command : undefined,
+                event: isEventIncoming(this.request) ? this.request.extensions.operationName : undefined,
                 body: msg as string,
                 destinations: responseDestinations,
                 id: options.id,
                 timestamp: ts ? ts.toString() : undefined,
                 ttl: ts && options.ttl ? (ts + options.ttl).toString() : undefined,
-                updates_only: options.post === "update_only",
+                updates_only: options.post === "update_only" ? true : undefined,
             };
             sendMessage(response, this.ws);
             return Promise.resolve(response);
@@ -128,7 +135,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
 export class WebSocketCommandMessageClient extends AbstractWebSocketMessageClient {
 
     constructor(request: CommandIncoming, ws: WebSocket) {
-        super(ws, request.correlation_id, request.team, request.source);
+        super(ws, request, request.correlation_id, request.team, request.source);
     }
 
     protected async doSend(msg: string | SlackMessage,
@@ -141,7 +148,7 @@ export class WebSocketCommandMessageClient extends AbstractWebSocketMessageClien
 export class WebSocketEventMessageClient extends AbstractWebSocketMessageClient {
 
     constructor(request: EventIncoming, ws: WebSocket) {
-        super(ws, request.extensions.correlation_id,
+        super(ws, request, request.extensions.correlation_id,
             { id: request.extensions.team_id, name: request.extensions.team_name }, null);
     }
 
@@ -236,6 +243,9 @@ export interface HandlerResponse {
         id: string;
         name?: string;
     };
+
+    command?: string;
+    event?: string;
 
     status?: {
         code: number;

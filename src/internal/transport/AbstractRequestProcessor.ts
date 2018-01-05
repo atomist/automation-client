@@ -132,6 +132,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             api_version: "1",
             correlation_id: request.correlation_id,
             team: request.team,
+            command: request.command,
             status: {
                 code,
                 reason: `${success ? "Successfully" : "Unsuccessfully"} invoked command` +
@@ -152,6 +153,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 id: event.extensions.team_id,
                 name: event.extensions.team_name,
             },
+            event: request.extensions.operationName,
             status: {
                 code: success ? 0 : 1,
                 reason: `${success ? "Successfully" : "Unsuccessfully"} invoked event` +
