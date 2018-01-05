@@ -21,7 +21,7 @@ export class BitBucketServerRepoRef extends AbstractRepoRef {
                 sha: string = "master",
                 path?: string) {
         super(remoteBase, owner, repo, sha, path);
-        this.apiBase = "https://" + remoteBase + "/rest/api/1.0/";
+        this.apiBase = `https://${remoteBase}/rest/api/1.0/`;
         this.ownerType = isProject ? "projects" : "users";
     }
 
@@ -65,7 +65,7 @@ export class BitBucketServerRepoRef extends AbstractRepoRef {
                 };
             })
             .catch(err => {
-                logger.error("Error attempting to delete repository: " + err);
+                logger.error(`Error attempting to delete repository: ${err}`);
                 return Promise.reject(err);
             });
     }
@@ -96,27 +96,31 @@ export class BitBucketServerRepoRef extends AbstractRepoRef {
                 };
             })
             .catch(err => {
-                logger.error("Error attempting to raise PR: " + err);
+                logger.error(`Error attempting to raise PR: ${err}`);
                 return Promise.reject(err);
             });
     }
 
     get url() {
-        let url: string = "projects/" + this.owner + "/repos/";
+        let url: string = `projects/${this.owner}/repos/`;
         if (!this.isProject) {
-            url = "users/" + this.owner + "/repos/";
+            url = `users/${this.owner}/repos/`;
         }
         return `https://${this.remoteBase}/${url}/${this.repo}`;
     }
 
     get pathComponent(): string {
-        return "scm/" + this.owner + "/" + this.repo;
+        let owernUrlComponent = this.owner;
+        if (!this.isProject) {
+            owernUrlComponent = `~${this.owner}`;
+        }
+        return `scm/${owernUrlComponent}/${this.repo}`;
     }
 
     private get apiBasePathComponent(): string {
-        let apiPath: string = "projects/" + this.owner + "/repos/";
+        let apiPath: string = `projects/${this.owner}/repos/`;
         if (!this.isProject) {
-            apiPath = "projects/~" + this.owner + "/repos/";
+            apiPath = `projects/~${this.owner}/repos/`;
         }
         return apiPath;
     }
