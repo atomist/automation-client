@@ -40,7 +40,13 @@ describe("BitBucketServer support", () => {
         const mock = new MockAdapter(axios);
 
         mock.onPost("https://bitbucket.organistation.co.za/rest/api/1.0/projects/a-project/repos/")
-            .reply(200, {});
+            .reply(config => {
+                const postData = JSON.parse(config.data);
+                assert(postData.name === "test-app");
+                assert(postData.scmId === "git");
+                assert(postData.forkable === "true");
+                return [201, {}];
+            });
 
         const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organistation.co.za", "a-project", "test-app");
         return bitbucketServerRepoRef.createRemote(BitBucketServerCredentials, "a description", "true");
@@ -50,7 +56,7 @@ describe("BitBucketServer support", () => {
         const mock = new MockAdapter(axios);
 
         mock.onDelete("https://bitbucket.organistation.co.za/rest/api/1.0/projects/a-project/repos/test-app")
-            .reply(200, {});
+            .reply(202, {});
 
         const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organistation.co.za", "a-project", "test-app");
         return bitbucketServerRepoRef.deleteRemote(BitBucketServerCredentials);
@@ -60,12 +66,19 @@ describe("BitBucketServer support", () => {
         const mock = new MockAdapter(axios);
 
         mock.onPost("https://bitbucket.organistation.co.za/rest/api/1.0/projects/a-project/repos/test-app/pull-requests")
-            .reply(200, {});
+            .reply(config => {
+                const postData = JSON.parse(config.data);
+                assert(postData.title === "Add a thing");
+                assert(postData.description === "Mr Peanut Butter goes woof");
+                assert(postData.fromRef.id === "refs/heads/thing1");
+                assert(postData.toRef.id === "refs/heads/master");
+                return [201, {}];
+            });
 
         const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organistation.co.za", "a-project", "test-app");
         return bitbucketServerRepoRef.raisePullRequest(
             BitBucketServerCredentials, "Add a thing",
-            "Dr Seuss is fun", "refs/heads/thing1",
+            "Mr Peanut Butter goes woof", "refs/heads/thing1",
             "refs/heads/master");
     });
 });
