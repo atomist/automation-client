@@ -49,11 +49,7 @@ export class BitBucketServerRepoRef extends AbstractRepoRef {
             })
             .catch(error => {
                 logger.error("Error attempting to create repository %j: %s", this, error);
-                return Promise.resolve({
-                    target: this,
-                    success: false,
-                    error,
-                });
+                return Promise.reject(error);
             });
     }
 
