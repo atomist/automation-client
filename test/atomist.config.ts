@@ -20,7 +20,7 @@ export const configuration: Configuration = {
     keywords: ["test", "automation"],
     commands: [
         // ...scanCommands( ["**/metadata/addAtomistSpringAgent.js", "**/command/Search*.js"] ),
-        githubOrg(HelloWorld, "atomisthqas"),
+        githubOrg(HelloWorld, "atomisthqa"),
     ],
     events: [
         HelloCircle,
