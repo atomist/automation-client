@@ -1,4 +1,5 @@
 import * as appRoot from "app-root-path";
+import * as os from "os";
 import { Automations } from "../metadata/metadata";
 
 export function info(automations: Automations): AutomationInfo {
@@ -44,6 +45,13 @@ export function info(automations: Automations): AutomationInfo {
         // Ignore the missing git-info.json
     }
 
+    i.system = {
+        hostname: os.hostname(),
+        type: os.type(),
+        release: os.release(),
+        platform: os.platform(),
+    };
+
     return i;
 }
 
@@ -64,5 +72,11 @@ export interface AutomationInfo {
         sha: string;
         branch: string;
         repository: string;
+    };
+    system?: {
+        hostname: string;
+        type: string;
+        release: string;
+        platform: string;
     };
 }

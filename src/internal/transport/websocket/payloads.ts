@@ -30,6 +30,10 @@ function prepareMetadata(automations: Automations) {
         "atomist.git.sha": i.git ? i.git.sha : undefined,
         "atomist.git.branch": i.git ? i.git.branch : undefined,
         "atomist.git.repository": i.git ? i.git.repository : undefined,
+        "atomist.system.hostname": i.system ? i.system.hostname : undefined,
+        "atomist.system.type": i.system ? i.system.type : undefined,
+        "atomist.system.release": i.system ? i.system.release : undefined,
+        "atomist.system.platform": i.system ? i.system.platform : undefined,
     };
 }
 
