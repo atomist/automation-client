@@ -15,28 +15,24 @@ export const BitBucketServerCredentials = {
 describe("BitBucketServer support", () => {
 
     describe("should return correct clone url", () => {
-        it("for project", done => {
+        it("for project", () => {
             const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organistation.co.za", "a-project", "test-app");
             assert(bitbucketServerRepoRef.cloneUrl(BitBucketServerCredentials) === "https://username:password@bitbucket.organistation.co.za/scm/a-project/test-app.git");
-            done();
         });
-        it("for user", done => {
+        it("for user", () => {
             const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organistation.co.za", "a-user", "test-app", false);
             assert(bitbucketServerRepoRef.cloneUrl(BitBucketServerCredentials) === "https://username:password@bitbucket.organistation.co.za/scm/a-user/test-app.git");
-            done();
         });
     });
 
     describe("should return correct api path url component", () => {
-        it("for project", done => {
+        it("for project", () => {
             const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organistation.co.za", "a-project", "test-app");
             assert(bitbucketServerRepoRef.apiPathComponent === "projects/a-project/repos/test-app");
-            done();
         });
-        it("for user", done => {
+        it("for user", () => {
             const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organistation.co.za", "a-user", "test-app", false);
             assert(bitbucketServerRepoRef.apiPathComponent === "projects/~a-user/repos/test-app");
-            done();
         });
     });
 
