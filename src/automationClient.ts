@@ -188,7 +188,7 @@ export class AutomationClient {
         const host = http && http.host ? http.host : "localhost";
         const expressOptions: ExpressServerOptions = {
             port: this.httpPort,
-            customizers: http.customizers,
+            customizers: http && http.customizers,
             host,
             auth: {
                 basic: {
