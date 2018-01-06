@@ -4,8 +4,8 @@ import * as GitHubApi from "github";
 import * as _ from "lodash";
 import * as passport from "passport";
 import * as http from "passport-http";
-import * as bearer from "passport-http-bearer";
 import { IStrategyOptions } from "passport-http-bearer";
+import * as bearer from "passport-http-bearer";
 import * as globals from "../../../globals";
 import { CommandHandlerMetadata } from "../../../metadata/automationMetadata";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
@@ -24,6 +24,7 @@ import {
 import { metrics } from "../../util/metric";
 import { guid } from "../../util/string";
 import { CommandIncoming } from "../RequestProcessor";
+import { prepareRegistration } from "../websocket/payloads";
 import { ExpressRequestProcessor } from "./ExpressRequestProcessor";
 
 /**
@@ -61,9 +62,9 @@ export class ExpressServer {
                 res.json(info(automations.automations));
             });
 
-        exp.get(`${ApiBase}/automations`, cors(), this.adminRoute, this.authenticate,
+        exp.get(`${ApiBase}/registration`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
-                res.json(automations.automations);
+                res.json(prepareRegistration(automations.automations));
             });
 
         exp.get(`${ApiBase}/metrics`, cors(), this.adminRoute, this.authenticate,
