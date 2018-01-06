@@ -89,4 +89,9 @@ export interface GitProject extends LocalProject, Configurable {
      */
     createBranch(name: string): Promise<ActionResult<this>>;
 
+    /**
+     * Check for existence of a branch
+     */
+    hasBranch(name: string): Promise<boolean>;
+
 }

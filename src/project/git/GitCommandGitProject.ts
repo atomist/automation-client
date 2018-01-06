@@ -217,8 +217,22 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             this.runCommandInCurrentWorkingDirectory(`git checkout ${name} --`));
     }
 
+    public hasBranch(name: string): Promise<boolean> {
+        return this.runCommandInCurrentWorkingDirectory(`git branch --list ${name}`).then(
+            commandResult => {
+                if (commandResult.success && commandResult.stdout.includes(name)) {
+                    return Promise.resolve(true);
+                } else if (commandResult.success) {
+                    return Promise.resolve(false);
+                } else {
+                    return Promise.reject(new Error(
+                        `command <git branch --list ${name}> failed: ${commandResult.stderr}`));
+                }
+            });
+    }
+
     private runCommandInCurrentWorkingDirectory(cmd: string): Promise<CommandResult<this>> {
-        return runCommand(cmd, {cwd: this.baseDir})
+        return runCommand(cmd, { cwd: this.baseDir })
             .then(result => {
                 return {
                     target: this,
@@ -309,10 +323,10 @@ function clean(repoDir: string) {
 }
 
 function runIn(baseDir: string, command: string) {
-    return runCommand(command, {cwd: baseDir});
+    return runCommand(command, { cwd: baseDir });
 }
 
 function pwd(baseDir) {
-    return runCommand("pwd", {cwd: baseDir}).then(result =>
+    return runCommand("pwd", { cwd: baseDir }).then(result =>
         console.log(result.stdout));
 }
