@@ -8,7 +8,10 @@ import {
     WebSocketEventMessageClient,
 } from "../../../../src/internal/transport/websocket/WebSocketMessageClient";
 import { guid } from "../../../../src/internal/util/string";
-import { buttonForCommand, SlackDestination } from "../../../../src/spi/message/MessageClient";
+import {
+    buttonForCommand,
+    SlackDestination,
+} from "../../../../src/spi/message/MessageClient";
 
 describe("WebSocketMessageClient", () => {
 

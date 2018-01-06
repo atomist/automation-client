@@ -180,7 +180,11 @@ export interface CommandReference {
     parameterName?: string;
 }
 
-export function buttonForCommand(buttonSpec: ButtonSpecification, command: any, parameters: any = {}): Action {
+export function buttonForCommand(buttonSpec: ButtonSpecification,
+                                 command: any,
+                                 parameters: {
+                                    [name: string]: string | number | boolean,
+                                 } = {}): Action {
     const cmd = commandName(command);
     parameters = mergeParameters(command, parameters);
     const id = cmd.toLocaleLowerCase();
@@ -193,8 +197,12 @@ export function buttonForCommand(buttonSpec: ButtonSpecification, command: any, 
     return action;
 }
 
-export function menuForCommand(selectSpec: MenuSpecification, command: any, parameterName: string,
-                               parameters: any = {}): Action {
+export function menuForCommand(selectSpec: MenuSpecification,
+                               command: any,
+                               parameterName: string,
+                               parameters: {
+                                   [name: string]: string | number | boolean,
+                               } = {}): Action {
     const cmd = commandName(command);
     parameters = mergeParameters(command, parameters);
     const id = cmd.toLocaleLowerCase();
