@@ -14,8 +14,9 @@ import { GraphClient } from "../../spi/graph/GraphClient";
 import {
     Destination,
     MessageClient,
-    MessageOptions,
+    MessageOptions, SlackMessageClient,
 } from "../../spi/message/MessageClient";
+import { DefaultSlackMessageClient } from "../../spi/message/MessageClientSupport";
 import {
     dispose,
     registerDisposable,
@@ -69,8 +70,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 context: cls,
             };
 
-            ctx.messageClient = this.createAndWrapMessageClient(command, ctx);
             ctx.graphClient = this.createGraphClient(command, ctx);
+            ctx.messageClient = this.createAndWrapMessageClient(command, ctx);
             ctx.lifecycle = {
                 registerDisposable: registerDisposable(ctx),
                 dispose: dispose(ctx),
@@ -110,8 +111,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 context: cls,
             };
 
-            ctx.messageClient = this.createAndWrapMessageClient(event, ctx);
             ctx.graphClient = this.createGraphClient(event, ctx);
+            ctx.messageClient = this.createAndWrapMessageClient(event, ctx);
             ctx.lifecycle = {
                 registerDisposable: registerDisposable(ctx),
                 dispose: dispose(ctx),
@@ -271,9 +272,9 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
     }
 
     protected createAndWrapMessageClient(event: EventIncoming | CommandIncoming,
-                                         context: HandlerContext & AutomationContextAware): MessageClient {
-        return new AutomationEventListenerEnabledMessageClient(context,
-            this.createMessageClient(event, context), this.listeners);
+                                         context: HandlerContext & AutomationContextAware): MessageClient & SlackMessageClient {
+        return new DefaultSlackMessageClient(new AutomationEventListenerEnabledMessageClient(context,
+            this.createMessageClient(event, context), this.listeners), context.graphClient);
     }
 
     protected setupNamespace(request: any,

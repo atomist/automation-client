@@ -1,7 +1,7 @@
 import { Contextual } from "./internal/invoker/Payload";
 import { AutomationContext } from "./internal/util/cls";
 import { GraphClient } from "./spi/graph/GraphClient";
-import { MessageClient } from "./spi/message/MessageClient";
+import { MessageClient, SlackMessageClient } from "./spi/message/MessageClient";
 
 /**
  * Context available to all handlers
@@ -16,7 +16,7 @@ export interface HandlerContext extends Contextual {
     /**
      * Client to send messages
      */
-    messageClient: MessageClient;
+    messageClient: MessageClient & SlackMessageClient;
 
     /**
      * Provides access to the lifecycle of a handler and context

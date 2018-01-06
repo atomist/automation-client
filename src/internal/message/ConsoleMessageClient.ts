@@ -5,7 +5,7 @@ import {
     MessageClient,
     MessageOptions,
 } from "../../spi/message/MessageClient";
-import { MessageClientSupport } from "../../spi/message/MessageClientSupport";
+import { DefaultSlackMessageClient, MessageClientSupport } from "../../spi/message/MessageClientSupport";
 import { logger } from "../util/logger";
 
 /**
@@ -28,4 +28,4 @@ export class ConsoleMessageClient extends MessageClientSupport implements Messag
     }
 }
 
-export const consoleMessageClient = new ConsoleMessageClient();
+export const consoleMessageClient = new DefaultSlackMessageClient(new ConsoleMessageClient(), null);

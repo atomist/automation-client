@@ -17,6 +17,7 @@ import { consoleMessageClient } from "../internal/message/ConsoleMessageClient";
 import { guid } from "../internal/util/string";
 
 import { AutomationServer } from "../server/AutomationServer";
+import { DefaultSlackMessageClient } from "../spi/message/MessageClientSupport";
 
 if (yargs.argv.request) {
     try {

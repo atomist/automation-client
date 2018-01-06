@@ -33,6 +33,22 @@ export interface MessageClient {
 }
 
 /**
+ * MessageClient to send messages to the default Slack team.
+ *
+ * Note: This implementation is deprecated in favor of MessageClient.
+ */
+export interface SlackMessageClient {
+
+    addressUsers(msg: string | SlackMessage,
+                 users: string | string[],
+                 options?: MessageOptions): Promise<any>;
+
+    addressChannels(msg: string | SlackMessage,
+                    channels: string | string[],
+                    options?: MessageOptions): Promise<any>;
+}
+
+/**
  * Basic message destination.
  */
 export interface Destination {
@@ -45,7 +61,7 @@ export interface Destination {
  */
 export class SlackDestination implements Destination {
 
-    public userAgent: "slack";
+    public userAgent: string = "slack";
 
     public users: string[] = [];
     public channels: string[] = [];

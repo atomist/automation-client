@@ -1,5 +1,6 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import { ConfigurableCommandHandler } from "../../src/decorators";
+import { failure, Success } from "../../src/HandlerResult";
 import { Failure, HandleCommand, HandlerContext, HandlerResult, Parameter } from "../../src/index";
 import { ReposQuery, ReposQueryVariables } from "../../src/schema/schema";
 import {
@@ -41,12 +42,15 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
             counter++;
         }*/
 
+        return ctx.messageClient.addressUsers(msg, "cd")
+            .then(() => Success, failure);
+
         // { fetchPolicy: "network-only" };
-        return ctx.graphClient.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
+        /*return ctx.graphClient.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
             { teamId: "T1L0VDKJP", offset: 0 }, {})
             .then(() => {
                 return ctx.messageClient.send(msg, addressSlackUsers(ctx.source.slack.team.id, "cd"));
             })
-            .then(() => ({ code: 0, redirect: "http://google.com" }));
+            .then(() => ({ code: 0, redirect: "http://google.com" }));*/
     }
 }
