@@ -17,11 +17,13 @@ describe("BitBucketServer support", () => {
     describe("should return correct clone url", () => {
         it("for project", () => {
             const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organisation.co.za", "a-project", "test-app");
-            assert(bitbucketServerRepoRef.cloneUrl(BitBucketServerCredentials) === "https://username:password@bitbucket.organisation.co.za/scm/a-project/test-app.git");
+            assert(bitbucketServerRepoRef.cloneUrl(BitBucketServerCredentials)
+                === "https://username:password@bitbucket.organisation.co.za/scm/a-project/test-app.git");
         });
         it("for user", () => {
             const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organisation.co.za", "a-user", "test-app", false);
-            assert(bitbucketServerRepoRef.cloneUrl(BitBucketServerCredentials) === "https://username:password@bitbucket.organisation.co.za/scm/~a-user/test-app.git");
+            assert(bitbucketServerRepoRef.cloneUrl(BitBucketServerCredentials)
+                === "https://username:password@bitbucket.organisation.co.za/scm/~a-user/test-app.git");
         });
     });
 
