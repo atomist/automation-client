@@ -33,25 +33,31 @@ export class GitHubRepoRef extends AbstractRepoRef {
             .then(() => successOn(this));
     }
 
-    public setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>> {
+    public setUserConfig(credentials: ProjectOperationCredentials,
+                         project: Configurable,
+                         userInfo: { name?: string, email?: string } = {}): Promise<ActionResult<any>> {
         const config = headers(credentials);
-        return Promise.all([axios.get(`${this.apiBase}/user`, config),
-            axios.get(`${this.apiBase}/user/emails`, config)])
-            .then(results => {
-                const name = results[0].data.name;
-                let email = results[0].data.email;
-
-                if (!email) {
-                    email = results[1].data.find(e => e.primary === true).email;
-                }
-
-                if (name && email) {
-                    return project.setUserConfig(name, email);
-                } else {
-                    return project.setUserConfig("Atomist Bot", "bot@atomist.com");
-                }
-            })
-            .catch(() => project.setUserConfig("Atomist Bot", "bot@atomist.com"));
+        if (userInfo.name && userInfo.email) {
+            return project.setUserConfig(userInfo.name, userInfo.email);
+        } else {
+            // try to figure it out from GitHub
+            return axios.get(`${this.apiBase}/user`, config)
+                .then(userResult => {
+                    const name = userInfo.name || userResult.data.name || "Atomist Bot";
+                    let email = userInfo.email || userResult.data.email;
+                    if (email) {
+                        // perhaps this was enough
+                        return project.setUserConfig(name, email);
+                    } else {
+                        // this one takes more permissions so don't try it unless we have to
+                        return axios.get(`${this.apiBase}/user/emails`, config)
+                            .then(emailsResult => {
+                                email = emailsResult.data.find(e => e.primary === true).email || "bot@atomist.com";
+                                return project.setUserConfig("Atomist Bot", "bot@atomist.com");
+                            });
+                    }
+                }).catch(() => project.setUserConfig("Atomist Bot", "bot@atomist.com"));
+        }
     }
 
     public raisePullRequest(credentials: ProjectOperationCredentials,
