@@ -61,7 +61,9 @@ export interface Destination {
  */
 export class SlackDestination implements Destination {
 
-    public userAgent: string = "slack";
+    public static SLACK_USER_AGENT: string = "slack";
+
+    public userAgent: string = SlackDestination.SLACK_USER_AGENT;
 
     public users: string[] = [];
     public channels: string[] = [];

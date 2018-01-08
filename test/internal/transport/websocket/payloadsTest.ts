@@ -39,8 +39,6 @@ describe("payloads", () => {
 
         const payload = prepareRegistration(rugs);
 
-        console.log(JSON.stringify(payload, null, 2));
-
         assert(payload.api_version === "1");
         assert(payload.events, "there are events");
         assert(!payload.events[0].subscriptionName, "event does not have subscription name");

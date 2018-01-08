@@ -28,7 +28,7 @@ describe("WebSocketMessageClient", () => {
                 done();
             });
 
-    }).timeout(5000);
+    });
 
     it("correctly clean up addresses", () => {
         assert(clean("test")[0] === "test");
@@ -81,7 +81,7 @@ describe("WebSocketMessageClient", () => {
                 done();
             });
 
-    }).timeout(5000);
+    });
 
     it("correctly format channel message", done => {
         const corrId = guid();
@@ -128,7 +128,7 @@ describe("WebSocketMessageClient", () => {
                 done();
             });
 
-    }).timeout(5000);
+    });
 
     it("correctly format response message", done => {
         const corrId = guid();
@@ -191,6 +191,6 @@ describe("WebSocketMessageClient", () => {
                 done();
             });
 
-    }).timeout(5000);
+    });
 
 });

@@ -43,7 +43,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
 
         const responseDestinations = [];
         destinations.forEach(d => {
-            if (d.userAgent === "slack") {
+            if (d.userAgent === SlackDestination.SLACK_USER_AGENT) {
                 const sd = d as SlackDestination;
 
                 toStringArray(sd.channels).forEach(c => {
@@ -80,40 +80,28 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             responseDestinations.push(this.source);
         }
 
+        const response: any = {
+            api_version: "1",
+            correlation_id: this.correlationId,
+            content_type: MessageMimeTypes.SLACK_JSON,
+            team: this.team,
+            command: isCommandIncoming(this.request) ? this.request.command : undefined,
+            event: isEventIncoming(this.request) ? this.request.extensions.operationName : undefined,
+            destinations: responseDestinations,
+            id: options.id,
+            timestamp: ts ? ts.toString() : undefined,
+            ttl: ts && options.ttl ? (ts + options.ttl).toString() : undefined,
+            updates_only: options.post === "update_only" ? true : undefined,
+        };
+
         if (isSlackMessage(msg)) {
             const actions = mapActions(msg);
-            const response: HandlerResponse = {
-                api_version: "1",
-                correlation_id: this.correlationId,
-                content_type: MessageMimeTypes.SLACK_JSON,
-                team: this.team,
-                command: isCommandIncoming(this.request) ? this.request.command : undefined,
-                event: isEventIncoming(this.request) ? this.request.extensions.operationName : undefined,
-                body: render(msg, false),
-                destinations: responseDestinations,
-                id: options.id,
-                timestamp: ts ? ts.toString() : undefined,
-                ttl: ts && options.ttl ? (ts + options.ttl).toString() : undefined,
-                updates_only: options.post === "update_only" ? true : undefined,
-                actions,
-            };
+            response.body = render(msg, false);
+            response.actions = actions;
             sendMessage(response, this.ws);
             return Promise.resolve(response);
         } else {
-            const response: HandlerResponse = {
-                api_version: "1",
-                correlation_id: this.correlationId,
-                content_type: MessageMimeTypes.PLAIN_TEXT,
-                team: this.team,
-                command: isCommandIncoming(this.request) ? this.request.command : undefined,
-                event: isEventIncoming(this.request) ? this.request.extensions.operationName : undefined,
-                body: msg as string,
-                destinations: responseDestinations,
-                id: options.id,
-                timestamp: ts ? ts.toString() : undefined,
-                ttl: ts && options.ttl ? (ts + options.ttl).toString() : undefined,
-                updates_only: options.post === "update_only" ? true : undefined,
-            };
+            response.body = msg as string;
             sendMessage(response, this.ws);
             return Promise.resolve(response);
         }

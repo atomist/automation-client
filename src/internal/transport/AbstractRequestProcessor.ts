@@ -14,7 +14,8 @@ import { GraphClient } from "../../spi/graph/GraphClient";
 import {
     Destination,
     MessageClient,
-    MessageOptions, SlackMessageClient,
+    MessageOptions,
+    SlackMessageClient,
 } from "../../spi/message/MessageClient";
 import { DefaultSlackMessageClient } from "../../spi/message/MessageClientSupport";
 import {
@@ -136,7 +137,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             command: request.command,
             status: {
                 code,
-                reason: `${success ? "Successfully" : "Unsuccessfully"} invoked command` +
+                reason: `${success ? "Successfully" : "Unsuccessfully"} invoked command handler` +
                 ` ${request.command} of ${this.automations.automations.name}@${this.automations.automations.version}`,
             },
         };
@@ -157,7 +158,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             event: request.extensions.operationName,
             status: {
                 code: success ? 0 : 1,
-                reason: `${success ? "Successfully" : "Unsuccessfully"} invoked event` +
+                reason: `${success ? "Successfully" : "Unsuccessfully"} invoked event handler` +
                 ` ${request.extensions.operationName} of ${this.automations.automations.name}@${this.automations.automations.version}`,
             },
         };
@@ -172,16 +173,16 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         const finalize = (result: HandlerResult) => {
             this.sendCommandStatus(result.code === 0 ? true : false, result.code, command, ctx)
                 .catch(err =>
-                    logger.warn("Unable to send status for command '%s': %s", command.command, err.message))
+                    logger.warn("Unable to send status for command handler '%s': %s", command.command, err.message))
                 .then(() => {
                     callback(Promise.resolve(result));
-                    logger.info(`Finished invocation of command '%s': %s`,
+                    logger.info(`Finished invocation of command handler '%s': %s`,
                         command.command, stringify(result));
                     this.clearNamespace();
                 });
         };
 
-        logger.debug("Incoming command '%s'", stringify(command, replacer));
+        logger.debug("Incoming command handler '%s'", stringify(command, replacer));
         try {
             this.automations.invokeCommand(ci, ctx)
                 .then(result => {
@@ -230,17 +231,17 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         const finalize = (results: HandlerResult[]) => {
             this.sendEventStatus(results.some(r => r.code !== 0) ? false : true, ef, event, ctx)
                 .catch(err =>
-                    logger.warn("Unable to send status for event '%s': %s",
+                    logger.warn("Unable to send status for event handler'%s': %s",
                         event.extensions.operationName, err.message))
                 .then(() => {
                     callback(Promise.resolve(results));
-                    logger.info(`Finished invocation of event '%s': %s`,
+                    logger.info(`Finished invocation of event handler '%s': %s`,
                         event.extensions.operationName, stringify(results));
                     this.clearNamespace();
                 });
         };
 
-        logger.debug("Incoming event '%s'", stringify(event, replacer));
+        logger.debug("Incoming event handler '%s'", stringify(event, replacer));
         try {
             this.automations.onEvent(ef, ctx)
                 .then(result => {
@@ -333,10 +334,10 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         if (callback) {
                             callback(Promise.resolve(result));
                         }
-                        logger.error(`Failed invocation of command '%s'`, command.command, serializeError(err));
+                        logger.error(`Failed invocation of command handler '%s'`, command.command, serializeError(err));
                         this.clearNamespace();
                     })
-                    .catch(error => logger.warn("Unable to send status for command: " + stringify(command)));
+                    .catch(error => logger.warn("Unable to send status for command handler: " + stringify(command)));
             });
     }
 
@@ -355,11 +356,11 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         if (callback) {
                             callback(Promise.resolve(result));
                         }
-                        logger.error(`Failed invocation of event '%s'`,
+                        logger.error(`Failed invocation of event handler '%s'`,
                             event.extensions.operationName, serializeError(err));
                         this.clearNamespace();
                     })
-                    .catch(error => logger.warn("Unable to send status for event: " + stringify(event)));
+                    .catch(error => logger.warn("Unable to send status for event handler: " + stringify(event)));
             });
     }
 }
@@ -388,7 +389,7 @@ class AutomationEventListenerEnabledMessageClient implements MessageClient {
 export function defaultResult(context: AutomationContextAware): HandlerResult {
     const result = {
         code: 0,
-        message: `Command '${context.context.operation}' completed successfully`,
+        message: `Command handler '${context.context.operation}' completed successfully`,
         correlation_id: context.context.correlationId,
         invocation_id: context.context.invocationId,
     };
@@ -399,7 +400,7 @@ export function defaultErrorResult(context: AutomationContextAware): HandlerResu
     const result = {
         ...defaultResult(context),
         code: 1,
-        message: `Command '${context.context.operation}' failed`,
+        message: `Command handler '${context.context.operation}' failed`,
     };
     return result as HandlerResult;
 }
