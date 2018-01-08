@@ -1,5 +1,5 @@
 import { HandlerContext, HandlerResult } from "./index";
-import { Arg } from "./internal/invoker/Payload";
+import { Arg, Secret } from "./internal/invoker/Payload";
 import { OnEvent } from "./onEvent";
 
 export interface EventFired<T> {
@@ -8,7 +8,7 @@ export interface EventFired<T> {
     extensions: {
         operationName: string;
     };
-    secrets?: Arg[];
+    secrets?: Secret[];
 }
 
 /**

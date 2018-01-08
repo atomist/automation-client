@@ -9,7 +9,7 @@ describe("ingesters", () => {
         const barIngester = ingester(barType).build();
         assert.deepEqual(barIngester, {
             root_type: "bar",
-            types: [ {
+            types: [{
                 kind: "OBJECT",
                 name: "bar",
                 fields: [],
@@ -127,11 +127,11 @@ describe("ingesters", () => {
                 kind: "OBJECT",
                 name: "foo",
                 fields: [{
-                   name: "fuu",
-                   type: {
-                       kind: "SCALAR",
-                       name: "Boolean",
-                   },
+                    name: "fuu",
+                    type: {
+                        kind: "SCALAR",
+                        name: "Boolean",
+                    },
                 }, {
                     name: "nums",
                     type: {

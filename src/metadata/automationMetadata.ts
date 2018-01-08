@@ -89,15 +89,15 @@ export interface AutomationMetadata {
 
 export interface MappedParameterDeclaration {
 
-    local_key: string;
-    foreign_key: string;
+    name: string;
+    uri: string;
     required: boolean;
 }
 
 export interface SecretDeclaration {
 
     name: string;
-    path: string;
+    uri: string;
 }
 
 export interface SecretsMetadata {

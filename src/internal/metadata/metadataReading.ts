@@ -50,7 +50,7 @@ function addName(r: CommandHandlerMetadata | EventHandlerMetadata): CommandHandl
 
 function metadataFromDecorator(h: any, params: any): CommandHandlerMetadata | EventHandlerMetadata {
     switch (params.__kind) {
-        case "command-handler" :
+        case "command-handler":
             return {
                 name: params.__name,
                 description: params.__description,
@@ -61,7 +61,7 @@ function metadataFromDecorator(h: any, params: any): CommandHandlerMetadata | Ev
                 mapped_parameters: mappedParameterMetadataFromInstance(params),
                 secrets: secretsMetadataFromInstance(params),
             };
-        case "parameters" :
+        case "parameters":
             return {
                 name: h.__name,
                 description: h.__description,
@@ -72,7 +72,7 @@ function metadataFromDecorator(h: any, params: any): CommandHandlerMetadata | Ev
                 mapped_parameters: mappedParameterMetadataFromInstance(params),
                 secrets: secretsMetadataFromInstance(params),
             };
-        case "event-handler" :
+        case "event-handler":
             // Remove any linebreaks and spaces from those subscription
             const subscription = GraphQL.inlineQuery(params.__subscription);
             const subscriptionName = GraphQL.operationName(subscription);
@@ -85,7 +85,7 @@ function metadataFromDecorator(h: any, params: any): CommandHandlerMetadata | Ev
                 subscriptionName,
                 secrets: secretsMetadataFromInstance(h),
             };
-        default :
+        default:
             throw new Error(`Unsupported automation '${params.constructor.name}'`);
     }
 }
@@ -136,7 +136,7 @@ function directParameters(r: any, prefix: string) {
 }
 
 function secretsMetadataFromInstance(r: any, prefix: string = ""): SecretDeclaration[] {
-    const directSecrets = !!r && r.__secrets ? r.__secrets.map(s => ({name: prefix + s.name, path: s.path})) : [];
+    const directSecrets = !!r && r.__secrets ? r.__secrets.map(s => ({ name: prefix + s.name, uri: s.uri })) : [];
     const nestedParameters = _.flatten(Object.keys(r)
         .map(key => [key, r[key]])
         .filter(nestedFieldInfo => !!nestedFieldInfo[1])
@@ -149,8 +149,8 @@ function secretsMetadataFromInstance(r: any, prefix: string = ""): SecretDeclara
 function mappedParameterMetadataFromInstance(r: any, prefix: string = ""): MappedParameterDeclaration[] {
     const directMappedParams = !!r && r.__mappedParameters ? r.__mappedParameters.map(mp =>
         ({
-            local_key: prefix + mp.localKey,
-            foreign_key: mp.foreignKey,
+            name: prefix + mp.name,
+            uri: mp.uri,
             required: mp.required !== false,
         })) : [];
     const nestedParameters = _.flatten(Object.keys(r)

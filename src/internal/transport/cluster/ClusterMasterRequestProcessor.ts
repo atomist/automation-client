@@ -136,16 +136,11 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                             return;
                         }
 
-                        if (msg.data.userNames && msg.data.userNames.length > 0) {
-                            messageClient.addressUsers(msg.data.message as string | SlackMessage,
-                                msg.data.userNames, msg.data.options)
-                                .then(clearNamespace, clearNamespace);
-                        } else if (msg.data.channelNames && msg.data.channelNames.length > 0) {
-                            messageClient.addressChannels(msg.data.message as string | SlackMessage,
-                                msg.data.channelNames, msg.data.options)
+                        if (msg.data.destinations && msg.data.destinations.length > 0) {
+                            messageClient.send(msg.data.message, msg.data.destinations, msg.data.options)
                                 .then(clearNamespace, clearNamespace);
                         } else {
-                            messageClient.respond(msg.data.message as string | SlackMessage, msg.data.options)
+                            messageClient.respond(msg.data.message, msg.data.options)
                                 .then(clearNamespace, clearNamespace);
                         }
                     } else if (msg.type === "status") {
@@ -277,9 +272,9 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
     protected createMessageClient(event: CommandIncoming | EventIncoming): MessageClient {
         if (isCommandIncoming(event)) {
-            return new WebSocketCommandMessageClient(event, this.automations, this.webSocket);
+            return new WebSocketCommandMessageClient(event, this.webSocket);
         } else if (isEventIncoming(event)) {
-            return new WebSocketEventMessageClient(event, this.automations, this.webSocket);
+            return new WebSocketEventMessageClient(event, this.webSocket);
         }
     }
 
@@ -299,7 +294,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
 class Dispatched<T> {
 
-    constructor(public result: Deferred<T>, public context: HandlerContext) {}
+    constructor(public result: Deferred<T>, public context: HandlerContext) { }
 }
 
 function hydrateContext(msg: WorkerMessage): HandlerContext {

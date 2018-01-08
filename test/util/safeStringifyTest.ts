@@ -13,7 +13,7 @@ describe("Safe Stringify", () => {
     });
 
     it("should space things out", () => {
-        const nested = { a: { b: 1, c: 2} };
+        const nested = { a: { b: 1, c: 2 } };
 
         const result = stringify(nested, null, 7);
 

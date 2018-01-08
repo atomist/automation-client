@@ -16,7 +16,7 @@ const thumbUrl = "https://slack-imgs.com/?c=1&o1=wi75.he75&url=https%3A%2F%2Fcdn
 @Tags("stack-overflow")
 export class SearchStackOverflow implements HandleCommand {
 
-    @Parameter({description: "your search query", pattern: /^.*$/, required: true})
+    @Parameter({ description: "your search query", pattern: /^.*$/, required: true })
     public query: string;
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
@@ -25,7 +25,7 @@ export class SearchStackOverflow implements HandleCommand {
             .then(msg => {
                 return ctx.messageClient.respond(msg);
             })
-            .then(() => Promise.resolve({code: 0}));
+            .then(() => Promise.resolve({ code: 0 }));
     }
 
     private handleResult(result, query: string): SlackMessage {

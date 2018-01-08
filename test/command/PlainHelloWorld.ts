@@ -2,8 +2,8 @@ import { HandleCommand, HandlerContext, HandlerResult, Secrets } from "../../src
 import { CommandHandlerMetadata } from "../../src/metadata/automationMetadata";
 
 export class PlainHelloWorld implements HandleCommand, CommandHandlerMetadata {
-//                                                     ^ -- implementing that interface is totally optional and only
-//                                                          useful for getting type checking from the compiler
+    //                                                     ^ -- implementing that interface is totally optional and only
+    //                                                          useful for getting type checking from the compiler
 
     public description = "Sends a hello back to the client";
     public intent = ["hello world"];
@@ -11,7 +11,7 @@ export class PlainHelloWorld implements HandleCommand, CommandHandlerMetadata {
         name: "name",
         display_name: "Name", pattern: "^.*$", required: true, default_value: "Jim",
     }];
-    public secrets = [{ name: "userToken", path: Secrets.UserToken }];
+    public secrets = [{ name: "userToken", uri: Secrets.UserToken }];
 
     public name: string;
 

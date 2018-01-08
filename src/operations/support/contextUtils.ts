@@ -1,16 +1,7 @@
-
-import { HandlerContext } from "../../HandlerContext";
-import { HandlerResult, Success } from "../../HandlerResult";
-
-/**
- * Convenient function to return a success result if we are able to send messages
- * recorded in context MessageClient
- * @param ctx handler context
- */
-export function sendMessages(ctx: HandlerContext): Promise<HandlerResult> {
-    return ctx.messageClient.flush()
-        .then(succeed);
-}
+import {
+    HandlerResult,
+    Success,
+} from "../../HandlerResult";
 
 /**
  * Can throw this into the end of a handler chain to return a HandlerResult

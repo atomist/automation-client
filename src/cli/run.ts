@@ -17,6 +17,7 @@ import { consoleMessageClient } from "../internal/message/ConsoleMessageClient";
 import { guid } from "../internal/util/string";
 
 import { AutomationServer } from "../server/AutomationServer";
+import { DefaultSlackMessageClient } from "../spi/message/MessageClientSupport";
 
 if (yargs.argv.request) {
     try {
@@ -57,11 +58,11 @@ function invokeOnConsole(automationServer: AutomationServer, ci: CommandInvocati
         args: ci.args ? ci.args.filter(a =>
             handler.parameters.some(p => p.name === a.name)) : undefined,
         mappedParameters: ci.args ? ci.args.filter(a =>
-            handler.mapped_parameters.some(p => p.local_key === a.name)) : undefined,
+            handler.mapped_parameters.some(p => p.name === a.name)) : undefined,
         secrets: ci.args ? ci.args.filter(a => handler.secrets.some(p => p.name === a.name))
             .map(a => {
                 const s = handler.secrets.find(p => p.name === a.name);
-                return { name: s.path, value: a.value };
+                return { uri: s.uri, value: a.value };
             }) : undefined,
     };
 

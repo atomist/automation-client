@@ -5,7 +5,7 @@ export interface ValidationError {
 
 export type ValidationResult = void | ValidationError;
 
-export function isValidationError(vr: ValidationResult): vr is ValidationError  {
+export function isValidationError(vr: ValidationResult): vr is ValidationError {
     const maybeErr = vr as ValidationError;
     return !!maybeErr && !!maybeErr.message;
 }

@@ -13,7 +13,7 @@ export function twoTierDirectoryRepoFinder(cwd: string): RepoFinder {
     return (context: HandlerContext) => {
         logger.debug(`Looking for repos in directories under '${cwd}'`);
         return NodeFsLocalProject.fromExistingDirectory(new GitHubRepoRef("owner", "sources"), cwd)
-            .then(project => toPromise(project.streamFilesRaw(["*/*/"].concat(DefaultExcludes), {nodir: false})))
+            .then(project => toPromise(project.streamFilesRaw(["*/*/"].concat(DefaultExcludes), { nodir: false })))
             .then(twoDirs => twoDirs.map(dir => {
                 const path = dir.path.startsWith("/") ? dir.path.substr(1) : dir.path;
                 const components = path.split("/");

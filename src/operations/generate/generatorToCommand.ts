@@ -35,7 +35,7 @@ function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: strin
     return {
         description: name,
         repoFinder: allReposInTeam(),
-        repoLoader: (p: P) => defaultRepoLoader({token: p.target.githubToken}, CachingDirectoryManager),
+        repoLoader: (p: P) => defaultRepoLoader({ token: p.target.githubToken }, CachingDirectoryManager),
         projectPersister: RemoteGitProjectPersister,
         redirecter: () => undefined,
     };
@@ -84,7 +84,7 @@ function handle<P extends BaseSeedDrivenGeneratorParameters>(ctx: HandlerContext
                             .then(() => p);
                     }),
                 ctx,
-                {token: params.target.githubToken},
+                { token: params.target.githubToken },
                 editorFactory(params, ctx),
                 details.projectPersister,
                 // IT'S A REPO ID

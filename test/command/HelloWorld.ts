@@ -1,14 +1,18 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import { ConfigurableCommandHandler } from "../../src/decorators";
+import { failure, Success } from "../../src/HandlerResult";
 import { Failure, HandleCommand, HandlerContext, HandlerResult, Parameter } from "../../src/index";
 import { ReposQuery, ReposQueryVariables } from "../../src/schema/schema";
-import { buttonForCommand, menuForCommand } from "../../src/spi/message/MessageClient";
+import {
+    addressSlackUsers, buttonForCommand, menuForCommand,
+    SlackDestination,
+} from "../../src/spi/message/MessageClient";
 import { SecretBaseHandler } from "./SecretBaseHandler";
 
 @ConfigurableCommandHandler("Send a hello back to the client", { intent: "hello cd", autoSubmit: true })
 export class HelloWorld extends SecretBaseHandler implements HandleCommand {
 
-    @Parameter({description: "Name of person the greeting should be send to", pattern: /^.*$/})
+    @Parameter({ description: "Name of person the greeting should be send to", pattern: /^.*$/ })
     public name: string;
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
@@ -23,9 +27,11 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
             attachments: [{
                 fallback: "Some buttons",
                 actions: [
-                    buttonForCommand({text: "yes"}, "HelloWorld", { name: this.name }),
-                    menuForCommand({text: "select name", options:
-                            [ { value: "cd", text: "cd" }, { value: "kipz", text: "kipz"}]},
+                    buttonForCommand({ text: "yes" }, "HelloWorld", { name: this.name }),
+                    menuForCommand({
+                        text: "select name", options:
+                            [{ value: "cd", text: "cd" }, { value: "kipz", text: "kipz" }],
+                    },
                         "HelloWorld", "name"),
                 ],
             }],
@@ -36,12 +42,15 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
             counter++;
         }*/
 
+        return ctx.messageClient.addressUsers(msg, "cd")
+            .then(() => Success, failure);
+
         // { fetchPolicy: "network-only" };
-        return ctx.graphClient.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
-            {teamId: "T1L0VDKJP", offset: 0}, {})
+        /*return ctx.graphClient.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
+            { teamId: "T1L0VDKJP", offset: 0 }, {})
             .then(() => {
-                return ctx.messageClient.addressUsers(msg, "cd");
+                return ctx.messageClient.send(msg, addressSlackUsers(ctx.source.slack.team.id, "cd"));
             })
-            .then(() => ({ code: 0, redirect: "http://google.com" }));
+            .then(() => ({ code: 0, redirect: "http://google.com" }));*/
     }
 }

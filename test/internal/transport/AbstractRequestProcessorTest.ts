@@ -54,9 +54,9 @@ describe("the processCommand method", () => {
 
     function invokeSomething(doThis: (ctx: HandlerContext) => void = nothing,
                              handlerResult: HandlerResult & any = {
-                                 code: 0,
-                                 more: "stand up and say wooo",
-                             }): Promise<HandlerResult> {
+            code: 0,
+            more: "stand up and say wooo",
+        }): Promise<HandlerResult> {
         const automationServerOpts: AutomationServerOptions = { name: "Fred", version: "8.10.5" };
         const automationServer: BuildableAutomationServer = new BuildableAutomationServer(automationServerOpts);
         const factory: Factory<HandleCommand> = () => {
@@ -96,15 +96,18 @@ describe("the processCommand method", () => {
         };
 
         const command: CommandIncoming = {
-            rug: "DoTheWave",
-            correlation_context: null,
             parameters: [],
             mapped_parameters: [],
             secrets: [],
-            name: "DoTheWave",
-            corrid: "abc",
+            command: "DoTheWave",
+            correlation_id: "abc",
             team: { id: "TEAM" },
-            atomist_type: "atomist type",
+            source: {
+                user_agent: "slack",
+                slack: {
+                    team: {id: "TEAM" },
+                },
+            },
         };
 
         return new Promise((resolve, reject) =>
@@ -145,9 +148,9 @@ describe("the processCommand method", () => {
         let watchMe = "begin";
         const allocateResource = (ctx: HandlerContext) => {
             ctx.lifecycle.registerDisposable(() => {
-                    watchMe = "changed";
-                    return Promise.resolve();
-                }, "set watchMe to changed",
+                watchMe = "changed";
+                return Promise.resolve();
+            }, "set watchMe to changed",
             );
         };
         invokeSomething(allocateResource, { code: 1, more: "I did this on purpose" })
@@ -166,9 +169,9 @@ describe("the processEvent method", () => {
 
     function invokeSomething(doThis: (ctx: HandlerContext) => void = nothing,
                              handlerResult: HandlerResult & any = {
-                                 code: 0,
-                                 more: "stand up and say wooo",
-                             }): Promise<HandlerResult> {
+            code: 0,
+            more: "stand up and say wooo",
+        }): Promise<HandlerResult> {
         const automationServerOpts: AutomationServerOptions = { name: "Fred", version: "8.10.5" };
         const automationServer: BuildableAutomationServer = new BuildableAutomationServer(automationServerOpts);
         const factory: Factory<HandleEvent<any>> = () => {
@@ -247,9 +250,9 @@ describe("the processEvent method", () => {
         let watchMe = "begin";
         const allocateResource = (ctx: HandlerContext) => {
             ctx.lifecycle.registerDisposable(() => {
-                    watchMe = "changed";
-                    return Promise.resolve();
-                }, "set watchMe to changed",
+                watchMe = "changed";
+                return Promise.resolve();
+            }, "set watchMe to changed",
             );
         };
         invokeSomething(allocateResource)
@@ -263,9 +266,9 @@ describe("the processEvent method", () => {
         let watchMe = "begin";
         const allocateResource = (ctx: HandlerContext) => {
             ctx.lifecycle.registerDisposable(() => {
-                    watchMe = "changed";
-                    return Promise.resolve();
-                }, "set watchMe to changed",
+                watchMe = "changed";
+                return Promise.resolve();
+            }, "set watchMe to changed",
             );
         };
         invokeSomething(allocateResource, { code: 1, more: "I did this on purpose" })

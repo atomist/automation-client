@@ -3,28 +3,116 @@ import {
     SlackMessage,
 } from "@atomist/slack-messages/SlackMessages";
 import * as _ from "lodash";
-import { ScriptedFlushable } from "../../internal/common/Flushable";
 import { metadataFromInstance } from "../../internal/metadata/metadataReading";
 
 /**
  * Implemented by classes that can send bot messages, whether to
  * channels or individuals, including actions and updates.
  */
-export interface MessageClient extends ScriptedFlushable<MessageClient> {
+export interface MessageClient {
 
-    respond(msg: string | SlackMessage, options?: MessageOptions): Promise<any>;
+    /**
+     * Send a response back to where this command request originated.
+     * @param msg
+     * @param {MessageOptions} options
+     * @returns {Promise<any>}
+     */
+    respond(msg: any,
+            options?: MessageOptions): Promise<any>;
 
-    addressUsers(msg: string | SlackMessage, userNames: string | string[], options?: MessageOptions): Promise<any>;
+    /**
+     * Send a message to any given destination.
+     * @param msg
+     * @param {Destination | Destination[]} destinations
+     * @param {MessageOptions} options
+     * @returns {Promise<any>}
+     */
+    send(msg: any,
+         destinations: Destination | Destination[],
+         options?: MessageOptions): Promise<any>;
+}
 
-    addressChannels(msg: string | SlackMessage, channelNames: string | string[],
+/**
+ * MessageClient to send messages to the default Slack team.
+ *
+ * Note: This implementation is deprecated in favor of MessageClient.
+ */
+export interface SlackMessageClient {
+
+    addressUsers(msg: string | SlackMessage,
+                 users: string | string[],
+                 options?: MessageOptions): Promise<any>;
+
+    addressChannels(msg: string | SlackMessage,
+                    channels: string | string[],
                     options?: MessageOptions): Promise<any>;
+}
 
-    recordRespond(msg: string | SlackMessage, options?: MessageOptions): this;
+/**
+ * Basic message destination.
+ */
+export interface Destination {
 
-    recordAddressUsers(msg: string | SlackMessage, userNames: string | string[], options?: MessageOptions): this;
+    userAgent: string;
+}
 
-    recordAddressChannels(msg: string | SlackMessage, channelNames: string | string[],
-                          options?: MessageOptions): this;
+/**
+ * Message Destination for Slack.
+ */
+export class SlackDestination implements Destination {
+
+    public static SLACK_USER_AGENT: string = "slack";
+
+    public userAgent: string = SlackDestination.SLACK_USER_AGENT;
+
+    public users: string[] = [];
+    public channels: string[] = [];
+
+    constructor(public team: string) {}
+
+    /**
+     * Address certain users by their user name.
+     * @param {string} user
+     * @returns {SlackDestination}
+     */
+    public addressUser(user: string): SlackDestination {
+        this.users.push(user);
+        return this;
+    }
+
+    /**
+     * Address certains channels by their channel name.
+     * @param {string} channel
+     * @returns {SlackDestination}
+     */
+    public addressChannel(channel: string): SlackDestination {
+        this.channels.push(channel);
+        return this;
+    }
+}
+
+/**
+ * Shortcut for creating a SlackDestination which addresses the given users.
+ * @param {string} team
+ * @param {string} users
+ * @returns {SlackDestination}
+ */
+export function addressSlackUsers(team: string, ...users: string[]): SlackDestination {
+    const sd = new SlackDestination(team);
+    users.forEach(u => sd.addressUser(u));
+    return sd;
+}
+
+/**
+ * Shortcut for creating a SlackDestination which addresses the given channels.
+ * @param {string} team
+ * @param {string} channels
+ * @returns {SlackDestination}
+ */
+export function addressSlackChannels(team: string, ...channels: string[]): SlackDestination {
+    const sd = new SlackDestination(team);
+    channels.forEach(c => sd.addressChannel(c));
+    return sd;
 }
 
 export interface MessageOptions {
@@ -56,19 +144,12 @@ export interface MessageOptions {
      * if a previous message with the same id exists.
      */
     post?: "update_only" | "always";
-
-    /**
-     * Team Id for the message to send to.
-     */
-    teamId?: string;
 }
 
 export class MessageMimeTypes {
 
-    public static SLACK_JSON: "application/x-atomist-slack+json" | "text/plain"
-        = "application/x-atomist-slack+json";
-    public static PLAIN_TEXT: "application/x-atomist-slack+json" | "text/plain"
-        = "text/plain";
+    public static SLACK_JSON: "application/x-atomist-slack+json" | "text/plain" = "application/x-atomist-slack+json";
+    public static PLAIN_TEXT: "application/x-atomist-slack+json" | "text/plain" = "text/plain";
 }
 
 export interface CommandReferencingAction extends Action {
@@ -101,7 +182,11 @@ export interface CommandReference {
     parameterName?: string;
 }
 
-export function buttonForCommand(buttonSpec: ButtonSpecification, command: any, parameters: any = {}): Action {
+export function buttonForCommand(buttonSpec: ButtonSpecification,
+                                 command: any,
+                                 parameters: {
+                                    [name: string]: string | number | boolean,
+                                 } = {}): Action {
     const cmd = commandName(command);
     parameters = mergeParameters(command, parameters);
     const id = cmd.toLocaleLowerCase();
@@ -114,8 +199,12 @@ export function buttonForCommand(buttonSpec: ButtonSpecification, command: any, 
     return action;
 }
 
-export function menuForCommand(selectSpec: MenuSpecification, command: any, parameterName: string,
-                               parameters: any = {}): Action {
+export function menuForCommand(selectSpec: MenuSpecification,
+                               command: any,
+                               parameterName: string,
+                               parameters: {
+                                   [name: string]: string | number | boolean,
+                               } = {}): Action {
     const cmd = commandName(command);
     parameters = mergeParameters(command, parameters);
     const id = cmd.toLocaleLowerCase();
@@ -144,7 +233,7 @@ export function commandName(command: any): string {
 }
 
 export function mergeParameters(command: any, parameters: any): any {
-    // Resue parameters defined on the instance
+    // Reuse parameters defined on the instance
     if (typeof command !== "string" && typeof command !== "function") {
         parameters = {
             ...command,
@@ -160,8 +249,7 @@ function rugButtonFrom(action: ButtonSpecification, command: any): Action {
     const button: Action = {
         text: action.text,
         type: "button",
-        name: "rug",
-        value: command.id,
+        name: `automation-command::${command.id}`,
     };
     _.forOwn(action, (v, k) => {
         (button as any)[k] = v;
@@ -182,7 +270,7 @@ function rugMenuFrom(action: MenuSpecification, command: any): Action {
     const select: Action = {
         text: action.text,
         type: "select",
-        name: `rug::${command.id}`,
+        name: `automation-command::${command.id}`,
     };
 
     if (typeof action.options === "string") {

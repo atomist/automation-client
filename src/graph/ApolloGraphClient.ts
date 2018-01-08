@@ -30,7 +30,7 @@ export class ApolloGraphClient implements GraphClient {
      */
     constructor(public endpoint: string, headers: any = {}) {
         const cache = new InMemoryCache({
-             addTypename: false,
+            addTypename: false,
         });
 
         const httpLink = createHttpLink({ uri: endpoint });
@@ -70,10 +70,10 @@ export class ApolloGraphClient implements GraphClient {
         });
 
         return this.client.query<T>({
-                query,
-                variables,
-                ...options,
-            })
+            query,
+            variables,
+            ...options,
+        })
             .then(result => callback(result));
     }
 
@@ -99,10 +99,10 @@ export class ApolloGraphClient implements GraphClient {
         });
 
         return this.client.mutate<T>({
-                mutation,
-                variables,
-                ...options,
-            })
+            mutation,
+            variables,
+            ...options,
+        })
             .then(response => callback(response));
     }
 

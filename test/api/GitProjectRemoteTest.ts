@@ -29,9 +29,9 @@ describe("GitProject remote", () => {
                 "Thing1", TestRepositoryVisibility))
             .then(() => gp.commit("Added a Thing"))
             .then(() => gp.push()
-                .then(() => deleteRepoIfExists({owner, repo})),
-            ).catch(err => deleteRepoIfExists({owner, repo})
-                .then(() => Promise.reject(err))),
+                .then(() => deleteRepoIfExists({ owner, repo })),
+        ).catch(err => deleteRepoIfExists({ owner, repo })
+            .then(() => Promise.reject(err))),
         ).then(() => done(), done);
 
     }).timeout(16000);
@@ -80,7 +80,7 @@ export function newRepo(): Promise<{ owner: string, repo: string }> {
             auto_init: true,
         }, config)
             .then(() =>
-                ({owner, repo: name})))
+                ({ owner, repo: name })))
         .catch(error => {
             if (error.response.status === 422) {
                 throw new Error("Could not create repository. GitHub says: " +

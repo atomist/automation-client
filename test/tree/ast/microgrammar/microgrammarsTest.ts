@@ -23,7 +23,7 @@ describe("microgrammar integration and path expression", () => {
         const fpr = new DefaultFileParserRegistry().addParser(
             new MicrogrammarBasedFileParser("people", "person", mg));
         const p = InMemoryProject.of(
-            {path: "Thing", content: "Tom:16 Mary:25"});
+            { path: "Thing", content: "Tom:16 Mary:25" });
         findMatches(p, fpr, AllFiles, "/people/person/name")
             .then(matches => {
                 assert(matches.length === 2);
@@ -39,16 +39,16 @@ describe("microgrammar integration and path expression", () => {
         const fpr = new DefaultFileParserRegistry().addParser(
             new MicrogrammarBasedFileParser("people", "person", mg));
         const p = InMemoryProject.of(
-            {path: "Thing", content: "Tom:16 Mary:25"});
+            { path: "Thing", content: "Tom:16 Mary:25" });
         findMatches(p, fpr, AllFiles, "/people/person/name")
             .then(matches => {
                 assert(matches.length === 2);
                 assert(matches[0].$value === "Tom");
                 assert(matches[1].$value === "Mary");
                 matches.forEach(m => {
-                   assert(!!m.sourceLocation);
-                   assert(m.sourceLocation.path === "Thing");
-                   assert(m.sourceLocation.offset === m.$offset);
+                    assert(!!m.sourceLocation);
+                    assert(m.sourceLocation.path === "Thing");
+                    assert(m.sourceLocation.offset === m.$offset);
                 });
             }).then(() => done(), done);
     });
@@ -60,7 +60,7 @@ describe("microgrammar integration and path expression", () => {
         const fpr = new DefaultFileParserRegistry().addParser(
             new MicrogrammarBasedFileParser("people", "person", mg));
         const p = InMemoryProject.of(
-            {path: "Thing", content: "Tom:16 Mary:25"});
+            { path: "Thing", content: "Tom:16 Mary:25" });
         findFileMatches(p, fpr, AllFiles, "/people/person/name")
             .then(matches => {
                 assert(matches.length === 1);
@@ -79,7 +79,7 @@ describe("microgrammar integration and path expression", () => {
         const fpr = new DefaultFileParserRegistry().addParser(
             new MicrogrammarBasedFileParser("people", "person", mg));
         const p = InMemoryProject.of(
-            {path: "Thing", content: "Tom:16 Mary:25"});
+            { path: "Thing", content: "Tom:16 Mary:25" });
         findMatches(p, fpr, AllFiles, "/people/person/name")
             .then(matches => {
                 assert(matches.length === 2);
@@ -99,7 +99,7 @@ describe("microgrammar integration and path expression", () => {
         const fpr = new DefaultFileParserRegistry().addParser(
             new MicrogrammarBasedFileParser("people", "person", mg));
         const p = InMemoryProject.of(
-            {path: "Thing", content: "Tom:16 Mary:25"});
+            { path: "Thing", content: "Tom:16 Mary:25" });
         findMatches(p, fpr, AllFiles, "/people/person/name")
             .then(matches => {
                 assert(matches.length === 2);
@@ -122,7 +122,7 @@ describe("microgrammar integration and path expression", () => {
         const firstPerson = "Tom:16";
         const content = firstPerson + " Mary:25";
         const p = InMemoryProject.of(
-            {path: "Thing", content});
+            { path: "Thing", content });
         findMatches(p, fpr, AllFiles, "/people/person")
             .then(matches => {
                 assert(matches.length === 2);
@@ -146,7 +146,7 @@ describe("microgrammar integration and path expression", () => {
         const firstPerson = "Tom:16";
         const content = firstPerson + " Mary:25";
         const p = InMemoryProject.of(
-            {path: "Thing", content});
+            { path: "Thing", content });
         findMatches(p, fpr, AllFiles, "/people/person")
             .then(matches => {
                 assert(matches.length === 2);
@@ -169,9 +169,9 @@ describe("microgrammar integration and path expression", () => {
             new MicrogrammarBasedFileParser("people", "person", mg));
         const firstPerson = "Tom:16";
         const secondPerson = "Mary:25";
-        const content = firstPerson +  " " + secondPerson;
+        const content = firstPerson + " " + secondPerson;
         const p = InMemoryProject.of(
-            {path: "Thing", content});
+            { path: "Thing", content });
         findMatches(p, fpr, AllFiles, "/people/person")
             .then(matches => {
                 assert(matches.length === 2);
@@ -192,8 +192,8 @@ describe("microgrammar integration and path expression", () => {
         const fpr = new DefaultFileParserRegistry().addParser(
             new MicrogrammarBasedFileParser("people", "person", mg));
         const p = InMemoryProject.of(
-            {path: "Thing1", content: "Tom:16 Mary:25"},
-            {path: "Thing2", content: "George:16 Kathy:25"},
+            { path: "Thing1", content: "Tom:16 Mary:25" },
+            { path: "Thing2", content: "George:16 Kathy:25" },
         );
         findMatches(p, fpr, AllFiles, ".Thing1/people/person/name")
             .then(matches => {
@@ -212,8 +212,8 @@ describe("microgrammar integration and path expression", () => {
         const fpr = new DefaultFileParserRegistry().addParser(
             new MicrogrammarBasedFileParser("people", "person", mg));
         const p = InMemoryProject.of(
-            {path: "Thing1", content: "Tom:16 Mary:25"},
-            {path: "Thing2", content: "George:16 Kathy:25"});
+            { path: "Thing1", content: "Tom:16 Mary:25" },
+            { path: "Thing2", content: "George:16 Kathy:25" });
         findByExpression(p, fpr, "Thing1::/people/person/name")
             .then(matches => {
                 assert(matches.length === 2);

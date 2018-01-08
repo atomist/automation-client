@@ -41,7 +41,7 @@ describe("editorHandler", () => {
             BaseEditorOrReviewerParameters,
             "editor");
         assert(metadataFromInstance(h).name === "editor");
-        const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         s.registerCommandHandler(() => h);
         done();
     });
@@ -55,25 +55,25 @@ describe("editorHandler", () => {
             }
         }
         const h = editorHandler(params => {
-                assert(!!params);
-                assert(params.targets.owner === "foo");
-                return p => Promise.resolve(p);
-            },
+            assert(!!params);
+            assert(params.targets.owner === "foo");
+            return p => Promise.resolve(p);
+        },
             MyParameters,
             "editor", {
                 repoFinder: fromListRepoFinder([]),
             });
-        const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         s.registerCommandHandler(() => h);
         s.invokeCommand({
             name: "editor",
-            args: [{name: "slackTeam", value: "T1691"}, {name: "owner", value: "foo"}],
-            secrets: [{name: "github://user_token?scopes=repo,user", value: "antechinus"}],
+            args: [{ name: "slackTeam", value: "T1691" }, { name: "owner", value: "foo" }],
+            secrets: [{ uri: "github://user_token?scopes=repo,user", value: "antechinus" }],
         }, {
-            teamId: "T666",
-            correlationId: "555",
-            messageClient: null,
-        })
+                teamId: "T666",
+                correlationId: "555",
+                messageClient: null,
+            })
             .then(_ => done(), done);
     });
 
@@ -87,10 +87,10 @@ describe("editorHandler", () => {
         }
         const proj = InMemoryProject.from(new SimpleRepoId("a", "b"));
         const h = editorHandler(params => {
-                assert(!!params);
-                assert(params.targets.owner === "foo");
-                return p => p.addFile("Thing", "1");
-            },
+            assert(!!params);
+            assert(params.targets.owner === "foo");
+            return p => p.addFile("Thing", "1");
+        },
             MyParameters,
             "editor", {
                 repoFinder: fromListRepoFinder([proj]),
@@ -99,17 +99,17 @@ describe("editorHandler", () => {
                     assert(p.findFileSync("Thing").getContentSync() === "1");
                 }),
             });
-        const s = new BuildableAutomationServer({name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: []});
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         s.registerCommandHandler(() => h);
         s.invokeCommand({
             name: "editor",
-            args: [{name: "slackTeam", value: "T1691"}, {name: "owner", value: "foo"}],
-            secrets: [{name: "github://user_token?scopes=repo,user", value: "antechinus"}],
+            args: [{ name: "slackTeam", value: "T1691" }, { name: "owner", value: "foo" }],
+            secrets: [{ uri: "github://user_token?scopes=repo,user", value: "antechinus" }],
         }, {
-            teamId: "T666",
-            correlationId: "555",
-            messageClient: null,
-        })
+                teamId: "T666",
+                correlationId: "555",
+                messageClient: null,
+            })
             .then(_ => {
                 assert(proj.findFileSync("Thing").getContentSync() === "1");
                 done();

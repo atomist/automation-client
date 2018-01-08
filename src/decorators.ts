@@ -22,18 +22,18 @@ export function Parameter(details: BaseParameter = {}) {
 /**
  * Map a local field to some other configuration item in a different system
  */
-export function MappedParameter(foreignKey: string, required: boolean = true) {
-    return (target: any, localKey: string) => {
-        declareMappedParameter(target, localKey, foreignKey, required);
+export function MappedParameter(uri: string, required: boolean = true) {
+    return (target: any, name: string) => {
+        declareMappedParameter(target, name, uri, required);
     };
 }
 
 /**
  * Declare a secret a Rug wants to use
  */
-export function Secret(path: string) {
+export function Secret(uri: string) {
     return (target: any, name: string) => {
-        declareSecret(target, name, path);
+        declareSecret(target, name, uri);
     };
 }
 

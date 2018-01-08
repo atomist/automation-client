@@ -38,7 +38,7 @@ export class AddAtomistSpringAgent implements HandleCommand {
         assert(this.slackTeam);
         assert(this.repo !== undefined,
             `this.repo=[${this.repo}],this.slackTeam=[${this.slackTeam}],this.githubWebUrl=[${this.githubWebUrl}]`);
-        return Promise.resolve({code: 0});
+        return Promise.resolve({ code: 0 });
     }
 }
 
@@ -69,6 +69,6 @@ export class TrustMeIGaveMySecret implements HandleEvent<any> {
 export class FooBarEventHandler implements HandleEvent<any> {
 
     public handle(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult> {
-        return Promise.resolve({ code: 0, thing: +e.data.Thing[0].some_thing + 1});
+        return Promise.resolve({ code: 0, thing: +e.data.Thing[0].some_thing + 1 });
     }
 }

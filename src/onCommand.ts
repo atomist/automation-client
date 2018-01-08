@@ -72,9 +72,9 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
                 public description: string,
                 private h: OnCommand<P>,
                 private parametersFactory: ParametersConstructor<P>,
-                // tslint:disable-next-line:variable-name
+        // tslint:disable-next-line:variable-name
                 private _tags: string | string[] = [],
-                // tslint:disable-next-line:variable-name
+        // tslint:disable-next-line:variable-name
                 private _intent: string | string[] = []) {
         const newParamInstance = this.freshParametersInstance();
         const md = metadataFromInstance(newParamInstance) as CommandHandlerMetadata;
@@ -82,7 +82,7 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
         this.mapped_parameters = md.mapped_parameters;
         this.secrets = md.secrets;
         this.intent = toStringArray(_intent);
-        this.tags = toStringArray(_tags).map(t => ({ name: t, description: t}) );
+        this.tags = toStringArray(_tags).map(t => ({ name: t, description: t }));
     }
 
     public freshParametersInstance(): P {
@@ -90,6 +90,6 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
     }
 
     public handle(ctx: HandlerContext, params: P) {
-       return this.h(ctx, params);
+        return this.h(ctx, params);
     }
 }

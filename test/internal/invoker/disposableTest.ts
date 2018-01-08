@@ -23,9 +23,9 @@ describe("disposing resources", () => {
 
         let called: boolean = false;
         ctx.lifecycle.registerDisposable(() => {
-                called = true;
-                return Promise.resolve();
-            },
+            called = true;
+            return Promise.resolve();
+        },
             "set called to true",
         );
 
@@ -55,9 +55,9 @@ describe("disposing resources", () => {
             }, "throw error",
         );
         ctx.lifecycle.registerDisposable(() => {
-                called = true;
-                return Promise.resolve();
-            }, "set called to true",
+            called = true;
+            return Promise.resolve();
+        }, "set called to true",
         );
 
         ctx.lifecycle.dispose()
@@ -81,14 +81,14 @@ describe("disposing resources", () => {
 
         let called: boolean = false;
 
-        ctx.lifecycle.registerDisposable( () => {
-                called = true;
-                return Promise.resolve();
-            }, "set called to true",
+        ctx.lifecycle.registerDisposable(() => {
+            called = true;
+            return Promise.resolve();
+        }, "set called to true",
         );
-        ctx.lifecycle.registerDisposable( () => {
-                return Promise.reject(new Error("this sucks"));
-            }, "throw error",
+        ctx.lifecycle.registerDisposable(() => {
+            return Promise.reject(new Error("this sucks"));
+        }, "throw error",
         );
 
         ctx.lifecycle.dispose()

@@ -1,6 +1,6 @@
 import "mocha";
 
-import {SlackMessage} from "@atomist/slack-messages";
+import { SlackMessage } from "@atomist/slack-messages";
 import * as assert from "power-assert";
 import { fromListRepoFinder, fromListRepoLoader } from "../../../src/operations/common/fromProjectList";
 import { BaseEditorOrReviewerParameters } from "../../../src/operations/common/params/BaseEditorOrReviewerParameters";
@@ -12,13 +12,13 @@ import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 describe("reviewerHandler", () => {
 
     const p = InMemoryProject.from(new SimpleRepoId("a", "b"),
-        {path: "thing", content: "1"});
+        { path: "thing", content: "1" });
 
     const rh = reviewerHandler(() =>
-            proj => Promise.resolve({
-                repoId: proj.id,
-                comments: [ new DefaultReviewComment("warn", "category", "bad", undefined)],
-            }),
+        proj => Promise.resolve({
+            repoId: proj.id,
+            comments: [new DefaultReviewComment("warn", "category", "bad", undefined)],
+        }),
         BaseEditorOrReviewerParameters, "test", {
             repoFinder: fromListRepoFinder([p]),
             repoLoader: () => fromListRepoLoader([p]),
@@ -47,7 +47,7 @@ const MockHandlerContext = {
     },
     graphClient: {
         executeMutationFromFile(file: string, variables?: any): Promise<any> {
-            return Promise.resolve({createSlackChannel: [{id: "stts"}]});
+            return Promise.resolve({ createSlackChannel: [{ id: "stts" }] });
         },
     },
 };

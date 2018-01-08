@@ -7,6 +7,7 @@ import { info } from "../../util/info";
 
 export function prepareRegistration(automations: Automations): any {
     return {
+        api_version: "1",
         name: automations.name,
         version: automations.version,
         policy: { name: (automations.policy ? automations.policy : "ephemeral") },
@@ -46,13 +47,13 @@ function prepareCommandRegistration(c: CommandHandlerMetadata) {
         auto_submit: c.auto_submit ? c.auto_submit : false,
         parameters: c.parameters,
         mapped_parameters: c.mapped_parameters,
-        secrets: c.secrets ? c.secrets.map(s => s.path) : [],
+        secrets: c.secrets ? c.secrets.map(s => ({ uri: s.uri })) : [],
     };
 }
 
 function prepareEventRegistration(e: EventHandlerMetadata) {
     return {
         subscription: e.subscription,
-        secrets: e.secrets ? e.secrets.map(s => s.path) : [],
+        secrets: e.secrets ? e.secrets.map(s => ({ uri: s.uri })) : [],
     };
 }

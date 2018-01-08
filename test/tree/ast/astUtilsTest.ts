@@ -20,7 +20,7 @@ describe("astUtils", () => {
                 TypeScriptES6FileParser,
                 "src/**/*.ts",
                 "//VariableDeclaration[?check]/Identifier",
-                {check: n => n.$value.includes("x")})
+                { check: n => n.$value.includes("x") })
                 .then(matches => {
                     assert(matches.length === 2);
                     assert(!!matches[0].sourceLocation);
@@ -71,7 +71,7 @@ describe("astUtils", () => {
                 "src/**/*.ts",
                 `//VariableDeclaration//ColonToken/following-sibling::* |
                                     //VariableDeclaration//ColonToken`,
-                {replaceAfter: {after: /\s*/, replacement: " "}})
+                { replaceAfter: { after: /\s*/, replacement: " " } })
                 .then(() => {
                     const f2 = p.findFileSync(f.path);
                     assert.equal(f2.getContentSync(), "const x = 10;");
@@ -105,7 +105,7 @@ export function gitHubRepoLoader(credentials: ProjectOperationCredentials): Repo
     };
 }`;
 
-        const mutableProject = InMemoryProject.of({path: "src/gitHubRepoLoader.ts", content: Before});
+        const mutableProject = InMemoryProject.of({ path: "src/gitHubRepoLoader.ts", content: Before });
 
         const After = `import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";

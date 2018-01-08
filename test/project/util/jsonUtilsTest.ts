@@ -39,10 +39,10 @@ describe("jsonUtils", () => {
         it("should add structured elements to real content", () => {
             const json = fromPackageJson("@atomist/test");
             const transformed = manipulate(json,
-                    o => o.extras = [
-                        { greg: "CEO" },
-                        { nadine: "GC"},
-                    ]);
+                o => o.extras = [
+                    { greg: "CEO" },
+                    { nadine: "GC" },
+                ]);
             assert(transformed.includes('"greg": "CEO"'));
             // Should succeed
             JSON.parse(transformed);
@@ -55,7 +55,7 @@ describe("jsonUtils", () => {
         it("should handle no such file", done => {
             const notJson = "bar";
 
-            const p = InMemoryProject.of({path: "thing.json", content: notJson});
+            const p = InMemoryProject.of({ path: "thing.json", content: notJson });
             doWithJson(p, "not_there.json", o => null)
                 .then(() => {
                     done();
@@ -65,7 +65,7 @@ describe("jsonUtils", () => {
         it("should handle ill formed file", done => {
             const notJson = "bar";
 
-            const p = InMemoryProject.of({path: "thing.json", content: notJson});
+            const p = InMemoryProject.of({ path: "thing.json", content: notJson });
 
             doWithJson(p, "thing.json", o => null)
                 .then(() => {
@@ -80,7 +80,7 @@ describe("jsonUtils", () => {
             const desired = simpleJson(31);
             const manipulation = o => o.y = 31;
 
-            const p = InMemoryProject.of({path: "thing.json", content: simple});
+            const p = InMemoryProject.of({ path: "thing.json", content: simple });
 
             doWithJson(p, "thing.json", manipulation)
                 .then(() => {
