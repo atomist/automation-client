@@ -66,11 +66,10 @@ function handleReviewOneOrMany<PARAMS extends EditorOrReviewerParameters>(review
                                                                           name: string,
                                                                           details: ReviewerCommandDetails<PARAMS>): OnCommand<PARAMS> {
     return (ctx: HandlerContext, parameters: PARAMS) => {
-        const credentials = { token: parameters.targets.githubToken };
         const repoFinder: RepoFinder = parameters.targets.repoRef ?
             () => Promise.resolve([parameters.targets.repoRef]) :
             details.repoFinder;
-        return reviewAll(ctx, credentials, reviewerFactory(parameters), parameters,
+        return reviewAll(ctx, parameters.targets.credentials, reviewerFactory(parameters), parameters,
             repoFinder,
             andFilter(parameters.targets.test, details.repoFilter),
             !!details.repoLoader ? details.repoLoader(parameters) : undefined)

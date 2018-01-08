@@ -3,9 +3,10 @@ import * as assert from "power-assert";
 
 import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
 import { PullRequest } from "../../src/operations/edit/editModes";
-import { toEditor } from "../../src/operations/edit/projectEditor";
+import { ProjectEditor, successfulEdit, toEditor } from "../../src/operations/edit/projectEditor";
 import { editProjectUsingBranch, editProjectUsingPullRequest } from "../../src/operations/support/editorUtils";
 import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
+import { Project } from "../../src/project/Project";
 import { Creds } from "./gitHubTest";
 import { deleteRepoIfExists, newRepo } from "./GitProjectRemoteTest";
 
@@ -42,5 +43,29 @@ describe("editorUtils tests with GitHub pull requests", () => {
                         .then(() => Promise.reject(err)));
             }).then(() => done(), done);
     }).timeout(15000);
+
+});
+
+const TinyChangeEditor: ProjectEditor = (p: Project) => {
+    return p.findFile("README.md")
+        .then(f => f.getContent()
+                .then(fileContent => f.setContent(fileContent + "\nmore stuff\n")),
+            err => p.addFile("README.md", "stuff"))
+        .then(() => successfulEdit(p, true));
+};
+
+describe("editorUtils with branch commit", () => {
+
+    it("can edit a project on an existing branch", done => {
+        newRepo().then(rr =>
+            GitCommandGitProject.cloned(Creds, new GitHubRepoRef(rr.owner, rr.repo))
+                .then(p => editProjectUsingBranch(undefined, p,
+                    TinyChangeEditor, { branch: "hello", message: "thanks" })
+                    .then(r => editProjectUsingBranch(undefined, p,
+                        TinyChangeEditor, { branch: "hello", message: "thanks" })))
+                .then(() => deleteRepoIfExists(rr),
+                    err => deleteRepoIfExists(rr).then(() => Promise.reject(err))))
+            .then(() => done(), done);
+    }).timeout(20000);
 
 });

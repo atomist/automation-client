@@ -60,7 +60,7 @@ export function editorHandler<PARAMS extends EditorOrReviewerParameters>(pe: (pa
 function handleEditOneOrMany<PARAMS extends BaseEditorOrReviewerParameters>(pe: (params: PARAMS) => AnyProjectEditor,
                                                                             details: EditorCommandDetails): OnCommand<PARAMS> {
     return (ctx: HandlerContext, parameters: PARAMS) => {
-        const credentials = { token: parameters.targets.githubToken };
+        const credentials = parameters.targets.credentials;
         if (!!parameters.targets.repoRef) {
             return editOne(ctx, credentials,
                 pe(parameters),

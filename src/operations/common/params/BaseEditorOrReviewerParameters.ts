@@ -1,6 +1,6 @@
 import { Parameters } from "../../../decorators";
-import { GitHubTargetsParams } from "./GitHubTargetsParams";
 import { MappedRepoParameters } from "./MappedRepoParameters";
+import { TargetsParams } from "./TargetsParams";
 
 /**
  * Contract for all editor or reviewer parameters
@@ -10,7 +10,7 @@ export interface EditorOrReviewerParameters {
     /**
      * Describe target repos
      */
-    targets: GitHubTargetsParams;
+    targets: TargetsParams;
 }
 
 /**
@@ -19,5 +19,5 @@ export interface EditorOrReviewerParameters {
 @Parameters()
 export class BaseEditorOrReviewerParameters implements EditorOrReviewerParameters {
 
-    constructor(public targets: GitHubTargetsParams = new MappedRepoParameters()) { }
+    constructor(public targets: TargetsParams = new MappedRepoParameters()) {}
 }

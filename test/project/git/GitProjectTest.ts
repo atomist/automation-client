@@ -157,9 +157,13 @@ ding dong ding
         GitCommandGitProject.cloned(Creds, new GitHubRepoRef("atomist", "microgrammar", sha))
             .then(p => {
                 checkProject(p);
-                const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
-                // TODO: check that it has the right sha
-                // this will be easy after cached-clones-58 is merged
+                return p.gitStatus()
+                    .then(gs1 => {
+                        const p2 = GitCommandGitProject.fromProject(p, Creds);
+                        return p2.gitStatus().then(gs2 => {
+                            assert(gs1.sha === gs2.sha);
+                        });
+                    });
             })
             .then(() => done(), done);
     }).timeout(5000);
@@ -175,6 +179,21 @@ ding dong ding
                         done();
                     });
             }).catch(done);
+    }).timeout(10000);
+
+    it("can tell whether a branch exists", done => {
+        const p = tempProject();
+        p.addFileSync("Thing", "1");
+        const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
+        gp.init()
+            .then(() => gp.addFile("something", "here"))
+            .then(() => gp.commit("you have to make an initial commit before you can create a branch"))
+            .then(() => gp.hasBranch("der"))
+            .then(result => assert(!result))
+            .then(() => gp.createBranch("der"))
+            .then(() => gp.hasBranch("der"))
+            .then(result => assert(result))
+            .then(() => done(), done);
     }).timeout(10000);
 
 });

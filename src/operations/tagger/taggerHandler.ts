@@ -60,11 +60,10 @@ function tagOneOrMany<PARAMS extends EditorOrReviewerParameters>(tagger: Tagger<
                                                                  name: string,
                                                                  details: TaggerCommandDetails<PARAMS>): OnCommand<PARAMS> {
     return (ctx: HandlerContext, parameters: PARAMS) => {
-        const credentials = { token: parameters.targets.githubToken };
         const repoFinder: RepoFinder = parameters.targets.repoRef ?
             () => Promise.resolve([parameters.targets.repoRef]) :
             details.repoFinder;
-        return tagAll(ctx, credentials, tagger, parameters,
+        return tagAll(ctx, parameters.targets.credentials, tagger, parameters,
             repoFinder,
             andFilter(parameters.targets.test, details.repoFilter),
             !!details.repoLoader ? details.repoLoader(parameters) : undefined)

@@ -10,7 +10,6 @@ import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { isGitHubRepoRef } from "../common/GitHubRepoRef";
 import { ProjectAction } from "../common/projectAction";
-import { GitHubDotComRemoteFactory, RemoteFactory } from "../common/RemoteFactory";
 import { RepoFilter } from "../common/repoFilter";
 import { RepoRef } from "../common/RepoId";
 import { RepoLoader } from "../common/repoLoader";
@@ -30,9 +29,6 @@ export interface GeneratorCommandDetails<P extends BaseSeedDrivenGeneratorParame
     redirecter: (r: RepoRef) => string;
     projectPersister?: ProjectPersister;
     afterAction?: ProjectAction<P>;
-
-    // TODO will probably get pulled up
-    remoteFactory: RemoteFactory;
 }
 
 function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: string): GeneratorCommandDetails<P> {
@@ -42,7 +38,6 @@ function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: strin
         repoLoader: (p: P) => defaultRepoLoader({ token: p.target.githubToken }, CachingDirectoryManager),
         projectPersister: RemoteGitProjectPersister,
         redirecter: () => undefined,
-        remoteFactory: GitHubDotComRemoteFactory,
     };
 }
 
@@ -127,5 +122,5 @@ function startingPoint<P extends BaseSeedDrivenGeneratorParameters>(params: P,
                                                                     repoLoader: RepoLoader,
                                                                     details: GeneratorCommandDetails<any>): Promise<Project> {
 
-    return repoLoader(details.remoteFactory(params.source));
+    return repoLoader(params.source.repoRef);
 }
