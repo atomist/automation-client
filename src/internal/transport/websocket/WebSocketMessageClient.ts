@@ -83,7 +83,6 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
         const response: any = {
             api_version: "1",
             correlation_id: this.correlationId,
-            content_type: MessageMimeTypes.SLACK_JSON,
             team: this.team,
             command: isCommandIncoming(this.request) ? this.request.command : undefined,
             event: isEventIncoming(this.request) ? this.request.extensions.operationName : undefined,
@@ -96,11 +95,13 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
 
         if (isSlackMessage(msg)) {
             const actions = mapActions(msg);
+            response.content_type = MessageMimeTypes.SLACK_JSON;
             response.body = render(msg, false);
             response.actions = actions;
             sendMessage(response, this.ws);
             return Promise.resolve(response);
         } else {
+            response.content_type = MessageMimeTypes.PLAIN_TEXT;
             response.body = msg as string;
             sendMessage(response, this.ws);
             return Promise.resolve(response);
