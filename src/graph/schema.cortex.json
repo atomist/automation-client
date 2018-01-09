@@ -39900,6 +39900,51 @@
               ]
             },
             {
+              "name": "setChatUserPreference",
+              "description": "Set the value of a user preference.",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "UserPreference"
+                }
+              },
+              "args": [
+                {
+                  "name": "chatTeamId",
+                  "description": "The ID of the chat team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID"
+                  }
+                },
+                {
+                  "name": "chatUserId",
+                  "description": "The id of user",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "name",
+                  "description": "The name of the preference",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "value",
+                  "description": "The value of the preference",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                }
+              ]
+            },
+            {
               "name": "createSlackChannel",
               "description": "Create a slack channel in the current team",
               "type": {
@@ -39907,6 +39952,14 @@
                 "name": "SlackChannel"
               },
               "args": [
+                {
+                  "name": "chatTeamId",
+                  "description": "The ID of the chat team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID"
+                  }
+                },
                 {
                   "name": "name",
                   "description": "The name of the channel to create",
@@ -39926,6 +39979,14 @@
               },
               "args": [
                 {
+                  "name": "chatTeamId",
+                  "description": "The ID of the chat team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID"
+                  }
+                },
+                {
                   "name": "channelId",
                   "description": "The id of the channel to join",
                   "type": {
@@ -39943,6 +40004,14 @@
                 "name": "SlackChannel"
               },
               "args": [
+                {
+                  "name": "chatTeamId",
+                  "description": "The ID of the chat team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
                 {
                   "name": "channelId",
                   "description": "The id of the channel to link",
@@ -39970,6 +40039,7 @@
                 {
                   "name": "providerId",
                   "description": "The provider id of the repo to link",
+                  "defaultValue": "zjlmxjzwhurspem",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String"
@@ -39985,6 +40055,14 @@
                 "name": "SlackChannel"
               },
               "args": [
+                {
+                  "name": "chatTeamId",
+                  "description": "The ID of the chat team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
                 {
                   "name": "channelId",
                   "description": "The id of the channel to join",
@@ -40012,6 +40090,14 @@
               },
               "args": [
                 {
+                  "name": "chatTeamId",
+                  "description": "The ID of the chat team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
                   "name": "channelId",
                   "description": "The id of the channel to link",
                   "type": {
@@ -40038,6 +40124,7 @@
                 {
                   "name": "providerId",
                   "description": "The provider id of the repo to link",
+                  "defaultValue": "zjlmxjzwhurspem",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String"
@@ -48518,6 +48605,15 @@
           "description": "A slack channel",
           "interfaces": [],
           "fields": [
+            {
+              "name": "chatTeamId",
+              "description": "The id of the chat team",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
             {
               "name": "name",
               "description": "The name of the channel",
