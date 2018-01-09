@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.5.2...HEAD
 
+### Changed
+
+-   Trying to get Git information on a non-git project will now return
+    empty values instead of failing [#131][131]
+
+[131]: https://github.com/atomist/automation-client-ts/issues/131
+
 ## [0.5.2][] - 2017-12-4
 
 [0.5.2]: https://github.com/atomist/automation-client-ts/compare/0.5.0...0.5.2
