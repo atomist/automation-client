@@ -182,7 +182,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 });
         };
 
-        logger.debug("Incoming command handler '%s'", stringify(command, replacer));
+        logger.debug("Incoming command handler invocation '%s'", stringify(command, replacer));
         try {
             this.automations.invokeCommand(ci, ctx)
                 .then(result => {
@@ -241,7 +241,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 });
         };
 
-        logger.debug("Incoming event handler '%s'", stringify(event, replacer));
+        logger.debug("Incoming event handler subscription '%s'", stringify(event, replacer));
         try {
             this.automations.onEvent(ef, ctx)
                 .then(result => {
@@ -407,7 +407,7 @@ export function defaultErrorResult(context: AutomationContextAware): HandlerResu
 
 function replacer(key: string, value: any) {
     if (key === "secrets" && value) {
-        return value.map(v => ({ name: v.name, value: hideString(v.value) }));
+        return value.map(v => ({ uri: v.uri, value: hideString(v.value) }));
     } else {
         return value;
     }
