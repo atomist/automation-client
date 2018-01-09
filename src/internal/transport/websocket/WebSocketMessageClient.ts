@@ -99,9 +99,10 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
         };
 
         if (isSlackMessage(msg)) {
-            const actions = mapActions(msg);
+            const msgClone = _.cloneDeep(msg);
+            const actions = mapActions(msgClone);
             response.content_type = MessageMimeTypes.SLACK_JSON;
-            response.body = render(msg, false);
+            response.body = render(msgClone, false);
             response.actions = actions;
             sendMessage(response, this.ws);
             return Promise.resolve(response);
