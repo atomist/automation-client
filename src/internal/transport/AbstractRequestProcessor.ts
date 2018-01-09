@@ -135,6 +135,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             correlation_id: request.correlation_id,
             team: request.team,
             command: request.command,
+            destinations: [ request.source ],
             status: {
                 code,
                 reason: `${success ? "Successfully" : "Unsuccessfully"} invoked command handler` +
