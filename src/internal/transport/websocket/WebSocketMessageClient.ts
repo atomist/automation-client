@@ -2,6 +2,7 @@ import {
     render,
     SlackMessage,
 } from "@atomist/slack-messages/SlackMessages";
+import * as _ from "lodash";
 import * as WebSocket from "ws";
 import {
     CommandReferencingAction,
@@ -77,6 +78,10 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
         });
 
         if (responseDestinations.length === 0 && this.source) {
+            const responseDestination = _.cloneDeep(this.source) as Source;
+            if (responseDestination.slack) {
+                delete responseDestination.slack.user;
+            }
             responseDestinations.push(this.source);
         }
 

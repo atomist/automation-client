@@ -1,4 +1,3 @@
-import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import * as cluster from "cluster";
 import * as stringify from "json-stringify-safe";
 import * as WebSocket from "ws";
@@ -236,7 +235,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         const dispatched = new Dispatched(new Deferred<HandlerResult>(), ctx);
         this.commands.set(ctx.context.invocationId, dispatched);
         const worker = this.assignWorker();
-        logger.debug("Incoming command '%s' dispatching to worker '%s'", ci.name, worker.id);
+        logger.debug("Incoming command handler request '%s' dispatching to worker '%s'", ci.name, worker.id);
         worker.send(message);
         callback(dispatched.result.promise);
     }
@@ -255,7 +254,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         const dispatched = new Dispatched(new Deferred<HandlerResult[]>(), ctx);
         this.events.set(ctx.context.invocationId, dispatched);
         const worker = this.assignWorker();
-        logger.debug("Incoming event '%s' dispatching to worker '%s'", ef.extensions.operationName, worker.id);
+        logger.debug("Incoming event handler subscription '%s' dispatching to worker '%s'", ef.extensions.operationName, worker.id);
         worker.send(message);
         callback(dispatched.result.promise);
     }

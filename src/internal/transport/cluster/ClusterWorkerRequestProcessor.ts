@@ -55,7 +55,7 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
     }
 
     public setRegistration(registration: RegistrationConfirmation) {
-        logger.debug("Receiving registration: %s", stringify(registration));
+        logger.debug("Receiving registration '%s'", stringify(registration));
         this.registration = registration;
         this.graphClients = new GraphClientFactory(this.registration, this._options);
     }
