@@ -208,7 +208,7 @@ function mapParameters(data: {}): Parameter[] {
 export function sendMessage(message: any, ws: WebSocket, log: boolean = true) {
     const payload = JSON.stringify(message);
     if (log) {
-        logger.debug(`Sending message: ${payload}`);
+        logger.debug(`Sending message '${payload}'`);
     }
     ws.send(payload);
 }
