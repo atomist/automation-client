@@ -6,8 +6,9 @@ import axios from "axios";
 import * as fs from "fs";
 
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
+
+import { ActionResult } from "../../src/action/ActionResult";
 import { HandlerContext } from "../../src/HandlerContext";
-import { BitBucketRepoRef } from "../../src/operations/common/BitBucketRepoRef";
 import { GitHubDotComBase, GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../../src/operations/common/ProjectOperationCredentials";
 import { RemoteRepoRef } from "../../src/operations/common/RepoId";
@@ -19,10 +20,9 @@ import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject
 import { LocalProject } from "../../src/project/local/LocalProject";
 import { Project } from "../../src/project/Project";
 import { hasFile } from "../../src/util/gitHub";
-import { BitBucketCredentials, BitBucketUser } from "../bitbucket-api/BitBucketGitTest";
 import { GitHubToken } from "./gitHubTest";
 
-function tempRepoName() {
+export function tempRepoName() {
     return `test-repo-${new Date().getTime()}`;
 }
 
@@ -33,6 +33,14 @@ const config = {
     },
 };
 
+export function deleteOrIgnore(rr: RemoteRepoRef, creds: ProjectOperationCredentials): Promise<ActionResult<any>> {
+    return rr.deleteRemote(creds)
+        .catch(err => {
+            console.log(`cleanup: deleting ${JSON.stringify(rr)} failed with ${err}. oh well`);
+            return null;
+        });
+}
+
 describe("generator end to end", () => {
 
     before(done => {
@@ -40,14 +48,6 @@ describe("generator end to end", () => {
             TargetOwner = response.data.login;
         }).then(() => done(), done);
     });
-
-    function deleteOrIgnore(rr: RemoteRepoRef, creds: ProjectOperationCredentials) {
-        return rr.deleteRemote(creds)
-            .catch(err => {
-                console.log(`cleanup: deleting ${JSON.stringify(rr)} failed with ${err}. oh well`);
-                return;
-            });
-    }
 
     it("should create a new GitHub repo using GenericGenerator", function(done) {
         this.retries(3);
@@ -106,30 +106,6 @@ describe("generator end to end", () => {
                             .then(() => {
                                 return;
                             }); // done() doesn't want your stuff
-                    });
-            }).then(() => cleanupDone(), cleanupDone);
-    }).timeout(20000);
-
-    it("should create a new BitBucket repo using generate function", function(done) {
-        this.retries(3);
-        const repoName = tempRepoName();
-        const targetRepo = new BitBucketRepoRef(BitBucketUser, repoName);
-        const cleanupDone = (err: Error | void = null) => {
-            deleteOrIgnore(targetRepo, BitBucketCredentials).then(done(err));
-        };
-
-        const clonedSeed = GitCommandGitProject.cloned(BitBucketCredentials,
-            new BitBucketRepoRef("springrod", "spring-rest-seed"));
-
-        generate(clonedSeed, undefined, BitBucketCredentials,
-            p => Promise.resolve(p), RemoteGitProjectPersister,
-            targetRepo)
-            .then(result => {
-                assert(result.success);
-                // Check the repo
-                GitCommandGitProject.cloned(BitBucketCredentials, targetRepo)
-                    .then(p => {
-                        assert(p.findFileSync("pom.xml") !== undefined);
                     });
             }).then(() => cleanupDone(), cleanupDone);
     }).timeout(20000);
