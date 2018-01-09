@@ -33,6 +33,7 @@ import {
     CommandIncoming,
     EventIncoming,
     RequestProcessor,
+    Source,
 } from "./RequestProcessor";
 import {
     HandlerResponse,
@@ -130,12 +131,18 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                              code: number,
                              request: CommandIncoming,
                              ctx: HandlerContext & AutomationContextAware): Promise<any> {
+        const source = _.cloneDeep(request.source) as Source;
+        if (source.slack) {
+            delete source.slack.user;
+        }
+
         const response: HandlerResponse = {
             api_version: "1",
             correlation_id: request.correlation_id,
             team: request.team,
             command: request.command,
-            destinations: [ request.source ],
+            source: request.source,
+            destinations: [ source ],
             status: {
                 code,
                 reason: `${success ? "Successfully" : "Unsuccessfully"} invoked command handler` +

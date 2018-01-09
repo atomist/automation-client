@@ -89,6 +89,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             api_version: "1",
             correlation_id: this.correlationId,
             team: this.team,
+            source: this.source,
             command: isCommandIncoming(this.request) ? this.request.command : undefined,
             event: isEventIncoming(this.request) ? this.request.extensions.operationName : undefined,
             destinations: responseDestinations,
@@ -246,6 +247,8 @@ export interface HandlerResponse {
         code: number;
         reason: string;
     };
+
+    source?: Source;
 
     destinations?: any[];
 
