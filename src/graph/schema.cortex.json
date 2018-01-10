@@ -39841,7 +39841,7 @@
                   "description": "The ID of the chat team",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "ID"
+                    "name": "String"
                   }
                 },
                 {
@@ -39915,7 +39915,7 @@
                   "description": "The ID of the chat team",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "ID"
+                    "name": "String"
                   }
                 },
                 {
@@ -39957,7 +39957,7 @@
                   "description": "The ID of the chat team",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "ID"
+                    "name": "String"
                   }
                 },
                 {
@@ -39983,7 +39983,7 @@
                   "description": "The ID of the chat team",
                   "type": {
                     "kind": "SCALAR",
-                    "name": "ID"
+                    "name": "String"
                   }
                 },
                 {
