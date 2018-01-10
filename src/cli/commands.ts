@@ -1,6 +1,7 @@
 import * as appRoot from "app-root-path";
 import * as child_process from "child_process";
 import * as fs from "fs";
+import * as glob from "glob-promise";
 import * as stringify from "json-stringify-safe";
 import * as p from "path";
 import { Arg, CommandInvocation } from "../internal/invoker/Payload";
@@ -60,6 +61,26 @@ export function run(
     return execNode("cli/run.js", args, msg, path, runInstall, runCompile);
 }
 
+export function gqlGen(
+    path: string,
+    pattern: string,
+    runInstall: boolean = true,
+): Promise<number> {
+
+    const msg = "Running GraphQL code generator";
+    let args = "--file node_modules/@atomist/automation-client/graph/schema.cortex.json " +
+        "--template typescript --no-schema --out src/typings";
+    return glob(pattern)
+        .then(graphqlFiles => {
+            if (graphqlFiles.length > 0) {
+                args += ` "${pattern}"`;
+            }
+        }, err => {
+            logger.warn("GraphQL file glob pattern '${pattern}' failed, continuing");
+        })
+        .then(() => execNode("gql-gen", args, msg, path, runInstall, false, "node_modules/.bin"));
+}
+
 export function config(argv: any): Promise<number> {
     return cliAtomistConfig(argv);
 }
@@ -75,9 +96,10 @@ function execNode(
     path: string,
     runInstall: boolean,
     runCompile: boolean,
+    scriptBase: string = "node_modules/@atomist/automation-client",
 ): number {
     const ap = resolve(path);
-    path = `${ap}/node_modules/@atomist/automation-client/${cmd}`;
+    const script = `${ap}/${scriptBase}/${cmd}`;
 
     if (!fs.existsSync(p.join(ap, "node_modules")) && runInstall) {
         const installStatus = install(ap);
@@ -86,7 +108,7 @@ function execNode(
         }
     }
 
-    if (!fs.existsSync(path)) {
+    if (!fs.existsSync(script)) {
         logger.error(`Project at '${ap}' is not a valid automation client project`);
         return 1;
     }
@@ -101,7 +123,7 @@ function execNode(
     logger.info(`${message} in '${ap}'`);
     try {
         const nodeOptions = process.env.ATOMIST_NODE_OPTIONS || "";
-        child_process.execSync(`node ${nodeOptions} \"${path}\" ${args}`,
+        child_process.execSync(`node ${nodeOptions} \"${script}\" ${args}`,
             { cwd: ap, stdio: "inherit", env: process.env });
     } catch (e) {
         console.error(`Node command ${cmd} failed`);

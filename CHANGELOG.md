@@ -13,8 +13,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Trying to get Git information on a non-git project will now return
     empty values instead of failing [#131][131]
+-   Allow GraphQL glob pattern to return no files when generation code
+    from GraphQL [#130][130]
 
 [131]: https://github.com/atomist/automation-client-ts/issues/131
+[130]: https://github.com/atomist/automation-client-ts/issues/130
 
 ## [0.5.2][] - 2017-12-4
 
