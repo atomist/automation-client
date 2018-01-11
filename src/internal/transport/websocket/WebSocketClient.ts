@@ -92,7 +92,7 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
             const proxyOptions = url.parse(proxy);
             const agent = new HttpsProxyAgent({
                 host: proxyOptions.hostname,
-                port: proxyOptions.port,
+                port: +proxyOptions.port,
                 secureProxy: proxyOptions.protocol === "https" ? true : false,
             });
             ws = new WebSocket(registration.url, { agent });
