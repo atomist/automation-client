@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [0.6.0]: https://github.com/atomist/automation-client-ts/compare/0.5.2...0.6.0
 
+Proxy release
+
 ### Changed
 
 -   Many changes to make more portable, i.e., runnable on MS Windows
