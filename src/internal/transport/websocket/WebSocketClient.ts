@@ -90,7 +90,11 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
             const proxy = process.env.HTTPS_PROXY || process.env.https_proxy;
             logger.info(`Opening WebSocket connection using proxy '${proxy}'`);
             const proxyOptions = url.parse(proxy);
-            const agent = new HttpsProxyAgent(proxyOptions);
+            const agent = new HttpsProxyAgent({
+                host: proxyOptions.hostname,
+                port: proxyOptions.port,
+                secureProxy: proxyOptions.protocol === "https" ? true : false,
+            });
             ws = new WebSocket(registration.url, { agent });
         } else {
             logger.info(`Opening WebSocket connection`);
