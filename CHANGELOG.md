@@ -7,19 +7,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.5.2...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.6.0...HEAD
+
+## [0.6.0][] - 2018-01-11
+
+[0.6.0]: https://github.com/atomist/automation-client-ts/compare/0.5.2...0.6.0
 
 ### Changed
 
+-   Many changes to make more portable, i.e., runnable on MS Windows
 -   Trying to get Git information on a non-git project will now return
     empty values instead of failing [#131][131]
 -   Allow GraphQL glob pattern to return no files when generation code
     from GraphQL [#130][130]
+-   Update to latest GraphQL data model
+
+### Added
+
+-   Basic BitBucket support, thanks @kbristow!
+-   Support for connecting via a proxy
 
 [131]: https://github.com/atomist/automation-client-ts/issues/131
 [130]: https://github.com/atomist/automation-client-ts/issues/130
 
-## [0.5.2][] - 2017-12-4
+## [0.5.2][] - 2017-12-04
 
 [0.5.2]: https://github.com/atomist/automation-client-ts/compare/0.5.0...0.5.2
 
