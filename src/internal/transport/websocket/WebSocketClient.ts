@@ -1,7 +1,9 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
+import * as HttpsProxyAgent from "https-proxy-agent";
 import * as stringify from "json-stringify-safe";
 import * as promiseRetry from "promise-retry";
 import * as serializeError from "serialize-error";
+import * as url from "url";
 import * as WebSocket from "ws";
 import { Deferred } from "../../util/Deferred";
 import { logger } from "../../util/logger";
@@ -83,8 +85,18 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
     }
 
     return new Promise<WebSocket>(resolve => {
-        logger.info(`Opening WebSocket connection`);
-        ws = new WebSocket(registration.url);
+
+        if (process.env.HTTPS_PROXY || process.env.https_proxy) {
+            const proxy = process.env.HTTPS_PROXY || process.env.https_proxy;
+            logger.info(`Opening WebSocket connection using proxy '${proxy}'`);
+            const proxyOptions = url.parse(proxy);
+            const agent = new HttpsProxyAgent(proxyOptions);
+            ws = new WebSocket(registration.url, { agent });
+        } else {
+            logger.info(`Opening WebSocket connection`);
+            ws = new WebSocket(registration.url);
+        }
+
         let timer: Timer;
 
         ws.on("open", function open() {
@@ -178,8 +190,12 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
             logger.warn("Retrying registration due to previous error");
         }
 
-        return axios.post(options.registrationUrl, registrationPayload,
-            { headers: { Authorization: `token ${options.token}` } })
+        const config: AxiosRequestConfig = {
+            headers: { Authorization: `token ${options.token}` },
+            timeout: 10000,
+        };
+
+        return axios.post(options.registrationUrl, registrationPayload, config)
             .then(result => {
                 const registration = result.data as RegistrationConfirmation;
 

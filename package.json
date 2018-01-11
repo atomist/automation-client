@@ -49,6 +49,7 @@
     "graphql-code-generator": "^0.8.14",
     "graphql-tag": "^2.6.0",
     "helmet": "^3.9.0",
+    "https-proxy-agent": "^2.1.1",
     "inquirer": "^4.0.2",
     "isbinaryfile": "^3.0.2",
     "isomorphic-fetch": "^2.2.1",
