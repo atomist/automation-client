@@ -68,7 +68,7 @@ describe("editorHandler", () => {
         s.invokeCommand({
             name: "editor",
             args: [{ name: "slackTeam", value: "T1691" }, { name: "owner", value: "foo" }],
-            secrets: [{ uri: "github://user_token?scopes=repo,user", value: "antechinus" }],
+            secrets: [{ uri: "github://user_token?scopes=repo,user:email,read:user", value: "antechinus" }],
         }, {
                 teamId: "T666",
                 correlationId: "555",
@@ -104,7 +104,7 @@ describe("editorHandler", () => {
         s.invokeCommand({
             name: "editor",
             args: [{ name: "slackTeam", value: "T1691" }, { name: "owner", value: "foo" }],
-            secrets: [{ uri: "github://user_token?scopes=repo,user", value: "antechinus" }],
+            secrets: [{ uri: "github://user_token?scopes=repo,user:email,read:user", value: "antechinus" }],
         }, {
                 teamId: "T666",
                 correlationId: "555",

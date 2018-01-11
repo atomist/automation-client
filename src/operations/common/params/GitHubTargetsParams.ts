@@ -25,7 +25,7 @@ export abstract class GitHubTargetsParams extends TargetsParams {
             undefined;
     }
 
-    @Secret(Secrets.userToken(["repo", "user"]))
+    @Secret(Secrets.userToken(["repo", "user:email", "read:user"]))
     private githubToken: string;
 
 }

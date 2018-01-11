@@ -9,7 +9,7 @@ import { RemoteRepoRef, RepoId } from "../common/RepoId";
  */
 export class NewRepoCreationParameters implements RepoId, RemoteLocator {
 
-    @Secret(Secrets.userToken(["repo", "user"]))
+    @Secret(Secrets.userToken(["repo", "user:email", "read:user"]))
     public githubToken;
 
     @MappedParameter(MappedParameters.GitHubOwner)
