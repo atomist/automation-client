@@ -9,6 +9,7 @@ import { Deferred } from "../../util/Deferred";
 import { logger } from "../../util/logger";
 import Timer = NodeJS.Timer;
 import { registerShutdownHook } from "../../util/shutdown";
+import { obfuscateJson } from "../../util/string";
 import {
     CommandIncoming,
     EventIncoming,
@@ -198,6 +199,18 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
             headers: { Authorization: `token ${options.token}` },
             timeout: 10000,
         };
+
+        if (process.env.HTTPS_PROXY || process.env.https_proxy) {
+            const proxy = process.env.HTTPS_PROXY || process.env.https_proxy;
+            const proxyOptions = url.parse(proxy);
+            config.proxy = {
+                host: proxyOptions.hostname,
+                port: +proxyOptions.port,
+            };
+            (config.proxy as any).protocol = proxyOptions.protocol;
+            logger.debug("Detected proxy and using configuration '%s'",
+                JSON.stringify(config, obfuscateJson, null));
+        }
 
         return axios.post(options.registrationUrl, registrationPayload, config)
             .then(result => {
