@@ -11,13 +11,15 @@ let DataDirectory = `${appRoot.path}/heap`;
  * print the head usage to the connsole every 60 seconds.
  * @param {string} dataDirectory
  */
-export function initMemoryMonitoring(dataDirectory: string = `${appRoot.path}/heap`) {
+export function initMemoryMonitoring(dataDirectory: string = `${appRoot.path}/heap`, log: boolean = true) {
     logger.info("Initialising memory monitoring");
     DataDirectory = dataDirectory;
 
-    setInterval(() => {
-        logger.debug("Memory statistics: %j", memoryUsage());
-    }, 60000);
+    if (log) {
+        setInterval(() => {
+            logger.debug("Memory statistics: %j", memoryUsage());
+        }, 60000);
+    }
 }
 
 /**
