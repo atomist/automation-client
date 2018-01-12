@@ -9,7 +9,11 @@ import {
 } from "../../src/spi/message/MessageClient";
 import { SecretBaseHandler } from "./SecretBaseHandler";
 
-@ConfigurableCommandHandler("Send a hello back to the client", { intent: "hello cd", autoSubmit: true })
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+@ConfigurableCommandHandler("Send a hello back to the client", { intent: "hello tanya", autoSubmit: true })
 export class HelloWorld extends SecretBaseHandler implements HandleCommand {
 
     @Parameter({ description: "Name of person the greeting should be send to", pattern: /^.*$/ })
@@ -22,19 +26,10 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
             return Promise.resolve(Failure);
         }
 
-        const msg: SlackMessage = {
-            text: `Send hello again, @${this.name}?`,
-            attachments: [{
-                fallback: "Some buttons",
-                actions: [
-                    buttonForCommand({ text: "yes" }, "HelloWorld", { name: this.name }),
-                    menuForCommand({
-                        text: "select name", options:
-                            [{ value: "cd", text: "cd" }, { value: "kipz", text: "kipz" }],
-                    },
-                        "HelloWorld", "name"),
-                ],
-            }],
+        const msg: any = {
+            content: `{"hello": "${this.name}"}`,
+            title: "Test title",
+            filetype: "javascript",
         };
 
         /*let counter = 0;
@@ -42,12 +37,13 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
             counter++;
         }*/
 
-        return ctx.messageClient.addressUsers(msg, "cd")
+        return ctx.messageClient.addressUsers(msg, this.name)
             .then(() => Success, failure);
 
         // { fetchPolicy: "network-only" };
         /*return ctx.graphClient.executeQueryFromFile<ReposQuery, ReposQueryVariables>("graphql/repos",
             { teamId: "T1L0VDKJP", offset: 0 }, {})
+            // .then(() => sleep(70000))
             .then(() => {
                 return ctx.messageClient.send(msg, addressSlackUsers(ctx.source.slack.team.id, "cd"));
             })

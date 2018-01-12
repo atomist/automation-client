@@ -11,6 +11,7 @@ import {
     MessageMimeTypes,
     MessageOptions,
     SlackDestination,
+    isFileMessage,
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { logger } from "../../util/logger";
@@ -26,20 +27,20 @@ import {
 export abstract class AbstractWebSocketMessageClient extends MessageClientSupport {
 
     constructor(private ws: WebSocket,
-                private request: CommandIncoming | EventIncoming,
-                private correlationId: string,
-                private team: { id: string, name?: string },
-                private source: Source) {
+        private request: CommandIncoming | EventIncoming,
+        private correlationId: string,
+        private team: { id: string, name?: string },
+        private source: Source) {
         super();
     }
 
     protected async doSend(msg: string | SlackMessage,
-                           destinations: Destination | Destination[],
-                           options: MessageOptions = {}): Promise<any> {
+        destinations: Destination | Destination[],
+        options: MessageOptions = {}): Promise<any> {
         const ts = this.ts(options);
 
         if (!Array.isArray(destinations)) {
-            destinations = [ destinations ];
+            destinations = [destinations];
         }
 
         const responseDestinations = [];
@@ -107,6 +108,10 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             response.actions = actions;
             sendMessage(response, this.ws);
             return Promise.resolve(response);
+        } else if (isFileMessage(msg)) {
+            response.content_type = "application/x-atomist-slack-file+json";
+            response.body = render(msg, false);
+            sendMessage(response, this.ws);
         } else {
             response.content_type = MessageMimeTypes.PLAIN_TEXT;
             response.body = msg as string;
@@ -135,8 +140,8 @@ export class WebSocketCommandMessageClient extends AbstractWebSocketMessageClien
     }
 
     protected async doSend(msg: string | SlackMessage,
-                           destinations: Destination | Destination[],
-                           options: MessageOptions = {}): Promise<any> {
+        destinations: Destination | Destination[],
+        options: MessageOptions = {}): Promise<any> {
         return super.doSend(msg, destinations, options);
     }
 }
@@ -149,10 +154,10 @@ export class WebSocketEventMessageClient extends AbstractWebSocketMessageClient 
     }
 
     protected async doSend(msg: string | SlackMessage,
-                           destinations: Destination | Destination[],
-                           options: MessageOptions = {}): Promise<any> {
+        destinations: Destination | Destination[],
+        options: MessageOptions = {}): Promise<any> {
         if (!Array.isArray(destinations)) {
-            destinations = [ destinations ];
+            destinations = [destinations];
         }
 
         if (destinations.length === 0) {
@@ -252,7 +257,7 @@ export interface HandlerResponse {
 
     destinations?: any[];
 
-    content_type?: "application/x-atomist-slack+json" | "text/plain";
+    content_type?: "application/x-atomist-slack+json" | "text/plain" | "application/x-atomist-slack-file+json";
 
     body?: string;
 

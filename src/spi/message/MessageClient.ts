@@ -18,7 +18,7 @@ export interface MessageClient {
      * @returns {Promise<any>}
      */
     respond(msg: any,
-            options?: MessageOptions): Promise<any>;
+        options?: MessageOptions): Promise<any>;
 
     /**
      * Send a message to any given destination.
@@ -28,8 +28,8 @@ export interface MessageClient {
      * @returns {Promise<any>}
      */
     send(msg: any,
-         destinations: Destination | Destination[],
-         options?: MessageOptions): Promise<any>;
+        destinations: Destination | Destination[],
+        options?: MessageOptions): Promise<any>;
 }
 
 /**
@@ -40,11 +40,11 @@ export interface MessageClient {
 export interface SlackMessageClient {
 
     addressUsers(msg: string | SlackMessage,
-                 users: string | string[],
-                 options?: MessageOptions): Promise<any>;
+        users: string | string[],
+        options?: MessageOptions): Promise<any>;
 
     addressChannels(msg: string | SlackMessage,
-                    channels: string | string[],
+        channels: string | string[],
                     options?: MessageOptions): Promise<any>;
 }
 
@@ -68,7 +68,7 @@ export class SlackDestination implements Destination {
     public users: string[] = [];
     public channels: string[] = [];
 
-    constructor(public team: string) {}
+    constructor(public team: string) { }
 
     /**
      * Address certain users by their user name.
@@ -185,8 +185,8 @@ export interface CommandReference {
 export function buttonForCommand(buttonSpec: ButtonSpecification,
                                  command: any,
                                  parameters: {
-                                    [name: string]: string | number | boolean,
-                                 } = {}): Action {
+        [name: string]: string | number | boolean,
+    } = {}): Action {
     const cmd = commandName(command);
     parameters = mergeParameters(command, parameters);
     const id = cmd.toLocaleLowerCase();
@@ -203,8 +203,8 @@ export function menuForCommand(selectSpec: MenuSpecification,
                                command: any,
                                parameterName: string,
                                parameters: {
-                                   [name: string]: string | number | boolean,
-                               } = {}): Action {
+        [name: string]: string | number | boolean,
+    } = {}): Action {
     const cmd = commandName(command);
     parameters = mergeParameters(command, parameters);
     const id = cmd.toLocaleLowerCase();
@@ -219,7 +219,11 @@ export function menuForCommand(selectSpec: MenuSpecification,
 }
 
 export function isSlackMessage(object: any): object is SlackMessage {
-    return !object.length;
+    return !object.length && !object.content;
+}
+
+export function isFileMessage(object: any): object is SlackMessage {
+    return !object.length && object.content;
 }
 
 export function commandName(command: any): string {
