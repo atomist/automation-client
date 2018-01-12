@@ -7,6 +7,7 @@ import { GitLabPushPayload } from "./event/gitLabIngester";
 import { GitLabPush } from "./event/GitLabPush";
 import { HelloCircle } from "./event/HelloCircle";
 import { HelloWorldIngester } from "./event/HelloWorld";
+import { MessageTest } from "./command/MessageTest";
 
 // const host = "https://automation.atomist.com";
 const host = "https://automation-staging.atomist.services";
@@ -20,6 +21,7 @@ export const configuration: Configuration = {
     commands: [
         // ...scanCommands( ["**/metadata/addAtomistSpringAgent.js", "**/command/Search*.js"] ),
         HelloWorld,
+        MessageTest
     ],
     events: [
         HelloCircle,
