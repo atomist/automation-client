@@ -7,7 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.6.0...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.6.1...HEAD
+
+## [0.6.1][] - 2018-01-12
+
+[0.6.1]: https://github.com/atomist/automation-client-ts/compare/0.6.0...0.6.1
+
+Eproxy release
+
+### Fixed
+
+-   Slack message timestamp and TTL
+-   Connecting via proxy
 
 ## [0.6.0][] - 2018-01-11
 
