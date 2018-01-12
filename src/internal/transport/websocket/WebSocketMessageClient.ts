@@ -85,7 +85,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             responseDestinations.push(this.source);
         }
 
-        const response: any = {
+        const response: HandlerResponse = {
             api_version: "1",
             correlation_id: this.correlationId,
             team: this.team,
@@ -95,8 +95,8 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             destinations: responseDestinations,
             id: options.id,
             timestamp: ts,
-            ttl: ts && options.ttl ? options : undefined,
-            updates_only: options.post === "update_only" ? true : (options.post === "always" ? false : undefined),
+            ttl: ts && options.ttl ? options.ttl : undefined,
+            post_mode: options.post === "update_only" ? "update_only" : (options.post === "always" ? "always" : "ttl"),
         };
 
         if (isSlackMessage(msg)) {
@@ -257,10 +257,10 @@ export interface HandlerResponse {
     body?: string;
 
     // Updatable messages
-    timestamp?: string;
     id?: string;
-    ttl?: string;
-    updates_only?: boolean;
+    timestamp?: number;
+    ttl?: number;
+    post_mode?: "ttl" | "always" | "update_only";
 
     actions?: Action[];
 }
