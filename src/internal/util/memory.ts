@@ -17,7 +17,7 @@ export function initMemoryMonitoring(dataDirectory: string = `${appRoot.path}/he
 
     if (log) {
         setInterval(() => {
-            logger.debug("Memory statistics: %j", memoryUsage());
+            logger.debug("Memory statistics '%j'", memoryUsage());
         }, 60000);
     }
 }
@@ -28,7 +28,7 @@ export function initMemoryMonitoring(dataDirectory: string = `${appRoot.path}/he
  */
 export function heapDump(): string {
     try {
-        logger.debug("Memory statistics: %j", memoryUsage());
+        logger.debug("Memory statistics '%j'", memoryUsage());
         const heapdump = require("heapdump");
         const name = `heapdump-${process.pid}-${Date.now()}.heapsnapshot`;
         if (!fs.existsSync(DataDirectory)) {
