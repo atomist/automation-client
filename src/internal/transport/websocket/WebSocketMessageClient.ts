@@ -94,9 +94,9 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             event: isEventIncoming(this.request) ? this.request.extensions.operationName : undefined,
             destinations: responseDestinations,
             id: options.id,
-            timestamp: ts ? ts.toString() : undefined,
-            ttl: ts && options.ttl ? (ts + options.ttl).toString() : undefined,
-            updates_only: options.post === "update_only" ? true : undefined,
+            timestamp: ts,
+            ttl: ts && options.ttl ? options : undefined,
+            updates_only: options.post === "update_only" ? true : (options.post === "always" ? false : undefined),
         };
 
         if (isSlackMessage(msg)) {
