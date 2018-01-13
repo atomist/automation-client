@@ -69,7 +69,7 @@ export function gqlGen(
 
     const msg = "Running GraphQL code generator";
     let args = "--file node_modules/@atomist/automation-client/graph/schema.cortex.json " +
-        "--template typescript --no-schema --out src/typings";
+        "--template typescript --no-schema --out src/typings/types.ts";
     return glob(pattern)
         .then(graphqlFiles => {
             if (graphqlFiles.length > 0) {
