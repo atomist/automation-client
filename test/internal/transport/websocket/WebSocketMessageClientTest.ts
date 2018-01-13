@@ -254,6 +254,6 @@ describe("WebSocketMessageClient", () => {
                 done();
             });
 
-    })
+    });
 
 });
