@@ -3,13 +3,14 @@ import { GitHubNameRegExp } from "./gitHubPatterns";
 
 import { ProjectOperationCredentials } from "../ProjectOperationCredentials";
 import { RepoFilter } from "../repoFilter";
+import { Credentialed } from "./Credentialed";
 import { RemoteLocator } from "./RemoteLocator";
 
 /**
  * Base parameters for working with repo(s).
  * Allows use of regex.
  */
-export abstract class TargetsParams implements RemoteLocator {
+export abstract class TargetsParams implements Credentialed, RemoteLocator {
 
     public abstract owner;
 

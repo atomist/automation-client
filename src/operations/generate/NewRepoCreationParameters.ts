@@ -1,13 +1,15 @@
 import { MappedParameter, MappedParameters, Parameter, Secret, Secrets } from "../../decorators";
 import { GitHubRepoRef } from "../common/GitHubRepoRef";
+import { Credentialed } from "../common/params/Credentialed";
 import { GitHubNameRegExp } from "../common/params/gitHubPatterns";
 import { RemoteLocator } from "../common/params/RemoteLocator";
+import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { RemoteRepoRef, RepoId } from "../common/RepoId";
 
 /**
  * Parameters common to all generators that create new repositories
  */
-export class NewRepoCreationParameters implements RepoId, RemoteLocator {
+export class NewRepoCreationParameters implements Credentialed, RepoId, RemoteLocator {
 
     @Secret(Secrets.userToken(["repo", "user:email", "read:user"]))
     public githubToken;
@@ -47,6 +49,10 @@ export class NewRepoCreationParameters implements RepoId, RemoteLocator {
         required: false,
     })
     public visibility: "public" | "private" = "public";
+
+    get credentials(): ProjectOperationCredentials {
+        return { token: this.githubToken };
+    }
 
     /**
      * Return a single RepoRef or undefined if we're not identifying a single repo
