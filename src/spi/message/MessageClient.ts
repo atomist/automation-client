@@ -68,7 +68,7 @@ export class SlackDestination implements Destination {
     public users: string[] = [];
     public channels: string[] = [];
 
-    constructor(public team: string) {}
+    constructor(public team: string) { }
 
     /**
      * Address certain users by their user name.
@@ -115,6 +115,20 @@ export function addressSlackChannels(team: string, ...channels: string[]): Slack
     return sd;
 }
 
+/**
+ * Message to create a Snippet in Slack
+ */
+export interface SlackFileMessage {
+
+    content: string;
+    title?: string;
+    fileName?: string;
+    // https://api.slack.com/types/file#file_types
+    fileType?: string;
+    comment?: string;
+
+}
+
 export interface MessageOptions {
 
     /**
@@ -148,8 +162,9 @@ export interface MessageOptions {
 
 export class MessageMimeTypes {
 
-    public static SLACK_JSON: "application/x-atomist-slack+json" | "text/plain" = "application/x-atomist-slack+json";
-    public static PLAIN_TEXT: "application/x-atomist-slack+json" | "text/plain" = "text/plain";
+    public static SLACK_JSON = "application/x-atomist-slack+json";
+    public static SLACK_FILE_JSON = "application/x-atomist-slack-file+json";
+    public static PLAIN_TEXT = "text/plain";
 }
 
 export interface CommandReferencingAction extends Action {
@@ -185,8 +200,8 @@ export interface CommandReference {
 export function buttonForCommand(buttonSpec: ButtonSpecification,
                                  command: any,
                                  parameters: {
-                                    [name: string]: string | number | boolean,
-                                 } = {}): Action {
+        [name: string]: string | number | boolean,
+    } = {}): Action {
     const cmd = commandName(command);
     parameters = mergeParameters(command, parameters);
     const id = cmd.toLocaleLowerCase();
@@ -203,8 +218,8 @@ export function menuForCommand(selectSpec: MenuSpecification,
                                command: any,
                                parameterName: string,
                                parameters: {
-                                   [name: string]: string | number | boolean,
-                               } = {}): Action {
+        [name: string]: string | number | boolean,
+    } = {}): Action {
     const cmd = commandName(command);
     parameters = mergeParameters(command, parameters);
     const id = cmd.toLocaleLowerCase();
@@ -219,7 +234,11 @@ export function menuForCommand(selectSpec: MenuSpecification,
 }
 
 export function isSlackMessage(object: any): object is SlackMessage {
-    return !object.length;
+    return !object.length && !object.content;
+}
+
+export function isFileMessage(object: any): object is SlackFileMessage {
+    return !object.length && object.content;
 }
 
 export function commandName(command: any): string {

@@ -1,6 +1,7 @@
 import { Configuration } from "../src/configuration";
 import { ingester, type } from "../src/ingesters";
 import { initMemoryMonitoring } from "../src/internal/util/memory";
+import { FileMessageTest } from "./command/FileMessageTest";
 import { HelloWorld } from "./command/HelloWorld";
 import { MessageTest } from "./command/MessageTest";
 import { CircleCIPayload } from "./event/circleIngester";
@@ -22,6 +23,7 @@ export const configuration: Configuration = {
         // ...scanCommands( ["**/metadata/addAtomistSpringAgent.js", "**/command/Search*.js"] ),
         HelloWorld,
         MessageTest,
+        FileMessageTest,
     ],
     events: [
         HelloCircle,

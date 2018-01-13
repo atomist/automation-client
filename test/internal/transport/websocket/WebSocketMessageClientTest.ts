@@ -10,7 +10,7 @@ import {
 import { guid } from "../../../../src/internal/util/string";
 import {
     buttonForCommand,
-    SlackDestination,
+    SlackDestination, SlackFileMessage,
 } from "../../../../src/spi/message/MessageClient";
 
 describe("WebSocketMessageClient", () => {
@@ -188,6 +188,69 @@ describe("WebSocketMessageClient", () => {
                 assert(fm.actions[0].parameters.length === 1);
                 assert(fm.actions[0].parameters[0].name === "name");
                 assert(fm.actions[0].parameters[0].value === "cd");
+                done();
+            });
+
+    });
+
+    it("correctly format response file message", done => {
+        const corrId = guid();
+        const client = new WebSocketCommandMessageClient(
+            {
+                api_version: "1",
+                correlation_id: corrId,
+                team: {
+                    id: "Txxxxxxx",
+                },
+                source: {
+                    user_agent: "slack",
+                    slack: {
+                        team: {
+                            id: "Txxxxxxx",
+                        },
+                        channel: {
+                            id: "C12",
+                        },
+                        thread_ts: "123",
+                    },
+                },
+                command: "Foor",
+                parameters: [],
+                mapped_parameters: [],
+                secrets: [],
+            }, { send: () => { //
+                // Intentionally left empty
+            } } as any as WebSocket );
+
+        const msg: SlackFileMessage = {
+            content: "some basic text",
+            title: "some title",
+            comment: "some comment",
+            fileType: "javascript",
+            fileName: "some file",
+        };
+
+        client.respond(msg, {id: "123456"})
+            .then(fm => {
+                assert(fm.api_version === "1");
+                assert(fm.correlation_id === corrId);
+                assert(fm.content_type === "application/x-atomist-slack-file+json");
+                assert(fm.team.id === "Txxxxxxx");
+                assert(fm.command === "Foor");
+                assert(fm.id === "123456");
+                assert(fm.destinations.length === 1);
+                assert(fm.destinations[0].user_agent === "slack");
+                assert(fm.destinations[0].slack.team.id === "Txxxxxxx");
+                assert(fm.destinations[0].slack.channel.id === "C12");
+                assert(fm.destinations[0].slack.thread_ts === "123");
+                assert(!fm.actions);
+
+                const newMsg = JSON.parse(fm.body);
+                assert(newMsg.content === msg.content);
+                assert(newMsg.title === msg.title);
+                assert(newMsg.initial_comment === msg.comment);
+                assert(newMsg.filetype === msg.fileType);
+                assert(newMsg.filename === msg.fileName);
                 done();
             });
 

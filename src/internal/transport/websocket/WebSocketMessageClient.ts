@@ -7,6 +7,7 @@ import * as WebSocket from "ws";
 import {
     CommandReferencingAction,
     Destination,
+    isFileMessage,
     isSlackMessage,
     MessageMimeTypes,
     MessageOptions,
@@ -39,7 +40,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
         const ts = this.ts(options);
 
         if (!Array.isArray(destinations)) {
-            destinations = [ destinations ];
+            destinations = [destinations];
         }
 
         const responseDestinations = [];
@@ -105,14 +106,21 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             response.content_type = MessageMimeTypes.SLACK_JSON;
             response.body = render(msgClone, false);
             response.actions = actions;
-            sendMessage(response, this.ws);
-            return Promise.resolve(response);
+        } else if (isFileMessage(msg)) {
+            response.content_type = MessageMimeTypes.SLACK_FILE_JSON;
+            response.body = JSON.stringify({
+                content: msg.content,
+                filename: msg.fileName,
+                filetype: msg.fileType,
+                title: msg.title,
+                initial_comment: msg.comment,
+            });
         } else {
             response.content_type = MessageMimeTypes.PLAIN_TEXT;
             response.body = msg as string;
-            sendMessage(response, this.ws);
-            return Promise.resolve(response);
         }
+        sendMessage(response, this.ws);
+        return Promise.resolve(response);
     }
 
     private ts(options: MessageOptions): number {
@@ -152,7 +160,7 @@ export class WebSocketEventMessageClient extends AbstractWebSocketMessageClient 
                            destinations: Destination | Destination[],
                            options: MessageOptions = {}): Promise<any> {
         if (!Array.isArray(destinations)) {
-            destinations = [ destinations ];
+            destinations = [destinations];
         }
 
         if (destinations.length === 0) {
@@ -252,7 +260,7 @@ export interface HandlerResponse {
 
     destinations?: any[];
 
-    content_type?: "application/x-atomist-slack+json" | "text/plain";
+    content_type?: string;
 
     body?: string;
 
