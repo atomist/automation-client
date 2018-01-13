@@ -84,7 +84,7 @@ function handle<P extends BaseSeedDrivenGeneratorParameters>(ctx: HandlerContext
                             .then(() => p);
                     }),
                 ctx,
-                { token: params.target.githubToken },
+                params.target.credentials,
                 editorFactory(params, ctx),
                 details.projectPersister,
                 // IT'S A REPO ID
