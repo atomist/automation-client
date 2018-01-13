@@ -18,7 +18,7 @@ export interface MessageClient {
      * @returns {Promise<any>}
      */
     respond(msg: any,
-        options?: MessageOptions): Promise<any>;
+            options?: MessageOptions): Promise<any>;
 
     /**
      * Send a message to any given destination.
@@ -28,8 +28,8 @@ export interface MessageClient {
      * @returns {Promise<any>}
      */
     send(msg: any,
-        destinations: Destination | Destination[],
-        options?: MessageOptions): Promise<any>;
+         destinations: Destination | Destination[],
+         options?: MessageOptions): Promise<any>;
 }
 
 /**
@@ -40,11 +40,11 @@ export interface MessageClient {
 export interface SlackMessageClient {
 
     addressUsers(msg: string | SlackMessage,
-        users: string | string[],
-        options?: MessageOptions): Promise<any>;
+                 users: string | string[],
+                 options?: MessageOptions): Promise<any>;
 
     addressChannels(msg: string | SlackMessage,
-        channels: string | string[],
+                    channels: string | string[],
                     options?: MessageOptions): Promise<any>;
 }
 
@@ -115,6 +115,20 @@ export function addressSlackChannels(team: string, ...channels: string[]): Slack
     return sd;
 }
 
+/**
+ * Message to create a Snippet in Slack
+ */
+export interface SlackFileMessage {
+
+    content: string;
+    title?: string;
+    fileName?: string;
+    // https://api.slack.com/types/file#file_types
+    fileType?: string;
+    comment?: string;
+
+}
+
 export interface MessageOptions {
 
     /**
@@ -148,8 +162,9 @@ export interface MessageOptions {
 
 export class MessageMimeTypes {
 
-    public static SLACK_JSON: "application/x-atomist-slack+json" | "text/plain" = "application/x-atomist-slack+json";
-    public static PLAIN_TEXT: "application/x-atomist-slack+json" | "text/plain" = "text/plain";
+    public static SLACK_JSON = "application/x-atomist-slack+json";
+    public static SLACK_FILE_JSON = "application/x-atomist-slack-file+json";
+    public static PLAIN_TEXT = "text/plain";
 }
 
 export interface CommandReferencingAction extends Action {
@@ -222,7 +237,7 @@ export function isSlackMessage(object: any): object is SlackMessage {
     return !object.length && !object.content;
 }
 
-export function isFileMessage(object: any): object is SlackMessage {
+export function isFileMessage(object: any): object is SlackFileMessage {
     return !object.length && object.content;
 }
 
