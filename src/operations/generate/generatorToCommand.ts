@@ -35,7 +35,7 @@ function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: strin
     return {
         description: name,
         repoFinder: allReposInTeam(),
-        repoLoader: (p: P) => defaultRepoLoader({ token: p.target.githubToken }, CachingDirectoryManager),
+        repoLoader: (p: P) => defaultRepoLoader(p.target.credentials, CachingDirectoryManager),
         projectPersister: RemoteGitProjectPersister,
         redirecter: () => undefined,
     };
