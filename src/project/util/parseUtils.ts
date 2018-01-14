@@ -127,6 +127,26 @@ export function doWithFileMatches<M, P extends ProjectAsync = ProjectAsync>(p: P
 }
 
 /**
+ * Convenience function to operate on matches in the project.
+ * Works regardless of the number of matches
+ * @param p project
+ * @param {string} globPattern
+ * @param {Microgrammar<M>} microgrammar
+ * @param {(m: M) => void} action
+ * @param {{makeUpdatable: boolean}} opts
+ */
+export function doWithMatches<M, P extends ProjectAsync = ProjectAsync>(p: P,
+                                                                        globPattern: string,
+                                                                        microgrammar: Microgrammar<M>,
+                                                                        action: (m: M) => void,
+                                                                        opts: Opts = DefaultOpts): Promise<P> {
+    const fileAction = (fh: FileWithMatches<M>) => {
+        fh.matches.forEach(action);
+    };
+    return doWithFileMatches(p, globPattern, microgrammar, fileAction, opts);
+}
+
+/**
  * Convenience function to operate on the sole match in the project.
  * Fail if zero or more than one.
  * @param p project
