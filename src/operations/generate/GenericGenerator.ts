@@ -50,7 +50,7 @@ export class GenericGenerator<P extends BaseSeedDrivenGeneratorParameters>
                             .then(() => p);
                     }),
                 ctx,
-                { token: params.target.githubToken },
+                params.target.credentials,
                 editorFactory(params, ctx),
                 projectPersister,
                 params.target)
@@ -74,6 +74,6 @@ export class GenericGenerator<P extends BaseSeedDrivenGeneratorParameters>
     }
 
     protected repoLoader(params: P): RepoLoader {
-        return defaultRepoLoader({ token: params.target.githubToken });
+        return defaultRepoLoader(params.target.credentials);
     }
 }
