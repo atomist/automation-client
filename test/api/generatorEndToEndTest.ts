@@ -15,6 +15,7 @@ import { RemoteRepoRef } from "../../src/operations/common/RepoId";
 import { BaseSeedDrivenGeneratorParameters } from "../../src/operations/generate/BaseSeedDrivenGeneratorParameters";
 import { generate } from "../../src/operations/generate/generatorUtils";
 import { GenericGenerator } from "../../src/operations/generate/GenericGenerator";
+import { GitHubRepoCreationParameters } from "../../src/operations/generate/GitHubRepoCreationParameters";
 import { RemoteGitProjectPersister } from "../../src/operations/generate/remoteGitProjectPersister";
 import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
 import { LocalProject } from "../../src/project/local/LocalProject";
@@ -64,7 +65,7 @@ describe("generator end to end", () => {
         params.source.repo = "spring-rest-seed";
         params.target.owner = TargetOwner;
         params.target.repo = repoName;
-        params.target.githubToken = GitHubToken;
+        (params.target as GitHubRepoCreationParameters).githubToken = GitHubToken;
         generator.handle(MockHandlerContext as HandlerContext, params)
             .then(result => {
                 assert(result.code === 0);

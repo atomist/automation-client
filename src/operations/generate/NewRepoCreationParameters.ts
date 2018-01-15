@@ -1,5 +1,4 @@
-import { MappedParameter, MappedParameters, Parameter, Secret, Secrets } from "../../decorators";
-import { GitHubRepoRef } from "../common/GitHubRepoRef";
+import { MappedParameter, MappedParameters, Parameter } from "../../decorators";
 import { Credentialed } from "../common/params/Credentialed";
 import { GitHubNameRegExp } from "../common/params/gitHubPatterns";
 import { RemoteLocator } from "../common/params/RemoteLocator";
@@ -9,10 +8,7 @@ import { RemoteRepoRef, RepoId } from "../common/RepoId";
 /**
  * Parameters common to all generators that create new repositories
  */
-export class NewRepoCreationParameters implements Credentialed, RepoId, RemoteLocator {
-
-    @Secret(Secrets.userToken(["repo", "user:email", "read:user"]))
-    public githubToken;
+export abstract class NewRepoCreationParameters implements Credentialed, RepoId, RemoteLocator {
 
     @MappedParameter(MappedParameters.GitHubOwner)
     public owner: string;
@@ -50,9 +46,7 @@ export class NewRepoCreationParameters implements Credentialed, RepoId, RemoteLo
     })
     public visibility: "public" | "private" = "public";
 
-    get credentials(): ProjectOperationCredentials {
-        return { token: this.githubToken };
-    }
+    public abstract credentials: ProjectOperationCredentials;
 
     /**
      * Return a single RepoRef or undefined if we're not identifying a single repo
@@ -60,10 +54,6 @@ export class NewRepoCreationParameters implements Credentialed, RepoId, RemoteLo
      * to return any kind of repo
      * @return {RepoRef}
      */
-    get repoRef(): RemoteRepoRef {
-        return (!!this.owner && !!this.repo) ?
-            new GitHubRepoRef(this.owner, this.repo) :
-            undefined;
-    }
+    public abstract repoRef: RemoteRepoRef;
 
 }
