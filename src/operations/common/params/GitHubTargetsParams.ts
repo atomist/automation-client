@@ -1,4 +1,4 @@
-import { Parameters, Secret, Secrets } from "../../../decorators";
+import { MappedParameter, MappedParameters, Parameters, Secret, Secrets } from "../../../decorators";
 
 import { GitHubRepoRef } from "../GitHubRepoRef";
 import { ProjectOperationCredentials } from "../ProjectOperationCredentials";
@@ -11,6 +11,9 @@ import { TargetsParams } from "./TargetsParams";
 @Parameters()
 export abstract class GitHubTargetsParams extends TargetsParams {
 
+    @MappedParameter(MappedParameters.GitHubApiUrl, false)
+    public apiUrl: string;
+
     get credentials(): ProjectOperationCredentials {
         return { token: this.githubToken };
     }
@@ -21,7 +24,7 @@ export abstract class GitHubTargetsParams extends TargetsParams {
      */
     get repoRef(): GitHubRepoRef {
         return (!!this.owner && !!this.repo && !this.usesRegex) ?
-            new GitHubRepoRef(this.owner, this.repo, this.sha) :
+            new GitHubRepoRef(this.owner, this.repo, this.sha, this.apiUrl) :
             undefined;
     }
 
