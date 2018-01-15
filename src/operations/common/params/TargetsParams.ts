@@ -10,7 +10,7 @@ import { RemoteLocator } from "./RemoteLocator";
  * Base parameters for working with repo(s).
  * Allows use of regex.
  */
-export abstract class TargetsParams implements Credentialed, RemoteLocator {
+export abstract class TargetsParams implements Credentialed, RepoRef, RemoteLocator {
 
     public abstract owner;
 
