@@ -14,9 +14,8 @@ env:
   - secure: lJq0IIUgmvM1B7LYHVPyU/DPt5qlJpvG3MxAp+qUDg76BwUZEr6VKgFq2mtLf5ox5dnMWaJj47FlXL+5OFiqMR6DibyZ7Kkeo4p6tWsXCGhBXdd8lFEL0TtQiZkBL6tzMxSVwJ3L2SFg05bYJQ0YLrMHABu26+zWsJJYUZvQ6iy/50ccSf5KvSdLn3jmHXfUnnli0Fs1fQ0zWFvrfW0RuMwC0c136Q/rEzekNABWVvJu91O+9bWpbSHaUvxlt0PzHjIDP4/M1WqPofwF7uDFyUb0yBF/5OPhKgjImiWg36kCn+DbN7aEZpVFlRjnNnnKvRnRKUFKj0Mg8aMoZoCcQflH+vNagznGYOyjLv9qahuqwzCkdQm7fty/qYUtI4IN4DOZMrOsBojc7FLRtA5iVwXYE6AcjbYmDxioGDbpC1yBk3jSbc0spUAL5zbKk1KfFMaPwjj8bKaUoo4Be+mWcsDQGolXnHOREG42SGAi/SVbE8KfxiGbyfPEpoE9IET/hKfEdsDjZUEb2T2Cae5Yx3itzOnZUPzCxiq68fZsYkPx35wYXvFgwYcpE5p22UN+ZCvZA11zUCgZNd/5SSMKezrh1f1ZAuxkOWPo7csJ9hPOgtzE0OxzA7HIorKBTDyom1txcDiG6kD+EWgr/0laUqcLxvvk0pT5xj+ZAgVphBA=
   - secure: elPCQNrp1vZm67ir4gd5/GNN8K1ZCDmqHCuSx0BHiJbQjQMztsBOBEfRlCJGzWegClwGKdvUm6XpO5R2i/0GhowZA3iIK6TyOD0O0O70vhWBZVnocAl/DBc7GfFbieR5vY1IEipwQkE85dBQNYrYrsnJFUDlerEoQJ+eCcpUcMgVWRgn7rZp/9rE3IP5NkZe8duZlwEH6FwJEp5YntQnQ90hXmn9kicLh2ukX80w22W/GaGAlkTu+hgGUUq2w6WWRFRwjs+xUxCyAhviTdvJBX9YhTkelCMsaGRs2IdTtM64TFYNGN2pSzLwHOFopg4AkVe2i8bFf5uAfouXLLItbbntR+Xpb92SWJryUhkOBHdDG+dXKrgyt5vYpMUwsdQwhS/wTFcWG1leoIY5n5YvORLei+WKdxQmfsQdrPCdiiAKtLOOtonkxPpVqH5K7Vf/xHkXRX7WrlTaM/NY0BYFz5lxxmibVJbOJxzfAYDlDkauIn/3S1m/den9re24XAGQTUSXcmeFrhmFxeEdybCie8E+SzM6gIYiDXNJ0JpE5VXwJ4p92Gtea7juf9Kcoc1s08gGm+SWTiA64SJlQzFYPAQcvHGzSE70dB1BtIrxFEoYLbbWIOO53LRQTpnLLh/pUHqVY2LvVSKAdICGDacj8N+dw9sF1XiLv2RuClfR6a8=
 before_install:
-- rm -f $HOME/.npm/_logs/*-debug.log
 - openssl aes-256-cbc -K $encrypted_e466dd0f1e03_key -iv $encrypted_e466dd0f1e03_iv
-  -in scripts/.npmrc.enc -out $HOME/.npmrc -d
+  -in .npmrc.enc -out .npmrc -d
 script: bash scripts/travis-build.bash
 notifications:
   email: false
@@ -28,9 +27,6 @@ notifications:
     on_start: always
     on_cancel: always
     on_error: always
-cache:
-  directories:
-  - "$HOME/.npm"
 before_deploy:
 - touch build/typedoc/.nojekyll
 deploy:

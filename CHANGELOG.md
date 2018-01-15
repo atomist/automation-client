@@ -7,7 +7,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.6.1...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.6.2...HEAD
+
+## [0.6.2][] - 2018-01-15
+
+[0.6.2]: https://github.com/atomist/automation-client-ts/compare/0.6.1...0.6.2
+
+Conscious uncoupling release
+
+### Added
+
+-   Upload files to Slack
+
+### Changed
+
+-   Migrate from `update_only` to `post_mode` when creating Slack messages
+-   Further decouple GitHub operations from project creation
 
 ## [0.6.1][] - 2018-01-12
 
