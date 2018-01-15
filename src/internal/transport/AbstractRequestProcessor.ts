@@ -145,7 +145,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             destinations: [ source ],
             status: {
                 code,
-                reason: `${success ? "Successfully" : "Unsuccessfully"} invoked command handler` +
+                reason: `${success ? "Successfully" : "Unsuccessfully"} invoked command` +
                 ` ${request.command} of ${this.automations.automations.name}@${this.automations.automations.version}`,
             },
         };
@@ -166,7 +166,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             event: request.extensions.operationName,
             status: {
                 code: success ? 0 : 1,
-                reason: `${success ? "Successfully" : "Unsuccessfully"} invoked event handler` +
+                reason: `${success ? "Successfully" : "Unsuccessfully"} invoked event subscription` +
                 ` ${request.extensions.operationName} of ${this.automations.automations.name}@${this.automations.automations.version}`,
             },
         };
@@ -181,16 +181,16 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         const finalize = (result: HandlerResult) => {
             this.sendCommandStatus(result.code === 0 ? true : false, result.code, command, ctx)
                 .catch(err =>
-                    logger.warn("Unable to send status for command handler '%s': %s", command.command, err.message))
+                    logger.warn("Unable to send status for command '%s': %s", command.command, err.message))
                 .then(() => {
                     callback(Promise.resolve(result));
-                    logger.info(`Finished invocation of command handler '%s': %s`,
+                    logger.info(`Finished invocation of command '%s': %s`,
                         command.command, stringify(result));
                     this.clearNamespace();
                 });
         };
 
-        logger.debug("Incoming command handler invocation '%s'", stringify(command, replacer));
+        logger.debug("Incoming command invocation '%s'", stringify(command, replacer));
         try {
             this.automations.invokeCommand(ci, ctx)
                 .then(result => {
@@ -239,17 +239,17 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         const finalize = (results: HandlerResult[]) => {
             this.sendEventStatus(results.some(r => r.code !== 0) ? false : true, ef, event, ctx)
                 .catch(err =>
-                    logger.warn("Unable to send status for event handler'%s': %s",
+                    logger.warn("Unable to send status for event subscription'%s': %s",
                         event.extensions.operationName, err.message))
                 .then(() => {
                     callback(Promise.resolve(results));
-                    logger.info(`Finished invocation of event handler '%s': %s`,
+                    logger.info(`Finished invocation of event subscription '%s': %s`,
                         event.extensions.operationName, stringify(results));
                     this.clearNamespace();
                 });
         };
 
-        logger.debug("Incoming event handler subscription '%s'", stringify(event, replacer));
+        logger.debug("Incoming event subscription '%s'", stringify(event, replacer));
         try {
             this.automations.onEvent(ef, ctx)
                 .then(result => {
@@ -342,10 +342,10 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         if (callback) {
                             callback(Promise.resolve(result));
                         }
-                        logger.error(`Failed invocation of command handler '%s'`, command.command, serializeError(err));
+                        logger.error(`Failed invocation of command '%s'`, command.command, serializeError(err));
                         this.clearNamespace();
                     })
-                    .catch(error => logger.warn("Unable to send status for command handler: " + stringify(command)));
+                    .catch(error => logger.warn("Unable to send status for command: " + stringify(command)));
             });
     }
 
@@ -364,11 +364,11 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         if (callback) {
                             callback(Promise.resolve(result));
                         }
-                        logger.error(`Failed invocation of event handler '%s'`,
+                        logger.error(`Failed invocation of event subscription '%s'`,
                             event.extensions.operationName, serializeError(err));
                         this.clearNamespace();
                     })
-                    .catch(error => logger.warn("Unable to send status for event handler: " + stringify(event)));
+                    .catch(error => logger.warn("Unable to send status for event subscription: " + stringify(event)));
             });
     }
 }
@@ -397,7 +397,6 @@ class AutomationEventListenerEnabledMessageClient implements MessageClient {
 export function defaultResult(context: AutomationContextAware): HandlerResult {
     const result = {
         code: 0,
-        message: `Command handler '${context.context.operation}' completed successfully`,
         correlation_id: context.context.correlationId,
         invocation_id: context.context.invocationId,
     };
@@ -408,7 +407,7 @@ export function defaultErrorResult(context: AutomationContextAware): HandlerResu
     const result = {
         ...defaultResult(context),
         code: 1,
-        message: `Command handler '${context.context.operation}' failed`,
+        message: `Command '${context.context.operation}' failed`,
     };
     return result as HandlerResult;
 }
