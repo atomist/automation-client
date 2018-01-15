@@ -16,6 +16,9 @@ env:
 before_install:
 - openssl aes-256-cbc -K $encrypted_e466dd0f1e03_key -iv $encrypted_e466dd0f1e03_iv
   -in .npmrc.enc -out .npmrc -d
+before_script:
+- ls -l node_modules/axios
+- cat node_modules/axios/package.json
 script: bash scripts/travis-build.bash
 notifications:
   email: false
