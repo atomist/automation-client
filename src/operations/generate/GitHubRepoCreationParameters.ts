@@ -15,6 +15,9 @@ export class GitHubRepoCreationParameters extends NewRepoCreationParameters {
     @MappedParameter(MappedParameters.GitHubWebHookUrl)
     public webhookUrl: string;
 
+    @MappedParameter(MappedParameters.GitHubApiUrl, false)
+    public apiUrl: string;
+
     get credentials(): ProjectOperationCredentials {
         return { token: this.githubToken };
     }
@@ -27,7 +30,7 @@ export class GitHubRepoCreationParameters extends NewRepoCreationParameters {
      */
     get repoRef(): RemoteRepoRef {
         return (!!this.owner && !!this.repo) ?
-            new GitHubRepoRef(this.owner, this.repo) :
+            new GitHubRepoRef(this.owner, this.repo, "master", this.apiUrl) :
             undefined;
     }
 
