@@ -37,7 +37,7 @@ function addWebhook(p: GitProject, params: BaseSeedDrivenGeneratorParameters): P
     if (!isGitHubRepoRef(p.id)) {
         return logAndFail("Unable to add Atomist web hook: Not a GitHub repo [%j]", p.id);
     }
-    if (!params.webhookUrl) {
+    if (!params.target.webhookUrl) {
         return logAndFail("Requested to add webhook but no URL provided");
     }
     if (!isTokenCredentials(params.target.credentials)) {
@@ -49,7 +49,7 @@ function addWebhook(p: GitProject, params: BaseSeedDrivenGeneratorParameters): P
         events: ["*"],
         active: true,
         config: {
-            url: params.webhookUrl,
+            url: params.target.webhookUrl,
             content_type: "json",
         },
     };

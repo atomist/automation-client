@@ -46,6 +46,8 @@ export abstract class NewRepoCreationParameters implements Credentialed, RepoId,
     })
     public visibility: "public" | "private" = "public";
 
+    public webhookUrl: string;
+
     public abstract credentials: ProjectOperationCredentials;
 
     /**

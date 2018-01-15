@@ -1,4 +1,4 @@
-import { MappedParameter, MappedParameters, Parameter, Parameters } from "../../decorators";
+import { Parameter, Parameters } from "../../decorators";
 import { GitHubSourceRepoParameters } from "../common/params/GitHubSourceRepoParameters";
 import { SourceRepoParameters } from "../common/params/SourceRepoParameters";
 import { GitHubRepoCreationParameters } from "./GitHubRepoCreationParameters";
@@ -21,9 +21,6 @@ export class BaseSeedDrivenGeneratorParameters {
         displayable: true,
     })
     public addAtomistWebhook: boolean = false;
-
-    @MappedParameter(MappedParameters.GitHubWebHookUrl)
-    public webhookUrl: string;
 
     /**
      * Subclasses can override this for non GitHub target strategies.

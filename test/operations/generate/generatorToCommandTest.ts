@@ -43,7 +43,7 @@ describe("generatorToCommand", () => {
         params.target.owner = owner;
         params.target.repo = repo;
         (params.target as GitHubRepoCreationParameters).githubToken = "artificialnocturne";
-        params.webhookUrl = url;
+        params.target.webhookUrl = url;
         params.addAtomistWebhook = true;
 
         const gen = generatorHandler(
@@ -99,7 +99,7 @@ describe("generatorToCommand", () => {
         params.target.owner = owner;
         params.target.repo = repo;
         (params.target as GitHubRepoCreationParameters).githubToken = "artificialnocturne";
-        params.webhookUrl = url;
+        params.target.webhookUrl = url;
         params.addAtomistWebhook = false;
 
         const gen = generatorHandler(

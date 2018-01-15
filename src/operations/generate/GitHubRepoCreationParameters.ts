@@ -1,4 +1,4 @@
-import { Secret, Secrets } from "../../decorators";
+import { MappedParameter, MappedParameters, Secret, Secrets } from "../../decorators";
 import { GitHubRepoRef } from "../common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { RemoteRepoRef } from "../common/RepoId";
@@ -11,6 +11,9 @@ export class GitHubRepoCreationParameters extends NewRepoCreationParameters {
 
     @Secret(Secrets.userToken(["repo", "user:email", "read:user"]))
     public githubToken;
+
+    @MappedParameter(MappedParameters.GitHubWebHookUrl)
+    public webhookUrl: string;
 
     get credentials(): ProjectOperationCredentials {
         return { token: this.githubToken };
