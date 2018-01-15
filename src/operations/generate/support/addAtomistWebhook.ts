@@ -6,6 +6,7 @@ import { GitProject } from "../../../project/git/GitProject";
 import { addRepoWebhook, GitHubRepoWebhookPayload } from "../../../util/gitHub";
 import { isGitHubRepoRef } from "../../common/GitHubRepoRef";
 import { ProjectAction } from "../../common/projectAction";
+import { isTokenCredentials } from "../../common/ProjectOperationCredentials";
 import { BaseSeedDrivenGeneratorParameters } from "../BaseSeedDrivenGeneratorParameters";
 
 /**
@@ -36,10 +37,10 @@ function addWebhook(p: GitProject, params: BaseSeedDrivenGeneratorParameters): P
     if (!isGitHubRepoRef(p.id)) {
         return logAndFail("Unable to add Atomist web hook: Not a GitHub repo [%j]", p.id);
     }
-    if (!params.webhookUrl) {
+    if (!params.target.webhookUrl) {
         return logAndFail("Requested to add webhook but no URL provided");
     }
-    if (!params.target.githubToken) {
+    if (!isTokenCredentials(params.target.credentials)) {
         return logAndFail("Requested to add webhook but no GitHub token provided");
     }
 
@@ -48,11 +49,14 @@ function addWebhook(p: GitProject, params: BaseSeedDrivenGeneratorParameters): P
         events: ["*"],
         active: true,
         config: {
-            url: params.webhookUrl,
+            url: params.target.webhookUrl,
             content_type: "json",
         },
     };
-    return addRepoWebhook(params.target.githubToken, p.id, payload)
+    if (!isTokenCredentials(params.target.credentials)) {
+        return logAndFail("GitHub token must be provided");
+    }
+    return addRepoWebhook(params.target.credentials.token, p.id, payload)
         .then(() => Promise.resolve(successOn(p)), err => {
             const status: number = (err.response && err.response.status) ? err.response.status : -1;
             return logAndFail("Failed to install Atomist webhook on %s/%s [%d]: %s", p.id.owner, p.id.repo, status,

@@ -1,5 +1,4 @@
 import { Parameter } from "../../../decorators";
-import { GitHubRepoRef } from "../GitHubRepoRef";
 import { RemoteRepoRef, RepoRef } from "../RepoId";
 import { GitBranchRegExp, GitHubNameRegExp } from "./gitHubPatterns";
 import { RemoteLocator } from "./RemoteLocator";
@@ -8,7 +7,7 @@ import { RemoteLocator } from "./RemoteLocator";
  * Parameters common to anything that works with a single source repo,
  * such as a seed driven generator
  */
-export class SourceRepoParameters implements RepoRef, RemoteLocator {
+export abstract class SourceRepoParameters implements RepoRef, RemoteLocator {
 
     @Parameter({
         pattern: GitHubNameRegExp.pattern,
@@ -52,10 +51,6 @@ export class SourceRepoParameters implements RepoRef, RemoteLocator {
      * to return any kind of repo
      * @return {RepoRef}
      */
-    get repoRef(): RemoteRepoRef {
-        return (!!this.owner && !!this.repo) ?
-            new GitHubRepoRef(this.owner, this.repo) :
-            undefined;
-    }
+    public abstract repoRef: RemoteRepoRef;
 
 }

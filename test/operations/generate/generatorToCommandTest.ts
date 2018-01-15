@@ -7,6 +7,7 @@ import { HandlerContext } from "../../../src/HandlerContext";
 import { RedirectResult } from "../../../src/HandlerResult";
 import { BaseSeedDrivenGeneratorParameters } from "../../../src/operations/generate/BaseSeedDrivenGeneratorParameters";
 import { generatorHandler } from "../../../src/operations/generate/generatorToCommand";
+import { GitHubRepoCreationParameters } from "../../../src/operations/generate/GitHubRepoCreationParameters";
 import { mockProjectPersister } from "./generatorUtilsTest";
 
 describe("generatorToCommand", () => {
@@ -41,8 +42,8 @@ describe("generatorToCommand", () => {
         params.source.repo = "spring-rest-seed";
         params.target.owner = owner;
         params.target.repo = repo;
-        params.target.githubToken = "artificialnocturne";
-        params.webhookUrl = url;
+        (params.target as GitHubRepoCreationParameters).githubToken = "artificialnocturne";
+        params.target.webhookUrl = url;
         params.addAtomistWebhook = true;
 
         const gen = generatorHandler(
@@ -97,8 +98,8 @@ describe("generatorToCommand", () => {
         params.source.repo = "spring-rest-seed";
         params.target.owner = owner;
         params.target.repo = repo;
-        params.target.githubToken = "artificialnocturne";
-        params.webhookUrl = url;
+        (params.target as GitHubRepoCreationParameters).githubToken = "artificialnocturne";
+        params.target.webhookUrl = url;
         params.addAtomistWebhook = false;
 
         const gen = generatorHandler(

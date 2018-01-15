@@ -1,16 +1,15 @@
-import { MappedParameter, MappedParameters, Parameter, Parameters } from "../../decorators";
+import { Parameter, Parameters } from "../../decorators";
+import { GitHubSourceRepoParameters } from "../common/params/GitHubSourceRepoParameters";
 import { SourceRepoParameters } from "../common/params/SourceRepoParameters";
+import { GitHubRepoCreationParameters } from "./GitHubRepoCreationParameters";
 import { NewRepoCreationParameters } from "./NewRepoCreationParameters";
 
 /**
- * The parameters needed to create a new repo from a seed
+ * The parameters needed to create a new repo from a seed.
+ * Defaults to use GitHub.com, but subclasses can override the source and target parameters.
  */
 @Parameters()
 export class BaseSeedDrivenGeneratorParameters {
-
-    public source = new SourceRepoParameters();
-
-    public target = new NewRepoCreationParameters();
 
     @Parameter({
         pattern: /^(?:true|false)$/,
@@ -23,7 +22,12 @@ export class BaseSeedDrivenGeneratorParameters {
     })
     public addAtomistWebhook: boolean = false;
 
-    @MappedParameter(MappedParameters.GitHubWebHookUrl)
-    public webhookUrl: string;
+    /**
+     * Subclasses can override this for non GitHub target strategies.
+     * @param {SourceRepoParameters} source
+     * @param {NewRepoCreationParameters} target
+     */
+    constructor(public source: SourceRepoParameters = new GitHubSourceRepoParameters(),
+                public target: NewRepoCreationParameters = new GitHubRepoCreationParameters()) {}
 
 }
