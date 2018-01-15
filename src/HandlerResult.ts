@@ -2,6 +2,8 @@
  * Result of a handler. Can be extended to include further,
  * command-specific, data
  */
+import {logger} from "./internal/util/logger";
+
 export interface HandlerResult {
     /**
      * 0 is success
@@ -48,6 +50,7 @@ export const Failure: HandlerResult = {
 export const FailurePromise = Promise.resolve(Failure);
 
 export function failure(err: Error): HandlerError {
+    logger.error(err.stack);
     return { code: 1, message: err.message, stack: err.stack };
 }
 
