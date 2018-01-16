@@ -44,6 +44,22 @@ describe("editorUtils tests with GitHub pull requests", () => {
             }).then(() => done(), done);
     }).timeout(15000);
 
+    it("creates PR with changes in simple editor using apiBase with trailing slash", done => {
+        newRepo()
+            .then(repo => {
+                return GitCommandGitProject.cloned(Creds, new GitHubRepoRef(repo.owner, repo.repo,
+                    "master", "https://api.github.com/"))
+                    .then(p => {
+                        return editProjectUsingPullRequest(undefined, p, EditorThatChangesProject,
+                            new PullRequest("x", "y"))
+                            .then(er => {
+                                assert(er.edited);
+                            }).then(() => deleteRepoIfExists(repo));
+                    }).catch(err => deleteRepoIfExists(repo)
+                        .then(() => Promise.reject(err)));
+            }).then(() => done(), done);
+    }).timeout(15000);
+
 });
 
 const TinyChangeEditor: ProjectEditor = (p: Project) => {
@@ -60,9 +76,9 @@ describe("editorUtils with branch commit", () => {
         newRepo().then(rr =>
             GitCommandGitProject.cloned(Creds, new GitHubRepoRef(rr.owner, rr.repo))
                 .then(p => editProjectUsingBranch(undefined, p,
-                    TinyChangeEditor, { branch: "hello", message: "thanks" })
+                    TinyChangeEditor, {branch: "hello", message: "thanks"})
                     .then(r => editProjectUsingBranch(undefined, p,
-                        TinyChangeEditor, { branch: "hello", message: "thanks" })))
+                        TinyChangeEditor, {branch: "hello", message: "thanks"})))
                 .then(() => deleteRepoIfExists(rr),
                     err => deleteRepoIfExists(rr).then(() => Promise.reject(err))))
             .then(() => done(), done);
