@@ -291,7 +291,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                              invocationId: string = guid(),
                              ts: number = Date.now()) {
         return {
-            correlationId: _.get(request, "corrid") || _.get(request, "extensions.correlation_id"),
+            correlationId: _.get(request, "correlation_id") || _.get(request, "extensions.correlation_id"),
             teamId: _.get(request, "team.id") || _.get(request, "extensions.team_id"),
             teamName: _.get(request, "team.name") || _.get(request, "extensions.team_name"),
             operation: _.get(request, "command") || _.get(request, "extensions.operationName"),
