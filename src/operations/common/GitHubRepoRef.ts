@@ -15,14 +15,18 @@ export const GitHubDotComBase = "https://api.github.com";
  */
 export class GitHubRepoRef extends AbstractRepoRef {
 
-    public kind = "github";
+    public readonly kind = "github";
+
+    public readonly apiBase: string;
 
     constructor(owner: string,
                 repo: string,
                 sha: string = "master",
-                public apiBase = GitHubDotComBase,
+                rawApiBase = GitHubDotComBase,
                 path?: string) {
         super("github.com", owner, repo, sha, path);
+        // Strip trailing / if present on API base
+        this.apiBase = rawApiBase.replace(/\/$/, "");
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
