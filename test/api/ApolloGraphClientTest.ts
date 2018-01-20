@@ -56,15 +56,16 @@ describe("ApolloGraphClient", () => {
     it("should mutate preferences", done => {
         const agc = new ApolloGraphClient(`https://automation.atomist.com/graphql/team/${SlackTeamId}`,
             { Authorization: `token ${GitHubToken}` });
-        agc.executeMutationFromFile("graphql/setUserPreference",
+        agc.executeMutationFromFile("graphql/setChatUserPreference",
             {
-                userId: SlackTeamId,
+                teamId: SlackTeamId,
+                userId: "U095T3BPF",
                 name: "test",
                 value: `{"disable_for_test":true}`,
             })
             .then(result => {
-                assert((result as any).setUserPreference[0].name === "test");
-                assert((result as any).setUserPreference[0].value === `{"disable_for_test":true}`);
+                assert((result as any).setChatUserPreference[0].name === "test");
+                assert((result as any).setChatUserPreference[0].value === `{"disable_for_test":true}`);
             })
             .then(() => done(), done);
     }).timeout(5000);

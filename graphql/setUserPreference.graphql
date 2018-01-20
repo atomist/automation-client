@@ -1,6 +1,0 @@
-mutation SetUserPreference($userId: String!, $name: String!, $value: String!) {
-  setUserPreference(userId: $userId, name: $name, value: $value) {
-    name
-    value
-  }
-}
