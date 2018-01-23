@@ -5646,6 +5646,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "name",
+                  "description": "name of Person",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of Person",
                   "type": {
@@ -5676,6 +5686,20 @@
                 {
                   "name": "surnames",
                   "description": "surnames is list variant of surname of Person",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Person",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -13595,6 +13619,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "name",
+                  "description": "name of Person",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of Person",
                   "type": {
@@ -13625,6 +13659,20 @@
                 {
                   "name": "surnames",
                   "description": "surnames is list variant of surname of Person",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Person",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -14190,6 +14238,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "name",
+                  "description": "name of Person",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of Person",
                   "type": {
@@ -14220,6 +14278,20 @@
                 {
                   "name": "surnames",
                   "description": "surnames is list variant of surname of Person",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Person",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -14630,6 +14702,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "name",
+                  "description": "name of Person",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of Person",
                   "type": {
@@ -14660,6 +14742,20 @@
                 {
                   "name": "surnames",
                   "description": "surnames is list variant of surname of Person",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Person",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -14934,6 +15030,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "name",
+                  "description": "name of Person",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of Person",
                   "type": {
@@ -14964,6 +15070,20 @@
                 {
                   "name": "surnames",
                   "description": "surnames is list variant of surname of Person",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Person",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -15657,6 +15777,18 @@
             {
               "name": "surname",
               "description": "surname of  Person",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "name of  Person",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -16513,6 +16645,18 @@
             {
               "name": "surname_desc",
               "description": "Descending sort for surname",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name_asc",
+              "description": "Ascending sort for name",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name_desc",
+              "description": "Descending sort for name",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -25105,6 +25249,153 @@
                 "kind": "OBJECT",
                 "name": "DockerImage",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "images",
+              "description": "Commit images DockerImage",
+              "args": [
+                {
+                  "name": "image",
+                  "description": "image of DockerImage",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "imageName",
+                  "description": "imageName of DockerImage",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "timestamp",
+                  "description": "timestamp of DockerImage",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "images",
+                  "description": "images is list variant of image of DockerImage",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "imageNames",
+                  "description": "imageNames is list variant of imageName of DockerImage",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "timestamps",
+                  "description": "timestamps is list variant of timestamp of DockerImage",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_DockerImageOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DockerImage",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -41143,35 +41434,6 @@
           "possibleTypes": null,
           "fields": [
             {
-              "name": "setTeamPreference",
-              "description": "Set the value of a team preference. Returns what was set",
-              "type": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "TeamPreference"
-                }
-              },
-              "args": [
-                {
-                  "name": "name",
-                  "description": "The name of the preference",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
-                  }
-                },
-                {
-                  "name": "value",
-                  "description": "The value of the preference",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
-                  }
-                }
-              ]
-            },
-            {
               "name": "setChatTeamPreference",
               "description": "Set the value of a chat team preference. Returns what was set",
               "type": {
@@ -41185,43 +41447,6 @@
                 {
                   "name": "chatTeamId",
                   "description": "The ID of the chat team",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
-                  }
-                },
-                {
-                  "name": "name",
-                  "description": "The name of the preference",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
-                  }
-                },
-                {
-                  "name": "value",
-                  "description": "The value of the preference",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
-                  }
-                }
-              ]
-            },
-            {
-              "name": "setUserPreference",
-              "description": "Set the value of a user preference.",
-              "type": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "UserPreference"
-                }
-              },
-              "args": [
-                {
-                  "name": "userId",
-                  "description": "The id of user",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String"
@@ -47913,6 +48138,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "name",
+                  "description": "name of Person",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of Person",
                   "type": {
@@ -47943,6 +48178,20 @@
                 {
                   "name": "surnames",
                   "description": "surnames is list variant of surname of Person",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Person",
                   "type": {
                     "kind": "LIST",
                     "name": null,
