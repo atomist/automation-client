@@ -7,7 +7,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.6.3...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.6.4...HEAD
+
+### Changed
+
+-   Make seed repository parameters visible to users
+
+## [0.6.4][] - 2018-01-16
+
+[0.6.4]: https://github.com/atomist/automation-client-ts/compare/0.6.3...0.6.4
+
+Kubernetes release
+
+### Changed
+
+-   Updated k8 schema
+
+### Fixed
+
+-   `setChatUserPreference` mutation
 
 ## [0.6.3][] - 2018-01-16
 

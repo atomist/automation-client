@@ -17,7 +17,7 @@ export abstract class SourceRepoParameters implements RepoRef, RemoteLocator {
         minLength: 1,
         maxLength: 100,
         required: false,
-        displayable: false,
+        displayable: true,
     })
     public owner: string;
 
@@ -29,7 +29,7 @@ export abstract class SourceRepoParameters implements RepoRef, RemoteLocator {
         minLength: 1,
         maxLength: 100,
         required: false,
-        displayable: false,
+        displayable: true,
     })
     public repo: string;
 
@@ -41,7 +41,7 @@ export abstract class SourceRepoParameters implements RepoRef, RemoteLocator {
         minLength: 1,
         maxLength: 256,
         required: false,
-        displayable: false,
+        displayable: true,
     })
     public sha: string = "master";
 
