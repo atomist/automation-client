@@ -7,13 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.6.4...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.6.5...HEAD
+
+## [0.6.5][] - 2018-01-24
+
+[0.6.5]: https://github.com/atomist/automation-client-ts/compare/0.6.4...0.6.5
+
+Seed release
 
 ### Changed
 
 -   Make seed repository parameters visible to users
 
-## [0.6.4][] - 2018-01-16
+## [0.6.4][] - 2018-01-23
 
 [0.6.4]: https://github.com/atomist/automation-client-ts/compare/0.6.3...0.6.4
 
