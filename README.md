@@ -321,10 +321,12 @@ export const configuration: Configuration = {
 | Path  | Description |
 |-------|-------------|
 | `/metrics` | exposes metrics around command, event handler executions |
-| `/commands` | all incoming request for running command handlers |
-| `/events` | all incoming events for event handlers |
-| `/messages` | all outgoing messages sent by handlers |
-| `/automations` | metadata of all available automations |
+| `/health` | endpoint that exposes health information of the automation client |
+| `/registration` | metadata of all available automations |
+| `/info` | exposes information about this automation client |
+| `/log/commands` | all incoming request for running command handlers |
+| `/log/events` | all incoming events for event handlers |
+| `/log/messages` | all outgoing messages sent by handlers |
 
 As an example, here is an a command to get the current metrics:
 
@@ -338,7 +340,7 @@ $ curl -X GET \
 The above endpoints are all HTTP GET and take bearer and basic auth per default. See below for more details about
 authentication.
 
-#### Invoking a command handler or ingestor
+#### Invoking a command handler
 
 Command handlers are exposed via HTTP GET like the following:
 
@@ -365,16 +367,7 @@ $ curl -X POST \
       "name": "slackUser", "value": "U095T3BPF"
     }]
   }'
-```
-
-Similarly, `Ingestors` can be invoked via:
-
-```
-curl -X POST \
-  http://localhost:2866/ingest/hello \
-  -H 'content-type: application/json' \
-  -d '{ "name": "cd" }'
-```
+````
 
 ## Support
 
