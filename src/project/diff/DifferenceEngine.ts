@@ -1,3 +1,4 @@
+import { HandlerContext } from "../../HandlerContext";
 import * as _ from "lodash";
 
 import { Chain } from "./Chain";
@@ -20,7 +21,7 @@ export class DifferenceEngine {
      * @param baseSha
      * @param headSha
      */
-    public run(baseSha: string, headSha: string) {
+    public run(context: HandlerContext, baseSha: string, headSha: string) {
         const baseProjectPromise = this.cloneRepo(this.githubIssueAuth, baseSha);
         baseProjectPromise.then(project => {
             const baseFingerprintPromises: Array<Promise<any>> = _.map(this.chains, c => c.extractor.extract(project));
