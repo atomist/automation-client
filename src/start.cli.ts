@@ -124,22 +124,18 @@ yargs.completion("completion")
         return ya
             .option("slack-team", {
                 describe: "Slack team ID",
-                requiresArg: true,
                 type: "string",
             })
             .option("github-user", {
                 describe: "GitHub user login",
-                requiresArg: true,
                 type: "string",
             })
             .option("github-password", {
                 describe: "GitHub user password",
-                requiresArg: true,
                 type: "string",
             })
             .option("github-mfa-token", {
                 describe: "GitHub user password",
-                requiresArg: true,
                 type: "string",
             });
     }, argv => {

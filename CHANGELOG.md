@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.6.5...HEAD
 
+### Fixed
+
+-   Make config command-line options optional [#208][208]
+
+[208]: https://github.com/atomist/automation-client-ts/issues/208
+
 ## [0.6.5][] - 2018-01-24
 
 [0.6.5]: https://github.com/atomist/automation-client-ts/compare/0.6.4...0.6.5
