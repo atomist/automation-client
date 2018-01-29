@@ -1,5 +1,5 @@
-import { HandlerContext } from "../../HandlerContext";
 import { exec } from "child-process-promise";
+import { HandlerContext } from "../../HandlerContext";
 
 import { isLocalProject, ReleaseFunction } from "../local/LocalProject";
 import { Project } from "../Project";

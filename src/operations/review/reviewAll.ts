@@ -30,7 +30,7 @@ export function reviewAll<P,
                                              repoFinder: RepoFinder = allReposInTeam(),
                                              repoFilter: RepoFilter = AllRepos,
                                              repoLoader: RepoLoader =
-        defaultRepoLoader(ctx, 
+        defaultRepoLoader(ctx,
             credentials)): Promise<ProjectReview[]> {
     return doWithAllRepos(ctx, credentials,
         p => reviewer(p, ctx, parameters), parameters,

@@ -1,5 +1,5 @@
-import { HandlerContext } from "../../../src/HandlerContext";
 import "mocha";
+import { HandlerContext } from "../../../src/HandlerContext";
 
 import * as assert from "power-assert";
 import { ActionResult } from "../../../src/action/ActionResult";

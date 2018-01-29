@@ -1,6 +1,6 @@
-import { HandlerContext } from "../../src/HandlerContext";
 import "mocha";
 import * as assert from "power-assert";
+import { HandlerContext } from "../../src/HandlerContext";
 
 import { BitBucketRepoRef } from "../../src/operations/common/BitBucketRepoRef";
 import { generate } from "../../src/operations/generate/generatorUtils";
