@@ -20,7 +20,7 @@ export function defaultRepoLoader(context: HandlerContext, credentials: ProjectO
         if (isLocalRepoRef(repoId)) {
             return LocalRepoLoader(repoId) as Promise<GitProject>;
         } else {
-            return gitHubRepoLoader(credentials, directoryManager)(repoId);
+            return gitHubRepoLoader(context, credentials, directoryManager)(repoId);
         }
     };
 }
