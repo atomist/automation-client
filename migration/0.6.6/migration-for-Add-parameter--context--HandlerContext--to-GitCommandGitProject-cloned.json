@@ -1,0 +1,30 @@
+{
+  "kind": "Add Parameter",
+  "functionWithAdditionalParameter": {
+    "enclosingScope": {
+      "kind": "class around method",
+      "name": "GitCommandGitProject",
+      "exported": true
+    },
+    "name": "cloned",
+    "filePath": "src/project/git/GitCommandGitProject.ts",
+    "access": {
+      "kind": "PublicMethodAccess"
+    }
+  },
+  "parameterType": {
+    "kind": "library",
+    "name": "HandlerContext",
+    "location": ""
+  },
+  "parameterName": "context",
+  "populateInTests": {
+    "dummyValue": "{} as HandlerContext",
+    "additionalImport": {
+      "kind": "local",
+      "name": "HandlerContext",
+      "localPath": "src/HandlerContext"
+    }
+  },
+  "external": true
+}

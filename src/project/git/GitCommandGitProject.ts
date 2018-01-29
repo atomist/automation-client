@@ -1,3 +1,4 @@
+import { HandlerContext } from "../../HandlerContext";
 import { exec } from "child-process-promise";
 
 import { isLocalProject, ReleaseFunction } from "../local/LocalProject";
@@ -58,7 +59,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @param {DirectoryManager} directoryManager
      * @return {Promise<GitCommandGitProject>}
      */
-    public static cloned(credentials: ProjectOperationCredentials,
+    public static cloned(context: HandlerContext, credentials: ProjectOperationCredentials,
                          id: RemoteRepoRef,
                          opts: CloneOptions = DefaultCloneOptions,
                          directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitProject> {
