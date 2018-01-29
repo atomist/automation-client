@@ -49,7 +49,7 @@ function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: strin
  * @param {string} details object allowing customization beyond reasonable defaults
  * @return {HandleCommand}
  */
-export function generatorHandler<P extends BaseSeedDrivenGeneratorParameters>(editorFactory: EditorFactory<P>,
+export function generatorHandler<P extends BaseSeedDrivenGeneratorParameters>(context: HandlerContext, editorFactory: EditorFactory<P>,
                                                                               factory: ParametersConstructor<P>,
                                                                               name: string,
                                                                               details: Partial<GeneratorCommandDetails<P>> = {}): HandleCommand {
