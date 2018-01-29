@@ -12,8 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 -   Make config command-line options optional [#208][208]
+-   Git branch regular expression [#211][211]
 
 [208]: https://github.com/atomist/automation-client-ts/issues/208
+[211]: https://github.com/atomist/automation-client-ts/issues/211
 
 ## [0.6.5][] - 2018-01-24
 
