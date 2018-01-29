@@ -74,6 +74,6 @@ export class GenericGenerator<P extends BaseSeedDrivenGeneratorParameters>
     }
 
     protected repoLoader(context: HandlerContext, params: P): RepoLoader {
-        return defaultRepoLoader(params.target.credentials);
+        return defaultRepoLoader(context, params.target.credentials);
     }
 }

@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Seed release
 
 ### Changed
+**Breaking** Add parameter "context: HandlerContext" to defaultRepoLoader
 **Breaking** Add parameter "context: HandlerContext" to generatorHandler
 
 -   Make seed repository parameters visible to users

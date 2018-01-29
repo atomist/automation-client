@@ -28,7 +28,7 @@ export function doWithAllRepos<R, P>(ctx: HandlerContext,
                                      repoFinder: RepoFinder = allReposInTeam(),
                                      repoFilter: RepoFilter = AllRepos,
                                      repoLoader: RepoLoader =
-        defaultRepoLoader(credentials)): Promise<R[]> {
+        defaultRepoLoader(ctx, credentials)): Promise<R[]> {
     return relevantRepos(ctx, repoFinder, repoFilter)
         .then(ids => {
             return Promise.all(
