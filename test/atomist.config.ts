@@ -26,12 +26,12 @@ export const configuration: Configuration = {
         FileMessageTest,
     ],
     events: [
-        HelloCircle,
-        GitLabPush,
-        HelloWorldIngester,
+        // HelloCircle,
+        // GitLabPush,
+        // HelloWorldIngester,
         // ...scanEvents("**/event/*.js"),
     ],
-    ingesters: [
+    /*ingesters: [
         CircleCIPayload,
         GitLabPushPayload,
         ingester(
@@ -39,11 +39,11 @@ export const configuration: Configuration = {
                 .withObjectField("sender", "HelloWorldPerson")
                 .withObjectField("recipient", "HelloWorldPerson"))
             .withType(type("HelloWorldPerson").withStringField("name")),
-    ],
+    ],*/
     ws: {
         enabled: true,
         termination: {
-            graceful: false,
+            graceful: true,
         },
     },
     http: {
@@ -69,8 +69,8 @@ export const configuration: Configuration = {
         teamId: "T1L0VDKJP",
     },
     cluster: {
-        enabled: false,
-        workers: 2,
+        enabled: true,
+        // workers: 2,
     },
 };
 
