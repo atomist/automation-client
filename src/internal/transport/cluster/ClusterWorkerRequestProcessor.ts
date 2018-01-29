@@ -19,11 +19,13 @@ import {
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { CommandInvocation } from "../../invoker/Payload";
+import { Deferred } from "../../util/Deferred";
 import { logger } from "../../util/logger";
 import {
     gc,
     heapDump,
 } from "../../util/memory";
+import { registerShutdownHook } from "../../util/shutdown";
 import { guid } from "../../util/string";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
@@ -52,6 +54,27 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
                 private _listeners: AutomationEventListener[] = []) {
         super(_automations, [..._listeners, new ClusterWorkerAutomationEventListener()]);
         workerSend({ type: "online", context: null });
+        registerShutdownHook(() => {
+
+            if (this._options.termination && this._options.termination.graceful === true) {
+                logger.info("Initiating worker shutdown");
+
+                // Now wait for configured timeout to let in-flight messages finish processing
+                const deferred = new Deferred<number>();
+                setTimeout(() => {
+                    logger.info("Closing worker");
+                    deferred.resolve(0);
+                }, (this._options.termination.gracePeriod || 60000) + 2500);
+
+                return deferred.promise
+                    .then(code => {
+                        return code;
+                    });
+            } else {
+                logger.info("Closing worker");
+                return Promise.resolve(0);
+            }
+        });
     }
 
     public setRegistration(registration: RegistrationConfirmation) {
