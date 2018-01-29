@@ -103,7 +103,6 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         const commands = this.commands;
         const events = this.events;
         const clearNamespace = this.clearNamespace;
-        let shutdownInitiated = false;
 
         function attachEvents(worker: cluster.Worker, deferred: Deferred<any>) {
 
@@ -217,14 +216,9 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
         cluster.on("exit", (worker, code, signal) => {
             logger.warn(`Worker '${worker.id}' exited with '${code}' '${signal}'. Restarting ...`);
-            if (!shutdownInitiated) {
+            if (code !== 0) {
                 attachEvents(cluster.fork(), new Deferred());
             }
-        });
-
-        registerShutdownHook(() => {
-           shutdownInitiated = true;
-           return Promise.resolve(0);
         });
 
         return Promise.all(promises);
