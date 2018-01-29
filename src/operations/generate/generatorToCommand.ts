@@ -31,7 +31,7 @@ export interface GeneratorCommandDetails<P extends BaseSeedDrivenGeneratorParame
     afterAction?: ProjectAction<P>;
 }
 
-function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: string): GeneratorCommandDetails<P> {
+function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(context: HandlerContext, name: string): GeneratorCommandDetails<P> {
     return {
         description: name,
         repoFinder: allReposInTeam(),
@@ -55,7 +55,7 @@ export function generatorHandler<P extends BaseSeedDrivenGeneratorParameters>(co
                                                                               details: Partial<GeneratorCommandDetails<P>> = {}): HandleCommand {
 
     const detailsToUse: GeneratorCommandDetails<P> = {
-        ...defaultDetails(name),
+        ...defaultDetails(context, name),
         ...details,
     };
     return commandHandlerFrom(handleGenerate(editorFactory, detailsToUse), factory, name,
