@@ -133,7 +133,7 @@
     "gql:copy": "ncp src/graph/schema.cortex.json build/src/graph/schema.cortex.json",
     "lint": "tslint --format verbose --project . --exclude \"{build,node_modules}/**\" \"**/*.ts\"",
     "lint:fix": "npm run lint -- --fix",
-    "start": "node build/src/start.client.js",
+    "start": "node $NODE_DEBUG_OPTION build/src/start.client.js",
     "test": "mocha --require espower-typescript/guess --exit \"test/{*.ts,!(api|benchmark|bitbucket-api)/**/*.ts}\"",
     "test:api": "mocha --require espower-typescript/guess --exit \"test/api/**/*.ts\"",
     "test:bitbucket-api": "mocha --require espower-typescript/guess --exit \"test/bitbucket-api/**/*.ts\"",

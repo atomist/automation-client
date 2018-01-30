@@ -4,8 +4,9 @@ import * as GitHubApi from "github";
 import * as _ from "lodash";
 import * as passport from "passport";
 import * as http from "passport-http";
-import { IStrategyOptions } from "passport-http-bearer";
 import * as bearer from "passport-http-bearer";
+import { IStrategyOptions } from "passport-http-bearer";
+import * as retry from "retry";
 import * as globals from "../../../globals";
 import { CommandHandlerMetadata } from "../../../metadata/automationMetadata";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
@@ -119,7 +120,7 @@ export class ExpressServer {
                         } else {
                             res.status(result.code === 0 ? 200 : 500).json(result);
                         }
-});
+                });
             },
         );
 
@@ -128,9 +129,28 @@ export class ExpressServer {
             this.options.customizers.forEach(c => c(exp, this.authenticate));
         }
 
-        exp.listen(this.options.port, () => {
-            logger.info(`Atomist automation client api running at 'http://${this.options.host}:${this.options.port}'`);
+        const operation = retry.operation({
+            retries: 100,
+            factor: 3,
+            minTimeout: 1 * 1000,
+            maxTimeout: 5 * 1000,
+            randomize: true,
         });
+
+        operation.attempt(() => {
+            exp.listen(this.options.port, () => {
+                logger.info(
+                    `Atomist automation client api running at 'http://${this.options.host}:${this.options.port}'`);
+            }).on("error", err => {
+                logger.warn("Starting automation client api failed: %s", err.message);
+                if (operation.retry(err)) {
+                    return;
+                } else {
+                    logger.error("Failed to start automation client api");
+                }
+            });
+        });
+
     }
 
     private exposeCommandHandlerInvocationRoute(exp: express.Express,
