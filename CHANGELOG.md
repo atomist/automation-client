@@ -7,12 +7,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.6.5...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.6.6...HEAD
+
+## [0.6.6][] - 2018-01-31
+
+[0.6.6]: https://github.com/atomist/automation-client-ts/compare/0.6.5...0.6.6
+
+Command release
+
+### Changed
+
+-   Retry HTTP server startup
 
 ### Fixed
 
 -   Make config command-line options optional [#208][208]
 -   Git branch regular expression [#211][211]
+-   Properly shutdown and restart cluster workers
 
 [208]: https://github.com/atomist/automation-client-ts/issues/208
 [211]: https://github.com/atomist/automation-client-ts/issues/211
