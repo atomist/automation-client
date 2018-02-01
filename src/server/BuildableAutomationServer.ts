@@ -73,7 +73,6 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                     teamId = opts.teamIds[0];
                 } else if (opts.teamIds.length > 1) {
                     teamId = opts.teamIds[0];
-                    logger.warn(`Provided ${opts.teamIds.length} team IDs, using the first: ${teamId}`);
                 }
                 if (teamId) {
                     if (opts.token) {
