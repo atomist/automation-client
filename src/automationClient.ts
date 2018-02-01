@@ -101,6 +101,7 @@ export class AutomationClient {
             registrationUrl: _.get(this.configuration, "endpoints.api", DefaultApiServer),
             token: this.configuration.token,
             termination: _.get(this.configuration, "ws.termination"),
+            compress: _.get(this.configuration, "ws.compress") || false,
         };
 
         if (this.configuration.logging && this.configuration.logging.level) {
@@ -176,8 +177,16 @@ export class AutomationClient {
     }
 
     private runWs(handler: WebSocketRequestProcessor, options: WebSocketClientOptions): Promise<void> {
-        this.webSocketClient = new WebSocketClient(() => prepareRegistration(this.automations.automations),
-            options, handler);
+
+        const payloadOptions: any = {};
+        if (options.compress) {
+            payloadOptions.accept_encoding = "gzip";
+        }
+
+        this.webSocketClient = new WebSocketClient(
+            () => prepareRegistration(this.automations.automations, payloadOptions),
+            options,
+            handler);
         return this.webSocketClient.start();
     }
 

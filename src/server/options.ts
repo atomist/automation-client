@@ -47,6 +47,7 @@ export interface RunOptions {
             gracePeriod?: number;
             graceful?: boolean;
         };
+        compress?: boolean;
     };
     endpoints?: {
         graphql?: string;

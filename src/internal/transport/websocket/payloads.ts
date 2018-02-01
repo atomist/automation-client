@@ -5,7 +5,7 @@ import {
 import { Automations } from "../../metadata/metadata";
 import { info } from "../../util/info";
 
-export function prepareRegistration(automations: Automations): any {
+export function prepareRegistration(automations: Automations, options: any = {}): any {
     return {
         api_version: "1",
         name: automations.name,
@@ -17,6 +17,7 @@ export function prepareRegistration(automations: Automations): any {
         events: automations.events.map(prepareEventRegistration),
         ingesters: automations.ingesters,
         metadata: { labels: prepareMetadata(automations) },
+        ...options,
     };
 }
 

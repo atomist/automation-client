@@ -5,6 +5,7 @@ import * as promiseRetry from "promise-retry";
 import * as serializeError from "serialize-error";
 import * as url from "url";
 import * as WebSocket from "ws";
+import * as zlib from "zlib";
 import { Deferred } from "../../util/Deferred";
 import { logger } from "../../util/logger";
 import Timer = NodeJS.Timer;
@@ -122,31 +123,47 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
         });
 
         ws.on("message", function incoming(data: WebSocket.Data) {
-            let request;
-            try {
-                request = JSON.parse(data as string);
-            } catch (err) {
-                logger.error(`Failed to parse incoming message: %s`, data);
-                return;
-            }
-            try {
-                if (isPing(request)) {
-                    sendMessage({ pong: request.ping }, this, false);
-                } else if (isPong(request)) {
-                    pong = request.pong;
-                } else if (isControl(request)) {
-                    logger.info("WebSocket connection stopped listening for incoming messages");
-                } else {
-                    if (isCommandIncoming(request)) {
-                        invokeCommandHandler(request);
-                    } else if (isEventIncoming(request)) {
-                        invokeEventHandler(request);
-                    } else {
-                        logger.error(`Unknown message payload received: ${data}`);
-                    }
+
+            function handleMessage(request: string) {
+                try {
+                    request = JSON.parse(request);
+                } catch (err) {
+                    logger.error(`Failed to parse incoming message: %s`, request);
+                    return;
                 }
-            } catch (err) {
-                console.error("Failed processing of message payload with: %s", JSON.stringify(serializeError(err)));
+
+                try {
+                    if (isPing(request)) {
+                        sendMessage({ pong: request.ping }, ws, false);
+                    } else if (isPong(request)) {
+                        pong = request.pong;
+                    } else if (isControl(request)) {
+                        logger.info("WebSocket connection stopped listening for incoming messages");
+                    } else {
+                        if (isCommandIncoming(request)) {
+                            invokeCommandHandler(request);
+                        } else if (isEventIncoming(request)) {
+                            invokeEventHandler(request);
+                        } else {
+                            logger.error(`Unknown message payload received: ${data}`);
+                        }
+                    }
+                } catch (err) {
+                    console.error("Failed processing of message payload with: %s", JSON.stringify(serializeError(err)));
+                }
+            }
+
+            if (options.compress) {
+                zlib.gunzip(data as Buffer, (err, result) => {
+                    if (!err) {
+                        handleMessage(result.toString());
+                    } else {
+                        logger.warn(`Failed to decompress incoming message: %s`, data);
+                        handleMessage(data as string);
+                    }
+                });
+            } else {
+                handleMessage(data as string);
             }
         });
 
@@ -264,6 +281,7 @@ export interface WebSocketClientOptions {
         gracePeriod?: number;
         graceful?: boolean;
     };
+    compress?: boolean;
 }
 
 function isPing(a: any): a is Ping {

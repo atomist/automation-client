@@ -45,6 +45,7 @@ export const configuration: Configuration = {
         termination: {
             graceful: true,
         },
+        compress: true,
     },
     http: {
         enabled: true,
