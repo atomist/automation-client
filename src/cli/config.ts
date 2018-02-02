@@ -1,4 +1,4 @@
-import * as GitHubApi from "github";
+import * as GitHubApi from "@octokit/rest";
 import * as inquirer from "inquirer";
 import * as stringify from "json-stringify-safe";
 import * as os from "os";

@@ -1,5 +1,5 @@
 import axios from "axios";
-import MockAdapter = require("axios-mock-adapter");
+import MockAdapter from "axios-mock-adapter";
 import * as assert from "power-assert";
 import {BasicAuthCredentials} from "../../src/operations/common/BasicAuthCredentials";
 import {BitBucketServerRepoRef} from "../../src/operations/common/BitBucketServerRepoRef";

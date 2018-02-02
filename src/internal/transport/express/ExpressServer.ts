@@ -1,11 +1,11 @@
+import * as GitHubApi from "@octokit/rest";
 import * as bodyParser from "body-parser";
 import * as express from "express";
-import * as GitHubApi from "github";
 import * as _ from "lodash";
 import * as passport from "passport";
 import * as http from "passport-http";
-import * as bearer from "passport-http-bearer";
 import { IStrategyOptions } from "passport-http-bearer";
+import * as bearer from "passport-http-bearer";
 import * as retry from "retry";
 import * as globals from "../../../globals";
 import { CommandHandlerMetadata } from "../../../metadata/automationMetadata";

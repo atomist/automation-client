@@ -2,7 +2,7 @@ import "mocha";
 import * as assert from "power-assert";
 
 import axios from "axios";
-import MockAdapter = require("axios-mock-adapter");
+import MockAdapter from "axios-mock-adapter";
 import { HandlerContext } from "../../../src/HandlerContext";
 import { RedirectResult } from "../../../src/HandlerResult";
 import { BaseSeedDrivenGeneratorParameters } from "../../../src/operations/generate/BaseSeedDrivenGeneratorParameters";
