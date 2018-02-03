@@ -6,6 +6,7 @@ import {
     IntrospectionQuery,
     parse,
 } from "graphql";
+import gql from "graphql-tag";
 import { validate } from "graphql/validation";
 import * as p from "path";
 import { findLine } from "../internal/util/string";
@@ -85,27 +86,30 @@ export function resolveAndReadFileSync(path: string,
                                        current: string = appRoot.path,
                                        parameters: {
                                            [name: string]: string | boolean | number;
-                                       }): string {
+                                       } = {}): string {
     if (!path.endsWith(".graphql")) {
         path = `${path}.graphql`;
     }
     const absolutePath = p.resolve(current, path);
     if (fs.existsSync(absolutePath)) {
-        let content = fs.readFileSync(absolutePath).toString();
-        for (const key in parameters) {
-            if (parameters.hasOwnProperty(key)) {
-                const value: any = parameters[key];
-                if (typeof value === "string") {
-                    content = content.replace(`$${key}`, `"${value}"`);
-                } else if (typeof value === "number") {
-                    content = content.replace(`$${key}`, `${value}`);
-                } else if (typeof value === "boolean") {
-                    content = content.replace(`$${key}`, `${value}`);
-                }
-            }
-        }
-        return content;
+        return replaceParameters(fs.readFileSync(absolutePath).toString(), parameters);
     } else {
         throw new Error(`GraphQL file '${absolutePath}' does not exist`);
     }
+}
+
+function replaceParameters(query: string,
+                           parameters: {
+                                [name: string]: string | boolean | number;
+                            } = {}): string {
+    const exp = /subscription[\S\s]*?(\([\S\s]*?\))[\S\s]*?{/i;
+    if (exp.test(query)) {
+        query = query.replace(exp.exec(query)[1], "");
+        for (const key in parameters) {
+            if (parameters.hasOwnProperty(key)) {
+                query = query.replace(new RegExp(`\\$${key}\\b`, "g"), JSON.stringify(parameters[key]));
+            }
+        }
+    }
+    return query;
 }

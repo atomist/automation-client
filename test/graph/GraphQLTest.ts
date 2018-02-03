@@ -59,6 +59,21 @@ query Repos($teamId: ID!, $offset: Int!) {
         assert(errors.length === 0);
     });
 
+    const ReplacedQuery = `subscription
+SomeSubscription {
+    ChatTeam(id: "T1L0VDKJP") {
+        orgs {
+            repo(first: 50, offset: 100, private: true) {
+                owner
+                name
+                bla(test: "T1L0VDKJP") {
+                    name
+                }
+            }
+        }
+    }
+}`;
+
     it("should successfully load query from relative path and replace parameters in subscription", () => {
         const query = GraphQL.subscriptionFromFile(
             "./someSubscription",
@@ -68,8 +83,6 @@ query Repos($teamId: ID!, $offset: Int!) {
                 offset: 100,
                 isPrivate: true,
             });
-        assert(query.includes(`"T1L0VDKJP"`));
-        assert(query.includes("100"));
-        assert(query.includes("private: true"));
+        assert.equal(query, ReplacedQuery);
     });
 });
