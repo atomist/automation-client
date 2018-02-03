@@ -58,4 +58,18 @@ query Repos($teamId: ID!, $offset: Int!) {
         const errors = GraphQL.validateQuery(query);
         assert(errors.length === 0);
     });
+
+    it("should successfully load query from relative path and replace parameters in subscription", () => {
+        const query = GraphQL.subscriptionFromFile(
+            "./someSubscription",
+            __dirname,
+            {
+                teamId: "T1L0VDKJP",
+                offset: 100,
+                isPrivate: true,
+            });
+        assert(query.includes(`"T1L0VDKJP"`));
+        assert(query.includes("100"));
+        assert(query.includes("private: true"));
+    });
 });

@@ -1,7 +1,7 @@
-query SomeOtherQuery($teamId: ID!, $offset: Int!) {
+query SomeSubscription {
     ChatTeam(id: $teamId) {
         orgs {
-            repo(first: 100, offset: $offset) {
+            repo(first: 100, offset: $offset, private: $isPrivate) {
                 owner
                 name
             }
