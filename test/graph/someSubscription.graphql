@@ -3,13 +3,15 @@ SomeSubscription(
 $teamId: ID!,
 $isPrivate: Boolean!,
 $offset: Int!
+$foo: String!,
+$fooBar: String!,
 ) {
     ChatTeam(id: $teamId) {
         orgs {
             repo(first: 50, offset: $offset, private: $isPrivate) {
                 owner
                 name
-                bla(test: $teamId) {
+                bla(test: $teamId, fooBar: $fooBar, foo: $foo) {
                     name
                 }
             }

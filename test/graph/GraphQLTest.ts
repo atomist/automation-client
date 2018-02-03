@@ -66,7 +66,7 @@ SomeSubscription {
             repo(first: 50, offset: 100, private: true) {
                 owner
                 name
-                bla(test: "T1L0VDKJP") {
+                bla(test: "T1L0VDKJP", fooBar: "fooBar", foo: "foo") {
                     name
                 }
             }
@@ -82,6 +82,8 @@ SomeSubscription {
                 teamId: "T1L0VDKJP",
                 offset: 100,
                 isPrivate: true,
+                foo: "foo",
+                fooBar: "fooBar",
             });
         assert.equal(query, ReplacedQuery);
     });
