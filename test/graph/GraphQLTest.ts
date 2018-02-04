@@ -58,4 +58,33 @@ query Repos($teamId: ID!, $offset: Int!) {
         const errors = GraphQL.validateQuery(query);
         assert(errors.length === 0);
     });
+
+    const ReplacedQuery = `subscription
+SomeSubscription {
+    ChatTeam(id: "T1L0VDKJP") {
+        orgs {
+            repo(first: 50, offset: 100, private: true) {
+                owner
+                name
+                bla(test: "T1L0VDKJP", fooBar: "fooBar", foo: "foo") {
+                    name
+                }
+            }
+        }
+    }
+}`;
+
+    it("should successfully load query from relative path and replace parameters in subscription", () => {
+        const query = GraphQL.subscriptionFromFile(
+            "./someSubscription",
+            __dirname,
+            {
+                teamId: "T1L0VDKJP",
+                offset: 100,
+                isPrivate: true,
+                foo: "foo",
+                fooBar: "fooBar",
+            });
+        assert.equal(query, ReplacedQuery);
+    });
 });

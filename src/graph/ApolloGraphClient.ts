@@ -60,7 +60,8 @@ export class ApolloGraphClient implements GraphClient {
                                       variables?: Q,
                                       options?: any,
                                       current?: string): Promise<T> {
-        return this.executeQuery<T, Q>(resolveAndReadFileSync(queryFile, current), variables, options);
+        return this.executeQuery<T, Q>(
+            resolveAndReadFileSync(queryFile, current, {}), variables, options);
     }
 
     public executeQuery<T, Q>(graphql: string,
@@ -77,10 +78,10 @@ export class ApolloGraphClient implements GraphClient {
         });
 
         return this.client.query<T>({
-            query,
-            variables,
-            ...options,
-        })
+                query,
+                variables,
+                ...options,
+            })
             .then(result => callback(result));
     }
 
@@ -88,7 +89,8 @@ export class ApolloGraphClient implements GraphClient {
                                          variables?: Q,
                                          options?: any,
                                          current?: string): Promise<T> {
-        return this.executeMutation<T, Q>(resolveAndReadFileSync(mutationFile, current), variables, options);
+        return this.executeMutation<T, Q>(
+            resolveAndReadFileSync(mutationFile, current, {}), variables, options);
     }
 
     public executeMutation<T, Q>(graphql: string,
@@ -106,10 +108,10 @@ export class ApolloGraphClient implements GraphClient {
         });
 
         return this.client.mutate<T>({
-            mutation,
-            variables,
-            ...options,
-        })
+                mutation,
+                variables,
+                ...options,
+            })
             .then(response => callback(response));
     }
 

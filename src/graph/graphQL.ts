@@ -6,6 +6,7 @@ import {
     IntrospectionQuery,
     parse,
 } from "graphql";
+import gql from "graphql-tag";
 import { validate } from "graphql/validation";
 import * as p from "path";
 import { findLine } from "../internal/util/string";
@@ -18,11 +19,16 @@ const schema = require("./schema.cortex.json");
  * Note: Use __dirname to get the current directory of the calling script.
  * @param {string} path
  * @param {string} current
+ * @param {{[p: string]: string | boolean | number}} parameters
  * @returns {string}
  */
-export function subscriptionFromFile(path: string, current: string = appRoot.path): string {
+export function subscriptionFromFile(path: string,
+                                     current: string = appRoot.path,
+                                     parameters: {
+                                        [name: string]: string | boolean | number;
+                                     } = {}): string {
     // TODO cd add validation that we only read subscriptions here
-    return resolveAndReadFileSync(path, current);
+    return resolveAndReadFileSync(path, current, parameters);
 }
 
 /**
@@ -72,16 +78,38 @@ export function prettyPrintErrors(errors: GraphQLError[], query?: string): strin
 /**
  * Resolve and read the contents of a GrapqQL query or subscription file
  * @param {string} path
+ * @param {string} current
+ * @param {{[p: string]: string | boolean | number}} parameters
  * @returns {string}
  */
-export function resolveAndReadFileSync(path: string, current: string = appRoot.path): string {
+export function resolveAndReadFileSync(path: string,
+                                       current: string = appRoot.path,
+                                       parameters: {
+                                           [name: string]: string | boolean | number;
+                                       } = {}): string {
     if (!path.endsWith(".graphql")) {
         path = `${path}.graphql`;
     }
     const absolutePath = p.resolve(current, path);
     if (fs.existsSync(absolutePath)) {
-        return fs.readFileSync(absolutePath).toString();
+        return replaceParameters(fs.readFileSync(absolutePath).toString(), parameters);
     } else {
         throw new Error(`GraphQL file '${absolutePath}' does not exist`);
     }
+}
+
+function replaceParameters(query: string,
+                           parameters: {
+                                [name: string]: string | boolean | number;
+                            } = {}): string {
+    const exp = /subscription[\S\s]*?(\([\S\s]*?\))[\S\s]*?{/i;
+    if (exp.test(query)) {
+        query = query.replace(exp.exec(query)[1], "");
+        for (const key in parameters) {
+            if (parameters.hasOwnProperty(key)) {
+                query = query.replace(new RegExp(`\\$${key}\\b`, "g"), JSON.stringify(parameters[key]));
+            }
+        }
+    }
+    return query;
 }

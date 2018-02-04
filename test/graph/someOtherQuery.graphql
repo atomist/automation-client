@@ -1,4 +1,3 @@
-
 query SomeOtherQuery($teamId: ID!, $offset: Int!) {
     ChatTeam(id: $teamId) {
         orgs {
