@@ -1,3 +1,4 @@
+import { HandlerContext } from "../../src/HandlerContext";
 import { BasicAuthCredentials } from "../../src/operations/common/BasicAuthCredentials";
 import { BitBucketRepoRef } from "../../src/operations/common/BitBucketRepoRef";
 import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
@@ -13,7 +14,7 @@ export const BitBucketCredentials = { username: BitBucketUser, password: BitBuck
 describe("BitBucket support", () => {
 
     it("should clone", done => {
-        GitCommandGitProject.cloned(BitBucketCredentials,
+        GitCommandGitProject.cloned({} as HandlerContext, BitBucketCredentials,
             new BitBucketRepoRef("jessitron", "poetry", "master"))
             .then(bp => bp.gitStatus())
             .then(() => done(), done);
@@ -65,7 +66,7 @@ function doWithNewRemote(testAndVerify: (p: GitProject) => Promise<any>) {
             "Thing1", TestRepositoryVisibility))
         .then(() => gp.commit("Added a README"))
         .then(() => gp.push())
-        .then(() => GitCommandGitProject.cloned(BitBucketCredentials, bbid))
+        .then(() => GitCommandGitProject.cloned({} as HandlerContext, BitBucketCredentials, bbid))
         .then(clonedp => {
             return testAndVerify(clonedp);
         })

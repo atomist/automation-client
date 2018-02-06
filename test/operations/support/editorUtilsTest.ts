@@ -1,5 +1,6 @@
 import "mocha";
 import * as assert from "power-assert";
+import { HandlerContext } from "../../../src/HandlerContext";
 
 import { PullRequest } from "../../../src/operations/edit/editModes";
 import { toEditor } from "../../../src/operations/edit/projectEditor";
@@ -14,7 +15,7 @@ const NoOpEditor = toEditor(p => {
 describe("editorUtils", () => {
 
     it("doesn't attempt to commit without changes", done => {
-        GitCommandGitProject.cloned(Creds, RepoThatExists)
+        GitCommandGitProject.cloned({} as HandlerContext, Creds, RepoThatExists)
             .then(p => {
                 return editProjectUsingBranch(undefined, p, NoOpEditor,
                     { branch: "dont-create-me-or-i-barf&&&####&&& we", message: "whocares" })
@@ -26,7 +27,7 @@ describe("editorUtils", () => {
     }).timeout(15000);
 
     it("doesn't attempt to create PR without changes", done => {
-        GitCommandGitProject.cloned(Creds, RepoThatExists)
+        GitCommandGitProject.cloned({} as HandlerContext, Creds, RepoThatExists)
             .then(p => p.gitStatus().then(status => {
                 assert(status.isClean);
                 return p;

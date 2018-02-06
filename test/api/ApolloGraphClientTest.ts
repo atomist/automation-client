@@ -1,5 +1,6 @@
 import "mocha";
 import * as assert from "power-assert";
+import { HandlerContext } from "../../src/HandlerContext";
 
 import { ApolloGraphClient } from "../../src/graph/ApolloGraphClient";
 import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
@@ -42,7 +43,7 @@ describe("ApolloGraphClient", () => {
                 const org = result.ChatTeam[0].orgs[0];
                 assert(org.repo.length > 0);
                 const repo1 = org.repo[0];
-                return GitCommandGitProject.cloned({ token: GitHubToken },
+                return GitCommandGitProject.cloned({} as HandlerContext, { token: GitHubToken },
                     new GitHubRepoRef(repo1.owner, repo1.name))
                     .then(p => {
                         const gitHead = p.findFileSync(".git/HEAD");

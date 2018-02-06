@@ -1,5 +1,6 @@
 import "mocha";
 import * as assert from "power-assert";
+import { HandlerContext } from "../../src/HandlerContext";
 
 import { BitBucketRepoRef } from "../../src/operations/common/BitBucketRepoRef";
 import { generate } from "../../src/operations/generate/generatorUtils";
@@ -18,7 +19,7 @@ describe("BitBucket generator end to end", () => {
             deleteOrIgnore(targetRepo, BitBucketCredentials).then(done(err));
         };
 
-        const clonedSeed = GitCommandGitProject.cloned(BitBucketCredentials,
+        const clonedSeed = GitCommandGitProject.cloned({} as HandlerContext, BitBucketCredentials,
             new BitBucketRepoRef("springrod", "spring-rest-seed"));
 
         generate(clonedSeed, undefined, BitBucketCredentials,
@@ -27,7 +28,7 @@ describe("BitBucket generator end to end", () => {
             .then(result => {
                 assert(result.success);
                 // Check the repo
-                GitCommandGitProject.cloned(BitBucketCredentials, targetRepo)
+                GitCommandGitProject.cloned({} as HandlerContext, BitBucketCredentials, targetRepo)
                     .then(p => {
                         assert(p.findFileSync("pom.xml") !== undefined);
                     });

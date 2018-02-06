@@ -46,7 +46,7 @@ describe("generatorToCommand", () => {
         params.target.webhookUrl = url;
         params.addAtomistWebhook = true;
 
-        const gen = generatorHandler(
+        const gen = generatorHandler({} as HandlerContext,
             (pars, context) => (p, x, px) => Promise.resolve(p),
             BaseSeedDrivenGeneratorParameters,
             "AddWebhookTest",
@@ -102,7 +102,7 @@ describe("generatorToCommand", () => {
         params.target.webhookUrl = url;
         params.addAtomistWebhook = false;
 
-        const gen = generatorHandler(
+        const gen = generatorHandler({} as HandlerContext,
             (pars, context) => (p, x, px) => Promise.resolve(p),
             BaseSeedDrivenGeneratorParameters,
             "AddWebhookTest",

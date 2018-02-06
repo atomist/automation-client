@@ -35,6 +35,11 @@ Command release
 Seed release
 
 ### Changed
+**Breaking** Add parameter "context: HandlerContext" to GitCommandGitProject.cloned
+**Breaking** Add parameter "context: HandlerContext" to DifferenceEngine.run
+**Breaking** Add parameter "context: HandlerContext" to gitHubRepoLoader
+**Breaking** Add parameter "context: HandlerContext" to defaultRepoLoader
+**Breaking** Add parameter "context: HandlerContext" to generatorHandler
 
 -   Make seed repository parameters visible to users
 

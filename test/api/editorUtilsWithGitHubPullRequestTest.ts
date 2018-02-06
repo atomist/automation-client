@@ -1,5 +1,6 @@
 import "mocha";
 import * as assert from "power-assert";
+import { HandlerContext } from "../../src/HandlerContext";
 
 import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
 import { PullRequest } from "../../src/operations/edit/editModes";
@@ -17,7 +18,7 @@ describe("editorUtils tests with GitHub pull requests", () => {
     it("creates branch with changes in simple editor", done => {
         newRepo()
             .then(repo => {
-                return GitCommandGitProject.cloned(Creds, new GitHubRepoRef(repo.owner, repo.repo))
+                return GitCommandGitProject.cloned({} as HandlerContext, Creds, new GitHubRepoRef(repo.owner, repo.repo))
                     .then(p => {
                         return editProjectUsingBranch(undefined, p, EditorThatChangesProject,
                             new PullRequest("x", "y"))
@@ -32,7 +33,7 @@ describe("editorUtils tests with GitHub pull requests", () => {
     it("creates PR with changes in simple editor", done => {
         newRepo()
             .then(repo => {
-                return GitCommandGitProject.cloned(Creds, new GitHubRepoRef(repo.owner, repo.repo))
+                return GitCommandGitProject.cloned({} as HandlerContext, Creds, new GitHubRepoRef(repo.owner, repo.repo))
                     .then(p => {
                         return editProjectUsingPullRequest(undefined, p, EditorThatChangesProject,
                             new PullRequest("x", "y"))
@@ -47,7 +48,7 @@ describe("editorUtils tests with GitHub pull requests", () => {
     it("creates PR with changes in simple editor using apiBase with trailing slash", done => {
         newRepo()
             .then(repo => {
-                return GitCommandGitProject.cloned(Creds, new GitHubRepoRef(repo.owner, repo.repo,
+                return GitCommandGitProject.cloned({} as HandlerContext, Creds, new GitHubRepoRef(repo.owner, repo.repo,
                     "master", "https://api.github.com/"))
                     .then(p => {
                         return editProjectUsingPullRequest(undefined, p, EditorThatChangesProject,
@@ -74,7 +75,7 @@ describe("editorUtils with branch commit", () => {
 
     it("can edit a project on an existing branch", done => {
         newRepo().then(rr =>
-            GitCommandGitProject.cloned(Creds, new GitHubRepoRef(rr.owner, rr.repo))
+            GitCommandGitProject.cloned({} as HandlerContext, Creds, new GitHubRepoRef(rr.owner, rr.repo))
                 .then(p => editProjectUsingBranch(undefined, p,
                     TinyChangeEditor, {branch: "hello", message: "thanks"})
                     .then(r => editProjectUsingBranch(undefined, p,

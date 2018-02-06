@@ -1,5 +1,6 @@
 import "mocha";
 import * as assert from "power-assert";
+import { HandlerContext } from "../../src/HandlerContext";
 
 import axios from "axios";
 import * as _ from "lodash";
@@ -40,7 +41,7 @@ describe("GitProject remote", () => {
         this.retries(1);
 
         newRepo()
-            .then(ownerAndRepo => GitCommandGitProject.cloned(Creds,
+            .then(ownerAndRepo => GitCommandGitProject.cloned({} as HandlerContext, Creds,
                 new GitHubRepoRef(ownerAndRepo.owner, ownerAndRepo.repo))
                 .then(gp => {
                     gp.addFileSync("Cat", "hat");
