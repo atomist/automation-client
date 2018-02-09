@@ -19,11 +19,15 @@ export const configuration: Configuration = {
     // policy: "durable",
     teamIds: "T1L0VDKJP",
     keywords: ["test", "automation"],
+    token: process.env.GITHUB_TOKEN,
     commands: [
         // ...scanCommands( ["**/metadata/addAtomistSpringAgent.js", "**/command/Search*.js"] ),
         HelloWorld,
         MessageTest,
         FileMessageTest,
+        () => {
+            return null;
+        },
     ],
     events: [
         // HelloCircle,

@@ -93,18 +93,20 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
     public registerCommandHandler(chm: Maker<HandleCommand>): this {
         const factory = toFactory(chm);
         const instanceToInspect = factory();
-        const md = metadataFromInstance(instanceToInspect) as CommandHandlerMetadata;
-        if (!md) {
-            throw new Error(`Cannot get metadata from handler '${stringify(instanceToInspect)}'`);
+        if (instanceToInspect) {
+            const md = metadataFromInstance(instanceToInspect) as CommandHandlerMetadata;
+            if (!md) {
+                throw new Error(`Cannot get metadata from handler '${stringify(instanceToInspect)}'`);
+            }
+            this.commandHandlers.push({
+                metadata: md,
+                invoke: (i, ctx) => {
+                    const newHandler = factory();
+                    const params = !!newHandler.freshParametersInstance ? newHandler.freshParametersInstance() : newHandler;
+                    return this.invokeCommandHandlerWithFreshParametersInstance(newHandler, md, params, i, ctx);
+                },
+            });
         }
-        this.commandHandlers.push({
-            metadata: md,
-            invoke: (i, ctx) => {
-                const newHandler = factory();
-                const params = !!newHandler.freshParametersInstance ? newHandler.freshParametersInstance() : newHandler;
-                return this.invokeCommandHandlerWithFreshParametersInstance(newHandler, md, params, i, ctx);
-            },
-        });
         return this;
     }
 
@@ -123,14 +125,16 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
     public registerEventHandler(maker: Maker<HandleEvent<any>>): this {
         const factory = toFactory(maker);
         const instanceToInspect = factory();
-        const md = metadataFromInstance(instanceToInspect) as EventHandlerMetadata;
-        if (!md) {
-            throw new Error(`Cannot get metadata from event handler '${stringify(instanceToInspect)}'`);
+        if (instanceToInspect) {
+            const md = metadataFromInstance(instanceToInspect) as EventHandlerMetadata;
+            if (!md) {
+                throw new Error(`Cannot get metadata from event handler '${stringify(instanceToInspect)}'`);
+            }
+            this.eventHandlers.push({
+                metadata: md,
+                invoke: (e, ctx) => this.invokeFreshEventHandlerInstance(factory(), md, e, ctx),
+            });
         }
-        this.eventHandlers.push({
-            metadata: md,
-            invoke: (e, ctx) => this.invokeFreshEventHandlerInstance(factory(), md, e, ctx),
-        });
         return this;
     }
 

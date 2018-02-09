@@ -10,6 +10,7 @@ import { BuildableAutomationServer } from "../../../src/server/BuildableAutomati
 import { SmartParameters } from "../../../src/SmartParameters";
 import { SecretResolver } from "../../../src/spi/env/SecretResolver";
 import { AddAtomistSpringAgent, AlwaysOkEventHandler, FooBarEventHandler, TrustMeIGaveMySecret } from "./TestHandlers";
+import { HelloWorld } from "../../command/HelloWorld";
 
 const messageClient = consoleMessageClient;
 
@@ -512,4 +513,43 @@ describe("BuildableAutomationServer", () => {
             done);
     });
 
+    it("should allow registration of null command handler", () => {
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        s.registerCommandHandler(() => null);
+        assert.equal(s.automations.commands.length, 0);
+        assert.equal(s.automations.events.length, 0);
+    });
+
+    it("should allow registration of null event handler", () => {
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        s.registerEventHandler(() => null);
+        assert.equal(s.automations.commands.length, 0);
+        assert.equal(s.automations.events.length, 0);
+    });
+
+    it("should allow dynamic registration of command handler", () => {
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        let register = false;
+        s.registerCommandHandler(() => {
+            if (register) {
+                return new HelloWorld();
+            } else {
+                return null;
+            }
+        });
+        assert.equal(s.automations.commands.length, 0);
+        register = true;
+        s.registerCommandHandler(() => {
+            if (register) {
+                return new HelloWorld();
+            } else {
+                return null;
+            }
+        });
+        assert.equal(s.automations.commands.length, 1);
+        assert.equal(s.automations.events.length, 0);
+    });
+
 });
+
+
