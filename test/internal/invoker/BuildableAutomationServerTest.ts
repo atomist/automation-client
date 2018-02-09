@@ -9,8 +9,8 @@ import { AutomationServer } from "../../../src/server/AutomationServer";
 import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
 import { SmartParameters } from "../../../src/SmartParameters";
 import { SecretResolver } from "../../../src/spi/env/SecretResolver";
-import { AddAtomistSpringAgent, AlwaysOkEventHandler, FooBarEventHandler, TrustMeIGaveMySecret } from "./TestHandlers";
 import { HelloWorld } from "../../command/HelloWorld";
+import { AddAtomistSpringAgent, AlwaysOkEventHandler, FooBarEventHandler, TrustMeIGaveMySecret } from "./TestHandlers";
 
 const messageClient = consoleMessageClient;
 
@@ -551,5 +551,3 @@ describe("BuildableAutomationServer", () => {
     });
 
 });
-
-
