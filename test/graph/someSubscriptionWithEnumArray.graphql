@@ -1,0 +1,5 @@
+subscription BuildWithStatus($statuses: [BuildStatus]!) {
+    Build(statuss: $statuses) {
+        id
+    }
+}

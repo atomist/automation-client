@@ -2,6 +2,7 @@ import "mocha";
 import * as assert from "power-assert";
 
 import * as GraphQL from "../../src/graph/graphQL";
+import { ParameterEnum } from "../../src/graph/graphQL";
 
 describe("GraphQL", () => {
 
@@ -59,7 +60,7 @@ query Repos($teamId: ID!, $offset: Int!) {
         assert(errors.length === 0);
     });
 
-    const ReplacedQuery = `subscription
+    const ReplacedSubscription1 = `subscription
 SomeSubscription {
     ChatTeam(id: "T1L0VDKJP") {
         orgs {
@@ -85,6 +86,38 @@ SomeSubscription {
                 foo: "foo",
                 fooBar: "fooBar",
             });
-        assert.equal(query, ReplacedQuery);
+        assert.equal(query, ReplacedSubscription1);
+    });
+
+    const ReplacedSubscription2 = `subscription BuildWithStatus {
+    Build(status: passed) {
+        id
+    }
+}`;
+
+    it("should successfully load query from relative path and replace parameter enum in subscription", () => {
+        const query = GraphQL.subscriptionFromFile(
+            "./someSubscriptionWithEnum",
+            __dirname,
+            {
+                status: GraphQL.enumValue("passed"),
+            });
+        assert.equal(query, ReplacedSubscription2);
+    });
+
+    const ReplacedSubscription3 = `subscription BuildWithStatus {
+    Build(statuss: [passed]) {
+        id
+    }
+}`;
+
+    it("should successfully load query from relative path and replace parameter enum array in subscription", () => {
+        const query = GraphQL.subscriptionFromFile(
+            "./someSubscriptionWithEnumArray",
+            __dirname,
+            {
+                statuses: GraphQL.enumValue(["passed"]),
+            });
+        assert.equal(query, ReplacedSubscription3);
     });
 });

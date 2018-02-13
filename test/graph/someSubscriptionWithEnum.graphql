@@ -1,0 +1,5 @@
+subscription BuildWithStatus($status: BuildStatus!) {
+    Build(status: $status) {
+        id
+    }
+}

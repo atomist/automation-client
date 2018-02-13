@@ -6,13 +6,20 @@ import {
     IntrospectionQuery,
     parse,
 } from "graphql";
-import gql from "graphql-tag";
 import { validate } from "graphql/validation";
 import * as p from "path";
 import { findLine } from "../internal/util/string";
 
 // tslint:disable-next-line:no-var-requires
 const schema = require("./schema.cortex.json");
+
+export class ParameterEnum {
+    constructor(public value: string | string[]) {}
+}
+
+export function enumValue(value: string | string[]): ParameterEnum {
+    return new ParameterEnum(value);
+}
 
 /**
  * Read a subscription from a file relative to the provided directory (or the module root by default)
@@ -25,7 +32,7 @@ const schema = require("./schema.cortex.json");
 export function subscriptionFromFile(path: string,
                                      current: string = appRoot.path,
                                      parameters: {
-                                        [name: string]: string | boolean | number;
+                                        [name: string]: string | boolean | number | ParameterEnum;
                                      } = {}): string {
     // TODO cd add validation that we only read subscriptions here
     return resolveAndReadFileSync(path, current, parameters);
@@ -85,7 +92,7 @@ export function prettyPrintErrors(errors: GraphQLError[], query?: string): strin
 export function resolveAndReadFileSync(path: string,
                                        current: string = appRoot.path,
                                        parameters: {
-                                           [name: string]: string | boolean | number;
+                                           [name: string]: string | boolean | number | ParameterEnum;
                                        } = {}): string {
     if (!path.endsWith(".graphql")) {
         path = `${path}.graphql`;
@@ -100,14 +107,26 @@ export function resolveAndReadFileSync(path: string,
 
 function replaceParameters(query: string,
                            parameters: {
-                                [name: string]: string | boolean | number;
+                                [name: string]: string | boolean | number | ParameterEnum;
                             } = {}): string {
     const exp = /subscription[\S\s]*?(\([\S\s]*?\))[\S\s]*?{/i;
     if (exp.test(query)) {
+        // First delete the parameter declaration at the top of the subscription
         query = query.replace(exp.exec(query)[1], "");
         for (const key in parameters) {
             if (parameters.hasOwnProperty(key)) {
-                query = query.replace(new RegExp(`\\$${key}\\b`, "g"), JSON.stringify(parameters[key]));
+                const value = parameters[key] as any;
+                // If value is defined it is a enum value
+                if (value.value) {
+                    if (Array.isArray(value.value)) {
+                        query =
+                            query.replace(new RegExp(`\\$${key}\\b`, "g"), `[${value.value.join(", ")}]`);
+                    } else {
+                        query = query.replace(new RegExp(`\\$${key}\\b`, "g"), value.value);
+                    }
+                } else {
+                    query = query.replace(new RegExp(`\\$${key}\\b`, "g"), JSON.stringify(value));
+                }
             }
         }
     }
