@@ -242,12 +242,17 @@ export function isFileMessage(object: any): object is SlackFileMessage {
 }
 
 export function commandName(command: any): string {
-    if (typeof command === "string") {
-        return command as string;
-    } else if (typeof command === "function") {
-        return command.prototype.constructor.name;
-    } else {
-        return metadataFromInstance(command).name;
+    try {
+        if (typeof command === "string") {
+            return command as string;
+        } else if (typeof command === "function") {
+            return command.prototype.constructor.name;
+        } else {
+            return metadataFromInstance(command).name;
+        }
+    } catch (e) {
+        throw new Error("Unable to determine the name of this command. " +
+            "Please pass the name as a string or an instance of the command");
     }
 }
 
