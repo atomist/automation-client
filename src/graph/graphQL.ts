@@ -12,6 +12,7 @@ import { findLine } from "../internal/util/string";
 
 // tslint:disable-next-line:no-var-requires
 const schema = require("./schema.cortex.json");
+import { murmur3 } from "murmurhash-js/";
 
 export class ParameterEnum {
     constructor(public value: string | string[]) {}
@@ -109,26 +110,36 @@ function replaceParameters(query: string,
                            parameters: {
                                 [name: string]: string | boolean | number | ParameterEnum;
                             } = {}): string {
-    const exp = /subscription[\S\s]*?(\([\S\s]*?\))[\S\s]*?{/i;
-    if (exp.test(query)) {
-        // First delete the parameter declaration at the top of the subscription
-        query = query.replace(exp.exec(query)[1], "");
-        for (const key in parameters) {
-            if (parameters.hasOwnProperty(key)) {
-                const value = parameters[key] as any;
-                // If value is defined it is a enum value
-                if (value.value) {
-                    if (Array.isArray(value.value)) {
-                        query =
-                            query.replace(new RegExp(`\\$${key}\\b`, "g"), `[${value.value.join(", ")}]`);
+    if (Object.keys(parameters).length > 0) {
+        const exp = /subscription[\s]*([\S]*?)(\([\S\s]*?\))[\S\s]*?{/i;
+        if (exp.test(query)) {
+            const result = exp.exec(query);
+            // First delete the parameter declaration at the top of the subscription
+            query = query.replace(result[2], "");
+            for (const key in parameters) {
+                if (parameters.hasOwnProperty(key)) {
+                    const value = parameters[key] as any;
+                    // If value is defined it is a enum value
+                    if (value.value) {
+                        if (Array.isArray(value.value)) {
+                            query = replace(query, `\\$${key}`, `[${value.value.join(", ")}]`);
+                        } else {
+                            query = replace(query, `\\$${key}`, value.value);
+                        }
                     } else {
-                        query = query.replace(new RegExp(`\\$${key}\\b`, "g"), value.value);
+                        query = replace(query, `\\$${key}`, JSON.stringify(value));
                     }
-                } else {
-                    query = query.replace(new RegExp(`\\$${key}\\b`, "g"), JSON.stringify(value));
                 }
             }
+
+            // Calulate hash to suffix the subscriptionName
+            const hash = murmur3(query, 37);
+            query = replace(query, result[1], `${result[1]}_${hash}`);
         }
     }
     return query;
+}
+
+function replace(query: string, key: string, value: string): string {
+    return query.replace(new RegExp(`${key}\\b`, "g"), value);
 }

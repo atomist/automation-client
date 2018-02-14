@@ -61,7 +61,7 @@ query Repos($teamId: ID!, $offset: Int!) {
     });
 
     const ReplacedSubscription1 = `subscription
-SomeSubscription {
+SomeSubscription_882904339 {
     ChatTeam(id: "T1L0VDKJP") {
         orgs {
             repo(first: 50, offset: 100, private: true) {
@@ -89,7 +89,7 @@ SomeSubscription {
         assert.equal(query, ReplacedSubscription1);
     });
 
-    const ReplacedSubscription2 = `subscription BuildWithStatus {
+    const ReplacedSubscription2 = `subscription BuildWithStatus_3617548296 {
     Build(status: passed) {
         id
     }
@@ -105,7 +105,7 @@ SomeSubscription {
         assert.equal(query, ReplacedSubscription2);
     });
 
-    const ReplacedSubscription3 = `subscription BuildWithStatus {
+    const ReplacedSubscription3 = `subscription BuildWithStatus_2080713454 {
     Build(statuss: [passed]) {
         id
     }
