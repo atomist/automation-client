@@ -8,4 +8,6 @@ export interface Fingerprint {
     version: string;
 
     data: string;
+
+    abbreviation: string;
 }
