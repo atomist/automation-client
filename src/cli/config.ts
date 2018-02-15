@@ -3,11 +3,7 @@ import * as inquirer from "inquirer";
 import * as stringify from "json-stringify-safe";
 import * as os from "os";
 
-import {
-    getUserConfig,
-    UserConfigFile,
-    writeUserConfig,
-} from "../configuration";
+import { getUserConfig, writeUserConfig } from "../configuration";
 
 const github = new GitHubApi();
 
