@@ -1,4 +1,3 @@
-
 import { HandlerContext } from "../../HandlerContext";
 import { Project } from "../../project/Project";
 import { EditResult, ProjectEditor } from "./projectEditor";
@@ -15,7 +14,7 @@ export function toEditModeFactory(em: EditMode | EditModeFactory): EditModeFacto
 
 /**
  * Root interface for information on how to apply an edit:
- * E.g via a PR or commit to master
+ * E.g via a PR or commit to a branch (including master)
  */
 export interface EditMode {
 
@@ -27,10 +26,20 @@ export function isEditMode(em: any): em is EditMode {
 }
 
 /**
- * Represents a commit to a project
+ * Represents a commit to a project on a branch
  */
 export interface BranchCommit extends EditMode {
     branch: string;
+}
+
+/**
+ * Return a commit to master branch with the given message. Use with care!
+ */
+export function commitToMaster(message: string): BranchCommit {
+    return {
+        message,
+        branch: "master",
+    };
 }
 
 export function isBranchCommit(em: EditMode): em is BranchCommit {
