@@ -148,7 +148,7 @@ describe("BuildableAutomationServer", () => {
         s.registerEventHandler(AlwaysOkEventHandler);
         s.onEvent({
             extensions: {
-                operationName: "Foo",
+                operationName: "AlwaysOkEventHandler",
             },
             data: {
                 Thing: [{
@@ -178,7 +178,7 @@ describe("BuildableAutomationServer", () => {
         s.registerEventHandler(TrustMeIGaveMySecret);
         s.onEvent({
             extensions: {
-                operationName: "Foo",
+                operationName: "TrustMeIGaveMySecret",
             },
             data: {
                 Thing: [{
@@ -191,30 +191,6 @@ describe("BuildableAutomationServer", () => {
                 messageClient,
             }).then(_ => {
                 assert((_[0] as any).thing === 27);
-                done();
-            });
-    });
-
-    it("should register two event handler instances and invoke with valid parameter", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
-        s.registerEventHandler(() => new AlwaysOkEventHandler());
-        s.registerEventHandler(() => new FooBarEventHandler());
-        s.onEvent({
-            extensions: {
-                operationName: "Foo",
-            },
-            data: {
-                Thing: [{
-                    some_thing: 27,
-                }],
-            },
-        }, {
-                teamId: "T666",
-                correlationId: "555",
-                messageClient,
-            }).then(_ => {
-                assert((_[0] as any).thing === 27);
-                assert((_[1] as any).thing === 28);
                 done();
             });
     });
