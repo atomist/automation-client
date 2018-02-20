@@ -329,6 +329,7 @@ export interface ButtonSpecification {
     text: string;
     style?: string;
     confirm?: ActionConfirmation;
+    global?: boolean;
 }
 
 export interface SelectOption {
@@ -346,4 +347,5 @@ export type DataSource = "static" | "users" | "channels" | "conversations" | "ex
 export interface MenuSpecification {
     text: string;
     options: SelectOption[] | DataSource | OptionGroup[];
+    global?: boolean;
 }
