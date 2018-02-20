@@ -2,8 +2,8 @@ import "mocha";
 import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
 
 import * as assert from "power-assert";
-import { HelloIssue } from "../../event/HelloIssue";
 import { EventHandlerMetadata } from "../../../src/metadata/automationMetadata";
+import { HelloIssue } from "../../event/HelloIssue";
 
 describe("class style event metadata reading", () => {
 
