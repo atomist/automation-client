@@ -14,6 +14,9 @@ import { findLine } from "../internal/util/string";
 const schema = require("./schema.cortex.json");
 import { murmur3 } from "murmurhash-js/";
 
+const OperationParameterExpression = /(?:subscription|query)[\s]*([\S]*?)\s*(\([\S\s]*?\))\s*[\S\s]*?{/i;
+const OperationNameExpression = /(?:subscription|query)[\s]*([\S]*)[\s\({]*/i;
+
 export class ParameterEnum {
     constructor(public value: string | string[]) {}
 }
@@ -57,6 +60,18 @@ export function operationName(query: string): string {
  */
 export function inlineQuery(query: string): string {
     return query.replace(/[\n\r]/g, "").replace(/\s\s+/g, " ");
+}
+
+/**
+ * Replace the operation name in the query or subscription
+ */
+export function replaceOperationName(query: string, name: string): string {
+    const exp = OperationNameExpression;
+    if (exp.test(query)) {
+        const result = exp.exec(query);
+        query = replace(query, result[1], name);
+    }
+    return query;
 }
 
 /**
@@ -111,7 +126,7 @@ function replaceParameters(query: string,
                                 [name: string]: string | boolean | number | ParameterEnum;
                             } = {}): string {
     if (Object.keys(parameters).length > 0) {
-        const exp = /subscription[\s]*([\S]*?)(\([\S\s]*?\))[\S\s]*?{/i;
+        const exp = OperationParameterExpression;
         if (exp.test(query)) {
             const result = exp.exec(query);
             // First delete the parameter declaration at the top of the subscription

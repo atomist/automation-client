@@ -2,7 +2,6 @@ import "mocha";
 import * as assert from "power-assert";
 
 import * as GraphQL from "../../src/graph/graphQL";
-import { ParameterEnum } from "../../src/graph/graphQL";
 
 describe("GraphQL", () => {
 

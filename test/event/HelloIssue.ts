@@ -9,7 +9,7 @@ import {
 } from "../../src/index";
 import { addressSlackChannels } from "../../src/spi/message/MessageClient";
 
-@EventHandler("Notify channel on new issue", `subscription HelloIssue
+@EventHandler("Notify channel on new issue", `subscription BlaBla
 {
   Issue {
     number

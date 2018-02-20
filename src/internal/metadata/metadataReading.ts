@@ -9,7 +9,10 @@ import {
     SecretDeclaration,
 } from "../../metadata/automationMetadata";
 import * as decorators from "./decoratorSupport";
-import { isCommandHandlerMetadata, isEventHandlerMetadata } from "./metadata";
+import {
+    isCommandHandlerMetadata,
+    isEventHandlerMetadata,
+} from "./metadata";
 
 /**
  * Extract metadata from a handler instance. We need an
@@ -22,7 +25,7 @@ export function metadataFromInstance(h: any): CommandHandlerMetadata | EventHand
     if (isEventHandlerMetadata(h)) {
         md = addName(h);
     } else if (isCommandHandlerMetadata(h)) {
-        md = addName(h); // JESS: this seems mighty incomplete to me.
+        md = addName(h);
     } else {
         // We need to find the instance from which to extract metadata.
         // It will be the handler itself unless it implements the optional freshParametersInstance method
@@ -74,7 +77,7 @@ function metadataFromDecorator(h: any, params: any): CommandHandlerMetadata | Ev
             };
         case "event-handler":
             // Remove any linebreaks and spaces from those subscription
-            const subscription = GraphQL.inlineQuery(params.__subscription);
+            const subscription = GraphQL.inlineQuery(GraphQL.replaceOperationName(params.__subscription, h.__name));
             const subscriptionName = GraphQL.operationName(subscription);
 
             return {
