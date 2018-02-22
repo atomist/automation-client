@@ -44,14 +44,17 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             destinations = [destinations];
         }
 
+        let destinationIdentifier: "slack" | "ingester";
         const responseDestinations = [];
         destinations.forEach(d => {
             if (d.userAgent === SlackDestination.SLACK_USER_AGENT) {
+                destinationIdentifier = "slack";
+
                 const sd = d as SlackDestination;
 
                 toStringArray(sd.channels).forEach(c => {
                     responseDestinations.push({
-                        user_agent: "slack",
+                        user_agent: SlackDestination.SLACK_USER_AGENT,
                         slack: {
                             team: {
                                 id: sd.team,
@@ -77,8 +80,9 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                     });
                 });
             } else if (d.userAgent === CustomEventDestination.INGESTER_USER_AGENT) {
+                destinationIdentifier = "ingester";
                 responseDestinations.push({
-                    user_agent: "ingester",
+                    user_agent: CustomEventDestination.INGESTER_USER_AGENT,
                     ingester: {
                         root_type: (d as CustomEventDestination).rootType,
                     },
@@ -87,6 +91,8 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
         });
 
         if (responseDestinations.length === 0 && this.source) {
+            // TODO CD this is probably not always going to be valid
+            destinationIdentifier = "slack";
             const responseDestination = _.cloneDeep(this.source) as Source;
             if (responseDestination.slack) {
                 delete responseDestination.slack.user;
@@ -108,25 +114,27 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             post_mode: options.post === "update_only" ? "update_only" : (options.post === "always" ? "always" : "ttl"),
         };
 
-        if (isSlackMessage(msg)) {
-            const msgClone = _.cloneDeep(msg);
-            const actions = mapActions(msgClone);
-            response.content_type = MessageMimeTypes.SLACK_JSON;
-            response.body = render(msgClone, false);
-            response.actions = actions;
-        } else if (isFileMessage(msg)) {
-            response.content_type = MessageMimeTypes.SLACK_FILE_JSON;
-            response.body = JSON.stringify({
-                content: msg.content,
-                filename: msg.fileName,
-                filetype: msg.fileType,
-                title: msg.title,
-                initial_comment: msg.comment,
-            });
-        } else if (typeof msg === "string") {
-            response.content_type = MessageMimeTypes.PLAIN_TEXT;
-            response.body = msg as string;
-        } else {
+        if (destinationIdentifier === "slack") {
+            if (isSlackMessage(msg)) {
+                const msgClone = _.cloneDeep(msg);
+                const actions = mapActions(msgClone);
+                response.content_type = MessageMimeTypes.SLACK_JSON;
+                response.body = render(msgClone, false);
+                response.actions = actions;
+            } else if (isFileMessage(msg)) {
+                response.content_type = MessageMimeTypes.SLACK_FILE_JSON;
+                response.body = JSON.stringify({
+                    content: msg.content,
+                    filename: msg.fileName,
+                    filetype: msg.fileType,
+                    title: msg.title,
+                    initial_comment: msg.comment,
+                });
+            } else if (typeof msg === "string") {
+                response.content_type = MessageMimeTypes.PLAIN_TEXT;
+                response.body = msg as string;
+            }
+        } else if (destinationIdentifier === "ingester") {
             response.content_type = MessageMimeTypes.APPLICATION_JSON;
             response.body = JSON.stringify(msg);
         }
