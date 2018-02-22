@@ -2,6 +2,7 @@ import * as _ from "lodash";
 
 import * as stringify from "json-stringify-safe";
 import { ApolloGraphClient } from "../graph/ApolloGraphClient";
+import { SuccessPromise } from "../HandlerResult";
 import {
     EventFired,
     HandleCommand,
@@ -176,14 +177,9 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
 
                 const handlerResult = h.handle(this.enrichContext(ctx), params);
                 if (!handlerResult) {
-                    return Promise.reject(
-                        `Error: Handler [${md.name}] returned null or undefined: Probably a user coding error`);
+                    return SuccessPromise;
                 }
-                return handlerResult
-                    .catch(err => {
-                        logger.error("Rejecting promise on " + err);
-                        return Promise.reject(err);
-                    });
+                return handlerResult;
             });
     }
 
@@ -192,23 +188,12 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                                             e: EventFired<any>,
                                             ctx: HandlerContext): Promise<HandlerResult> {
         this.populateSecrets(h, metadata, e.secrets);
-        return h.handle(e, this.enrichContext(ctx), h)
-            .catch(err => {
-                // these do not fire when the handler fails.
-                // perhaps only in the case of unexpected errors?
-                logger.error("Rejecting promise on " + err);
-                return Promise.reject(err);
-            });
-    }
+        const handlerResult = h.handle(e, this.enrichContext(ctx), h);
+        if (!handlerResult) {
+            return SuccessPromise;
+        }
 
-    private invokeFreshIngestorInstance(h: HandleEvent<any>,
-                                        e: EventFired<any>,
-                                        ctx: HandlerContext): Promise<HandlerResult> {
-        return h.handle(e, this.enrichContext(ctx), h)
-            .catch(err => {
-                logger.error("Rejecting promise on " + err);
-                return Promise.reject(err);
-            });
+        return handlerResult;
     }
 
     private enrichContext(ctx: HandlerContext): HandlerContext {

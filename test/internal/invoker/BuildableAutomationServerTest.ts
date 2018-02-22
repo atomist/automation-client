@@ -1,8 +1,9 @@
 import stringify = require("json-stringify-safe");
 import "mocha";
 import * as assert from "power-assert";
-import { CommandHandler, MappedParameter, Parameter, Parameters, Secret } from "../../../src/decorators";
+import { CommandHandler, EventHandler, MappedParameter, Parameter, Parameters, Secret } from "../../../src/decorators";
 import { HandleCommand, SelfDescribingHandleCommand } from "../../../src/HandleCommand";
+import { HandleEvent } from "../../../src/HandleEvent";
 import { consoleMessageClient } from "../../../src/internal/message/ConsoleMessageClient";
 import { succeed } from "../../../src/operations/support/contextUtils";
 import { AutomationServer } from "../../../src/server/AutomationServer";
@@ -526,4 +527,64 @@ describe("BuildableAutomationServer", () => {
         assert.equal(s.automations.events.length, 0);
     });
 
+    it("should succeed if command handler returns undefined or null", done => {
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+
+        @CommandHandler("goo bar")
+        class Handler implements HandleCommand {
+
+            public handle(ch, params) {
+                return undefined;
+            }
+        }
+
+        s.registerCommandHandler(Handler);
+        s.invokeCommand({
+            name: "Handler",
+            args: [],
+            secrets: [],
+        }, {
+            teamId: "T666",
+            correlationId: "555",
+            messageClient,
+        })
+        .then(hr => {
+                assert(hr.code === 0);
+                done();
+            },
+            done);
+    });
+
+    it("should succeed if event handler returns undefined or null", done => {
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+
+        @EventHandler("goo bar", "subscription Test { Issue { title }}")
+        class Handler implements HandleEvent<any> {
+
+            public handle(ch, params) {
+                return undefined;
+            }
+        }
+
+        s.registerEventHandler(Handler);
+        s.onEvent({
+            data: {
+                Issue: [{
+                    title: "test",
+                }],
+            },
+            extensions: {
+                operationName: "Handler",
+            },
+        }, {
+            teamId: "T666",
+            correlationId: "555",
+            messageClient,
+        })
+        .then(hr => {
+                assert(hr[0].code === 0);
+                done();
+            },
+            done);
+    });
 });
