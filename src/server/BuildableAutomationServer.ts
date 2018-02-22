@@ -179,7 +179,14 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                 if (!handlerResult) {
                     return SuccessPromise;
                 }
-                return handlerResult;
+                return (handlerResult as Promise<HandlerResult>)
+                    .then(result => {
+                        if (result) {
+                            return result;
+                        } else {
+                            return SuccessPromise;
+                        }
+                    });
             });
     }
 
@@ -193,7 +200,14 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
             return SuccessPromise;
         }
 
-        return handlerResult;
+        return (handlerResult as Promise<HandlerResult>)
+            .then(result => {
+                if (result) {
+                    return result;
+                } else {
+                    return SuccessPromise;
+                }
+            });
     }
 
     private enrichContext(ctx: HandlerContext): HandlerContext {

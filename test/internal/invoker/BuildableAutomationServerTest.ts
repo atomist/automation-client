@@ -534,7 +534,7 @@ describe("BuildableAutomationServer", () => {
         class Handler implements HandleCommand {
 
             public handle(ch, params) {
-                return undefined;
+                return Promise.resolve(undefined);
             }
         }
 
@@ -562,7 +562,7 @@ describe("BuildableAutomationServer", () => {
         class Handler implements HandleEvent<any> {
 
             public handle(ch, params) {
-                return undefined;
+                return Promise.resolve(undefined);
             }
         }
 
