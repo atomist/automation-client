@@ -1,10 +1,16 @@
 import { EventHandler } from "../../src/decorators";
-import { EventFired, HandleEvent } from "../../src/HandleEvent";
+import {
+    EventFired,
+    HandleEvent,
+} from "../../src/HandleEvent";
 import { HandlerContext } from "../../src/HandlerContext";
-import { HandlerResult, SuccessPromise } from "../../src/HandlerResult";
+import {
+    HandlerResult,
+    SuccessPromise,
+} from "../../src/HandlerResult";
 
 @EventHandler("Receive HelloWorlds via http ingestion", `
-subscription HelloWorld {
+subscription HelloWorldIngester {
   HelloWorld {
     id
     sender {

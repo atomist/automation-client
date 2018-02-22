@@ -1,13 +1,8 @@
 import { Configuration } from "../src/configuration";
 import { ingester, type } from "../src/ingesters";
-import { initMemoryMonitoring } from "../src/internal/util/memory";
 import { FileMessageTest } from "./command/FileMessageTest";
 import { HelloWorld } from "./command/HelloWorld";
 import { MessageTest } from "./command/MessageTest";
-import { CircleCIPayload } from "./event/circleIngester";
-import { GitLabPushPayload } from "./event/gitLabIngester";
-import { GitLabPush } from "./event/GitLabPush";
-import { HelloCircle } from "./event/HelloCircle";
 import { HelloWorldIngester } from "./event/HelloWorld";
 
 // const host = "https://automation.atomist.com";
@@ -32,22 +27,22 @@ export const configuration: Configuration = {
     events: [
         // HelloCircle,
         // GitLabPush,
-        // HelloWorldIngester,
+        HelloWorldIngester,
         // ...scanEvents("**/event/*.js"),
     ],
-    /*ingesters: [
-        CircleCIPayload,
-        GitLabPushPayload,
+    ingesters: [
+        // CircleCIPayload,
+        // GitLabPushPayload,
         ingester(
             type("HelloWorld")
                 .withObjectField("sender", "HelloWorldPerson")
                 .withObjectField("recipient", "HelloWorldPerson"))
             .withType(type("HelloWorldPerson").withStringField("name")),
-    ],*/
+    ],
     ws: {
         enabled: true,
         termination: {
-            graceful: true,
+            graceful: false,
         },
         compress: true,
     },
@@ -74,9 +69,7 @@ export const configuration: Configuration = {
         teamId: "T1L0VDKJP",
     },
     cluster: {
-        enabled: true,
+        enabled: false,
         // workers: 2,
     },
 };
-
-initMemoryMonitoring();

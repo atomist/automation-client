@@ -6,6 +6,7 @@ import * as _ from "lodash";
 import * as WebSocket from "ws";
 import {
     CommandReferencingAction,
+    CustomEventDestination,
     Destination,
     isFileMessage,
     isSlackMessage,
@@ -75,6 +76,13 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                         },
                     });
                 });
+            } else if (d.userAgent === CustomEventDestination.INGESTER_USER_AGENT) {
+                responseDestinations.push({
+                    user_agent: "ingester",
+                    ingester: {
+                        root_type: (d as CustomEventDestination).rootType,
+                    },
+                });
             }
         });
 
@@ -115,9 +123,12 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 title: msg.title,
                 initial_comment: msg.comment,
             });
-        } else {
+        } else if (typeof msg === "string") {
             response.content_type = MessageMimeTypes.PLAIN_TEXT;
             response.body = msg as string;
+        } else {
+            response.content_type = MessageMimeTypes.APPLICATION_JSON;
+            response.body = JSON.stringify(msg);
         }
         sendMessage(response, this.ws);
         return Promise.resolve(response);

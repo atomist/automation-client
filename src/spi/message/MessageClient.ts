@@ -116,6 +116,22 @@ export function addressSlackChannels(team: string, ...channels: string[]): Slack
 }
 
 /**
+ * Message Destination for Custom Event types.
+ */
+export class CustomEventDestination implements Destination {
+
+    public static INGESTER_USER_AGENT: string = "ingester";
+
+    public userAgent: string = CustomEventDestination.INGESTER_USER_AGENT;
+
+    constructor(public rootType: string) { }
+}
+
+export function addressEvent(rootType: string): CustomEventDestination {
+    return new CustomEventDestination(rootType);
+}
+
+/**
  * Message to create a Snippet in Slack
  */
 export interface SlackFileMessage {
@@ -165,6 +181,7 @@ export class MessageMimeTypes {
     public static SLACK_JSON = "application/x-atomist-slack+json";
     public static SLACK_FILE_JSON = "application/x-atomist-slack-file+json";
     public static PLAIN_TEXT = "text/plain";
+    public static APPLICATION_JSON = "application/json";
 }
 
 export interface CommandReferencingAction extends Action {
@@ -234,7 +251,7 @@ export function menuForCommand(selectSpec: MenuSpecification,
 }
 
 export function isSlackMessage(object: any): object is SlackMessage {
-    return !object.length && !object.content;
+    return object.title || object.attachments;
 }
 
 export function isFileMessage(object: any): object is SlackFileMessage {
