@@ -250,7 +250,7 @@ export function menuForCommand(selectSpec: MenuSpecification,
 }
 
 export function isSlackMessage(object: any): object is SlackMessage {
-    return (object.title || object.attachments) && !object.content;
+    return (object.text || object.attachments) && !object.content;
 }
 
 export function isFileMessage(object: any): object is SlackFileMessage {
