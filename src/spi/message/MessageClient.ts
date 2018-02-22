@@ -135,7 +135,6 @@ export function addressEvent(rootType: string): CustomEventDestination {
  * Message to create a Snippet in Slack
  */
 export interface SlackFileMessage {
-
     content: string;
     title?: string;
     fileName?: string;
@@ -251,7 +250,7 @@ export function menuForCommand(selectSpec: MenuSpecification,
 }
 
 export function isSlackMessage(object: any): object is SlackMessage {
-    return object.title || object.attachments;
+    return (object.title || object.attachments) && !object.content;
 }
 
 export function isFileMessage(object: any): object is SlackFileMessage {
