@@ -555,6 +555,34 @@ describe("BuildableAutomationServer", () => {
             done);
     });
 
+    it("should succeed if command handler returns a Promise of undefined or null", done => {
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+
+        @CommandHandler("goo bar")
+        class Handler implements HandleCommand {
+
+            public handle(ch, params) {
+                return Promise.resolve(undefined);
+            }
+        }
+
+        s.registerCommandHandler(Handler);
+        s.invokeCommand({
+            name: "Handler",
+            args: [],
+            secrets: [],
+        }, {
+            teamId: "T666",
+            correlationId: "555",
+            messageClient,
+        })
+            .then(hr => {
+                    assert(hr.code === 0);
+                    done();
+                },
+                done);
+    });
+
     it("should succeed if event handler returns undefined or null", done => {
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
 
@@ -586,5 +614,38 @@ describe("BuildableAutomationServer", () => {
                 done();
             },
             done);
+    });
+
+    it("should succeed if event handler returns a Promise of undefined or null", done => {
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+
+        @EventHandler("goo bar", "subscription Test { Issue { title }}")
+        class Handler implements HandleEvent<any> {
+
+            public handle(ch, params) {
+                return Promise.resolve(undefined);
+            }
+        }
+
+        s.registerEventHandler(Handler);
+        s.onEvent({
+            data: {
+                Issue: [{
+                    title: "test",
+                }],
+            },
+            extensions: {
+                operationName: "Handler",
+            },
+        }, {
+            teamId: "T666",
+            correlationId: "555",
+            messageClient,
+        })
+            .then(hr => {
+                    assert(hr[0].code === 0);
+                    done();
+                },
+                done);
     });
 });
