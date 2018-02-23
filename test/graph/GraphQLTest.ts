@@ -1,6 +1,5 @@
 import "mocha";
 import * as assert from "power-assert";
-
 import * as GraphQL from "../../src/graph/graphQL";
 
 describe("GraphQL", () => {
@@ -59,8 +58,7 @@ query Repos($teamId: ID!, $offset: Int!) {
         assert(errors.length === 0);
     });
 
-    const ReplacedSubscription1 = `subscription
-SomeSubscription_882904339 {
+    const ReplacedSubscription1 = `subscription SomeSubscription_882904339 {
     ChatTeam(id: "T1L0VDKJP") {
         orgs {
             repo(first: 50, offset: 100, private: true) {
@@ -118,5 +116,27 @@ SomeSubscription_882904339 {
                 statuses: GraphQL.enumValue(["passed"]),
             });
         assert.equal(query, ReplacedSubscription3);
+    });
+
+    const ReplaceQuery1 = `query BlaBla ($teamId: ID!, $offset: Int!) {
+    ChatTeam(id: $teamId) {
+        orgs {
+            repo(first: 100, offset: $offset) {
+                owner
+                name
+            }
+        }
+    }
+}
+`;
+
+    it("should successfully load query from relative path and replace parameter enum array in subscription", () => {
+        let query = GraphQL.subscriptionFromFile(
+            "./someOtherQueryWithTheSameName",
+            __dirname,
+            {});
+        query = GraphQL.replaceOperationName(query, "BlaBla");
+        console.log(query);
+        assert.equal(query, ReplaceQuery1);
     });
 });

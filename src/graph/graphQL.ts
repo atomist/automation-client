@@ -15,7 +15,7 @@ const schema = require("./schema.cortex.json");
 import { murmur3 } from "murmurhash-js/";
 
 const OperationParameterExpression = /(?:subscription|query)[\s]*([\S]*?)\s*(\([\S\s]*?\))\s*[\S\s]*?{/i;
-const OperationNameExpression = /(?:subscription|query)[\s]*([\S]*)[\s\({]*/i;
+const OperationNameExpression = /(subscription|query)[\s]*([^({\s]*)/i;
 
 export class ParameterEnum {
     constructor(public value: string | string[]) {}
@@ -66,12 +66,7 @@ export function inlineQuery(query: string): string {
  * Replace the operation name in the query or subscription
  */
 export function replaceOperationName(query: string, name: string): string {
-    const exp = OperationNameExpression;
-    if (exp.test(query)) {
-        const result = exp.exec(query);
-        query = replace(query, result[1], name);
-    }
-    return query;
+    return query.replace(OperationNameExpression, `$1 ${name}`);
 }
 
 /**
@@ -149,7 +144,7 @@ function replaceParameters(query: string,
 
             // Calulate hash to suffix the subscriptionName
             const hash = murmur3(query, 37);
-            query = replace(query, result[1], `${result[1]}_${hash}`);
+            query = replaceOperationName(query, `${result[1]}_${hash}`);
         }
     }
     return query;
