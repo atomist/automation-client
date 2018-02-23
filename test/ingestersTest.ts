@@ -202,7 +202,7 @@ describe("ingesters", () => {
                         },
                     },
                 }],
-            },{
+            }, {
                 kind: "OBJECT",
                 name: "bar",
                 fields: [{
