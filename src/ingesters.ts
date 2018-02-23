@@ -17,6 +17,7 @@ export interface Ingester {
 export interface ObjectType {
     kind: "OBJECT";
     name: string;
+    description?: string;
     fields: FieldType[];
 }
 
@@ -25,6 +26,8 @@ export interface ObjectType {
  */
 export interface FieldType {
     name: string;
+    description?: string;
+    args?: FieldType[];
     type: {
         kind: "SCALAR" | "LIST" | "OBJECT";
         name?: string | "String" | "Int" | "Float" | "Boolean";
@@ -36,6 +39,7 @@ export interface FieldType {
     directives?: Array<{
         name: string,
     }>;
+    defaultValue?: any;
 }
 
 /**
@@ -51,12 +55,12 @@ export class IngesterBuilder {
             this.name = rootType as string;
         } else {
             this.name = (rootType as TypeBuilder).name;
-            this.types.push((rootType as TypeBuilder).build());
+            this.types.push((rootType as TypeBuilder).build(this.types));
         }
     }
 
     public withType(builder: TypeBuilder): IngesterBuilder {
-        this.types.push(builder.build());
+        this.types.push(builder.build(this.types));
         return this;
     }
 
@@ -69,15 +73,18 @@ export class IngesterBuilder {
 }
 
 /**
- * Builder to construct ObjectType instances fluently
+ * Builder to construct TypeBuilder instances fluently
  */
 export class TypeBuilder {
 
     private fields: FieldType[] = [];
 
-    constructor(public name) { }
+    constructor(public name: string, public description?: string) { }
 
-    public withScalarField(name: string, kind: "String" | "Int" | "Float" | "Boolean", directives: string[] = []): TypeBuilder {
+    public withScalarField(name: string,
+                           kind: "String" | "Int" | "Float" | "Boolean",
+                           description?: string,
+                           directives: string[] = []): TypeBuilder {
         const field: FieldType = {
             name,
             type: {
@@ -85,6 +92,9 @@ export class TypeBuilder {
                 name: kind,
             },
         };
+        if (description) {
+            field.description = description;
+        }
         if (directives.length > 0) {
             field.directives = directives.map(d => ({ name: d }));
         }
@@ -92,14 +102,21 @@ export class TypeBuilder {
         return this;
     }
 
-    public withObjectField(name: string, object: string | TypeBuilder, ...directives: string[]): TypeBuilder {
+    public withObjectField(name: string, object: string | TypeBuilder,
+                           description?: string,
+                           args: string[] = [],
+                           directives: string[] = []): TypeBuilder {
         const field: FieldType = {
             name,
+            args: args as any as FieldType[],
             type: {
                 kind: "OBJECT",
                 name: isString(object) ? object : (object as TypeBuilder).name,
             },
         };
+        if (description) {
+            field.description = description;
+        }
         if (directives.length > 0) {
             field.directives = directives.map(d => ({ name: d }));
         }
@@ -107,24 +124,26 @@ export class TypeBuilder {
         return this;
     }
 
-    public withStringField(name: string, ...directives: string[]): TypeBuilder {
-        return this.withScalarField(name, "String", directives);
+    public withStringField(name: string, description?: string, directives: string[] = []): TypeBuilder {
+        return this.withScalarField(name, "String", description, directives);
     }
 
-    public withBooleanField(name: string, ...directives: string[]): TypeBuilder {
-        return this.withScalarField(name, "Boolean", directives);
+    public withBooleanField(name: string, description?: string, directives: string[] = []): TypeBuilder {
+        return this.withScalarField(name, "Boolean", description, directives);
     }
 
-    public withFloatField(name: string, ...directives: string[]): TypeBuilder {
-        return this.withScalarField(name, "Float", directives);
+    public withFloatField(name: string, description?: string, directives: string[] = []): TypeBuilder {
+        return this.withScalarField(name, "Float", description, directives);
     }
 
-    public withIntField(name: string, ...directives: string[]): TypeBuilder {
-        return this.withScalarField(name, "Int", directives);
+    public withIntField(name: string, description?: string, directives: string[] = []): TypeBuilder {
+        return this.withScalarField(name, "Int", description, directives);
     }
 
-    public withListScalarField(name: string, kind: "String" | "Int" | "Float" | "Boolean"): TypeBuilder {
-        this.fields.push({
+    public withListScalarField(name: string,
+                               kind: "String" | "Int" | "Float" | "Boolean",
+                               description?: string): TypeBuilder {
+        const field: FieldType = {
             name,
             type: {
                 kind: "LIST",
@@ -133,13 +152,21 @@ export class TypeBuilder {
                     name: kind,
                 },
             },
-        });
+        };
+        if (description) {
+            field.description = description;
+        }
+        this.fields.push(field);
         return this;
     }
 
-    public withListObjectField(name: string, object: string | TypeBuilder): TypeBuilder {
-        this.fields.push({
+    public withListObjectField(name: string,
+                               object: string | TypeBuilder,
+                               description: string = null,
+                               args: string[] = []): TypeBuilder {
+        const field: FieldType = {
             name,
+            args: args as any as FieldType[],
             type: {
                 kind: "LIST",
                 ofType: {
@@ -147,16 +174,45 @@ export class TypeBuilder {
                     name: isString(object) ? object : (object as TypeBuilder).name,
                 },
             },
-        });
+        };
+        if (description) {
+            field.description = description;
+        }
+        this.fields.push(field);
         return this;
     }
 
-    public build(): ObjectType {
-        return {
+    public build(types: ObjectType[]): ObjectType {
+        this.fields.filter(
+            f => f.type.kind === "OBJECT" || (f.type.kind === "LIST" && f.type.ofType.kind === "OBJECT")).forEach(f => {
+            f.args = (f.args || []).map(a => {
+                const refType = types.find(t => t.name === (f.type.name || (f.type.ofType && f.type.ofType.name)));
+                if (refType) {
+                    const refFieldType = refType.fields.find(fi => fi.name as any === a);
+                    if (refFieldType) {
+                        return {
+                            ...refFieldType,
+                            // TODO what are those default values
+                            defaultValue: null,
+                        };
+                    }
+                }
+                throw new Error(
+                    `Referenced type '${f.type.name}' in arg '${a}' of field '${f.name}' in type '${this.name}' could not be found`);
+            });
+            if (!f.args || f.args.length === 0) {
+                delete f.args;
+            }
+        })
+        const object: ObjectType = {
             kind: "OBJECT",
             name: this.name,
             fields: this.fields,
         };
+        if (this.description) {
+            object.description = this.description;
+        }
+        return object;
     }
 }
 

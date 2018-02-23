@@ -33,11 +33,11 @@ export const configuration: Configuration = {
     ingesters: [
         // CircleCIPayload,
         // GitLabPushPayload,
-        ingester(
-            type("HelloWorld")
-                .withObjectField("sender", "HelloWorldPerson")
-                .withObjectField("recipient", "HelloWorldPerson"))
-            .withType(type("HelloWorldPerson").withStringField("name")),
+        ingester("HelloWorld")
+            .withType(type("HelloWorldPerson").withStringField("name", "Name of the person"))
+            .withType(type("HelloWorld")
+                .withObjectField("sender", "HelloWorldPerson", "sender desc", ["name"])
+                .withObjectField("recipient", "HelloWorldPerson", "recipient desc", ["name"])),
     ],
     ws: {
         enabled: true,

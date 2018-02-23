@@ -147,7 +147,7 @@ describe("ingesters", () => {
     });
 
     it("should create root type with directive", () => {
-        const barType = type("bar").withStringField("poo", "compositeId")
+        const barType = type("bar").withStringField("poo", "test desc", ["compositeId"])
             .withFloatField("puu");
         const barIngester = ingester(barType).build();
         assert.deepEqual(barIngester, {
@@ -157,6 +157,7 @@ describe("ingesters", () => {
                 name: "bar",
                 fields: [{
                     name: "poo",
+                    description: "test desc",
                     type: {
                         kind: "SCALAR",
                         name: "String",
@@ -169,6 +170,61 @@ describe("ingesters", () => {
                     type: {
                         kind: "SCALAR",
                         name: "Float",
+                    },
+                }],
+            }],
+        });
+    });
+
+    it("should create root type with argument", () => {
+        const fooType = type("foo").withBooleanField("fuu").withListScalarField("nums", "Int");
+        const barType = type("bar").withStringField("poo")
+            .withFloatField("puu").withListObjectField("foos", fooType, "foos desc", ["fuu"]);
+        const barIngester = ingester("bar").withType(fooType).withType(barType).build();
+        assert.deepEqual(barIngester, {
+            root_type: "bar",
+            types: [{
+                kind: "OBJECT",
+                name: "bar",
+                fields: [{
+                    name: "poo",
+                    type: {
+                        kind: "SCALAR",
+                        name: "String",
+                    },
+                }, {
+                    name: "puu",
+                    type: {
+                        kind: "SCALAR",
+                        name: "Float",
+                    },
+                }, {
+                    name: "foos",
+                    type: {
+                        kind: "LIST",
+                        ofType: {
+                            kind: "OBJECT",
+                            name: "foo",
+                        },
+                    },
+                }],
+            }, {
+                kind: "OBJECT",
+                name: "foo",
+                fields: [{
+                    name: "fuu",
+                    type: {
+                        kind: "SCALAR",
+                        name: "Boolean",
+                    },
+                }, {
+                    name: "nums",
+                    type: {
+                        kind: "LIST",
+                        ofType: {
+                            kind: "SCALAR",
+                            name: "Int",
+                        },
                     },
                 }],
             }],
