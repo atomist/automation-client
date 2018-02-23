@@ -63,6 +63,13 @@ describe("jsonUtils", () => {
                 "\n" + json + "\n" + transformed);
         });
 
+        it("should retain spacing of 0 with a newline", () => {
+            const json = simpleJson(25) + "\n";
+            const transformed = manipulate(json, o => o);
+            assert(transformed === json,
+                "\n" + json + "\n" + transformed);
+        });
+
     });
 
     describe("doWithJson", () => {
