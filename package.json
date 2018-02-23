@@ -64,7 +64,7 @@
     "passport-http-bearer": "^1.0.1",
     "power-assert": "^1.4.4",
     "promise-retry": "^1.1.1",
-    "proper-lockfile": "^3.0.2",
+    "proper-lockfile": "^2.0.1",
     "serialize-error": "^2.1.0",
     "shelljs": "^0.8.1",
     "stream-spigot": "^3.0.6",
