@@ -4228,6 +4228,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "containerID",
+                  "description": "containerID of K8Container",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "names",
                   "description": "names is list variant of name of K8Container",
                   "type": {
@@ -4362,6 +4372,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "containerIDs",
+                  "description": "containerIDs is list variant of containerID of K8Container",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -7229,6 +7253,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "providerType",
+                  "description": "providerType of GitHubProvider",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ProviderType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of GitHubProvider",
                   "type": {
@@ -7299,6 +7333,20 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "providerTypes",
+                  "description": "providerTypes is list variant of providerType of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "orderBy",
                   "description": null,
                   "type": {
@@ -7363,6 +7411,225 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "GitHubProvider",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SCMProvider",
+              "description": null,
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "url",
+                  "description": "url of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerId",
+                  "description": "providerId of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "apiUrl",
+                  "description": "apiUrl of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitUrl",
+                  "description": "gitUrl of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerType",
+                  "description": "providerType of SCMProvider",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ProviderType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "urls",
+                  "description": "urls is list variant of url of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerIds",
+                  "description": "providerIds is list variant of providerId of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "apiUrls",
+                  "description": "apiUrls is list variant of apiUrl of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitUrls",
+                  "description": "gitUrls is list variant of gitUrl of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerTypes",
+                  "description": "providerTypes is list variant of providerType of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_SCMProviderOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "SCMProvider",
                   "ofType": null
                 }
               },
@@ -7609,6 +7876,153 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "GitHubOrgWebhook",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Webhook",
+              "description": null,
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Webhook",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "url",
+                  "description": "url of Webhook",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "webhookType",
+                  "description": "webhookType of Webhook",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "WebhookType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Webhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "urls",
+                  "description": "urls is list variant of url of Webhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "webhookTypes",
+                  "description": "webhookTypes is list variant of webhookType of Webhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "WebhookType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_WebhookOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Webhook",
                   "ofType": null
                 }
               },
@@ -7932,6 +8346,65 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "Card",
+              "description": "Auto-generated query for Card",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Card"
+                }
+              },
+              "args": [
+                {
+                  "name": "id",
+                  "description": "The ID of this Card",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID"
+                    }
+                  }
+                },
+                {
+                  "name": "id",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  },
+                  "directives": [
+                    {
+                      "name": "compositeId"
+                    }
+                  ]
+                },
+                {
+                  "name": "ts",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int"
+                  }
+                },
+                {
+                  "name": "ttl",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int"
+                  }
+                },
+                {
+                  "name": "post",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                }
+              ]
             }
           ],
           "inputFields": null,
@@ -14428,6 +14901,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "providerType",
+                  "description": "providerType of GitHubProvider",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ProviderType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of GitHubProvider",
                   "type": {
@@ -14492,6 +14975,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerTypes",
+                  "description": "providerTypes is list variant of providerType of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "ProviderType",
                       "ofType": null
                     }
                   },
@@ -14564,6 +15061,177 @@
                   "name": "GitHubProvider",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "scmProvider",
+              "description": "GitHubId scmProvider SCMProvider",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "url",
+                  "description": "url of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerId",
+                  "description": "providerId of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "apiUrl",
+                  "description": "apiUrl of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitUrl",
+                  "description": "gitUrl of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerType",
+                  "description": "providerType of SCMProvider",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ProviderType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "urls",
+                  "description": "urls is list variant of url of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerIds",
+                  "description": "providerIds is list variant of providerId of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "apiUrls",
+                  "description": "apiUrls is list variant of apiUrl of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitUrls",
+                  "description": "gitUrls is list variant of gitUrl of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerTypes",
+                  "description": "providerTypes is list variant of providerType of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_SCMProviderOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SCMProvider",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -14874,6 +15542,18 @@
               "deprecationReason": null
             },
             {
+              "name": "providerType",
+              "description": "providerType of  GitHubProvider",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "ProviderType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "team",
               "description": "GitHubProvider team Team",
               "args": [
@@ -14952,6 +15632,41 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "ProviderType",
+          "description": "Enum for ProviderType",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "bitbucket_cloud",
+              "description": "Value for bitbucket_cloud",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "github_com",
+              "description": "Value for github_com",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ghe",
+              "description": "Value for ghe",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "bitbucket",
+              "description": "Value for bitbucket",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -15368,6 +16083,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "providerType",
+                  "description": "providerType of GitHubProvider",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ProviderType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of GitHubProvider",
                   "type": {
@@ -15438,6 +16163,20 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "providerTypes",
+                  "description": "providerTypes is list variant of providerType of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "orderBy",
                   "description": null,
                   "type": {
@@ -15502,6 +16241,225 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "GitHubProvider",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "scmProviders",
+              "description": "Team scmProviders SCMProvider",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "url",
+                  "description": "url of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerId",
+                  "description": "providerId of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "apiUrl",
+                  "description": "apiUrl of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitUrl",
+                  "description": "gitUrl of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerType",
+                  "description": "providerType of SCMProvider",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ProviderType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "urls",
+                  "description": "urls is list variant of url of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerIds",
+                  "description": "providerIds is list variant of providerId of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "apiUrls",
+                  "description": "apiUrls is list variant of apiUrl of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitUrls",
+                  "description": "gitUrls is list variant of gitUrl of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerTypes",
+                  "description": "providerTypes is list variant of providerType of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_SCMProviderOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "SCMProvider",
                   "ofType": null
                 }
               },
@@ -16771,6 +17729,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "providerType",
+                  "description": "providerType of GitHubProvider",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ProviderType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of GitHubProvider",
                   "type": {
@@ -16841,6 +17809,20 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "providerTypes",
+                  "description": "providerTypes is list variant of providerType of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "orderBy",
                   "description": null,
                   "type": {
@@ -16858,6 +17840,177 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "GitHubProvider",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "scmProvider",
+              "description": "Org scmProvider SCMProvider",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "url",
+                  "description": "url of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerId",
+                  "description": "providerId of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "apiUrl",
+                  "description": "apiUrl of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitUrl",
+                  "description": "gitUrl of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerType",
+                  "description": "providerType of SCMProvider",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ProviderType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "urls",
+                  "description": "urls is list variant of url of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerIds",
+                  "description": "providerIds is list variant of providerId of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "apiUrls",
+                  "description": "apiUrls is list variant of apiUrl of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitUrls",
+                  "description": "gitUrls is list variant of gitUrl of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerTypes",
+                  "description": "providerTypes is list variant of providerType of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_SCMProviderOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SCMProvider",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -17278,6 +18431,153 @@
               "deprecationReason": null
             },
             {
+              "name": "webhooks",
+              "description": "Org webhooks Webhook",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Webhook",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "url",
+                  "description": "url of Webhook",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "webhookType",
+                  "description": "webhookType of Webhook",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "WebhookType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Webhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "urls",
+                  "description": "urls is list variant of url of Webhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "webhookTypes",
+                  "description": "webhookTypes is list variant of webhookType of Webhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "WebhookType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_WebhookOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Webhook",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "chatTeam",
               "description": "Org chatTeam ChatTeam",
               "args": [
@@ -17631,6 +18931,283 @@
               "description": "Descending sort for gitUrl",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "providerType_asc",
+              "description": "Ascending sort for providerType",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "providerType_desc",
+              "description": "Descending sort for providerType",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SCMProvider",
+          "description": "SCMProvider-Node",
+          "fields": [
+            {
+              "name": "_id",
+              "description": "internal node id",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Long",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "id of  SCMProvider",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "url",
+              "description": "url of  SCMProvider",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "providerId",
+              "description": "providerId of  SCMProvider",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "apiUrl",
+              "description": "apiUrl of  SCMProvider",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "gitUrl",
+              "description": "gitUrl of  SCMProvider",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "providerType",
+              "description": "providerType of  SCMProvider",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "ProviderType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "team",
+              "description": "SCMProvider team Team",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of Team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Team",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Team",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_TeamOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Team",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "_SCMProviderOrdering",
+          "description": "Ordering Enum for SCMProvider",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "atmTeamId_asc",
+              "description": "Ascending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "atmTeamId_desc",
+              "description": "Descending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_asc",
+              "description": "Ascending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_desc",
+              "description": "Descending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "url_asc",
+              "description": "Ascending sort for url",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "url_desc",
+              "description": "Descending sort for url",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "providerId_asc",
+              "description": "Ascending sort for providerId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "providerId_desc",
+              "description": "Descending sort for providerId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "apiUrl_asc",
+              "description": "Ascending sort for apiUrl",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "apiUrl_desc",
+              "description": "Descending sort for apiUrl",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "gitUrl_asc",
+              "description": "Ascending sort for gitUrl",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "gitUrl_desc",
+              "description": "Descending sort for gitUrl",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "providerType_asc",
+              "description": "Ascending sort for providerType",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "providerType_desc",
+              "description": "Descending sort for providerType",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -17879,6 +19456,223 @@
           "kind": "ENUM",
           "name": "_GitHubOrgWebhookOrdering",
           "description": "Ordering Enum for GitHubOrgWebhook",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "atmTeamId_asc",
+              "description": "Ascending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "atmTeamId_desc",
+              "description": "Descending sort for atmTeamId",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_asc",
+              "description": "Ascending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id_desc",
+              "description": "Descending sort for id",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "url_asc",
+              "description": "Ascending sort for url",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "url_desc",
+              "description": "Descending sort for url",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webhookType_asc",
+              "description": "Ascending sort for webhookType",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webhookType_desc",
+              "description": "Descending sort for webhookType",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Webhook",
+          "description": "Webhook-Node",
+          "fields": [
+            {
+              "name": "_id",
+              "description": "internal node id",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Long",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "id of  Webhook",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "url",
+              "description": "url of  Webhook",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webhookType",
+              "description": "webhookType of  Webhook",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "WebhookType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "org",
+              "description": "Webhook org Org",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Org",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "owner",
+                  "description": "owner of Org",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ownerType",
+                  "description": "ownerType of Org",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "OwnerType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Org",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "owners",
+                  "description": "owners is list variant of owner of Org",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ownerTypes",
+                  "description": "ownerTypes is list variant of ownerType of Org",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "OwnerType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_OrgOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Org",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "_WebhookOrdering",
+          "description": "Ordering Enum for Webhook",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -18225,6 +20019,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "providerType",
+                  "description": "providerType of GitHubProvider",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ProviderType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of GitHubProvider",
                   "type": {
@@ -18295,6 +20099,20 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "providerTypes",
+                  "description": "providerTypes is list variant of providerType of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "orderBy",
                   "description": null,
                   "type": {
@@ -18359,6 +20177,225 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "GitHubProvider",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "scmProviders",
+              "description": "ChatTeam scmProviders SCMProvider",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "url",
+                  "description": "url of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerId",
+                  "description": "providerId of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "apiUrl",
+                  "description": "apiUrl of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitUrl",
+                  "description": "gitUrl of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerType",
+                  "description": "providerType of SCMProvider",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ProviderType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "urls",
+                  "description": "urls is list variant of url of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerIds",
+                  "description": "providerIds is list variant of providerId of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "apiUrls",
+                  "description": "apiUrls is list variant of apiUrl of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitUrls",
+                  "description": "gitUrls is list variant of gitUrl of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerTypes",
+                  "description": "providerTypes is list variant of providerType of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_SCMProviderOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "SCMProvider",
                   "ofType": null
                 }
               },
@@ -30463,6 +32500,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "containerID",
+                  "description": "containerID of K8Container",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "names",
                   "description": "names is list variant of name of K8Container",
                   "type": {
@@ -30597,6 +32644,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "containerIDs",
+                  "description": "containerIDs is list variant of containerID of K8Container",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -31104,6 +33165,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "containerID",
+                  "description": "containerID of K8Container",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "names",
                   "description": "names is list variant of name of K8Container",
                   "type": {
@@ -31238,6 +33309,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "containerIDs",
+                  "description": "containerIDs is list variant of containerID of K8Container",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -31511,6 +33596,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Long",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "containerID",
+              "description": "containerID of  K8Container",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -32276,6 +34373,18 @@
             {
               "name": "resourceVersion_desc",
               "description": "Descending sort for resourceVersion",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "containerID_asc",
+              "description": "Ascending sort for containerID",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "containerID_desc",
+              "description": "Descending sort for containerID",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -41702,6 +43811,40 @@
                   }
                 }
               ]
+            },
+            {
+              "name": "setOwnerLogin",
+              "description": "set a GitHub login to be used for resources owned by an Org",
+              "type": {
+                "kind": "OBJECT",
+                "name": "OwnerLogin"
+              },
+              "args": [
+                {
+                  "name": "owner",
+                  "description": "The owner name for the Organization/Team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "providerId",
+                  "description": "The id of the Git provider for this Owner",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "login",
+                  "description": "The login that should be used",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -46720,6 +48863,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "containerID",
+                  "description": "containerID of K8Container",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "names",
                   "description": "names is list variant of name of K8Container",
                   "type": {
@@ -46854,6 +49007,20 @@
                     "ofType": {
                       "kind": "SCALAR",
                       "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "containerIDs",
+                  "description": "containerIDs is list variant of containerID of K8Container",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -49721,6 +51888,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "providerType",
+                  "description": "providerType of GitHubProvider",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ProviderType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of GitHubProvider",
                   "type": {
@@ -49791,6 +51968,20 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "providerTypes",
+                  "description": "providerTypes is list variant of providerType of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "orderBy",
                   "description": null,
                   "type": {
@@ -49855,6 +52046,225 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "GitHubProvider",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SCMProvider",
+              "description": null,
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "url",
+                  "description": "url of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerId",
+                  "description": "providerId of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "apiUrl",
+                  "description": "apiUrl of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitUrl",
+                  "description": "gitUrl of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerType",
+                  "description": "providerType of SCMProvider",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ProviderType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "urls",
+                  "description": "urls is list variant of url of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerIds",
+                  "description": "providerIds is list variant of providerId of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "apiUrls",
+                  "description": "apiUrls is list variant of apiUrl of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitUrls",
+                  "description": "gitUrls is list variant of gitUrl of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerTypes",
+                  "description": "providerTypes is list variant of providerType of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_SCMProviderOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "SCMProvider",
                   "ofType": null
                 }
               },
@@ -50101,6 +52511,153 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "GitHubOrgWebhook",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "Webhook",
+              "description": null,
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Webhook",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "url",
+                  "description": "url of Webhook",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "webhookType",
+                  "description": "webhookType of Webhook",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "WebhookType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Webhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "urls",
+                  "description": "urls is list variant of url of Webhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "webhookTypes",
+                  "description": "webhookTypes is list variant of webhookType of Webhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "WebhookType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_WebhookOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_id",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Long",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ids",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Long",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "offset",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Webhook",
                   "ofType": null
                 }
               },
@@ -50424,6 +52981,19 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "Card",
+              "description": "Auto-generated subscription for Card",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Card"
+                }
+              },
+              "args": []
             }
           ],
           "inputFields": null,
@@ -50458,6 +53028,554 @@
             {
               "name": "id",
               "description": "The id of the channel",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Card",
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "directives": [
+                {
+                  "name": "compositeId"
+                }
+              ],
+              "args": []
+            },
+            {
+              "name": "ts",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int"
+              },
+              "args": []
+            },
+            {
+              "name": "ttl",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int"
+              },
+              "args": []
+            },
+            {
+              "name": "post",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "title",
+              "type": {
+                "kind": "OBJECT",
+                "name": "CardTitle"
+              },
+              "args": []
+            },
+            {
+              "name": "body",
+              "type": {
+                "kind": "OBJECT",
+                "name": "CardBody"
+              },
+              "args": []
+            },
+            {
+              "name": "correlations",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardCorrelation"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "collaborators",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardCollaborator"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "events",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardEvent"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "actions",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardAction"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "actionGroups",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardActionGroup"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "id",
+              "description": "The ID of this Card",
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardTitle",
+          "fields": [
+            {
+              "name": "icon",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "text",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardBody",
+          "fields": [
+            {
+              "name": "avatar",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "login",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "text",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "hint",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardCollaborator",
+          "fields": [
+            {
+              "name": "avatar",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "login",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "link",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardCorrelation",
+          "fields": [
+            {
+              "name": "type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "icon",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "title",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "link",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "body",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CorrelationBody"
+                }
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CorrelationBody",
+          "fields": [
+            {
+              "name": "icon",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "text",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardEvent",
+          "fields": [
+            {
+              "name": "icon",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "text",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "ts",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int"
+              },
+              "args": []
+            },
+            {
+              "name": "actions",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardAction"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "actionGroups",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardActionGroup"
+                }
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardAction",
+          "fields": [
+            {
+              "name": "text",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "registration",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "command",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "parameters",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardActionParameter"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "parameterName",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "parameterOptions",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardActionParameterOption"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "parameterOptionGroups",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardActionParameterOptionGroup"
+                }
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardActionGroup",
+          "fields": [
+            {
+              "name": "actions",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardAction"
+                }
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardActionParameter",
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "value",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardActionParameterOption",
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "value",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardActionParameterOptionGroup",
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "options",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardActionParameterOption"
+                }
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "OwnerLogin",
+          "description": "a GitHub Owner (like an Org) can set a login to be used for background tasks",
+          "interfaces": [],
+          "fields": [
+            {
+              "name": "owner",
+              "description": "The owner name for the Organization/Team",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            {
+              "name": "providerId",
+              "description": "The id of the git provider for this Owner",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            {
+              "name": "login",
+              "description": "The login that should be used",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -50574,5 +53692,8 @@
         }
       ]
     }
+  },
+  "extensions": {
+    "correlation_id": "08d8764f-e97d-4f73-a6d3-bddacc70ef8e"
   }
 }
