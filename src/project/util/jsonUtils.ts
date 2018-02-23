@@ -30,7 +30,7 @@ export function doWithJson<M, P extends ProjectAsync = ProjectAsync>(
     });
 }
 
-const spacePossibilities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, " ", "  ", "\t"];
+const spacePossibilities = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, " ", "  ", "\t"];
 
 /**
  * Update the object form of the given JSON content and write
@@ -47,7 +47,7 @@ export function manipulate(jsonIn: string, manipulation: JsonManipulation, conte
     try {
         const obj = JSON.parse(jsonIn);
 
-        let space: number | string = 0;
+        let space: number | string = 2;
         for (const sp of spacePossibilities) {
             const maybe = JSON.stringify(obj, null, sp);
             if (jsonIn === maybe) {

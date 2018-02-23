@@ -48,6 +48,21 @@ describe("jsonUtils", () => {
             JSON.parse(transformed);
         });
 
+        it("should retain spacing of 2", () => {
+            const json = fromPackageJson("@atomist/test");
+            const transformed = manipulate(json,
+                o => o);
+            // Should not change it
+            assert.equal(transformed, json);
+        });
+
+        it("should retain spacing of 0", () => {
+            const json = simpleJson(25);
+            const transformed = manipulate(json, o => o);
+            assert(transformed === json,
+                "\n" + json + "\n" + transformed);
+        });
+
     });
 
     describe("doWithJson", () => {
