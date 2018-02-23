@@ -97,6 +97,7 @@ export abstract class MappedParameters {
     public static readonly GitHubApiUrl: string = "atomist://github_api_url";
     public static readonly GitHubDefaultRepositoryVisibility: string = "atomist://github/default_repo_visibility";
     public static readonly GitHubUserLogin: string = "atomist://github/username";
+    public static readonly GitHubRepositoryProvider: string = "atomist://github/repository/provider";
 
     public static readonly SlackChannel: string = "atomist://slack/channel";
     public static readonly SlackChannelName: string = "atomist://slack/channel_name";
