@@ -185,31 +185,6 @@ describe("ingesters", () => {
             root_type: "bar",
             types: [{
                 kind: "OBJECT",
-                name: "bar",
-                fields: [{
-                    name: "poo",
-                    type: {
-                        kind: "SCALAR",
-                        name: "String",
-                    },
-                }, {
-                    name: "puu",
-                    type: {
-                        kind: "SCALAR",
-                        name: "Float",
-                    },
-                }, {
-                    name: "foos",
-                    type: {
-                        kind: "LIST",
-                        ofType: {
-                            kind: "OBJECT",
-                            name: "foo",
-                        },
-                    },
-                }],
-            }, {
-                kind: "OBJECT",
                 name: "foo",
                 fields: [{
                     name: "fuu",
@@ -226,6 +201,40 @@ describe("ingesters", () => {
                             name: "Int",
                         },
                     },
+                }],
+            },{
+                kind: "OBJECT",
+                name: "bar",
+                fields: [{
+                    name: "poo",
+                    type: {
+                        kind: "SCALAR",
+                        name: "String",
+                    },
+                }, {
+                    name: "puu",
+                    type: {
+                        kind: "SCALAR",
+                        name: "Float",
+                    },
+                }, {
+                    name: "foos",
+                    description: "foos desc",
+                    type: {
+                        kind: "LIST",
+                        ofType: {
+                            kind: "OBJECT",
+                            name: "foo",
+                        },
+                    },
+                    args: [{
+                        defaultValue: null,
+                        name: "fuu",
+                        type: {
+                            kind: "SCALAR",
+                            name: "Boolean",
+                        },
+                    }],
                 }],
             }],
         });
