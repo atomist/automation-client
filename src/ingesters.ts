@@ -203,7 +203,7 @@ export class TypeBuilder {
             if (!f.args || f.args.length === 0) {
                 delete f.args;
             }
-        })
+        });
         const object: ObjectType = {
             kind: "OBJECT",
             name: this.name,
