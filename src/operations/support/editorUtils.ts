@@ -21,26 +21,35 @@ import { EditResult, ProjectEditor, successfulEdit } from "../edit/projectEditor
  * set to true by the editor and the git status is not dirty, this is a developer error
  * which should result in a runtime error.
  * @param context handler context for this operation
- * @param repo repo id
+ * @param p project
  * @param editor editor to use
- * @param ei how to persist the edit
+ * @param editMode how to persist the edit
  * @param parameters to editor
  * @return EditResult instance that reports as to whether the project was actually edited
  */
-export function editRepo<P extends EditorOrReviewerParameters>(context: HandlerContext,
-                                                               repo: Project,
-                                                               editor: ProjectEditor<P>,
-                                                               ei: EditMode,
-                                                               parameters?: P): Promise<EditResult> {
-    if (isPullRequest(ei)) {
-        return editProjectUsingPullRequest(context, repo as GitProject, editor, ei, parameters);
-    } else if (isBranchCommit(ei)) {
-        return editProjectUsingBranch(context, repo as GitProject, editor, ei, parameters);
-    } else if (isCustomExecutionEditMode(ei)) {
-        return ei.edit(repo, editor, context, parameters);
-    } else {
-        // No edit to do
-        return Promise.resolve(successfulEdit(repo, true));
+export async function editRepo<P extends EditorOrReviewerParameters>(context: HandlerContext,
+                                                                     p: Project,
+                                                                     editor: ProjectEditor<P>,
+                                                                     editMode: EditMode,
+                                                                     parameters?: P): Promise<EditResult> {
+    if (!!editMode.beforePersist) {
+        await editMode.beforePersist(p);
+    }
+    try {
+        if (isPullRequest(editMode)) {
+            return editProjectUsingPullRequest(context, p as GitProject, editor, editMode, parameters);
+        } else if (isBranchCommit(editMode)) {
+            return editProjectUsingBranch(context, p as GitProject, editor, editMode, parameters);
+        } else if (isCustomExecutionEditMode(editMode)) {
+            return editMode.edit(p, editor, context, parameters);
+        } else {
+            // No edit to do
+            return Promise.resolve(successfulEdit(p, true));
+        }
+    } finally {
+        if (!!editMode.afterPersist) {
+            await editMode.afterPersist(p);
+        }
     }
 }
 
