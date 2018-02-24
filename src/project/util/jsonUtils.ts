@@ -30,7 +30,7 @@ export function doWithJson<M, P extends ProjectAsync = ProjectAsync>(
     });
 }
 
-const spacePossibilities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, " ", "  ", "\t"];
+const spacePossibilities = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, " ", "  ", "\t"];
 
 /**
  * Update the object form of the given JSON content and write
@@ -45,12 +45,15 @@ export function manipulate(jsonIn: string, manipulation: JsonManipulation, conte
     }
 
     try {
+        const newline = jsonIn.endsWith("\n"); // does this work on Windows?
+        const jsonToCompare = newline ? jsonIn.replace(/\n$/, "") : jsonIn;
+
         const obj = JSON.parse(jsonIn);
 
-        let space: number | string = 0;
+        let space: number | string = 2;
         for (const sp of spacePossibilities) {
             const maybe = JSON.stringify(obj, null, sp);
-            if (jsonIn === maybe) {
+            if (jsonToCompare === maybe) {
                 logger.debug(`Definitely inferred space as [${sp}]`);
                 space = sp;
                 break;
@@ -60,7 +63,7 @@ export function manipulate(jsonIn: string, manipulation: JsonManipulation, conte
         logger.debug(`Inferred space is [${space}]`);
 
         manipulation(obj);
-        return JSON.stringify(obj, null, space);
+        return JSON.stringify(obj, null, space) + (newline ? "\n" : "");
     } catch (e) {
         logger.warn("Syntax error parsing supposed JSON (%s). Context:[%s]. Alleged JSON:\n%s", e, context, jsonIn);
         return jsonIn;
