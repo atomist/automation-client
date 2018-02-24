@@ -21,14 +21,6 @@ export interface EditMode {
     message: string;
 
     /**
-     * Optional method to perform any additional actions on the project before
-     * applying the edit to persistent store--for example, getting the sha from a git repo
-     * @param {Project} p
-     * @return {Promise<any>}
-     */
-    beforePersist?(p: Project): Promise<any>;
-
-    /**
      * Optional method to perform any additional actions on the project after
      * applying the edit to persistent store--for example, setting a GitHub status
      * @param {Project} p

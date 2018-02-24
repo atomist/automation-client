@@ -27,14 +27,11 @@ import { EditResult, ProjectEditor, successfulEdit } from "../edit/projectEditor
  * @param parameters to editor
  * @return EditResult instance that reports as to whether the project was actually edited
  */
-export async function editRepo<P extends EditorOrReviewerParameters>(context: HandlerContext,
-                                                                     p: Project,
-                                                                     editor: ProjectEditor<P>,
-                                                                     editMode: EditMode,
-                                                                     parameters?: P): Promise<EditResult> {
-    if (!!editMode.beforePersist) {
-        await editMode.beforePersist(p);
-    }
+export function editRepo<P extends EditorOrReviewerParameters>(context: HandlerContext,
+                                                               p: Project,
+                                                               editor: ProjectEditor<P>,
+                                                               editMode: EditMode,
+                                                               parameters?: P): Promise<EditResult> {
     const after = x => !!editMode.afterPersist ? editMode.afterPersist(p).then(() => x) : x;
     if (isPullRequest(editMode)) {
         return editProjectUsingPullRequest(context, p as GitProject, editor, editMode, parameters)
