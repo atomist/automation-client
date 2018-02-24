@@ -1,7 +1,8 @@
 import { ActionResult } from "../../action/ActionResult";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
-import { commandHandlerFrom, OnCommand, ParametersConstructor } from "../../onCommand";
+import { commandHandlerFrom, OnCommand } from "../../onCommand";
+import { Maker } from "../../util/constructionUtils";
 import { CommandDetails } from "../CommandDetails";
 import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewerParameters";
 import { andFilter, RepoFilter } from "../common/repoFilter";
@@ -39,13 +40,13 @@ function defaultDetails(name: string): ReviewerCommandDetails<EditorOrReviewerPa
 /**
  * Create a handle function that reviews one or many repos, following AllReposByDefaultParameters
  * @param reviewerFactory function returning a reviewer instance for the appropriate parameters
- * @param {ParametersConstructor<PARAMS>} factory
+ * @param factory construction function
  * @param {string} name
  * @param {string} details object allowing customization beyond reasonable defaults
  * @return {HandleCommand}
  */
 export function reviewerHandler<PARAMS extends EditorOrReviewerParameters>(reviewerFactory: (params: PARAMS) => ProjectReviewer<PARAMS>,
-                                                                           factory: ParametersConstructor<PARAMS>,
+                                                                           factory: Maker<PARAMS>,
                                                                            name: string,
                                                                            details: Partial<ReviewerCommandDetails<PARAMS>> = {}): HandleCommand {
     const detailsToUse: ReviewerCommandDetails<EditorOrReviewerParameters> = {

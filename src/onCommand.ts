@@ -1,9 +1,5 @@
 import { SelfDescribingHandleCommand } from "./HandleCommand";
-import {
-    HandleCommand,
-    HandlerContext,
-    HandlerResult,
-} from "./index";
+import { HandleCommand, HandlerContext, HandlerResult } from "./index";
 import { metadataFromInstance } from "./internal/metadata/metadataReading";
 import { toStringArray } from "./internal/util/string";
 import {
@@ -14,12 +10,7 @@ import {
     Tag,
 } from "./metadata/automationMetadata";
 import { registerCommand } from "./scan";
-
-export interface ParametersConstructor<P> {
-
-    new(): P;
-
-}
+import { Maker, toFactory } from "./util/constructionUtils";
 
 /**
  * Handle the given command. Parameters will have been set on a fresh
@@ -36,7 +27,7 @@ export type OnCommand<P = undefined> =
  * Create a HandleCommand instance with the appropriate metadata wrapping
  * the given function
  * @param h handle function
- * @param {ParametersConstructor<P>} factory to create new parameters instances
+ * @param factory construction function
  * @param {string} name can be omitted if the function isn't exported
  * @param {string} description
  * @param {string[]} intent
@@ -44,7 +35,7 @@ export type OnCommand<P = undefined> =
  * @return {HandleCommand<P>}
  */
 export function commandHandlerFrom<P>(h: OnCommand<P>,
-                                      factory: ParametersConstructor<P>,
+                                      factory: Maker<P>,
                                       name: string = h.name,
                                       description: string = name,
                                       intent: string | string[] = [],
@@ -71,7 +62,7 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
     constructor(public name: string,
                 public description: string,
                 private h: OnCommand<P>,
-                private parametersFactory: ParametersConstructor<P>,
+                private parametersFactory: Maker<P>,
         // tslint:disable-next-line:variable-name
                 private _tags: string | string[] = [],
         // tslint:disable-next-line:variable-name
@@ -86,7 +77,7 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
     }
 
     public freshParametersInstance(): P {
-        return new this.parametersFactory();
+        return toFactory(this.parametersFactory)();
     }
 
     public handle(ctx: HandlerContext, params: P) {

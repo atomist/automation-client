@@ -1,10 +1,11 @@
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { RedirectResult } from "../../HandlerResult";
-import { commandHandlerFrom, OnCommand, ParametersConstructor } from "../../onCommand";
+import { commandHandlerFrom, OnCommand } from "../../onCommand";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
 import { CachingDirectoryManager } from "../../spi/clone/CachingDirectoryManager";
+import { Maker } from "../../util/constructionUtils";
 import { CommandDetails } from "../CommandDetails";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
@@ -44,13 +45,13 @@ function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: strin
 /**
  * Create a generator function wrapping the given transform
  * @param {AnyProjectEditor} editorFactory editor for the transformation
- * @param {ParametersConstructor<P>} factory for the parameters
+ * @param factory construction function
  * @param {string} name name of the generator
  * @param {string} details object allowing customization beyond reasonable defaults
  * @return {HandleCommand}
  */
 export function generatorHandler<P extends BaseSeedDrivenGeneratorParameters>(editorFactory: EditorFactory<P>,
-                                                                              factory: ParametersConstructor<P>,
+                                                                              factory: Maker<P>,
                                                                               name: string,
                                                                               details: Partial<GeneratorCommandDetails<P>> = {}): HandleCommand {
 

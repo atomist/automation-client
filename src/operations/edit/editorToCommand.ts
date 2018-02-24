@@ -1,6 +1,7 @@
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
-import { commandHandlerFrom, OnCommand, ParametersConstructor } from "../../onCommand";
+import { commandHandlerFrom, OnCommand } from "../../onCommand";
+import { Maker } from "../../util/constructionUtils";
 import { CommandDetails } from "../CommandDetails";
 import {
     BaseEditorOrReviewerParameters,
@@ -35,13 +36,12 @@ function defaultDetails(name: string): EditorCommandDetails {
 /**
  * Create a handle function that edits one or many repos, following AllReposByDefaultParameters
  * @param pe function returning a project editor instance appropriate for the parameters
- * @param {ParametersConstructor<PARAMS>} factory
  * @param {string} name
  * @param {string} details object allowing customization beyond reasonable defaults
  * @return {HandleCommand}
  */
 export function editorHandler<PARAMS extends EditorOrReviewerParameters>(pe: (params: PARAMS) => AnyProjectEditor,
-                                                                         factory: ParametersConstructor<PARAMS>,
+                                                                         factory: Maker<PARAMS>,
                                                                          name: string,
                                                                          details: Partial<EditorCommandDetails> = {}): HandleCommand {
     const detailsToUse: EditorCommandDetails = {
