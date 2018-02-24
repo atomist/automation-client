@@ -1,6 +1,7 @@
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
-import { commandHandlerFrom, OnCommand, ParametersConstructor } from "../../onCommand";
+import { commandHandlerFrom, OnCommand } from "../../onCommand";
+import { Maker } from "../../util/constructionUtils";
 import { CommandDetails } from "../CommandDetails";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
@@ -33,13 +34,13 @@ export const MessageClientTagRouter: TagRouter = (tags, params, ctx) =>
 /**
  * Create a handle function that tags one or many repos, following AllReposByDefaultParameters
  * @param tagger tagger function
- * @param {ParametersConstructor<PARAMS>} factory
+ * @param factory construction function
  * @param {string} name
  * @param {string} details object allowing customization beyond reasonable defaults
  * @return {HandleCommand}
  */
 export function taggerHandler<PARAMS extends EditorOrReviewerParameters>(tagger: Tagger<PARAMS>,
-                                                                         factory: ParametersConstructor<PARAMS>,
+                                                                         factory: Maker<PARAMS>,
                                                                          name: string,
                                                                          details: Partial<TaggerCommandDetails<PARAMS>> = {}): HandleCommand {
     const detailsToUse: TaggerCommandDetails<PARAMS> = {

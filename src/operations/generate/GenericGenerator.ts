@@ -1,8 +1,8 @@
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { RedirectResult } from "../../HandlerResult";
-import { ParametersConstructor } from "../../onCommand";
 import { Project } from "../../project/Project";
+import { Maker, toFactory } from "../../util/constructionUtils";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { GitHubRepoRef } from "../common/GitHubRepoRef";
 import { RepoRef } from "../common/RepoId";
@@ -22,20 +22,20 @@ export class GenericGenerator<P extends BaseSeedDrivenGeneratorParameters>
     /**
      * Create a new generator instance, parameterizing it with parameters,
      * transform editor and redirect computation strategy
-     * @param {ParametersConstructor<P extends BaseSeedDrivenGeneratorParameters>} factory
+     * @param factory construction function
      * @param {(ctx: HandlerContext, params: P) => AnyProjectEditor<P extends BaseSeedDrivenGeneratorParameters>} editorFactory
      * @param {(r: RepoRef) => string} redirecter strategy function for determining what page to redirect to after project
      * creation
      * @param projectPersister function that knows how to persist repos we've created
      */
-    constructor(private factory: ParametersConstructor<P>,
+    constructor(private factory: Maker<P>,
                 private editorFactory: (params: P, ctx: HandlerContext) => AnyProjectEditor<P>,
                 private redirecter: (r: RepoRef) => string = () => undefined,
                 private projectPersister: ProjectPersister = RemoteGitProjectPersister) {
     }
 
     public freshParametersInstance(): P {
-        return new this.factory();
+        return toFactory(this.factory)();
     }
 
     public handle(ctx: HandlerContext, params: P): Promise<RedirectResult> {
