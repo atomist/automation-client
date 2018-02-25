@@ -21,26 +21,30 @@ import { EditResult, ProjectEditor, successfulEdit } from "../edit/projectEditor
  * set to true by the editor and the git status is not dirty, this is a developer error
  * which should result in a runtime error.
  * @param context handler context for this operation
- * @param repo repo id
+ * @param p project
  * @param editor editor to use
- * @param ei how to persist the edit
+ * @param editMode how to persist the edit
  * @param parameters to editor
  * @return EditResult instance that reports as to whether the project was actually edited
  */
 export function editRepo<P extends EditorOrReviewerParameters>(context: HandlerContext,
-                                                               repo: Project,
+                                                               p: Project,
                                                                editor: ProjectEditor<P>,
-                                                               ei: EditMode,
+                                                               editMode: EditMode,
                                                                parameters?: P): Promise<EditResult> {
-    if (isPullRequest(ei)) {
-        return editProjectUsingPullRequest(context, repo as GitProject, editor, ei, parameters);
-    } else if (isBranchCommit(ei)) {
-        return editProjectUsingBranch(context, repo as GitProject, editor, ei, parameters);
-    } else if (isCustomExecutionEditMode(ei)) {
-        return ei.edit(repo, editor, context, parameters);
+    const after = x => !!editMode.afterPersist ? editMode.afterPersist(p).then(() => x) : x;
+    if (isPullRequest(editMode)) {
+        return editProjectUsingPullRequest(context, p as GitProject, editor, editMode, parameters)
+            .then(after);
+    } else if (isBranchCommit(editMode)) {
+        return editProjectUsingBranch(context, p as GitProject, editor, editMode, parameters)
+            .then(after);
+    } else if (isCustomExecutionEditMode(editMode)) {
+        return editMode.edit(p, editor, context, parameters)
+            .then(after);
     } else {
         // No edit to do
-        return Promise.resolve(successfulEdit(repo, true));
+        return Promise.resolve(successfulEdit(p, true));
     }
 }
 
