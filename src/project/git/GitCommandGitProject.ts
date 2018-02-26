@@ -5,9 +5,11 @@ import {Project} from "../Project";
 
 import {ActionResult, successOn} from "../../action/ActionResult";
 import {CommandResult, runCommand} from "../../action/cli/commandLine";
+import {HandlerContext} from "../../HandlerContext";
 import {logger} from "../../internal/util/logger";
 import {ProjectOperationCredentials} from "../../operations/common/ProjectOperationCredentials";
 import {isRemoteRepoRef, RemoteRepoRef, RepoRef} from "../../operations/common/RepoId";
+import {CachingDirectoryManager} from "../../spi/clone/CachingDirectoryManager";
 import {
     CloneDirectoryInfo,
     CloneOptions,
@@ -18,8 +20,6 @@ import {TmpDirectoryManager} from "../../spi/clone/tmpDirectoryManager";
 import {NodeFsLocalProject} from "../local/NodeFsLocalProject";
 import {GitProject} from "./GitProject";
 import {GitStatus, runStatusIn} from "./gitStatus";
-import {HandlerContext} from "../../HandlerContext";
-import {CachingDirectoryManager} from "../../spi/clone/CachingDirectoryManager";
 
 export const DefaultDirectoryManager = TmpDirectoryManager;
 
@@ -77,7 +77,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                          directoryManager?: DirectoryManager): Promise<GitProject> {
         if (isClonedParameters(paramsOrCredentials)) {
             if (!paramsOrCredentials.context) {
-               logger.warn("Please pass the HandlerContext. It is deprecated not to; it lets us be faster")
+               logger.warn("Please pass the HandlerContext. It is deprecated not to; it lets us be faster");
             }
             return GitCommandGitProject.clonedImpl(paramsOrCredentials);
         } else {
@@ -290,7 +290,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 function clone(params: CloneParameters,
                secondTry: boolean = false): Promise<GitProject> {
     const id = params.id;
-    const directoryManager = params.directoryManager || (params.context ? CachingDirectoryManager: DefaultDirectoryManager );
+    const directoryManager = params.directoryManager || (params.context ? CachingDirectoryManager : DefaultDirectoryManager );
     return directoryManager.directoryFor(id.owner, id.repo, id.sha, params)
         .then(cloneDirectoryInfo => {
             if (params.context) {
