@@ -19,17 +19,18 @@ import {NodeFsLocalProject} from "../local/NodeFsLocalProject";
 import {GitProject} from "./GitProject";
 import {GitStatus, runStatusIn} from "./gitStatus";
 import {HandlerContext} from "../../HandlerContext";
+import {CachingDirectoryManager} from "../../spi/clone/CachingDirectoryManager";
 
 export const DefaultDirectoryManager = TmpDirectoryManager;
 
-export interface ClonedParameters extends CloneOptions {
+export interface CloneParameters extends CloneOptions {
     credentials: ProjectOperationCredentials;
     id: RemoteRepoRef;
     directoryManager?: DirectoryManager;
     context?: HandlerContext;
 }
 
-function isClonedParameters(p): p is ClonedParameters {
+function isClonedParameters(p): p is CloneParameters {
     return p.credentials && p.id;
 }
 
@@ -64,32 +65,39 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     /**
      * Create a new GitCommandGitProject by cloning the given remote project
-     * @param {ClonedParameters} params
+     *
+     * this is a temporary backwards-compatible version.
+     *
+     * @param {CloneParameters} params
      * all other parameters are deprecated!
      */
-    public static cloned(paramsOrCredentials: ClonedParameters | ProjectOperationCredentials,
+    public static cloned(paramsOrCredentials: CloneParameters | ProjectOperationCredentials,
                          id?: RemoteRepoRef,
                          opts?: CloneOptions,
                          directoryManager?: DirectoryManager): Promise<GitProject> {
         if (isClonedParameters(paramsOrCredentials)) {
+            if (!paramsOrCredentials.context) {
+               logger.warn("Please pass the HandlerContext. It is deprecated not to; it lets us be faster")
+            }
             return GitCommandGitProject.clonedImpl(paramsOrCredentials);
         } else {
+            logger.warn("deprecated use of GitCommandGitProject.cloned. Please use the parameter object");
             return GitCommandGitProject.clonedImpl({
                 credentials: paramsOrCredentials,
                 id,
                 ...opts,
                 directoryManager,
-            });x
+            });
         }
     }
 
-    public static clonedImpl(params: ClonedParameters): Promise<GitProject> {
+    public static clonedImpl(params: CloneParameters): Promise<GitProject> {
         const id = params.id;
         const opts = {...DefaultCloneOptions, ...params} as CloneOptions;
-        const directoryManager = params.directoryManager || DefaultDirectoryManager;
+        const directoryManager = params.directoryManager;
         const credentials = params.credentials;
 
-        return clone(credentials, id, opts, directoryManager)
+        return clone(params)
             .then(p => {
                 if (!!id.path) {
                     const pathInsideRepo = id.path.startsWith("/") ? id.path : "/" + id.path;
@@ -272,36 +280,42 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
 /**
  * Clone the given repo from GitHub
- * @param credentials git provider credentials
- * @param id remote repo ref
- * @param opts options for clone
- * @param directoryManager strategy for cloning
+ * @param params includes credentials: git provider credentials;
+ *  id: remote repo ref;
+ *  opts: options for clone;
+ *  directoryManager: strategy for cloning
+ *  context: if provided, we can use the CachingDirectoryManager
+ * @param secondTry this function is recursive
  */
-function clone(credentials: ProjectOperationCredentials,
-               id: RemoteRepoRef,
-               opts: CloneOptions,
-               directoryManager: DirectoryManager,
+function clone(params: CloneParameters,
                secondTry: boolean = false): Promise<GitProject> {
-    return directoryManager.directoryFor(id.owner, id.repo, id.sha, opts)
+    const id = params.id;
+    const directoryManager = params.directoryManager || (params.context ? CachingDirectoryManager: DefaultDirectoryManager );
+    return directoryManager.directoryFor(id.owner, id.repo, id.sha, params)
         .then(cloneDirectoryInfo => {
+            if (params.context) {
+                // if they passed in the context, we can make sure the directory gets released after the handler completes.
+                // This lets us use CachingDirectoryManager.
+                params.context.lifecycle.registerDisposable(() => cloneDirectoryInfo.release());
+            }
             switch (cloneDirectoryInfo.type) {
                 case "empty-directory":
-                    return cloneInto(credentials, cloneDirectoryInfo, opts, id);
+                    return cloneInto(params.credentials, cloneDirectoryInfo, params, id);
                 case "existing-directory":
                     const repoDir = cloneDirectoryInfo.path;
-                    return resetOrigin(repoDir, credentials, id)
+                    return resetOrigin(repoDir, params.credentials, id)
                         .then(() => checkout(repoDir, id.sha))
                         .then(() => clean(repoDir))
                         .then(() => {
                             return GitCommandGitProject.fromBaseDir(id,
-                                repoDir, credentials, cloneDirectoryInfo.release,
+                                repoDir, params.credentials, cloneDirectoryInfo.release,
                                 cloneDirectoryInfo.provenance + "\nRe-using existing clone");
                         }, error => {
                             return cloneDirectoryInfo.invalidate().then(() => {
                                 if (secondTry) {
                                     throw error;
                                 } else {
-                                    return clone(credentials, id, opts, directoryManager, true);
+                                    return clone(params, true);
                                 }
                             });
                         });
