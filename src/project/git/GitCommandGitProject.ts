@@ -1,25 +1,37 @@
-import { exec } from "child-process-promise";
+import {exec} from "child-process-promise";
 
-import { isLocalProject, ReleaseFunction } from "../local/LocalProject";
-import { Project } from "../Project";
+import {isLocalProject, ReleaseFunction} from "../local/LocalProject";
+import {Project} from "../Project";
 
-import { ActionResult, successOn } from "../../action/ActionResult";
-import { CommandResult, runCommand } from "../../action/cli/commandLine";
-import { logger } from "../../internal/util/logger";
-import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
-import { isRemoteRepoRef, RemoteRepoRef, RepoRef } from "../../operations/common/RepoId";
+import {ActionResult, successOn} from "../../action/ActionResult";
+import {CommandResult, runCommand} from "../../action/cli/commandLine";
+import {logger} from "../../internal/util/logger";
+import {ProjectOperationCredentials} from "../../operations/common/ProjectOperationCredentials";
+import {isRemoteRepoRef, RemoteRepoRef, RepoRef} from "../../operations/common/RepoId";
 import {
     CloneDirectoryInfo,
     CloneOptions,
     DefaultCloneOptions,
     DirectoryManager,
 } from "../../spi/clone/DirectoryManager";
-import { TmpDirectoryManager } from "../../spi/clone/tmpDirectoryManager";
-import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
-import { GitProject } from "./GitProject";
-import { GitStatus, runStatusIn } from "./gitStatus";
+import {TmpDirectoryManager} from "../../spi/clone/tmpDirectoryManager";
+import {NodeFsLocalProject} from "../local/NodeFsLocalProject";
+import {GitProject} from "./GitProject";
+import {GitStatus, runStatusIn} from "./gitStatus";
+import {HandlerContext} from "../../HandlerContext";
 
 export const DefaultDirectoryManager = TmpDirectoryManager;
+
+export interface ClonedParameters extends CloneOptions {
+    credentials: ProjectOperationCredentials;
+    id: RemoteRepoRef;
+    directoryManager?: DirectoryManager;
+    context?: HandlerContext;
+}
+
+function isClonedParameters(p): p is ClonedParameters {
+    return p.credentials && p.id;
+}
 
 /**
  * Implements GitProject interface using the Git binary from the command line.
@@ -52,16 +64,31 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     /**
      * Create a new GitCommandGitProject by cloning the given remote project
-     * @param {ProjectOperationCredentials} credentials
-     * @param {RemoteRepoRef} id
-     * @param {CloneOptions} opts
-     * @param {DirectoryManager} directoryManager
-     * @return {Promise<GitCommandGitProject>}
+     * @param {ClonedParameters} params
+     * all other parameters are deprecated!
      */
-    public static cloned(credentials: ProjectOperationCredentials,
-                         id: RemoteRepoRef,
-                         opts: CloneOptions = DefaultCloneOptions,
-                         directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitProject> {
+    public static cloned(paramsOrCredentials: ClonedParameters | ProjectOperationCredentials,
+                         id?: RemoteRepoRef,
+                         opts?: CloneOptions,
+                         directoryManager?: DirectoryManager): Promise<GitProject> {
+        if (isClonedParameters(paramsOrCredentials)) {
+            return GitCommandGitProject.clonedImpl(paramsOrCredentials);
+        } else {
+            return GitCommandGitProject.clonedImpl({
+                credentials: paramsOrCredentials,
+                id,
+                ...opts,
+                directoryManager,
+            });x
+        }
+    }
+
+    public static clonedImpl(params: ClonedParameters): Promise<GitProject> {
+        const id = params.id;
+        const opts = {...DefaultCloneOptions, ...params} as CloneOptions;
+        const directoryManager = params.directoryManager || DefaultDirectoryManager;
+        const credentials = params.credentials;
+
         return clone(credentials, id, opts, directoryManager)
             .then(p => {
                 if (!!id.path) {
@@ -232,7 +259,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     private runCommandInCurrentWorkingDirectory(cmd: string): Promise<CommandResult<this>> {
-        return runCommand(cmd, { cwd: this.baseDir })
+        return runCommand(cmd, {cwd: this.baseDir})
             .then(result => {
                 return {
                     target: this,
@@ -323,10 +350,10 @@ function clean(repoDir: string) {
 }
 
 function runIn(baseDir: string, command: string) {
-    return runCommand(command, { cwd: baseDir });
+    return runCommand(command, {cwd: baseDir});
 }
 
 function pwd(baseDir) {
-    return runCommand("pwd", { cwd: baseDir }).then(result =>
+    return runCommand("pwd", {cwd: baseDir}).then(result =>
         console.log(result.stdout));
 }
