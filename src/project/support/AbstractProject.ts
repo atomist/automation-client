@@ -25,6 +25,8 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
      */
     public abstract findFile(path: string): Promise<File>;
 
+    public abstract getFile(path: string): Promise<File | undefined>;
+
     public abstract findFileSync(path: string): File;
 
     public streamFiles(...globPatterns: string[]): FileStream {

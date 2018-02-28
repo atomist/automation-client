@@ -21,6 +21,19 @@ describe("InMemoryProject", () => {
         assert(f === undefined);
     });
 
+    it("getFile: existing file", async () => {
+        const thisProject = InMemoryProject.of({ path: "package.json", content: "{ node: true }" });
+        const f = await thisProject.getFile("package.json");
+        const content = await f.getContent();
+        assert(content.indexOf("node") !== -1);
+    });
+
+    it("getFile: no such file", async () => {
+        const thisProject = InMemoryProject.of({ path: "package.json", content: "{ node: true }" });
+        const f = await thisProject.getFile("xxxxpackage.json");
+        assert(f === undefined);
+    });
+
     it("fileExistsSync: existing file", () => {
         const thisProject = InMemoryProject.of({ path: "package.json", content: "{ node: true }" });
         assert(thisProject.fileExistsSync("package.json"));

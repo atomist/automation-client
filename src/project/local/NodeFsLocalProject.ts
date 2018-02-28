@@ -43,11 +43,9 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
      * @param cleanup
      * @returns {LocalProject}
      */
-    public static copy(
-        other: Project,
-        baseDir: string,
-        cleanup: ReleaseFunction = () => Promise.resolve(),
-    ): Promise<LocalProject> {
+    public static copy(other: Project,
+                       baseDir: string,
+                       cleanup: ReleaseFunction = () => Promise.resolve()): Promise<LocalProject> {
 
         return fs.ensureDir(baseDir)
             .then(() => {
@@ -179,7 +177,13 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
             .then(exists => exists ?
                 Promise.resolve(new NodeFsLocalFile(this.baseDir, path)) :
                 Promise.reject(fileNotFound(path)),
-        );
+            );
+    }
+
+    public async getFile(path: string): Promise<File> {
+        const exists = await fs.pathExists(this.baseDir + "/" + path);
+        return exists ? new NodeFsLocalFile(this.baseDir, path) :
+            undefined;
     }
 
     public findFileSync(path: string): File {
@@ -192,7 +196,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
     public streamFilesRaw(globPatterns: string[], opts: {}): FileStream {
         // Fight arrow function "this" issue
         const baseDir = this.baseDir;
-        const toFileTransform = new stream.Transform({ objectMode: true });
+        const toFileTransform = new stream.Transform({objectMode: true});
 
         toFileTransform._transform = function(chunk, encoding, done) {
             const f = new NodeFsLocalFile(baseDir, pathWithinArchive(baseDir, chunk.path));

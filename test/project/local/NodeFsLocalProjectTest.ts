@@ -132,7 +132,16 @@ describe("NodeFsLocalProject", () => {
 
     it("findFile: no such file", done => {
         thisProject.findFile("xxxxpackage.json")
-            .then(() => assert(false, "found nonexistant file"), err => assert(true, "no file"))
+            .then(() => assert(false, "found nonexistent file"), err => assert(true, "no file"))
+            .then(() => done(), done);
+    });
+
+    it("getFile: no such file", done => {
+        thisProject.getFile("xxxxpackage.json")
+            .then(f => {
+                console.log("File is " + f);
+                assert(f === undefined);
+            })
             .then(() => done(), done);
     });
 
@@ -141,6 +150,12 @@ describe("NodeFsLocalProject", () => {
             .then(f => {
                 assert(f.path === "package.json");
             })
+            .then(() => done(), done);
+    });
+
+    it("getFile: existing file", done => {
+        thisProject.getFile("package.json")
+            .then(f => assert(!!f))
             .then(() => done(), done);
     });
 

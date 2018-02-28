@@ -70,6 +70,10 @@ export class InMemoryProject extends AbstractProject {
         return file ? Promise.resolve(file) : Promise.reject(`File not found at ${path}`);
     }
 
+    public async getFile(path: string): Promise<File> {
+        return this.memFiles.find(f => f.path === path);
+    }
+
     public findFileSync(path: string): File {
         return this.memFiles.find(f => f.path === path);
     }

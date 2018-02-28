@@ -106,11 +106,21 @@ export interface ProjectAsync extends ProjectCore, ScriptedFlushable<Project> {
     totalFileCount(): Promise<number>;
 
     /**
-     * Use then or catch, dependending on whether the file exists
+     * Attempt to find a file.
+     * Use then or catch, depending on whether the file exists.
+     * You may well want getFile, which returns a Promise of the file or undefined.
      * @param {string} path
      * @return {Promise<File>}
      */
     findFile(path: string): Promise<File>;
+
+    /**
+     * Attempt to find a file.
+     * Never throws an exception, returns undefined
+     * @param {string} path
+     * @return {Promise<File>}
+     */
+    getFile(path: string): Promise<File | undefined>;
 
     /**
      * Add a file preserving permissions
