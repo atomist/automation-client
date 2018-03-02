@@ -27,7 +27,8 @@ export const configuration: Configuration = {
     events: [
         // HelloCircle,
         // GitLabPush,
-        HelloWorldIngester,
+        () => new HelloWorldIngester(),
+        () => new HelloWorldIngester(),
         // ...scanEvents("**/event/*.js"),
     ],
     ingesters: [

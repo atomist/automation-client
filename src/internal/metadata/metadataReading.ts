@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+import * as shortId from "shortid";
 import * as GraphQL from "../../graph/graphQL";
 import { HandleCommand } from "../../HandleCommand";
 import {
@@ -77,7 +78,10 @@ function metadataFromDecorator(h: any, params: any): CommandHandlerMetadata | Ev
             };
         case "event-handler":
             // Remove any linebreaks and spaces from those subscription
-            const subscription = GraphQL.inlineQuery(GraphQL.replaceOperationName(params.__subscription, h.__name));
+            const name = `${h.__name}_${shortId.generate().split("-")
+                .join(Math.floor(Math.random() * 10)).split("_").join(Math.floor(Math.random() * 10))}`;
+            // const name = `${h.__name};
+            const subscription = GraphQL.inlineQuery(GraphQL.replaceOperationName(params.__subscription, name));
             const subscriptionName = GraphQL.operationName(subscription);
 
             return {

@@ -42,7 +42,7 @@ export class AddAtomistSpringAgent implements HandleCommand {
     }
 }
 
-@EventHandler("Always returns OK", "subscription Foo {Issue { name } }")
+@EventHandler("Always returns OK", "subscription Foo { Issue { name } }")
 @Tags("thing")
 export class AlwaysOkEventHandler implements HandleEvent<any> {
 
@@ -51,7 +51,7 @@ export class AlwaysOkEventHandler implements HandleEvent<any> {
     }
 }
 
-@EventHandler("OK only if mySecret is populated", "subscription Foo {Issue { name } }")
+@EventHandler("OK only if mySecret is populated", "subscription Foo { Issue { name } }")
 @Tags("thing")
 export class TrustMeIGaveMySecret implements HandleEvent<any> {
 
