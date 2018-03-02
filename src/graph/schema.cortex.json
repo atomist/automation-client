@@ -8363,25 +8363,45 @@
                   "name": "id",
                   "description": "The ID of this Card",
                   "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID"
-                    }
+                    "kind": "SCALAR",
+                    "name": "ID"
                   }
                 },
                 {
-                  "name": "id",
+                  "name": "_offset",
+                  "description": "Paging offset (default 0)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int"
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_first",
+                  "description": "Return the first X results (default 10)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int"
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_orderBy",
+                  "description": "Name of property to sort on",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String"
                   },
-                  "directives": [
-                    {
-                      "name": "compositeId"
-                    }
-                  ]
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ordering",
+                  "description": "Direction of ordering",
+                  "defaultValue": null,
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "_Ordering"
+                  }
                 },
                 {
                   "name": "ts",
@@ -8399,6 +8419,33 @@
                 },
                 {
                   "name": "post",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "key",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  },
+                  "description": "Key of the Card",
+                  "directives": [
+                    {
+                      "name": "compositeId"
+                    }
+                  ]
+                },
+                {
+                  "name": "type",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "shortTitle",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String"
@@ -11428,6 +11475,105 @@
                   "name": "ChannelLink",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webhook",
+              "description": "Repo webhook Webhook",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Webhook",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "url",
+                  "description": "url of Webhook",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "webhookType",
+                  "description": "webhookType of Webhook",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "WebhookType",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Webhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "urls",
+                  "description": "urls is list variant of url of Webhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "webhookTypes",
+                  "description": "webhookTypes is list variant of webhookType of Webhook",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "WebhookType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_WebhookOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Webhook",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -19658,6 +19804,225 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Org",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "repo",
+              "description": "Webhook repo Repo",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "id of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "owner",
+                  "description": "owner of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": "name of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowRebaseMerge",
+                  "description": "allowRebaseMerge of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowSquashMerge",
+                  "description": "allowSquashMerge of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowMergeCommit",
+                  "description": "allowMergeCommit of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubId",
+                  "description": "gitHubId of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "defaultBranch",
+                  "description": "defaultBranch of Repo",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "ids",
+                  "description": "ids is list variant of id of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "owners",
+                  "description": "owners is list variant of owner of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "names",
+                  "description": "names is list variant of name of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowRebaseMerges",
+                  "description": "allowRebaseMerges is list variant of allowRebaseMerge of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowSquashMerges",
+                  "description": "allowSquashMerges is list variant of allowSquashMerge of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "allowMergeCommits",
+                  "description": "allowMergeCommits is list variant of allowMergeCommit of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "gitHubIds",
+                  "description": "gitHubIds is list variant of gitHubId of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "defaultBranchs",
+                  "description": "defaultBranchs is list variant of defaultBranch of Repo",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "orderBy",
+                  "description": null,
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "_RepoOrdering",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Repo",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -43543,19 +43908,27 @@
           "possibleTypes": null,
           "fields": [
             {
-              "name": "setChatTeamPreference",
-              "description": "Set the value of a chat team preference. Returns what was set",
+              "name": "setChatUserPreference",
+              "description": "Set the value of a user preference.",
               "type": {
                 "kind": "LIST",
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "TeamPreference"
+                  "name": "UserPreference"
                 }
               },
               "args": [
                 {
                   "name": "chatTeamId",
                   "description": "The ID of the chat team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "chatUserId",
+                  "description": "The id of user",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String"
@@ -43580,27 +43953,19 @@
               ]
             },
             {
-              "name": "setChatUserPreference",
-              "description": "Set the value of a user preference.",
+              "name": "setChatTeamPreference",
+              "description": "Set the value of a chat team preference. Returns what was set",
               "type": {
                 "kind": "LIST",
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "UserPreference"
+                  "name": "TeamPreference"
                 }
               },
               "args": [
                 {
                   "name": "chatTeamId",
                   "description": "The ID of the chat team",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
-                  }
-                },
-                {
-                  "name": "chatUserId",
-                  "description": "The id of user",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String"
@@ -43820,6 +44185,48 @@
                 "name": "OwnerLogin"
               },
               "args": [
+                {
+                  "name": "owner",
+                  "description": "The owner name for the Organization/Team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "providerId",
+                  "description": "The id of the Git provider for this Owner",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "login",
+                  "description": "The login that should be used",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "setRepoLogin",
+              "description": "set a GitHub login to be used for this Repository",
+              "type": {
+                "kind": "OBJECT",
+                "name": "RepoLogin"
+              },
+              "args": [
+                {
+                  "name": "repo",
+                  "description": "The owner name for the Organization/Team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
                 {
                   "name": "owner",
                   "description": "The owner name for the Organization/Team",
@@ -44596,8 +45003,696 @@
         },
         {
           "kind": "OBJECT",
-          "name": "TeamPreference",
-          "description": "A team's preferences as key/value pairs",
+          "name": "CardRepository",
+          "fields": [
+            {
+              "name": "owner",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "name",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardCollaborator",
+          "fields": [
+            {
+              "name": "avatar",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "login",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "link",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Card",
+          "fields": [
+            {
+              "name": "ts",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int"
+              },
+              "args": []
+            },
+            {
+              "name": "ttl",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int"
+              },
+              "args": []
+            },
+            {
+              "name": "post",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "key",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "description": "Key of the Card",
+              "directives": [
+                {
+                  "name": "compositeId"
+                }
+              ],
+              "args": []
+            },
+            {
+              "name": "repository",
+              "args": [
+                {
+                  "name": "owner",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CardRepository"
+              },
+              "description": "Repository this card was created for"
+            },
+            {
+              "name": "type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "shortTitle",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "title",
+              "type": {
+                "kind": "OBJECT",
+                "name": "CardTitle"
+              },
+              "args": []
+            },
+            {
+              "name": "body",
+              "type": {
+                "kind": "OBJECT",
+                "name": "CardBody"
+              },
+              "args": []
+            },
+            {
+              "name": "correlations",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardCorrelation"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "collaborators",
+              "args": [
+                {
+                  "name": "login",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardCollaborator"
+                }
+              },
+              "description": "Collaborator on this card"
+            },
+            {
+              "name": "events",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardEvent"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "actions",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardAction"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "actionGroups",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardActionGroup"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "comments",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardBody"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "reactions",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardReaction"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "id",
+              "description": "The ID of this Card",
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardTitle",
+          "fields": [
+            {
+              "name": "icon",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "text",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardBody",
+          "fields": [
+            {
+              "name": "avatar",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "login",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "text",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "hint",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "ts",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardReaction",
+          "fields": [
+            {
+              "name": "avatar",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "login",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "reaction",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardCorrelation",
+          "fields": [
+            {
+              "name": "type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "icon",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "title",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "shortTitle",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "link",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "body",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CorrelationBody"
+                }
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CorrelationBody",
+          "fields": [
+            {
+              "name": "icon",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "text",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardEvent",
+          "fields": [
+            {
+              "name": "icon",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "text",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "ts",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int"
+              },
+              "args": []
+            },
+            {
+              "name": "actions",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardAction"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "actionGroups",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardActionGroup"
+                }
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardAction",
+          "fields": [
+            {
+              "name": "text",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "registration",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "command",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "role",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "parameters",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardActionParameter"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "parameterName",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "parameterOptions",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardActionParameterOption"
+                }
+              },
+              "args": []
+            },
+            {
+              "name": "parameterOptionGroups",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardActionParameterOptionGroup"
+                }
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardActionGroup",
+          "fields": [
+            {
+              "name": "actions",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardAction"
+                }
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardActionParameter",
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "value",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardActionParameterOption",
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "value",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CardActionParameterOptionGroup",
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
+              "name": "options",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CardActionParameterOption"
+                }
+              },
+              "args": []
+            }
+          ],
+          "interfaces": []
+        },
+        {
+          "kind": "ENUM",
+          "name": "_Ordering",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "description": "asc or desc ordering. Must be used with orderBy",
+          "enumValues": [
+            {
+              "name": "desc",
+              "description": "Descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "asc",
+              "description": "Ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ]
+        },
+        {
+          "kind": "OBJECT",
+          "name": "UserPreference",
+          "description": "A user's preferences as key/value pairs",
           "interfaces": [],
           "fields": [
             {
@@ -44622,8 +45717,8 @@
         },
         {
           "kind": "OBJECT",
-          "name": "UserPreference",
-          "description": "A user's preferences as key/value pairs",
+          "name": "TeamPreference",
+          "description": "A team's preferences as key/value pairs",
           "interfaces": [],
           "fields": [
             {
@@ -52984,7 +54079,7 @@
             },
             {
               "name": "Card",
-              "description": "Auto-generated subscription for Card",
+              "description": "Auto-generated query for Card",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -52993,7 +54088,100 @@
                   "name": "Card"
                 }
               },
-              "args": []
+              "args": [
+                {
+                  "name": "id",
+                  "description": "The ID of this Card",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID"
+                  }
+                },
+                {
+                  "name": "_offset",
+                  "description": "Paging offset (default 0)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int"
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_first",
+                  "description": "Return the first X results (default 10)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int"
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_orderBy",
+                  "description": "Name of property to sort on",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "_ordering",
+                  "description": "Direction of ordering",
+                  "defaultValue": null,
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "_Ordering"
+                  }
+                },
+                {
+                  "name": "ts",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int"
+                  }
+                },
+                {
+                  "name": "ttl",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int"
+                  }
+                },
+                {
+                  "name": "post",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "key",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  },
+                  "description": "Key of the Card",
+                  "directives": [
+                    {
+                      "name": "compositeId"
+                    }
+                  ]
+                },
+                {
+                  "name": "type",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "shortTitle",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                }
+              ]
             }
           ],
           "inputFields": null,
@@ -53038,523 +54226,54 @@
         },
         {
           "kind": "OBJECT",
-          "name": "Card",
-          "fields": [
-            {
-              "name": "id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "directives": [
-                {
-                  "name": "compositeId"
-                }
-              ],
-              "args": []
-            },
-            {
-              "name": "ts",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int"
-              },
-              "args": []
-            },
-            {
-              "name": "ttl",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int"
-              },
-              "args": []
-            },
-            {
-              "name": "post",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "title",
-              "type": {
-                "kind": "OBJECT",
-                "name": "CardTitle"
-              },
-              "args": []
-            },
-            {
-              "name": "body",
-              "type": {
-                "kind": "OBJECT",
-                "name": "CardBody"
-              },
-              "args": []
-            },
-            {
-              "name": "correlations",
-              "type": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CardCorrelation"
-                }
-              },
-              "args": []
-            },
-            {
-              "name": "collaborators",
-              "type": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CardCollaborator"
-                }
-              },
-              "args": []
-            },
-            {
-              "name": "events",
-              "type": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CardEvent"
-                }
-              },
-              "args": []
-            },
-            {
-              "name": "actions",
-              "type": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CardAction"
-                }
-              },
-              "args": []
-            },
-            {
-              "name": "actionGroups",
-              "type": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CardActionGroup"
-                }
-              },
-              "args": []
-            },
-            {
-              "name": "id",
-              "description": "The ID of this Card",
-              "type": {
-                "kind": "SCALAR",
-                "name": "ID"
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CardTitle",
-          "fields": [
-            {
-              "name": "icon",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "text",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CardBody",
-          "fields": [
-            {
-              "name": "avatar",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "login",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "text",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "hint",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CardCollaborator",
-          "fields": [
-            {
-              "name": "avatar",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "login",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "link",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CardCorrelation",
-          "fields": [
-            {
-              "name": "type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "icon",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "title",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "link",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "body",
-              "type": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CorrelationBody"
-                }
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CorrelationBody",
-          "fields": [
-            {
-              "name": "icon",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "text",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CardEvent",
-          "fields": [
-            {
-              "name": "icon",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "text",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "ts",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int"
-              },
-              "args": []
-            },
-            {
-              "name": "actions",
-              "type": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CardAction"
-                }
-              },
-              "args": []
-            },
-            {
-              "name": "actionGroups",
-              "type": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CardActionGroup"
-                }
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CardAction",
-          "fields": [
-            {
-              "name": "text",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "registration",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "command",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "parameters",
-              "type": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CardActionParameter"
-                }
-              },
-              "args": []
-            },
-            {
-              "name": "parameterName",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "parameterOptions",
-              "type": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CardActionParameterOption"
-                }
-              },
-              "args": []
-            },
-            {
-              "name": "parameterOptionGroups",
-              "type": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CardActionParameterOptionGroup"
-                }
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CardActionGroup",
-          "fields": [
-            {
-              "name": "actions",
-              "type": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CardAction"
-                }
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CardActionParameter",
-          "fields": [
-            {
-              "name": "name",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "value",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CardActionParameterOption",
-          "fields": [
-            {
-              "name": "name",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "value",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
-          "name": "CardActionParameterOptionGroup",
-          "fields": [
-            {
-              "name": "name",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String"
-              },
-              "args": []
-            },
-            {
-              "name": "options",
-              "type": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CardActionParameterOption"
-                }
-              },
-              "args": []
-            }
-          ],
-          "interfaces": []
-        },
-        {
-          "kind": "OBJECT",
           "name": "OwnerLogin",
           "description": "a GitHub Owner (like an Org) can set a login to be used for background tasks",
           "interfaces": [],
           "fields": [
+            {
+              "name": "owner",
+              "description": "The owner name for the Organization/Team",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            {
+              "name": "providerId",
+              "description": "The id of the git provider for this Owner",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            {
+              "name": "login",
+              "description": "The login that should be used",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "OBJECT",
+          "name": "RepoLogin",
+          "description": "a GitHub Owner (like an Org) can set a login to be used for background tasks",
+          "interfaces": [],
+          "fields": [
+            {
+              "name": "repo",
+              "description": "The repository name",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
             {
               "name": "owner",
               "description": "The owner name for the Organization/Team",
@@ -53694,6 +54413,6 @@
     }
   },
   "extensions": {
-    "correlation_id": "08d8764f-e97d-4f73-a6d3-bddacc70ef8e"
+    "correlation_id": "3ebbeb1f-ac7b-4e0f-8f80-e0105ae5ec6d"
   }
 }
