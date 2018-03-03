@@ -19,6 +19,7 @@ export interface BaseParameter {
     readonly type?: ParameterType;
     readonly order?: number;
     readonly group?: Group;
+    readonly control?: "input" | "textarea";
 }
 
 export interface Parameter extends BaseParameter {

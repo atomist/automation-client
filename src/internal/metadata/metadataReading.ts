@@ -131,6 +131,7 @@ function directParameters(r: any, prefix: string) {
             default_value: r[p.name],
             display_name: p.displayName ? p.displayName : nameToUse,
             order: p.order,
+            control: p.control,
         };
 
         // Make this optional parameter explicit

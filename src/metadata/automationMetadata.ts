@@ -42,7 +42,6 @@ export interface Parameter {
 
     displayable?: boolean;
 
-    // TODO why does this come back wrong in annotation?
     valid_input?: string;
     max_length?: number;
     min_length?: number;
@@ -59,6 +58,8 @@ export interface Parameter {
     tags?: string[];
 
     order?: number;
+
+    control?: "input" | "textarea";
 }
 
 /**

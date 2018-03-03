@@ -19,7 +19,7 @@ import { SecretBaseHandler } from "./SecretBaseHandler";
 @ConfigurableCommandHandler("Send a hello back to the client", { intent: "hello cd", autoSubmit: true })
 export class HelloWorld extends SecretBaseHandler implements HandleCommand {
 
-    @Parameter({ description: "Name of person the greeting should be send to", pattern: /^.*$/ })
+    @Parameter({ description: "Name of person the greeting should be send to", pattern: /^.*$/, control: "textarea" })
     public name: string;
 
     @MappedParameter(MappedParameters.SlackUserName)
