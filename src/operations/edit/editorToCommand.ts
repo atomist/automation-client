@@ -69,7 +69,9 @@ function handleEditOneOrMany<PARAMS extends BaseEditorOrReviewerParameters>(pe: 
                 parameters,
                 !!details.repoLoader ? details.repoLoader(parameters) : undefined);
         }
-        return editAll(ctx, credentials, pe(parameters), details.editMode, parameters,
+        return editAll(ctx, credentials, pe(parameters),
+            editModeFor(details.editMode, parameters),
+            parameters,
             details.repoFinder,
             andFilter(parameters.targets.test, details.repoFilter),
             !!details.repoLoader ? details.repoLoader(parameters) : undefined);
