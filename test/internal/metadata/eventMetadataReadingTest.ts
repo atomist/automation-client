@@ -9,7 +9,7 @@ describe("class style event metadata reading", () => {
 
     it("should extract metadataFromInstance from event handler", () => {
         const md = metadataFromInstance(new HelloIssue()) as EventHandlerMetadata;
-        assert(md.subscriptionName.startsWith("HelloIssue_"));
+        assert(md.subscriptionName === "HelloIssue");
     });
 
 });
