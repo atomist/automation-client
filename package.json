@@ -67,7 +67,6 @@
     "proper-lockfile": "^2.0.1",
     "serialize-error": "^2.1.0",
     "shelljs": "^0.8.1",
-    "shortid": "^2.2.8",
     "stream-spigot": "^3.0.6",
     "tmp-promise": "^1.0.4",
     "utf8": "^3.0.0",
