@@ -244,26 +244,11 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
                 if (error.response && error.response.status === 409) {
                     logger.error(`Registration failed because a session for ${nameVersion} is already active`);
                     retry(error);
-                } else if (error.response && error.response.status === 400) {
-                    logger.error(`Registration payload for ${nameVersion} was invalid`);
-                    process.exit(1);
-                } else if (error.response
-                    && (error.response.status === 401)) {
-                    const furtherInfo = error.response.data ? `\nFurther information: ${error.response.data}` : "";
-                    logger.error(
-                        `Authentication failed for ${nameVersion} in teams ${registrationPayload.team_ids}` +
-                        furtherInfo);
-                    process.exit(1);
-                } else if (error.response
-                    && (error.response.status === 403)) {
-                    const furtherInfo = error.response.data ? `\nFurther information: ${error.response.data}` : "";
-                    logger.error(
-                        `Authorization failed for ${nameVersion} in teams ${registrationPayload.team_ids}.
-This could be caused by:
-- The Atomist app has not been authorized in the Slack team
-- You are not a member of each GitHub organization associated with the Slack team
-- Your GitHub token doesn't provide org:read permissions` +
-                        furtherInfo);
+                } else if (error.response && (error.response.status === 400
+                        || error.response.status === 401
+                        || error.response.status === 403)) {
+                    logger.error(`Registration failed with code '%s': '%s'`,
+                        error.response.status,  error.response.data);
                     process.exit(1);
                 } else {
                     logger.error("Registration failed with '%s'", error);

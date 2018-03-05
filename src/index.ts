@@ -39,3 +39,9 @@ import * as GraphQL from "./graph/graphQL";
 export { GraphQL };
 
 export { logger } from "./internal/util/logger";
+
+export {
+    type,
+    IngesterBuilder,
+    ingester,
+} from "./ingesters";

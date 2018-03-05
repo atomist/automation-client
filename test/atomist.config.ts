@@ -1,5 +1,5 @@
 import { Configuration } from "../src/configuration";
-import { ingester, type } from "../src/ingesters";
+import { ingester, IngesterBuilder, type } from "../src/ingesters";
 import { FileMessageTest } from "./command/FileMessageTest";
 import { HelloWorld } from "./command/HelloWorld";
 import { MessageTest } from "./command/MessageTest";

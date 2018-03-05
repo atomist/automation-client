@@ -190,11 +190,17 @@ export class TypeBuilder {
                 if (refType) {
                     const refFieldType = refType.fields.find(fi => fi.name as any === a);
                     if (refFieldType) {
-                        return {
+                        if (refFieldType.type.kind === "OBJECT") {
+                            throw new Error(
+                                `Referenced type '${f.type.name}' in arg '${a}' is of type OBJECT. Only SCALAR is supports as args`);
+                        }
+                        const argsType = {
                             ...refFieldType,
                             // TODO what are those default values
                             defaultValue: null,
                         };
+                        delete argsType.args;
+                        return argsType;
                     }
                 }
                 throw new Error(
