@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.6.6...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.7.0...HEAD
+
+## [0.7.0][] - 2018-03-07
+
+[0.7.0]: https://github.com/atomist/automation-client-ts/compare/0.6.6...0.7.0
+
+Card release
 
 ### Added
 
@@ -16,7 +22,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Deprecated
 
--   config --slack-team command-line option, use --team instead
+-   config --slack-team command-line option, use --team instead [#234][234]
+
+[234]: https://github.com/atomist/automation-client-ts/issues/234
 
 ## [0.6.6][] - 2018-01-31
 
