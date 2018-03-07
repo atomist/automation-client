@@ -7,6 +7,7 @@ import {
     HandlerResult,
     Secret, Secrets,
 } from "../../src/index";
+import { EventHandlerMetadata } from "../../src/metadata/automationMetadata";
 import { addressSlackChannels } from "../../src/spi/message/MessageClient";
 
 @EventHandler("Notify channel on new issue", `subscription BlaBla
@@ -52,5 +53,35 @@ export class HelloIssue implements HandleEvent<any> {
             .then(() => {
                 return Promise.resolve({ code: 0 });
             });
+    }
+}
+
+export class HelloIssueViaProperties implements HandleEvent<any>, EventHandlerMetadata {
+
+    public name = "HelloIssueViaProperties";
+    public description = "";
+    public subscriptionName = "BlaBla";
+    public subscription  = `subscription BlaBla
+{
+  Issue {
+    number
+    title
+    repo {
+      owner
+      name
+      channels {
+        name
+      }
+      org {
+        provider {
+          apiUrl
+        }
+      }
+    }
+  }
+}`;
+
+    public handle(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult> {
+        return null;
     }
 }

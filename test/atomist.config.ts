@@ -3,6 +3,7 @@ import { ingester, IngesterBuilder, type } from "../src/ingesters";
 import { FileMessageTest } from "./command/FileMessageTest";
 import { HelloWorld } from "./command/HelloWorld";
 import { MessageTest } from "./command/MessageTest";
+import { HelloIssueViaProperties } from "./event/HelloIssue";
 import { HelloWorldIngester } from "./event/HelloWorld";
 
 // const host = "https://automation.atomist.com";
@@ -27,7 +28,8 @@ export const configuration: Configuration = {
     events: [
         // HelloCircle,
         // GitLabPush,
-        HelloWorldIngester,
+        // HelloWorldIngester,
+        HelloIssueViaProperties,
         // ...scanEvents("**/event/*.js"),
     ],
     ingesters: [
