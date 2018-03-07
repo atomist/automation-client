@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.6.6...HEAD
 
+### Added
+
+-   Variable parameters in subscriptions
+-   Card support
+
 ### Deprecated
 
 -   config --slack-team command-line option, use --team instead
