@@ -30,13 +30,9 @@ function createGitHubToken(user: string, password: string, mfa?: string): Promis
     });
 }
 
-function badSlackTeamMessage(teamId: string): string {
-    return `The Slack team ID you entered should start with 'T' but does not: ${teamId}`;
-}
-
 export function cliAtomistConfig(argv: any): Promise<number> {
 
-    const argSlackTeamId: string = argv["slack-team"];
+    const argTeamId: string = argv.team;
     const argGitHubUser: string = argv["github-user"];
     const argGitHubPassword: string = argv["github-password"];
     const argGitHubMfaToken: string = argv["github-mfa-token"];
@@ -46,15 +42,13 @@ export function cliAtomistConfig(argv: any): Promise<number> {
     if (!userConfig.teamIds) {
         userConfig.teamIds = [];
     }
-    if (userConfig.token && userConfig.teamIds.length > 0 && !argSlackTeamId) {
+    if (userConfig.token && userConfig.teamIds.length > 0 && !argTeamId) {
         console.log(`Existing configuration is valid and no team supplied, exiting`);
         return Promise.resolve(0);
     }
-    if (argSlackTeamId) {
-        if (argSlackTeamId.indexOf("T") !== 0) {
-            console.warn(badSlackTeamMessage(argSlackTeamId));
-        } else if (!userConfig.teamIds.includes(argSlackTeamId)) {
-            userConfig.teamIds.push(argSlackTeamId);
+    if (argTeamId) {
+        if (!userConfig.teamIds.includes(argTeamId)) {
+            userConfig.teamIds.push(argTeamId);
         }
     }
 
@@ -63,13 +57,8 @@ export function cliAtomistConfig(argv: any): Promise<number> {
         questions.push({
             type: "input",
             name: "teamId",
-            message: "Slack Team ID",
-            validate: value => {
-                if (value.indexOf("T") !== 0) {
-                    return badSlackTeamMessage(value);
-                }
-                return true;
-            },
+            message: "Team ID",
+            validate: value => true,
         });
     }
     if (!userConfig.token) {

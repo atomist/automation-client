@@ -122,9 +122,10 @@ yargs.completion("completion")
     })
     .command("config", "Configure environment for running automation clients", ya => {
         return ya
-            .option("slack-team", {
-                describe: "Slack team ID",
+            .option("team", {
+                describe: "Atomist workspace/team ID",
                 type: "string",
+                alias: "slack-team",
             })
             .option("github-user", {
                 describe: "GitHub user login",

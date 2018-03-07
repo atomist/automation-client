@@ -367,7 +367,7 @@ $ curl -X POST \
       "name": "slackUser", "value": "U095T3BPF"
     }]
   }'
-````
+```
 
 ## Support
 

@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.6.6...HEAD
 
+### Deprecated
+
+-   config --slack-team command-line option, use --team instead
+
 ## [0.6.6][] - 2018-01-31
 
 [0.6.6]: https://github.com/atomist/automation-client-ts/compare/0.6.5...0.6.6
