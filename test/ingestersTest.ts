@@ -231,8 +231,11 @@ describe("ingesters", () => {
                         defaultValue: null,
                         name: "fuu",
                         type: {
-                            kind: "SCALAR",
-                            name: "Boolean",
+                            kind: "LIST",
+                            ofType: {
+                                kind: "SCALAR",
+                                name: "Boolean",
+                            },
                         },
                     }],
                 }],

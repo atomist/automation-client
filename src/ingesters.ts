@@ -1,3 +1,4 @@
+import { Field } from "@atomist/slack-messages";
 import { isString } from "util";
 
 /**
@@ -198,9 +199,16 @@ export class TypeBuilder {
                             ...refFieldType,
                             // TODO what are those default values
                             defaultValue: null,
+                            type: {
+                                kind: "LIST",
+                                ofType: {
+                                    kind: "SCALAR",
+                                    name: refFieldType.type.name,
+                                },
+                            },
                         };
                         delete argsType.args;
-                        return argsType;
+                        return argsType as any as FieldType;
                     }
                 }
                 throw new Error(
