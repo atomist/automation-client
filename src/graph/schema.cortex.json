@@ -8406,49 +8406,68 @@
                 {
                   "name": "ts",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "Int"
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int"
+                    }
                   }
                 },
                 {
                   "name": "ttl",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "Int"
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int"
+                    }
                   }
                 },
                 {
                   "name": "post",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String"
+                    }
                   }
                 },
                 {
                   "name": "key",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
-                  },
                   "description": "Key of the Card",
-                  "directives": [
-                    {
-                      "name": "compositeId"
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String"
                     }
-                  ]
+                  }
                 },
                 {
                   "name": "type",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String"
+                    }
                   }
                 },
                 {
                   "name": "shortTitle",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String"
+                    }
                   }
                 }
               ]
@@ -17417,6 +17436,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "preferences",
+              "description": "Return a person's preferences",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PersonPreference"
+                }
+              }
             }
           ],
           "inputFields": null,
@@ -43953,6 +43984,43 @@
               ]
             },
             {
+              "name": "setPersonPreference",
+              "description": "Set the value of a person preference. Returns what was set",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PersonPreference"
+                }
+              },
+              "args": [
+                {
+                  "name": "personId",
+                  "description": "The ID of the person",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "name",
+                  "description": "The name of the preference",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "value",
+                  "description": "The value of the preference",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                }
+              ]
+            },
+            {
               "name": "setChatTeamPreference",
               "description": "Set the value of a chat team preference. Returns what was set",
               "type": {
@@ -45020,6 +45088,14 @@
                 "name": "String"
               },
               "args": []
+            },
+            {
+              "name": "slug",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
             }
           ],
           "interfaces": []
@@ -45101,18 +45177,35 @@
               "name": "repository",
               "args": [
                 {
-                  "name": "owner",
+                  "name": "slug",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
+                    "kind": "LIST",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String"
+                    }
                   },
                   "defaultValue": null
                 },
                 {
                   "name": "name",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
+                    "kind": "LIST",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String"
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "owner",
+                  "type": {
+                    "kind": "LIST",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String"
+                    }
                   },
                   "defaultValue": null
                 }
@@ -45172,8 +45265,11 @@
                 {
                   "name": "login",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
+                    "kind": "LIST",
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String"
+                    }
                   },
                   "defaultValue": null
                 }
@@ -45582,6 +45678,14 @@
           "name": "CardActionGroup",
           "fields": [
             {
+              "name": "text",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              },
+              "args": []
+            },
+            {
               "name": "actions",
               "type": {
                 "kind": "LIST",
@@ -45693,6 +45797,32 @@
           "kind": "OBJECT",
           "name": "UserPreference",
           "description": "A user's preferences as key/value pairs",
+          "interfaces": [],
+          "fields": [
+            {
+              "name": "name",
+              "description": "The name of the preference",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            },
+            {
+              "name": "value",
+              "description": "The value of the preference",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "OBJECT",
+          "name": "PersonPreference",
+          "description": "A person's preferences as key/value pairs",
           "interfaces": [],
           "fields": [
             {
@@ -54136,52 +54266,83 @@
                 {
                   "name": "ts",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "Int"
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int"
+                    }
                   }
                 },
                 {
                   "name": "ttl",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "Int"
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int"
+                    }
                   }
                 },
                 {
                   "name": "post",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String"
+                    }
                   }
                 },
                 {
                   "name": "key",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
-                  },
                   "description": "Key of the Card",
-                  "directives": [
-                    {
-                      "name": "compositeId"
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String"
                     }
-                  ]
+                  }
                 },
                 {
                   "name": "type",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String"
+                    }
                   }
                 },
                 {
                   "name": "shortTitle",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String"
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String"
+                    }
                   }
                 }
               ]
+            },
+            {
+              "name": "RepoOnboarded",
+              "description": "",
+              "type": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "RepoOnboarded"
+                }
+              },
+              "args": []
             }
           ],
           "inputFields": null,
@@ -54302,6 +54463,29 @@
               }
             }
           ]
+        },
+        {
+          "kind": "OBJECT",
+          "name": "RepoOnboarded",
+          "description": "The data for an existing Repo has been loaded and is ready for querying",
+          "interfaces": [],
+          "args": [],
+          "fields": [
+            {
+              "name": "repo",
+              "description": "GitHub Repository",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Repo",
+                  "ofType": null
+                }
+              }
+            }
+          ]
         }
       ],
       "directives": [
@@ -54413,6 +54597,6 @@
     }
   },
   "extensions": {
-    "correlation_id": "3ebbeb1f-ac7b-4e0f-8f80-e0105ae5ec6d"
+    "correlation_id": "cec005dd-9121-4b10-8199-64244896cf2a"
   }
 }
