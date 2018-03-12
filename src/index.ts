@@ -7,6 +7,7 @@ export {
     MappedParameter,
     MappedParameters,
     Parameter,
+    Parameters,
     Secret,
     Secrets,
     Tags,
