@@ -1,6 +1,6 @@
 import * as cluster from "cluster";
 import * as _ from "lodash";
-import { Configuration } from "./configuration";
+import { AutomationServerOptions, Configuration } from "./configuration";
 import {
     HandleCommand,
     HandleEvent,
@@ -31,13 +31,7 @@ import { logger } from "./internal/util/logger";
 import { toStringArray } from "./internal/util/string";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
-import { AutomationServerOptions } from "./server/options";
 import { Maker } from "./util/constructionUtils";
-
-export const DefaultApiServer =
-    "https://automation.atomist.com/registration";
-export const DefaultGraphQLServer =
-    "https://automation.atomist.com/graphql/team";
 
 const DefaultListeners = [
     new MetricEnabledAutomationEventListener(),
@@ -46,32 +40,24 @@ const DefaultListeners = [
 
 export class AutomationClient {
 
-    public httpPort: number;
-
     public automations: BuildableAutomationServer;
     public webSocketClient: WebSocketClient;
     public httpServer: ExpressServer;
     public wsHandler: WebSocketRequestProcessor;
 
-    public teamIds: string[];
-    public groups: string[];
-
     constructor(private configuration: Configuration) {
-        this.teamIds = toStringArray(this.configuration.teamIds);
-        this.groups = toStringArray((this.configuration as any).groups);
-
         this.automations = new BuildableAutomationServer(
             {
                 name: configuration.name,
                 version: configuration.version,
-                policy: this.configuration.policy,
-                teamIds: this.teamIds,
-                groups: this.groups,
+                policy: configuration.policy,
+                teamIds: configuration.teamIds,
+                groups: configuration.groups,
                 keywords: [],
                 token: configuration.token,
                 endpoints: {
-                    graphql: _.get(this.configuration, "endpoints.graphql", DefaultGraphQLServer),
-                    api: _.get(this.configuration, "endpoints.api", DefaultApiServer),
+                    graphql: configuration.endpoints.graphql,
+                    api: configuration.endpoints.api,
                 },
             } as AutomationServerOptions);
     }
@@ -97,20 +83,18 @@ export class AutomationClient {
 
     public run(): Promise<any> {
         const webSocketOptions: WebSocketClientOptions = {
-            graphUrl: _.get(this.configuration, "endpoints.graphql", DefaultGraphQLServer),
-            registrationUrl: _.get(this.configuration, "endpoints.api", DefaultApiServer),
+            graphUrl: this.configuration.endpoints.graphql,
+            registrationUrl: this.configuration.endpoints.api,
             token: this.configuration.token,
-            termination: _.get(this.configuration, "ws.termination"),
-            compress: _.get(this.configuration, "ws.compress") || false,
+            termination: this.configuration.ws.termination,
+            compress: this.configuration.ws.compress,
         };
 
-        if (this.configuration.logging && this.configuration.logging.level) {
-            (logger as any).level = this.configuration.logging.level;
-        }
+        (logger as any).level = this.configuration.logging.level;
 
-        if (!(this.configuration.cluster && this.configuration.cluster.enabled)) {
+        if (!this.configuration.cluster.enabled) {
             logger.info(`Starting Atomist automation client ${this.configuration.name}@${this.configuration.version}`);
-            if ((this.configuration.ws && this.configuration.ws.enabled) || !this.configuration.ws) {
+            if (this.configuration.ws.enabled) {
                 this.wsHandler = this.setupWebSocketRequestHandler(webSocketOptions);
                 return Promise.all([
                     this.runWs(this.wsHandler, webSocketOptions),
@@ -123,7 +107,7 @@ export class AutomationClient {
                     this.setupApplicationEvents(),
                 ]);
             }
-        } else if (cluster.isMaster || !(this.configuration.cluster && this.configuration.cluster.enabled)) {
+        } else if (cluster.isMaster) {
             logger.info(
                 `Starting Atomist automation client master ${this.configuration.name}@${this.configuration.version}`);
             this.wsHandler = this.setupWebSocketClusterRequestHandler(webSocketOptions);
@@ -143,37 +127,29 @@ export class AutomationClient {
     }
 
     private setupWebSocketClusterRequestHandler(
-        webSocketOptions: WebSocketClientOptions): ClusterMasterRequestProcessor {
-        if (this.configuration.listeners) {
-            return new ClusterMasterRequestProcessor(this.automations, webSocketOptions,
-                [...DefaultListeners, ...this.configuration.listeners],
-                this.configuration.cluster.workers);
-        } else {
-            return new ClusterMasterRequestProcessor(this.automations, webSocketOptions,
-                DefaultListeners, this.configuration.cluster.workers);
-        }
+        webSocketOptions: WebSocketClientOptions,
+    ): ClusterMasterRequestProcessor {
+
+        return new ClusterMasterRequestProcessor(this.automations, webSocketOptions,
+            [...DefaultListeners, ...this.configuration.listeners],
+            this.configuration.cluster.workers);
     }
 
     private setupWebSocketRequestHandler(webSocketOptions: WebSocketClientOptions): WebSocketRequestProcessor {
-        if (this.configuration.listeners) {
-            return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
-                [...DefaultListeners, ...this.configuration.listeners]);
-        } else {
-            return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
-                DefaultListeners);
-        }
+
+        return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
+            [...DefaultListeners, ...this.configuration.listeners]);
     }
 
     private setupApplicationEvents(): Promise<any> {
-        if (this.configuration.applicationEvents
-            && this.configuration.applicationEvents.enabled
-            && this.configuration.applicationEvents.enabled === true) {
-            const teamId = this.configuration.applicationEvents.teamId
-                ? this.configuration.applicationEvents.teamId : this.teamIds[0];
-            return registerApplicationEvents(teamId);
-        } else {
-            return Promise.resolve();
+        if (this.configuration.applicationEvents.enabled) {
+            if (this.configuration.applicationEvents.teamId) {
+                return registerApplicationEvents(this.configuration.applicationEvents.teamId);
+            } else if (this.configuration.teamIds.length > 0) {
+                return registerApplicationEvents(this.configuration.teamIds[0]);
+            }
         }
+        return Promise.resolve();
     }
 
     private runWs(handler: WebSocketRequestProcessor, options: WebSocketClientOptions): Promise<void> {
@@ -191,49 +167,22 @@ export class AutomationClient {
     }
 
     private runHttp(): void {
-        const http = this.configuration.http;
-        this.httpPort = http && http.port ? http.port :
-            (process.env.PORT ? +process.env.PORT : 2866);
-        const host = http && http.host ? http.host : "localhost";
+        if (!this.configuration.http.enabled) {
+            return;
+        }
         const expressOptions: ExpressServerOptions = {
-            port: this.httpPort,
-            customizers: http && http.customizers,
-            host,
+            port: this.configuration.http.port,
+            customizers: this.configuration.http.customizers,
+            host: this.configuration.http.host,
             auth: {
-                basic: {
-                    enabled: true,
-                },
-                bearer: {
-                    enabled: true,
-                },
+                basic: _.cloneDeep(this.configuration.http.auth.basic),
+                bearer: _.cloneDeep(this.configuration.http.auth.bearer),
             },
             endpoint: {
-                graphql: _.get(this.configuration, "endpoints.graphql")
-                    ? _.get(this.configuration, "endpoints.graphql") : DefaultGraphQLServer,
+                graphql: this.configuration.endpoints.graphql,
             },
         };
-
-        if (http && http.enabled) {
-            // Set up auth options
-            if (http.auth) {
-                if (http.auth.basic && http.auth.basic.enabled) {
-                    expressOptions.auth.basic.enabled = true;
-                    expressOptions.auth.basic.username = http.auth.basic.username;
-                    expressOptions.auth.basic.password = http.auth.basic.password;
-                } else if (http.auth.basic) {
-                    expressOptions.auth.basic.enabled = http.auth.basic.enabled;
-                }
-                if (http.auth.bearer && http.auth.bearer.enabled) {
-                    expressOptions.auth.bearer.enabled = http.auth.bearer.enabled;
-                    expressOptions.auth.bearer.org = http.auth.bearer.org;
-                } else if (http.auth.bearer) {
-                    expressOptions.auth.bearer.enabled = http.auth.bearer.enabled;
-                }
-            }
-        }
-        if (!http || http.enabled) {
-            this.httpServer = new ExpressServer(this.automations, this.configuration.listeners, expressOptions);
-        }
+        this.httpServer = new ExpressServer(this.automations, this.configuration.listeners, expressOptions);
     }
 }
 
@@ -241,26 +190,19 @@ export let runningAutomationClient: AutomationClient;
 
 export function automationClient(configuration: Configuration): AutomationClient {
     const client = new AutomationClient(configuration);
-    if (configuration.commands) {
-        configuration.commands.forEach(c => {
-            client.withCommandHandler(c);
-        });
-    }
-    if (configuration.events) {
-        configuration.events.forEach(e => {
-            client.withEventHandler(e);
-        });
-    }
-
-    if (configuration.ingesters) {
-        configuration.ingesters.forEach(e => {
-            if ((e as any).build) {
-                client.withIngester((e as IngesterBuilder).build());
-            } else {
-                client.withIngester(e as Ingester);
-            }
-        });
-    }
+    configuration.commands.forEach(c => {
+        client.withCommandHandler(c);
+    });
+    configuration.events.forEach(e => {
+        client.withEventHandler(e);
+    });
+    configuration.ingesters.forEach(e => {
+        if ((e as any).build) {
+            client.withIngester((e as IngesterBuilder).build());
+        } else {
+            client.withIngester(e as Ingester);
+        }
+    });
     runningAutomationClient = client;
     return client;
 }

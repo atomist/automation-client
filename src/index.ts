@@ -46,3 +46,5 @@ export {
     IngesterBuilder,
     ingester,
 } from "./ingesters";
+
+export { AutomationEventListener } from "./server/AutomationEventListener";

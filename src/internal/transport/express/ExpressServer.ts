@@ -4,14 +4,14 @@ import * as express from "express";
 import * as _ from "lodash";
 import * as passport from "passport";
 import * as http from "passport-http";
-import { IStrategyOptions } from "passport-http-bearer";
 import * as bearer from "passport-http-bearer";
+import { IStrategyOptions } from "passport-http-bearer";
 import * as retry from "retry";
+import { ExpressCustomizer } from "../../../configuration";
 import * as globals from "../../../globals";
 import { CommandHandlerMetadata } from "../../../metadata/automationMetadata";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
-import { ExpressCustomizer } from "../../../server/options";
 import {
     health,
     HealthStatus,
@@ -120,7 +120,7 @@ export class ExpressServer {
                         } else {
                             res.status(result.code === 0 ? 200 : 500).json(result);
                         }
-                });
+                    });
             },
         );
 

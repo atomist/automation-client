@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 
 import { automationClient } from "./automationClient";
-import { findConfiguration } from "./configuration";
+import { loadConfiguration } from "./configuration";
+import { logger } from "./index";
 import { enableDefaultScanning } from "./scan";
 
-const configuration = enableDefaultScanning(findConfiguration());
+const configuration = enableDefaultScanning(loadConfiguration());
 const node = automationClient(configuration);
 
 node.run()
-    .then(() => {
-        // Intentionally left empty
+    .then(() => process.exit(0), e => {
+        logger.error(`automation client error: ${e.message}`);
+        process.exit(1);
     });

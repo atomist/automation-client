@@ -32,10 +32,16 @@ export function extractArgs(args: string[]): Arg[] {
 
 export function readVersion(): string {
     try {
-        const pj = require(`${appRoot}/package.json`);
+        const pj = require(p.join(__dirname, "..", "package.json"));
         return `${pj.name} ${pj.version}`;
     } catch (e) {
-        return "@atomist/automation-client 0.0.0";
+        try {
+            // in case you are running locally
+            const pj = require(p.join(__dirname, "..", "..", "package.json"));
+            return `${pj.name} ${pj.version}`;
+        } catch (e) {
+            return "@atomist/automation-client 0.0.0";
+        }
     }
 }
 
