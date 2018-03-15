@@ -30,6 +30,7 @@ import {
     isCommandIncoming,
     isEventIncoming,
 } from "../RequestProcessor";
+import {celebrateRegistration} from "../websocket/celebration";
 import { WebSocketClientOptions } from "../websocket/WebSocketClient";
 import {
     sendMessage,
@@ -45,7 +46,6 @@ import {
     MasterMessage,
     WorkerMessage,
 } from "./messages";
-import {celebrateRegistration} from "../websocket/celebration";
 
 /**
  * A RequestProcessor that delegates to Node.JS Cluster workers to do the actual

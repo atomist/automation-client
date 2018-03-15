@@ -11,11 +11,11 @@ import {HealthStatus, registerHealthIndicator} from "../../util/health";
 import {logger} from "../../util/logger";
 import {AbstractRequestProcessor} from "../AbstractRequestProcessor";
 import {CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming} from "../RequestProcessor";
+import {celebrateRegistration} from "./celebration";
 import {GraphClientFactory} from "./GraphClientFactory";
 import {WebSocketClientOptions} from "./WebSocketClient";
 import {sendMessage, WebSocketCommandMessageClient, WebSocketEventMessageClient} from "./WebSocketMessageClient";
 import {RegistrationConfirmation, WebSocketRequestProcessor} from "./WebSocketRequestProcessor";
-import {celebrateRegistration} from "./celebration";
 
 export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
     implements WebSocketRequestProcessor {
