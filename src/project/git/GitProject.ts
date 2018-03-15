@@ -16,6 +16,8 @@ export interface GitProject extends LocalProject, Configurable {
 
     newRepo: boolean;
 
+    id: RemoteRepoRef;
+
     /**
      * Init git for this project.
      */
