@@ -1,20 +1,20 @@
 import * as stringify from "json-stringify-safe";
 import * as WebSocket from "ws";
 import * as global from "../../../globals";
-import {AutomationContextAware, HandlerContext,} from "../../../HandlerContext";
+import {AutomationContextAware, HandlerContext} from "../../../HandlerContext";
 import {AutomationEventListener} from "../../../server/AutomationEventListener";
 import {AutomationServer} from "../../../server/AutomationServer";
 import {GraphClient} from "../../../spi/graph/GraphClient";
 import {MessageClient} from "../../../spi/message/MessageClient";
+import {Automations} from "../../metadata/metadata";
 import {HealthStatus, registerHealthIndicator} from "../../util/health";
 import {logger} from "../../util/logger";
 import {AbstractRequestProcessor} from "../AbstractRequestProcessor";
-import {CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming,} from "../RequestProcessor";
+import {CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming} from "../RequestProcessor";
 import {GraphClientFactory} from "./GraphClientFactory";
 import {WebSocketClientOptions} from "./WebSocketClient";
-import {sendMessage, WebSocketCommandMessageClient, WebSocketEventMessageClient,} from "./WebSocketMessageClient";
-import {RegistrationConfirmation, WebSocketRequestProcessor,} from "./WebSocketRequestProcessor";
-import {Automations} from "../../metadata/metadata";
+import {sendMessage, WebSocketCommandMessageClient, WebSocketEventMessageClient} from "./WebSocketMessageClient";
+import {RegistrationConfirmation, WebSocketRequestProcessor} from "./WebSocketRequestProcessor";
 
 export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
     implements WebSocketRequestProcessor {
