@@ -5,7 +5,7 @@ export function celebrateRegistration(webSocketRequestProcessorName: string,
                                       registration: RegistrationConfirmation,
                                       automations: Automations): string {
     return `
-/-----------------------------\
+/-----------------------------\\
 | - Registered with Atomist - |
 |-----------------------------|
 | Team: ${automations.team_ids.join("\, ")}
@@ -14,5 +14,5 @@ export function celebrateRegistration(webSocketRequestProcessorName: string,
 | web socket processor: ${webSocketRequestProcessorName}
 | ${automations.commands.length} commands
 | ${automations.events.length} events
-\-----------------------------/`;
+\\-----------------------------/`;
 }
