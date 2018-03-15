@@ -45,6 +45,7 @@ import {
     MasterMessage,
     WorkerMessage,
 } from "./messages";
+import {celebrateRegistration} from "../websocket/celebration";
 
 /**
  * A RequestProcessor that delegates to Node.JS Cluster workers to do the actual
@@ -76,6 +77,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
     public onRegistration(registration: RegistrationConfirmation) {
         logger.info("Registration successful: %s", stringify(registration));
+        logger.info(celebrateRegistration("Cluster", registration, this.automations.automations));
         global.setJwtToken(registration.jwt);
         this.registration = registration;
 
