@@ -1,34 +1,20 @@
 import * as stringify from "json-stringify-safe";
 import * as WebSocket from "ws";
 import * as global from "../../../globals";
-import {
-    AutomationContextAware,
-    HandlerContext,
-} from "../../../HandlerContext";
-import { AutomationEventListener } from "../../../server/AutomationEventListener";
-import { AutomationServer } from "../../../server/AutomationServer";
-import { GraphClient } from "../../../spi/graph/GraphClient";
-import { MessageClient } from "../../../spi/message/MessageClient";
-import { HealthStatus, registerHealthIndicator } from "../../util/health";
-import { logger } from "../../util/logger";
-import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
-import {
-    CommandIncoming,
-    EventIncoming,
-    isCommandIncoming,
-    isEventIncoming,
-} from "../RequestProcessor";
-import { GraphClientFactory } from "./GraphClientFactory";
-import { WebSocketClientOptions } from "./WebSocketClient";
-import {
-    sendMessage,
-    WebSocketCommandMessageClient,
-    WebSocketEventMessageClient,
-} from "./WebSocketMessageClient";
-import {
-    RegistrationConfirmation,
-    WebSocketRequestProcessor,
-} from "./WebSocketRequestProcessor";
+import {AutomationContextAware, HandlerContext,} from "../../../HandlerContext";
+import {AutomationEventListener} from "../../../server/AutomationEventListener";
+import {AutomationServer} from "../../../server/AutomationServer";
+import {GraphClient} from "../../../spi/graph/GraphClient";
+import {MessageClient} from "../../../spi/message/MessageClient";
+import {HealthStatus, registerHealthIndicator} from "../../util/health";
+import {logger} from "../../util/logger";
+import {AbstractRequestProcessor} from "../AbstractRequestProcessor";
+import {CommandIncoming, EventIncoming, isCommandIncoming, isEventIncoming,} from "../RequestProcessor";
+import {GraphClientFactory} from "./GraphClientFactory";
+import {WebSocketClientOptions} from "./WebSocketClient";
+import {sendMessage, WebSocketCommandMessageClient, WebSocketEventMessageClient,} from "./WebSocketMessageClient";
+import {RegistrationConfirmation, WebSocketRequestProcessor,} from "./WebSocketRequestProcessor";
+import {Automations} from "../../metadata/metadata";
 
 export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
     implements WebSocketRequestProcessor {
@@ -53,6 +39,7 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
 
     public onRegistration(registration: RegistrationConfirmation) {
         logger.info("Registration successful: %s", stringify(registration));
+        logger.info(celebrateRegistration(registration, this.automations.automations));
         global.setJwtToken(registration.jwt);
         this.registration = registration;
         this.graphClients = new GraphClientFactory(this.registration, this.options);
@@ -86,4 +73,18 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
             return new WebSocketEventMessageClient(event, this.webSocket);
         }
     }
+}
+
+function celebrateRegistration(registration: RegistrationConfirmation, automations: Automations): string {
+    return `
+/-----------------------------\
+| - Registered with Atomist - |
+|-----------------------------|
+| Team: ${automations.team_ids.join("\, ")}
+| automation name: ${registration.name}
+| version: ${registration.version}
+| ${automations.commands.length} commands
+| ${automations.events.length} events
+\-----------------------------/`;
+
 }
