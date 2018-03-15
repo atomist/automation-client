@@ -93,10 +93,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     public static clonedImpl(params: CloneParameters): Promise<GitProject> {
         const id = params.id;
-        const opts = {...DefaultCloneOptions, ...params} as CloneOptions;
-        const directoryManager = params.directoryManager;
         const credentials = params.credentials;
-
         return clone(params)
             .then(p => {
                 if (!!id.path) {
@@ -290,7 +287,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 function clone(params: CloneParameters,
                secondTry: boolean = false): Promise<GitProject> {
     const id = params.id;
-    const directoryManager = params.directoryManager || (params.context ? CachingDirectoryManager : DefaultDirectoryManager );
+    const directoryManager = params.directoryManager || (!!params.context ? CachingDirectoryManager : DefaultDirectoryManager );
     return directoryManager.directoryFor(id.owner, id.repo, id.sha, params)
         .then(cloneDirectoryInfo => {
             if (params.context) {

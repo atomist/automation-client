@@ -29,14 +29,10 @@ const cache = new StableDirectoryManager({
  * If the returned CloneDirectoryInfo has type: "empty-directory"
  * then the caller should clone into it (not from it, you're not in the parent directory).
  * If it has type: "existing-directory" then fetch, clean, checkout etc. given it's already cloned.
- *
- * @type {{directoryFor:
- * ((owner: string, repo: string, branch: string, opts: CloneOptions) => Promise<CloneDirectoryInfo>)}}
  */
 export const CachingDirectoryManager: DirectoryManager = {
 
     directoryFor(owner: string, repo: string, branch: string, opts: CloneOptions): Promise<CloneDirectoryInfo> {
-
         return cache.directoryFor(owner, repo, branch, opts).then(existing =>
             pleaseLock(existing.path).then(lockResult => {
                 if (lockResult.success) {
