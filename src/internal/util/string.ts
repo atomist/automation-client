@@ -62,6 +62,8 @@ export function obfuscateJson(key: string, value: any) {
         return undefined;
     } else if (key === "customizers") {
         return undefined;
+    } else if (key === "initializers") {
+        return undefined;
     }
     return value;
 }

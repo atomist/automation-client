@@ -5,11 +5,9 @@ import { loadConfiguration } from "./configuration";
 import { logger } from "./index";
 import { enableDefaultScanning } from "./scan";
 
-const configuration = enableDefaultScanning(loadConfiguration());
-const node = automationClient(configuration);
-
-node.run()
-    .then(() => process.exit(0), e => {
-        logger.error(`automation client error: ${e.message}`);
-        process.exit(1);
-    });
+loadConfiguration()
+    .then(configuration => {
+        enableDefaultScanning(configuration);
+        return configuration;
+    })
+    .then(configuration => automationClient(configuration).run());

@@ -74,4 +74,10 @@ export const configuration: Configuration = {
         enabled: false,
         // workers: 2,
     },
+    initializers: [
+        config => {
+            config.custom = { test: "123456" };
+            return Promise.resolve(config);
+        },
+    ],
 };

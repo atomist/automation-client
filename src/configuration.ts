@@ -13,9 +13,15 @@ import {
     HandleCommand,
     HandleEvent,
 } from "./index";
-import { Ingester, IngesterBuilder } from "./ingesters";
+import {
+    Ingester,
+    IngesterBuilder,
+} from "./ingesters";
 import { logger } from "./internal/util/logger";
-import { guid, obfuscateJson } from "./internal/util/string";
+import {
+    guid,
+    obfuscateJson,
+} from "./internal/util/string";
 import { AutomationEventListener } from "./server/AutomationEventListener";
 import { Maker } from "./util/constructionUtils";
 
@@ -106,6 +112,8 @@ export interface AutomationOptions {
     };
     /** Custom configuration you can abuse to your benefit */
     custom?: any;
+    /** Can be used to hook in async initialization before the client is being started */
+    initializers?: Array<(configuration: Configuration) => Promise<Configuration>>;
 }
 
 /** DEPRECATED use AutomationOptions */
@@ -263,6 +271,7 @@ export function defaultConfiguration(): Configuration {
         events: [],
         ingesters: [],
         listeners: [],
+        initializers: [],
     };
     return cfg;
 }
@@ -302,10 +311,14 @@ export function writeUserConfig(cfg: UserConfig): Promise<void> {
  */
 export function getUserConfig(): UserConfig {
     let cfg: UserConfig;
-    try {
-        cfg = fs.readJsonSync(userConfigPath());
-    } catch (e) {
-        logger.warn(`Failed to read user config: ${e.message}`);
+    if (fs.existsSync(userConfigPath())) {
+        try {
+            cfg = fs.readJsonSync(userConfigPath());
+        } catch (e) {
+            logger.warn(`Failed to read user config: ${e.message}`);
+            cfg = {};
+        }
+    } else {
         cfg = {};
     }
     // user config should not have name or version
@@ -566,6 +579,13 @@ export function resolvePort(cfg: Configuration): number {
 }
 
 /**
+ * Invoke initializers on the provided configuration.
+ */
+export function invokeInitializers(cfg: Configuration): Promise<Configuration> {
+    return cfg.initializers.reduce((p, f) => p.then(f), Promise.resolve(cfg));
+}
+
+/**
  * Make sure final configuration has the minimum configuration it
  * needs.  It will throw an error if required properties are missing.
  *
@@ -624,7 +644,7 @@ function validateConfiguration(cfg: Configuration) {
  *                not provided the package is searched for one
  * @return merged configuration object
  */
-export function loadConfiguration(cfgPath?: string): Configuration {
+export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
     const defCfg = defaultConfiguration();
     const userCfg = loadUserConfiguration(defCfg.name, defCfg.version);
     const autoCfg = loadAutomationConfig(cfgPath);
@@ -634,8 +654,18 @@ export function loadConfiguration(cfgPath?: string): Configuration {
     resolveTeamIds(cfg);
     resolveToken(cfg);
     resolvePort(cfg);
-    validateConfiguration(cfg);
-    return cfg;
+
+    return invokeInitializers(cfg)
+        .then(completeCfg => {
+            completeCfg.initializers = [];
+
+            if (cluster.isMaster) {
+                logger.debug("Using automation client configuration: %s", stringify(cfg, obfuscateJson));
+            }
+
+            validateConfiguration(completeCfg);
+            return completeCfg;
+        });
 }
 
 /**

@@ -45,7 +45,7 @@ export class AutomationClient {
     public httpServer: ExpressServer;
     public wsHandler: WebSocketRequestProcessor;
 
-    constructor(private configuration: Configuration) {
+    constructor(public configuration: Configuration) {
         this.automations = new BuildableAutomationServer(
             {
                 name: configuration.name,
