@@ -26,11 +26,9 @@ if (yargs.argv.request) {
             .then(configuration => {
                 const node = automationClient(configuration);
 
-                if (configuration.commands) {
-                    configuration.commands.forEach(c => {
-                        node.withCommandHandler(c);
-                    });
-                }
+                configuration.commands.forEach(c => {
+                    node.withCommandHandler(c);
+                });
 
                 invokeOnConsole(node.automationServer, request, createHandlerContext(configuration));
             });

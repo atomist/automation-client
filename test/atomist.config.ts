@@ -4,7 +4,6 @@ import { FileMessageTest } from "./command/FileMessageTest";
 import { HelloWorld } from "./command/HelloWorld";
 import { MessageTest } from "./command/MessageTest";
 import { HelloIssueViaProperties } from "./event/HelloIssue";
-import { HelloWorldIngester } from "./event/HelloWorld";
 
 // const host = "https://automation.atomist.com";
 const host = "https://automation-staging.atomist.services";
@@ -74,7 +73,7 @@ export const configuration: Configuration = {
         enabled: false,
         // workers: 2,
     },
-    initializers: [
+    postProcessors: [
         config => {
             config.custom = { test: "123456" };
             return Promise.resolve(config);

@@ -2,6 +2,7 @@ import "mocha";
 import * as assert from "power-assert";
 
 import * as fs from "fs-extra";
+import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as path from "path";
 import * as tmp from "tmp-promise";
@@ -73,7 +74,7 @@ describe("configuration", () => {
         events: [],
         ingesters: [],
         listeners: [],
-        initializers: [],
+        postProcessors: [],
     };
 
     describe("resolveModuleConfig", () => {
@@ -273,11 +274,18 @@ describe("configuration", () => {
             assert.deepStrictEqual(c.teamIds, ["T1L0VDKJP"]);
             assert.deepStrictEqual(c.keywords, ["test", "automation"]);
             assert(c.ws.enabled === true);
+            assert(c.ws.termination.graceful === false);
+            assert(c.ws.compress === true);
             assert(c.http.enabled === true);
+            assert(c.http.auth.basic.enabled === false);
+            assert(c.http.auth.basic.username === "test");
+            assert(c.http.auth.basic.password === "test");
+            assert(c.http.auth.bearer.enabled === true);
+            assert(c.http.auth.bearer.adminOrg === "atomisthq");
             assert(c.applicationEvents.enabled === true);
             assert(c.applicationEvents.teamId === "T1L0VDKJP");
             assert(c.cluster.enabled === false);
-        });
+        }).timeout(4000);
 
     });
 
@@ -335,7 +343,7 @@ describe("configuration", () => {
                 version: "3.1.4",
             };
             const save = process.env.ATOMIST_CONFIG;
-            process.env.ATOMIST_CONFIG = JSON.stringify(e);
+            process.env.ATOMIST_CONFIG = stringify(e);
             const c = loadAtomistConfig();
             assert.deepStrictEqual(c, { name: "@atomist/temp-test", version: "3.1.4" });
             if (save) {
@@ -543,50 +551,68 @@ describe("configuration", () => {
 
     describe("loadConfiguration", () => {
 
-        it("should throw an exception", done => {
+        it("should throw an exception for no teamIds or groups", async () => {
             const save = process.env.HOME;
             process.env.HOME = "/throw/loadConfiguration/off/the/trail";
-            loadConfiguration("/this/path/does/not/exist/i/hope")
-                .catch(err => {
-                    assert(/teamIds or groups/.exec(err.message));
-                    process.env.HOME = save;
-                    done();
-                });
+            try {
+                await loadConfiguration("/this/path/does/not/exist/i/hope");
+                assert.fail("Failed to throw an exception");
+            } catch (e) {
+                assert(e.message.includes("teamIds or groups"));
+            }
+            process.env.HOME = save;
         });
 
-        it("should load config", done => {
-            const saveHome = process.env.HOME;
+        it("should throw an exception for both teamIds or groups", async () => {
+            const save: { [key: string]: string } = {};
+            save.HOME = process.env.HOME;
             process.env.HOME = "/throw/loadConfiguration/off/the/trail";
-            const saveToken = process.env.GITHUB_TOKEN;
-            if (saveToken) {
+            save.ATOMIST_CONFIG = process.env.ATOMIST_CONFIG;
+            process.env.ATOMIST_CONFIG = stringify({ teamIds: ["A"], groups: ["G"] });
+            try {
+                await loadConfiguration("/this/path/does/not/exist/i/hope");
+                assert.fail("Failed to throw an exception");
+            } catch (e) {
+                assert(e.message === `cannot specify both teamIds (["A"]) and groups (["G"])`);
+            }
+            _.forEach(save, (v, k) => {
+                if (v) {
+                    process.env[k] = v;
+                } else {
+                    delete process.env[k];
+                }
+            });
+        });
+
+        it("should load config", async () => {
+            const save: { [key: string]: string } = {};
+            save.HOME = process.env.HOME;
+            process.env.HOME = "/throw/loadConfiguration/off/the/trail";
+            save.GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+            if (save.GITHUB_TOKEN) {
                 delete process.env.GITHUB_TOKEN;
             }
             const cfg: Configuration = {
                 token: "bogus",
                 teamIds: ["non-team"],
             };
-            const saveAtmCfg = process.env.ATOMIST_CONFIG;
-            process.env.ATOMIST_CONFIG = JSON.stringify(cfg);
+            save.ATOMIST_CONFIG = process.env.ATOMIST_CONFIG;
+            process.env.ATOMIST_CONFIG = stringify(cfg);
             const e = _.cloneDeep(defCfg);
             e.token = "bogus";
             e.teamIds = ["non-team"];
-            loadConfiguration("/this/path/does/not/exist/i/hope")
-                .then(c => {
-                    assert.deepStrictEqual(c, e);
-                    if (saveAtmCfg) {
-                        process.env.ATOMIST_CONFIG = saveAtmCfg;
-                    } else {
-                        delete process.env.ATOMIST_CONFIG;
-                    }
-                    if (saveToken) {
-                        process.env.GITHUB_TOKEN = saveToken;
-                    }
-                    process.env.HOME = saveHome;
-                    done();
-                });
+            const c = await loadConfiguration("/this/path/does/not/exist/i/hope");
+            assert.deepStrictEqual(c, e);
+            _.forEach(save, (v, k) => {
+                if (v) {
+                    process.env[k] = v;
+                } else {
+                    delete process.env[k];
+                }
+            });
         });
 
-        it("should properly merge all configs", done => {
+        it("should properly merge all configs", async () => {
             const save: { [key: string]: string } = {};
             // user config
             save.HOME = process.env.HOME;
@@ -594,8 +620,12 @@ describe("configuration", () => {
 
             // automation config
             const atomistConfigJs = `exports.configuration = {
-    http:{enabled:false,port:1818,host:"atm-cfg-js"},
-    initializers: [
+    http:{
+        enabled: false,
+        port: 1818,
+        host: "atm-cfg-js"
+    },
+    postProcessors: [
             config => {
             config.custom = { test: "123456" };
             return Promise.resolve(config);
@@ -637,7 +667,7 @@ describe("configuration", () => {
                     },
                 },
             };
-            process.env.ATOMIST_CONFIG = JSON.stringify(atomistConfig);
+            process.env.ATOMIST_CONFIG = stringify(atomistConfig);
 
             // ATOMIST_TEAMS
             save.ATOMIST_TEAMS = process.env.ATOMIST_TEAMS;
@@ -647,37 +677,34 @@ describe("configuration", () => {
             save.ATOMIST_TOKEN = process.env.ATOMIST_TOKEN;
             process.env.ATOMIST_TOKEN = "lizphairexileinguyville";
 
-            loadConfiguration(atomistConfigJsFile.name)
-                .then(c => {
-                    const e = _.cloneDeep(defCfg);
-                    e.endpoints.graphql = "https://user.graphql.ep:1313/gql/team";
-                    e.endpoints.api = "https://user.api.ep:4141/reg";
-                    e.environment = "env-module-load";
-                    e.application = "app-module-load";
-                    e.policy = "durable";
-                    e.http.enabled = false;
-                    e.http.port = 1818;
-                    e.http.host = "atm-cfg-js";
-                    e.ws.compress = true;
-                    e.ws.termination.graceful = true;
-                    e.ws.termination.gracePeriod = 30;
-                    e.cluster.enabled = true;
-                    e.cluster.workers = 2;
-                    e.teamIds = ["T61", "HELPMEMARY", "GLORY"];
-                    e.token = "lizphairexileinguyville";
-                    e.custom = { test: "123456" };
+            const c = await loadConfiguration(atomistConfigJsFile.name);
+            const e = _.cloneDeep(defCfg);
+            e.endpoints.graphql = "https://user.graphql.ep:1313/gql/team";
+            e.endpoints.api = "https://user.api.ep:4141/reg";
+            e.environment = "env-module-load";
+            e.application = "app-module-load";
+            e.policy = "durable";
+            e.http.enabled = false;
+            e.http.port = 1818;
+            e.http.host = "atm-cfg-js";
+            e.ws.compress = true;
+            e.ws.termination.graceful = true;
+            e.ws.termination.gracePeriod = 30;
+            e.cluster.enabled = true;
+            e.cluster.workers = 2;
+            e.teamIds = ["T61", "HELPMEMARY", "GLORY"];
+            e.token = "lizphairexileinguyville";
+            e.custom = { test: "123456" };
 
-                    assert.deepStrictEqual(c, e);
+            assert.deepStrictEqual(c, e);
 
-                    _.forEach(save, (v, k) => {
-                        if (v) {
-                            process.env[k] = v;
-                        } else {
-                            delete process.env[k];
-                        }
-                    });
-                    done();
-                });
+            _.forEach(save, (v, k) => {
+                if (v) {
+                    process.env[k] = v;
+                } else {
+                    delete process.env[k];
+                }
+            });
         });
 
     });

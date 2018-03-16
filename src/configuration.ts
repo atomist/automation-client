@@ -60,21 +60,25 @@ export interface AutomationOptions {
      */
     teamIds?: string[];
     /**
-     * Groups this automation will be registered with.  Must be
-     * specified if teams is not specified.  Cannot be specified if
-     * teams is specified.
+     * DO NOT USE.  Groups this automation will be registered with.
+     * Must be specified if teams is not specified.  Cannot be
+     * specified if teams is specified.  Providing groups indicates
+     * this is a global automation, which can only successfully be
+     * registered by Atomist.
      */
     groups?: string[];
     /**
      * If events should be queued when the registration is not
      * connected to the websocket, specificy "durable".  "ephemeral"
-     * is suited for testing and running locally.
+     * is suited for testing and running locally and is the default.
      */
     policy?: "ephemeral" | "durable";
     /**
-     * GitHub personal access token with repo and read:org scopes for
-     * all GitHub users and organizations associated with the Atomist
-     * teams this automation is registered in.
+     * GitHub personal access token with, at minimum, read:org scope.
+     * The GitHub user that owns this token must be associated with an
+     * Atomist person with the developer role.  Additional scopes may
+     * be necessary if the automation uses the token to perform
+     * actions against the GitHub API.
      */
     token?: string;
     /** HTTP configuration, useful for health checks */
@@ -112,8 +116,13 @@ export interface AutomationOptions {
     };
     /** Custom configuration you can abuse to your benefit */
     custom?: any;
-    /** Can be used to hook in async initialization before the client is being started */
-    initializers?: Array<(configuration: Configuration) => Promise<Configuration>>;
+    /**
+     * Post-processors can be used to modify the configuration after
+     * all standard configuration loading has been done and before the
+     * client is started.  Post-processors return a configuration
+     * promise so they can be asynchronous.
+     */
+    postProcessors?: Array<(configuration: Configuration) => Promise<Configuration>>;
 }
 
 /** DEPRECATED use AutomationOptions */
@@ -125,11 +134,15 @@ export type RunOptions = AutomationOptions;
 export interface AutomationServerOptions extends AutomationOptions {
     /** environment automation is running in, e.g., "production" or "testing" */
     environment?: string;
-    /** unique application name */
+    /**
+     * Application identifier used for metrics send to statsd.  If not
+     * set, the automation client package name with any namespace
+     * prefix removed is used.
+     */
     application?: string;
     /** keywords useful for discovery */
     keywords?: string[];
-    /** Whether and where to send application start and stop events. */
+    /** Whether and where to send application start and stop events to Atomist. */
     applicationEvents?: {
         enabled: boolean;
         teamId?: string;
@@ -145,13 +158,19 @@ export interface AutomationServerOptions extends AutomationOptions {
     };
     /** Logging configuration */
     logging?: {
-        /** Log level */
+        /** Log level, default is "info" */
         level: "debug" | "info" | "warn" | "error";
+        /**
+         * Custom log configuration, useful if your logging solution
+         * requires host, port, token, etc. configuration.
+         */
         custom?: any;
     };
     /** statsd config */
     statsd?: {
+        /** statsd host, if not set, metrics are not sent to statsd */
         host?: string;
+        /** statsd port, default  */
         port?: number;
     };
 }
@@ -271,7 +290,7 @@ export function defaultConfiguration(): Configuration {
         events: [],
         ingesters: [],
         listeners: [],
-        initializers: [],
+        postProcessors: [],
     };
     return cfg;
 }
@@ -310,16 +329,13 @@ export function writeUserConfig(cfg: UserConfig): Promise<void> {
  * Read and return user config from UserConfigFile.
  */
 export function getUserConfig(): UserConfig {
-    let cfg: UserConfig;
+    let cfg: UserConfig = {};
     if (fs.existsSync(userConfigPath())) {
         try {
             cfg = fs.readJsonSync(userConfigPath());
         } catch (e) {
             logger.warn(`Failed to read user config: ${e.message}`);
-            cfg = {};
         }
-    } else {
-        cfg = {};
     }
     // user config should not have name or version
     if (cfg.name) {
@@ -579,10 +595,10 @@ export function resolvePort(cfg: Configuration): number {
 }
 
 /**
- * Invoke initializers on the provided configuration.
+ * Invoke postProcessors on the provided configuration.
  */
-export function invokeInitializers(cfg: Configuration): Promise<Configuration> {
-    return cfg.initializers.reduce((p, f) => p.then(f), Promise.resolve(cfg));
+export function invokePostProcessors(cfg: Configuration): Promise<Configuration> {
+    return cfg.postProcessors.reduce((p, f) => p.then(f), Promise.resolve(cfg));
 }
 
 /**
@@ -605,11 +621,16 @@ function validateConfiguration(cfg: Configuration) {
     if (!cfg.token) {
         missing.push("token");
     }
-    if ((!cfg.teamIds || cfg.teamIds.length < 1) && (!cfg.groups || cfg.groups.length < 1)) {
+    if (cfg.teamIds.length < 1 && cfg.groups.length < 1) {
         missing.push("teamIds or groups");
     }
     if (missing.length > 0) {
         throw new Error(`configuration is missing required properties: ${missing.join(",")}`);
+    }
+    if (cfg.teamIds.length > 0 && cfg.groups.length > 0) {
+        const t = stringify(cfg.teamIds);
+        const g = stringify(cfg.groups);
+        throw new Error(`cannot specify both teamIds (${t}) and groups (${g})`);
     }
 }
 
@@ -620,8 +641,8 @@ function validateConfiguration(cfg: Configuration) {
  *
  * 0.  Recognized environment variables (see below)
  * 1.  The value of the ATOMIST_CONFIG environment variable, parsed as
- *     JSON and cast to Configuration
- * 2.  The contents of the ATOMIST_CONFIG_PATH file as Configuration
+ *     JSON and cast to AutomationServerOptions
+ * 2.  The contents of the ATOMIST_CONFIG_PATH file as AutomationServerOptions
  * 3.  The automation's atomist.config.js exported configuration as
  *     Configuration
  * 4.  The contents of the user's client.config.json as UserConfig
@@ -631,10 +652,11 @@ function validateConfiguration(cfg: Configuration) {
  * If any of the sources are missing, they are ignored.  Any truthy
  * configuration values specified by sources of higher precedence
  * cause any values provided by sources of lower precedence to be
- * ignored.  Typically the only required values in the configuration
- * for a successful registration are the token and non-empty teamIds
- * or groups and these can be provided via the ATOMIST_TOKEN and
- * ATOMIST_TEAMS environment variables.
+ * ignored.  Arrays are replaced, not merged.  Typically the only
+ * required values in the configuration for a successful registration
+ * are the token and non-empty teamIds.  These can be provided via the
+ * ATOMIST_TOKEN and ATOMIST_TEAMS environment variables,
+ * respectively.
  *
  * The configuration exported from the atomist.config.js is modified
  * to contain the final configuration values and returned from this
@@ -655,9 +677,9 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
     resolveToken(cfg);
     resolvePort(cfg);
 
-    return invokeInitializers(cfg)
+    return invokePostProcessors(cfg)
         .then(completeCfg => {
-            completeCfg.initializers = [];
+            completeCfg.postProcessors = [];
 
             if (cluster.isMaster) {
                 logger.debug("Using automation client configuration: %s", stringify(cfg, obfuscateJson));

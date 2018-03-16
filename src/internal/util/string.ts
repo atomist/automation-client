@@ -62,7 +62,7 @@ export function obfuscateJson(key: string, value: any) {
         return undefined;
     } else if (key === "customizers") {
         return undefined;
-    } else if (key === "initializers") {
+    } else if (key === "postProcessors") {
         return undefined;
     }
     return value;
