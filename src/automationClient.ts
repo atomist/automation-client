@@ -30,6 +30,7 @@ import { toStringArray } from "./internal/util/string";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
 import { Maker } from "./util/constructionUtils";
+import { StatsdAutomationEventListener, StatsdOptions } from "./util/statsd";
 
 const DefaultListeners = [
     new MetricEnabledAutomationEventListener(),
@@ -89,6 +90,14 @@ export class AutomationClient {
         };
 
         (logger as any).level = this.configuration.logging.level;
+
+        if (this.configuration.statsd.enabled) {
+            const statsdOptions: StatsdOptions = {
+                host: this.configuration.statsd.host,
+                port: this.configuration.statsd.port,
+            };
+            DefaultListeners.push(new StatsdAutomationEventListener(statsdOptions));
+        }
 
         if (!this.configuration.cluster.enabled) {
             logger.info(`Starting Atomist automation client ${this.configuration.name}@${this.configuration.version}`);

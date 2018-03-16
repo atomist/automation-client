@@ -67,6 +67,9 @@ describe("configuration", () => {
         logging: {
             level: "info",
         },
+        statsd: {
+            enabled: false,
+        },
         applicationEvents: {
             enabled: false,
         },

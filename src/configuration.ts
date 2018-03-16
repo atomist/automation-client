@@ -166,9 +166,17 @@ export interface AutomationServerOptions extends AutomationOptions {
     };
     /** statsd config */
     statsd?: {
-        /** statsd host, if not set, metrics are not sent to statsd */
+        /** Whether to send metrics statsd, default is false */
+        enabled: boolean;
+        /**
+         * statsd host.  If not set, use the host-shots default,
+         * "localhost" at the time of this writing.
+         */
         host?: string;
-        /** statsd port, default  */
+        /**
+         * statsd port.  If not set, use the hot-shots default, 8125
+         * at the time of this writing.
+         */
         port?: number;
     };
 }
@@ -275,13 +283,16 @@ export function defaultConfiguration(): Configuration {
             },
             compress: false,
         },
+        applicationEvents: {
+            enabled: false,
+        },
         cluster: {
             enabled: false,
         },
         logging: {
             level: "info",
         },
-        applicationEvents: {
+        statsd: {
             enabled: false,
         },
         commands: [],
