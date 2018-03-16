@@ -1,6 +1,7 @@
 import "mocha";
 
 import * as assert from "power-assert";
+import { AutomationServerOptions } from "../../../src/configuration";
 import { HandleCommand } from "../../../src/HandleCommand";
 import { EventFired, HandleEvent } from "../../../src/HandleEvent";
 import { AutomationContextAware, HandlerContext } from "../../../src/HandlerContext";
@@ -11,7 +12,6 @@ import { AbstractRequestProcessor } from "../../../src/internal/transport/Abstra
 import { CommandIncoming, EventIncoming } from "../../../src/internal/transport/RequestProcessor";
 import { AutomationContext } from "../../../src/internal/util/cls";
 import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
-import { AutomationServerOptions } from "../../../src/server/options";
 import { GraphClient } from "../../../src/spi/graph/GraphClient";
 import { MessageClient } from "../../../src/spi/message/MessageClient";
 import { Factory } from "../../../src/util/constructionUtils";
@@ -105,7 +105,7 @@ describe("the processCommand method", () => {
             source: {
                 user_agent: "slack",
                 slack: {
-                    team: {id: "TEAM" },
+                    team: { id: "TEAM" },
                 },
             },
         };

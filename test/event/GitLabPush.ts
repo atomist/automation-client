@@ -1,13 +1,19 @@
-import { bold, SlackMessage, url } from "@atomist/slack-messages/SlackMessages";
+import {
+    bold,
+    SlackMessage,
+    url,
+} from "@atomist/slack-messages/SlackMessages";
+import { EventHandler } from "../../src/decorators";
 import {
     EventFired,
-    EventHandler,
-    failure,
     HandleEvent,
-    HandlerContext,
+} from "../../src/HandleEvent";
+import { HandlerContext } from "../../src/HandlerContext";
+import {
+    failure,
     HandlerResult,
     Success,
-} from "../../src/index";
+} from "../../src/HandlerResult";
 import { addressSlackChannels } from "../../src/spi/message/MessageClient";
 
 @EventHandler("Notify on GitLab pushes", `subscription GitLabPush {

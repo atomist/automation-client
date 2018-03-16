@@ -1,5 +1,7 @@
 import { SelfDescribingHandleCommand } from "./HandleCommand";
-import { HandleCommand, HandlerContext, HandlerResult } from "./index";
+import { HandleCommand } from "./HandleCommand";
+import { HandlerContext } from "./HandlerContext";
+import { HandlerResult } from "./HandlerResult";
 import { metadataFromInstance } from "./internal/metadata/metadataReading";
 import { toStringArray } from "./internal/util/string";
 import {

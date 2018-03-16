@@ -9,7 +9,7 @@ import * as yargs from "yargs";
 import { automationClient } from "../automationClient";
 import {
     Configuration,
-    findConfiguration,
+    loadConfiguration,
 } from "../configuration";
 import { HandlerContext } from "../HandlerContext";
 import { CommandInvocation } from "../internal/invoker/Payload";
@@ -22,16 +22,17 @@ import { DefaultSlackMessageClient } from "../spi/message/MessageClientSupport";
 if (yargs.argv.request) {
     try {
         const request: CommandInvocation = JSON.parse(yargs.argv.request);
-        const config = findConfiguration();
-        const node = automationClient(config);
+        loadConfiguration()
+            .then(configuration => {
+                const node = automationClient(configuration);
 
-        if (config.commands) {
-            config.commands.forEach(c => {
-                node.withCommandHandler(c);
+                configuration.commands.forEach(c => {
+                    node.withCommandHandler(c);
+                });
+
+                invokeOnConsole(node.automationServer, request, createHandlerContext(configuration));
             });
-        }
 
-        invokeOnConsole(node.automationServer, request, createHandlerContext(config));
     } catch (e) {
         console.error(`Error: ${e.message}`);
         process.exit(1);

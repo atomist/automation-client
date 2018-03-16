@@ -2,10 +2,16 @@ import "mocha";
 import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
 
 import * as assert from "power-assert";
-import { CommandHandler, MappedParameter, Parameter, Secret, Tags } from "../../../src/decorators";
+import {
+    CommandHandler,
+    MappedParameter,
+    MappedParameters,
+    Parameter,
+    Secret,
+    Tags,
+} from "../../../src/decorators";
 import { HandleCommand } from "../../../src/HandleCommand";
 import { HandlerContext } from "../../../src/HandlerContext";
-import { MappedParameters } from "../../../src/index";
 import { CommandHandlerMetadata } from "../../../src/metadata/automationMetadata";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 

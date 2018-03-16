@@ -1,4 +1,9 @@
-import { MappedParameter, MappedParameters, Secret, Secrets } from "../../src/index";
+import {
+    MappedParameter,
+    MappedParameters,
+    Secret,
+    Secrets,
+} from "../../src/decorators";
 
 export abstract class SecretBaseHandler {
 

@@ -2,17 +2,15 @@ import {
     ConfigurableCommandHandler,
     MappedParameter,
     MappedParameters,
+    Parameter,
 } from "../../src/decorators";
+import { HandleCommand } from "../../src/HandleCommand";
+import { HandlerContext } from "../../src/HandlerContext";
 import {
     failure,
+    HandlerResult,
     success,
 } from "../../src/HandlerResult";
-import {
-    HandleCommand,
-    HandlerContext,
-    HandlerResult,
-    Parameter,
-} from "../../src/index";
 import { addressEvent } from "../../src/spi/message/MessageClient";
 import { SecretBaseHandler } from "./SecretBaseHandler";
 

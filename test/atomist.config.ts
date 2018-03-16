@@ -4,7 +4,6 @@ import { FileMessageTest } from "./command/FileMessageTest";
 import { HelloWorld } from "./command/HelloWorld";
 import { MessageTest } from "./command/MessageTest";
 import { HelloIssueViaProperties } from "./event/HelloIssue";
-import { HelloWorldIngester } from "./event/HelloWorld";
 
 // const host = "https://automation.atomist.com";
 const host = "https://automation-staging.atomist.services";
@@ -13,7 +12,7 @@ export const configuration: Configuration = {
     name: "@atomist/automation-node-tests",
     version: "0.0.7",
     // policy: "durable",
-    teamIds: "T1L0VDKJP",
+    teamIds: ["T1L0VDKJP"],
     keywords: ["test", "automation"],
     token: process.env.GITHUB_TOKEN,
     commands: [
@@ -74,4 +73,10 @@ export const configuration: Configuration = {
         enabled: false,
         // workers: 2,
     },
+    postProcessors: [
+        config => {
+            config.custom = { test: "123456" };
+            return Promise.resolve(config);
+        },
+    ],
 };

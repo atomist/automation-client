@@ -1,13 +1,14 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import axios from "axios";
 import * as _ from "lodash";
+
 import {
-    HandleCommand,
-    HandlerContext,
-    HandlerResult,
     MappedParameters,
     Secrets,
-} from "./index";
+} from "./decorators";
+import { HandleCommand } from "./HandleCommand";
+import { HandlerContext } from "./HandlerContext";
+import { HandlerResult } from "./HandlerResult";
 import {
     declareMappedParameter,
     declareSecret,

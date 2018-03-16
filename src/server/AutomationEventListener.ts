@@ -1,9 +1,7 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
-import {
-    EventFired,
-    HandlerContext,
-    HandlerResult,
-} from "../index";
+import { EventFired } from "../HandleEvent";
+import { HandlerContext } from "../HandlerContext";
+import { HandlerResult } from "../HandlerResult";
 import { CommandInvocation } from "../internal/invoker/Payload";
 import {
     CommandIncoming,
