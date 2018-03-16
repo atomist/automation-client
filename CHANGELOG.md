@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   --version command-line option
 
+### Added
+
+-   statsd support
+
 ## [0.7.0][] - 2018-03-07
 
 [0.7.0]: https://github.com/atomist/automation-client-ts/compare/0.6.6...0.7.0

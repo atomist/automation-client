@@ -49,4 +49,5 @@ export {
 
 export { AutomationEventListener } from "./server/AutomationEventListener";
 
-export { runningAutomationClient } from "./automationClient";
+// this next line causes client project mocha tests to hang after running tests
+// export { runningAutomationClient } from "./automationClient";

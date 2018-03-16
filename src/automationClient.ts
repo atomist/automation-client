@@ -32,17 +32,17 @@ import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
 import { Maker } from "./util/constructionUtils";
 import { StatsdAutomationEventListener, StatsdOptions } from "./util/statsd";
 
-const DefaultListeners = [
-    new MetricEnabledAutomationEventListener(),
-    new EventStoringAutomationEventListener(),
-];
-
 export class AutomationClient {
 
     public automations: BuildableAutomationServer;
     public webSocketClient: WebSocketClient;
     public httpServer: ExpressServer;
     public wsHandler: WebSocketRequestProcessor;
+
+    private defaultListeners = [
+        new MetricEnabledAutomationEventListener(),
+        new EventStoringAutomationEventListener(),
+    ];
 
     constructor(public configuration: Configuration) {
         this.automations = new BuildableAutomationServer(
@@ -96,7 +96,7 @@ export class AutomationClient {
                 host: this.configuration.statsd.host,
                 port: this.configuration.statsd.port,
             };
-            DefaultListeners.push(new StatsdAutomationEventListener(statsdOptions));
+            this.defaultListeners.push(new StatsdAutomationEventListener(statsdOptions));
         }
 
         if (!this.configuration.cluster.enabled) {
@@ -138,14 +138,14 @@ export class AutomationClient {
     ): ClusterMasterRequestProcessor {
 
         return new ClusterMasterRequestProcessor(this.automations, webSocketOptions,
-            [...DefaultListeners, ...this.configuration.listeners],
+            [...this.defaultListeners, ...this.configuration.listeners],
             this.configuration.cluster.workers);
     }
 
     private setupWebSocketRequestHandler(webSocketOptions: WebSocketClientOptions): WebSocketRequestProcessor {
 
         return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
-            [...DefaultListeners, ...this.configuration.listeners]);
+            [...this.defaultListeners, ...this.configuration.listeners]);
     }
 
     private setupApplicationEvents(): Promise<any> {
