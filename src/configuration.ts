@@ -99,7 +99,7 @@ export interface AutomationOptions {
         };
         compress?: boolean;
     };
-    /** Atomist API enpoints */
+    /** Atomist API endpoints */
     endpoints?: {
         graphql?: string;
         api?: string;
