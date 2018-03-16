@@ -1,6 +1,7 @@
 import * as _ from "lodash";
 
 import * as stringify from "json-stringify-safe";
+import { AutomationServerOptions } from "../configuration";
 import { ApolloGraphClient } from "../graph/ApolloGraphClient";
 import { SuccessPromise } from "../HandlerResult";
 import {
@@ -34,7 +35,6 @@ import {
     toFactory,
 } from "../util/constructionUtils";
 import { AbstractAutomationServer } from "./AbstractAutomationServer";
-import { AutomationServerOptions } from "./options";
 
 interface CommandHandlerRegistration {
 
