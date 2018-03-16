@@ -3,12 +3,17 @@ import { HandlerContext } from "../../../src/HandlerContext";
 
 import * as assert from "power-assert";
 import {
-    CommandHandler, EventHandler, MappedParameter, Parameter, Secret,
+    CommandHandler,
+    EventHandler,
+    MappedParameter,
+    MappedParameters,
+    Parameter,
+    Secret,
+    Secrets,
     Tags,
 } from "../../../src/decorators";
 import { EventFired, HandleEvent } from "../../../src/HandleEvent";
 import { HandlerResult } from "../../../src/HandlerResult";
-import { MappedParameters, Secrets } from "../../../src/index";
 
 @CommandHandler("add the Atomist Spring Boot agent to a Spring Boot project")
 @Tags("atomist", "spring")

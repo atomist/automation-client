@@ -48,3 +48,5 @@ export {
 } from "./ingesters";
 
 export { AutomationEventListener } from "./server/AutomationEventListener";
+
+export { runningAutomationClient } from "./automationClient";

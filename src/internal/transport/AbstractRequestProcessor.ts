@@ -1,13 +1,13 @@
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as serializeError from "serialize-error";
+import { EventFired } from "../../HandleEvent";
 import { AutomationContextAware } from "../../HandlerContext";
+import { HandlerContext } from "../../HandlerContext";
 import {
-    EventFired,
     failure,
-    HandlerContext,
     HandlerResult,
-} from "../../index";
+} from "../../HandlerResult";
 import { AutomationEventListener } from "../../server/AutomationEventListener";
 import { AutomationServer } from "../../server/AutomationServer";
 import { GraphClient } from "../../spi/graph/GraphClient";
@@ -142,7 +142,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             team: request.team,
             command: request.command,
             source: request.source,
-            destinations: [ source ],
+            destinations: [source],
             status: {
                 code,
                 reason: `${success ? "Successfully" : "Unsuccessfully"} invoked command` +

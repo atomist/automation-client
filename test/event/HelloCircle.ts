@@ -1,13 +1,15 @@
 import { user } from "@atomist/slack-messages/SlackMessages";
+import { EventHandler } from "../../src/decorators";
 import {
     EventFired,
-    EventHandler,
-    failure,
     HandleEvent,
-    HandlerContext,
+} from "../../src/HandleEvent";
+import { HandlerContext } from "../../src/HandlerContext";
+import {
+    failure,
     HandlerResult,
     Success,
-} from "../../src/index";
+} from "../../src/HandlerResult";
 import { addressSlackChannels } from "../../src/spi/message/MessageClient";
 
 @EventHandler("Notify on Circle CI events", `subscription HelloCircle

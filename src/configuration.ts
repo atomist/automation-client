@@ -9,10 +9,8 @@ import * as _ from "lodash";
 import * as path from "path";
 import * as semver from "semver";
 
-import {
-    HandleCommand,
-    HandleEvent,
-} from "./index";
+import { HandleCommand } from "./HandleCommand";
+import { HandleEvent } from "./HandleEvent";
 import {
     Ingester,
     IngesterBuilder,

@@ -3,18 +3,24 @@ import { metadataFromInstance } from "../../../src/internal/metadata/metadataRea
 
 import * as assert from "power-assert";
 import {
-    CommandHandler, ConfigurableCommandHandler, MappedParameter, Parameter, Secret,
+    CommandHandler,
+    ConfigurableCommandHandler,
+    MappedParameter,
+    MappedParameters,
+    Parameter,
+    Secret,
     Tags,
 } from "../../../src/decorators";
 import { HandleCommand } from "../../../src/HandleCommand";
 import { EventFired, HandleEvent } from "../../../src/HandleEvent";
 import { HandlerContext } from "../../../src/HandlerContext";
 import { HandlerResult } from "../../../src/HandlerResult";
-import { MappedParameters } from "../../../src/index";
 
 import { populateParameters } from "../../../src/internal/parameterPopulation";
 import {
-    CommandHandlerMetadata, EventHandlerMetadata, FreeChoices,
+    CommandHandlerMetadata,
+    EventHandlerMetadata,
+    FreeChoices,
 } from "../../../src/metadata/automationMetadata";
 import { oneOf, someOf } from "../../../src/metadata/parameterUtils";
 import { AddAtomistSpringAgent } from "../invoker/TestHandlers";

@@ -2,7 +2,6 @@
 
 import { automationClient } from "./automationClient";
 import { loadConfiguration } from "./configuration";
-import { logger } from "./index";
 import { enableDefaultScanning } from "./scan";
 
 loadConfiguration()

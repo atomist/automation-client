@@ -1,12 +1,15 @@
 import axios from "axios";
 import {
-    EventFired,
     EventHandler,
+    Secret,
+    Secrets,
+} from "../../src/decorators";
+import {
+    EventFired,
     HandleEvent,
-    HandlerContext,
-    HandlerResult,
-    Secret, Secrets,
-} from "../../src/index";
+} from "../../src/HandleEvent";
+import { HandlerContext } from "../../src/HandlerContext";
+import { HandlerResult } from "../../src/HandlerResult";
 import { EventHandlerMetadata } from "../../src/metadata/automationMetadata";
 import { addressSlackChannels } from "../../src/spi/message/MessageClient";
 
@@ -61,7 +64,7 @@ export class HelloIssueViaProperties implements HandleEvent<any>, EventHandlerMe
     public name = "HelloIssueViaProperties";
     public description = "";
     public subscriptionName = "BlaBla";
-    public subscription  = `subscription BlaBla
+    public subscription = `subscription BlaBla
 {
   Issue {
     number

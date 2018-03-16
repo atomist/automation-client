@@ -1,8 +1,6 @@
-import {
-    EventFired,
-    HandlerContext,
-    HandlerResult,
-} from "./index";
+import { EventFired } from "./HandleEvent";
+import { HandlerContext } from "./HandlerContext";
+import { HandlerResult } from "./HandlerResult";
 
 /**
  * Handle the given event.

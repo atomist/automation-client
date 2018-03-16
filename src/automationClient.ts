@@ -1,10 +1,8 @@
 import * as cluster from "cluster";
 import * as _ from "lodash";
 import { AutomationServerOptions, Configuration } from "./configuration";
-import {
-    HandleCommand,
-    HandleEvent,
-} from "./index";
+import { HandleCommand } from "./HandleCommand";
+import { HandleEvent } from "./HandleEvent";
 import {
     Ingester,
     IngesterBuilder,

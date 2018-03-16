@@ -1,9 +1,7 @@
 import * as appRoot from "app-root-path";
 import { Configuration } from "./configuration";
-import {
-    HandleCommand,
-    HandleEvent,
-} from "./index";
+import { HandleCommand } from "./HandleCommand";
+import { HandleEvent } from "./HandleEvent";
 import { logger } from "./internal/util/logger";
 import { toStringArray } from "./internal/util/string";
 import { Maker } from "./util/constructionUtils";

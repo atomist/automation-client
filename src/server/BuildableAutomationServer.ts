@@ -3,14 +3,16 @@ import * as _ from "lodash";
 import * as stringify from "json-stringify-safe";
 import { AutomationServerOptions } from "../configuration";
 import { ApolloGraphClient } from "../graph/ApolloGraphClient";
-import { SuccessPromise } from "../HandlerResult";
+import { HandleCommand } from "../HandleCommand";
 import {
     EventFired,
-    HandleCommand,
     HandleEvent,
-    HandlerContext,
+} from "../HandleEvent";
+import { HandlerContext } from "../HandlerContext";
+import {
     HandlerResult,
-} from "../index";
+    SuccessPromise,
+} from "../HandlerResult";
 import { Ingester } from "../ingesters";
 import { NodeConfigSecretResolver } from "../internal/env/NodeConfigSecretResolver";
 import {
