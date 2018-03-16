@@ -571,7 +571,7 @@ describe("configuration", () => {
             save.HOME = process.env.HOME;
             process.env.HOME = "/throw/loadConfiguration/off/the/trail";
             save.ATOMIST_CONFIG = process.env.ATOMIST_CONFIG;
-            process.env.ATOMIST_CONFIG = stringify({ teamIds: ["A"], groups: ["G"] });
+            process.env.ATOMIST_CONFIG = stringify({ token: "x", teamIds: ["A"], groups: ["G"] });
             try {
                 await loadConfiguration("/this/path/does/not/exist/i/hope");
                 assert.fail("Failed to throw an exception");
