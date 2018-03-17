@@ -2,8 +2,8 @@ import Timer = NodeJS.Timer;
 import * as cluster from "cluster";
 import { ClientOptions, StatsD } from "hot-shots";
 
-import { runningAutomationClient } from "../automationClient";
 import { Configuration } from "../configuration";
+import { runningAutomationClient } from "../globals";
 import { EventFired } from "../HandleEvent";
 import { AutomationContextAware, HandlerContext } from "../HandlerContext";
 import { HandlerResult } from "../HandlerResult";

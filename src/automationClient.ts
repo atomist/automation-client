@@ -1,6 +1,10 @@
 import * as cluster from "cluster";
 import * as _ from "lodash";
 import { AutomationServerOptions, Configuration } from "./configuration";
+import {
+    runningAutomationClient,
+    setRunningAutomationClient,
+} from "./globals";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import {
@@ -193,8 +197,6 @@ export class AutomationClient {
     }
 }
 
-export let runningAutomationClient: AutomationClient;
-
 export function automationClient(configuration: Configuration): AutomationClient {
     const client = new AutomationClient(configuration);
     configuration.commands.forEach(c => {
@@ -210,6 +212,5 @@ export function automationClient(configuration: Configuration): AutomationClient
             client.withIngester(e as Ingester);
         }
     });
-    runningAutomationClient = client;
-    return client;
+    return setRunningAutomationClient(client);
 }
