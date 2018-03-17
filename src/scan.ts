@@ -88,10 +88,10 @@ export function scanEvents(patterns: string | string[] =
  * Enable scanning on the given Configuration instance.
  */
 export function enableDefaultScanning(configuration: Configuration): Configuration {
-    if (configuration.commands === undefined) {
+    if (!configuration.commands) {
         configuration.commands = scanCommands();
     }
-    if (configuration.events === undefined) {
+    if (!configuration.events) {
         configuration.events = scanEvents();
     }
     return configuration;

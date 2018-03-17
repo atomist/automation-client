@@ -295,8 +295,8 @@ export function defaultConfiguration(): Configuration {
         statsd: {
             enabled: false,
         },
-        commands: [],
-        events: [],
+        commands: undefined, // enable scanning
+        events: undefined, // enable scanning
         ingesters: [],
         listeners: [],
         postProcessors: [],

@@ -73,8 +73,8 @@ describe("configuration", () => {
         applicationEvents: {
             enabled: false,
         },
-        commands: [],
-        events: [],
+        commands: undefined,
+        events: undefined,
         ingesters: [],
         listeners: [],
         postProcessors: [],
