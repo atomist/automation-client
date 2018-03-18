@@ -4,13 +4,13 @@ import * as assert from "power-assert";
 import axios from "axios";
 import * as _ from "lodash";
 
+import { guid } from "../../src/internal/util/string";
 import { GitHubDotComBase, GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../src/project/git/GitProject";
 import { TestRepositoryVisibility } from "../credentials";
 import { tempProject } from "../project/utils";
 import { Creds, GitHubToken } from "./gitHubTest";
-import { guid } from "../../src/internal/util/string";
 
 describe("GitProject remote", () => {
 
