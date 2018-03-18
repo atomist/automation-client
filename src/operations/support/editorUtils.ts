@@ -92,7 +92,7 @@ function doWithEditResult(r: EditResult<GitProject>, gitop: () => Promise<EditRe
                 }) : gitop();
             });
     }
-    logger.info("NOT committing %j as it's not dirty, edited=%s", r.target.id, r.edited);
+    logger.info("NOT committing %j in %s as it's not dirty, edited=%s", r.target.id, r.target.baseDir, r.edited);
     return Promise.resolve(r);
 }
 

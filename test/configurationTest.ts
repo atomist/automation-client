@@ -288,7 +288,7 @@ describe("configuration", () => {
             assert(c.applicationEvents.enabled === true);
             assert(c.applicationEvents.teamId === "T1L0VDKJP");
             assert(c.cluster.enabled === false);
-        }).timeout(4000);
+        }).timeout(5000);
 
     });
 

@@ -24,12 +24,21 @@ export class SimpleRepoId implements RepoId {
  */
 export interface RepoRef extends RepoId {
 
+    /*
+     * Might contain a sha, might contain a ref (for backwards compatibility)
+     * Providing a sha here and a branch in `branch` instead is encouraged.
+     */
     sha?: string;
 
     /**
      * Path from root, using / syntax. If undefined or the empty string, use the root of the repo.
      */
     path?: string;
+
+    /*
+     * If this is populated, then `sha` should contain a sha (it may also contain the same branch name, for backwards compatibility)
+     */
+    branch?: string;
 
 }
 
