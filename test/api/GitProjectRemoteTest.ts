@@ -10,6 +10,7 @@ import { GitProject } from "../../src/project/git/GitProject";
 import { TestRepositoryVisibility } from "../credentials";
 import { tempProject } from "../project/utils";
 import { Creds, GitHubToken } from "./gitHubTest";
+import { guid } from "../../src/internal/util/string";
 
 describe("GitProject remote", () => {
 
@@ -68,7 +69,7 @@ export function newRepo(): Promise<{ owner: string, repo: string }> {
             Authorization: `token ${GitHubToken}`,
         },
     };
-    const name = `test-repo-${new Date().getTime()}`;
+    const name = `test-repo-${new Date().getTime()}-${guid()}`;
     const description = "a thing";
     const url = `${GitHubDotComBase}/user/repos`;
     console.debug("Visibility is " + TestRepositoryVisibility);
