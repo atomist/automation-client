@@ -6,6 +6,8 @@ import { RemoteRepoRef } from "./RepoId";
 
 export abstract class AbstractRepoRef implements RemoteRepoRef {
 
+    public branch?: string;
+
     constructor(public remoteBase: string,
                 public owner: string,
                 public repo: string,
