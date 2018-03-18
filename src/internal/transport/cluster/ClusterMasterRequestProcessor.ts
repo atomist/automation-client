@@ -30,6 +30,7 @@ import {
     isCommandIncoming,
     isEventIncoming,
 } from "../RequestProcessor";
+import {celebrateRegistration} from "../websocket/celebration";
 import { WebSocketClientOptions } from "../websocket/WebSocketClient";
 import {
     sendMessage,
@@ -76,6 +77,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
     public onRegistration(registration: RegistrationConfirmation) {
         logger.info("Registration successful: %s", stringify(registration));
+        logger.info(celebrateRegistration("Cluster", registration, this.automations.automations));
         global.setJwtToken(registration.jwt);
         this.registration = registration;
 
