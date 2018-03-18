@@ -91,10 +91,10 @@ function doWithEditResult(r: EditResult<GitProject>, gitop: () => Promise<EditRe
                         target: r.target,
                         success: true,
                         edited: false,
-                    }
+                    };
                 } else {
                     logger.info("Observed dirty; executing git operation. Project: %j\n Directory: %s", r.target.id, r.target.baseDir);
-                    return gitop()
+                    return gitop();
                 }
             });
     }
