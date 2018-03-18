@@ -468,7 +468,9 @@ export function loadAutomationConfig(cfgPath?: string): Configuration {
     let cfg: Configuration = {};
     if (!cfgPath) {
         const cfgFile = "atomist.config.js";
-        const files = glob.sync(`${appRoot.path}/**/${cfgFile}`, { ignore: [".git/**", "node_modules/**"] });
+        const files = glob.sync(
+            `${appRoot.path}/**/${cfgFile}`,
+            { ignore: ["**/.git/**", "**/node_modules/**"] });
         if (files.length === 1) {
             cfgPath = files[0];
         } else if (files.length > 1) {
