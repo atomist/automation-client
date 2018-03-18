@@ -9,3 +9,8 @@ export const GitBranchRegExp = {
     validInput: "a valid Git branch name, see" +
     " https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html",
 };
+
+export const GitShaRegExp = {
+    pattern: /^[0-9a-f]{40}$/,
+    validInput: "40 hex digits, lowercase",
+};

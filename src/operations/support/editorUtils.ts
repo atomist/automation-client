@@ -73,26 +73,32 @@ export function editProjectUsingBranch<P>(context: HandlerContext,
 /**
  * Perform git operation on the project only if edited != false or status is dirty
  * @param {EditResult<GitProject>} r
- * @param {() => Promise<EditResult>} gitop
+ * @param {() => Promise<EditResult>} gitop what to do with a dirty project
  * @return {Promise<EditResult>}
  */
 function doWithEditResult(r: EditResult<GitProject>, gitop: () => Promise<EditResult>): Promise<EditResult> {
     if (r.edited === true) {
-        // Do a second check to see if the project is dirty
+        logger.info("Declared dirty; executing git operation. Project: %j\n Directory: %s", r.target.id, r.target.baseDir);
         return gitop();
     }
     if (r.edited === undefined) {
         // Check git status
         return r.target.gitStatus()
             .then(status => {
-                return status.isClean ? ({
-                    target: r.target,
-                    success: true,
-                    edited: false,
-                }) : gitop();
+                if (status.isClean) {
+                    logger.info("Observed clean; skipping git operation. Project: %j\n Directory: %s", r.target.id, r.target.baseDir);
+                    return {
+                        target: r.target,
+                        success: true,
+                        edited: false,
+                    };
+                } else {
+                    logger.info("Observed dirty; executing git operation. Project: %j\n Directory: %s", r.target.id, r.target.baseDir);
+                    return gitop();
+                }
             });
     }
-    logger.info("NOT committing %j as it's not dirty, edited=%s", r.target.id, r.edited);
+    logger.info("Declared not dirty; skipping git operation. Project: %j\n Directory: %s\nEdited=%s", r.target.id, r.target.baseDir, r.edited);
     return Promise.resolve(r);
 }
 
