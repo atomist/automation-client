@@ -8,6 +8,10 @@ import { RegistrationConfirmation } from "./websocket/WebSocketRequestProcessor"
 export function banner(registration: RegistrationConfirmation,
                        automations: Automations) {
 
+    if (!runningAutomationClient) {
+        return;
+    }
+
     let message = automations.name;
     const b = _.get(runningAutomationClient, "configuration.logging.banner");
     if (typeof b === "string") {
