@@ -97,9 +97,9 @@ export class SlackDestination implements Destination {
  * @param {string} users
  * @returns {SlackDestination}
  */
-export function addressSlackUsers(team: string, user: string, ...moreUsers: string[]): SlackDestination {
+export function addressSlackUsers(team: string, ...users: string[]): SlackDestination {
     const sd = new SlackDestination(team);
-    [user].concat(moreUsers).forEach(u => sd.addressUser(u));
+    users.forEach(u => sd.addressUser(u));
     return sd;
 }
 
@@ -109,9 +109,9 @@ export function addressSlackUsers(team: string, user: string, ...moreUsers: stri
  * @param {string} channels
  * @returns {SlackDestination}
  */
-export function addressSlackChannels(team: string, channel: string, ...moreChannels: string[]): SlackDestination {
+export function addressSlackChannels(team: string, ...channels: string[]): SlackDestination {
     const sd = new SlackDestination(team);
-    [channel].concat(moreChannels).forEach(c => sd.addressChannel(c));
+    channels.forEach(c => sd.addressChannel(c));
     return sd;
 }
 
