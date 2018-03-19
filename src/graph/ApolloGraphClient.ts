@@ -2,10 +2,12 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import ApolloClient from "apollo-client";
 import { ApolloLink } from "apollo-link";
 import { createHttpLink } from "apollo-link-http";
+import axios from "axios";
+import { buildAxiosFetch } from "axios-fetch";
 import gql from "graphql-tag";
-import "isomorphic-fetch";
 import * as stringify from "json-stringify-safe";
 import * as namespace from "../internal/util/cls";
+import { configureProxy } from "../internal/util/http";
 import { logger } from "../internal/util/logger";
 import { GraphClient } from "../spi/graph/GraphClient";
 import {
@@ -33,18 +35,28 @@ export class ApolloGraphClient implements GraphClient {
             addTypename: false,
         });
 
-        const httpLink = createHttpLink({ uri: endpoint });
+        const httpLink = createHttpLink({
+            uri: endpoint,
+            fetch: buildAxiosFetch(axios.create(configureProxy({}))),
+        });
+
         const middlewareLink = new ApolloLink((operation, forward) => {
             // attach the correlation-id to the request
             const correlationId = namespace.get() ? namespace.get().correlationId : undefined;
-
-            operation.setContext({
-                headers: {
-                    ...headers,
-                    "correlation-id": correlationId,
-                },
-            });
-
+            if (correlationId) {
+                operation.setContext({
+                    headers: {
+                        ...headers,
+                        "correlation-id": correlationId,
+                    },
+                });
+            } else {
+                operation.setContext({
+                    headers: {
+                        ...headers,
+                    },
+                });
+            }
             return forward(operation);
         });
 

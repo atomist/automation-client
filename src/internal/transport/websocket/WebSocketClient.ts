@@ -7,10 +7,10 @@ import * as url from "url";
 import * as WebSocket from "ws";
 import * as zlib from "zlib";
 import { Deferred } from "../../util/Deferred";
+import { configureProxy } from "../../util/http";
 import { logger } from "../../util/logger";
 import Timer = NodeJS.Timer;
 import { registerShutdownHook } from "../../util/shutdown";
-import { obfuscateJson } from "../../util/string";
 import {
     CommandIncoming,
     EventIncoming,
@@ -217,19 +217,7 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
             timeout: 10000,
         };
 
-        if (process.env.HTTPS_PROXY || process.env.https_proxy) {
-            const proxy = process.env.HTTPS_PROXY || process.env.https_proxy;
-            const proxyOptions = url.parse(proxy);
-            config.proxy = {
-                host: proxyOptions.hostname,
-                port: +proxyOptions.port,
-            };
-            (config.proxy as any).protocol = proxyOptions.protocol;
-            logger.debug("Detected proxy and using configuration '%s'",
-                JSON.stringify(config, obfuscateJson, null));
-        }
-
-        return axios.post(options.registrationUrl, registrationPayload, config)
+        return axios.post(options.registrationUrl, registrationPayload, configureProxy(config))
             .then(result => {
                 const registration = result.data as RegistrationConfirmation;
 
