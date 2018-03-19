@@ -56,17 +56,25 @@ export class DefaultSlackMessageClient implements MessageClient, SlackMessageCli
     public addressUsers(msg: string | SlackMessage,
                         users: string | string[],
                         options?: MessageOptions): Promise<any> {
+        if (!users || Array.isArray(users) && users.length === 0) {
+            throw new Error("Please pass at least one channel.");
+        }
+        const [firstUser, others] = Array.isArray(users) ? [users[0], users.slice(1)] : [users, []];
         return this.lookupChatTeam()
             .then(chatTeamId =>
-                this.delegate.send(msg, addressSlackUsers(chatTeamId, ...toStringArray(users)), options));
+                this.delegate.send(msg, addressSlackUsers(chatTeamId, firstUser, ...others), options));
     }
 
     public addressChannels(msg: string | SlackMessage,
                            channels: string | string[],
                            options?: MessageOptions): Promise<any> {
+        if (!channels || Array.isArray(channels) && channels.length === 0) {
+            throw new Error("Please pass at least one channel.");
+        }
+        const [firstChannel, others] = Array.isArray(channels) ? [channels[0], channels.slice(1)] : [channels, []];
         return this.lookupChatTeam()
             .then(chatTeamId =>
-                this.delegate.send(msg, addressSlackChannels(chatTeamId, ...toStringArray(channels)), options));
+                this.delegate.send(msg, addressSlackChannels(chatTeamId, firstChannel, ...others), options));
 
     }
 
