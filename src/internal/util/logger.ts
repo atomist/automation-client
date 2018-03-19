@@ -99,7 +99,7 @@ const winstonLogger = new winston.Logger({
     transports: [
         new (winston.transports.Console)({
             json: false,
-            colorize: true,
+            colorize: require("chalk").supportsColor,
             prettyPrint: true,
             timestamp: true,
             showLevel: true,
