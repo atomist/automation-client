@@ -163,6 +163,11 @@ export interface AutomationServerOptions extends AutomationOptions {
          * requires host, port, token, etc. configuration.
          */
         custom?: any;
+        /**
+         * Print welcome banner; set to an arbitrary string to display,
+         * default is name of automation-client
+         */
+        banner?: boolean | string;
     };
     /** statsd config */
     statsd?: {

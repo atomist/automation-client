@@ -3,6 +3,7 @@ import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as serializeError from "serialize-error";
 import * as winston from "winston";
+import { runningAutomationClient } from "../../automationClient";
 import * as context from "./cls";
 
 export let LoggingConfig = {

@@ -79,4 +79,8 @@ export const configuration: Configuration = {
             return Promise.resolve(config);
         },
     ],
+    logging: {
+        level: "debug",
+        banner: true,
+    },
 };
