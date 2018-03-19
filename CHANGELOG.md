@@ -7,10 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.7.0...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.8.0...HEAD
+
+## [0.8.0][] - 2018-03-19
+
+[0.8.0]: https://github.com/atomist/automation-client-ts/compare/0.7.0...0.8.0
+
+Configuration release
 
 ### Changed
 
+-   Custom ingester types now use array arguments
+-   At least one user/channel is required when sending messages
 -   Make configuration more composable and user config more powerful
 
 ### Fixed
@@ -19,7 +27,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
+-   Mapped parameters for all repos
+-   Print banner on successful registration
+-   Branch as optional parameter in RepoRef
 -   statsd support
+-   Logging to file
 
 ## [0.7.0][] - 2018-03-07
 
