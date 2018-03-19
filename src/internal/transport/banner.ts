@@ -25,7 +25,7 @@ export function banner(registration: RegistrationConfirmation,
         const gitInfo = info(automations);
 
         const chalk = require("chalk");
-        res = chalk.blue(res);
+        res = chalk.green(res);
 
         const urls = automations.team_ids.map(t => {
             return `
@@ -46,3 +46,4 @@ ${urls}
     });
 
 }
+
