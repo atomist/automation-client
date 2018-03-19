@@ -25,8 +25,11 @@ import {
     WebSocketClientOptions,
 } from "./internal/transport/websocket/WebSocketClient";
 import { WebSocketRequestProcessor } from "./internal/transport/websocket/WebSocketRequestProcessor";
-import { logger } from "./internal/util/logger";
-import { toStringArray } from "./internal/util/string";
+import {
+    addFileTransport,
+    logger,
+    setLogLevel,
+} from "./internal/util/logger";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
 import { Maker } from "./util/constructionUtils";
@@ -89,7 +92,15 @@ export class AutomationClient {
             compress: this.configuration.ws.compress,
         };
 
-        (logger as any).level = this.configuration.logging.level;
+        setLogLevel(this.configuration.logging.level);
+
+        if (this.configuration.logging.file !== false) {
+            let filename = "./log/automation-client.log";
+            if (typeof this.configuration.logging.file === "string") {
+                filename = this.configuration.logging.file;
+            }
+            addFileTransport(filename, this.configuration.logging.level);
+        }
 
         if (this.configuration.statsd.enabled) {
             const statsdOptions: StatsdOptions = {

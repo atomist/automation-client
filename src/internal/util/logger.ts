@@ -1,14 +1,41 @@
 import * as cluster from "cluster";
+import * as fs from "fs";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
+import * as p from "path";
 import * as serializeError from "serialize-error";
+import * as stripAnsi from "strip-ansi";
 import * as winston from "winston";
-import { runningAutomationClient } from "../../automationClient";
 import * as context from "./cls";
 
 export let LoggingConfig = {
     format: "logger",
 };
+
+export function setLogLevel(level: string) {
+    winstonLogger.level = level;
+}
+
+export function addFileTransport(filename: string, level: string) {
+    const path = p.resolve(filename);
+    if (!fs.existsSync(p.dirname(path))) {
+        fs.mkdirSync(p.dirname(path));
+    }
+
+    winstonLogger.add(
+        winston.transports.File,
+        {
+            level,
+            filename: p.basename(path),
+            dirname: p.dirname(path),
+            maxsize: 10 * 1024 * 1024,
+            maxFiles: 10,
+            tailable: true,
+            zippedArchive: true,
+            json: false,
+            formatter,
+        });
+}
 
 export function formatter(options: any): string {
     if (LoggingConfig.format === "cli") {
@@ -57,7 +84,11 @@ export function formatter(options: any): string {
         (options.meta && Object.keys(options.meta).length ?
             (options.message ? ": " : "") + stringify(options.meta) : "");
 
-    return formatted;
+    if (options.colorize) {
+        return formatted;
+    } else {
+        return stripAnsi(formatted);
+    }
 }
 
 const winstonLogger = new winston.Logger({

@@ -168,6 +168,11 @@ export interface AutomationServerOptions extends AutomationOptions {
          * default is name of automation-client
          */
         banner?: boolean | string;
+        /**
+         * Log to file; set to file path to overwrite location and name of logfile,
+         * defaults to ./log/automation-client.log in current working directory
+         */
+        file?: boolean | string;
     };
     /** statsd config */
     statsd?: {
@@ -296,6 +301,8 @@ export function defaultConfiguration(): Configuration {
         },
         logging: {
             level: "info",
+            file: false,
+            banner: true,
         },
         statsd: {
             enabled: false,

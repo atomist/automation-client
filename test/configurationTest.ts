@@ -66,6 +66,8 @@ describe("configuration", () => {
         },
         logging: {
             level: "info",
+            file: false,
+            banner: true,
         },
         statsd: {
             enabled: false,
