@@ -30,7 +30,7 @@ export function banner(registration: RegistrationConfirmation,
         const urls = automations.team_ids.map(t => {
             return `
   ${chalk.grey("Url")}  ${chalk.underline(`https://app.atomist.com/workspace/${t}/automations`)}
-  ${chalk.grey("GraphQL")}  ${chalk.underline(`${runningAutomationClient.configuration.endpoints.graphql}/${t}`)}`;
+  ${chalk.grey("GraphiQL")}  ${chalk.underline(`https://app.atomist.com/workspace/${t}/graphql`)}`;
         });
 
         /* tslint:disable */
