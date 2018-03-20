@@ -80,7 +80,11 @@ export const configuration: Configuration = {
         },
     ],
     logging: {
-        level: "debug",
+        level: "info",
         banner: true,
+        file: {
+            enabled: true,
+            level: "debug",
+        },
     },
 };

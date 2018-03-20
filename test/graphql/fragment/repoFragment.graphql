@@ -1,0 +1,9 @@
+fragment RepoNameInGraphql on Repo {
+  name
+  owner
+  org {
+    team {
+      name
+    }
+  }
+}

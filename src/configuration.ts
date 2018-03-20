@@ -172,7 +172,11 @@ export interface AutomationServerOptions extends AutomationOptions {
          * Log to file; set to file path to overwrite location and name of logfile,
          * defaults to ./log/automation-client.log in current working directory
          */
-        file?: boolean | string;
+        file?: {
+            enabled: boolean,
+            name?: string,
+            level?: string,
+        }
     };
     /** statsd config */
     statsd?: {
@@ -301,7 +305,10 @@ export function defaultConfiguration(): Configuration {
         },
         logging: {
             level: "debug",
-            file: false,
+            file: {
+                enabled: false,
+                level: "debug",
+            },
             banner: true,
         },
         statsd: {

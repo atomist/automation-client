@@ -94,12 +94,12 @@ export class AutomationClient {
 
         setLogLevel(this.configuration.logging.level);
 
-        if (this.configuration.logging.file !== false) {
+        if (this.configuration.logging.file && this.configuration.logging.file.enabled === true) {
             let filename = "./log/automation-client.log";
-            if (typeof this.configuration.logging.file === "string") {
-                filename = this.configuration.logging.file;
+            if (this.configuration.logging.file.name) {
+                filename = this.configuration.logging.file.name;
             }
-            addFileTransport(filename, this.configuration.logging.level);
+            addFileTransport(filename, this.configuration.logging.file.level || this.configuration.logging.level);
         }
 
         if (this.configuration.statsd.enabled) {

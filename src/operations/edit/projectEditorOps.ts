@@ -28,7 +28,7 @@ export function chainEditors(...projectEditors: AnyProjectEditor[]): ProjectEdit
     };
 }
 
-function combineEditResults(r1: EditResult, r2: EditResult): EditResult {
+export function combineEditResults(r1: EditResult, r2: EditResult): EditResult {
     return {
         ...r1,
         ...r2,
