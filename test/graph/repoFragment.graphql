@@ -1,0 +1,9 @@
+fragment RepoName on Repo {
+  name
+  owner
+  org {
+    team {
+      name
+    }
+  }
+}

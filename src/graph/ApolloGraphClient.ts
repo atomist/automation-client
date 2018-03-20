@@ -10,6 +10,7 @@ import * as namespace from "../internal/util/cls";
 import { configureProxy } from "../internal/util/http";
 import { logger } from "../internal/util/logger";
 import { GraphClient } from "../spi/graph/GraphClient";
+import * as graphql from "./graphQL";
 import {
     inlineQuery,
     resolveAndReadFileSync,
@@ -68,20 +69,37 @@ export class ApolloGraphClient implements GraphClient {
         });
     }
 
-    public executeQueryFromFile<T, Q>(queryFile: string,
-                                      variables?: Q,
-                                      options?: any,
-                                      current?: string): Promise<T> {
-        return this.executeQuery<T, Q>(
-            resolveAndReadFileSync(queryFile, current, {}), variables, options);
+    public query<T, Q>(options: {
+                            query?: string,
+                            path?: string,
+                            name?: string,
+                            fragmentDir?: string,
+                            variables?: Q,
+                            options?: any,
+                        }): Promise<T> {
+        const q = graphql.query({
+            query: options.query,
+            path: options.path,
+            name: options.name,
+            moduleDir: module.parent.id,
+        });
+        return this.executeQuery<T, Q>(q, options.variables, options.options);
     }
 
-    public executeQuery<T, Q>(graphql: string,
+    public executeQueryFromFile<T, Q>(queryFile: string,
+                                      variables?: Q,
+                                      queryOptions?: any,
+                                      current?: string): Promise<T> {
+        return this.executeQuery<T, Q>(
+            resolveAndReadFileSync(queryFile, current, {}), variables, queryOptions);
+    }
+
+    public executeQuery<T, Q>(q: string,
                               variables?: Q,
-                              options?: any): Promise<T> {
+                              queryOptions?: any): Promise<T> {
         logger.debug(`Querying '%s' with variables '%s' and query: %s`,
-            this.endpoint, stringify(variables), inlineQuery(graphql));
-        const query = gql(graphql);
+            this.endpoint, stringify(variables), inlineQuery(q));
+        const query = gql(q);
 
         const callback = namespace.init().bind<Promise<T>>(response => {
             // The following statement is needed for debugging; we can always disable that later
@@ -92,26 +110,42 @@ export class ApolloGraphClient implements GraphClient {
         return this.client.query<T>({
                 query,
                 variables,
-                ...options,
+                ...queryOptions,
             })
             .then(result => callback(result));
     }
 
-    public executeMutationFromFile<T, Q>(mutationFile: string,
-                                         variables?: Q,
-                                         options?: any,
-                                         current?: string): Promise<T> {
-        return this.executeMutation<T, Q>(
-            resolveAndReadFileSync(mutationFile, current, {}), variables, options);
+    public mutate<T, Q>(options: {
+                            mutation?: string,
+                            path?: string,
+                            name?: string,
+                            variables?: Q,
+                            options?: any,
+                        }): Promise<T> {
+        const m = graphql.mutate({
+            mutation: options.mutation,
+            path: options.path,
+            name: options.name,
+            moduleDir: module.parent.id,
+        });
+        return this.executeMutation<T, Q>(m, options.variables, options.options);
     }
 
-    public executeMutation<T, Q>(graphql: string,
-                                 variables?: Q,
-                                 options?: any): Promise<any> {
-        logger.debug(`Mutating '%s' with variables '%s' and mutation: %s`,
-            this.endpoint, stringify(variables), inlineQuery(graphql));
+    public executeMutationFromFile<T, Q>(mutationFile: string,
+                                         variables?: Q,
+                                         mutationOptions?: any,
+                                         current?: string): Promise<T> {
+        return this.executeMutation<T, Q>(
+            resolveAndReadFileSync(mutationFile, current, {}), variables, mutationOptions);
+    }
 
-        const mutation = gql(graphql);
+    public executeMutation<T, Q>(m: string,
+                                 variables?: Q,
+                                 mutationOptions?: any): Promise<any> {
+        logger.debug(`Mutating '%s' with variables '%s' and mutation: %s`,
+            this.endpoint, stringify(variables), inlineQuery(m));
+
+        const mutation = gql(m);
 
         const callback = namespace.init().bind<Promise<T>>(response => {
             // The following statement is needed for debugging; we can always disable that later
@@ -122,7 +156,7 @@ export class ApolloGraphClient implements GraphClient {
         return this.client.mutate<T>({
                 mutation,
                 variables,
-                ...options,
+                ...mutationOptions,
             })
             .then(response => callback(response));
     }

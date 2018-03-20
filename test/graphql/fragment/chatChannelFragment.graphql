@@ -1,0 +1,3 @@
+fragment ChannelNameInGraphql on ChatChannel {
+  name
+}

@@ -1,0 +1,15 @@
+subscription bla {
+    SentryAlert {
+        id
+        message
+        url
+        event {
+            extra {
+                git_sha
+                git_owner
+                git_repo
+                correlation_id
+            }
+        }
+    }
+}
