@@ -11,6 +11,7 @@ import gql from "graphql-tag";
 import { validate } from "graphql/validation";
 import { murmur3 } from "murmurhash-js/";
 import * as p from "path";
+import * as trace from "stack-trace";
 import { findLine } from "../internal/util/string";
 
 // tslint:disable-next-line:no-var-requires
@@ -63,17 +64,18 @@ export function subscription(options: {
     const fragmentDir = options.fragmentDir;
     const path = options.path;
     const name = options.name;
+    const t = trace.get();
 
     // If subscription isn't defined attempt to load from file
     if (!s) {
-        s = locateAndLoadGraphql({ path, name }, "subscription", module.parent.id);
+        s = locateAndLoadGraphql({ path, name }, "subscription", t[1].getFileName());
     }
 
     // Replace variables
     s = replaceParameters(s, options.variables);
 
     // Inline fragments
-    s = inlineFragments(s, name, fragmentDir);
+    s = inlineFragments(s, name, t[1].getFileName(), fragmentDir);
 
     // Inline entire subscription
     if (options.inline === true) {
@@ -122,7 +124,7 @@ export function query<T, Q>(options: {
     }
 
     // Inline fragments
-    q = inlineFragments(q, name, fragmentDir);
+    q = inlineFragments(q, name, options.moduleDir, fragmentDir);
 
     // Inline entire query
     if (options.inline === true) {
@@ -306,14 +308,14 @@ function replace(q: string, key: string, value: string): string {
     return q.replace(new RegExp(`${key}\\b`, "g"), value);
 }
 
-function inlineFragments(q: string, name: string, fragmentDir: string): string {
+function inlineFragments(q: string, name: string, moduleDir: string, fragmentDir: string): string {
 
     if (!fragmentDir && !name) {
-        fragmentDir = p.dirname(module.parent.id);
+        fragmentDir = p.dirname(moduleDir);
     } else if (!fragmentDir && name) {
-        fragmentDir = p.resolve(findUp.sync("graphql", { cwd: p.resolve(p.dirname(module.parent.id)) }), "fragment");
+        fragmentDir = p.resolve(findUp.sync("graphql", { cwd: p.resolve(p.dirname(moduleDir)) }), "fragment");
     } else if (!p.isAbsolute(fragmentDir)) {
-        fragmentDir = p.resolve(p.dirname(module.parent.id), fragmentDir);
+        fragmentDir = p.resolve(p.dirname(moduleDir), fragmentDir);
     }
 
     if (FragmentExpression.test(q)) {
@@ -358,7 +360,7 @@ function locateAndLoadGraphql(options: {
             path = `${path}.graphql`;
         }
         if (!p.isAbsolute(path)) {
-            path = p.resolve(p.dirname(module.parent.id), path);
+            path = p.resolve(p.dirname(moduleDir), path);
         }
     } else if (options.name) {
         const graphqlDir = findUp.sync("graphql", { cwd: p.resolve(p.dirname(moduleDir)) });

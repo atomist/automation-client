@@ -6,6 +6,7 @@ import axios from "axios";
 import { buildAxiosFetch } from "axios-fetch";
 import gql from "graphql-tag";
 import * as stringify from "json-stringify-safe";
+import * as trace from "stack-trace";
 import * as namespace from "../internal/util/cls";
 import { configureProxy } from "../internal/util/http";
 import { logger } from "../internal/util/logger";
@@ -81,7 +82,7 @@ export class ApolloGraphClient implements GraphClient {
             query: options.query,
             path: options.path,
             name: options.name,
-            moduleDir: module.parent.id,
+            moduleDir: trace.get()[1].getFileName(),
         });
         return this.executeQuery<T, Q>(q, options.variables, options.options);
     }
@@ -126,7 +127,7 @@ export class ApolloGraphClient implements GraphClient {
             mutation: options.mutation,
             path: options.path,
             name: options.name,
-            moduleDir: module.parent.id,
+            moduleDir: trace.get()[1].getFileName(),
         });
         return this.executeMutation<T, Q>(m, options.variables, options.options);
     }
