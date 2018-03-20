@@ -40,12 +40,13 @@ export function enumValue(value: string | string[]): ParameterEnum {
  * * name:  name of the .graphql file to load; this will walk up the directory structure
  *          starting a t the location of the calling script and look for a folder called
  *          'graphql'. Once that folder is found, by convention name is being looked for
- *          in the 'query' sub directory.
+ *          in the 'subscription' sub directory.
  * * fragmentsDir: location of fragment .graphql files
  * * inline: remove any unneeded whitespace and line breaks from returned GraphQL string
  * * variables: the variables to bind into the subscription
  *
- * @param {{subscription?: string; path?: string; name?: string; fragmentDir?: string; inline?: boolean; variables?: {[p: string]: string | boolean | number | ParameterEnum}}} options
+ * @param {{subscription?: string; path?: string; name?: string; fragmentDir?: string; inline?: boolean;
+ *  variables?: {[p: string]: string | boolean | number | ParameterEnum}}} options
  * @returns {string}
  */
 export function subscription(options: {
@@ -142,7 +143,7 @@ export function query<T, Q>(options: {
  * * name:  name of the .graphql file to load; this will walk up the directory structure
  *          starting a t the location of the calling script and look for a folder called
  *          'graphql'. Once that folder is found, by convention name is being looked for
- *          in the 'query' sub directory.
+ *          in the 'mutation' sub directory.
  * * moduleDir: location of the calling script
  * * inline: remove any unneeded whitespace and line breaks from returned GraphQL string
  *
