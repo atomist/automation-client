@@ -142,16 +142,12 @@ query Repos($teamId: ID!, $offset: Int!) {
     it("should successfully inline fragments", () => {
         const query = GraphQL.subscription({
             path:  "./subscriptionWithFragment",
-            inline: true,
         });
         assert.equal(query, "subscription Test { Repo { name owner org { team { name } } channels { name } }}");
     });
 
     it("should successfully inline fragments from graphql folder", () => {
-        const query = GraphQL.subscription({
-            name:  "subscriptionWithFragmentInGraphql",
-            inline: true,
-        });
+        const query = GraphQL.subscription("subscriptionWithFragmentInGraphql");
         assert.equal(query, "subscription Test { Repo { name owner org { team { name } } channels { name } }}");
     });
 
@@ -159,7 +155,6 @@ query Repos($teamId: ID!, $offset: Int!) {
         const query = GraphQL.subscription({
             path:  "./subscriptionWithFragment",
             fragmentDir: ".",
-            inline: true,
         });
         assert.equal(query, "subscription Test { Repo { name owner org { team { name } } channels { name } }}");
     });
@@ -168,7 +163,6 @@ query Repos($teamId: ID!, $offset: Int!) {
         const query = GraphQL.subscription({
             name:  "subscriptionWithFragmentInGraphql",
             fragmentDir: "../graphql/fragment",
-            inline: true,
             operationName: "BlaBla",
         });
         assert.equal(query, "subscription BlaBla { Repo { name owner org { team { name } } channels { name } }}");

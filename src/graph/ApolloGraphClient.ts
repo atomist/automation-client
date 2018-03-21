@@ -10,7 +10,11 @@ import * as trace from "stack-trace";
 import * as namespace from "../internal/util/cls";
 import { configureProxy } from "../internal/util/http";
 import { logger } from "../internal/util/logger";
-import { GraphClient } from "../spi/graph/GraphClient";
+import {
+    GraphClient,
+    MutationOptions,
+    QueryOptions,
+} from "../spi/graph/GraphClient";
 import * as graphql from "./graphQL";
 import {
     inlineQuery,
@@ -70,14 +74,12 @@ export class ApolloGraphClient implements GraphClient {
         });
     }
 
-    public query<T, Q>(options: {
-                            query?: string,
-                            path?: string,
-                            name?: string,
-                            fragmentDir?: string,
-                            variables?: Q,
-                            options?: any,
-                        }): Promise<T> {
+    public query<T, Q>(options: QueryOptions<Q> | string): Promise<T> {
+        if (typeof options === "string") {
+            options = {
+                name: options,
+            };
+        }
         const q = graphql.query({
             query: options.query,
             path: options.path,
@@ -116,13 +118,12 @@ export class ApolloGraphClient implements GraphClient {
             .then(result => callback(result));
     }
 
-    public mutate<T, Q>(options: {
-                            mutation?: string,
-                            path?: string,
-                            name?: string,
-                            variables?: Q,
-                            options?: any,
-                        }): Promise<T> {
+    public mutate<T, Q>(options: MutationOptions<Q> | string): Promise<T> {
+        if (typeof options === "string") {
+            options = {
+                name: options,
+            };
+        }
         const m = graphql.mutate({
             mutation: options.mutation,
             path: options.path,

@@ -51,17 +51,18 @@ export function enumValue(value: string | string[]): ParameterEnum {
  *  variables?: {[p: string]: string | boolean | number | ParameterEnum}}} options
  * @returns {string}
  */
-export function subscription(options: {
-    subscription?: string,
-    path?: string,
-    name?: string,
-    fragmentDir?: string,
-    inline?: boolean,
-    variables?: {
-        [name: string]: string | boolean | number | ParameterEnum;
-    },
-    operationName?: string,
-}): string {
+export function subscription(optionsOrName: SubscriptionOptions | string): string {
+    let options: SubscriptionOptions;
+
+    // Allow passing over a single string which would be the name of subscription file
+    if (typeof optionsOrName === "string") {
+        options = {
+            name: optionsOrName,
+        };
+    } else {
+        options = optionsOrName as SubscriptionOptions;
+    }
+
     let s = options.subscription;
     const fragmentDir = options.fragmentDir;
     const path = options.path;
@@ -84,10 +85,22 @@ export function subscription(options: {
     }
 
     // Inline entire subscription
-    if (options.inline === true) {
+    if (options.inline !== false) {
         s = inlineQuery(s);
     }
     return s;
+}
+
+export interface SubscriptionOptions {
+    subscription?: string;
+    path?: string;
+    name?: string;
+    fragmentDir?: string;
+    inline?: boolean;
+    variables?: {
+        [name: string]: string | boolean | number | ParameterEnum;
+    };
+    operationName?: string;
 }
 
 /**
@@ -110,15 +123,7 @@ export function subscription(options: {
  * @param {{query?: string; path?: string; name?: string; fragmentDir?: string; moduleDir: string; inline?: boolean}} options
  * @returns {string}
  */
-export function query<T, Q>(options: {
-    query?: string,
-    path?: string,
-    name?: string,
-    fragmentDir?: string,
-    moduleDir: string,
-    inline?: boolean,
-}): string {
-
+export function query<T, Q>(options: QueryOptions): string {
     let q = options.query;
     const fragmentDir = options.fragmentDir;
     const path = options.path;
@@ -137,6 +142,15 @@ export function query<T, Q>(options: {
         q = inlineQuery(q);
     }
     return q;
+}
+
+export interface QueryOptions {
+    query?: string;
+    path?: string;
+    name?: string;
+    fragmentDir?: string;
+    moduleDir: string;
+    inline?: boolean;
 }
 
 /**
@@ -158,13 +172,7 @@ export function query<T, Q>(options: {
  * @param {{mutation?: string; path?: string; name?: string; moduleDir: string; inline?: boolean}} options
  * @returns {string}
  */
-export function mutate<T, Q>(options: {
-    mutation?: string,
-    path?: string,
-    name?: string,
-    moduleDir: string,
-    inline?: boolean,
-}): string {
+export function mutate<T, Q>(options: MutationOptions): string {
 
     let m = options.mutation;
     const path = options.path;
@@ -181,6 +189,14 @@ export function mutate<T, Q>(options: {
     }
 
     return m;
+}
+
+export interface MutationOptions {
+    mutation?: string;
+    path?: string;
+    name?: string;
+    moduleDir: string;
+    inline?: boolean;
 }
 
 /**

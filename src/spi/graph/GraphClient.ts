@@ -10,30 +10,19 @@ export interface GraphClient {
 
     /**
      * Run query either provided as a string or as loaded from a file
-     * @param {{query?: string; path?: string; name?: string; fragmentDir?: string; variables?: Q; options?: any}} options
+     * @param {{query?: string; path?: string; name?: string; fragmentDir?: string; variables?: Q; options?: any}}
+     *          | string optionsOrName
      * @returns {Promise<T>}
      */
-    query<T, Q>(options: {
-                    query?: string,
-                    path?: string,
-                    name?: string,
-                    fragmentDir?: string,
-                    variables?: Q,
-                    options?: any,
-                }): Promise<T>;
+    query<T, Q>(optionsOrName: QueryOptions<Q> | string): Promise<T>;
 
     /**
      * Run mutation either provided as a string or as loaded from a file
-     * @param {{mutation?: string; path?: string; name?: string; fragmentDir?: string; variables?: Q; options?: any}} options
+     * @param {{mutation?: string; path?: string; name?: string; fragmentDir?: string; variables?: Q; options?: any}}
+     *          | string optionsOrName
      * @returns {Promise<T>}
      */
-    mutate<T, Q>(options: {
-                    mutation?: string,
-                    path?: string,
-                    name?: string,
-                    variables?: Q,
-                    options?: any,
-                }): Promise<T>;
+    mutate<T, Q>(optionsOrName: MutationOptions<Q> | string): Promise<T>;
 
     /**
      * Run GraphQL query based on the provided file name and variables
@@ -80,4 +69,21 @@ export interface GraphClient {
      * DEPRECATED: use mutate() instead
      */
     executeMutation<T, Q>(mutation: string, variables?: Q, options?: any): Promise<any>;
+}
+
+export interface QueryOptions<Q> {
+    query?: string;
+    path?: string;
+    name?: string;
+    fragmentDir?: string;
+    variables?: Q;
+    options?: any;
+}
+
+export interface MutationOptions<Q> {
+    mutation?: string;
+    path?: string;
+    name?: string;
+    variables?: Q;
+    options?: any;
 }
