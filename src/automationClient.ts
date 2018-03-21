@@ -94,7 +94,7 @@ export class AutomationClient {
 
         setLogLevel(this.configuration.logging.level);
 
-        if (this.configuration.logging.file && this.configuration.logging.file.enabled === true) {
+        if (this.configuration.logging.file.enabled === true) {
             let filename = "./log/automation-client.log";
             if (this.configuration.logging.file.name) {
                 filename = this.configuration.logging.file.name;
