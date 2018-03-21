@@ -195,6 +195,14 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         return this.runCommandInCurrentWorkingDirectory(`git checkout ${sha} --`);
     }
 
+    /**
+     * Revert all changes since last commit
+     * @return {any}
+     */
+    public async revert(): Promise<CommandResult<this>> {
+        return clean(this.baseDir);
+    }
+
     public push(): Promise<CommandResult<this>> {
         if (!!this.branch && !!this.remote) {
             // We need to set the remote
