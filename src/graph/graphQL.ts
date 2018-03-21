@@ -45,6 +45,7 @@ export function enumValue(value: string | string[]): ParameterEnum {
  * * fragmentsDir: location of fragment .graphql files
  * * inline: remove any unneeded whitespace and line breaks from returned GraphQL string
  * * variables: the variables to bind into the subscription
+ * * operationName: name of the subscription to use in the generated GraphQL string
  *
  * @param {{subscription?: string; path?: string; name?: string; fragmentDir?: string; inline?: boolean;
  *  variables?: {[p: string]: string | boolean | number | ParameterEnum}}} options
@@ -59,6 +60,7 @@ export function subscription(options: {
     variables?: {
         [name: string]: string | boolean | number | ParameterEnum;
     },
+    operationName?: string,
 }): string {
     let s = options.subscription;
     const fragmentDir = options.fragmentDir;
@@ -76,6 +78,10 @@ export function subscription(options: {
 
     // Inline fragments
     s = inlineFragments(s, name, t[1].getFileName(), fragmentDir);
+
+    if (options.operationName) {
+        s = replaceOperationName(s, options.operationName);
+    }
 
     // Inline entire subscription
     if (options.inline === true) {
