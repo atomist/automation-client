@@ -81,7 +81,7 @@ export interface GitProject extends LocalProject, Configurable {
     /**
      * Revert all changes since last commit
      */
-    revert(sha: string): Promise<ActionResult<this>>;
+    revert(): Promise<ActionResult<this>>;
 
     /**
      * Push to the remote.
