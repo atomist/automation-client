@@ -46,12 +46,13 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
     private graphClients: GraphClientFactory;
     private registration?: RegistrationConfirmation;
 
-    // tslint:disable-next-line:variable-name
-    constructor(private _automations: AutomationServer,
-        // tslint:disable-next-line:variable-name
-                private _options: WebSocketClientOptions,
-        // tslint:disable-next-line:variable-name
-                private _listeners: AutomationEventListener[] = []) {
+    /* tslint:disable:variable-name */
+    constructor(
+        private _automations: AutomationServer,
+        private _options: WebSocketClientOptions,
+        private _listeners: AutomationEventListener[] = [],
+    ) {
+
         super(_automations, [..._listeners, new ClusterWorkerAutomationEventListener()]);
         workerSend({ type: "online", context: null });
         registerShutdownHook(() => {
@@ -64,7 +65,7 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
                 setTimeout(() => {
                     logger.info("Closing worker");
                     deferred.resolve(0);
-                }, (this._options.termination.gracePeriod || 60000) + 2500);
+                }, this._options.termination.gracePeriod + 2500);
 
                 return deferred.promise
                     .then(code => {
@@ -76,6 +77,7 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
             }
         });
     }
+    /* tslint:enable:variable-name */
 
     public setRegistration(registration: RegistrationConfirmation) {
         logger.debug("Receiving registration '%s'", stringify(registration));

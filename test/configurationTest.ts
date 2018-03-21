@@ -58,6 +58,7 @@ describe("configuration", () => {
             enabled: true,
             termination: {
                 graceful: false,
+                gracePeriod: 60000,
             },
             compress: false,
         },

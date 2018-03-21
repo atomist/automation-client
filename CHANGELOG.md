@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.8.0...HEAD
 
+### Added
+
+-   Default gracePeriod of 60 s
+
 ## [0.8.0][] - 2018-03-19
 
 [0.8.0]: https://github.com/atomist/automation-client-ts/compare/0.7.0...0.8.0

@@ -25,10 +25,11 @@ import {
 
 export class WebSocketClient {
 
-    public constructor(private registrationCallback: () => any,
-                       private options: WebSocketClientOptions,
-                       private requestProcessor: WebSocketRequestProcessor) {
-    }
+    public constructor(
+        private registrationCallback: () => any,
+        private options: WebSocketClientOptions,
+        private requestProcessor: WebSocketRequestProcessor,
+    ) { }
 
     public start(): Promise<void> {
 
@@ -49,7 +50,7 @@ export class WebSocketClient {
                         ws.close();
                         logger.info("Closing WebSocket connection");
                         deferred.resolve(0);
-                    }, this.options.termination.gracePeriod || 60000);
+                    }, this.options.termination.gracePeriod);
 
                     return deferred.promise
                         .then(code => {
@@ -233,10 +234,10 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
                     logger.error(`Registration failed because a session for ${nameVersion} is already active`);
                     retry(error);
                 } else if (error.response && (error.response.status === 400
-                        || error.response.status === 401
-                        || error.response.status === 403)) {
+                    || error.response.status === 401
+                    || error.response.status === 403)) {
                     logger.error(`Registration failed with code '%s': '%s'`,
-                        error.response.status,  error.response.data);
+                        error.response.status, error.response.data);
                     process.exit(1);
                 } else {
                     logger.error("Registration failed with '%s'", error);

@@ -102,9 +102,15 @@ export interface AutomationOptions {
     ws?: {
         enabled: boolean;
         termination?: {
-            gracePeriod?: number;
+            /**
+             * if true, give in-flight transactions `gracePeriod`
+             * milliseconds to complete when shutting down
+             */
             graceful?: boolean;
+            /** grace period in millisends */
+            gracePeriod?: number;
         };
+        /** compress messages over websocket */
         compress?: boolean;
     };
     /** Atomist API endpoints */
@@ -294,6 +300,7 @@ export function defaultConfiguration(): Configuration {
             enabled: true,
             termination: {
                 graceful: false,
+                gracePeriod: 60000,
             },
             compress: false,
         },
