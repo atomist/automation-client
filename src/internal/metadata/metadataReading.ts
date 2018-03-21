@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import * as GraphQL from "../../graph/graphQL";
+import * as GraphQL from "../../internal/graph/graphQL";
 import { HandleCommand } from "../../HandleCommand";
 import {
     CommandHandlerMetadata,
