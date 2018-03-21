@@ -1,12 +1,12 @@
+import * as appRoot from "app-root-path";
 import * as findUp from "find-up";
 import * as fs from "fs";
-import { buildClientSchema, GraphQLError, IntrospectionQuery, parse, } from "graphql";
+import { buildClientSchema, GraphQLError, IntrospectionQuery, parse } from "graphql";
 import gql from "graphql-tag";
 import { validate } from "graphql/validation";
 import { murmur3 } from "murmurhash-js/";
 import * as p from "path";
 import { findLine } from "../util/string";
-import * as appRoot from "app-root-path";
 
 // tslint:disable-next-line:no-var-requires
 const schema = require("../../graph/schema.cortex.json");
@@ -217,7 +217,7 @@ export function prettyPrintErrors(errors: GraphQLError[], q?: string): string {
 }
 
 export function replaceParameters(q: string,
-                           parameters: {
+                                  parameters: {
                                [name: string]: string | boolean | number | ParameterEnum;
                            } = {}): string {
     if (Object.keys(parameters).length > 0) {
@@ -325,10 +325,9 @@ function locateAndLoadGraphql(options: {
     }
 }
 
-
 export function resolveAndReadFileSync(path: string,
-                                current: string = appRoot.path,
-                                parameters: {
+                                       current: string = appRoot.path,
+                                       parameters: {
                                     [name: string]: string | boolean | number | ParameterEnum;
                                 } = {}): string {
     if (!path.endsWith(".graphql")) {

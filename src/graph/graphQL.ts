@@ -55,7 +55,6 @@ export function subscription(optionsOrName: SubscriptionOptions | string): strin
     return internalGraphQL.subscription(options);
 }
 
-
 /**
  * Read a subscription from a file relative to the provided directory (or the module root by default)
  * Note: Use __dirname to get the current directory of the calling script.
@@ -74,5 +73,3 @@ export function subscriptionFromFile(path: string,
     // TODO cd add validation that we only read subscriptions here
     return internalGraphQL.resolveAndReadFileSync(path, current, parameters);
 }
-
-

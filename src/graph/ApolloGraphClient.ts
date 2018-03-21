@@ -7,6 +7,7 @@ import { buildAxiosFetch } from "axios-fetch";
 import gql from "graphql-tag";
 import * as stringify from "json-stringify-safe";
 import * as trace from "stack-trace";
+import * as internalGraphql from "../internal/graph/graphQL";
 import * as namespace from "../internal/util/cls";
 import { configureProxy } from "../internal/util/http";
 import { logger } from "../internal/util/logger";
@@ -15,7 +16,6 @@ import {
     MutationOptions,
     QueryOptions,
 } from "../spi/graph/GraphClient";
-import * as internalGraphql from "../internal/graph/graphQL";
 
 /**
  * Implementation of GraphClient using Apollo Client.
