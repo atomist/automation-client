@@ -15,11 +15,7 @@ import {
     MutationOptions,
     QueryOptions,
 } from "../spi/graph/GraphClient";
-import * as graphql from "./graphQL";
-import {
-    inlineQuery,
-    resolveAndReadFileSync,
-} from "./graphQL";
+import * as internalGraphql from "../internal/graph/graphQL";
 
 /**
  * Implementation of GraphClient using Apollo Client.
@@ -80,7 +76,7 @@ export class ApolloGraphClient implements GraphClient {
                 name: options,
             };
         }
-        const q = graphql.query({
+        const q = internalGraphql.query({
             query: options.query,
             path: options.path,
             name: options.name,
@@ -94,14 +90,14 @@ export class ApolloGraphClient implements GraphClient {
                                       queryOptions?: any,
                                       current?: string): Promise<T> {
         return this.executeQuery<T, Q>(
-            resolveAndReadFileSync(queryFile, current, {}), variables, queryOptions);
+            internalGraphql.resolveAndReadFileSync(queryFile, current, {}), variables, queryOptions);
     }
 
     public executeQuery<T, Q>(q: string,
                               variables?: Q,
                               queryOptions?: any): Promise<T> {
         logger.debug(`Querying '%s' with variables '%s' and query: %s`,
-            this.endpoint, stringify(variables), inlineQuery(q));
+            this.endpoint, stringify(variables), internalGraphql.inlineQuery(q));
         const query = gql(q);
 
         const callback = namespace.init().bind<Promise<T>>(response => {
@@ -124,7 +120,7 @@ export class ApolloGraphClient implements GraphClient {
                 name: options,
             };
         }
-        const m = graphql.mutate({
+        const m = internalGraphql.mutate({
             mutation: options.mutation,
             path: options.path,
             name: options.name,
@@ -138,14 +134,14 @@ export class ApolloGraphClient implements GraphClient {
                                          mutationOptions?: any,
                                          current?: string): Promise<T> {
         return this.executeMutation<T, Q>(
-            resolveAndReadFileSync(mutationFile, current, {}), variables, mutationOptions);
+            internalGraphql.resolveAndReadFileSync(mutationFile, current, {}), variables, mutationOptions);
     }
 
     public executeMutation<T, Q>(m: string,
                                  variables?: Q,
                                  mutationOptions?: any): Promise<any> {
         logger.debug(`Mutating '%s' with variables '%s' and mutation: %s`,
-            this.endpoint, stringify(variables), inlineQuery(m));
+            this.endpoint, stringify(variables), internalGraphql.inlineQuery(m));
 
         const mutation = gql(m);
 
