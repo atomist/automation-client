@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [0.9.0]: https://github.com/atomist/automation-client-ts/compare/0.8.0...0.9.0
 
-Configuration release
+Fragment release
 
 ### Added
 
