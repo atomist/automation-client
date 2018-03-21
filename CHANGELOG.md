@@ -7,11 +7,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.8.0...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.9.0...HEAD
+
+## [0.9.0][] - 2018-03-21
+
+[0.9.0]: https://github.com/atomist/automation-client-ts/compare/0.8.0...0.9.0
+
+Configuration release
 
 ### Added
 
+-   GraphQL calls use proxy
+-   Startup banner
+-   Log level for logging to file
+-   GitProject revert method
+-   Support for GraphQL fragments
 -   Default gracePeriod of 60 s
+
+### Changed
+
+-   Export combineEditResults
 
 ## [0.8.0][] - 2018-03-19
 

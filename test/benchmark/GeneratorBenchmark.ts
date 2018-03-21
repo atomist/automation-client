@@ -13,7 +13,7 @@ import { InMemoryProject } from "../../src/project/mem/InMemoryProject";
 import { Project } from "../../src/project/Project";
 
 LoggingConfig.format = "cli";
-(logger as any).level = process.env.LOG_LEVEL || "info";
+(logger as any).transports.console.level = process.env.LOG_LEVEL || "info";
 
 describe("generator benchmark", () => {
 
