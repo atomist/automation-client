@@ -66,7 +66,10 @@ describe("configuration", () => {
         },
         logging: {
             level: "debug",
-            file: false,
+            file: {
+                enabled: false,
+                level: "debug",
+            },
             banner: true,
         },
         statsd: {

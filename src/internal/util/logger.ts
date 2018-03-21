@@ -13,7 +13,7 @@ export let LoggingConfig = {
 };
 
 export function setLogLevel(level: string) {
-    winstonLogger.level = level;
+    winstonLogger.transports.console.level = level;
 }
 
 export function addFileTransport(filename: string, level: string) {
@@ -98,6 +98,7 @@ const winstonLogger = new winston.Logger({
     exitOnError: false,
     transports: [
         new (winston.transports.Console)({
+            level: "debug",
             json: false,
             colorize: require("chalk").supportsColor,
             prettyPrint: true,
