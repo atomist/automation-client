@@ -68,6 +68,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                         });
                 },
                 executeMutationFromFile: graphClient.executeMutationFromFile,
+                mutate: graphClient.mutate,
                 executeQuery: (query: string, variables?: any, options?: any) => {
                     const start = Date.now();
                     return graphClient.executeQuery(query, variables, options)
@@ -84,6 +85,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
 
                 },
                 executeQueryFromFile: graphClient.executeQueryFromFile,
+                query: graphClient.query,
             };
         }
     }

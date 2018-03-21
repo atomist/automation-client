@@ -1,6 +1,7 @@
 import "mocha";
 import * as assert from "power-assert";
 import * as GraphQL from "../../src/graph/graphQL";
+import * as internalGraphql from "../../src/internal/graph/graphQL";
 
 describe("GraphQL", () => {
 
@@ -18,19 +19,19 @@ describe("GraphQL", () => {
 `;
 
     it("should successfully validate valid query", () => {
-        const query = GraphQL.subscriptionFromFile("graphql/repos");
-        const errors = GraphQL.validateQuery(query);
+        const query = GraphQL.subscriptionFromFile("../graphql/query/repos", __dirname);
+        const errors = internalGraphql.validateQuery(query);
         assert(errors.length === 0);
     });
 
     it("should successfully validate invalid query and return errors", () => {
-        const errors = GraphQL.validateQuery(InvalidQuery);
+        const errors = internalGraphql.validateQuery(InvalidQuery);
         assert(errors.length === 3);
     });
 
     it("should pretty print errors", () => {
-        const errors = GraphQL.validateQuery(InvalidQuery);
-        const message = GraphQL.prettyPrintErrors(errors, InvalidQuery);
+        const errors = internalGraphql.validateQuery(InvalidQuery);
+        const message = internalGraphql.prettyPrintErrors(errors, InvalidQuery);
         assert(message === `Cannot query field "invalid" on type "Repo". [7,17]
                 invalid
 ----------------^
@@ -47,14 +48,14 @@ query Repos($teamId: ID!, $offset: Int!) {
     });
 
     it("should successfully load query from relative path out of project root", () => {
-        const query = GraphQL.subscriptionFromFile("../../graphql/repos", __dirname);
-        const errors = GraphQL.validateQuery(query);
+        const query = GraphQL.subscriptionFromFile("../graphql/query/repos", __dirname );
+        const errors = internalGraphql.validateQuery(query);
         assert(errors.length === 0);
     });
 
     it("should successfully load query from relative path", () => {
         const query = GraphQL.subscriptionFromFile("./someOtherQuery.graphql", __dirname);
-        const errors = GraphQL.validateQuery(query);
+        const errors = internalGraphql.validateQuery(query);
         assert(errors.length === 0);
     });
 
@@ -75,7 +76,7 @@ query Repos($teamId: ID!, $offset: Int!) {
     it("should successfully load query from relative path and replace parameters in subscription", () => {
         const query = GraphQL.subscriptionFromFile(
             "./someSubscription",
-            __dirname,
+             __dirname,
             {
                 teamId: "T1L0VDKJP",
                 offset: 100,
@@ -135,8 +136,37 @@ query Repos($teamId: ID!, $offset: Int!) {
             "./someOtherQueryWithTheSameName",
             __dirname,
             {});
-        query = GraphQL.replaceOperationName(query, "BlaBla");
-        console.log(query);
+        query = internalGraphql.replaceOperationName(query, "BlaBla");
         assert.equal(query, ReplaceQuery1);
     });
+
+    it("should successfully inline fragments", () => {
+        const query = GraphQL.subscription({
+            path:  "./subscriptionWithFragment",
+        });
+        assert.equal(query, "subscription Test { Repo { name owner org { team { name } } channels { name } }}");
+    });
+
+    it("should successfully inline fragments from graphql folder", () => {
+        const query = GraphQL.subscription("subscriptionWithFragmentInGraphql");
+        assert.equal(query, "subscription Test { Repo { name owner org { team { name } } channels { name } }}");
+    });
+
+    it("should successfully inline fragments with path and fragmentDir", () => {
+        const query = GraphQL.subscription({
+            path:  "./subscriptionWithFragment",
+            fragmentDir: ".",
+        });
+        assert.equal(query, "subscription Test { Repo { name owner org { team { name } } channels { name } }}");
+    });
+
+    it("should successfully inline fragments with name and fragmentDir", () => {
+        const query = GraphQL.subscription({
+            name:  "subscriptionWithFragmentInGraphql",
+            fragmentDir: "../graphql/fragment",
+            operationName: "BlaBla",
+        });
+        assert.equal(query, "subscription BlaBla { Repo { name owner org { team { name } } channels { name } }}");
+    });
+
 });

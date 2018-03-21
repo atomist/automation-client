@@ -1,28 +1,58 @@
 import * as appRoot from "app-root-path";
 import * as fs from "fs";
-import {
-    buildClientSchema,
-    GraphQLError,
-    IntrospectionQuery,
-    parse,
-} from "graphql";
-import { validate } from "graphql/validation";
-import * as p from "path";
-import { findLine } from "../internal/util/string";
-
-// tslint:disable-next-line:no-var-requires
-const schema = require("./schema.cortex.json");
 import { murmur3 } from "murmurhash-js/";
-
-const OperationParameterExpression = /(?:subscription|query)[\s]*([\S]*?)\s*(\([\S\s]*?\))\s*[\S\s]*?{/i;
-const OperationNameExpression = /(subscription|query)[\s]*([^({\s]*)/i;
+import * as p from "path";
+import * as trace from "stack-trace";
+import * as internalGraphQL from "../internal/graph/graphQL";
+import { SubscriptionOptions } from "../internal/graph/graphQL";
 
 export class ParameterEnum {
-    constructor(public value: string | string[]) {}
+    constructor(public value: string | string[]) {
+    }
 }
 
 export function enumValue(value: string | string[]): ParameterEnum {
     return new ParameterEnum(value);
+}
+
+/**
+ * Prepare a GraphQL subscription string for the use with Apollo or EventHandlers.
+ *
+ * Subscription can be provided by the following options:
+ *
+ * * subscription: string containing the subscription GraphQL, or
+ * * path:  absolute or relative path to a .graphql file to load; if provided a relative
+ *          path this will resolve the relative path to an absolute given the location of
+ *          the calling script.
+ * * name:  name of the .graphql file to load; this will walk up the directory structure
+ *          starting a t the location of the calling script and look for a folder called
+ *          'graphql'. Once that folder is found, by convention name is being looked for
+ *          in the 'subscription' sub directory.
+ * * fragmentsDir: location of fragment .graphql files
+ * * inline: remove any unneeded whitespace and line breaks from returned GraphQL string
+ * * variables: the variables to bind into the subscription
+ * * operationName: name of the subscription to use in the generated GraphQL string
+ *
+ * @param {{subscription?: string; path?: string; name?: string; fragmentDir?: string; inline?: boolean;
+ *  variables?: {[p: string]: string | boolean | number | ParameterEnum}}} options
+ * @returns {string}
+ */
+export function subscription(optionsOrName: SubscriptionOptions | string): string {
+    const pathToCallingFunction = trace.get()[1].getFileName();
+
+    let options: SubscriptionOptions;
+
+    // Allow passing over a single string which would be the name of subscription file
+    if (typeof optionsOrName === "string") {
+        options = {
+            name: optionsOrName,
+        };
+    } else {
+        options = optionsOrName as SubscriptionOptions;
+    }
+    options.moduleDir = options.moduleDir || pathToCallingFunction;
+
+    return internalGraphQL.subscription(options);
 }
 
 /**
@@ -32,124 +62,14 @@ export function enumValue(value: string | string[]): ParameterEnum {
  * @param {string} current
  * @param {{[p: string]: string | boolean | number}} parameters
  * @returns {string}
+ *
+ * DEPRECATED: use subscription() instead
  */
 export function subscriptionFromFile(path: string,
                                      current: string = appRoot.path,
                                      parameters: {
-                                        [name: string]: string | boolean | number | ParameterEnum;
+                                         [name: string]: string | boolean | number | ParameterEnum;
                                      } = {}): string {
     // TODO cd add validation that we only read subscriptions here
-    return resolveAndReadFileSync(path, current, parameters);
-}
-
-/**
- * Extract operationName from the provided query or subscription
- * @param {string} query
- * @returns {string}
- */
-export function operationName(query: string): string {
-    const graphql = parse(query);
-    // TODO add some validation here
-    return (graphql.definitions[0] as any).name.value;
-}
-
-/**
- * Inline the given query. Mainly useful for nicer log messages
- * @param {string} query
- * @returns {string}
- */
-export function inlineQuery(query: string): string {
-    return query.replace(/[\n\r]/g, "").replace(/\s\s+/g, " ");
-}
-
-/**
- * Replace the operation name in the query or subscription
- */
-export function replaceOperationName(query: string, name: string): string {
-    return query.replace(OperationNameExpression, `$1 ${name}`);
-}
-
-/**
- * Validate a query against our GraphQL schema
- * @param {string} query
- * @returns {GraphQLError[]}
- */
-export function validateQuery(query: string): GraphQLError[] {
-    const graphql = parse(query);
-    const clientSchema = buildClientSchema(schema.data as IntrospectionQuery);
-    return validate(clientSchema, graphql);
-}
-
-export function prettyPrintErrors(errors: GraphQLError[], query?: string): string {
-    return errors.map(e => {
-        let msg = `${e.message} ${e.locations.map(l => `[${l.line},${l.column}]`).join(", ")}`;
-        if (query) {
-            for (let i = 0; i < e.positions.length; i++) {
-                msg += `\n${findLine(query, e.positions[i])}`;
-                msg += `\n${Array(e.locations[i].column).join("-")}^`;
-            }
-        }
-        return msg;
-    }).join("\n\n");
-}
-
-/**
- * Resolve and read the contents of a GrapqQL query or subscription file
- * @param {string} path
- * @param {string} current
- * @param {{[p: string]: string | boolean | number}} parameters
- * @returns {string}
- */
-export function resolveAndReadFileSync(path: string,
-                                       current: string = appRoot.path,
-                                       parameters: {
-                                           [name: string]: string | boolean | number | ParameterEnum;
-                                       } = {}): string {
-    if (!path.endsWith(".graphql")) {
-        path = `${path}.graphql`;
-    }
-    const absolutePath = p.resolve(current, path);
-    if (fs.existsSync(absolutePath)) {
-        return replaceParameters(fs.readFileSync(absolutePath).toString(), parameters);
-    } else {
-        throw new Error(`GraphQL file '${absolutePath}' does not exist`);
-    }
-}
-
-function replaceParameters(query: string,
-                           parameters: {
-                                [name: string]: string | boolean | number | ParameterEnum;
-                            } = {}): string {
-    if (Object.keys(parameters).length > 0) {
-        const exp = OperationParameterExpression;
-        if (exp.test(query)) {
-            const result = exp.exec(query);
-            // First delete the parameter declaration at the top of the subscription
-            query = query.replace(result[2], "");
-            for (const key in parameters) {
-                if (parameters.hasOwnProperty(key)) {
-                    const value = parameters[key] as any;
-                    // If value is defined it is a enum value
-                    if (value.value) {
-                        if (Array.isArray(value.value)) {
-                            query = replace(query, `\\$${key}`, `[${value.value.join(", ")}]`);
-                        } else {
-                            query = replace(query, `\\$${key}`, value.value);
-                        }
-                    } else {
-                        query = replace(query, `\\$${key}`, JSON.stringify(value));
-                    }
-                }
-            }
-
-            // Calulate hash to suffix the subscriptionName
-            const hash = murmur3(query, 37);
-            query = replaceOperationName(query, `${result[1]}_${hash}`);
-        }
-    }
-    return query;
-}
-
-function replace(query: string, key: string, value: string): string {
-    return query.replace(new RegExp(`${key}\\b`, "g"), value);
+    return internalGraphQL.resolveAndReadFileSync(path, current, parameters);
 }
