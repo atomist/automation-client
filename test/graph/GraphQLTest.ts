@@ -169,7 +169,7 @@ query Repos($teamId: ID!, $offset: Int!) {
             name:  "subscriptionWithFragmentInGraphql",
             fragmentDir: "../graphql/fragment",
             inline: true,
-            operationName: "BlaBla"
+            operationName: "BlaBla",
         });
         assert.equal(query, "subscription BlaBla { Repo { name owner org { team { name } } channels { name } }}");
     });
