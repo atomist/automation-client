@@ -209,8 +209,11 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         }
 
         cluster.on("disconnect", worker => {
-            logger.warn(`Worker '${worker.id}' disconnected. Killing ...`);
-            worker.kill("SIGTERM");
+            logger.warn(`Worker '${worker.id}' disconnected`);
+        });
+
+        cluster.on("online", worker => {
+            logger.warn(`Worker '${worker.id}' connected`);
         });
 
         cluster.on("exit", (worker, code, signal) => {
