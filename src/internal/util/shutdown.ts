@@ -5,7 +5,6 @@ let shutdownHooks: Array<{priority: number, hook: () => Promise<number>}> = [];
 
 export function registerShutdownHook(cb: () => Promise<number>, priority: number = Number.MAX_VALUE) {
     shutdownHooks = [{ priority, hook: cb }, ...shutdownHooks].sort((h1, h2) => h1.priority - h2.priority);
-    console.log(shutdownHooks);
 }
 
 exitHook.forceExitTimeout(60000 * 2);
