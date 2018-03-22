@@ -124,8 +124,8 @@ export class ExpressServer {
             },
         );
 
-        if (!!this.options.customizers) {
-            logger.info("Customizing Express server");
+        if (this.options.customizers.length > 0) {
+            logger.info("Invoking http server customizers");
             this.options.customizers.forEach(c => c(exp, this.authenticate));
         }
 
