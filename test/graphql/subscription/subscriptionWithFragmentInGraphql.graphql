@@ -1,8 +1,5 @@
 subscription Test {
   Repo {
     ... RepoNameInGraphql
-    channels {
-      ... ChannelNameInGraphql
-    }
   }
 }

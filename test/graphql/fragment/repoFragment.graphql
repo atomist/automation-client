@@ -6,4 +6,7 @@ fragment RepoNameInGraphql on Repo {
       name
     }
   }
+  channels {
+    ... ChannelNameInGraphql
+  }
 }
