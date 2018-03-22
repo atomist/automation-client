@@ -10,16 +10,14 @@ export interface GraphClient {
 
     /**
      * Run query either provided as a string or as loaded from a file
-     * @param {{query?: string; path?: string; name?: string; fragmentDir?: string; variables?: Q; options?: any}}
-     *          | string optionsOrName
+     * @param {QueryOptions<Q> | string} optionsOrName
      * @returns {Promise<T>}
      */
     query<T, Q>(optionsOrName: QueryOptions<Q> | string): Promise<T>;
 
     /**
      * Run mutation either provided as a string or as loaded from a file
-     * @param {{mutation?: string; path?: string; name?: string; fragmentDir?: string; variables?: Q; options?: any}}
-     *          | string optionsOrName
+     * @param {MutationOptions<Q> | string} optionsOrName
      * @returns {Promise<T>}
      */
     mutate<T, Q>(optionsOrName: MutationOptions<Q> | string): Promise<T>;
@@ -87,3 +85,5 @@ export interface MutationOptions<Q> {
     variables?: Q;
     options?: any;
 }
+
+export const NoCacheOptions = { fetchPolicy: "network-only" }
