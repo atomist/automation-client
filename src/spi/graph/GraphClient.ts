@@ -86,4 +86,4 @@ export interface MutationOptions<Q> {
     options?: any;
 }
 
-export const NoCacheOptions = { fetchPolicy: "network-only" }
+export const NoCacheOptions = { fetchPolicy: "network-only" };
