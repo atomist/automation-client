@@ -1,16 +1,19 @@
 import * as exitHook from "async-exit-hook";
 import { logger } from "./logger";
 
-const shutdownHooks: Array<() => Promise<number>> = [];
+let shutdownHooks: Array<{priority: number, hook: () => Promise<number>}> = [];
 
-export function registerShutdownHook(cb: () => Promise<number>) {
-    shutdownHooks.push(cb);
+export function registerShutdownHook(cb: () => Promise<number>, priority: number = Number.MAX_VALUE) {
+    shutdownHooks = [{ priority, hook: cb }, ...shutdownHooks].sort((h1, h2) => h1.priority - h2.priority);
+    console.log(shutdownHooks);
 }
 
 exitHook.forceExitTimeout(60000 * 2);
 exitHook(callback => {
     logger.info("Shutdown initiated. Calling shutdown hooks");
-    shutdownHooks.reduce((p, c, i, result) => p.then(c), Promise.resolve(0))
+    shutdownHooks
+        .map(h => h.hook)
+        .reduce((p, c, i, result) => p.then(c), Promise.resolve(0))
         .then(result => {
             logger.info("Shutdown hooks completed. Exiting...");
             callback();

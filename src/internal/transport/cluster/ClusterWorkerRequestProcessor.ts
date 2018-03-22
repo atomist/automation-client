@@ -63,7 +63,7 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
                 // Now wait for configured timeout to let in-flight messages finish processing
                 const deferred = new Deferred<number>();
                 setTimeout(() => {
-                    logger.info("Closing worker");
+                    logger.info("Shutting down worker");
                     deferred.resolve(0);
                 }, this._options.termination.gracePeriod + 2500);
 
@@ -72,7 +72,7 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
                         return code;
                     });
             } else {
-                logger.info("Closing worker");
+                logger.info("Shutting down worker");
                 return Promise.resolve(0);
             }
         });

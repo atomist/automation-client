@@ -20,6 +20,7 @@ import {
     registerHealthIndicator,
 } from "../../util/health";
 import { logger } from "../../util/logger";
+import { registerShutdownHook } from "../../util/shutdown";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import { banner } from "../banner";
 import {
@@ -56,6 +57,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
     private webSocket?: WebSocket;
     private commands: Map<string, Dispatched<HandlerResult>> = new Map();
     private events: Map<string, Dispatched<HandlerResult[]>> = new Map();
+    private shutdownInitiated: boolean = false;
 
     constructor(protected automations: AutomationServer,
                 protected options: WebSocketClientOptions,
@@ -70,6 +72,11 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                 return { status: HealthStatus.Down, detail: "WebSocket disconnected" };
             }
         });
+
+        registerShutdownHook(() => {
+           this.shutdownInitiated = true;
+           return Promise.resolve(0);
+        }, Number.MIN_VALUE);
     }
 
     public onRegistration(registration: RegistrationConfirmation) {
@@ -213,12 +220,12 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         });
 
         cluster.on("online", worker => {
-            logger.warn(`Worker '${worker.id}' connected`);
+            logger.debug(`Worker '${worker.id}' connected`);
         });
 
         cluster.on("exit", (worker, code, signal) => {
-            logger.warn(`Worker '${worker.id}' exited with '${code}' '${signal}'. Restarting ...`);
-            if (code !== 0) {
+            if (code !== 0 && !this.shutdownInitiated) {
+                logger.warn(`Worker '${worker.id}' exited with '${code}' '${signal}'. Restarting ...`);
                 attachEvents(cluster.fork(), new Deferred());
             }
         });
