@@ -364,22 +364,22 @@ export function writeUserConfig(cfg: UserConfig): Promise<void> {
  * Read and return user config from UserConfigFile.
  */
 export function getUserConfig(): UserConfig {
-    let cfg: UserConfig = {};
     if (fs.existsSync(userConfigPath())) {
         try {
-            cfg = fs.readJsonSync(userConfigPath());
+            const cfg = fs.readJsonSync(userConfigPath());
+            // user config should not have name or version
+            if (cfg.name) {
+                delete cfg.name;
+            }
+            if (cfg.version) {
+                delete cfg.version;
+            }
+            return cfg;
         } catch (e) {
             logger.warn(`Failed to read user config: ${e.message}`);
         }
     }
-    // user config should not have name or version
-    if (cfg.name) {
-        delete cfg.name;
-    }
-    if (cfg.version) {
-        delete cfg.version;
-    }
-    return cfg;
+    return undefined;
 }
 
 /**
