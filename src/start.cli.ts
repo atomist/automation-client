@@ -11,6 +11,7 @@ import {
     extractArgs,
     gitInfo,
     gqlGen,
+    gqlIntrospect,
     readVersion,
     run,
     start,
@@ -85,6 +86,26 @@ yargs.completion("completion")
         }
 
     })
+    .command(["gql-introspect <teamId> <token>"], "Introspect GraphQL schema", ya => {
+        return ya
+            .option("change-dir", {
+                alias: "C",
+                default: process.cwd(),
+                describe: "Path to automation client project",
+                type: "string",
+            })
+            .option("install", {
+                default: true,
+                describe: "Run 'npm install' before starting/compiling",
+                type: "boolean",
+            });
+    }, argv => {
+        gqlIntrospect(argv["change-dir"], argv.teamId, argv.token, argv.install)
+            .then(status => process.exit(status), err => {
+                console.error(`${Package}: Unhandled Error: ${err.message}`);
+                process.exit(101);
+            });
+    })
     .command(["gql-gen <glob>", "gql <glob>"], "Generate TypeScript code for GraphQL", ya => {
         return ya
             .option("change-dir", {
@@ -99,7 +120,6 @@ yargs.completion("completion")
                 type: "boolean",
             });
     }, argv => {
-        const glob = argv.glob;
         gqlGen(argv["change-dir"], argv.glob, argv.install)
             .then(status => process.exit(status), err => {
                 console.error(`${Package}: Unhandled Error: ${err.message}`);
