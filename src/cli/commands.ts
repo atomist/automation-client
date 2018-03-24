@@ -73,7 +73,6 @@ export function gqlIntrospect(
     token: string = process.env.GITHUB_TOKEN,
     runInstall: boolean = true,
 ): Promise<number> {
-
     const msg = `Introspecting GraphQL schema for team ${teamId}`;
     const args = `introspect-schema https://automation.atomist.com/graphql/team/${teamId} ` +
         `--output ./src/graphql/schema.json --header \"Authorization: token ${token}\"`;

@@ -86,8 +86,18 @@ yargs.completion("completion")
         }
 
     })
-    .command(["gql-introspect <teamId> <token>"], "Introspect GraphQL schema", ya => {
-        return ya
+    .command(["gql-introspect <team>"], "Introspect GraphQL schema", ya => {
+        return (ya as any)
+            .positional("team", {
+                describe: "Atomist workspace/team ID",
+                required: true,
+            })
+            .option("token", {
+                alias: "T",
+                default: process.env.GITHUB_TOKEN,
+                describe: "Token to use for authentication",
+                type: "string",
+            })
             .option("change-dir", {
                 alias: "C",
                 default: process.cwd(),
@@ -100,7 +110,7 @@ yargs.completion("completion")
                 type: "boolean",
             });
     }, argv => {
-        gqlIntrospect(argv["change-dir"], argv.teamId, argv.token, argv.install)
+        gqlIntrospect(argv["change-dir"], argv.team, argv.token, argv.install)
             .then(status => process.exit(status), err => {
                 console.error(`${Package}: Unhandled Error: ${err.message}`);
                 process.exit(101);
