@@ -67,10 +67,10 @@ export function run(
     return execNode("cli/run.js", args, msg, path, runInstall, runCompile);
 }
 
-export function gqlIntrospect(
+export function gqlFetch(
     path: string,
     teamId: string,
-    token: string = process.env.GITHUB_TOKEN,
+    token: string = process.env.ATOMIST_TOKEN || process.env.GITHUB_TOKEN,
     runInstall: boolean = true,
 ): Promise<number> {
     const msg = `Introspecting GraphQL schema for team ${teamId}`;

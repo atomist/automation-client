@@ -11,7 +11,7 @@ import {
     extractArgs,
     gitInfo,
     gqlGen,
-    gqlIntrospect,
+    gqlFetch,
     readVersion,
     run,
     start,
@@ -86,7 +86,7 @@ yargs.completion("completion")
         }
 
     })
-    .command(["gql-introspect <team>"], "Introspect GraphQL schema", ya => {
+    .command(["gql-fetch <team>"], "Introspect GraphQL schema", ya => {
         return (ya as any)
             .positional("team", {
                 describe: "Atomist workspace/team ID",
@@ -94,8 +94,8 @@ yargs.completion("completion")
             })
             .option("token", {
                 alias: "T",
-                default: process.env.GITHUB_TOKEN,
                 describe: "Token to use for authentication",
+                default: process.env.ATOMIST_TOKEN || process.env.GITHUB_TOKEN,
                 type: "string",
             })
             .option("change-dir", {
@@ -110,7 +110,7 @@ yargs.completion("completion")
                 type: "boolean",
             });
     }, argv => {
-        gqlIntrospect(argv["change-dir"], argv.team, argv.token, argv.install)
+        gqlFetch(argv["change-dir"], argv.team, argv.token, argv.install)
             .then(status => process.exit(status), err => {
                 console.error(`${Package}: Unhandled Error: ${err.message}`);
                 process.exit(101);
