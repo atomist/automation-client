@@ -10,6 +10,7 @@ import {
     config,
     extractArgs,
     gitInfo,
+    gqlFetch,
     gqlGen,
     readVersion,
     run,
@@ -85,6 +86,36 @@ yargs.completion("completion")
         }
 
     })
+    .command(["gql-fetch <team>"], "Introspect GraphQL schema", ya => {
+        return (ya as any)
+            .positional("team", {
+                describe: "Atomist workspace/team ID",
+                required: true,
+            })
+            .option("token", {
+                alias: "T",
+                describe: "Token to use for authentication",
+                default: process.env.ATOMIST_TOKEN || process.env.GITHUB_TOKEN,
+                type: "string",
+            })
+            .option("change-dir", {
+                alias: "C",
+                default: process.cwd(),
+                describe: "Path to automation client project",
+                type: "string",
+            })
+            .option("install", {
+                default: true,
+                describe: "Run 'npm install' before starting/compiling",
+                type: "boolean",
+            });
+    }, argv => {
+        gqlFetch(argv["change-dir"], argv.team, argv.token, argv.install)
+            .then(status => process.exit(status), err => {
+                console.error(`${Package}: Unhandled Error: ${err.message}`);
+                process.exit(101);
+            });
+    })
     .command(["gql-gen <glob>", "gql <glob>"], "Generate TypeScript code for GraphQL", ya => {
         return ya
             .option("change-dir", {
@@ -99,7 +130,6 @@ yargs.completion("completion")
                 type: "boolean",
             });
     }, argv => {
-        const glob = argv.glob;
         gqlGen(argv["change-dir"], argv.glob, argv.install)
             .then(status => process.exit(status), err => {
                 console.error(`${Package}: Unhandled Error: ${err.message}`);

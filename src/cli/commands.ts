@@ -67,15 +67,33 @@ export function run(
     return execNode("cli/run.js", args, msg, path, runInstall, runCompile);
 }
 
+export function gqlFetch(
+    path: string,
+    teamId: string,
+    token: string = process.env.ATOMIST_TOKEN || process.env.GITHUB_TOKEN,
+    runInstall: boolean = true,
+): Promise<number> {
+    const msg = `Introspecting GraphQL schema for team ${teamId}`;
+    const args = `introspect-schema https://automation.atomist.com/graphql/team/${teamId} ` +
+        `--output ./src/graphql/schema.json --header \"Authorization: token ${token}\"`;
+    return Promise.resolve(
+        execNode("apollo-codegen", args, msg, path, runInstall, false, "node_modules/.bin"));
+}
+
 export function gqlGen(
     path: string,
     pattern: string,
     runInstall: boolean = true,
 ): Promise<number> {
 
-    const msg = "Running GraphQL code generator";
-    let args = "--file node_modules/@atomist/automation-client/graph/schema.cortex.json " +
-        "--template typescript --no-schema --out src/typings/types.ts";
+    // Check if the project has a custom schema
+    let schema = "node_modules/@atomist/automation-client/graph/schema.cortex.json";
+    if (fs.existsSync(p.join(path, "src", "graphql", "schema.json"))) {
+        schema = "./src/graphql/schema.json";
+    }
+
+    const msg = `Running GraphQL code generator`;
+    let args = `--file ${schema} --template typescript --no-schema --out src/typings/types.ts`;
     return glob(pattern)
         .then(graphqlFiles => {
             if (graphqlFiles.length > 0) {
