@@ -11,7 +11,6 @@ try {
             return configuration;
         })
         .then(configuration => automationClient(configuration).run())
-        .then(() => process.exit(0))
         .catch(e => {
             console.error(`Error: ${e.message}`);
             process.exit(1);
