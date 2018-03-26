@@ -7,7 +7,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.9.0...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.10.0...HEAD
+
+## [0.10.0][] - 2018-03-26
+
+[0.10.0]: https://github.com/atomist/automation-client-ts/compare/0.9.0...0.10.0
+
+Schema release
+
+### Added
+
+-   CLI gql-fetch command to download team schema with custom types
+
+### Changed
+
+-   Better worker shutdown behavior
+-   Cleaner logs
 
 ## [0.9.0][] - 2018-03-21
 
