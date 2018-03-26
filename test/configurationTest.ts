@@ -1,6 +1,7 @@
 import "mocha";
 import * as assert from "power-assert";
 
+import * as appRoot from "app-root-path";
 import * as fs from "fs-extra";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
@@ -245,9 +246,10 @@ describe("configuration", () => {
 
     describe("loadAutomationConfig", () => {
 
-        it("should warn but return nothing", () => {
-            const c = loadAutomationConfig("/this/file/should/not/exist/so/please/do/not/make/it");
-            assert.deepStrictEqual(c, {});
+        it("should throw error for missing config", () => {
+            const p = "/this/file/should/not/exist/so/please/do/not/make/it";
+            const re = new RegExp(`Failed to load ${p}.configuration: Cannot find module '${p}'`);
+            assert.throws(() => loadAutomationConfig(p), re);
         });
 
         it("should load provided path", () => {
@@ -560,11 +562,13 @@ describe("configuration", () => {
 
     describe("loadConfiguration", () => {
 
+        const emptyConfig = path.join(appRoot.path, "build", "test", "empty.config.js");
+
         it("should throw an exception for no teamIds or groups", async () => {
             const save = process.env.HOME;
             process.env.HOME = "/throw/loadConfiguration/off/the/trail";
             try {
-                await loadConfiguration("/this/path/does/not/exist/i/hope");
+                await loadConfiguration(emptyConfig);
                 assert.fail("Failed to throw an exception");
             } catch (e) {
                 assert(e.message.includes("you must either provide an array of 'groups' in your configuration or,"));
@@ -579,7 +583,7 @@ describe("configuration", () => {
             save.ATOMIST_CONFIG = process.env.ATOMIST_CONFIG;
             process.env.ATOMIST_CONFIG = stringify({ token: "x", teamIds: ["A"], groups: ["G"] });
             try {
-                await loadConfiguration("/this/path/does/not/exist/i/hope");
+                await loadConfiguration(emptyConfig);
                 assert.fail("Failed to throw an exception");
             } catch (e) {
                 assert(e.message.includes(`cannot specify both 'teamIds' and 'groups'`));
@@ -610,7 +614,7 @@ describe("configuration", () => {
             const e = _.cloneDeep(defCfg);
             e.token = "bogus";
             e.teamIds = ["non-team"];
-            const c = await loadConfiguration("/this/path/does/not/exist/i/hope");
+            const c = await loadConfiguration(emptyConfig);
             assert.deepStrictEqual(c, e);
             _.forEach(save, (v, k) => {
                 if (v) {

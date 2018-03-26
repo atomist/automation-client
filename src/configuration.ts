@@ -376,7 +376,7 @@ export function getUserConfig(): UserConfig {
             }
             return cfg;
         } catch (e) {
-            logger.warn(`Failed to read user config: ${e.message}`);
+            throw new Error(`Failed to read user config: ${e.message}`);
         }
     }
     return undefined;
@@ -494,9 +494,7 @@ export function loadAutomationConfig(cfgPath?: string): Configuration {
     let cfg: Configuration = {};
     if (!cfgPath) {
         const cfgFile = "atomist.config.js";
-        const files = glob.sync(
-            `${appRoot.path}/**/${cfgFile}`,
-            { ignore: ["**/.git/**", "**/node_modules/**"] });
+        const files = glob.sync(`${appRoot.path}/**/${cfgFile}`, { ignore: ["**/{.git,node_modules}/**"] });
         if (files.length === 1) {
             cfgPath = files[0];
         } else if (files.length > 1) {
@@ -508,7 +506,7 @@ export function loadAutomationConfig(cfgPath?: string): Configuration {
             cfg = require(cfgPath).configuration;
             cfgLog("automation config");
         } catch (e) {
-            logger.warn(`Failed to load configuration automation config file: ${e.message}`);
+            throw new Error(`Failed to load ${cfgPath}.configuration: ${e.message}`);
         }
     }
     return cfg;
@@ -531,7 +529,7 @@ export function loadAtomistConfigPath(): AutomationServerOptions {
             cfg = fs.readJsonSync(process.env.ATOMIST_CONFIG_PATH);
             cfgLog("ATOMIST_CONFIG_PATH");
         } catch (e) {
-            logger.warn(`Failed to read ATOMIST_CONFIG_PATH: ${e.message}`);
+            throw new Error(`Failed to read ATOMIST_CONFIG_PATH: ${e.message}`);
         }
     }
     return cfg;
@@ -555,7 +553,7 @@ export function loadAtomistConfig(): AutomationServerOptions {
             cfg = JSON.parse(process.env.ATOMIST_CONFIG);
             cfgLog("ATOMIST_CONFIG");
         } catch (e) {
-            logger.warn(`Failed to parse contents of ATOMIST_CONFIG environment variable: ${e.message}`);
+            throw new Error(`Failed to parse contents of ATOMIST_CONFIG environment variable: ${e.message}`);
         }
     }
     return cfg;
@@ -706,15 +704,20 @@ function validateConfiguration(cfg: Configuration) {
  * @return merged configuration object
  */
 export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
-    const defCfg = defaultConfiguration();
-    const userCfg = loadUserConfiguration(defCfg.name, defCfg.version);
-    const autoCfg = loadAutomationConfig(cfgPath);
-    const atmPathCfg = loadAtomistConfigPath();
-    const atmCfg = loadAtomistConfig();
-    const cfg = mergeConfigs({}, defCfg, userCfg, autoCfg, atmPathCfg, atmCfg);
-    resolveTeamIds(cfg);
-    resolveToken(cfg);
-    resolvePort(cfg);
+    let cfg: Configuration;
+    try {
+        const defCfg = defaultConfiguration();
+        const userCfg = loadUserConfiguration(defCfg.name, defCfg.version);
+        const autoCfg = loadAutomationConfig(cfgPath);
+        const atmPathCfg = loadAtomistConfigPath();
+        const atmCfg = loadAtomistConfig();
+        cfg = mergeConfigs({}, defCfg, userCfg, autoCfg, atmPathCfg, atmCfg);
+        resolveTeamIds(cfg);
+        resolveToken(cfg);
+        resolvePort(cfg);
+    } catch (e) {
+        return Promise.reject(e);
+    }
 
     return invokePostProcessors(cfg)
         .then(completeCfg => {
@@ -724,8 +727,12 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
                 logger.debug("Using automation client configuration: %s", stringify(cfg, obfuscateJson));
             }
 
-            validateConfiguration(completeCfg);
-            return completeCfg;
+            try {
+                validateConfiguration(completeCfg);
+            } catch (e) {
+                return Promise.reject(e);
+            }
+            return Promise.resolve(completeCfg);
         });
 }
 
