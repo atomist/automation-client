@@ -648,26 +648,28 @@ function validateConfiguration(cfg: Configuration) {
     if (!cfg) {
         throw new Error(`no configuration defined`);
     }
-    const missing: string[] = [];
+    const errors: string[] = [];
     if (!cfg.name) {
-        missing.push("name");
+        errors.push("you must set a 'name' property in your configuration");
     }
     if (!cfg.version) {
-        missing.push("version");
+        errors.push("you must set a 'version' property in your configuration");
     }
     if (!cfg.token) {
-        missing.push("token");
+        errors.push("you must set a 'token' property in your configuration or the ATOMIST_TOKEN environment variable");
     }
     if (cfg.teamIds.length < 1 && cfg.groups.length < 1) {
-        missing.push("teamIds or groups");
-    }
-    if (missing.length > 0) {
-        throw new Error(`configuration is missing required properties: ${missing.join(",")}`);
+        errors.push("you must either provide an array of 'groups' in your configuration or, more likely, provide " +
+            "an array of 'teamIds' in your configuration or set the ATOMIST_TEAMS environment variable " +
+            "to a comma-separated list of team IDs");
     }
     if (cfg.teamIds.length > 0 && cfg.groups.length > 0) {
-        const t = stringify(cfg.teamIds);
-        const g = stringify(cfg.groups);
-        throw new Error(`cannot specify both teamIds (${t}) and groups (${g})`);
+        errors.push("you cannot specify both 'teamIds' and 'groups' in your configuration, you must set one " +
+            "to an empty array");
+    }
+    if (errors.length > 0) {
+        const msg = `your configuration (${stringify(cfg, obfuscateJson)}) is not correct: ${errors.join("; ")}`;
+        throw new Error(msg);
     }
 }
 

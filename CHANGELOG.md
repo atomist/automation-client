@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.10.0...HEAD
 
+### Changed
+
+-   Improved configuration error messages [#253][253]
+
+[253]: https://github.com/atomist/automation-client-ts/issues/253
+
 ## [0.10.0][] - 2018-03-26
 
 [0.10.0]: https://github.com/atomist/automation-client-ts/compare/0.9.0...0.10.0

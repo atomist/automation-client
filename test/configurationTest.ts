@@ -567,7 +567,7 @@ describe("configuration", () => {
                 await loadConfiguration("/this/path/does/not/exist/i/hope");
                 assert.fail("Failed to throw an exception");
             } catch (e) {
-                assert(e.message.includes("teamIds or groups"));
+                assert(e.message.includes("you must either provide an array of 'groups' in your configuration or,"));
             }
             process.env.HOME = save;
         });
@@ -582,7 +582,7 @@ describe("configuration", () => {
                 await loadConfiguration("/this/path/does/not/exist/i/hope");
                 assert.fail("Failed to throw an exception");
             } catch (e) {
-                assert(e.message === `cannot specify both teamIds (["A"]) and groups (["G"])`);
+                assert(e.message.includes(`cannot specify both 'teamIds' and 'groups'`));
             }
             _.forEach(save, (v, k) => {
                 if (v) {
