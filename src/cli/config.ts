@@ -4,6 +4,7 @@ import * as stringify from "json-stringify-safe";
 import * as os from "os";
 
 import { getUserConfig, writeUserConfig } from "../configuration";
+import { obfuscateJson } from "../internal/util/string";
 
 const github = new GitHubApi();
 
@@ -43,7 +44,8 @@ export function cliAtomistConfig(argv: any): Promise<number> {
         userConfig.teamIds = [];
     }
     if (userConfig.token && userConfig.teamIds.length > 0 && !argTeamId) {
-        console.log(`Existing configuration is valid and no team supplied, exiting`);
+        console.log(`Existing configuration is valid (${stringify(userConfig, obfuscateJson)}) and no team ` +
+            `supplied, exiting`);
         return Promise.resolve(0);
     }
     if (argTeamId) {

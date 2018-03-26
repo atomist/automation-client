@@ -12,8 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Improved configuration error messages [#253][253]
+-   Provide user configuration if reporting it is valid [#251][251]
 
 [253]: https://github.com/atomist/automation-client-ts/issues/253
+[251]: https://github.com/atomist/automation-client-ts/issues/251
 
 ## [0.10.0][] - 2018-03-26
 
