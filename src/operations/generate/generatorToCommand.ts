@@ -19,6 +19,7 @@ import { BaseSeedDrivenGeneratorParameters } from "./BaseSeedDrivenGeneratorPara
 import { generate, ProjectPersister } from "./generatorUtils";
 import { RemoteGitProjectPersister } from "./remoteGitProjectPersister";
 import { addAtomistWebhook } from "./support/addAtomistWebhook";
+import { logger } from "../../internal/util/logger";
 
 export type EditorFactory<P> = (params: P, ctx: HandlerContext) => AnyProjectEditor<P>;
 
@@ -88,21 +89,25 @@ function handle<P extends BaseSeedDrivenGeneratorParameters>(ctx: HandlerContext
                 params.target.credentials,
                 editorFactory(params, ctx),
                 details.projectPersister,
-                // IT'S A REPO ID
                 params.target,
                 params,
                 details.afterAction,
             )
-                .then(r => ctx.messageClient.respond(`Created and pushed new project`)
+                .then(r => ctx.messageClient.respond("Created and pushed new project")
                     .then(() => r));
         })
-        .then(r => {
+        .then(async r => {
             if (isGitHubRepoRef(r.target.id)) {
+                logger.info("Creating Atomist webhook for repo %j", r.target.id);
+                await ctx.messageClient.respond("Added Atomist webhook");
                 return addAtomistWebhook((r.target as GitProject), params);
+            } else {
+                logger.info("NOT creating Atomist webhook for repo %j, as not GitHub repo", r.target.id);
             }
-            return Promise.resolve(r);
+            return r;
         })
-        .then(r => ctx.messageClient.respond(`Successfully created new project`).then(() => r))
+        .then(r => ctx.messageClient.respond(`Successfully created new project: ${r.target.id.url}`)
+            .then(() => r))
         .then(r => ({
             code: 0,
             // Redirect to our local project page

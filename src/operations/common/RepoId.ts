@@ -40,6 +40,11 @@ export interface RepoRef extends RepoId {
      */
     branch?: string;
 
+    /**
+     * Entire url of the repo if it has one
+     */
+    url?: string;
+
 }
 
 /**

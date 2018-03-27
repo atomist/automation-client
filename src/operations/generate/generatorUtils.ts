@@ -61,7 +61,7 @@ export function generate<P extends Project = Project, PARAMS = object>(
                 .then(independentCopy => toEditor<PARAMS>(editor)(independentCopy, ctx, params))
                 .then(r => r.target)
                 .then(populated => {
-                    logger.debug("Persisting repo at [%s]: owner/repo=%s/%s",
+                    logger.info("Persisting repo at [%s]: owner/repo=%s/%s",
                         (populated as LocalProject).baseDir, targetId.owner, targetId.repo);
                     return persist(populated, credentials, targetId);
                 })
