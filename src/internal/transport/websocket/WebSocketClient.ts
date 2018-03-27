@@ -91,7 +91,7 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
 
         if (process.env.HTTPS_PROXY || process.env.https_proxy) {
             const proxy = process.env.HTTPS_PROXY || process.env.https_proxy;
-            logger.info(`Opening WebSocket connection using proxy '${proxy}'`);
+            logger.debug(`Opening WebSocket connection using proxy '${proxy}'`);
             const proxyOptions = url.parse(proxy);
             const agent = new HttpsProxyAgent({
                 host: proxyOptions.hostname,
@@ -196,7 +196,7 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
                   handler: WebSocketRequestProcessor, retries: number = 100): Promise<RegistrationConfirmation> {
     const registrationPayload = registrationCallback();
 
-    logger.info(`Registering ${registrationPayload.name}@${registrationPayload.version} ` +
+    logger.debug(`Registering ${registrationPayload.name}@${registrationPayload.version} ` +
         `with Atomist at '${options.registrationUrl}': ${stringify(registrationPayload)}`);
 
     const retryOptions = {

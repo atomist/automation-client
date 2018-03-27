@@ -20,7 +20,7 @@ function sendEvent(state: "stopping" | "started", teamId: string, event: Applica
     event.state = state;
     event.ts = new Date().getTime();
 
-    logger.info("Sending application event:", stringify(event));
+    logger.debug("Sending application event:", stringify(event));
 
     return axios.post(`${Url}/${teamId}`, event)
         .catch(err => {

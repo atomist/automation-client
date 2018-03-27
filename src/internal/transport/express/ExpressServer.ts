@@ -125,7 +125,7 @@ export class ExpressServer {
         );
 
         if (this.options.customizers.length > 0) {
-            logger.info("Invoking http server customizers");
+            logger.debug("Invoking http server customizers");
             this.options.customizers.forEach(c => c(exp, this.authenticate));
         }
 
@@ -139,7 +139,7 @@ export class ExpressServer {
 
         operation.attempt(() => {
             exp.listen(this.options.port, () => {
-                logger.info(
+                logger.debug(
                     `Atomist automation client api running at 'http://${this.options.host}:${this.options.port}'`);
             }).on("error", err => {
                 logger.warn("Starting automation client api failed: %s", err.message);

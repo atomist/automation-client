@@ -98,7 +98,7 @@ const winstonLogger = new winston.Logger({
     exitOnError: false,
     transports: [
         new (winston.transports.Console)({
-            level: "debug",
+            level: "info",
             json: false,
             colorize: require("chalk").supportsColor,
             prettyPrint: true,
