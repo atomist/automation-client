@@ -16,7 +16,10 @@ import {
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { logger } from "../../util/logger";
-import { toStringArray } from "../../util/string";
+import {
+    guid,
+    toStringArray,
+} from "../../util/string";
 import {
     CommandIncoming,
     EventIncoming,
@@ -137,6 +140,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
         } else if (destinationIdentifier === "ingester") {
             response.content_type = MessageMimeTypes.APPLICATION_JSON;
             response.body = JSON.stringify(msg);
+            response.id = (options.id ? options.id : guid());
         }
         sendMessage(response, this.ws);
         return Promise.resolve(response);
