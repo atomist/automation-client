@@ -38,8 +38,7 @@ export function cliAtomistConfig(argv: any): Promise<number> {
     const argGitHubPassword: string = argv["github-password"];
     const argGitHubMfaToken: string = argv["github-mfa-token"];
 
-    const userConfig = getUserConfig();
-
+    const userConfig = getUserConfig() || {};
     if (!userConfig.teamIds) {
         userConfig.teamIds = [];
     }
