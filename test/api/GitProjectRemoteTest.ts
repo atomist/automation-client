@@ -13,9 +13,14 @@ import { TestRepositoryVisibility } from "../credentials";
 import { tempProject } from "../project/utils";
 import { Creds, GitHubToken } from "./gitHubTest";
 
+import * as winston from "winston";
+import { logger, LoggingConfig } from "../../src/internal/util/logger";
+LoggingConfig.format = "cli";
+(logger as winston.LoggerInstance).transports.console.level = process.env.LOG_LEVEL || "info";
+
 describe("GitProject remote", () => {
 
-    it("add a file, init and commit, then push to new remote repo", function(done) {
+    it("add a file, init and commit, then push to new remote repo", async function() {
         this.retries(5);
 
         const p = tempProject();
@@ -25,7 +30,7 @@ describe("GitProject remote", () => {
 
         const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
 
-        getOwnerByToken().then(owner => gp.init()
+        await getOwnerByToken().then(owner => gp.init()
             .then(() => gp.createAndSetRemote(
                 new GitHubRepoRef(owner, repo),
                 "Thing1", TestRepositoryVisibility))
@@ -33,15 +38,13 @@ describe("GitProject remote", () => {
             .then(() => gp.push()
                 .then(() => deleteRepoIfExists({ owner, repo })),
         ).catch(err => deleteRepoIfExists({ owner, repo })
-            .then(() => Promise.reject(err))),
-        ).then(() => done(), done);
-
+            .then(() => assert.fail(err.message), e => assert.fail(err.message + e.message))));
     }).timeout(16000);
 
-    it("add a file, then PR push to remote repo", function(done) {
-        this.retries(1);
+    it("add a file, then PR push to remote repo", async function() {
+        this.retries(3);
 
-        newRepo()
+        await newRepo()
             .then(ownerAndRepo => GitCommandGitProject.cloned(Creds,
                 new GitHubRepoRef(ownerAndRepo.owner, ownerAndRepo.repo))
                 .then(gp => {
@@ -53,9 +56,7 @@ describe("GitProject remote", () => {
                         .then(() => gp.raisePullRequest("Thing2", "Adds another character"))
                         .then(() => deleteRepoIfExists(ownerAndRepo));
                 }).catch(err => deleteRepoIfExists(ownerAndRepo)
-                    .then(() => Promise.reject(err))))
-            .then(() => done(), done);
-
+                    .then(() => assert.fail(err.message), e => assert.fail(err.message + e.message))));
     }).timeout(20000);
 
 });
@@ -74,7 +75,7 @@ export function newRepo(): Promise<{ owner: string, repo: string }> {
     const name = `test-repo-${new Date().getTime()}-${guid()}`;
     const description = "a thing";
     const url = `${GitHubDotComBase}/user/repos`;
-    // console.debug("Visibility is " + TestRepositoryVisibility);
+    // logger.debug("Visibility is " + TestRepositoryVisibility);
     return getOwnerByToken()
         .then(owner => axios.post(url, {
             name,
@@ -99,7 +100,7 @@ export function newRepo(): Promise<{ owner: string, repo: string }> {
 }
 
 export function deleteRepoIfExists(ownerAndRepo: { owner: string, repo: string }): Promise<any> {
-    console.debug("Cleanup: deleting " + ownerAndRepo.repo);
+    logger.debug("Cleanup: deleting " + ownerAndRepo.repo);
     const config = {
         headers: {
             Authorization: `token ${GitHubToken}`,
@@ -108,7 +109,7 @@ export function deleteRepoIfExists(ownerAndRepo: { owner: string, repo: string }
     const url = `${GitHubDotComBase}/repos/${ownerAndRepo.owner}/${ownerAndRepo.repo}`;
     return axios.delete(url, config)
         .catch(err => {
-            console.error(`error deleting ${ownerAndRepo.repo}, ignoring. ${err.response.status}`);
+            logger.error(`error deleting ${ownerAndRepo.repo}, ignoring. ${err.response.status}`);
         });
 }
 

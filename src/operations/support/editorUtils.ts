@@ -78,7 +78,7 @@ export function editProjectUsingBranch<P>(context: HandlerContext,
  */
 function doWithEditResult(r: EditResult<GitProject>, gitop: () => Promise<EditResult>): Promise<EditResult> {
     if (r.edited === true) {
-        logger.info("Declared dirty; executing git operation. Project: %j\n Directory: %s", r.target.id, r.target.baseDir);
+        logger.debug("Declared dirty; executing git operation. Project: %j\n Directory: %s", r.target.id, r.target.baseDir);
         return gitop();
     }
     if (r.edited === undefined) {
@@ -86,19 +86,19 @@ function doWithEditResult(r: EditResult<GitProject>, gitop: () => Promise<EditRe
         return r.target.gitStatus()
             .then(status => {
                 if (status.isClean) {
-                    logger.info("Observed clean; skipping git operation. Project: %j\n Directory: %s", r.target.id, r.target.baseDir);
+                    logger.debug("Observed clean; skipping git operation. Project: %j\n Directory: %s", r.target.id, r.target.baseDir);
                     return {
                         target: r.target,
                         success: true,
                         edited: false,
                     };
                 } else {
-                    logger.info("Observed dirty; executing git operation. Project: %j\n Directory: %s", r.target.id, r.target.baseDir);
+                    logger.debug("Observed dirty; executing git operation. Project: %j\n Directory: %s", r.target.id, r.target.baseDir);
                     return gitop();
                 }
             });
     }
-    logger.info("Declared not dirty; skipping git operation. Project: %j\n Directory: %s\nEdited=%s", r.target.id, r.target.baseDir, r.edited);
+    logger.debug("Declared not dirty; skipping git operation. Project: %j\n Directory: %s\nEdited=%s", r.target.id, r.target.baseDir, r.edited);
     return Promise.resolve(r);
 }
 

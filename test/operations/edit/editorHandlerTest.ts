@@ -36,17 +36,16 @@ describe("editorHandler", () => {
         assert.deepEqual(chm.intent, [intent]);
     });
 
-    it("should register editor", done => {
+    it("should register editor", () => {
         const h = editorHandler(() => p => Promise.resolve(p),
             BaseEditorOrReviewerParameters,
             "editor");
         assert(metadataFromInstance(h).name === "editor");
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         s.registerCommandHandler(() => h);
-        done();
     });
 
-    it("should use no op editor against no repos", done => {
+    it("should use no op editor against no repos", async () => {
         class MyParameters extends BaseEditorOrReviewerParameters {
             constructor() {
                 super(new AlwaysAskRepoParameters());
@@ -65,19 +64,14 @@ describe("editorHandler", () => {
             });
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         s.registerCommandHandler(() => h);
-        s.invokeCommand({
+        await s.invokeCommand({
             name: "editor",
             args: [{ name: "slackTeam", value: "T1691" }, { name: "owner", value: "foo" }],
             secrets: [{ uri: "github://user_token?scopes=repo,user:email,read:user", value: "antechinus" }],
-        }, {
-                teamId: "T666",
-                correlationId: "555",
-                messageClient: null,
-            })
-            .then(_ => done(), done);
-    }).timeout(4000);
+        }, { teamId: "T666", correlationId: "555", messageClient: null });
+    }).timeout(6000);
 
-    it("should use custom repo loader and verify result", done => {
+    it("should use custom repo loader and verify result", async () => {
         class MyParameters extends BaseEditorOrReviewerParameters {
             constructor() {
                 super(new AlwaysAskRepoParameters());
@@ -101,19 +95,12 @@ describe("editorHandler", () => {
             });
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
         s.registerCommandHandler(() => h);
-        s.invokeCommand({
+        await s.invokeCommand({
             name: "editor",
             args: [{ name: "slackTeam", value: "T1691" }, { name: "owner", value: "foo" }],
             secrets: [{ uri: "github://user_token?scopes=repo,user:email,read:user", value: "antechinus" }],
-        }, {
-                teamId: "T666",
-                correlationId: "555",
-                messageClient: null,
-            })
-            .then(_ => {
-                assert(proj.findFileSync("Thing").getContentSync() === "1");
-                done();
-            }, done);
+        }, { teamId: "T666", correlationId: "555", messageClient: null })
+            .then(() => assert(proj.findFileSync("Thing").getContentSync() === "1"));
     });
 
 });

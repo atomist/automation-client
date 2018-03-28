@@ -2,6 +2,7 @@ import "mocha";
 import * as assert from "power-assert";
 
 import { ApolloGraphClient } from "../../src/graph/ApolloGraphClient";
+import { logger } from "../../src/internal/util/logger";
 import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
 import { ReposQuery, ReposQueryVariables } from "../../src/schema/schema";
@@ -19,7 +20,7 @@ describe("ApolloGraphClient", () => {
             agc.executeQueryFromFile<ReposQuery, ReposQueryVariables>("../graphql/query/repos",
                 { teamId: SlackTeamId, offset: 0 }, {}, __dirname)
                 .then(result => {
-                    console.debug("query took " + (Date.now() - start));
+                    logger.debug("query took " + (Date.now() - start));
                     const org = result.ChatTeam[0].orgs[0];
                     assert(org.repo.length > 0);
                     const repo1 = org.repo[0];
@@ -29,7 +30,7 @@ describe("ApolloGraphClient", () => {
                     agc.executeQueryFromFile<ReposQuery, ReposQueryVariables>("../graphql/query/repos",
                         { teamId: SlackTeamId, offset: 0 }, {}, __dirname)
                         .then(r1 => {
-                            console.debug("query took " + (Date.now() - start));
+                            logger.debug("query took " + (Date.now() - start));
                         });
                 })
                 .then(() => done(), done);
@@ -82,11 +83,11 @@ describe("ApolloGraphClient", () => {
                 { Authorization: `token ${GitHubToken}` });
             let start = Date.now();
             agc.query<ReposQuery, ReposQueryVariables>({
-                    name: "repos",
-                    variables: { teamId: SlackTeamId, offset: 0 },
-                })
+                name: "repos",
+                variables: { teamId: SlackTeamId, offset: 0 },
+            })
                 .then(result => {
-                    console.debug("query took " + (Date.now() - start));
+                    logger.debug("query took " + (Date.now() - start));
                     const org = result.ChatTeam[0].orgs[0];
                     assert(org.repo.length > 0);
                     const repo1 = org.repo[0];
@@ -94,11 +95,11 @@ describe("ApolloGraphClient", () => {
                     assert(repo1.owner);
                     start = Date.now();
                     agc.query<ReposQuery, ReposQueryVariables>({
-                            name: "repos",
-                            variables: { teamId: SlackTeamId, offset: 0 },
-                        })
+                        name: "repos",
+                        variables: { teamId: SlackTeamId, offset: 0 },
+                    })
                         .then(r1 => {
-                            console.debug("query took " + (Date.now() - start));
+                            logger.debug("query took " + (Date.now() - start));
                         });
                 })
                 .then(() => done(), done);
@@ -108,9 +109,9 @@ describe("ApolloGraphClient", () => {
             const agc = new ApolloGraphClient(`https://automation.atomist.com/graphql/team/${SlackTeamId}`,
                 { Authorization: `token ${GitHubToken}` });
             agc.query<ReposQuery, ReposQueryVariables>({
-                    name: "repos",
-                    variables: { teamId: SlackTeamId, offset: 0 },
-                })
+                name: "repos",
+                variables: { teamId: SlackTeamId, offset: 0 },
+            })
                 .then(result => {
                     const org = result.ChatTeam[0].orgs[0];
                     assert(org.repo.length > 0);
@@ -136,7 +137,8 @@ describe("ApolloGraphClient", () => {
                     userId: "U095T3BPF",
                     name: "test",
                     value: `{"disable_for_test":true}`,
-                }})
+                },
+            })
                 .then(result => {
                     assert((result as any).setChatUserPreference[0].name === "test");
                     assert((result as any).setChatUserPreference[0].value === `{"disable_for_test":true}`);

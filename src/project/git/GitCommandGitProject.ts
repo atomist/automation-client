@@ -310,20 +310,20 @@ function cloneInto(
     const cleanUrl = url.replace(/\/\/.*:x-oauth-basic/, "//TOKEN:x-oauth-basic");
     logger.debug(`Cloning repo '${cleanUrl}' in '${repoDir}'`);
     const retryOptions = {
-        retries: 3,
+        retries: 4,
         factor: 2,
-        minTimeout: 200,
-        maxTimeout: 1000,
-        randomize: true,
+        minTimeout: 100,
+        maxTimeout: 500,
+        randomize: false,
     };
     return promiseRetry(retryOptions, (retry, count) => {
         return command
             .catch(err => {
-                logger.warn(`clone of ${id.owner}/${id.repo} attempt ${count} failed: ${err.message}`);
+                logger.debug(`clone of ${id.owner}/${id.repo} attempt ${count} failed`);
                 retry(err);
             });
     })
-        .then(_ => {
+        .then(() => {
             logger.debug(`Clone succeeded with URL '${cleanUrl}'`);
             return GitCommandGitProject.fromBaseDir(id, repoDir, credentials,
                 targetDirectoryInfo.release,

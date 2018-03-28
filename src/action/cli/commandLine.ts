@@ -24,9 +24,9 @@ export interface CommandResult<T = undefined> extends ActionResult<T> {
  */
 export function runCommand(cmd: string, opts: ExecOptions): Promise<CommandResult> {
     logger.debug((opts.cwd ? opts.cwd : "") + " ==> " + cmd);
-    return exec(cmd, opts)
-        .then(r => ({
-            ...r,
-            success: true,
-        }));
+    return exec(cmd, { capture: ["stdout", "stderr"], ...opts })
+        .then(r => {
+            logger.debug(r.stdout + r.stderr);
+            return { ...r, success: true };
+        });
 }
