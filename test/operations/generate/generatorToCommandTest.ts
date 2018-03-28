@@ -66,7 +66,7 @@ describe("generatorToCommand", () => {
         const pp = gen.handle(ctx, params) as Promise<RedirectResult>;
         pp.then(r => {
             assert(postedHook, "posted Atomist webhook to api.github.com");
-            assert(responseMessage === "Successfully created new project");
+            assert(responseMessage.startsWith("Successfully created new project"));
         }).then(() => done(), done);
     }).timeout(15000);
 
@@ -122,7 +122,7 @@ describe("generatorToCommand", () => {
         const pp = gen.handle(ctx, params) as Promise<RedirectResult>;
         pp.then(r => {
             assert(postedHook === false, "posted Atomist webhook when it should not have");
-            assert(responseMessage === "Successfully created new project");
+            assert(responseMessage.startsWith("Successfully created new project"));
         }).then(() => done(), done);
     }).timeout(10000);
 
