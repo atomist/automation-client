@@ -1,6 +1,7 @@
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { RedirectResult } from "../../HandlerResult";
+import { logger } from "../../internal/util/logger";
 import { commandHandlerFrom, OnCommand } from "../../onCommand";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
@@ -19,7 +20,6 @@ import { BaseSeedDrivenGeneratorParameters } from "./BaseSeedDrivenGeneratorPara
 import { generate, ProjectPersister } from "./generatorUtils";
 import { RemoteGitProjectPersister } from "./remoteGitProjectPersister";
 import { addAtomistWebhook } from "./support/addAtomistWebhook";
-import { logger } from "../../internal/util/logger";
 
 export type EditorFactory<P> = (params: P, ctx: HandlerContext) => AnyProjectEditor<P>;
 

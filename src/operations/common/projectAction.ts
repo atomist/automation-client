@@ -1,6 +1,6 @@
 import { ActionResult } from "../../action/ActionResult";
-import { Project } from "../../project/Project";
 import { HandlerContext } from "../../HandlerContext";
+import { Project } from "../../project/Project";
 
 /**
  * Action on a project, given parameters. Expose HandlerContext
