@@ -1,6 +1,8 @@
 #!/bin/bash
 # build and test a node package
 
+npm install
+
 set -o pipefail
 
 declare Pkg=travis-build-node
