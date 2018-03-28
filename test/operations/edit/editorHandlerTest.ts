@@ -75,7 +75,7 @@ describe("editorHandler", () => {
                 messageClient: null,
             })
             .then(_ => done(), done);
-    });
+    }).timeout(4000);
 
     it("should use custom repo loader and verify result", done => {
         class MyParameters extends BaseEditorOrReviewerParameters {

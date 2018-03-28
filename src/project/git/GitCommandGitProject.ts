@@ -1,4 +1,5 @@
 import { exec } from "child-process-promise";
+import * as promiseRetry from "promise-retry";
 
 import { isLocalProject, ReleaseFunction } from "../local/LocalProject";
 import { Project } from "../Project";
@@ -292,21 +293,38 @@ function clone(credentials: ProjectOperationCredentials,
         });
 }
 
-function cloneInto(credentials: ProjectOperationCredentials,
-                   targetDirectoryInfo: CloneDirectoryInfo,
-                   opts: CloneOptions,
-                   id: RemoteRepoRef) {
+function cloneInto(
+    credentials: ProjectOperationCredentials,
+    targetDirectoryInfo: CloneDirectoryInfo,
+    opts: CloneOptions,
+    id: RemoteRepoRef,
+) {
+
     const repoDir = targetDirectoryInfo.path;
+    const url = id.cloneUrl(credentials);
     const command = (!opts.alwaysDeep && id.sha === "master" && targetDirectoryInfo.transient) ?
-        runIn(".", `git clone --depth 1 ${id.cloneUrl(credentials)} ${repoDir}`) :
-        runIn(".", `git clone ${id.cloneUrl(credentials)} ${repoDir}`)
+        runIn(".", `git clone --depth 1 ${url} ${repoDir}`) :
+        runIn(".", `git clone ${url} ${repoDir}`)
             .then(() => runIn(repoDir, `git checkout ${id.sha} --`));
 
-    logger.debug(`Cloning repo '${id.url}' in '${repoDir}'`);
-    return command
+    const cleanUrl = url.replace(/\/\/.*:x-oauth-basic/, "//TOKEN:x-oauth-basic");
+    logger.debug(`Cloning repo '${cleanUrl}' in '${repoDir}'`);
+    const retryOptions = {
+        retries: 3,
+        factor: 2,
+        minTimeout: 200,
+        maxTimeout: 1000,
+        randomize: true,
+    };
+    return promiseRetry(retryOptions, (retry, count) => {
+        return command
+            .catch(err => {
+                logger.warn(`clone of ${id.owner}/${id.repo} attempt ${count} failed: ${err.message}`);
+                retry(err);
+            });
+    })
         .then(_ => {
-            logger.debug(`Clone succeeded with URL '${id.url}'`);
-            // fs.chmodSync(repoDir, "0777");
+            logger.debug(`Clone succeeded with URL '${cleanUrl}'`);
             return GitCommandGitProject.fromBaseDir(id, repoDir, credentials,
                 targetDirectoryInfo.release,
                 targetDirectoryInfo.provenance + "\nfreshly cloned");

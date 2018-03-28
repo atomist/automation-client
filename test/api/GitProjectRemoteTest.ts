@@ -3,6 +3,7 @@ import * as assert from "power-assert";
 
 import axios from "axios";
 import * as _ from "lodash";
+import * as promiseRetry from "promise-retry";
 
 import { guid } from "../../src/internal/util/string";
 import { GitHubDotComBase, GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
@@ -66,13 +67,14 @@ describe("GitProject remote", () => {
 export function newRepo(): Promise<{ owner: string, repo: string }> {
     const config = {
         headers: {
+            Accept: "application/vnd.github.v3+json",
             Authorization: `token ${GitHubToken}`,
         },
     };
     const name = `test-repo-${new Date().getTime()}-${guid()}`;
     const description = "a thing";
     const url = `${GitHubDotComBase}/user/repos`;
-    console.debug("Visibility is " + TestRepositoryVisibility);
+    // console.debug("Visibility is " + TestRepositoryVisibility);
     return getOwnerByToken()
         .then(owner => axios.post(url, {
             name,
@@ -80,8 +82,12 @@ export function newRepo(): Promise<{ owner: string, repo: string }> {
             private: TestRepositoryVisibility === "private",
             auto_init: true,
         }, config)
-            .then(() =>
-                ({ owner, repo: name })))
+            .then(() => promiseRetry((retry, count) => {
+                const repoUrl = `${GitHubDotComBase}/repos/${owner}/${name}`;
+                return axios.get(repoUrl, config)
+                    .catch(retry);
+            }))
+            .then(() => ({ owner, repo: name })))
         .catch(error => {
             if (error.response.status === 422) {
                 throw new Error("Could not create repository. GitHub says: " +
