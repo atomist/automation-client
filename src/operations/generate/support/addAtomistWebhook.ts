@@ -10,7 +10,7 @@ import { isTokenCredentials } from "../../common/ProjectOperationCredentials";
 import { BaseSeedDrivenGeneratorParameters } from "../BaseSeedDrivenGeneratorParameters";
 
 /**
- * afterAction for use in generatorUtils.generate function that adds the Atomist web hook
+ * afterAction for use in generatorUtils.generate function that adds Atomist web hook
  * for the repo
  * @param {GitProject} p
  * @param {BaseSeedDrivenGeneratorParameters} params
