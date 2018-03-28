@@ -14,7 +14,6 @@ import { BaseSeedDrivenGeneratorParameters } from "../BaseSeedDrivenGeneratorPar
  * for the repo
  * @param {GitProject} p
  * @param {BaseSeedDrivenGeneratorParameters} params
- * @return {any}
  */
 export const addAtomistWebhook: ProjectAction<BaseSeedDrivenGeneratorParameters, GitProject> =
     (p, params) => addWebhook(p, params)
