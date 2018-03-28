@@ -7,7 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.11.1...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.11.2...HEAD
+
+## [0.11.2][] - 2018-03-28
+
+[0.11.2]: https://github.com/atomist/automation-client-ts/compare/0.11.1...0.11.2
+
+Run release
+
+### Changed
+
+-   Clean up logging
+
+### Added
+
+-   ID to ingester messages
 
 ### Fixed
 
