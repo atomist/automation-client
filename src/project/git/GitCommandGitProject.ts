@@ -3,8 +3,8 @@ import { exec } from "child-process-promise";
 import { isLocalProject, ReleaseFunction } from "../local/LocalProject";
 import { Project } from "../Project";
 
-import { ActionResult, successOn } from "../../action/ActionResult";
 import { CommandResult, runCommand } from "../../action/cli/commandLine";
+import { ActionResult, successOn } from "../../action/ActionResult";
 import { logger } from "../../internal/util/logger";
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
 import { isRemoteRepoRef, RemoteRepoRef, RepoRef } from "../../operations/common/RepoId";
