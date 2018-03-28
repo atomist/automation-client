@@ -1,5 +1,4 @@
 import * as appRoot from "app-root-path";
-import * as cluster from "cluster";
 import * as config from "config";
 import * as exp from "express";
 import * as fs from "fs-extra";
@@ -388,9 +387,7 @@ export function getUserConfig(): UserConfig {
  * @param source name of configuration source
  */
 function cfgLog(source: string) {
-    if (cluster.isMaster) {
-        logger.debug(`Loading ${source} configuration`);
-    }
+    logger.debug(`Loading ${source} configuration`);
 }
 
 /**
@@ -723,9 +720,7 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
         .then(completeCfg => {
             completeCfg.postProcessors = [];
 
-            if (cluster.isMaster) {
-                logger.info("Using automation client configuration: %s", stringify(cfg, obfuscateJson));
-            }
+            logger.info("Using automation client configuration: %s", stringify(cfg, obfuscateJson));
 
             try {
                 validateConfiguration(completeCfg);
