@@ -67,7 +67,7 @@ export function generate<P extends Project = Project, PARAMS = object>(
                 })
                 .then(persistenceResult => {
                     return afterAction ?
-                        afterAction(persistenceResult.target, params)
+                        afterAction(persistenceResult.target, params, ctx)
                             .then(r => {
                                 // Preserve any extra returned values from persister
                                 return {

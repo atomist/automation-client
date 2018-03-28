@@ -100,7 +100,7 @@ function handle<P extends BaseSeedDrivenGeneratorParameters>(ctx: HandlerContext
             if (isGitHubRepoRef(r.target.id)) {
                 logger.info("Creating Atomist webhook for repo %j", r.target.id);
                 await ctx.messageClient.respond("Added Atomist webhook");
-                return addAtomistWebhook((r.target as GitProject), params);
+                return addAtomistWebhook((r.target as GitProject), params, ctx);
             } else {
                 logger.info("NOT creating Atomist webhook for repo %j, as not GitHub repo", r.target.id);
             }
