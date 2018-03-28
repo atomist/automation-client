@@ -1,7 +1,6 @@
 # @atomist/automation-client
 
 [![npm version](https://badge.fury.io/js/%40atomist%2Fautomation-client.svg)](https://badge.fury.io/js/%40atomist%2Fautomation-client)
-[![Build Status](https://travis-ci.org/atomist/automation-client-ts.svg?branch=master)](https://travis-ci.org/atomist/automation-client-ts)
 
 [Node][node] module [`@atomist/automation-client`][automation-client]
 for creating Atomist development automations.  Development automations take the following forms:
