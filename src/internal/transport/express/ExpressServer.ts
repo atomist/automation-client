@@ -166,7 +166,7 @@ export class ExpressServer {
 
                 const payload: CommandIncoming = {
                     atomist_type: "command_handler_request",
-                    name: h.name,
+                    command: h.name,
                     rug: {},
                     correlation_context: { team: { id } },
                     corrid: guid(),
