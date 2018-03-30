@@ -90,5 +90,5 @@ function raiseEvent(payload: any, incomingPayload: CommandIncoming, type: string
         logger.info("team_id: %s correlation_id: %s",
             incomingPayload.team.id, incomingPayload.correlation_id);
         logger.info("type: %s payload: %j", type, payload);
-    }); 
+    });
 }
