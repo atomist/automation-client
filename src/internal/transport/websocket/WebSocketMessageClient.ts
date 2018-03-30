@@ -249,7 +249,7 @@ export function sendMessage(message: any, ws: WebSocket, log: boolean = true) {
     if (log) {
         logger.debug(`Sending message '${payload}'`);
     }
-    ws.send(payload);
+    return ws.send(payload);
 }
 
 export function clean(addresses: string[] | string): string[] {
