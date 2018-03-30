@@ -1,27 +1,27 @@
-import { SlackMessage } from "@atomist/slack-messages";
+import {SlackMessage} from "@atomist/slack-messages";
 import axios from "axios";
-import { ApolloGraphClient } from "../../../graph/ApolloGraphClient";
+import {ApolloGraphClient} from "../../../graph/ApolloGraphClient";
 import {
     AutomationContextAware,
     HandlerContext,
 } from "../../../HandlerContext";
-import { AutomationEventListener } from "../../../server/AutomationEventListener";
-import { AutomationServer } from "../../../server/AutomationServer";
-import { GraphClient } from "../../../spi/graph/GraphClient";
+import {AutomationEventListener} from "../../../server/AutomationEventListener";
+import {AutomationServer} from "../../../server/AutomationServer";
+import {GraphClient} from "../../../spi/graph/GraphClient";
 import {
     Destination,
     MessageClient,
     MessageOptions,
 } from "../../../spi/message/MessageClient";
-import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
+import {MessageClientSupport} from "../../../spi/message/MessageClientSupport";
 import * as namespace from "../../util/cls";
-import { logger } from "../../util/logger";
-import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
+import {logger} from "../../util/logger";
+import {AbstractRequestProcessor} from "../AbstractRequestProcessor";
 import {
     CommandIncoming,
     EventIncoming,
 } from "../RequestProcessor";
-import { ExpressServerOptions } from "./ExpressServer";
+import {ExpressServerOptions} from "./ExpressServer";
 
 /**
  * RequestProcessor implementation used by the Express infrastructure to process
@@ -56,7 +56,7 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
                                 context: AutomationContextAware): GraphClient {
         const teamId = namespace.get().teamId;
         return new ApolloGraphClient(`${this.options.endpoint.graphql}/${teamId}`,
-            { Authorization: `token ${this.token}` });
+            {Authorization: `token ${this.token}`});
     }
 
     protected createMessageClient(event: EventIncoming | CommandIncoming,
@@ -85,8 +85,10 @@ function raiseEvent(payload: any, incomingPayload: CommandIncoming, type: string
         correlation_id: incomingPayload.correlation_id,
         message: payload,
         type,
-    })
-        .catch(err => {
-            logger.warn(err);
-        });
+    }).catch(err => {
+        logger.warn("Failure raising event: " + err.message);
+        logger.info("team_id: %s correlation_id: %s",
+            incomingPayload.team.id, incomingPayload.correlation_id);
+        logger.info("type: %s payload: %j", type, payload);
+    }); 
 }
