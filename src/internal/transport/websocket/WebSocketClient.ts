@@ -236,7 +236,7 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
                 } else if (error.response && (error.response.status === 400
                     || error.response.status === 401
                     || error.response.status === 403)) {
-                    logger.error(`Registration failed with code '%s': '%s'`,
+                    logger.error(`Registration failed with code '%s': '%j'`,
                         error.response.status, error.response.data);
                     process.exit(1);
                 } else {
