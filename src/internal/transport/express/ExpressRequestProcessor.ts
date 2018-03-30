@@ -1,5 +1,5 @@
 import {SlackMessage} from "@atomist/slack-messages";
-import axios from "axios";
+import axios, {AxiosError} from "axios";
 import {ApolloGraphClient} from "../../../graph/ApolloGraphClient";
 import {
     AutomationContextAware,
@@ -85,8 +85,9 @@ function raiseEvent(payload: any, incomingPayload: CommandIncoming, type: string
         correlation_id: incomingPayload.correlation_id,
         message: payload,
         type,
-    }).catch(err => {
-        logger.warn("Failure raising event: " + err.message);
+    }).catch((err: AxiosError) => {
+        logger.warn("Failure raising event: %s" + err.message);
+        logger.warn("response data: %j" + err.response.data);
         logger.info("team_id: %s correlation_id: %s",
             incomingPayload.team.id, incomingPayload.correlation_id);
         logger.info("type: %s payload: %j", type, payload);
