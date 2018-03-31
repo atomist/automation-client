@@ -113,29 +113,21 @@ export class ExpressServer {
                 res.json(globals.eventStore().commandSeries());
             });
 
-        automations.automations.commands.forEach(
-            h => {
-                this.exposeCommandHandlerInvocationRoute(exp,
-                    `${ApiBase}/command/${_.kebabCase(h.name)}`, h, cors,
-                    (req, res, result) => {
-                        if (result.redirect && !req.get("x-atomist-no-redirect")) {
-                            res.redirect(result.redirect);
-                        } else {
-                            res.status(result.code === 0 ? 200 : 500).json(result);
-                        }
-                    });
-            },
-        );
+        this.exposeCommandHandlerInvocationRoute(exp,
+            `${ApiBase}/command`, cors,
+            (req, res, result) => {
+                if (result.redirect && !req.get("x-atomist-no-redirect")) {
+                    res.redirect(result.redirect);
+                } else {
+                    res.status(result.code === 0 ? 200 : 500).json(result);
+                }
+            });
 
-        automations.automations.events.forEach(
-            h => {
-                this.exposeEventHandlerInvocationRoute(exp,
-                    `${ApiBase}/event/${_.kebabCase(h.name)}`, h, cors,
-                    (req, res, result) => {
-                        res.status(result.some(r => r.code !== 0) ? 500 : 200).json(result);
-                    });
-            },
-        );
+        this.exposeEventHandlerInvocationRoute(exp,
+            `${ApiBase}/event`, cors,
+            (req, res, result) => {
+                res.status(result.some(r => r.code !== 0) ? 500 : 200).json(result);
+            });
 
         if (this.options.customizers.length > 0) {
             logger.debug("Invoking http server customizers");
@@ -168,7 +160,6 @@ export class ExpressServer {
 
     private exposeCommandHandlerInvocationRoute(exp: express.Express,
                                                 url: string,
-                                                h: CommandHandlerMetadata,
                                                 cors,
                                                 handle: (req, res, result) => any) {
 
@@ -188,7 +179,6 @@ export class ExpressServer {
 
     private exposeEventHandlerInvocationRoute(exp: express.Express,
                                               url: string,
-                                              e: EventHandlerMetadata,
                                               cors,
                                               handle: (req, res, result) => any) {
 

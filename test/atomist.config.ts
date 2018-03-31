@@ -56,7 +56,7 @@ export const configuration: Configuration = {
                 password: "test",
             },
             bearer: {
-                enabled: false,
+                enabled: true,
                 adminOrg: "atomisthq",
             },
         },
