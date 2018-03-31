@@ -85,6 +85,7 @@ export class HelloIssueViaProperties implements HandleEvent<any>, EventHandlerMe
 }`;
 
     public handle(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult> {
+        console.log(e);
         return null;
     }
 }

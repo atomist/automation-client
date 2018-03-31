@@ -132,7 +132,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                              request: CommandIncoming,
                              ctx: HandlerContext & AutomationContextAware): Promise<any> {
         const source = _.cloneDeep(request.source) as Source;
-        if (source.slack) {
+        if (source && source.slack) {
             delete source.slack.user;
         }
 

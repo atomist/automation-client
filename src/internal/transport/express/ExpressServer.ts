@@ -7,9 +7,13 @@ import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
 import { IStrategyOptions } from "passport-http-bearer";
 import * as retry from "retry";
+import { runningAutomationClient } from "../../../automationClient";
 import { ExpressCustomizer } from "../../../configuration";
 import * as globals from "../../../globals";
-import { CommandHandlerMetadata } from "../../../metadata/automationMetadata";
+import {
+    CommandHandlerMetadata,
+    EventHandlerMetadata,
+} from "../../../metadata/automationMetadata";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
 import {
@@ -24,7 +28,6 @@ import {
 } from "../../util/memory";
 import { metrics } from "../../util/metric";
 import { guid } from "../../util/string";
-import { CommandIncoming } from "../RequestProcessor";
 import { prepareRegistration } from "../websocket/payloads";
 import { ExpressRequestProcessor } from "./ExpressRequestProcessor";
 
@@ -124,6 +127,16 @@ export class ExpressServer {
             },
         );
 
+        automations.automations.events.forEach(
+            h => {
+                this.exposeEventHandlerInvocationRoute(exp,
+                    `${ApiBase}/event/${_.kebabCase(h.name)}`, h, cors,
+                    (req, res, result) => {
+                        res.status(result.some(r => r.code !== 0) ? 500 : 200).json(result);
+                    });
+            },
+        );
+
         if (this.options.customizers.length > 0) {
             logger.debug("Invoking http server customizers");
             this.options.customizers.forEach(c => c(exp, this.authenticate));
@@ -161,76 +174,33 @@ export class ExpressServer {
 
         exp.post(url, cors(), this.authenticate,
             (req, res) => {
-                const id = this.automations.automations.team_ids
-                    ? this.automations.automations.team_ids[0] : "Txxxxxxxx";
+                const handler = new ExpressRequestProcessor(
+                    runningAutomationClient.configuration.token,
+                    this.automations,
+                    this.listeners,
+                    this.options);
 
-                const payload: CommandIncoming = {
-                    atomist_type: "command_handler_request",
-                    command: h.name,
-                    rug: {},
-                    correlation_context: { team: { id } },
-                    corrid: guid(),
-                    team: {
-                        id,
-                    },
-                    ...req.body,
-                };
-
-                const token = req.user ? req.user.token : undefined;
-                const handler = new ExpressRequestProcessor(token, payload,
-                    this.automations, this.listeners, this.options);
-
-                handler.processCommand(payload, result => {
+                handler.processCommand(req.body, result => {
                     result.then(r => handle(req, res, r));
                 });
             });
+    }
 
-        exp.get(url, this.authenticate,
+    private exposeEventHandlerInvocationRoute(exp: express.Express,
+                                              url: string,
+                                              e: EventHandlerMetadata,
+                                              cors,
+                                              handle: (req, res, result) => any) {
+
+        exp.post(url, cors(), this.authenticate,
             (req, res) => {
-                const parameters = h.parameters.filter(p => {
-                    const value = req.query[p.name];
-                    return value && value.length > 0;
-                }).map(p => {
-                    return { name: p.name, value: req.query[p.name] };
-                });
-                const mappedParameters = (h.mapped_parameters || []).filter(p => {
-                    const value = req.query[`mp_${p.name}`];
-                    return value && value.length > 0;
-                }).map(p => {
-                    return { name: p.name, value: req.query[`mp_${p.name}`] };
-                });
-                const secrets = h.secrets.map(p => {
-                    const value = req.query[`s_${p.uri}`];
-                    return { uri: p.uri, value };
-                });
+                const handler = new ExpressRequestProcessor(
+                    runningAutomationClient.configuration.token,
+                    this.automations,
+                    this.listeners,
+                    this.options);
 
-                const id = this.automations.automations.team_ids
-                    ? this.automations.automations.team_ids[0] : "Txxxxxxxx";
-
-                const payload: CommandIncoming = {
-                    command: h.name,
-                    parameters,
-                    mapped_parameters: mappedParameters,
-                    secrets,
-                    correlation_id: guid(),
-                    team: {
-                        id,
-                    },
-                    source: {
-                        user_agent: "slack",
-                        slack: {
-                            team: {
-                                id,
-                            },
-                        },
-                    },
-                };
-
-                const token = req.user ? req.user.token : undefined;
-                const handler = new ExpressRequestProcessor(token, payload,
-                    this.automations, this.listeners, this.options);
-
-                handler.processCommand(payload, result => {
+                handler.processEvent(req.body, result => {
                     result.then(r => handle(req, res, r));
                 });
             });

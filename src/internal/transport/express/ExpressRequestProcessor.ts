@@ -29,23 +29,13 @@ import { ExpressServerOptions } from "./ExpressServer";
  */
 export class ExpressRequestProcessor extends AbstractRequestProcessor {
 
+    private messages: any[] = [];
+
     constructor(private token: string,
-                private payload: CommandIncoming,
                 protected automations: AutomationServer,
                 protected listeners: AutomationEventListener[] = [],
                 private options: ExpressServerOptions) {
         super(automations, listeners);
-    }
-
-    public sendCommandStatus(success: boolean,
-                             code: number,
-                             request: CommandIncoming,
-                             ctx: HandlerContext & AutomationContextAware) {
-        if (success) {
-            return raiseEvent(`Successfully invoked ${request.command}`, request, "success");
-        } else {
-            return raiseEvent(`Unsuccessfully invoked ${request.command}`, request, "failure");
-        }
     }
 
     protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {
@@ -61,32 +51,20 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
 
     protected createMessageClient(event: EventIncoming | CommandIncoming,
                                   context: AutomationContextAware): MessageClient {
-        return new ExpressMessageClient(this.payload);
+        return new ExpressMessageClient(this.messages);
     }
 }
 
 class ExpressMessageClient extends MessageClientSupport {
 
-    constructor(private payload: CommandIncoming) {
+    constructor(private messages: any[]) {
         super();
     }
 
     protected doSend(msg: string | SlackMessage,
                      destinations: Destination | Destination[],
                      options?: MessageOptions): Promise<any> {
-        return raiseEvent(msg, this.payload, "message");
+         this.messages.push(msg);
+         return Promise.resolve();
     }
-}
-
-function raiseEvent(payload: any, incomingPayload: CommandIncoming, type: string): Promise<any> {
-    // TODO cd this url should change
-    return axios.put("https://app.atomist.com/v1/event", {
-        team_id: incomingPayload.team.id,
-        correlation_id: incomingPayload.correlation_id,
-        message: payload,
-        type,
-    })
-        .catch(err => {
-            logger.warn(err);
-        });
 }
