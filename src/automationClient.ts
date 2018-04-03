@@ -1,5 +1,7 @@
 import * as cluster from "cluster";
+import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
+
 import { AutomationServerOptions, Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
@@ -30,6 +32,7 @@ import {
     logger,
     setLogLevel,
 } from "./internal/util/logger";
+import { obfuscateJson } from "./internal/util/string";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
 import { Maker } from "./util/constructionUtils";
@@ -110,8 +113,13 @@ export class AutomationClient {
             this.defaultListeners.push(new StatsdAutomationEventListener(statsdOptions));
         }
 
+        const clientSig = `${this.configuration.name}@${this.configuration.version}`;
+        const clientConf = stringify(this.configuration, obfuscateJson);
+
         if (!this.configuration.cluster.enabled) {
-            logger.info(`Starting Atomist automation client ${this.configuration.name}@${this.configuration.version}`);
+            logger.info(`Starting Atomist automation client ${clientSig}`);
+            logger.debug(`Using automation client configuration: ${clientConf}`);
+
             if (this.configuration.ws.enabled) {
                 this.wsHandler = this.setupWebSocketRequestHandler(webSocketOptions);
                 return Promise.all([
@@ -126,8 +134,9 @@ export class AutomationClient {
                 ]);
             }
         } else if (cluster.isMaster) {
-            logger.info(
-                `Starting Atomist automation client master ${this.configuration.name}@${this.configuration.version}`);
+            logger.info(`Starting Atomist automation client master ${clientSig}`);
+            logger.debug(`Using automation client configuration: ${clientConf}`);
+
             this.wsHandler = this.setupWebSocketClusterRequestHandler(webSocketOptions);
             return (this.wsHandler as ClusterMasterRequestProcessor).run()
                 .then(() => {
@@ -138,8 +147,7 @@ export class AutomationClient {
                     ]);
                 });
         } else if (cluster.isWorker) {
-            logger.info(
-                `Starting Atomist automation client worker ${this.configuration.name}@${this.configuration.version}`);
+            logger.info(`Starting Atomist automation client worker ${clientSig}`);
             return Promise.resolve(startWorker(this.automations, webSocketOptions, this.configuration.listeners));
         }
     }
