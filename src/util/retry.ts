@@ -1,17 +1,9 @@
-import * as promiseRetry from "promise-retry";
+import promiseRetry = require("promise-retry");
+import { WrapOptions } from "retry";
 
 import { logger } from "../internal/util/logger";
 
-export interface RetryOptions {
-
-    retries: number;
-    factor: number;
-    minTimeout: number;
-    maxTimeout: number;
-    randomize: boolean;
-}
-
-const DefaultRetryOptions: RetryOptions = {
+const DefaultRetryOptions: WrapOptions = {
     retries: 5,
     factor: 3,
     minTimeout: 1 * 500,
@@ -28,8 +20,8 @@ const DefaultRetryOptions: RetryOptions = {
  * @return {Promise<R>}
  */
 export function doWithRetry<R>(what: () => Promise<R>, description: string,
-                               opts: Partial<RetryOptions> = {}): Promise<R> {
-    const retryOptions: RetryOptions = {
+                               opts: WrapOptions = {}): Promise<R> {
+    const retryOptions: WrapOptions = {
         ...DefaultRetryOptions,
         ...opts,
     };
@@ -37,7 +29,7 @@ export function doWithRetry<R>(what: () => Promise<R>, description: string,
     return promiseRetry(retryOptions, retry => {
         return what()
             .catch(err => {
-                logger.warn(`Error occurred attempting '${description}'. '${err.message}'`);
+                logger.warn(`Error occurred attempting '${description}': ${err.message}`);
                 retry(err);
             });
     });

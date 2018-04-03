@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 import * as HttpsProxyAgent from "https-proxy-agent";
 import * as stringify from "json-stringify-safe";
-import * as promiseRetry from "promise-retry";
+import promiseRetry = require("promise-retry");
 import * as serializeError from "serialize-error";
 import * as url from "url";
 import * as WebSocket from "ws";

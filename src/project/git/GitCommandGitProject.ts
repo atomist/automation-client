@@ -1,5 +1,5 @@
 import { exec } from "child-process-promise";
-import * as promiseRetry from "promise-retry";
+import promiseRetry = require("promise-retry");
 
 import { isLocalProject, ReleaseFunction } from "../local/LocalProject";
 import { Project } from "../Project";

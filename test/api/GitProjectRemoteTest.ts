@@ -3,7 +3,7 @@ import * as assert from "power-assert";
 
 import axios from "axios";
 import * as _ from "lodash";
-import * as promiseRetry from "promise-retry";
+import promiseRetry = require("promise-retry");
 
 import { guid } from "../../src/internal/util/string";
 import { GitHubDotComBase, GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";

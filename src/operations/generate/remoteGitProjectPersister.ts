@@ -1,9 +1,11 @@
+import { WrapOptions } from "retry";
+
 import { ActionResult } from "../../action/ActionResult";
 import { logger } from "../../internal/util/logger";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
-import { doWithRetry, RetryOptions } from "../../util/retry";
+import { doWithRetry } from "../../util/retry";
 import { GitHubRepoRef, isGitHubRepoRef } from "../common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { isRemoteRepoRef, RepoId } from "../common/RepoId";
@@ -45,8 +47,8 @@ export const RemoteGitProjectPersister: ProjectPersister<GitProject> =
             .then(() => push(gp));
     };
 
-export function push(gp: GitProject, opts: Partial<RetryOptions> = {}): Promise<ActionResult<GitProject>> {
-    const retryOptions: RetryOptions = {
+export function push(gp: GitProject, opts: WrapOptions = {}): Promise<ActionResult<GitProject>> {
+    const retryOptions: WrapOptions = {
         retries: 5,
         factor: 3,
         minTimeout: 1 * 500,
