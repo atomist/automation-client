@@ -159,11 +159,7 @@
     "watch": "supervisor --watch build --quiet --exec npm -- run start"
   },
   "bin": {
-    "atomist": "./start.cli.js",
-    "git-info": "./git-info.js",
-    "atomist-cli": "./atomist-cli.js",
-    "atomist-client": "./atomist-client.js",
-    "atomist-config": "./atomist-config.js"
+    "atomist": "./start.cli.js"
   },
   "engines": {
     "node": "8.x.x",
