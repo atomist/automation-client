@@ -723,10 +723,6 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
         .then(completeCfg => {
             completeCfg.postProcessors = [];
 
-            if (cluster.isMaster) {
-                logger.info("Using automation client configuration: %s", stringify(cfg, obfuscateJson));
-            }
-
             try {
                 validateConfiguration(completeCfg);
             } catch (e) {
