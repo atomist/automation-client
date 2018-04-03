@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.11.2...HEAD
 
+### Removed
+
+-   Remove previously deprecated command-line utilities now superseded
+    by the combined `atomist` CLI
+
 ## [0.11.2][] - 2018-03-28
 
 [0.11.2]: https://github.com/atomist/automation-client-ts/compare/0.11.1...0.11.2
