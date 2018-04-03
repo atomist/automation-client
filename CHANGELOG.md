@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.11.2...HEAD
 
+### Added
+
+-   reduceResults to combine handler results
+
 ### Removed
 
 -   Remove previously deprecated command-line utilities now superseded

@@ -27,10 +27,13 @@ export {
 } from "./HandlerContext";
 
 export {
-    Failure,
     failure,
+    Failure,
+    FailurePromise,
+    HandlerError,
     HandlerResult,
     RedirectResult,
+    reduceResults,
     success,
     Success,
     SuccessPromise,
