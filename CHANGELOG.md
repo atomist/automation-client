@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 -   reduceResults to combine handler results
+-   Functions for posting Atomist webhooks
 
 ### Removed
 

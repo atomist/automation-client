@@ -54,3 +54,10 @@ export { AutomationEventListener } from "./server/AutomationEventListener";
 
 // this next line causes client project mocha tests to hang after running tests
 // export { runningAutomationClient } from "./automationClient";
+
+export {
+    AtomistBuild,
+    AtomistLinkImage,
+    AtomistWebhookType,
+    postAtomistWebhook,
+} from "./atomistWebhook";

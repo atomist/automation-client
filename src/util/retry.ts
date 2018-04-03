@@ -3,7 +3,10 @@ import { WrapOptions } from "retry";
 
 import { logger } from "../internal/util/logger";
 
-const DefaultRetryOptions: WrapOptions = {
+/**
+ * Default retry options for doWithRetry.
+ */
+export const DefaultRetryOptions: WrapOptions = {
     retries: 5,
     factor: 3,
     minTimeout: 1 * 500,
