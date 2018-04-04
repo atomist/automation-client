@@ -61,7 +61,12 @@ describe("generatorToCommand", () => {
                     return Promise.resolve(msg);
                 },
             },
-        } as HandlerContext;
+            graphClient: {
+                query(): Promise<any> {
+                    return Promise.resolve(false);
+                },
+            },
+        } as any as HandlerContext;
 
         const pp = gen.handle(ctx, params) as Promise<RedirectResult>;
         pp.then(r => {
@@ -117,7 +122,12 @@ describe("generatorToCommand", () => {
                     return Promise.resolve(msg);
                 },
             },
-        } as HandlerContext;
+            graphClient: {
+                query(): Promise<any> {
+                    return Promise.resolve(false);
+                },
+            },
+        } as any as HandlerContext;
 
         const pp = gen.handle(ctx, params) as Promise<RedirectResult>;
         pp.then(r => {
