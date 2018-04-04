@@ -1,22 +1,29 @@
+import * as _ from "lodash";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { RedirectResult } from "../../HandlerResult";
-import { commandHandlerFrom, OnCommand } from "../../onCommand";
+import {
+    commandHandlerFrom,
+    OnCommand,
+} from "../../onCommand";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
 import { CachingDirectoryManager } from "../../spi/clone/CachingDirectoryManager";
+import { NoCacheOptions } from "../../spi/graph/GraphClient";
 import { Maker } from "../../util/constructionUtils";
 import { CommandDetails } from "../CommandDetails";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { isGitHubRepoRef } from "../common/GitHubRepoRef";
 import { ProjectAction } from "../common/projectAction";
-import { RepoFilter } from "../common/repoFilter";
 import { RepoRef } from "../common/RepoId";
 import { RepoLoader } from "../common/repoLoader";
 import { AnyProjectEditor } from "../edit/projectEditor";
 import { BaseSeedDrivenGeneratorParameters } from "./BaseSeedDrivenGeneratorParameters";
-import { generate, ProjectPersister } from "./generatorUtils";
+import {
+    generate,
+    ProjectPersister,
+} from "./generatorUtils";
 import { RemoteGitProjectPersister } from "./remoteGitProjectPersister";
 import { addAtomistWebhook } from "./support/addAtomistWebhook";
 
@@ -98,7 +105,14 @@ function handle<P extends BaseSeedDrivenGeneratorParameters>(ctx: HandlerContext
         })
         .then(r => {
             if (isGitHubRepoRef(r.target.id)) {
-                return addAtomistWebhook((r.target as GitProject), params);
+                return hasOrgWebhook(params.target.owner, ctx)
+                    .then(webhookInstalled => {
+                        if (!webhookInstalled) {
+                            return addAtomistWebhook((r.target as GitProject), params);
+                        } else {
+                            return Promise.resolve(r);
+                        }
+                    });
             }
             return Promise.resolve(r);
         })
@@ -108,6 +122,26 @@ function handle<P extends BaseSeedDrivenGeneratorParameters>(ctx: HandlerContext
             // Redirect to our local project page
             redirect: details.redirecter(params.target),
         }));
+}
+
+const OrgWebhookQuery = `query OrgWebhook($owner: String!) {
+  Webhook(webhookType: organization) {
+    org(owner: $owner) @required {
+      owner
+    }
+  }
+}`;
+
+async function hasOrgWebhook(owner: string, ctx: HandlerContext): Promise<boolean> {
+    const orgHooks = await ctx.graphClient.query<any, any>({
+        query: OrgWebhookQuery,
+        variables: {
+            owner,
+        },
+        options: NoCacheOptions,
+    });
+    const hookOwner = _.get(orgHooks, "Webhook[0].org.owner");
+    return hookOwner === owner;
 }
 
 /**

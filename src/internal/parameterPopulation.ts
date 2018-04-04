@@ -1,7 +1,11 @@
-import { Chooser, CommandHandlerMetadata, FreeChoices, Parameter } from "../metadata/automationMetadata";
-import { Arg } from "./invoker/Payload";
-
 import * as _ from "lodash";
+import {
+    Chooser,
+    CommandHandlerMetadata,
+    FreeChoices,
+    Parameter,
+} from "../metadata/automationMetadata";
+import { Arg } from "./invoker/Payload";
 
 /**
  * Populate the parameters of the command handler instance,
@@ -34,7 +38,11 @@ function computeValue(parameter: Parameter, arg: Arg) {
             value = arg.value;
             break;
         case "boolean":
-            value = arg.value === "true";
+            if (typeof arg.value === "boolean") {
+                value = arg.value;
+            } else {
+                value = arg.value === "true";
+            }
             break;
         case "number":
             if (typeof arg.value === "string") {
