@@ -283,14 +283,17 @@ export function defaultConfiguration(): Configuration {
  * takes precedence if it is set.
  */
 function loadDefaultConfiguration(): Configuration {
+    const cfg = require("./configuration-local.json") as Configuration;
+
+    let envSpecificCfg = {};
     const nodeEnv = process.env.ATOMIST_ENV || process.env.NODE_ENV;
     if (nodeEnv === "production") {
-        return require("./configuration.production.json") as Configuration;
-    } else if (nodeEnv === "staging") {
-        return require("./configuration.staging.json") as Configuration;
-    } else {
-        return require("./configuration.development.json") as Configuration;
+        envSpecificCfg = require("./configuration-production.json") as Configuration;
+    } else if (nodeEnv === "staging" || nodeEnv === "testing") {
+        envSpecificCfg = require("./configuration-testing.json") as Configuration;
     }
+
+    return mergeConfigs(cfg, envSpecificCfg);
 }
 
 /**
@@ -364,7 +367,7 @@ function cfgLog(source: string) {
  * @param override configuration values to add/override those in start
  * @return resulting merged configuration
  */
-function mergeConfigs(obj: Configuration, ...sources: Configuration[]): Configuration {
+export function mergeConfigs(obj: Configuration, ...sources: Configuration[]): Configuration {
     return _.mergeWith(obj, ...sources, (objValue, srcValue) => {
         if (_.isArray(srcValue)) {
             return srcValue;

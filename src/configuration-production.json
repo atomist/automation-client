@@ -1,16 +1,7 @@
 {
-  "teamIds": [],
-  "groups": [],
-  "environment": "staging",
+  "environment": "production",
   "policy": "durable",
-  "endpoints": {
-    "api": "https://automation.atomist.com/registration",
-    "graphql": "https://automation.atomist.com/graphql/team"
-  },
   "http": {
-    "enabled": true,
-    "host": "localhost",
-    "port": 2866,
     "auth": {
       "basic": {
         "enabled": true
@@ -18,11 +9,9 @@
       "bearer": {
         "enabled": true
       }
-    },
-    "customizers": []
+    }
   },
   "ws": {
-    "enabled": true,
     "termination": {
       "graceful": true,
       "gracePeriod": 60000
@@ -40,15 +29,9 @@
     "file": {
       "enabled": false,
       "level": "debug"
-    },
-    "banner": true
+    }
   },
   "statsd": {
     "enabled": true
-  },
-  "commands": null,
-  "events": null,
-  "ingesters": [],
-  "listeners": [],
-  "postProcessors": []
+  }
 }

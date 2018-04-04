@@ -17,6 +17,7 @@ import {
     loadAutomationConfig,
     loadConfiguration,
     loadUserConfiguration,
+    mergeConfigs,
     resolveConfigurationValue,
     resolveModuleConfig,
     resolveTeamIds,
@@ -725,11 +726,11 @@ describe("configuration", () => {
     describe("loadDefaultConfiguration", () => {
 
         it("should default local config", () => {
-            assertEnvConfiguration(null, "development");
+            assertEnvConfiguration(null, "local");
         });
 
-        it("should default staging config", () => {
-            assertEnvConfiguration("staging");
+        it("should default testing config", () => {
+            assertEnvConfiguration("testing");
         });
 
         it("should default production config", () => {
@@ -750,8 +751,9 @@ describe("configuration", () => {
             delete cfg.keywords;
             delete cfg.application;
 
-            const localCfg = JSON.parse(fs.readFileSync(`./src/configuration.${file}.json`).toString());
-            assert.deepStrictEqual(cfg, localCfg);
+            const localCfg = JSON.parse(fs.readFileSync(`./src/configuration-local.json`).toString());
+            const envSpecificCfg = JSON.parse(fs.readFileSync(`./src/configuration-${file}.json`).toString());
+            assert.deepStrictEqual(cfg, mergeConfigs(localCfg, envSpecificCfg));
 
             process.env.NODE_ENV = oldEnv;
         }
