@@ -188,7 +188,7 @@ export interface AutomationServerOptions extends AutomationOptions {
     /** statsd config */
     statsd?: {
         /** Whether to send metrics statsd, default is false */
-        enabled: boolean;
+        enabled?: boolean;
         /**
          * statsd host.  If not set, use the host-shots default,
          * "localhost" at the time of this writing.
