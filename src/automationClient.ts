@@ -105,12 +105,8 @@ export class AutomationClient {
             addFileTransport(filename, this.configuration.logging.file.level || this.configuration.logging.level);
         }
 
-        if (this.configuration.statsd.enabled) {
-            const statsdOptions: StatsdOptions = {
-                host: this.configuration.statsd.host,
-                port: this.configuration.statsd.port,
-            };
-            this.defaultListeners.push(new StatsdAutomationEventListener(statsdOptions));
+        if (this.configuration.statsd.enabled === true) {
+            this.defaultListeners.push(new StatsdAutomationEventListener(this.configuration));
         }
 
         const clientSig = `${this.configuration.name}@${this.configuration.version}`;
