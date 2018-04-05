@@ -263,71 +263,37 @@ export function defaultConfiguration(): Configuration {
         // tslint:disable-next-line:no-var-requires
         pj = require(`${appRoot.path}/package.json`);
     } catch (e) {
-        logger.warn(`failed to load package.json: ${e.message}`);
+        logger.warn(`Failed to load package.json: ${e.message}`);
     }
     pj.name = pj.name || "atm-client-" + guid();
     pj.version = pj.version || "0.0.0";
     pj.keywords = pj.keywords || [];
 
-    const cfg: Configuration = {
-        name: pj.name,
-        version: pj.version,
-        keywords: pj.keywords,
-        teamIds: [],
-        groups: [],
-        environment: "local",
-        application: pj.name.replace(/^@.*?\//, ""),
-        policy: "ephemeral",
-        endpoints: {
-            api: "https://automation.atomist.com/registration",
-            graphql: "https://automation.atomist.com/graphql/team",
-        },
-        http: {
-            enabled: true,
-            host: "localhost",
-            port: 2866,
-            auth: {
-                basic: {
-                    enabled: true,
-                },
-                bearer: {
-                    enabled: true,
-                },
-            },
-            customizers: [],
-        },
-        ws: {
-            enabled: true,
-            termination: {
-                graceful: false,
-                gracePeriod: 60000,
-            },
-            compress: false,
-        },
-        applicationEvents: {
-            enabled: false,
-        },
-        cluster: {
-            enabled: false,
-        },
-        logging: {
-            level: "debug",
-            file: {
-                enabled: false,
-                level: "debug",
-            },
-            banner: true,
-        },
-        statsd: {
-            enabled: false,
-        },
-        commands: undefined, // enable scanning
-        events: undefined, // enable scanning
-        ingesters: [],
-        listeners: [],
-        postProcessors: [],
-    };
+    const cfg = loadDefaultConfiguration();
+    cfg.name = pj.name;
+    cfg.version = pj.version;
+    cfg.keywords = pj.keywords;
+    cfg.application = pj.name.replace(/^@.*?\//, "");
+
     return cfg;
+}
+
+/**
+ * Return the default configuration based on NODE_ENV or ATOMIST_ENV.  ATOMIST_ENV
+ * takes precedence if it is set.
+ */
+function loadDefaultConfiguration(): Configuration {
+    const cfg = require("./configuration-local.json") as Configuration;
+
+    let envSpecificCfg = {};
+    const nodeEnv = process.env.ATOMIST_ENV || process.env.NODE_ENV;
+    if (nodeEnv === "production") {
+        envSpecificCfg = require("./configuration-production.json") as Configuration;
+    } else if (nodeEnv === "staging" || nodeEnv === "testing") {
+        envSpecificCfg = require("./configuration-testing.json") as Configuration;
+    }
+
+    return mergeConfigs(cfg, envSpecificCfg);
 }
 
 /**
@@ -401,7 +367,7 @@ function cfgLog(source: string) {
  * @param override configuration values to add/override those in start
  * @return resulting merged configuration
  */
-function mergeConfigs(obj: Configuration, ...sources: Configuration[]): Configuration {
+export function mergeConfigs(obj: Configuration, ...sources: Configuration[]): Configuration {
     return _.mergeWith(obj, ...sources, (objValue, srcValue) => {
         if (_.isArray(srcValue)) {
             return srcValue;

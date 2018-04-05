@@ -17,6 +17,7 @@ import {
     loadAutomationConfig,
     loadConfiguration,
     loadUserConfiguration,
+    mergeConfigs,
     resolveConfigurationValue,
     resolveModuleConfig,
     resolveTeamIds,
@@ -47,10 +48,10 @@ describe("configuration", () => {
             port: 2866,
             auth: {
                 basic: {
-                    enabled: true,
+                    enabled: false,
                 },
                 bearer: {
-                    enabled: true,
+                    enabled: false,
                 },
             },
             customizers: [],
@@ -69,7 +70,7 @@ describe("configuration", () => {
         logging: {
             level: "debug",
             file: {
-                enabled: false,
+                enabled: true,
                 level: "debug",
             },
             banner: true,
@@ -80,8 +81,8 @@ describe("configuration", () => {
         applicationEvents: {
             enabled: false,
         },
-        commands: undefined,
-        events: undefined,
+        commands: null,
+        events: null,
         ingesters: [],
         listeners: [],
         postProcessors: [],
@@ -722,4 +723,39 @@ describe("configuration", () => {
 
     });
 
+    describe("loadDefaultConfiguration", () => {
+
+        it("should default local config", () => {
+            assertEnvConfiguration(null, "local");
+        });
+
+        it("should default testing config", () => {
+            assertEnvConfiguration("testing");
+        });
+
+        it("should default production config", () => {
+            assertEnvConfiguration("production");
+        });
+
+        function assertEnvConfiguration(env: string, file?: string) {
+            if (!file) {
+                file = env;
+            }
+            const oldEnv = process.env.NODE_ENV;
+            process.env.NODE_ENV = env;
+
+            const cfg = defaultConfiguration();
+
+            delete cfg.name;
+            delete cfg.version;
+            delete cfg.keywords;
+            delete cfg.application;
+
+            const localCfg = JSON.parse(fs.readFileSync(`./src/configuration-local.json`).toString());
+            const envSpecificCfg = JSON.parse(fs.readFileSync(`./src/configuration-${file}.json`).toString());
+            assert.deepStrictEqual(cfg, mergeConfigs(localCfg, envSpecificCfg));
+
+            process.env.NODE_ENV = oldEnv;
+        }
+    });
 });

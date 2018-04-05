@@ -9,7 +9,6 @@ import * as zlib from "zlib";
 import { Deferred } from "../../util/Deferred";
 import { configureProxy } from "../../util/http";
 import { logger } from "../../util/logger";
-import Timer = NodeJS.Timer;
 import { registerShutdownHook } from "../../util/shutdown";
 import {
     CommandIncoming,
@@ -22,6 +21,7 @@ import {
     RegistrationConfirmation,
     WebSocketRequestProcessor,
 } from "./WebSocketRequestProcessor";
+import Timer = NodeJS.Timer;
 
 export class WebSocketClient {
 
@@ -237,7 +237,7 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
                     || error.response.status === 401
                     || error.response.status === 403)) {
                     logger.error(`Registration failed with code '%s': '%s'`,
-                        error.response.status, JSON.stringify(error.response.data, null, 2));
+                        error.response.status, JSON.stringify(error.response.data));
                     process.exit(1);
                 } else {
                     logger.error("Registration failed with '%s'", error);
