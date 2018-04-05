@@ -4,6 +4,7 @@ import {
     ClientOptions,
     StatsD,
 } from "hot-shots";
+import * as trace from "stack-trace";
 import { runningAutomationClient } from "../automationClient";
 import { Configuration } from "../configuration";
 import { EventFired } from "../HandleEvent";
@@ -12,7 +13,6 @@ import {
     HandlerContext,
 } from "../HandlerContext";
 import { HandlerResult } from "../HandlerResult";
-import * as trace from "stack-trace";
 import * as internalGraphql from "../internal/graph/graphQL";
 import { CommandInvocation } from "../internal/invoker/Payload";
 import { RequestProcessor } from "../internal/transport/RequestProcessor";
