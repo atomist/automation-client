@@ -3,7 +3,7 @@ import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import {
     AutomationServerOptions,
-    Configuration
+    Configuration,
 } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
@@ -12,7 +12,7 @@ import {
     IngesterBuilder,
 } from "./ingesters";
 import { registerApplicationEvents } from "./internal/env/applicationEvent";
-import { ClusterMasterRequestProcessor, } from "./internal/transport/cluster/ClusterMasterRequestProcessor";
+import { ClusterMasterRequestProcessor } from "./internal/transport/cluster/ClusterMasterRequestProcessor";
 import { startWorker } from "./internal/transport/cluster/ClusterWorkerRequestProcessor";
 import { EventStoringAutomationEventListener } from "./internal/transport/EventStoringAutomationEventListener";
 import {
