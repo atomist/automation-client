@@ -208,7 +208,10 @@ export class AutomationClient {
                 graphql: this.configuration.endpoints.graphql,
             },
         };
-        this.httpServer = new ExpressServer(this.automations, this.configuration.listeners, expressOptions);
+        this.httpServer = new ExpressServer(
+            this.automations,
+            [...this.defaultListeners, ...this.configuration.listeners],
+            expressOptions);
     }
 }
 

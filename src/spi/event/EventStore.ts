@@ -9,7 +9,7 @@ export interface EventStore {
 
     recordCommand(command: CommandIncoming): string;
 
-    recordMessage(id: string, message: any): string;
+    recordMessage(id: string, correlationId: string, message: any): string;
 
     events(from?: number): any[];
 

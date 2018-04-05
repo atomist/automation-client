@@ -1,5 +1,6 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import { eventStore } from "../../globals";
+import { HandlerContext } from "../../HandlerContext";
 import { AutomationEventListenerSupport } from "../../server/AutomationEventListener";
 import {
     Destination,
@@ -23,7 +24,8 @@ export class EventStoringAutomationEventListener extends AutomationEventListener
 
     public messageSent(message: string | SlackMessage,
                        destinations: Destination | Destination[],
-                       options?: MessageOptions) {
-        eventStore().recordMessage(options && options.id ? options.id : guid(), message);
+                       options: MessageOptions,
+                       ctx: HandlerContext) {
+        eventStore().recordMessage(options && options.id ? options.id : guid(), ctx.correlationId, message);
     }
 }

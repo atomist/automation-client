@@ -24,20 +24,20 @@ export class InMemoryEventStore implements EventStore {
 
     public recordEvent(event: EventIncoming) {
         const id = event.extensions.correlation_id ? event.extensions.correlation_id : guid();
-        this.eventCache.set({ guid: id, ts: new Date().getTime() }, event);
+        this.eventCache.set({ guid: id, correlationId: id, ts: new Date().getTime() }, event);
         this.eventSer.update(1);
         return id;
     }
 
     public recordCommand(command: CommandIncoming) {
         const id = command.correlation_id ? command.correlation_id : guid();
-        this.commandCache.set({ guid: id, ts: new Date().getTime() }, command);
+        this.commandCache.set({ guid: id, correlationId: id, ts: new Date().getTime() }, command);
         this.commandSer.update(1);
         return id;
     }
 
-    public recordMessage(id: string, message: any) {
-        this.messageCache.set({ guid: id, ts: new Date().getTime() }, message);
+    public recordMessage(id: string, correlationId: string, message: any) {
+        this.messageCache.set({ guid: id, correlationId, ts: new Date().getTime() }, message);
         return id;
     }
 
@@ -78,6 +78,7 @@ function hideSecrets(event: EventIncoming | CommandIncoming) {
 
 interface CacheKey {
     guid: string;
+    correlationId: string;
     ts: number;
 }
 
