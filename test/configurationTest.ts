@@ -7,6 +7,7 @@ import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as path from "path";
 import * as tmp from "tmp-promise";
+import { Config } from "winston";
 
 import {
     AutomationServerOptions,
@@ -17,11 +18,14 @@ import {
     loadAutomationConfig,
     loadConfiguration,
     loadUserConfiguration,
+    LocalDefaultConfiguration,
     mergeConfigs,
+    ProductionDefaultConfiguration,
     resolveConfigurationValue,
     resolveModuleConfig,
     resolveTeamIds,
     resolveToken,
+    TestingDefaultConfiguration,
     UserConfig,
 } from "../src/configuration";
 
@@ -726,21 +730,18 @@ describe("configuration", () => {
     describe("loadDefaultConfiguration", () => {
 
         it("should default local config", () => {
-            assertEnvConfiguration(null, "local");
+            assertEnvConfiguration(null, LocalDefaultConfiguration);
         });
 
         it("should default testing config", () => {
-            assertEnvConfiguration("testing");
+            assertEnvConfiguration("testing", TestingDefaultConfiguration);
         });
 
         it("should default production config", () => {
-            assertEnvConfiguration("production");
+            assertEnvConfiguration("production", ProductionDefaultConfiguration);
         });
 
-        function assertEnvConfiguration(env: string, file?: string) {
-            if (!file) {
-                file = env;
-            }
+        function assertEnvConfiguration(env: string, envSpecificCfg: Configuration) {
             const oldEnv = process.env.NODE_ENV;
             process.env.NODE_ENV = env;
 
@@ -751,8 +752,7 @@ describe("configuration", () => {
             delete cfg.keywords;
             delete cfg.application;
 
-            const localCfg = JSON.parse(fs.readFileSync(`./src/configuration-local.json`).toString());
-            const envSpecificCfg = JSON.parse(fs.readFileSync(`./src/configuration-${file}.json`).toString());
+            const localCfg = LocalDefaultConfiguration;
             assert.deepStrictEqual(cfg, mergeConfigs(localCfg, envSpecificCfg));
 
             process.env.NODE_ENV = oldEnv;

@@ -8,6 +8,7 @@ import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as path from "path";
 import * as semver from "semver";
+import { Config } from "winston";
 
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
@@ -81,7 +82,7 @@ export interface AutomationOptions {
     token?: string;
     /** HTTP configuration, useful for health checks */
     http?: {
-        enabled: boolean;
+        enabled?: boolean;
         port?: number;
         host?: string;
         customizers?: ExpressCustomizer[],
@@ -100,7 +101,7 @@ export interface AutomationOptions {
     };
     /** websocket configuration */
     ws?: {
-        enabled: boolean;
+        enabled?: boolean;
         termination?: {
             /**
              * if true, give in-flight transactions `gracePeriod`
@@ -283,14 +284,14 @@ export function defaultConfiguration(): Configuration {
  * takes precedence if it is set.
  */
 function loadDefaultConfiguration(): Configuration {
-    const cfg = require("./configuration-local.json") as Configuration;
+    const cfg = LocalDefaultConfiguration;
 
     let envSpecificCfg = {};
     const nodeEnv = process.env.ATOMIST_ENV || process.env.NODE_ENV;
     if (nodeEnv === "production") {
-        envSpecificCfg = require("./configuration-production.json") as Configuration;
+        envSpecificCfg = ProductionDefaultConfiguration;
     } else if (nodeEnv === "staging" || nodeEnv === "testing") {
-        envSpecificCfg = require("./configuration-testing.json") as Configuration;
+        envSpecificCfg = TestingDefaultConfiguration;
     }
 
     return mergeConfigs(cfg, envSpecificCfg);
@@ -702,3 +703,130 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
  * DEPRECATED: use loadConfiguration instead.
  */
 export const findConfiguration = loadConfiguration;
+
+export const LocalDefaultConfiguration: Configuration = {
+    teamIds: [],
+    groups: [],
+    environment: "local",
+    policy: "ephemeral",
+    endpoints: {
+        api: "https://automation.atomist.com/registration",
+        graphql: "https://automation.atomist.com/graphql/team",
+    },
+    http: {
+        enabled: true,
+        host: "localhost",
+        port: 2866,
+        auth: {
+            basic: {
+                enabled: false,
+            },
+            bearer: {
+                enabled: false,
+            },
+        },
+        customizers: [],
+    },
+    ws: {
+        enabled: true,
+        termination: {
+            graceful: false,
+            gracePeriod: 60000,
+        },
+        compress: false,
+    },
+    applicationEvents: {
+        enabled: false,
+    },
+    cluster: {
+        enabled: false,
+    },
+    logging: {
+        level: "debug",
+        file: {
+            enabled: true,
+            level: "debug",
+        },
+        banner: true,
+    },
+    statsd: {
+        enabled: false,
+    },
+    commands: null,
+    events: null,
+    ingesters: [],
+    listeners: [],
+    postProcessors: [],
+};
+
+export const ProductionDefaultConfiguration: Partial<Configuration> = {
+    environment: "production",
+    policy: "durable",
+    http: {
+        auth: {
+            basic: {
+                enabled: true,
+            },
+            bearer: {
+                enabled: true,
+            },
+        },
+    },
+    ws: {
+        termination: {
+            graceful: true,
+        },
+        compress: true,
+    },
+    applicationEvents: {
+        enabled: true,
+    },
+    cluster: {
+        enabled: true,
+    },
+    logging: {
+        level: "info",
+        file: {
+            enabled: false,
+        },
+    },
+    statsd: {
+        enabled: true,
+    },
+};
+
+export const TestingDefaultConfiguration: Partial<Configuration> = {
+    environment: "testing",
+    policy: "durable",
+    http: {
+        auth: {
+            basic: {
+                enabled: true,
+            },
+            bearer: {
+                enabled: true,
+            },
+        },
+    },
+    ws: {
+        termination: {
+            graceful: true,
+        },
+        compress: true,
+    },
+    applicationEvents: {
+        enabled: true,
+    },
+    cluster: {
+        enabled: true,
+    },
+    logging: {
+        level: "info",
+        file: {
+            enabled: false,
+        },
+    },
+    statsd: {
+        enabled: true,
+    },
+};
