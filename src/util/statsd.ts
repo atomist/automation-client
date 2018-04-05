@@ -255,6 +255,9 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
 
     /** Do-nothing callback */
     private callback(err: Error) {
+        if (err) {
+            console.warn(err);
+        }
         return;
     }
 
