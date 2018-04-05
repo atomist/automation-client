@@ -5,7 +5,6 @@ import {
     StatsD,
 } from "hot-shots";
 import * as trace from "stack-trace";
-import { runningAutomationClient } from "../automationClient";
 import { Configuration } from "../configuration";
 import { EventFired } from "../HandleEvent";
 import {
