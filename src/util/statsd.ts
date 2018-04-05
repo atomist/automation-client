@@ -28,11 +28,6 @@ import {
     SlackDestination,
 } from "../spi/message/MessageClient";
 
-export interface StatsdOptions {
-    host?: string;
-    port?: number;
-}
-
 export class StatsdAutomationEventListener extends AutomationEventListenerSupport {
 
     private statsd: StatsD;
@@ -66,11 +61,9 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
             ctx.graphClient = {
                 endpoint: graphClient.endpoint,
                 executeMutation: (mutation: string, variables?: any, options?: any) => {
-                    logger.info(`>>>>>>>>>>>>>>>>> ${JSON.stringify(tags)}`);
                     const start = Date.now();
                     return graphClient.executeMutation(mutation, variables, options)
                         .then(result => {
-                            logger.info("Sending metric");
                             this.statsd.increment("counter.graphql.mutation.success", 1, 1, tags, this.callback);
                             this.statsd.timing("timer.graphql.mutation", Date.now() - start, 1, tags, this.callback);
                             return result;
@@ -82,11 +75,9 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                         });
                 },
                 executeMutationFromFile: (path: string, variables?: any, options?: any, current?: string) => {
-                    logger.info(`>>>>>>>>>>>>>>>>> ${JSON.stringify(tags)}`);
                     const start = Date.now();
                     return graphClient.executeMutationFromFile(path, variables, options, current)
                         .then(result => {
-                            logger.info("Sending metric");
                             this.statsd.increment("counter.graphql.mutation.success", 1, 1, tags, this.callback);
                             this.statsd.timing("timer.graphql.mutation", Date.now() - start, 1, tags, this.callback);
                             return result;
@@ -98,7 +89,6 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                         });
                 },
                 mutate: (optionsOrName: MutationOptions<any> | string) => {
-                    logger.info(`>>>>>>>>>>>>>>>>> ${JSON.stringify(tags)}`);
                     const start = Date.now();
 
                     if (typeof optionsOrName === "string") {
@@ -115,7 +105,6 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
 
                     return graphClient.executeMutation(m, optionsOrName.variables, optionsOrName.options)
                         .then(result => {
-                            logger.info("Sending metric");
                             this.statsd.increment("counter.graphql.mutation.success", 1, 1, tags, this.callback);
                             this.statsd.timing("timer.graphql.mutation", Date.now() - start, 1, tags, this.callback);
                             return result;
@@ -127,11 +116,9 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                         });
                 },
                 executeQuery: (query: string, variables?: any, options?: any) => {
-                    logger.info(`>>>>>>>>>>>>>>>>> ${JSON.stringify(tags)}`);
                     const start = Date.now();
                     return graphClient.executeQuery(query, variables, options)
                         .then(result => {
-                            logger.info("Sending metric");
                             this.statsd.increment("counter.graphql.query.success", 1, 1, tags, this.callback);
                             this.statsd.timing("timer.graphql.query", Date.now() - start, 1, tags, this.callback);
                             return result;
@@ -144,11 +131,9 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
 
                 },
                 executeQueryFromFile: (path: string, variables?: any, options?: any, current?: string) => {
-                    logger.info(`>>>>>>>>>>>>>>>>> ${JSON.stringify(tags)}`);
                     const start = Date.now();
                     return graphClient.executeQueryFromFile(path, variables, options, current)
                         .then(result => {
-                            logger.info("Sending metric");
                             this.statsd.increment("counter.graphql.query.success", 1, 1, tags, this.callback);
                             this.statsd.timing("timer.graphql.query", Date.now() - start, 1, tags, this.callback);
                             return result;
@@ -160,7 +145,6 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                         });
                 },
                 query: (optionsOrName: QueryOptions<any> | string) => {
-                    logger.info(`>>>>>>>>>>>>>>>>> ${JSON.stringify(tags)}`);
                     const start = Date.now();
 
                     if (typeof optionsOrName === "string") {
@@ -177,7 +161,6 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
 
                     return graphClient.executeQuery(q, optionsOrName.variables, optionsOrName.options)
                         .then(result => {
-                            logger.info("Sending metric");
                             this.statsd.increment("counter.graphql.query.success", 1, 1, tags, this.callback);
                             this.statsd.timing("timer.graphql.query", Date.now() - start, 1, tags, this.callback);
                             return result;
@@ -264,9 +247,6 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
 
     /** Do-nothing callback */
     private callback(err: Error) {
-        if (err) {
-            console.warn(err);
-        }
         return;
     }
 
