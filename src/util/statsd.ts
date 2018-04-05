@@ -12,6 +12,8 @@ import {
     HandlerContext,
 } from "../HandlerContext";
 import { HandlerResult } from "../HandlerResult";
+import * as trace from "stack-trace";
+import * as internalGraphql from "../internal/graph/graphQL";
 import { CommandInvocation } from "../internal/invoker/Payload";
 import { RequestProcessor } from "../internal/transport/RequestProcessor";
 import { logger } from "../internal/util/logger";
@@ -96,7 +98,20 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                 },
                 mutate: (optionsOrName: MutationOptions<any> | string) => {
                     const start = Date.now();
-                    return graphClient.mutate(optionsOrName)
+
+                    if (typeof optionsOrName === "string") {
+                        optionsOrName = {
+                            name: optionsOrName,
+                        };
+                    }
+                    const m = internalGraphql.mutate({
+                        mutation: optionsOrName.mutation,
+                        path: optionsOrName.path,
+                        name: optionsOrName.name,
+                        moduleDir: trace.get()[1].getFileName(),
+                    });
+
+                    return graphClient.executeMutation(m, optionsOrName.variables, optionsOrName.options)
                         .then(result => {
                             this.statsd.increment("counter.graphql.mutation.success", 1, 1, tags, this.callback);
                             this.statsd.timing("timer.graphql.mutation", Date.now() - start, 1, tags, this.callback);
@@ -139,7 +154,20 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                 },
                 query: (optionsOrName: QueryOptions<any> | string) => {
                     const start = Date.now();
-                    return graphClient.query(optionsOrName)
+
+                    if (typeof optionsOrName === "string") {
+                        optionsOrName = {
+                            name: optionsOrName,
+                        };
+                    }
+                    const q = internalGraphql.query({
+                        query: optionsOrName.query,
+                        path: optionsOrName.path,
+                        name: optionsOrName.name,
+                        moduleDir: trace.get()[1].getFileName(),
+                    });
+
+                    return graphClient.executeQuery(q, optionsOrName.variables, optionsOrName.options)
                         .then(result => {
                             this.statsd.increment("counter.graphql.query.success", 1, 1, tags, this.callback);
                             this.statsd.timing("timer.graphql.query", Date.now() - start, 1, tags, this.callback);
