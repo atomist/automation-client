@@ -295,12 +295,12 @@ export interface ExpressServerOptions {
     customizers?: ExpressCustomizer[];
     auth?: {
         basic: {
-            enabled: boolean;
+            enabled?: boolean;
             username?: string;
             password?: string;
         },
         bearer: {
-            enabled: boolean;
+            enabled?: boolean;
             org?: string;
             adminOrg?: string;
         },
