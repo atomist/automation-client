@@ -88,12 +88,12 @@ export interface AutomationOptions {
         customizers?: ExpressCustomizer[],
         auth?: {
             basic?: {
-                enabled: boolean;
+                enabled?: boolean;
                 username?: string;
                 password?: string;
             }
             bearer?: {
-                enabled: boolean;
+                enabled?: boolean;
                 org?: string;
                 adminOrg?: string;
             };
@@ -164,7 +164,7 @@ export interface AutomationServerOptions extends AutomationOptions {
     /** Logging configuration */
     logging?: {
         /** Log level, default is "info" */
-        level: "debug" | "info" | "warn" | "error";
+        level?: "debug" | "info" | "warn" | "error";
         /**
          * Custom log configuration, useful if your logging solution
          * requires host, port, token, etc. configuration.
@@ -180,7 +180,7 @@ export interface AutomationServerOptions extends AutomationOptions {
          * defaults to ./log/automation-client.log in current working directory
          */
         file?: {
-            enabled: boolean,
+            enabled?: boolean,
             name?: string,
             level?: string,
         }
