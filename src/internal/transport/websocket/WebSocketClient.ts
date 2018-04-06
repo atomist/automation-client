@@ -169,7 +169,7 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
         });
 
         // On close this websocket is meant to reconnect
-        ws.on("close", function close(code: number, message: string) {
+        ws.on("close", (code: number, message: string) => {
             if (code) {
                 logger.warn(`WebSocket connection closed with ${code}: ${message}`);
             } else {
@@ -180,6 +180,12 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
             if (reconnect) {
                 register(registrationCallback, options, requestProcessor)
                     .then(reg => connect(registrationCallback, reg, options, requestProcessor));
+            }
+        });
+
+        ws.on("error", err => {
+            if (err) {
+                logger.warn(`WebSocket error occurred: ${JSON.stringify(serializeError(err))}`);
             }
         });
 
