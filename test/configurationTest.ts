@@ -7,7 +7,6 @@ import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as path from "path";
 import * as tmp from "tmp-promise";
-import { Config } from "winston";
 
 import {
     AutomationServerOptions,
@@ -67,6 +66,7 @@ describe("configuration", () => {
                 gracePeriod: 60000,
             },
             compress: false,
+            timeout: 10000,
         },
         cluster: {
             enabled: false,

@@ -113,6 +113,8 @@ export interface AutomationOptions {
         };
         /** compress messages over websocket */
         compress?: boolean;
+        /** timeout in milliseconds */
+        timeout?: number;
     };
     /** Atomist API endpoints */
     endpoints?: {
@@ -734,6 +736,7 @@ export const LocalDefaultConfiguration: Configuration = {
             gracePeriod: 60000,
         },
         compress: false,
+        timeout: 10000,
     },
     applicationEvents: {
         enabled: false,

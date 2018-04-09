@@ -221,7 +221,7 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
 
         const config: AxiosRequestConfig = {
             headers: { Authorization: `token ${options.token}` },
-            timeout: 10000,
+            timeout: options.timeout || 10000,
         };
 
         return axios.post(options.registrationUrl, registrationPayload, configureProxy(config))
@@ -262,6 +262,7 @@ export interface WebSocketClientOptions {
         graceful?: boolean;
     };
     compress?: boolean;
+    timeout?: number;
 }
 
 function isPing(a: any): a is Ping {

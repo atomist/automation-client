@@ -93,6 +93,7 @@ export class AutomationClient {
             token: this.configuration.token,
             termination: this.configuration.ws.termination,
             compress: this.configuration.ws.compress,
+            timeout: this.configuration.ws.timeout,
         };
 
         setLogLevel(this.configuration.logging.level);
