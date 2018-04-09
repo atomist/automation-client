@@ -83,17 +83,6 @@ describe("the processCommand method", () => {
             invocationId: "invokinate",
             ts: 500625,
         };
-        const context: HandlerContext & AutomationContextAware = {
-            messageClient: null,
-            teamId: automationContext.teamId,
-            correlationId: automationContext.correlationId,
-            context: automationContext,
-        };
-
-        context.lifecycle = {
-            registerDisposable: registerDisposable(context),
-            dispose: dispose(context),
-        };
 
         const command: CommandIncoming = {
             parameters: [],
@@ -108,6 +97,19 @@ describe("the processCommand method", () => {
                     team: { id: "TEAM" },
                 },
             },
+        };
+
+        const context: HandlerContext & AutomationContextAware = {
+            messageClient: null,
+            teamId: automationContext.teamId,
+            correlationId: automationContext.correlationId,
+            context: automationContext,
+            trigger: command,
+        };
+
+        context.lifecycle = {
+            registerDisposable: registerDisposable(context),
+            dispose: dispose(context),
         };
 
         return new Promise((resolve, reject) =>
@@ -203,17 +205,6 @@ describe("the processEvent method", () => {
             invocationId: "invokinate",
             ts: 500625,
         };
-        const context: HandlerContext & AutomationContextAware = {
-            messageClient: null,
-            teamId: automationContext.teamId,
-            correlationId: automationContext.correlationId,
-            context: automationContext,
-        };
-
-        context.lifecycle = {
-            registerDisposable: registerDisposable(context),
-            dispose: dispose(context),
-        };
 
         const incoming: EventIncoming = {
             extensions: {
@@ -223,6 +214,19 @@ describe("the processEvent method", () => {
             },
             data: {},
             secrets: [],
+        };
+
+        const context: HandlerContext & AutomationContextAware = {
+            messageClient: null,
+            teamId: automationContext.teamId,
+            correlationId: automationContext.correlationId,
+            context: automationContext,
+            trigger: incoming,
+        };
+
+        context.lifecycle = {
+            registerDisposable: registerDisposable(context),
+            dispose: dispose(context),
         };
 
         return new Promise((resolve, reject) =>

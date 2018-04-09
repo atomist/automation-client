@@ -1,4 +1,8 @@
 import { Contextual } from "./internal/invoker/Payload";
+import {
+    CommandIncoming,
+    EventIncoming,
+} from "./internal/transport/RequestProcessor";
 import { AutomationContext } from "./internal/util/cls";
 import { GraphClient } from "./spi/graph/GraphClient";
 import { MessageClient, SlackMessageClient } from "./spi/message/MessageClient";
@@ -31,6 +35,8 @@ export interface HandlerContext extends Contextual {
 export interface AutomationContextAware {
 
     context: AutomationContext;
+
+    trigger: CommandIncoming | EventIncoming;
 }
 
 /**
