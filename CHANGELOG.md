@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.13.0][] - 2018-04-10
 
-[0.13.0]: https://github.com/atomist/automation-client-ts/compare/0.12.0...0.13.0
+[0.13.0]: https://github.com/atomist/automation-client-ts/compare/0.12.1...0.13.0
 
 Config release
 
