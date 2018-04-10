@@ -7,7 +7,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.12.1...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.13.0...HEAD
+
+## [0.13.0][] - 2018-04-10
+
+[0.13.0]: https://github.com/atomist/automation-client-ts/compare/0.12.0...0.13.0
+
+Config release
+
+### Added
+
+-   Production and testing configurations keyed on ATOMIST_ENV or
+    NODE_ENV
+
+### Changed
+
+-   Made more configuration properties optional
+-   Check org webhook before adding repo webhook
+
+### Fixed
+
+-   statsd reporting in workers
 
 ## [0.12.1][] - 2018-04-03
 
