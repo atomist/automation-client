@@ -160,7 +160,7 @@ export interface AutomationServerOptions extends AutomationOptions {
      * of available CPUs will be started.
      */
     cluster?: {
-        enabled: boolean;
+        enabled?: boolean;
         workers?: number;
     };
     /** Logging configuration */
