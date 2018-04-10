@@ -169,8 +169,8 @@ ding dong ding
     }).timeout(5000);
 
     it("clones a project subdirectory", done => {
-        GitCommandGitProject.cloned(Creds, new GitHubRepoRef("pallets", "flask", "master",
-            GitHubDotComBase, "examples/flaskr"))
+        GitCommandGitProject.cloned(Creds, new GitHubRepoRef("pallets", "flask", "0cbe698958f81efe202e71ac07446b87ad694789",
+            GitHubDotComBase, "examples/tutorial"))
             .then(gp => {
                 assert(!!gp.findFileSync("flaskr/__init__.py"), "Should be able to find file under subdirectory");
                 gp.isClean()
