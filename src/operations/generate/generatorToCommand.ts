@@ -9,7 +9,7 @@ import {
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
 import { CachingDirectoryManager } from "../../spi/clone/CachingDirectoryManager";
-import { NoCacheOptions } from "../../spi/graph/GraphClient";
+import { QueryNoCacheOptions } from "../../spi/graph/GraphClient";
 import { Maker } from "../../util/constructionUtils";
 import { CommandDetails } from "../CommandDetails";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
@@ -138,7 +138,7 @@ async function hasOrgWebhook(owner: string, ctx: HandlerContext): Promise<boolea
         variables: {
             owner,
         },
-        options: NoCacheOptions,
+        options: QueryNoCacheOptions,
     });
     const hookOwner = _.get(orgHooks, "Webhook[0].org.owner");
     return hookOwner === owner;
