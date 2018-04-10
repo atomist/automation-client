@@ -151,7 +151,7 @@ export interface AutomationServerOptions extends AutomationOptions {
     keywords?: string[];
     /** Whether and where to send application start and stop events to Atomist. */
     applicationEvents?: {
-        enabled: boolean;
+        enabled?: boolean;
         teamId?: string;
     };
     /**
