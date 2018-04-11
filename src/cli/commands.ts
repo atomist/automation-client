@@ -3,7 +3,7 @@ import * as child_process from "child_process";
 import * as fs from "fs";
 import * as glob from "glob-promise";
 import * as stringify from "json-stringify-safe";
-import * as p from "path";
+import * as path from "path";
 import { Arg, CommandInvocation } from "../internal/invoker/Payload";
 import { logger } from "../internal/util/logger";
 import { cliAtomistConfig } from "./config";
@@ -32,12 +32,12 @@ export function extractArgs(args: string[]): Arg[] {
 
 export function readVersion(): string {
     try {
-        const pj = require(p.join(__dirname, "..", "package.json"));
+        const pj = require(path.join(__dirname, "..", "package.json"));
         return `${pj.name} ${pj.version}`;
     } catch (e) {
         try {
             // in case you are running locally
-            const pj = require(p.join(__dirname, "..", "..", "package.json"));
+            const pj = require(path.join(__dirname, "..", "..", "package.json"));
             return `${pj.name} ${pj.version}`;
         } catch (e) {
             return "@atomist/automation-client 0.0.0";
@@ -46,63 +46,87 @@ export function readVersion(): string {
 }
 
 export function start(
-    path: string,
+    cwd: string,
     runInstall: boolean = true,
     runCompile: boolean = true,
 ): number {
 
-    const msg = "Starting Automation Client";
-    return execNode("start.client.js", "", msg, path, runInstall, runCompile);
+    const opts: ExecOptions = {
+        cmd: "start.client.js",
+        args: "",
+        message: "Starting Automation Client",
+        cwd,
+        runInstall,
+        runCompile,
+    };
+    return execJs(opts);
 }
 
 export function run(
-    path: string,
+    cwd: string,
     ci: CommandInvocation,
     runInstall: boolean = true,
     runCompile: boolean = true,
 ): number {
 
-    const args = `--request='${stringify(ci)}'`;
-    const msg = `Running command '${ci.name}'`;
-    return execNode("cli/run.js", args, msg, path, runInstall, runCompile);
+    const opts: ExecOptions = {
+        cmd: "cli/run.js",
+        args: `--request='${stringify(ci)}'`,
+        message: `Running command '${ci.name}'`,
+        cwd,
+        runInstall,
+        runCompile,
+    };
+    return execJs(opts);
 }
 
 export function gqlFetch(
-    path: string,
+    cwd: string,
     teamId: string,
     token: string = process.env.ATOMIST_TOKEN || process.env.GITHUB_TOKEN,
     runInstall: boolean = true,
 ): Promise<number> {
-    const msg = `Introspecting GraphQL schema for team ${teamId}`;
-    const args = `introspect-schema https://automation.atomist.com/graphql/team/${teamId} ` +
-        `--output ./src/graphql/schema.json --header \"Authorization: token ${token}\"`;
-    return Promise.resolve(
-        execNode("apollo-codegen", args, msg, path, runInstall, false, "node_modules/.bin"));
+    const opts: ExecOptions = {
+        cmd: "apollo-codegen",
+        args: `introspect-schema https://automation.atomist.com/graphql/team/${teamId} ` +
+        `--output ./src/graphql/schema.json --header \"Authorization: token ${token}\"`,
+        message: `Introspecting GraphQL schema for team ${teamId}`,
+        cwd,
+        runInstall,
+        runCompile: false,
+    };
+    return Promise.resolve(execBin(opts));
 }
 
 export function gqlGen(
-    path: string,
+    cwd: string,
     pattern: string,
     runInstall: boolean = true,
 ): Promise<number> {
 
     // Check if the project has a custom schema
     let schema = "node_modules/@atomist/automation-client/graph/schema.cortex.json";
-    if (fs.existsSync(p.join(path, "src", "graphql", "schema.json"))) {
+    if (fs.existsSync(path.join(cwd, "src", "graphql", "schema.json"))) {
         schema = "./src/graphql/schema.json";
     }
 
-    const msg = `Running GraphQL code generator`;
-    let args = `--file ${schema} --template typescript --no-schema --out src/typings/types.ts`;
+    const opts: ExecOptions = {
+        cmd: "gql-gen",
+        args: `--file ${schema} --template typescript --no-schema --out src/typings/types.ts`,
+        message: `Running GraphQL code generator`,
+        cwd,
+        runInstall,
+        runCompile: false,
+    };
     return glob(pattern)
         .then(graphqlFiles => {
             if (graphqlFiles.length > 0) {
-                args += ` "${pattern}"`;
+                opts.args += ` "${pattern}"`;
             }
         }, err => {
             logger.warn("GraphQL file glob pattern '${pattern}' failed, continuing");
         })
-        .then(() => execNode("gql-gen", args, msg, path, runInstall, false, "node_modules/.bin"));
+        .then(() => execBin(opts));
 }
 
 export function config(argv: any): Promise<number> {
@@ -113,57 +137,97 @@ export function gitInfo(argv: any): Promise<number> {
     return cliGitInfo(argv["change-dir"]);
 }
 
-function execNode(
-    cmd: string,
-    args: string,
-    message: string,
-    path: string,
-    runInstall: boolean,
-    runCompile: boolean,
-    scriptBase: string = "node_modules/@atomist/automation-client",
-): number {
-    const ap = resolve(path);
-    const script = `${ap}/${scriptBase}/${cmd}`;
+interface ExecOptions {
+    cmd: string;
+    args?: string;
+    message?: string;
+    cwd?: string;
+    runInstall?: boolean;
+    runCompile?: boolean;
+    checks?: Array<() => number>;
+}
 
-    if (!fs.existsSync(p.join(ap, "node_modules")) && runInstall) {
-        const installStatus = install(ap);
+function execBin(opts: ExecOptions): number {
+    opts.cwd = path.resolve(opts.cwd);
+    opts.cmd = (process.platform === "win32") ? `${opts.cmd}.cmd` : opts.cmd;
+    opts.cmd = path.join(opts.cwd, "node_modules", ".bin", opts.cmd);
+    opts.checks = [
+        () => {
+            if (!fs.existsSync(opts.cmd)) {
+                logger.error(`Project at '${opts.cwd}' is not a valid automation client project: missing ${opts.cmd}`);
+                return 1;
+            }
+            return 0;
+        },
+    ];
+    return execCmd(opts);
+}
+
+function execJs(opts: ExecOptions): number {
+    opts.cwd = path.resolve(opts.cwd);
+    const script = path.join(opts.cwd, "node_modules", "@atomist", "automation-client", opts.cmd);
+    opts.args = `"${script}" ${opts.args}`;
+    opts.cmd = (process.platform === "win32") ? "node.exe" : "node";
+    opts.checks = [
+        () => {
+            if (!fs.existsSync(script)) {
+                logger.error(`Project at '${opts.cwd}' is not a valid automation client project: missing ${script}`);
+                return 1;
+            }
+            return 0;
+        },
+    ];
+    return execCmd(opts);
+}
+
+/**
+ * Synchronously execute the given command with the given arguments,
+ * optionally installing and compiling first.
+ *
+ * @param opts the exec options
+ * @return integer return value of command, 0 if command is successful
+ */
+function execCmd(opts: ExecOptions): number {
+    if (opts.runInstall) {
+        const installStatus = install(opts.cwd);
         if (installStatus !== 0) {
             return installStatus;
         }
     }
 
-    if (!fs.existsSync(script)) {
-        logger.error(`Project at '${ap}' is not a valid automation client project`);
-        return 1;
-    }
-
-    if (runCompile) {
-        const compileStatus = compile(ap);
+    if (opts.runCompile) {
+        const compileStatus = compile(opts.cwd);
         if (compileStatus !== 0) {
             return compileStatus;
         }
     }
 
-    logger.info(`${message} in '${ap}'`);
+    for (const check of opts.checks) {
+        const checkStatus = check();
+        if (checkStatus !== 0) {
+            return checkStatus;
+        }
+    }
+
+    const command = `${opts.cmd} ${opts.args}`;
+    logger.info(`${opts.message} in '${opts.cwd}'`);
     try {
-        const nodeOptions = process.env.ATOMIST_NODE_OPTIONS || "";
-        child_process.execSync(`node ${nodeOptions} \"${script}\" ${args}`,
-            { cwd: ap, stdio: "inherit", env: process.env });
+        child_process.execSync(command, { cwd: opts.cwd, stdio: "inherit", env: process.env });
     } catch (e) {
-        console.error(`Node command ${cmd} failed`);
+        console.error(`Command '${command}' failed: ${e.message}`);
         return e.status as number;
     }
     return 0;
 }
 
-export function install(path: string): number {
-    logger.info(`Running 'npm install' in '${path}'`);
+export function install(cwd: string): number {
+    logger.info(`Running 'npm install' in '${cwd}'`);
     try {
-        if (!checkPackageJson(path)) {
+        if (!checkPackageJson(cwd)) {
             return 1;
         }
         child_process.execSync(`npm install`,
-            { cwd: path, stdio: "inherit", env: process.env });
+            { cwd, stdio: "inherit", env: process.env });
     } catch (e) {
         logger.error(`Installation failed`);
         return e.status as number;
@@ -171,14 +235,14 @@ export function install(path: string): number {
     return 0;
 }
 
-export function compile(path: string): number {
-    logger.info(`Running 'npm run compile' in '${path}'`);
+export function compile(cwd: string): number {
+    logger.info(`Running 'npm run compile' in '${cwd}'`);
     try {
-        if (!checkPackageJson(path)) {
+        if (!checkPackageJson(cwd)) {
             return 1;
         }
         child_process.execSync(`npm run compile`,
-            { cwd: path, stdio: "inherit", env: process.env });
+            { cwd, stdio: "inherit", env: process.env });
     } catch (e) {
         logger.error(`Compilation failed`);
         return e.status as number;
@@ -186,15 +250,11 @@ export function compile(path: string): number {
     return 0;
 }
 
-export function checkPackageJson(path: string): boolean {
-    const pkgPath = p.join(path, "package.json");
+export function checkPackageJson(cwd: string): boolean {
+    const pkgPath = path.join(cwd, "package.json");
     if (!fs.existsSync(pkgPath)) {
-        console.error(`No 'package.json' in '${path}'`);
+        console.error(`No 'package.json' in '${cwd}'`);
         return false;
     }
     return true;
-}
-
-export function resolve(path: string): string {
-    return p.resolve(process.cwd(), path);
 }
