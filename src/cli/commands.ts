@@ -124,6 +124,7 @@ function execNode(
 ): number {
     const ap = resolve(path);
     const script = `${ap}/${scriptBase}/${cmd}`;
+    const nodeExe = (process.platform === "win32") ? "node.exe" : "node";
 
     if (!fs.existsSync(p.join(ap, "node_modules")) && runInstall) {
         const installStatus = install(ap);
@@ -144,13 +145,13 @@ function execNode(
         }
     }
 
+    const nodeOptions = process.env.ATOMIST_NODE_OPTIONS || "";
+    const nodeCmd = `${nodeExe} ${nodeOptions} "${script}" ${args}`;
     logger.info(`${message} in '${ap}'`);
     try {
-        const nodeOptions = process.env.ATOMIST_NODE_OPTIONS || "";
-        child_process.execSync(`node ${nodeOptions} \"${script}\" ${args}`,
-            { cwd: ap, stdio: "inherit", env: process.env });
+        child_process.execSync(nodeCmd, { cwd: ap, stdio: "inherit", env: process.env });
     } catch (e) {
-        console.error(`Node command ${cmd} failed`);
+        console.error(`Node command '${nodeCmd}' failed: ${e.message}`);
         return e.status as number;
     }
     return 0;

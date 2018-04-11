@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.13.0...HEAD
 
+### Fixed
+
+-   Fix running node on MS Windows [#271][271]
+
+[271]: https://github.com/atomist/automation-client-ts/issues/271
+
 ## [0.13.0][] - 2018-04-10
 
 [0.13.0]: https://github.com/atomist/automation-client-ts/compare/0.12.1...0.13.0
