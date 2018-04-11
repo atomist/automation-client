@@ -7,7 +7,7 @@ import * as tmp from "tmp-promise";
 
 import {
     cleanGitUrl,
-    obtainGitInfo
+    obtainGitInfo,
 } from "../../../src/internal/env/gitInfo";
 
 describe("gitInfo", () => {
