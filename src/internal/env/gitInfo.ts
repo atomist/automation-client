@@ -58,7 +58,7 @@ export function obtainGitInfo(directory: string): Promise<GitInformation> {
                                     if (!url) {
                                         continue;
                                     }
-                                    gitInfo.repository = url;
+                                    gitInfo.repository = cleanGitUrl(url);
                                     i = configLines.length;
                                     break;
                                 } else if (/^\S/.test(configLines[j])) {
@@ -86,4 +86,12 @@ export interface GitInformation {
     sha: string;
     branch: string;
     repository: string;
+}
+
+export function cleanGitUrl(url: string): string {
+    const gitUrlParse = require("git-url-parse");
+    const gitUrl = gitUrlParse(url);
+    gitUrl.user = undefined;
+    gitUrl.git_suffix = true;
+    return gitUrl.toString("ssh");
 }

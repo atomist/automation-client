@@ -48,6 +48,7 @@
     "express-session": "^1.15.6",
     "find-up": "^2.1.0",
     "fs-extra": "^5.0.0",
+    "git-url-parse": "^8.3.1",
     "glob-promise": "^3.3.0",
     "glob-stream": "^6.1.0",
     "graphql": "^0.12.3",

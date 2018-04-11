@@ -3,10 +3,12 @@ import * as assert from "power-assert";
 
 import * as appRoot from "app-root-path";
 import * as fs from "fs-extra";
-import * as stringify from "json-stringify-safe";
 import * as tmp from "tmp-promise";
 
-import { obtainGitInfo } from "../../../src/internal/env/gitInfo";
+import {
+    cleanGitUrl,
+    obtainGitInfo
+} from "../../../src/internal/env/gitInfo";
 
 describe("gitInfo", () => {
 
@@ -124,6 +126,12 @@ describe("gitInfo", () => {
                     .then(() => dir.cleanup());
             }).then(() => done(), done);
 
+    });
+
+    it("clean up git url", () => {
+        const url = "https://axxxxxxxxxxxx5:x-oauth-basic@github.com/atomist/github-sdm.git";
+        const cleanUrl = cleanGitUrl(url);
+        assert.equal(cleanUrl, "git@github.com:atomist/github-sdm.git");
     });
 
 });
