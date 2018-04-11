@@ -2,6 +2,7 @@ import * as appRoot from "app-root-path";
 import axios from "axios";
 import * as stringify from "json-stringify-safe";
 import * as os from "os";
+import { runningAutomationClient } from "../../automationClient";
 import { logger } from "../util/logger";
 import { registerShutdownHook } from "../util/shutdown";
 import { guid } from "../util/string";
@@ -50,7 +51,7 @@ export function registerApplicationEvents(teamId: string): Promise<any> {
             branch,
             repo,
         },
-        domain: env ? env.space_name : (process.env.DOMAIN ? process.env.DOMAIN : "local"),
+        domain: runningAutomationClient.configuration.environment,
         pod: env ? env.instance_id : os.hostname(),
         host: env ? env.instance_id : os.hostname(),
         id: env ? env.instance_id : guid(),
