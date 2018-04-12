@@ -7,11 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.13.0...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.13.1...HEAD
+
+## [0.13.1][] - 2018-04-12
+
+[0.13.1]: https://github.com/atomist/automation-client-ts/compare/0.13.0...0.13.1
+
+Win release
 
 ### Fixed
 
 -   Fix running node on MS Windows [#271][271]
+-   Ensure gql-fetch works in clients
 
 [271]: https://github.com/atomist/automation-client-ts/issues/271
 
