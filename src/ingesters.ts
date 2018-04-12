@@ -208,6 +208,7 @@ export class TypeBuilder {
                             },
                         };
                         delete argsType.args;
+                        delete argsType.directives;
                         return argsType as any as FieldType;
                     }
                 }
