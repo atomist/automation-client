@@ -1,6 +1,6 @@
 import * as appRoot from "app-root-path";
 import * as child_process from "child_process";
-import * as fs from "fs";
+import * as fs from "fs-extra";
 import * as glob from "glob-promise";
 import * as stringify from "json-stringify-safe";
 import * as path from "path";
@@ -86,16 +86,22 @@ export function gqlFetch(
     token: string = process.env.ATOMIST_TOKEN || process.env.GITHUB_TOKEN,
     runInstall: boolean = true,
 ): Promise<number> {
-    const opts: ExecOptions = {
-        cmd: "apollo-codegen",
-        args: `introspect-schema https://automation.atomist.com/graphql/team/${teamId} ` +
-        `--output ./src/graphql/schema.json --header \"Authorization: token ${token}\"`,
-        message: `Introspecting GraphQL schema for team ${teamId}`,
-        cwd,
-        runInstall,
-        runCompile: false,
-    };
-    return Promise.resolve(execBin(opts));
+
+    const outDir = path.join(cwd, "src", "graphql");
+    const outSchema = path.join(outDir, "schema.json");
+    return fs.ensureDir(outDir)
+        .then(() => {
+            const opts: ExecOptions = {
+                cmd: "apollo-codegen",
+                args: `introspect-schema https://automation.atomist.com/graphql/team/${teamId} ` +
+                `--output ${outSchema} --header "Authorization: token ${token}"`,
+                message: `Introspecting GraphQL schema for team ${teamId}`,
+                cwd,
+                runInstall,
+                runCompile: false,
+            };
+            return execBin(opts);
+        });
 }
 
 export function gqlGen(
