@@ -88,6 +88,8 @@ export class AutomationClient {
 
     public run(): Promise<any> {
         runningAutomationClient = this;
+        (global as any).__runningAutomationClient = this;
+
 
         const webSocketOptions: WebSocketClientOptions = {
             graphUrl: this.configuration.endpoints.graphql,
@@ -214,6 +216,10 @@ export class AutomationClient {
 }
 
 export let runningAutomationClient: AutomationClient;
+
+export function automationClientInstance() {
+    return (global as any).__runningAutomationClient;
+}
 
 export function automationClient(configuration: Configuration): AutomationClient {
     const client = new AutomationClient(configuration);

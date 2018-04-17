@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { runningAutomationClient } from "../../automationClient";
+import { automationClientInstance } from "../../automationClient";
 import { Automations } from "../metadata/metadata";
 import { info } from "../util/info";
 import { logger } from "../util/logger";
@@ -8,12 +8,12 @@ import { RegistrationConfirmation } from "./websocket/WebSocketRequestProcessor"
 export function banner(registration: RegistrationConfirmation,
                        automations: Automations) {
 
-    if (!runningAutomationClient) {
+    if (!automationClientInstance()) {
         return;
     }
 
     let message = automations.name;
-    const b = _.get(runningAutomationClient, "configuration.logging.banner");
+    const b = _.get(automationClientInstance(), "configuration.logging.banner");
     if (typeof b === "string") {
         message = b as string;
     } else if (b === false) {
@@ -44,7 +44,7 @@ export function banner(registration: RegistrationConfirmation,
         const msg = `
 ${res}
   ${chalk.grey("Version")} ${automations.version}${gitInfo.git ? `  ${chalk.grey("Sha")} ${gitInfo.git.sha.slice(0, 7)}  ${chalk.grey("Repository")} ${gitInfo.git.repository}` : ""}
-  ${automations.groups && automations.groups.length > 0 ? `${chalk.grey("Groups")} all` : `${chalk.grey(`${automations.team_ids.length > 1 ? "Teams" : "Team"}`)} ${automations.team_ids.join(", ")}`}  ${chalk.grey("Policy")} ${automations.policy ? automations.policy : "ephemeral"}  ${chalk.grey("Cluster")} ${runningAutomationClient.configuration.cluster.enabled ? "enabled" : "disabled"}
+  ${automations.groups && automations.groups.length > 0 ? `${chalk.grey("Groups")} all` : `${chalk.grey(`${automations.team_ids.length > 1 ? "Teams" : "Team"}`)} ${automations.team_ids.join(", ")}`}  ${chalk.grey("Policy")} ${automations.policy ? automations.policy : "ephemeral"}  ${chalk.grey("Cluster")} ${automationClientInstance().configuration.cluster.enabled ? "enabled" : "disabled"}
   ${chalk.grey(commands.length === 1 ? "Command" : "Commands")} ${commands.length}  ${chalk.grey(events.length === 1 ? "Event" : "Events")} ${events.length}  ${chalk.grey(automations.ingesters.length === 1 ? "Ingester" : "Ingesters")} ${automations.ingesters.length}
   ${chalk.grey("JWT")} ${registration.jwt}
   ${commands.length > 0 ? `
