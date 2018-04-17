@@ -475,7 +475,7 @@ export function loadAutomationConfig(cfgPath?: string): Configuration {
             cfg = require(cfgPath).configuration;
             cfgLog("automation config");
         } catch (e) {
-            logger.error(e.stack);
+            console.log(e.stack);
             throw new Error(`Failed to load ${cfgPath}.configuration: ${e.message}`);
         }
     }
