@@ -90,7 +90,6 @@ export class AutomationClient {
         runningAutomationClient = this;
         (global as any).__runningAutomationClient = this;
 
-
         const webSocketOptions: WebSocketClientOptions = {
             graphUrl: this.configuration.endpoints.graphql,
             registrationUrl: this.configuration.endpoints.api,
