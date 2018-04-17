@@ -87,6 +87,8 @@ export class AutomationClient {
     }
 
     public run(): Promise<any> {
+        runningAutomationClient = this;
+
         const webSocketOptions: WebSocketClientOptions = {
             graphUrl: this.configuration.endpoints.graphql,
             registrationUrl: this.configuration.endpoints.api,
@@ -228,6 +230,5 @@ export function automationClient(configuration: Configuration): AutomationClient
             client.withIngester(e as Ingester);
         }
     });
-    runningAutomationClient = client;
     return client;
 }
