@@ -8,7 +8,6 @@ import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as path from "path";
 import * as semver from "semver";
-import { Config } from "winston";
 
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";

@@ -1,10 +1,12 @@
-import * as appRoot from "app-root-path";
 import * as child_process from "child_process";
 import * as fs from "fs-extra";
 import * as glob from "glob-promise";
 import * as stringify from "json-stringify-safe";
 import * as path from "path";
-import { Arg, CommandInvocation } from "../internal/invoker/Payload";
+import {
+    Arg,
+    CommandInvocation,
+} from "../internal/invoker/Payload";
 import { logger } from "../internal/util/logger";
 import { cliAtomistConfig } from "./config";
 import { cliGitInfo } from "./gitInfo";

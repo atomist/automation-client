@@ -1,19 +1,14 @@
 import * as GitHubApi from "@octokit/rest";
 import * as bodyParser from "body-parser";
 import * as express from "express";
-import * as _ from "lodash";
 import * as passport from "passport";
 import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
 import { IStrategyOptions } from "passport-http-bearer";
 import * as retry from "retry";
-import { runningAutomationClient } from "../../../automationClient";
+import { automationClientInstance } from "../../../automationClient";
 import { ExpressCustomizer } from "../../../configuration";
 import * as globals from "../../../globals";
-import {
-    CommandHandlerMetadata,
-    EventHandlerMetadata,
-} from "../../../metadata/automationMetadata";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
 import {
@@ -166,7 +161,7 @@ export class ExpressServer {
         exp.post(url, cors(), this.authenticate,
             (req, res) => {
                 const handler = new ExpressRequestProcessor(
-                    runningAutomationClient.configuration.token,
+                    automationClientInstance().configuration.token,
                     this.automations,
                     this.listeners,
                     this.options);
@@ -185,7 +180,7 @@ export class ExpressServer {
         exp.post(url, cors(), this.authenticate,
             (req, res) => {
                 const handler = new ExpressRequestProcessor(
-                    runningAutomationClient.configuration.token,
+                    automationClientInstance().configuration.token,
                     this.automations,
                     this.listeners,
                     this.options);
