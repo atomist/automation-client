@@ -64,15 +64,17 @@ export function githubOrg(maker: Maker<HandleCommand>, org: string): () => Handl
     return () => {
         const command = toFactory(maker)();
         declareMappedParameter(command, "__atomist_slack_user", MappedParameters.SlackUser, true);
+        declareMappedParameter(command, "__atomist_slack_team", MappedParameters.SlackTeam, true);
         declareSecret(command, "__atomist_user_token", Secrets.userToken("read:org"));
         const handleMethod = command.handle;
         command.handle = (ctx: HandlerContext) => {
 
             const user = (command as any).__atomist_slack_user;
+            const team = (command as any).__atomist_slack_team;
             const token = (command as any).__atomist_user_token;
 
             return ctx.graphClient.executeQuery(GitHubIdQuery,
-                { teamId: ctx.teamId, chatId: user })
+                { teamId: team, chatId: user })
                 .then(result => {
                     const login = _.get(result, "ChatTeam[0].members[0].person.gitHubId.login");
 
