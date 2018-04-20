@@ -1,5 +1,4 @@
 import { isString } from "util";
-import { EnumType } from "../build/src/ingesters";
 
 /**
  * Defines an Ingester as per automation-api
