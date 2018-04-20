@@ -1,15 +1,15 @@
-import { Field } from "@atomist/slack-messages";
 import { isString } from "util";
+import { EnumType } from "../build/src/ingesters";
 
 /**
- * Defines an Ingester as per automation-api.
+ * Defines an Ingester as per automation-api
  *
  * An Ingester is a collection of GraphQL types and a pointer to the root type in the
  * root_type field.
  */
 export interface Ingester {
     root_type: any | string;
-    types: ObjectType[];
+    types: Array<ObjectType | EnumType>;
 }
 
 /**
@@ -23,6 +23,18 @@ export interface ObjectType {
 }
 
 /**
+ * Describes root level GraphQL enums
+ */
+export interface EnumType {
+    kind: "ENUM";
+    name: string;
+    description?: string;
+    enumValues: Array<{
+        name: string,
+    }>;
+}
+
+/**
  * Describes fields of ObjectType root level GraphQL types
  */
 export interface FieldType {
@@ -30,7 +42,7 @@ export interface FieldType {
     description?: string;
     args?: FieldType[];
     type: {
-        kind: "SCALAR" | "LIST" | "OBJECT";
+        kind: "SCALAR" | "LIST" | "OBJECT" | "ENUM";
         name?: string | "String" | "Int" | "Float" | "Boolean";
         ofType?: {
             kind: "OBJECT" | "SCALAR";
@@ -49,6 +61,7 @@ export interface FieldType {
 export class IngesterBuilder {
 
     private types: ObjectType[] = [];
+    private enums: EnumType[] = [];
     private name: string;
 
     constructor(public rootType: string | TypeBuilder) {
@@ -65,10 +78,15 @@ export class IngesterBuilder {
         return this;
     }
 
+    public withEnum(builder: EnumBuilder): IngesterBuilder {
+        this.enums.push(builder.build());
+        return this;
+    }
+
     public build(): Ingester {
         return {
             root_type: this.name,
-            types: this.types,
+            types: [...this.enums, ...this.types],
         };
     }
 }
@@ -103,7 +121,8 @@ export class TypeBuilder {
         return this;
     }
 
-    public withObjectField(name: string, object: string | TypeBuilder,
+    public withObjectField(name: string,
+                           object: string | TypeBuilder,
                            description?: string,
                            args: string[] = [],
                            directives: string[] = []): TypeBuilder {
@@ -125,19 +144,48 @@ export class TypeBuilder {
         return this;
     }
 
-    public withStringField(name: string, description?: string, directives: string[] = []): TypeBuilder {
+    public withEnumField(name: string,
+                         object: string | EnumBuilder,
+                         description?: string,
+                         directives: string[] = []) {
+        const field: FieldType = {
+            name,
+            type: {
+                kind: "ENUM",
+                name: isString(object) ? object : (object as EnumBuilder).name,
+            },
+        };
+        if (description) {
+            field.description = description;
+        }
+        if (directives.length > 0) {
+            field.directives = directives.map(d => ({ name: d }));
+        }
+        this.fields.push(field);
+        return this;
+    }
+
+    public withStringField(name: string,
+                           description?: string,
+                           directives: string[] = []): TypeBuilder {
         return this.withScalarField(name, "String", description, directives);
     }
 
-    public withBooleanField(name: string, description?: string, directives: string[] = []): TypeBuilder {
+    public withBooleanField(name: string,
+                            description?: string,
+                            directives: string[] = []): TypeBuilder {
         return this.withScalarField(name, "Boolean", description, directives);
     }
 
-    public withFloatField(name: string, description?: string, directives: string[] = []): TypeBuilder {
+    public withFloatField(name: string,
+                          description?: string,
+                          directives: string[] = []): TypeBuilder {
         return this.withScalarField(name, "Float", description, directives);
     }
 
-    public withIntField(name: string, description?: string, directives: string[] = []): TypeBuilder {
+    public withIntField(name: string,
+                        description?: string,
+                        directives: string[] = []): TypeBuilder {
         return this.withScalarField(name, "Int", description, directives);
     }
 
@@ -232,7 +280,27 @@ export class TypeBuilder {
 }
 
 /**
- * Create an IngesterBuilder for the provided rootType.
+ * Builder to construct EnumType instances fluently
+ */
+export class EnumBuilder {
+
+    constructor(public name: string, public values: string[], public description?: string) { }
+
+    public build(): EnumType {
+        const enu: EnumType = {
+            kind: "ENUM",
+            name: this.name,
+            enumValues: this.values.map(v => ({ name: v})),
+        };
+        if (this.description) {
+            enu.description = this.description;
+        }
+        return enu;
+    }
+}
+
+/**
+ * Create an IngesterBuilder for the provided rootType
  *
  * If rootType is TypeBuilder instance, it is added to the types collection.
  * Therefore there is no need to call withType on the rootType.
@@ -244,10 +312,31 @@ export function ingester(rootType: string | TypeBuilder): IngesterBuilder {
 }
 
 /**
- * Create a TypeBuilder for the provided name.
+ * Create a TypeBuilder for the provided name
  * @param {string} name
  * @returns {TypeBuilder}
+ * Deprecated
  */
 export function type(name: string): TypeBuilder {
     return new TypeBuilder(name);
+}
+
+/**
+ * Create a TypeBuilder for the provided name
+ * @param {string} name
+ * @returns {TypeBuilder}
+ */
+export function buildType(name: string): TypeBuilder {
+    return new TypeBuilder(name);
+}
+
+/**
+ * Create a EnumBuilder for the provided name, description and values
+ * @param {string} name
+ * @param {string[]} values
+ * @param {string} description
+ * @returns {EnumBuilder}
+ */
+export function buildEnum(name: string, values: string[], description?: string): EnumBuilder {
+    return new EnumBuilder(name, values, description);
 }

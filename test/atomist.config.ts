@@ -1,5 +1,11 @@
 import { Configuration } from "../src/configuration";
-import { ingester, IngesterBuilder, type } from "../src/ingesters";
+import {
+    buildEnum,
+    buildType,
+    ingester,
+    IngesterBuilder,
+    type,
+} from "../src/ingesters";
 import { FileMessageTest } from "./command/FileMessageTest";
 import { HelloWorld } from "./command/HelloWorld";
 import { MessageTest } from "./command/MessageTest";
@@ -35,8 +41,10 @@ export const configuration: Configuration = {
         // CircleCIPayload,
         // GitLabPushPayload,
         ingester("HelloWorld")
-            .withType(type("HelloWorldPerson").withStringField("name", "Name of the person"))
-            .withType(type("HelloWorld")
+            .withType(buildType("HelloWorldPerson").withStringField("name", "Name of the person"))
+            .withEnum(buildEnum("Urgency", ["high", "low", "normal"], "How important is your message"))
+            .withType(buildType("HelloWorld")
+                .withEnumField("urgency", "Urgency", "Field description")
                 .withObjectField("sender", "HelloWorldPerson", "sender desc", ["name"])
                 .withObjectField("recipient", "HelloWorldPerson", "recipient desc", ["name"])),
     ],

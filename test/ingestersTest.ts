@@ -1,6 +1,10 @@
 import "mocha";
 import * as assert from "power-assert";
-import { ingester, type } from "../src/ingesters";
+import {
+    buildEnum,
+    ingester,
+    type,
+} from "../src/ingesters";
 
 describe("ingesters", () => {
 
@@ -20,7 +24,7 @@ describe("ingesters", () => {
     it("should create simple root type with one string field", () => {
         const barType = type("bar").withStringField("poo");
         const barIngester = ingester(barType).build();
-        assert.deepEqual(barIngester, {
+        assert.deepStrictEqual(barIngester, {
             root_type: "bar",
             types: [{
                 kind: "OBJECT",
@@ -30,6 +34,37 @@ describe("ingesters", () => {
                     type: {
                         kind: "SCALAR",
                         name: "String",
+                    },
+                }],
+            }],
+        });
+    });
+
+    it("should create simple root type with one enum field", () => {
+        const enumType = buildEnum("Color", ["red", "black", "blue"]);
+        const barType = type("bar").withEnumField("color", "Color");
+        const barIngester = ingester(barType).withEnum(enumType).build();
+        assert.deepEqual(barIngester, {
+            root_type: "bar",
+            types: [{
+                kind: "ENUM",
+                name: "Color",
+                enumValues: [{
+                    name: "red",
+                }, {
+                    name: "black",
+                },
+                {
+                    name: "blue",
+                }],
+            }, {
+                kind: "OBJECT",
+                name: "bar",
+                fields: [{
+                    name: "color",
+                    type: {
+                        kind: "ENUM",
+                        name: "Color",
                     },
                 }],
             }],
