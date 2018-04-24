@@ -156,7 +156,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @param title
      * @param body
      */
-    public raisePullRequest(title: string, body: string = name): Promise<ActionResult<this>> {
+    public raisePullRequest(title: string, body: string = name, targetBranch: string = "master"): Promise<ActionResult<this>> {
         if (!(this.branch)) {
             throw new Error("Cannot create a PR: no branch has been created");
         }
@@ -169,7 +169,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             title,
             body,
             this.branch,
-            "master")
+            targetBranch)
             .then(() => successOn(this));
     }
 
