@@ -8,11 +8,13 @@ import axios from "axios";
 import stringify = require("json-stringify-safe");
 import { encode } from "../../internal/util/base64";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
+import { ProviderType } from "./RepoId";
 
 export class BitBucketServerRepoRef extends AbstractRepoRef {
 
-    private apiBase: string;
-    private ownerType: string;
+    private readonly apiBase: string;
+
+    private readonly ownerType: string;
 
     constructor(remoteBase: string,
                 owner: string,
@@ -20,7 +22,7 @@ export class BitBucketServerRepoRef extends AbstractRepoRef {
                 private isProject: boolean = true,
                 sha: string = "master",
                 path?: string) {
-        super(remoteBase, owner, repo, sha, path);
+        super(ProviderType.bitbucket, remoteBase, owner, repo, sha, path);
         this.apiBase = `https://${remoteBase}/rest/api/1.0/`;
         this.ownerType = isProject ? "projects" : "users";
     }

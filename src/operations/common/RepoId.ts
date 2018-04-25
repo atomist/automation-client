@@ -42,6 +42,13 @@ export interface RepoRef extends RepoId {
 
 }
 
+export enum ProviderType {
+    bitbucket_cloud,
+    github_com,
+    ghe,
+    bitbucket,
+}
+
 /**
  * Identifies a git repo with a remote.
  * Also defines behavior for working with remote, such as
@@ -53,6 +60,8 @@ export interface RemoteRepoRef extends RepoRef {
      * Remote base
      */
     readonly remoteBase: string;
+
+    readonly providerType: ProviderType;
 
     /**
      * Entire url of the repo

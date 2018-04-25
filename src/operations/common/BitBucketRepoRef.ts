@@ -9,6 +9,8 @@ import stringify = require("json-stringify-safe");
 import { encode } from "../../internal/util/base64";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
 
+import { ProviderType } from "./RepoId";
+
 export const BitBucketDotComBase = "https://bitbucket.org/api/2.0";
 
 export class BitBucketRepoRef extends AbstractRepoRef {
@@ -18,7 +20,7 @@ export class BitBucketRepoRef extends AbstractRepoRef {
                 sha: string = "master",
                 public apiBase = BitBucketDotComBase,
                 path?: string) {
-        super("bitbucket.org", owner, repo, sha, path);
+        super(ProviderType.bitbucket_cloud, "bitbucket.org", owner, repo, sha, path);
     }
 
     public cloneUrl(creds: ProjectOperationCredentials) {

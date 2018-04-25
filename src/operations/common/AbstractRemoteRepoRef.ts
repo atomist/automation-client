@@ -1,14 +1,14 @@
-
 import { ActionResult } from "../../action/ActionResult";
 import { Configurable } from "../../project/git/Configurable";
 import { isTokenCredentials, ProjectOperationCredentials } from "./ProjectOperationCredentials";
-import { RemoteRepoRef } from "./RepoId";
+import { ProviderType, RemoteRepoRef } from "./RepoId";
 
 export abstract class AbstractRepoRef implements RemoteRepoRef {
 
     public branch?: string;
 
-    constructor(public remoteBase: string,
+    constructor(public providerType: ProviderType,
+                public remoteBase: string,
                 public owner: string,
                 public repo: string,
                 public sha: string = "master",

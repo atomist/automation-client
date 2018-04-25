@@ -1,7 +1,7 @@
 import { ActionResult, successOn } from "../../action/ActionResult";
 import { createRepo } from "../../util/gitHub";
 import { isTokenCredentials, ProjectOperationCredentials } from "./ProjectOperationCredentials";
-import { RepoRef } from "./RepoId";
+import { ProviderType, RepoRef } from "./RepoId";
 
 import axios from "axios";
 import { logger } from "../../internal/util/logger";
@@ -37,7 +37,9 @@ export class GitHubRepoRef extends AbstractRepoRef {
                 sha: string = "master",
                 rawApiBase = GitHubDotComBase,
                 path?: string) {
-        super("github.com", owner, repo, sha, path);
+        super(
+            rawApiBase === GitHubDotComBase ? ProviderType.github_com : ProviderType.ghe,
+            "github.com", owner, repo, sha, path);
         // Strip trailing / if present on API base
         this.apiBase = rawApiBase.replace(/\/$/, "");
     }
