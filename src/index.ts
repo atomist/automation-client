@@ -61,4 +61,5 @@ export {
 
 export { LogHandler } from "./internal/transport/OnLog";
 
-export { automationClientInstance } from "./automationClient";
+// causes mocha tests in dependent projects to not exist cleanly
+// export { automationClientInstance } from "./automationClient";
