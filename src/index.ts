@@ -60,3 +60,5 @@ export {
 } from "./atomistWebhook";
 
 export { LogHandler } from "./internal/transport/OnLog";
+
+export { automationClientInstance } from "./automationClient";

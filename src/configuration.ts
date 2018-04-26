@@ -352,7 +352,8 @@ export function getUserConfig(): UserConfig {
             }
             return cfg;
         } catch (e) {
-            throw new Error(`Failed to read user config: ${e.message}`);
+            e.message = `Failed to read user config: ${e.message}`;
+            throw e;
         }
     }
     return undefined;
@@ -482,8 +483,8 @@ export function loadAutomationConfig(cfgPath?: string): Configuration {
             cfg = require(cfgPath).configuration;
             cfgLog("automation config");
         } catch (e) {
-            logger.error(e.stack);
-            throw new Error(`Failed to load ${cfgPath}.configuration: ${e.message}`);
+            e.message = `Failed to load ${cfgPath}.configuration: ${e.message}`;
+            throw e;
         }
     }
     return cfg;
@@ -506,7 +507,8 @@ export function loadAtomistConfigPath(): AutomationServerOptions {
             cfg = fs.readJsonSync(process.env.ATOMIST_CONFIG_PATH);
             cfgLog("ATOMIST_CONFIG_PATH");
         } catch (e) {
-            throw new Error(`Failed to read ATOMIST_CONFIG_PATH: ${e.message}`);
+            e.message = `Failed to read ATOMIST_CONFIG_PATH: ${e.message}`;
+            throw e;
         }
     }
     return cfg;
@@ -530,7 +532,8 @@ export function loadAtomistConfig(): AutomationServerOptions {
             cfg = JSON.parse(process.env.ATOMIST_CONFIG);
             cfgLog("ATOMIST_CONFIG");
         } catch (e) {
-            throw new Error(`Failed to parse contents of ATOMIST_CONFIG environment variable: ${e.message}`);
+            e.message = `Failed to parse contents of ATOMIST_CONFIG environment variable: ${e.message}`;
+            throw e;
         }
     }
     return cfg;
@@ -693,6 +696,10 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
         resolveToken(cfg);
         resolvePort(cfg);
     } catch (e) {
+        logger.error(`Failed to load configuration: ${e.message}`);
+        if (e.stack) {
+            logger.error(`Stack trace:\n${e.stack}`);
+        }
         return Promise.reject(e);
     }
 

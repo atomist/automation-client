@@ -19,8 +19,23 @@ Win release
 
 -   Fix running node on MS Windows [#271][271]
 -   Ensure gql-fetch works in clients
+-   Call listeners on workers in cluster mode
+-   Fix team vs chatTeam usage
+-   Add enums to ingester [#276][276]
+
+### Added
+
+-   Provided automation client instance via `automationClientInstance()`
+-   Support for raising PR against any branch
+-   Provider type to RemoteRepoRef
+-   Support for AtomistLog events
+
+### Changed
+
+-   Print stack trace if loading configuration fails
 
 [271]: https://github.com/atomist/automation-client-ts/issues/271
+[276]: https://github.com/atomist/automation-client-ts/issues/276
 
 ## [0.13.0][] - 2018-04-10
 
