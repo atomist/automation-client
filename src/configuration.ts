@@ -15,6 +15,7 @@ import {
     Ingester,
     IngesterBuilder,
 } from "./ingesters";
+import { LogHandler } from "./internal/transport/OnLog";
 import { logger } from "./internal/util/logger";
 import {
     guid,
@@ -184,7 +185,14 @@ export interface AutomationServerOptions extends AutomationOptions {
             enabled?: boolean,
             name?: string,
             level?: string,
-        }
+        },
+        /**
+         * Register LogHandler to subscribe to AtomistLog events
+         */
+        logEvents?: {
+            enabled?: boolean,
+            handlers?: LogHandler[],
+        },
     };
     /** statsd config */
     statsd?: {
@@ -750,6 +758,9 @@ export const LocalDefaultConfiguration: Configuration = {
             level: "debug",
         },
         banner: true,
+        logEvents: {
+            enabled: true,
+        },
     },
     statsd: {
         enabled: false,

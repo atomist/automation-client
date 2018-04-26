@@ -94,5 +94,8 @@ export const configuration: Configuration = {
             enabled: true,
             level: "debug",
         },
+        logEvents: {
+            enabled: true,
+        },
     },
 };
