@@ -1,4 +1,3 @@
-import { logger } from "../..";
 import { subscription } from "../../graph/graphQL";
 import {
     EventFired,
@@ -10,6 +9,7 @@ import {
     Success,
 } from "../../HandlerResult";
 import { EventHandlerMetadata } from "../../metadata/automationMetadata";
+import { logger } from "../util/logger";
 
 // Subscription to retrieve all Log events for this automation client
 const LogSubscription = `subscription OnLog($name: String!, $version: String!) {
