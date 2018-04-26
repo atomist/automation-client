@@ -20,6 +20,7 @@ import {
     ExpressServerOptions,
 } from "./internal/transport/express/ExpressServer";
 import { MetricEnabledAutomationEventListener } from "./internal/transport/MetricEnabledAutomationEventListener";
+import { onLogMaker } from "./internal/transport/OnLog";
 import { DefaultWebSocketRequestProcessor } from "./internal/transport/websocket/DefaultWebSocketRequestProcessor";
 import { prepareRegistration } from "./internal/transport/websocket/payloads";
 import {
@@ -97,6 +98,13 @@ export class AutomationClient {
             compress: this.configuration.ws.compress,
             timeout: this.configuration.ws.timeout,
         };
+
+        if (this.configuration.logging.logEvents.enabled) {
+            this.withEventHandler(
+                onLogMaker(this.configuration.name,
+                    this.configuration.version,
+                    this.configuration.logging.logEvents.handlers));
+        }
 
         setLogLevel(this.configuration.logging.level);
 
