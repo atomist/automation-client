@@ -7,18 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.13.1...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.14.0...HEAD
 
-## [0.13.1][] - 2018-04-12
+## [0.14.0][] - 2018-04-27
 
-[0.13.1]: https://github.com/atomist/automation-client-ts/compare/0.13.0...0.13.1
+[0.14.0]: https://github.com/atomist/automation-client-ts/compare/0.13.1...0.14.0
 
 Win release
 
 ### Fixed
 
--   Fix running node on MS Windows [#271][271]
--   Ensure gql-fetch works in clients
 -   Call listeners on workers in cluster mode
 -   Fix team vs chatTeam usage
 -   Add enums to ingester [#276][276]
@@ -34,8 +32,24 @@ Win release
 
 -   Print stack trace if loading configuration fails
 
-[271]: https://github.com/atomist/automation-client-ts/issues/271
+### Removed
+
+-   **BREAKING** `runningAutomationClient`, use `automationClientInstance()`
+
 [276]: https://github.com/atomist/automation-client-ts/issues/276
+
+## [0.13.1][] - 2018-04-12
+
+[0.13.1]: https://github.com/atomist/automation-client-ts/compare/0.13.0...0.13.1
+
+Win release
+
+### Fixed
+
+-   Fix running node on MS Windows [#271][271]
+-   Ensure gql-fetch works in clients
+
+[271]: https://github.com/atomist/automation-client-ts/issues/271
 
 ## [0.13.0][] - 2018-04-10
 
