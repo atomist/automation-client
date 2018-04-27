@@ -22,9 +22,9 @@ describe("astUtils", () => {
                 "//VariableDeclaration[?check]/Identifier",
                 { check: n => n.$value.includes("x") })
                 .then(matches => {
-                    assert(matches.length === 2);
+                    assert.equal(matches.length, 2);
                     assert(!!matches[0].sourceLocation);
-                    assert(matches[0].sourceLocation.offset === matches[0].$offset);
+                    assert.equal(matches[0].sourceLocation.offset, matches[0].$offset);
                     assert(matches[0].sourceLocation.lineFrom1 > 0);
                     assert.deepEqual(matches.map(m => m.$value), ["x", "xylophone"]);
                     done();

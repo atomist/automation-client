@@ -25,7 +25,7 @@ describe("TypeScriptFileParser", () => {
             .toAst(f)
             .then(root => {
                 // console.log(stringify(root, null, 2));
-                assert(root.$name === "SourceFile");
+                assert.equal(root.$name, "SourceFile");
                 done();
             }).catch(done);
     });
@@ -62,7 +62,7 @@ describe("TypeScriptFileParser", () => {
             .toAst(f)
             .then(root => {
                 const value = evaluateScalarValue(root, "//VariableDeclaration/Identifier");
-                assert(value === "x");
+                assert.equal(value, "x");
                 done();
             }).catch(done);
     });
@@ -83,7 +83,7 @@ describe("TypeScriptFileParser", () => {
         TypeScriptES6FileParser
             .toAst(f)
             .then(root => {
-                assert(root.$name === "SourceFile");
+                assert.equal(root.$name, "SourceFile");
                 let minOffset = -1;
                 let terminalCount = 0;
                 const v: TreeVisitor = tn => {
@@ -95,7 +95,7 @@ describe("TypeScriptFileParser", () => {
                             // It's a terminal
                             const expected = f.getContentSync().substr(tn.$offset, tn.$value.length);
                             const actual = tn.$value;
-                            assert(actual === expected,
+                            assert.equal(actual, expected,
                                 `Unable to validate content for node with name ${tn.$name}: ` +
                                 `[${actual}] and [${expected}]`);
                         }
@@ -116,7 +116,7 @@ describe("TypeScriptFileParser", () => {
             "//VariableDeclaration/Identifier")
             .then(matchResults => {
                 // console.log(stringify(root, null, 2));
-                assert(matchResults.length === 1);
+                assert.equal(matchResults.length, 1);
                 assert(matchResults[0].$value === "x");
                 done();
             }).catch(done);

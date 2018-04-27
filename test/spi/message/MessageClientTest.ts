@@ -12,23 +12,23 @@ describe("MessageClient", () => {
     describe("commandName", () => {
 
         it("extract commandName from string", () => {
-            assert(commandName("HelloWorld") === "HelloWorld");
+            assert.equal(commandName("HelloWorld"), "HelloWorld");
         });
 
         it("extract commandName from command handler instance", () => {
-            assert(commandName(new HelloWorld()) === "HelloWorld");
+            assert.equal(commandName(new HelloWorld()), "HelloWorld");
         });
 
         it("extract commandName from plain command handler instance", () => {
-            assert(commandName(new PlainHelloWorld()) === "PlainHelloWorld");
+            assert.equal(commandName(new PlainHelloWorld()), "PlainHelloWorld");
         });
 
         it("extract commandName from command handler constructor", () => {
-            assert(commandName(HelloWorld) === "HelloWorld");
+            assert.equal(commandName(HelloWorld), "HelloWorld");
         });
 
         it("extract commandName from plain command handler constructor", () => {
-            assert(commandName(PlainHelloWorld) === "PlainHelloWorld");
+            assert.equal(commandName(PlainHelloWorld), "PlainHelloWorld");
         });
     });
 

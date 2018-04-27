@@ -106,7 +106,7 @@ describe("configuration", () => {
                 ],
             };
             const moduleConfig = resolveModuleConfig(userConfig, "@tegan/sara");
-            assert(moduleConfig.token === userConfig.token);
+            assert.equal(moduleConfig.token, userConfig.token);
             assert.deepStrictEqual(moduleConfig.teamIds, userConfig.teamIds);
         });
 
@@ -149,7 +149,7 @@ describe("configuration", () => {
                 ],
             };
             const moduleConfig = resolveModuleConfig(userConfig, "@tegan/sara");
-            assert(moduleConfig.token === userConfig.token);
+            assert.equal(moduleConfig.token, userConfig.token);
             assert.deepStrictEqual(moduleConfig.teamIds, ["TVAPOR"]);
         });
 
@@ -165,27 +165,27 @@ describe("configuration", () => {
                 ],
             };
             const moduleConfig = resolveModuleConfig(userConfig, "@tegan/sara", "2.1.0");
-            assert(moduleConfig.token === userConfig.token);
+            assert.equal(moduleConfig.token, userConfig.token);
             assert.deepStrictEqual(moduleConfig.teamIds, ["TVAPOR"]);
         });
 
         it("should return nothing", () => {
             const userConfig: UserConfig = {};
             const moduleConfig = resolveModuleConfig(userConfig);
-            assert(moduleConfig.token === undefined);
-            assert(moduleConfig.teamIds === undefined);
+            assert.equal(moduleConfig.token, undefined);
+            assert.equal(moduleConfig.teamIds, undefined);
         });
 
         it("should handled undefined", () => {
             const moduleConfig = resolveModuleConfig(undefined);
-            assert(moduleConfig.token === undefined);
-            assert(moduleConfig.teamIds === undefined);
+            assert.equal(moduleConfig.token, undefined);
+            assert.equal(moduleConfig.teamIds, undefined);
         });
 
         it("should handled null", () => {
             const moduleConfig = resolveModuleConfig(null);
-            assert(moduleConfig.token === undefined);
-            assert(moduleConfig.teamIds === undefined);
+            assert.equal(moduleConfig.token, undefined);
+            assert.equal(moduleConfig.teamIds, undefined);
         });
 
     });
@@ -288,22 +288,22 @@ describe("configuration", () => {
 
         it("should find the test automation config", () => {
             const c = loadAutomationConfig();
-            assert(c.name === "@atomist/automation-node-tests");
-            assert(c.version === "0.0.7");
+            assert.equal(c.name, "@atomist/automation-node-tests");
+            assert.equal(c.version, "0.0.7");
             assert.deepStrictEqual(c.teamIds, ["T1L0VDKJP"]);
             assert.deepStrictEqual(c.keywords, ["test", "automation"]);
-            assert(c.ws.enabled === true);
-            assert(c.ws.termination.graceful === false);
-            assert(c.ws.compress === true);
-            assert(c.http.enabled === true);
-            assert(c.http.auth.basic.enabled === false);
-            assert(c.http.auth.basic.username === "test");
-            assert(c.http.auth.basic.password === "test");
-            assert(c.http.auth.bearer.enabled === true);
-            assert(c.http.auth.bearer.adminOrg === "atomisthq");
-            assert(c.applicationEvents.enabled === true);
-            assert(c.applicationEvents.teamId === "T1L0VDKJP");
-            assert(c.cluster.enabled === false);
+            assert.equal(c.ws.enabled, true);
+            assert.equal(c.ws.termination.graceful, false);
+            assert.equal(c.ws.compress, true);
+            assert.equal(c.http.enabled, true);
+            assert.equal(c.http.auth.basic.enabled, false);
+            assert.equal(c.http.auth.basic.username, "test");
+            assert.equal(c.http.auth.basic.password, "test");
+            assert.equal(c.http.auth.bearer.enabled, true);
+            assert.equal(c.http.auth.bearer.adminOrg, "atomisthq");
+            assert.equal(c.applicationEvents.enabled, true);
+            assert.equal(c.applicationEvents.teamId, "T1L0VDKJP");
+            assert.equal(c.cluster.enabled, false);
         });
 
     });
@@ -397,7 +397,7 @@ describe("configuration", () => {
             delete process.env.ATOMIST_TEAMS;
             delete process.env.ATOMIST_TEAM;
             const ts = resolveTeamIds({});
-            assert(ts === undefined);
+            assert.equal(ts, undefined);
             if (saveTeams) {
                 process.env.ATOMIST_TEAMS = saveTeams;
             }
@@ -458,37 +458,37 @@ describe("configuration", () => {
 
         it("should fall to the default", () => {
             const c = resolveConfigurationValue(["NONSENSICAL_NONSENSE"], ["should.not.exist.at.all"], "here");
-            assert(c === "here");
+            assert.equal(c, "here");
         });
 
         it("should not care if config does not exist if environment variable does", () => {
             const c = resolveConfigurationValue(["HOME"], ["should.not.exist.at.all"], "no");
-            assert(c === process.env.HOME);
+            assert.equal(c, process.env.HOME);
         });
 
         it("should find nothing in the environment", () => {
             const c = resolveConfigurationValue(["BLAH_BLAH_BLAH"], ["targetOwner"], "no");
-            assert(c === "johnsonr");
+            assert.equal(c, "johnsonr");
         });
 
         it("should take environment over config", () => {
             const c = resolveConfigurationValue(["HOME"], ["targetOwner"], "no");
-            assert(c === process.env.HOME);
+            assert.equal(c, process.env.HOME);
         });
 
         it("should take environment over config", () => {
             const c = resolveConfigurationValue(["HOME"], ["targetOwner"], "no");
-            assert(c === process.env.HOME);
+            assert.equal(c, process.env.HOME);
         });
 
         it("should take first environment match", () => {
             const c = resolveConfigurationValue(["HOME", "PATH"], ["targetOwner"], "no");
-            assert(c === process.env.HOME);
+            assert.equal(c, process.env.HOME);
         });
 
         it("should take first config match", () => {
             const c = resolveConfigurationValue(["BLAH_BLAH_BLAH", "NO_NO_NO"], ["targetOwner", "repo"], "no");
-            assert(c === "johnsonr");
+            assert.equal(c, "johnsonr");
         });
 
     });
@@ -501,7 +501,7 @@ describe("configuration", () => {
                 delete process.env.GITHUB_TOKEN;
             }
             const c = resolveToken({});
-            assert(c === undefined);
+            assert.equal(c, undefined);
             if (save) {
                 process.env.GITHUB_TOKEN = save;
             }
@@ -514,7 +514,7 @@ describe("configuration", () => {
             }
             const t = "not-a-real-token";
             const c = resolveToken({ token: t });
-            assert(c === t);
+            assert.equal(c, t);
             if (save) {
                 process.env.GITHUB_TOKEN = save;
             }
@@ -525,7 +525,7 @@ describe("configuration", () => {
             const t = "not-a-real-token";
             process.env.ATOMIST_TOKEN = t;
             const c = resolveToken({});
-            assert(c === t);
+            assert.equal(c, t);
             if (save) {
                 process.env.ATOMIST_TOKEN = save;
             } else {
@@ -538,7 +538,7 @@ describe("configuration", () => {
             const t = "not-a-real-token";
             process.env.GITHUB_TOKEN = t;
             const c = resolveToken({});
-            assert(c === t);
+            assert.equal(c, t);
             if (save) {
                 process.env.GITHUB_TOKEN = save;
             } else {
@@ -553,7 +553,7 @@ describe("configuration", () => {
             process.env.ATOMIST_TOKEN = t;
             process.env.GITHUB__TOKEN = "no";
             const c = resolveToken({});
-            assert(c === t);
+            assert.equal(c, t);
             if (saveAT) {
                 process.env.ATOMIST_TOKEN = saveAT;
             } else {

@@ -9,8 +9,8 @@ describe("scan", () => {
     it.skip("should find test handlers", done => {
         loadConfiguration()
             .then(configuration => {
-                assert(configuration.commands.length === 3);
-                assert(configuration.events.length === 1);
+                assert.equal(configuration.commands.length, 3);
+                assert.equal(configuration.events.length, 1);
                 done();
             });
 

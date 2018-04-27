@@ -53,7 +53,7 @@ describe("gitHubUtils", () => {
         it("check an existing file", done => {
             hasFile(GitHubToken, "atomist-seeds", "spring-rest-seed", "pom.xml")
                 .then(r => {
-                    assert(r === true);
+                    assert.equal(r, true);
                     done();
                 }).catch(done);
         }).timeout(5000);
@@ -61,7 +61,7 @@ describe("gitHubUtils", () => {
         it("check a non-existing file", done => {
             hasFile(GitHubToken, "atomist-seeds", "spring-rest-seed", "the/quick/brown/foxpom.xml")
                 .then(r => {
-                    assert(r === false);
+                    assert.equal(r, false);
                     done();
                 }).catch(done);
         }).timeout(5000);
@@ -70,7 +70,7 @@ describe("gitHubUtils", () => {
             hasFile(GitHubToken, "atomist-seeds", "spring-rest-seed",
                 "/src/main/java/com/atomist/spring/SpringRestSeedApplication.java")
                 .then(r => {
-                    assert(r === true);
+                    assert.equal(r, true);
                     done();
                 }).catch(done);
         }).timeout(5000);

@@ -21,7 +21,7 @@ describe("the TmpDirectoryManager", () => {
                     .then(() => {
                         assert.fail("Should have been deleted: " + suppliedDirectory);
                     }, err => {
-                        assert(err.code === "ENOENT", "directory should not exists");
+                        assert.equal(err.code, "ENOENT", "directory should not exists");
                     });
             })
             .then(() => done(), done);

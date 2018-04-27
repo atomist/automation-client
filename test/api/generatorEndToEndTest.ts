@@ -68,7 +68,7 @@ describe("generator end to end", () => {
         (params.target as GitHubRepoCreationParameters).githubToken = GitHubToken;
         generator.handle(MockHandlerContext as HandlerContext, params)
             .then(result => {
-                assert(result.code === 0);
+                assert.equal(result.code, 0);
                 // Check the repo
                 return hasFile(GitHubToken, TargetOwner, repoName, "pom.xml")
                     .then(r => {

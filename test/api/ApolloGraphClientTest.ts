@@ -50,7 +50,7 @@ describe("ApolloGraphClient", () => {
                         .then(p => {
                             const gitHead = p.findFileSync(".git/HEAD");
                             assert(gitHead);
-                            assert(gitHead.path === ".git/HEAD");
+                            assert.equal(gitHead.path, ".git/HEAD");
                         });
                 })
                 .then(() => done(), done);
@@ -67,8 +67,8 @@ describe("ApolloGraphClient", () => {
                     value: `{"disable_for_test":true}`,
                 }, {}, __dirname)
                 .then(result => {
-                    assert((result as any).setChatUserPreference[0].name === "test");
-                    assert((result as any).setChatUserPreference[0].value === `{"disable_for_test":true}`);
+                    assert.equal((result as any).setChatUserPreference[0].name, "test");
+                    assert.equal((result as any).setChatUserPreference[0].value, `{"disable_for_test":true}`);
                 })
                 .then(() => done(), done);
         }).timeout(5000);
@@ -121,7 +121,7 @@ describe("ApolloGraphClient", () => {
                         .then(p => {
                             const gitHead = p.findFileSync(".git/HEAD");
                             assert(gitHead);
-                            assert(gitHead.path === ".git/HEAD");
+                            assert.equal(gitHead.path, ".git/HEAD");
                         });
                 })
                 .then(() => done(), done);
@@ -140,8 +140,8 @@ describe("ApolloGraphClient", () => {
                 },
             })
                 .then(result => {
-                    assert((result as any).setChatUserPreference[0].name === "test");
-                    assert((result as any).setChatUserPreference[0].value === `{"disable_for_test":true}`);
+                    assert.equal((result as any).setChatUserPreference[0].name, "test");
+                    assert.equal((result as any).setChatUserPreference[0].value, `{"disable_for_test":true}`);
                 })
                 .then(() => done(), done);
         }).timeout(5000);

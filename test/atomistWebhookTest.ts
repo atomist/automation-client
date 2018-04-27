@@ -50,7 +50,7 @@ describe("atomistWebhook", () => {
                 return [200];
             });
             const res = await postAtomistWebhook(webhook, payload, teamId, noRetryOptions);
-            assert(res.status === 200);
+            assert.equal(res.status, 200);
             assert(posted, "webhook not posted");
         });
 
@@ -64,7 +64,7 @@ describe("atomistWebhook", () => {
                     return [200];
                 });
             const res = await postAtomistWebhook(webhook, payload, teamId, fastRetryOptions);
-            assert(res.status === 200);
+            assert.equal(res.status, 200);
             assert(posted, "webhook not posted");
         });
 
@@ -79,7 +79,7 @@ describe("atomistWebhook", () => {
             });
             const res = await postAtomistWebhook(webhook, payload, teamId, noRetryOptions);
             delete process.env.ATOMIST_WEBHOOK_BASEURL;
-            assert(res.status === 200);
+            assert.equal(res.status, 200);
             assert(posted, "webhook not posted");
         });
 
@@ -94,7 +94,7 @@ describe("atomistWebhook", () => {
                 const res = await postAtomistWebhook(webhook, payload, teamId, noRetryOptions);
                 assert.fail("should not have successfully posted wrong payload");
             } catch (e) {
-                assert(e.response.status === 404);
+                assert.equal(e.response.status, 404);
             }
         });
 

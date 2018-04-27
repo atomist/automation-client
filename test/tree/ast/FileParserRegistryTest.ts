@@ -12,7 +12,7 @@ describe("FileParserRegistry", () => {
             toAst: f => { throw new Error(); },
         };
         const fpr = new DefaultFileParserRegistry().addParser(fp);
-        assert(fpr.parserFor("/hotdog/this") === fp);
+        assert.equal(fpr.parserFor("/hotdog/this"), fp);
     });
 
     it("should not find parser", () => {
@@ -21,7 +21,7 @@ describe("FileParserRegistry", () => {
             toAst: f => { throw new Error(); },
         };
         const fpr = new DefaultFileParserRegistry().addParser(fp);
-        assert(fpr.parserFor("/nothotdog/this") === undefined);
+        assert.equal(fpr.parserFor("/nothotdog/this"), undefined);
     });
 
     it("should pass validation", () => {

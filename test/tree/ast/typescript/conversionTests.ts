@@ -41,9 +41,9 @@ describe("path expression driven conversion", () => {
             .then(values => {
                 // console.log(stringify(values[0],
                 //    (key, value) => ["$parent", "node", "sourceFile"].includes(key) ? undefined : value, 2));
-                assert(values.length === 1);
+                assert.equal(values.length, 1);
                 // console.log(`Value is [${values[0].$value}]`);
-                assert(values[0].$value === ":");
+                assert.equal(values[0].$value, ":");
                 done();
             }).catch(done);
     });
