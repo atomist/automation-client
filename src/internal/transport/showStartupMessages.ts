@@ -28,7 +28,7 @@ export async function showStartupMessages(registration: RegistrationConfirmation
     } else {
         // It's a function returning a banner object
         const banner = b(registration);
-        message = chalk[banner.color](banner.asciify ? await toAscii(banner.content) : banner.content);
+        message = chalk[banner.color](banner.asciify ? await toAscii(banner.banner) : banner.banner);
     }
 
     const gitInfo = info(automations);

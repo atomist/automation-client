@@ -55,9 +55,9 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
         });
     }
 
-    public onRegistration(registration: RegistrationConfirmation) {
+    public async onRegistration(registration: RegistrationConfirmation) {
         logger.info("Registration successful: %s", stringify(registration));
-        showStartupMessages(registration, this.automations.automations);
+        await showStartupMessages(registration, this.automations.automations);
         global.setJwtToken(registration.jwt);
         this.registration = registration;
         this.graphClients = new GraphClientFactory(this.registration, this.options);
