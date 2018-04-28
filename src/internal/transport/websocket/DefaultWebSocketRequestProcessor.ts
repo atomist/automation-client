@@ -55,12 +55,15 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
         });
     }
 
-    public async onRegistration(registration: RegistrationConfirmation) {
+    public onRegistration(registration: RegistrationConfirmation) {
         logger.info("Registration successful: %s", stringify(registration));
-        await showStartupMessages(registration, this.automations.automations);
         global.setJwtToken(registration.jwt);
         this.registration = registration;
         this.graphClients = new GraphClientFactory(this.registration, this.options);
+        showStartupMessages(registration, this.automations.automations)
+            .then(() => {
+                // intentionally left empty
+            });
     }
 
     public onConnect(ws: WebSocket) {

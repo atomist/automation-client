@@ -23,12 +23,14 @@ export async function showStartupMessages(registration: RegistrationConfirmation
     const b = _.get(automationClientInstance(), "configuration.logging.banner");
     if (typeof b === "string") {
         message = chalk.green(await toAscii(b as string));
-    } else if (b === false) {
-        return;
-    } else {
+    } else if (b === true) {
+        message = chalk.green(await toAscii(message));
+    } else if (_.isFunction(b)) {
         // It's a function returning a banner object
         const banner = b(registration);
         message = chalk[banner.color](banner.asciify ? await toAscii(banner.banner) : banner.banner);
+    } else if (b === false) {
+        return;
     }
 
     const gitInfo = info(automations);
