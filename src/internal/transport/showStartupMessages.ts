@@ -69,7 +69,7 @@ async function toAscii(s: string): Promise<string> {
     const asciify = require("asciify");
     const promisified = promisify(asciify);
     try {
-        return promisified(s, {font: "ogre"});
+        return promisified(s, ({font: "ogre"}));
     } catch {
         return s;
     }
