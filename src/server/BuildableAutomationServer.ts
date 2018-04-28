@@ -112,8 +112,8 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         this.commandHandlers.push({
             metadata: md,
             invoke: (i, ctx) => {
-                const freshParams = !!hc.freshParametersInstance ? hc.freshParametersInstance() : hc;
-                return this.invokeCommandHandlerWithFreshParametersInstance(hc, md, freshParams, i, ctx);
+                const freshParams = !!hc.freshParametersInstance ? hc.freshParametersInstance() : hc as any as P;
+                return this.invokeCommandHandlerWithFreshParametersInstance<P>(hc, md, freshParams, i, ctx);
             },
         });
         return this;
