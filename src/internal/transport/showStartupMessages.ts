@@ -67,8 +67,9 @@ ${urls.length > 0 ? "\n" : ""}  ${chalk.grey("Docs")} https://docs.atomist.com  
 
 async function toAscii(s: string): Promise<string> {
     const asciify = require("asciify");
+    const promisified = promisify(asciify);
     try {
-        return promisify(asciify)(s, {font: "ogre"});
+        return promisified(s, {font: "ogre"});
     } catch {
         return s;
     }
