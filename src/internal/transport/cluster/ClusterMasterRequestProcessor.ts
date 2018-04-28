@@ -22,13 +22,13 @@ import {
 import { logger } from "../../util/logger";
 import { registerShutdownHook } from "../../util/shutdown";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
-import { banner } from "../banner";
 import {
     CommandIncoming,
     EventIncoming,
     isCommandIncoming,
     isEventIncoming,
 } from "../RequestProcessor";
+import { showStartupMessages } from "../showStartupMessages";
 import { WebSocketClientOptions } from "../websocket/WebSocketClient";
 import {
     sendMessage,
@@ -81,7 +81,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
     public onRegistration(registration: RegistrationConfirmation) {
         logger.info("Registration successful: %s", stringify(registration));
-        banner(registration, this.automations.automations);
+        showStartupMessages(registration, this.automations.automations);
         global.setJwtToken(registration.jwt);
         this.registration = registration;
 

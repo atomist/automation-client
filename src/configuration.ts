@@ -16,6 +16,7 @@ import {
     IngesterBuilder,
 } from "./ingesters";
 import { LogHandler } from "./internal/transport/OnLog";
+import { RegistrationConfirmation } from "./internal/transport/websocket/WebSocketRequestProcessor";
 import { logger } from "./internal/util/logger";
 import {
     guid,
@@ -36,6 +37,24 @@ import { Maker } from "./util/constructionUtils";
  * }
  */
 export type ExpressCustomizer = (express: exp.Express, ...handlers: exp.RequestHandler[]) => void;
+
+/**
+ * A computed banner
+ */
+export interface Banner {
+
+    /**
+     * Banner content
+     */
+    banner: string;
+
+    /**
+     * Whether or not the banner content should be asciified
+     */
+    asciify: boolean;
+
+    color: "black" | "red" | "green" | "yellow" | "blue" | "magenta" | "cyan" | "white" | "gray";
+}
 
 /**
  * Options for an automation node.
@@ -176,7 +195,7 @@ export interface AutomationServerOptions extends AutomationOptions {
          * Print welcome banner; set to an arbitrary string to display,
          * default is name of automation-client
          */
-        banner?: boolean | string;
+        banner?: boolean | string | ((registration: RegistrationConfirmation) => Banner);
         /**
          * Log to file; set to file path to overwrite location and name of logfile,
          * defaults to ./log/automation-client.log in current working directory
