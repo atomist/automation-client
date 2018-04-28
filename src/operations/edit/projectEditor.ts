@@ -8,13 +8,13 @@ import { isProject, Project } from "../../project/Project";
  * @param context context for the current command or event handler
  * @param params params, if available
  */
-export type ProjectEditor<P = undefined, ER extends EditResult = EditResult> =
+export type ProjectEditor<P = any, ER extends EditResult = EditResult> =
     (p: Project, context: HandlerContext, params?: P) => Promise<ER>;
 
-export type SimpleProjectEditor<P = undefined> =
+export type SimpleProjectEditor<P = any> =
     (p: Project, context?: HandlerContext, params?: P) => Promise<Project>;
 
-export type AnyProjectEditor<P = undefined> = ProjectEditor<P> | SimpleProjectEditor<P>;
+export type AnyProjectEditor<P = any> = ProjectEditor<P> | SimpleProjectEditor<P>;
 
 /**
  * Result of editing a project. More information may be added by instances.
@@ -28,7 +28,7 @@ export interface EditResult<P extends Project = Project> extends ActionResult<P>
     readonly edited?: boolean;
 }
 
-export function toEditor<P = undefined>(ed: (SimpleProjectEditor<P> | ProjectEditor<P>)): ProjectEditor<P> {
+export function toEditor<P = any>(ed: (SimpleProjectEditor<P> | ProjectEditor<P>)): ProjectEditor<P> {
     return (proj, ctx, params) =>
         (ed as any)(proj, ctx, params)
             .then(r =>

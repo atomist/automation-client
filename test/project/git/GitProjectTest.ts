@@ -130,7 +130,7 @@ ding dong ding
         const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
         gp.init()
             .then(() => gp.isClean())
-            .then(assertNotClean)
+            .then(assertNotClean as any)
             .then(() => done(), done);
     });
 

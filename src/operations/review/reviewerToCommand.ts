@@ -52,7 +52,7 @@ export function reviewerHandler<PARAMS extends EditorOrReviewerParameters>(revie
     const detailsToUse: ReviewerCommandDetails<EditorOrReviewerParameters> = {
         ...defaultDetails(name),
         ...details,
-    };
+    } as ReviewerCommandDetails<EditorOrReviewerParameters>;
     return commandHandlerFrom(handleReviewOneOrMany(reviewerFactory, name, detailsToUse),
         factory,
         name,
