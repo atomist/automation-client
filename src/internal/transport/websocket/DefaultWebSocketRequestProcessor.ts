@@ -15,13 +15,13 @@ import {
 } from "../../util/health";
 import { logger } from "../../util/logger";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
-import { banner } from "../banner";
 import {
     CommandIncoming,
     EventIncoming,
     isCommandIncoming,
     isEventIncoming,
 } from "../RequestProcessor";
+import { showStartupMessages } from "../showStartupMessages";
 import { GraphClientFactory } from "./GraphClientFactory";
 import { WebSocketClientOptions } from "./WebSocketClient";
 import {
@@ -57,10 +57,13 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
 
     public onRegistration(registration: RegistrationConfirmation) {
         logger.info("Registration successful: %s", stringify(registration));
-        banner(registration, this.automations.automations);
         global.setJwtToken(registration.jwt);
         this.registration = registration;
         this.graphClients = new GraphClientFactory(this.registration, this.options);
+        showStartupMessages(registration, this.automations.automations)
+            .then(() => {
+                // intentionally left empty
+            });
     }
 
     public onConnect(ws: WebSocket) {
