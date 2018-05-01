@@ -42,10 +42,10 @@ export async function showStartupMessages(registration: RegistrationConfirmation
 
     const commands = automations.commands
         .sort((c1, c2) => c1.name.localeCompare(c2.name))
-        .map(c => `    ${c.name} ${c.description ? `(${c.description})` : ""}`);
+        .map(c => `    ${c.name} ${c.description ? `(${_.upperFirst(c.description)})` : ""}`);
     const events = automations.events
         .sort((e1, e2) => e1.name.localeCompare(e2.name))
-        .map(e => `    ${e.name} ${e.description ? `(${e.description})` : ""}`);
+        .map(e => `    ${e.name} ${e.description ? `(${_.upperFirst(e.description)})` : ""}`);
 
     /* tslint:disable */
     const msg = `
