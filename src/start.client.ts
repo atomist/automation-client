@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import "source-map-support/register";
 import { automationClient } from "./automationClient";
 import { loadConfiguration } from "./configuration";
 import { enableDefaultScanning } from "./scan";
