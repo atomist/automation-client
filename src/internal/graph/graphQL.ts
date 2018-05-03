@@ -299,9 +299,8 @@ function locateAndLoadGraphql(options: {
                               subfolder: string,
                               moduleDir: string): string {
     let path = options.path;
-    let name = options.name;
     // Read subscription from file if given
-    if (options.path) {
+    if (path) {
         if (!path.endsWith(".graphql")) {
             path = `${path}.graphql`;
         }
@@ -309,12 +308,16 @@ function locateAndLoadGraphql(options: {
             path = p.resolve(p.dirname(moduleDir), path);
         }
     } else if (options.name) {
-        const graphqlDir = findUp.sync("graphql", { cwd: p.resolve(p.dirname(moduleDir)) });
+        let name = options.name;
+        const cwd = p.resolve(p.dirname(moduleDir));
+        const graphqlDir = findUp.sync("graphql", { cwd });
         if (graphqlDir) {
             if (!name.endsWith(".graphql")) {
                 name = `${name}.graphql`;
             }
             path = p.resolve(graphqlDir, subfolder, name);
+        } else {
+            throw new Error("No graphql folder found anywhere above directory " + cwd + "\nConsider specifying a path");
         }
     }
 
