@@ -28,6 +28,10 @@ import {
     UserConfig,
 } from "../src/configuration";
 
+// reset evenatually existing env vars for this run
+delete process.env.ATOMIST_TEAMS;
+delete process.env.ATOMIST_CONFIG_PATH;
+
 describe("configuration", () => {
 
     // tslint:disable-next-line:no-var-requires
