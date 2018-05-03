@@ -48,15 +48,17 @@ export interface Automation {
     version?: string | null;
 }
 
+export const OnLogName = "OnLog";
+
 /**
  * Subscribe to AtomistLog events from the API.
  * Note: This event handler will get registered when this is enabled in the automation client configuration
  */
 export class OnLog implements HandleEvent<Subscription>, EventHandlerMetadata {
 
-    public name: string = "OnLog";
+    public name: string = OnLogName;
     public description: string = "Subscribe to AtomistLog events from the API";
-    public subscriptionName: string = "OnLog";
+    public subscriptionName: string = OnLogName;
     public subscription: string;
 
     constructor(private eman: string,
