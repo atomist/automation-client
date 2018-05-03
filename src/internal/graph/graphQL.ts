@@ -309,13 +309,18 @@ function locateAndLoadGraphql(options: {
             path = p.resolve(p.dirname(moduleDir), path);
         }
     } else if (options.name) {
-        const graphqlDir = findUp.sync("graphql", { cwd: p.resolve(p.dirname(moduleDir)) });
+        const cwd = p.resolve(p.dirname(moduleDir));
+        const graphqlDir = findUp.sync("graphql", { cwd });
         if (graphqlDir) {
             if (!name.endsWith(".graphql")) {
                 name = `${name}.graphql`;
             }
             path = p.resolve(graphqlDir, subfolder, name);
+        } else {
+            throw new Error("No graphql folder found anywhere above directory " + cwd + "\nConsider specifying a path");
         }
+    } else {
+        throw new Error("No name or path specified");
     }
 
     if (fs.existsSync(path)) {
