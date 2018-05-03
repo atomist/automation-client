@@ -55,6 +55,7 @@ export function registerApplicationEvents(teamId: string): Promise<any> {
         pod: env ? env.instance_id : os.hostname(),
         host: env ? env.instance_id : os.hostname(),
         id: env ? env.instance_id : guid(),
+        namespace: env ? env.space_name : process.env.ATOMIST_ENV || process.env.NODE_ENV || "unknown",
     };
 
     if (env) {
@@ -84,6 +85,7 @@ interface ApplicationEvent {
     pod: string;
     host: string;
     id: string;
+    namespace: string;
     data?: any;
     state?: string;
     ts?: number;
