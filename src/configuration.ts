@@ -320,6 +320,8 @@ function loadDefaultConfiguration(): Configuration {
         envSpecificCfg = ProductionDefaultConfiguration;
     } else if (nodeEnv === "staging" || nodeEnv === "testing") {
         envSpecificCfg = TestingDefaultConfiguration;
+    } else if (nodeEnv) {
+        cfg.environment = nodeEnv;
     }
 
     return mergeConfigs(cfg, envSpecificCfg);
@@ -767,7 +769,7 @@ export const LocalDefaultConfiguration: Configuration = {
         enabled: true,
         termination: {
             graceful: false,
-            gracePeriod: 60000,
+            gracePeriod: 10000,
         },
         compress: false,
         timeout: 10000,
