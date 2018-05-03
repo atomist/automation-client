@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.14.1...HEAD
 
+### Changed
+
+-   Reduce default websocket grace period to 10 seconds
+
 ## [0.14.1][] - 2018-04-30
 
 [0.14.1]: https://github.com/atomist/automation-client-ts/compare/0.14.0...0.14.1

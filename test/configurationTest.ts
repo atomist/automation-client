@@ -67,7 +67,7 @@ describe("configuration", () => {
             enabled: true,
             termination: {
                 graceful: false,
-                gracePeriod: 60000,
+                gracePeriod: 10000,
             },
             compress: false,
             timeout: 10000,
