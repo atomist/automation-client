@@ -1,0 +1,15 @@
+type HelloWorld @rootType {
+    sender: HelloWorldPerson!
+    recipient(name: String!): HelloWorldPerson!
+    urgency: Urgency!
+}
+
+type HelloWorldPerson {
+    name: String!
+}
+
+enum Urgency {
+    HIGH,
+    LOW,
+    NORMAL
+}

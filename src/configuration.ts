@@ -247,7 +247,7 @@ export interface Configuration extends AutomationServerOptions {
      */
     events?: Array<Maker<HandleEvent<any>>>;
     /** Custom event ingester */
-    ingesters?: Array<Ingester | IngesterBuilder>;
+    ingesters?: Array<Ingester | IngesterBuilder | string>;
     /** Log and metric sinks */
     listeners?: AutomationEventListener[];
 }

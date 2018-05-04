@@ -64,7 +64,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
 
     private eventHandlers: EventHandlerRegistration[] = [];
 
-    private ingesters: Ingester[] = [];
+    private ingesters: Array<Ingester | string> = [];
 
     constructor(public opts: AutomationServerOptions,
                 private fallbackSecretResolver: SecretResolver = new NodeConfigSecretResolver()) {
