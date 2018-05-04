@@ -3,6 +3,7 @@ import {
     MappedParameter,
     MappedParameters,
     Parameter,
+    Value,
 } from "../../src/decorators";
 import { HandleCommand } from "../../src/HandleCommand";
 import { HandlerContext } from "../../src/HandlerContext";

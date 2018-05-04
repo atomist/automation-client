@@ -6,8 +6,9 @@ import * as fs from "fs-extra";
 import * as glob from "glob";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
-import * as path from "path";
+import * as p from "path";
 import * as semver from "semver";
+import { automationClientInstance } from "./automationClient";
 
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
@@ -308,6 +309,24 @@ export function defaultConfiguration(): Configuration {
 }
 
 /**
+ * Exposes the configuration for lookup of configuration values.
+ * This is useful for components to obtain values eg. from configuration.custom
+ * like user provided secrets etc.
+ * @param {string} path the property path evaluated against the configuration instance
+ * @returns {T}
+ */
+export function configurationValue<T>(path: string, defaultValue?: T): T  {
+    const conf = automationClientInstance().configuration;
+    const value = _.get(conf, path) as T;
+    if (!value && !defaultValue) {
+        throw new Error(`Required @Value '${path}' not available`);
+    } else if (!value && defaultValue) {
+        return defaultValue;
+    }
+    return value;
+}
+
+/**
  * Return the default configuration based on NODE_ENV or ATOMIST_ENV.  ATOMIST_ENV
  * takes precedence if it is set.
  */
@@ -332,7 +351,7 @@ function loadDefaultConfiguration(): Configuration {
  */
 function userConfigDir(): string {
     const home = process.env[process.platform === "win32" ? "USERPROFILE" : "HOME"];
-    return path.join(home, ".atomist");
+    return p.join(home, ".atomist");
 }
 
 /**
@@ -340,7 +359,7 @@ function userConfigDir(): string {
  */
 function userConfigPath(): string {
     const clientConfigFile = "client.config.json";
-    return path.join(userConfigDir(), clientConfigFile);
+    return p.join(userConfigDir(), clientConfigFile);
 }
 
 /**
@@ -634,7 +653,7 @@ export function resolvePort(cfg: Configuration): number {
  * Invoke postProcessors on the provided configuration.
  */
 export function invokePostProcessors(cfg: Configuration): Promise<Configuration> {
-    return cfg.postProcessors.reduce((p, f) => p.then(f), Promise.resolve(cfg));
+    return cfg.postProcessors.reduce((pp, fp) => pp.then(fp), Promise.resolve(cfg));
 }
 
 /**

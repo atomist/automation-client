@@ -27,6 +27,12 @@ export interface Parameter extends BaseParameter {
     // readonly default?: string;
 }
 
+export interface BaseValue {
+    readonly path: string;
+    readonly root?: string;
+    readonly required?: boolean;
+}
+
 function set_metadata(obj: any, key: string, value: any) {
     let target = obj;
     if (obj.prototype !== undefined) {
@@ -99,7 +105,7 @@ export function declareMappedParameter(target: any, name: string, uri: string, r
     if (params == null) {
         params = [];
     } else {
-        // remove any that have the same name already (i.e. if folk are calling declareParameter)
+        // remove any that have the same name already (i.e. if folk are calling declareMappedParameter)
         // use a cheeky method so that we can reuse the same array
         const found: any[] = params.filter(p => p.localKey === name);
         if (found != null && found.length > 0) {
@@ -129,12 +135,47 @@ export function declareMappedParameter(target: any, name: string, uri: string, r
     return target;
 }
 
+export function declareValue(target: any, name: string, value: BaseValue) {
+    let params = get_metadata(target, "__values");
+    if (params == null) {
+        params = [];
+    } else {
+        // remove any that have the same name already (i.e. if folk are calling declareConfig)
+        // use a cheeky method so that we can reuse the same array
+        const found: any[] = params.filter(p => p.localKey === name);
+        if (found != null && found.length > 0) {
+            const index = params.indexOf(found[0]);
+            params.splice(index, 1);
+        }
+    }
+    const param = { name, value };
+    params.push(param);
+
+    // merge mapped_parameters from parent if it has some
+    let parent = Object.getPrototypeOf(target);
+    while (parent != null) {
+        const protoParams: any[] = get_metadata(parent, "__values");
+        if (protoParams != null) {
+            protoParams.forEach(protoParam => {
+                // if we don't already have a parameter with the same name
+                if (!params.some(p => p.name === protoParam.name)) {
+                    params.push(protoParam);
+                }
+            });
+        }
+        parent = Object.getPrototypeOf(parent);
+    }
+
+    set_metadata(target, "__values", params);
+    return target;
+}
+
 export function declareSecret(target: any, name: string, uri: string) {
     let params = get_metadata(target, "__secrets");
     if (params == null) {
         params = [];
     } else {
-        // remove any that have the same name already (i.e. if folk are calling declareParameter)
+        // remove any that have the same name already (i.e. if folk are calling declareSecret)
         // use a cheeky method so that we can reuse the same array
         const found: any[] = params.filter(p => p.name === name);
         if (found != null && found.length > 0) {

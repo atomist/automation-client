@@ -12,6 +12,7 @@ import {
     IngesterBuilder,
 } from "./ingesters";
 import { registerApplicationEvents } from "./internal/env/applicationEvent";
+import { NodeConfigSecretResolver } from "./internal/env/NodeConfigSecretResolver";
 import { ClusterMasterRequestProcessor } from "./internal/transport/cluster/ClusterMasterRequestProcessor";
 import { startWorker } from "./internal/transport/cluster/ClusterWorkerRequestProcessor";
 import { EventStoringAutomationEventListener } from "./internal/transport/EventStoringAutomationEventListener";
@@ -52,20 +53,7 @@ export class AutomationClient {
     ];
 
     constructor(public configuration: Configuration) {
-        this.automations = new BuildableAutomationServer(
-            {
-                name: configuration.name,
-                version: configuration.version,
-                policy: configuration.policy,
-                teamIds: configuration.teamIds,
-                groups: configuration.groups,
-                keywords: [],
-                token: configuration.token,
-                endpoints: {
-                    graphql: configuration.endpoints.graphql,
-                    api: configuration.endpoints.api,
-                },
-            } as AutomationServerOptions);
+        this.automations = new BuildableAutomationServer(configuration);
     }
 
     get automationServer(): AutomationServer {
