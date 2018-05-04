@@ -341,7 +341,7 @@ function locateAndLoadGraphql(
             }
             path = p.resolve(graphqlDir, subfolder, name);
         } else {
-            throw new Error("No graphql folder found anywhere above directory " + cwd + "\nConsider specifying a path");
+            throw new Error(`No graphql folder found anywhere above directory ${cwd}\nConsider specifying a path`);
         }
     } else {
         throw new Error("No name or path specified");
