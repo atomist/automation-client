@@ -1,5 +1,6 @@
 import {
     BaseParameter,
+    BaseValue,
     declareCommandHandler,
     declareEventHandler,
     declareMappedParameter,
@@ -7,6 +8,7 @@ import {
     declareParameters,
     declareSecret,
     declareTags,
+    declareValue,
 } from "./internal/metadata/decoratorSupport";
 import { toStringArray } from "./internal/util/string";
 
@@ -29,11 +31,26 @@ export function MappedParameter(uri: string, required: boolean = true) {
 }
 
 /**
- * Declare a secret a Rug wants to use
+ * Declare a secret an automation wants to use
  */
 export function Secret(uri: string) {
     return (target: any, name: string) => {
         declareSecret(target, name, uri);
+    };
+}
+
+/**
+ * Inject a config value from the automation-client configuration
+ */
+export function Value(pathOrValue: string | BaseValue) {
+    return (target: any, name: string) => {
+        if (typeof pathOrValue === "string") {
+            declareValue(target, name, {
+                path: pathOrValue,
+            });
+        } else {
+            declareValue(target, name, pathOrValue);
+        }
     };
 }
 

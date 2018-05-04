@@ -3,6 +3,7 @@ import {
     EventHandler,
     Secret,
     Secrets,
+    Value,
 } from "../../src/decorators";
 import {
     EventFired,
@@ -36,6 +37,9 @@ export class HelloIssue implements HandleEvent<any> {
 
     @Secret(Secrets.OrgToken)
     public githubToken: string;
+
+    @Value("http.port")
+    public port: number;
 
     public handle(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult> {
 
