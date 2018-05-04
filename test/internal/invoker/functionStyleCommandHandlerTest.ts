@@ -15,7 +15,8 @@ describe("function style command handler invocation", () => {
                 },
             },
         } as HandlerContext;
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer(
+            { name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [], custom: { http: { port: 1111 } } });
         s.fromCommandHandler(addAtomistSpringAgent);
 
         const payload: CommandInvocation = {
