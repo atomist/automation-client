@@ -10,6 +10,7 @@ export {
     Parameters,
     Secret,
     Secrets,
+    Value,
     Tags,
 } from "./decorators";
 
@@ -40,6 +41,7 @@ export {
 } from "./HandlerResult";
 
 import * as GraphQL from "./graph/graphQL";
+
 export { GraphQL };
 
 export { logger } from "./internal/util/logger";

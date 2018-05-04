@@ -1,7 +1,11 @@
 import * as _ from "lodash";
 
 import * as stringify from "json-stringify-safe";
-import { AutomationServerOptions } from "../configuration";
+import { automationClientInstance } from "../automationClient";
+import {
+    AutomationServerOptions,
+    Configuration,
+} from "../configuration";
 import { ApolloGraphClient } from "../graph/ApolloGraphClient";
 import { HandleCommand } from "../HandleCommand";
 import {
@@ -22,7 +26,10 @@ import {
 } from "../internal/invoker/Payload";
 import { Automations, isCommandHandlerMetadata } from "../internal/metadata/metadata";
 import { metadataFromInstance } from "../internal/metadata/metadataReading";
-import { populateParameters } from "../internal/parameterPopulation";
+import {
+    populateParameters,
+    populateValues,
+} from "../internal/parameterPopulation";
 import { logger } from "../internal/util/logger";
 import { toStringArray } from "../internal/util/string";
 import {
@@ -163,6 +170,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                                                                invocation: CommandInvocation,
                                                                ctx: HandlerContext): Promise<HandlerResult> {
         populateParameters(params, md, invocation.args);
+        populateValues(params, md, this.opts );
         this.populateMappedParameters(params, md, invocation);
         this.populateSecrets(params, md, invocation.secrets);
 
@@ -197,6 +205,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                                             e: EventFired<any>,
                                             ctx: HandlerContext): Promise<HandlerResult> {
         this.populateSecrets(h, metadata, e.secrets);
+        populateValues(h, metadata, this.opts);
         const handlerResult = h.handle(e, this.enrichContext(ctx), h);
         if (!handlerResult) {
             return SuccessPromise;

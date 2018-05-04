@@ -1,4 +1,10 @@
-import { MappedParameter, Parameter, Parameters, Secret } from "../../../src/decorators";
+import {
+    MappedParameter,
+    Parameter,
+    Parameters,
+    Secret,
+    Value,
+} from "../../../src/decorators";
 import { HandleCommand } from "../../../src/HandleCommand";
 import { commandHandlerFrom } from "../../../src/onCommand";
 import { succeed } from "../../../src/operations/support/contextUtils";
@@ -20,6 +26,9 @@ export class AddAtomistSpringAgentParams {
 
     @Secret("atomist://some_secret")
     public someSecret: string;
+
+    @Value("custom.http.port", true)
+    public port: number;
 }
 
 // Note we need an explicit type annotation here to avoid an error

@@ -1,5 +1,8 @@
 import * as _ from "lodash";
+import { automationClientInstance } from "../automationClient";
+import { Configuration } from "../configuration";
 import {
+    AutomationMetadata,
     Chooser,
     CommandHandlerMetadata,
     FreeChoices,
@@ -21,6 +24,18 @@ export function populateParameters(instanceToPopulate: any, hm: CommandHandlerMe
             if (parameter) {
                 _.update(instanceToPopulate, parameter.name, () => computeValue(parameter, arg));
             }
+        }
+    });
+}
+
+export function populateValues(instanceToPopulate: any, am: AutomationMetadata, configuration: Configuration) {
+    (am.values || []).forEach(v => {
+        const configValue = _.get(configuration, v.path);
+        if (!configValue && v.required) {
+            throw new Error(`Required @Value '${v.path}' in '${
+                instanceToPopulate.constructor.name}' is not available in configuration`);
+        } else {
+            _.update(instanceToPopulate, v.name, () => configValue);
         }
     });
 }
