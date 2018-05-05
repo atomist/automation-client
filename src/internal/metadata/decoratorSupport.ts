@@ -27,6 +27,12 @@ export interface Parameter extends BaseParameter {
     // readonly default?: string;
 }
 
+export interface BaseValue {
+    path: string;
+    required?: boolean;
+    type?: "string" | "number" | "boolean";
+}
+
 function set_metadata(obj: any, key: string, value: any) {
     let target = obj;
     if (obj.prototype !== undefined) {
@@ -129,12 +135,12 @@ export function declareMappedParameter(target: any, name: string, uri: string, r
     return target;
 }
 
-export function declareValue(target: any, name: string, path: string, required: boolean) {
+export function declareValue(target: any, name: string, value: BaseValue) {
     let params = get_metadata(target, "__values");
     if (params == null) {
         params = [];
     } else {
-        // remove any that have the same name already (i.e. if folk are calling declareConfig)
+        // remove any that have the same name already (i.e. if folk are calling declareValue)
         // use a cheeky method so that we can reuse the same array
         const found: any[] = params.filter(p => p.localKey === name);
         if (found != null && found.length > 0) {
@@ -142,16 +148,16 @@ export function declareValue(target: any, name: string, path: string, required: 
             params.splice(index, 1);
         }
     }
-    const param = { name, path, required };
+    const param = { name, value };
     params.push(param);
 
-    // merge mapped_parameters from parent if it has some
+    // merge values from parent if it has some
     let parent = Object.getPrototypeOf(target);
     while (parent != null) {
         const protoParams: any[] = get_metadata(parent, "__values");
         if (protoParams != null) {
             protoParams.forEach(protoParam => {
-                // if we don't already have a parameter with the same name
+                // if we don't already have a value with the same name
                 if (!params.some(p => p.name === protoParam.name)) {
                     params.push(protoParam);
                 }

@@ -1,12 +1,11 @@
 import * as _ from "lodash";
-import { automationClientInstance } from "../automationClient";
 import { Configuration } from "../configuration";
 import {
     AutomationMetadata,
     Chooser,
     CommandHandlerMetadata,
     FreeChoices,
-    Parameter,
+    ParameterType,
 } from "../metadata/automationMetadata";
 import { Arg } from "./invoker/Payload";
 
@@ -22,7 +21,7 @@ export function populateParameters(instanceToPopulate: any, hm: CommandHandlerMe
         if (arg.value !== undefined) {
             const parameter = hm.parameters.find(p => p.name === arg.name);
             if (parameter) {
-                _.update(instanceToPopulate, parameter.name, () => computeValue(parameter, arg));
+                _.update(instanceToPopulate, parameter.name, () => computeValue(parameter, arg.value));
             }
         }
     });
@@ -35,33 +34,33 @@ export function populateValues(instanceToPopulate: any, am: AutomationMetadata, 
             throw new Error(`Required @Value '${v.path}' in '${
                 instanceToPopulate.constructor.name}' is not available in configuration`);
         } else {
-            _.update(instanceToPopulate, v.name, () => configValue);
+            _.update(instanceToPopulate, v.name, () => computeValue(
+                { name: v.name, type: v.type as any as ParameterType }, configValue));
         }
     });
 }
 
-function computeValue(parameter: Parameter, arg: Arg) {
-    let value;
+function computeValue(parameter: { name: string, type?: ParameterType }, value: any) {
     // Convert type if necessary
     switch (parameter.type) {
         case undefined:
             // It's a string. Keep the value the same
-            value = arg.value;
+            value = value;
             break;
         case FreeChoices:
             // It's a string array. Keep the value the same
-            value = arg.value;
+            value = value;
             break;
         case "boolean":
-            if (typeof arg.value === "boolean") {
-                value = arg.value;
+            if (typeof value === "boolean") {
+                value = value;
             } else {
-                value = arg.value === "true";
+                value = value === "true";
             }
             break;
         case "number":
-            if (typeof arg.value === "string") {
-                value = parseInt(arg.value, 10);
+            if (typeof value === "string") {
+                value = parseInt(value, 10);
             } else {
                 throw new Error(`Parameter '${parameter.name}' has array value, but is numeric`);
             }
@@ -70,17 +69,17 @@ function computeValue(parameter: Parameter, arg: Arg) {
             // It's a Chooser
             const chooser = parameter.type as Chooser;
             if (chooser.pickOne) {
-                if (typeof arg.value !== "string") {
+                if (typeof value !== "string") {
                     throw new Error(`Parameter '${parameter.name}' has array value, but should be string`);
                 }
                 // Treat as a string
-                value = arg.value;
+                value = value;
             } else {
-                if (typeof arg.value === "string") {
+                if (typeof value.value === "string") {
                     throw new Error(`Parameter '${parameter.name}' has string value, but should be array`);
                 }
                 // It's an array
-                value = arg.value;
+                value = value;
             }
             break;
     }

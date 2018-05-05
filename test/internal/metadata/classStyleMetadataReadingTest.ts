@@ -213,6 +213,60 @@ describe("class style metadata reading", () => {
 
     });
 
+    it("should handle @Value with boolean type conversation", () => {
+        const h = new HasBooleanValue();
+        const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        const mp = md.values[0];
+        assert(mp.required === true);
+        assert(mp.name === "foo");
+        assert(mp.path === "custom.foo");
+
+        const config: Configuration = {
+            custom: {
+                foo: "true",
+            },
+        };
+
+        populateValues(h, md, config);
+        assert.equal(h.foo, true);
+    });
+
+    it("should handle @Value with number type conversation", () => {
+        const h = new HasNumberValue();
+        const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        const mp = md.values[0];
+        assert(mp.required === true);
+        assert(mp.name === "foo");
+        assert(mp.path === "custom.foo");
+
+        const config: Configuration = {
+            custom: {
+                foo: "10",
+            },
+        };
+
+        populateValues(h, md, config);
+        assert.equal(h.foo, 10);
+    });
+
+    it("should handle @Value with string type conversation", () => {
+        const h = new HasStringValue();
+        const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        const mp = md.values[0];
+        assert(mp.required === true);
+        assert(mp.name === "foo");
+        assert(mp.path === "custom.foo");
+
+        const config: Configuration = {
+            custom: {
+                foo: 1,
+            },
+        };
+
+        populateValues(h, md, config);
+        assert.equal(h.foo, "1");
+    });
+
 });
 
 export class Superclass implements HandleCommand {
@@ -291,7 +345,7 @@ export class HasDefaultedBooleanParam implements HandleCommand {
     })
     public booleanParam: boolean = true;
 
-    @Value("teamIds", false)
+    @Value({ path: "teamIds", required: false })
     public teams: string[];
 
     public handle(context: HandlerContext): Promise<HandlerResult> {
@@ -435,6 +489,39 @@ export class NoDecoratorEventHandlerWithoutInterface implements HandleEvent<any>
 export class OptionalMappedParameter implements HandleCommand {
 
     @MappedParameter("lookup", false)
+    public foo: string;
+
+    public handle(context: HandlerContext): Promise<HandlerResult> {
+        throw new Error("not relevant");
+    }
+}
+
+@CommandHandler("description", "universal", "generator")
+export class HasBooleanValue implements HandleCommand {
+
+    @Value({ path: "custom.foo", type: "boolean" })
+    public foo: boolean;
+
+    public handle(context: HandlerContext): Promise<HandlerResult> {
+        throw new Error("not relevant");
+    }
+}
+
+@CommandHandler("description", "universal", "generator")
+export class HasNumberValue implements HandleCommand {
+
+    @Value({ path: "custom.foo", type: "number" })
+    public foo: number;
+
+    public handle(context: HandlerContext): Promise<HandlerResult> {
+        throw new Error("not relevant");
+    }
+}
+
+@CommandHandler("description", "universal", "generator")
+export class HasStringValue implements HandleCommand {
+
+    @Value({ path: "custom.foo", type: "string" })
     public foo: string;
 
     public handle(context: HandlerContext): Promise<HandlerResult> {
