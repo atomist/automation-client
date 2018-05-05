@@ -95,6 +95,7 @@ export interface ValueDeclaration {
     path: string;
     root: string;
     required: boolean;
+    type: boolean;
 }
 
 export interface MappedParameterDeclaration {

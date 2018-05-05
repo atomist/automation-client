@@ -9,6 +9,7 @@ import {
     SecretDeclaration,
     ValueDeclaration,
 } from "../../metadata/automationMetadata";
+import { BaseValue } from "./decoratorSupport";
 import * as decorators from "./decoratorSupport";
 import {
     isCommandHandlerMetadata,
@@ -174,8 +175,9 @@ function valueMetadataFromInstance(r: any, prefix: string = ""): ValueDeclaratio
     const directValues = !!r && r.__values ? r.__values.map(mp =>
         ({
             name: prefix + mp.name,
-            path: mp.path,
-            required: mp.required !== false,
+            path: mp.value.path,
+            required: mp.value.required !== false,
+            type: mp.value.type ? mp.value.type : "string",
         })) : [];
     const nestedValues = _.flatten(Object.keys(r)
         .map(key => [key, r[key]])

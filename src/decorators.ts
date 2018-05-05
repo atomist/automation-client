@@ -1,5 +1,6 @@
 import {
     BaseParameter,
+    BaseValue,
     declareCommandHandler,
     declareEventHandler,
     declareMappedParameter,
@@ -41,9 +42,15 @@ export function Secret(uri: string) {
 /**
  * Inject a config value from the automation-client configuration
  */
-export function Value(path: string, required: boolean = true) {
+export function Value(pathOrValue: string | BaseValue) {
     return (target: any, name: string) => {
-        declareValue(target, name, path, required);
+        if (typeof pathOrValue === "string") {
+            declareValue(target, name, {
+                path: pathOrValue,
+            });
+        } else {
+            declareValue(target, name, pathOrValue);
+        }
     };
 }
 

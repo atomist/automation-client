@@ -27,7 +27,7 @@ export class AddAtomistSpringAgentParams {
     @Secret("atomist://some_secret")
     public someSecret: string;
 
-    @Value("custom.http.port", true)
+    @Value({ path: "custom.http.port", required: true })
     public port: number;
 }
 
