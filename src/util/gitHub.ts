@@ -65,6 +65,7 @@ function filePromise(token: string, user: string, repo: string, path: string): A
 export interface Issue {
     title: string;
     body: string;
+    state?: "open" | "closed";
     assignee?: string;
     milestone?: number;
     labels?: string[];
