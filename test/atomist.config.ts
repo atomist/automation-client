@@ -82,10 +82,10 @@ export const configuration: Configuration = {
         // workers: 2,
     },
     postProcessors: [
-        config => {
+        /*config => {
             config.custom = { test: "123456" };
             return Promise.resolve(config);
-        },
+        },*/
     ],
     logging: {
         level: "debug",

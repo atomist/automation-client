@@ -715,6 +715,10 @@ function validateConfiguration(cfg: Configuration) {
  * ATOMIST_TOKEN and ATOMIST_TEAMS environment variables,
  * respectively.
  *
+ * Placeholders in string config values will get resolved against the
+ * environment. The resolution happens at the very end when all configs
+ * have been merged.
+ *
  * The configuration exported from the atomist.config.js is modified
  * to contain the final configuration values and returned from this
  * function.
@@ -735,6 +739,7 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
         resolveTeamIds(cfg);
         resolveToken(cfg);
         resolvePort(cfg);
+        resolvePlaceholders(cfg);
     } catch (e) {
         logger.error(`Failed to load configuration: ${e.message}`);
         if (e.stack) {
@@ -754,6 +759,53 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
             }
             return Promise.resolve(completeCfg);
         });
+}
+
+/**
+ * Resolves placeholders against the process.env.
+ * Placeholders should be of form ${ENV_VAR}. Placeholders support default values
+ * in case they aren't defined: ${ENV_VAR:default value}
+ * @param {Configuration} config
+ */
+export function resolvePlaceholders(cfg: Configuration) {
+    resolvePlaceholdersRecursively(cfg);
+}
+
+function resolvePlaceholdersRecursively(obj: any) {
+    for (const property in obj) {
+        if (obj.hasOwnProperty(property)) {
+            if (typeof obj[property] === "object") {
+                resolvePlaceholdersRecursively(obj[property]);
+            } else if (typeof obj[property] === "string") {
+                obj[property] = resolvePlaceholder(obj[property]);
+            }
+        }
+    }
+}
+
+const PlaceholderExpression = /\$\{([.a-zA-Z_-]+)([.:0-9a-zA-Z-_ \" ]+)*\}/g;
+
+function resolvePlaceholder(value: string): string {
+    if (PlaceholderExpression.test(value)) {
+        PlaceholderExpression.lastIndex = 0;
+        let result;
+
+        // tslint:disable-next-line:no-conditional-assignment
+        while (result = PlaceholderExpression.exec(value)) {
+            const fm = result[0];
+            const envValue = process.env[result[1]];
+            const defaultValue = result[2] ? result[2].trim().slice(1) : undefined;
+
+            if (envValue) {
+                value = value.split(fm).join(envValue);
+            } else if (defaultValue) {
+                value = value.split(fm).join(defaultValue);
+            } else {
+                throw new Error(`Environment variable '${result[1]}' is not defined`);
+            }
+        }
+    }
+    return value;
 }
 
 /**
