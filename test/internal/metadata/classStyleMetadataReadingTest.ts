@@ -224,7 +224,7 @@ describe("class style metadata reading", () => {
         const config: Configuration = {
             custom: {
                 foo: "true",
-            }
+            },
         };
 
         populateValues(h, md, config);
@@ -242,7 +242,7 @@ describe("class style metadata reading", () => {
         const config: Configuration = {
             custom: {
                 foo: "10",
-            }
+            },
         };
 
         populateValues(h, md, config);
@@ -260,7 +260,7 @@ describe("class style metadata reading", () => {
         const config: Configuration = {
             custom: {
                 foo: 1,
-            }
+            },
         };
 
         populateValues(h, md, config);
