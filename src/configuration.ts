@@ -362,7 +362,7 @@ function userConfigDir(): string {
 /**
  * Return user automation client configuration path.
  */
-function userConfigPath(): string {
+export function userConfigPath(): string {
     const clientConfigFile = "client.config.json";
     return p.join(userConfigDir(), clientConfigFile);
 }

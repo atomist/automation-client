@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Reduce default websocket grace period to 10 seconds
 
+### Added
+
+-   The config command now probes environment for known SDM variables
+    and persists them to the user configuration
+
 ## [0.14.1][] - 2018-04-30
 
 [0.14.1]: https://github.com/atomist/automation-client-ts/compare/0.14.0...0.14.1
