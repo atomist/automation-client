@@ -4,6 +4,7 @@ import {
     ClientOptions,
     StatsD,
 } from "hot-shots";
+import * as os from "os";
 import * as trace from "stack-trace";
 import { Configuration } from "../configuration";
 import { EventFired } from "../HandleEvent";
@@ -286,6 +287,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                 `atomist_environment:${this.configuration.environment}`,
                 `atomist_application_id:${this.configuration.application}`,
                 `atomist_process_id:${process.pid}`,
+                `atomist_host:${os.hostname()}`,
             ],
         };
         this.statsd = new StatsD(options);
