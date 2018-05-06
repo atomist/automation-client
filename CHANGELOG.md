@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Default for `--install` command-line options is to install if the
     node_modules directory does not exist
 
+### Added
+
+-   The config command now probes environment for known SDM variables
+    and persists them to the user configuration
+
 ## [0.14.1][] - 2018-04-30
 
 [0.14.1]: https://github.com/atomist/automation-client-ts/compare/0.14.0...0.14.1
