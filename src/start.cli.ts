@@ -20,6 +20,10 @@ import { CommandInvocation } from "./internal/invoker/Payload";
 
 const Package = "atomist";
 
+const compileDescribe = "Run 'npm run compile' before running";
+const installDescribe = "Run 'npm install' before running/compiling, default is to install if no " +
+    "'node_modules' directory exists";
+
 // tslint:disable-next-line:no-unused-expression
 yargs.completion("completion")
     .command(["execute <name>", "exec <name>", "cmd <name>"], "Run a command", ya => {
@@ -36,12 +40,11 @@ yargs.completion("completion")
             })
             .option("compile", {
                 default: true,
-                describe: "Run 'npm run compile' before running",
+                describe: compileDescribe,
                 type: "boolean",
             })
             .option("install", {
-                default: true,
-                describe: "Run 'npm install' before running/compiling",
+                describe: installDescribe,
                 type: "boolean",
             });
     }, argv => {
@@ -68,12 +71,11 @@ yargs.completion("completion")
             })
             .option("compile", {
                 default: true,
-                describe: "Run 'npm run compile' before starting",
+                describe: compileDescribe,
                 type: "boolean",
             })
             .option("install", {
-                default: true,
-                describe: "Run 'npm install' before starting/compiling",
+                describe: installDescribe,
                 type: "boolean",
             });
     }, argv => {
@@ -105,8 +107,7 @@ yargs.completion("completion")
                 type: "string",
             })
             .option("install", {
-                default: true,
-                describe: "Run 'npm install' before starting/compiling",
+                describe: installDescribe,
                 type: "boolean",
             });
     }, argv => {
@@ -125,8 +126,7 @@ yargs.completion("completion")
                 type: "string",
             })
             .option("install", {
-                default: true,
-                describe: "Run 'npm install' before starting/compiling",
+                describe: installDescribe,
                 type: "boolean",
             });
     }, argv => {
