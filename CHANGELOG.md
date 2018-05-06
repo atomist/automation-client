@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Reduce default websocket grace period to 10 seconds
+-   Default for `--install` command-line options is to install if the
+    node_modules directory does not exist
 
 ## [0.14.1][] - 2018-04-30
 
