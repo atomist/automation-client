@@ -7,13 +7,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.14.1...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.15.0...HEAD
+
+## [0.15.0][] - 2018-05-07
+
+[0.15.0]: https://github.com/atomist/automation-client-ts/compare/0.14.1...0.15.0
+
+Multi release
 
 ### Changed
 
 -   Reduce default websocket grace period to 10 seconds
 -   Default for `--install` command-line options is to install if the
     node_modules directory does not exist
+-   Support `ATOMIST_config_path` environment variables
+-   Support injection of configuration values
+-   Support arbitrary top-level configuration
 
 ### Added
 
