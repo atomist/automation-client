@@ -23,6 +23,7 @@ Multi release
 -   Support `ATOMIST_config_path` environment variables
 -   Support injection of configuration values
 -   Support arbitrary top-level configuration
+-   **BREAKING** moved `automationClientInstance()` to `globals.ts`
 
 ### Added
 
