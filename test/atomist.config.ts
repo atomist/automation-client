@@ -79,7 +79,7 @@ export const configuration: Configuration = {
     },
     cluster: {
         enabled: false,
-        // workers: 2,
+        // workers: 3,
     },
     postProcessors: [
         config => {
