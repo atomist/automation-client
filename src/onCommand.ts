@@ -10,6 +10,7 @@ import {
     Parameter,
     SecretDeclaration,
     Tag,
+    ValueDeclaration,
 } from "./metadata/automationMetadata";
 import { registerCommand } from "./scan";
 import { Maker, toFactory } from "./util/constructionUtils";
@@ -58,6 +59,7 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
     public mapped_parameters: MappedParameterDeclaration[];
 
     public secrets?: SecretDeclaration[];
+    public values?: ValueDeclaration[];
     public intent?: string[];
     public tags?: Tag[];
 
@@ -65,14 +67,15 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
                 public description: string,
                 private h: OnCommand<P>,
                 private parametersFactory: Maker<P>,
-        // tslint:disable-next-line:variable-name
+                // tslint:disable-next-line:variable-name
                 private _tags: string | string[] = [],
-        // tslint:disable-next-line:variable-name
+                // tslint:disable-next-line:variable-name
                 private _intent: string | string[] = []) {
         const newParamInstance = this.freshParametersInstance();
         const md = metadataFromInstance(newParamInstance) as CommandHandlerMetadata;
         this.parameters = md.parameters;
         this.mapped_parameters = md.mapped_parameters;
+        this.values = md.values;
         this.secrets = md.secrets;
         this.intent = toStringArray(_intent);
         this.tags = toStringArray(_tags).map(t => ({ name: t, description: t }));

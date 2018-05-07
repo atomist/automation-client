@@ -1,4 +1,5 @@
 import "mocha";
+import { Configuration } from "../../../src";
 import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
 
 import * as assert from "power-assert";
@@ -10,13 +11,17 @@ import {
     Parameter,
     Secret,
     Tags,
+    Value,
 } from "../../../src/decorators";
 import { HandleCommand } from "../../../src/HandleCommand";
 import { EventFired, HandleEvent } from "../../../src/HandleEvent";
 import { HandlerContext } from "../../../src/HandlerContext";
 import { HandlerResult } from "../../../src/HandlerResult";
 
-import { populateParameters } from "../../../src/internal/parameterPopulation";
+import {
+    populateParameters,
+    populateValues,
+} from "../../../src/internal/parameterPopulation";
 import {
     CommandHandlerMetadata,
     EventHandlerMetadata,
@@ -174,6 +179,94 @@ describe("class style metadata reading", () => {
         const mp = md.mapped_parameters[0];
         assert(mp.required === false);
     });
+
+    it("should handle @Value", () => {
+        const h = new Subclass();
+        const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        const mp = md.values[0];
+        assert(mp.required === true);
+        assert(mp.name === "automationClientName");
+        assert(mp.path === "name");
+
+        const config: Configuration = {
+            name: "test-client",
+        };
+
+        populateValues(h, md, config);
+        assert.equal(h.automationClientName, config.name);
+    });
+
+    it("should handle @Value with required=false", () => {
+        const h = new HasDefaultedBooleanParam();
+        const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        const mp = md.values[0];
+        assert(mp.required === false);
+        assert(mp.name === "teams");
+        assert(mp.path === "teamIds");
+
+        const config: Configuration = {
+            teamIds: ["123", "456"],
+        };
+
+        populateValues(h, md, config);
+        assert.equal(h.teams, config.teamIds);
+
+    });
+
+    it("should handle @Value with boolean type conversation", () => {
+        const h = new HasBooleanValue();
+        const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        const mp = md.values[0];
+        assert(mp.required === true);
+        assert(mp.name === "foo");
+        assert(mp.path === "custom.foo");
+
+        const config: Configuration = {
+            custom: {
+                foo: "true",
+            },
+        };
+
+        populateValues(h, md, config);
+        assert.equal(h.foo, true);
+    });
+
+    it("should handle @Value with number type conversation", () => {
+        const h = new HasNumberValue();
+        const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        const mp = md.values[0];
+        assert(mp.required === true);
+        assert(mp.name === "foo");
+        assert(mp.path === "custom.foo");
+
+        const config: Configuration = {
+            custom: {
+                foo: "10",
+            },
+        };
+
+        populateValues(h, md, config);
+        assert.equal(h.foo, 10);
+    });
+
+    it("should handle @Value with string type conversation", () => {
+        const h = new HasStringValue();
+        const md = metadataFromInstance(h) as CommandHandlerMetadata;
+        const mp = md.values[0];
+        assert(mp.required === true);
+        assert(mp.name === "foo");
+        assert(mp.path === "custom.foo");
+
+        const config: Configuration = {
+            custom: {
+                foo: 1,
+            },
+        };
+
+        populateValues(h, md, config);
+        assert.equal(h.foo, "1");
+    });
+
 });
 
 export class Superclass implements HandleCommand {
@@ -192,6 +285,9 @@ export class Superclass implements HandleCommand {
 
     @Secret("atomist://some_secret")
     public superSecret: string;
+
+    @Value("name")
+    public automationClientName: string;
 
     public handle(context: HandlerContext): Promise<HandlerResult> {
         throw new Error("not relevant");
@@ -248,6 +344,9 @@ export class HasDefaultedBooleanParam implements HandleCommand {
         type: "boolean",
     })
     public booleanParam: boolean = true;
+
+    @Value({ path: "teamIds", required: false })
+    public teams: string[];
 
     public handle(context: HandlerContext): Promise<HandlerResult> {
         throw new Error("not relevant");
@@ -390,6 +489,39 @@ export class NoDecoratorEventHandlerWithoutInterface implements HandleEvent<any>
 export class OptionalMappedParameter implements HandleCommand {
 
     @MappedParameter("lookup", false)
+    public foo: string;
+
+    public handle(context: HandlerContext): Promise<HandlerResult> {
+        throw new Error("not relevant");
+    }
+}
+
+@CommandHandler("description", "universal", "generator")
+export class HasBooleanValue implements HandleCommand {
+
+    @Value({ path: "custom.foo", type: "boolean" })
+    public foo: boolean;
+
+    public handle(context: HandlerContext): Promise<HandlerResult> {
+        throw new Error("not relevant");
+    }
+}
+
+@CommandHandler("description", "universal", "generator")
+export class HasNumberValue implements HandleCommand {
+
+    @Value({ path: "custom.foo", type: "number" })
+    public foo: number;
+
+    public handle(context: HandlerContext): Promise<HandlerResult> {
+        throw new Error("not relevant");
+    }
+}
+
+@CommandHandler("description", "universal", "generator")
+export class HasStringValue implements HandleCommand {
+
+    @Value({ path: "custom.foo", type: "string" })
     public foo: string;
 
     public handle(context: HandlerContext): Promise<HandlerResult> {

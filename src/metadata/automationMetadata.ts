@@ -86,6 +86,16 @@ export interface AutomationMetadata {
     name: string;
     description: string;
     tags?: Tag[];
+    values?: ValueDeclaration[];
+}
+
+export interface ValueDeclaration {
+
+    name: string;
+    path: string;
+    root: string;
+    required: boolean;
+    type: boolean;
 }
 
 export interface MappedParameterDeclaration {

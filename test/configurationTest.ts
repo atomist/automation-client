@@ -21,7 +21,9 @@ import {
     mergeConfigs,
     ProductionDefaultConfiguration,
     resolveConfigurationValue,
+    resolveEnvironmentVariables,
     resolveModuleConfig,
+    resolvePlaceholders,
     resolveTeamIds,
     resolveToken,
     TestingDefaultConfiguration,
@@ -764,5 +766,96 @@ describe("configuration", () => {
 
             process.env.NODE_ENV = oldEnv;
         }
+    });
+
+    describe("resolvePlaceholders", () => {
+
+        it("should resolve simple placeholder", () => {
+            const c = defaultConfiguration();
+            c.custom = {
+                foo: "${BAR}",
+            };
+
+            process.env.BAR = "foo";
+            resolvePlaceholders(c);
+            delete process.env.BAR;
+
+            assert.equal(c.custom.foo, "foo");
+        });
+
+        it("should resolve simple placeholder and apply default value", () => {
+            const c = defaultConfiguration();
+            c.custom = {
+                foo: "${BAR:super foo}",
+            };
+
+            delete process.env.BAR;
+            resolvePlaceholders(c);
+
+            assert.equal(c.custom.foo, "super foo");
+        });
+
+        it("should resolve simple placeholder and not apply default value", () => {
+            const c = defaultConfiguration();
+            c.custom = {
+                foo: "${BAR:super foo}",
+            };
+
+            process.env.BAR = "kung fu";
+            resolvePlaceholders(c);
+            delete process.env.BAR;
+
+            assert.equal(c.custom.foo, "kung fu");
+        });
+
+        it("should resolve multiple placeholders", () => {
+            const c = defaultConfiguration();
+            c.custom = {
+                foo: "Careful ${DUDE }, there's a ${DRINK:beverage} here!",
+            };
+
+            process.env.DUDE = "Man";
+            resolvePlaceholders(c);
+            delete process.env.DUDE;
+
+            assert.equal(c.custom.foo, "Careful Man, there's a beverage here!");
+        });
+
+        it("should fail if placeholder can't be resolved", () => {
+            const c = defaultConfiguration();
+            c.custom = {
+                foo: "Careful ${DUDE }, there's a ${DRINK:beverage} here!",
+            };
+            delete process.env.DUDE;
+            assert.throws(() => resolvePlaceholders(c), Error);
+        });
+
+    });
+
+    describe("resolveEnvironmentVariables", () => {
+
+        it("should resolve simple env var", () => {
+            const c = defaultConfiguration();
+
+            process.env.ATOMIST_custom_foo_bar = "bla";
+            resolveEnvironmentVariables(c);
+            delete process.env.ATOMIST_custom_foo_bar;
+
+            assert.equal(c.custom.foo.bar, "bla");
+        });
+
+        it("should resolve multiple env vars", () => {
+            const c = defaultConfiguration();
+
+            process.env.ATOMIST_custom_foo_bar = "bla";
+            process.env.ATOMIST_token = "some token";
+            resolveEnvironmentVariables(c);
+            delete process.env.ATOMIST_custom_foo_bar;
+            delete process.env.ATOMIST_token;
+
+            assert.equal(c.custom.foo.bar, "bla");
+            assert.equal(c.token, "some token");
+        });
+
     });
 });

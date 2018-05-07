@@ -7,7 +7,9 @@ import {
     MappedParameterDeclaration,
     Parameter,
     SecretDeclaration,
+    ValueDeclaration,
 } from "../../metadata/automationMetadata";
+import { BaseValue } from "./decoratorSupport";
 import * as decorators from "./decoratorSupport";
 import {
     isCommandHandlerMetadata,
@@ -63,6 +65,7 @@ function metadataFromDecorator(h: any, params: any): CommandHandlerMetadata | Ev
                 parameters: parametersFromInstance(params),
                 mapped_parameters: mappedParameterMetadataFromInstance(params),
                 secrets: secretsMetadataFromInstance(params),
+                values: valueMetadataFromInstance(params),
             };
         case "parameters":
             return {
@@ -74,6 +77,7 @@ function metadataFromDecorator(h: any, params: any): CommandHandlerMetadata | Ev
                 parameters: parametersFromInstance(params),
                 mapped_parameters: mappedParameterMetadataFromInstance(params),
                 secrets: secretsMetadataFromInstance(params),
+                values: valueMetadataFromInstance(params),
             };
         case "event-handler":
             // Remove any linebreaks and spaces from those subscription
@@ -87,6 +91,7 @@ function metadataFromDecorator(h: any, params: any): CommandHandlerMetadata | Ev
                 subscription,
                 subscriptionName,
                 secrets: secretsMetadataFromInstance(h),
+                values: valueMetadataFromInstance(h),
             };
         default:
             throw new Error(`Unsupported automation '${params.constructor.name}'`);
@@ -164,4 +169,21 @@ function mappedParameterMetadataFromInstance(r: any, prefix: string = ""): Mappe
         .map(nestedFieldInfo => mappedParameterMetadataFromInstance(nestedFieldInfo[1], prefix + nestedFieldInfo[0] + ".")),
     );
     return directMappedParams.concat(nestedParameters);
+}
+
+function valueMetadataFromInstance(r: any, prefix: string = ""): ValueDeclaration[] {
+    const directValues = !!r && r.__values ? r.__values.map(mp =>
+        ({
+            name: prefix + mp.name,
+            path: mp.value.path,
+            required: mp.value.required !== false,
+            type: mp.value.type ? mp.value.type : "string",
+        })) : [];
+    const nestedValues = _.flatten(Object.keys(r)
+        .map(key => [key, r[key]])
+        .filter(nestedFieldInfo => !!nestedFieldInfo[1])
+        .filter(nestedFieldInfo => typeof nestedFieldInfo[1] === "object")
+        .map(nestedFieldInfo => valueMetadataFromInstance(nestedFieldInfo[1], prefix + nestedFieldInfo[0] + ".")),
+    );
+    return directValues.concat(nestedValues);
 }

@@ -6,8 +6,9 @@ import * as fs from "fs-extra";
 import * as glob from "glob";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
-import * as path from "path";
+import * as p from "path";
 import * as semver from "semver";
+import { automationClientInstance } from "./automationClient";
 
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
@@ -57,9 +58,18 @@ export interface Banner {
 }
 
 /**
+ * Custom configuration you can abuse to your benefit
+ */
+export interface AnyOptions {
+
+    /** Abuse goes here */
+    [key: string]: any;
+}
+
+/**
  * Options for an automation node.
  */
-export interface AutomationOptions {
+export interface AutomationOptions extends AnyOptions {
     /**
      * Automation name.  If not given, the name is extracted from
      * the package.json.
@@ -140,8 +150,6 @@ export interface AutomationOptions {
         graphql?: string;
         api?: string;
     };
-    /** Custom configuration you can abuse to your benefit */
-    custom?: any;
     /**
      * Post-processors can be used to modify the configuration after
      * all standard configuration loading has been done and before the
@@ -150,9 +158,6 @@ export interface AutomationOptions {
      */
     postProcessors?: Array<(configuration: Configuration) => Promise<Configuration>>;
 }
-
-/** DEPRECATED use AutomationOptions */
-export type RunOptions = AutomationOptions;
 
 /**
  * Options useful when running an automation client in server mode.
@@ -308,6 +313,25 @@ export function defaultConfiguration(): Configuration {
 }
 
 /**
+ * Exposes the configuration for lookup of configuration values.
+ * This is useful for components to obtain values eg. from configuration.custom
+ * like user provided secrets etc.
+ * @param {string} path the property path evaluated against the configuration instance
+ * @returns {T}
+ */
+export function configurationValue<T>(path: string, defaultValue?: T): T  {
+    const conf = automationClientInstance().configuration;
+    const value = _.get(conf, path) as T;
+
+    if (value) {
+        return value;
+    } else if (defaultValue) {
+        return defaultValue;
+    }
+    throw new Error(`Required @Value '${path}' not available`);
+}
+
+/**
  * Return the default configuration based on NODE_ENV or ATOMIST_ENV.  ATOMIST_ENV
  * takes precedence if it is set.
  */
@@ -332,7 +356,7 @@ function loadDefaultConfiguration(): Configuration {
  */
 function userConfigDir(): string {
     const home = process.env[process.platform === "win32" ? "USERPROFILE" : "HOME"];
-    return path.join(home, ".atomist");
+    return p.join(home, ".atomist");
 }
 
 /**
@@ -340,7 +364,7 @@ function userConfigDir(): string {
  */
 function userConfigPath(): string {
     const clientConfigFile = "client.config.json";
-    return path.join(userConfigDir(), clientConfigFile);
+    return p.join(userConfigDir(), clientConfigFile);
 }
 
 /**
@@ -630,11 +654,78 @@ export function resolvePort(cfg: Configuration): number {
     return cfg.http.port;
 }
 
+const EnvironmentVariablePrefix = "ATOMIST_";
+const EnvironmentVariablesToIgnore = ["CONFIG", "CONFIG_PATH", "TEAMS", "TEAM", "TOKEN", "ENV"];
+
+/**
+ * Resolve ATOMIST_ environment variables and add them to config.
+ * Variables of like ATOMIST_custom_foo_bar will be converted to
+ * a json path of custom.foo.bar.
+ * @param {Configuration} cfg
+ */
+export function resolveEnvironmentVariables(cfg: Configuration) {
+    for (const key in process.env) {
+        if (key.startsWith(EnvironmentVariablePrefix)
+            && !EnvironmentVariablesToIgnore.some(v => `${EnvironmentVariablePrefix}${v}` === key)
+            && process.env.hasOwnProperty(key)) {
+            const path = key.slice(EnvironmentVariablePrefix.length).split("_").join(".");
+            _.update(cfg, path, () => process.env[key]);
+        }
+    }
+}
+
+/**
+ * Resolve placeholders against the process.env.
+ * Placeholders should be of form ${ENV_VAR}. Placeholders support default values
+ * in case they aren't defined: ${ENV_VAR:default value}
+ * @param {Configuration} config
+ */
+export function resolvePlaceholders(cfg: Configuration) {
+    resolvePlaceholdersRecursively(cfg);
+}
+
+function resolvePlaceholdersRecursively(obj: any) {
+    for (const property in obj) {
+        if (obj.hasOwnProperty(property)) {
+            if (typeof obj[property] === "object") {
+                resolvePlaceholdersRecursively(obj[property]);
+            } else if (typeof obj[property] === "string") {
+                obj[property] = resolvePlaceholder(obj[property]);
+            }
+        }
+    }
+}
+
+const PlaceholderExpression = /\$\{([.a-zA-Z_-]+)([.:0-9a-zA-Z-_ \" ]+)*\}/g;
+
+function resolvePlaceholder(value: string): string {
+    if (PlaceholderExpression.test(value)) {
+        PlaceholderExpression.lastIndex = 0;
+        let result;
+
+        // tslint:disable-next-line:no-conditional-assignment
+        while (result = PlaceholderExpression.exec(value)) {
+            const fm = result[0];
+            const envValue = process.env[result[1]];
+            const defaultValue = result[2] ? result[2].trim().slice(1) : undefined;
+
+            if (envValue) {
+                value = value.split(fm).join(envValue);
+            } else if (defaultValue) {
+                value = value.split(fm).join(defaultValue);
+            } else {
+                throw new Error(`Environment variable '${result[1]}' is not defined`);
+            }
+        }
+    }
+    return value;
+}
+
 /**
  * Invoke postProcessors on the provided configuration.
  */
 export function invokePostProcessors(cfg: Configuration): Promise<Configuration> {
-    return cfg.postProcessors.reduce((p, f) => p.then(f), Promise.resolve(cfg));
+    return cfg.postProcessors.reduce((pp, fp) => pp.then(fp), Promise.resolve(cfg));
 }
 
 /**
@@ -696,6 +787,10 @@ function validateConfiguration(cfg: Configuration) {
  * ATOMIST_TOKEN and ATOMIST_TEAMS environment variables,
  * respectively.
  *
+ * Placeholders in string config values will get resolved against the
+ * environment. The resolution happens at the very end when all configs
+ * have been merged.
+ *
  * The configuration exported from the atomist.config.js is modified
  * to contain the final configuration values and returned from this
  * function.
@@ -716,6 +811,8 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
         resolveTeamIds(cfg);
         resolveToken(cfg);
         resolvePort(cfg);
+        resolveEnvironmentVariables(cfg);
+        resolvePlaceholders(cfg);
     } catch (e) {
         logger.error(`Failed to load configuration: ${e.message}`);
         if (e.stack) {
@@ -736,11 +833,6 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
             return Promise.resolve(completeCfg);
         });
 }
-
-/**
- * DEPRECATED: use loadConfiguration instead.
- */
-export const findConfiguration = loadConfiguration;
 
 export const LocalDefaultConfiguration: Configuration = {
     teamIds: [],
