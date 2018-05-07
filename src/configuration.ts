@@ -58,9 +58,18 @@ export interface Banner {
 }
 
 /**
+ * Custom configuration you can abuse to your benefit
+ */
+export interface AnyOptions {
+
+    /** Abuse goes here */
+    [key: string]: any;
+}
+
+/**
  * Options for an automation node.
  */
-export interface AutomationOptions {
+export interface AutomationOptions extends AnyOptions {
     /**
      * Automation name.  If not given, the name is extracted from
      * the package.json.
@@ -141,8 +150,6 @@ export interface AutomationOptions {
         graphql?: string;
         api?: string;
     };
-    /** Custom configuration you can abuse to your benefit */
-    custom?: any;
     /**
      * Post-processors can be used to modify the configuration after
      * all standard configuration loading has been done and before the
@@ -151,9 +158,6 @@ export interface AutomationOptions {
      */
     postProcessors?: Array<(configuration: Configuration) => Promise<Configuration>>;
 }
-
-/** DEPRECATED use AutomationOptions */
-export type RunOptions = AutomationOptions;
 
 /**
  * Options useful when running an automation client in server mode.
@@ -318,12 +322,13 @@ export function defaultConfiguration(): Configuration {
 export function configurationValue<T>(path: string, defaultValue?: T): T  {
     const conf = automationClientInstance().configuration;
     const value = _.get(conf, path) as T;
-    if (!value && !defaultValue) {
-        throw new Error(`Required @Value '${path}' not available`);
-    } else if (!value && defaultValue) {
+
+    if (value) {
+        return value;
+    } else if (defaultValue) {
         return defaultValue;
     }
-    return value;
+    throw new Error(`Required @Value '${path}' not available`);
 }
 
 /**
@@ -828,11 +833,6 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
             return Promise.resolve(completeCfg);
         });
 }
-
-/**
- * DEPRECATED: use loadConfiguration instead.
- */
-export const findConfiguration = loadConfiguration;
 
 export const LocalDefaultConfiguration: Configuration = {
     teamIds: [],

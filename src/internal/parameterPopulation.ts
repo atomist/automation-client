@@ -43,19 +43,16 @@ export function populateValues(instanceToPopulate: any, am: AutomationMetadata, 
 function computeValue(parameter: { name: string, type?: ParameterType }, value: any) {
     // Convert type if necessary
     switch (parameter.type) {
+        case "string":
         case undefined:
             // It's a string. Keep the value the same
-            value = value;
             break;
         case FreeChoices:
             // It's a string array. Keep the value the same
-            value = value;
             break;
         case "boolean":
-            if (typeof value === "boolean") {
-                value = value;
-            } else {
-                value = value === "true";
+            if (typeof value !== "boolean") {
+                value = value === "true" || value === "yes" || value === "1";
             }
             break;
         case "number":
@@ -72,14 +69,10 @@ function computeValue(parameter: { name: string, type?: ParameterType }, value: 
                 if (typeof value !== "string") {
                     throw new Error(`Parameter '${parameter.name}' has array value, but should be string`);
                 }
-                // Treat as a string
-                value = value;
             } else {
                 if (typeof value.value === "string") {
                     throw new Error(`Parameter '${parameter.name}' has string value, but should be array`);
                 }
-                // It's an array
-                value = value;
             }
             break;
     }
