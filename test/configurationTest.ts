@@ -37,7 +37,7 @@ describe("configuration", () => {
         delete process.env.ATOMIST_CONFIG;
         delete process.env.ATOMIST_TEAM;
         delete process.env.ATOMIST_TEAMS;
-    })
+    });
 
     // tslint:disable-next-line:no-var-requires
     const pkgVersion = require(__dirname + "/../package.json").version;
