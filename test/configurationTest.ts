@@ -37,6 +37,8 @@ describe("configuration", () => {
         delete process.env.ATOMIST_CONFIG;
         delete process.env.ATOMIST_TEAM;
         delete process.env.ATOMIST_TEAMS;
+        delete process.env.ATOMIST_ENV;
+        delete process.env.NODE_ENV;
     });
 
     // tslint:disable-next-line:no-var-requires
