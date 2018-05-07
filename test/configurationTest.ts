@@ -33,11 +33,11 @@ import {
 describe("configuration", () => {
 
     before(() => {
-        delete process.env.ATOMIST_CONFIG_PATH;
-        delete process.env.ATOMIST_CONFIG;
-        delete process.env.ATOMIST_TEAM;
-        delete process.env.ATOMIST_TEAMS;
-        delete process.env.ATOMIST_ENV;
+        for (const key in process.env) {
+            if (process.env.hasOwnProperty(key) && key.startsWith("ATOMIST_")) {
+                delete process.env[key];
+            }
+        }
         delete process.env.NODE_ENV;
     });
 
