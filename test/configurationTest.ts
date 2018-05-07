@@ -30,11 +30,14 @@ import {
     UserConfig,
 } from "../src/configuration";
 
-// reset evenatually existing env vars for this run
-delete process.env.ATOMIST_TEAMS;
-delete process.env.ATOMIST_CONFIG_PATH;
-
 describe("configuration", () => {
+
+    before(() => {
+        delete process.env.ATOMIST_CONFIG_PATH;
+        delete process.env.ATOMIST_CONFIG;
+        delete process.env.ATOMIST_TEAM;
+        delete process.env.ATOMIST_TEAMS;
+    })
 
     // tslint:disable-next-line:no-var-requires
     const pkgVersion = require(__dirname + "/../package.json").version;
