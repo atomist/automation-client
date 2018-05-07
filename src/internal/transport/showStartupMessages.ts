@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { promisify } from "util";
-import { automationClientInstance } from "../../automationClient";
+import { automationClientInstance } from "../../globals";
 import { Automations } from "../metadata/metadata";
 import { info } from "../util/info";
 import { logger } from "../util/logger";

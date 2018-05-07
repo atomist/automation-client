@@ -1,11 +1,6 @@
-import * as _ from "lodash";
-
 import * as stringify from "json-stringify-safe";
-import { automationClientInstance } from "../automationClient";
-import {
-    AutomationServerOptions,
-    Configuration,
-} from "../configuration";
+import * as _ from "lodash";
+import { AutomationServerOptions } from "../configuration";
 import { ApolloGraphClient } from "../graph/ApolloGraphClient";
 import { HandleCommand } from "../HandleCommand";
 import {
@@ -22,9 +17,13 @@ import { NodeConfigSecretResolver } from "../internal/env/NodeConfigSecretResolv
 import {
     Arg,
     CommandInvocation,
-    Invocation, Secret,
+    Invocation,
+    Secret,
 } from "../internal/invoker/Payload";
-import { Automations, isCommandHandlerMetadata } from "../internal/metadata/metadata";
+import {
+    Automations,
+    isCommandHandlerMetadata,
+} from "../internal/metadata/metadata";
 import { metadataFromInstance } from "../internal/metadata/metadataReading";
 import {
     populateParameters,
@@ -34,9 +33,14 @@ import { logger } from "../internal/util/logger";
 import { toStringArray } from "../internal/util/string";
 import {
     CommandHandlerMetadata,
-    EventHandlerMetadata, SecretsMetadata,
+    EventHandlerMetadata,
+    SecretsMetadata,
 } from "../metadata/automationMetadata";
-import { isSmartParameters, isValidationError, ValidationResult } from "../SmartParameters";
+import {
+    isSmartParameters,
+    isValidationError,
+    ValidationResult,
+} from "../SmartParameters";
 import { SecretResolver } from "../spi/env/SecretResolver";
 import { GraphClient } from "../spi/graph/GraphClient";
 import {

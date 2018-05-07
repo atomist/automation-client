@@ -1,3 +1,4 @@
+import { AutomationClient } from "./automationClient";
 import { InMemoryEventStore } from "./internal/event/InMemoryEventStore";
 import { EventStore } from "./spi/event/EventStore";
 
@@ -25,4 +26,8 @@ export function eventStore(): EventStore {
 
 export function setEventStore(newEventStore: EventStore) {
     es = newEventStore;
+}
+
+export function automationClientInstance(): AutomationClient {
+    return (global as any).__runningAutomationClient;
 }

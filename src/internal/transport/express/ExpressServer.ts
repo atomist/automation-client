@@ -6,9 +6,9 @@ import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
 import { IStrategyOptions } from "passport-http-bearer";
 import * as retry from "retry";
-import { automationClientInstance } from "../../../automationClient";
 import { ExpressCustomizer } from "../../../configuration";
 import * as globals from "../../../globals";
+import { automationClientInstance } from "../../../globals";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
 import {

@@ -8,8 +8,7 @@ import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as p from "path";
 import * as semver from "semver";
-import { automationClientInstance } from "./automationClient";
-
+import { automationClientInstance } from "./globals";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import {
