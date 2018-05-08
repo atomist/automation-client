@@ -72,6 +72,7 @@ export function cliAtomistConfig(argv: any): Promise<number> {
     }
     questions.push(teamsQuestion);
 
+    const configPath = userConfigPath();
     if (!userConfig.token) {
         console.log(`
 As part of the Atomist configuration, we need to create a GitHub
@@ -143,7 +144,7 @@ token nor your GitHub username and password.
         console.log(`
 Your Atomist user configuration already has an access token.
 To generate a new token, remove the existing token from
-'${userConfigPath()}'
+'${configPath}'
 and run \`atomist config\` again.
 `);
     }
@@ -337,21 +338,18 @@ and run \`atomist config\` again.
                 userConfig.teamIds = (answers.teamIds as string).split(/\s+/);
             }
 
+            const sdm: any = {};
+
             if (answers.dockerRegistry) {
-                const dockerConf = {
+                sdm.docker = {
                     registry: answers.dockerRegistry,
                     user: answers.dockerUser,
                     password: answers.dockerPassword,
                 };
-                if (userConfig.docker) {
-                    _.merge(userConfig.docker, dockerConf);
-                } else {
-                    userConfig.docker = dockerConf;
-                }
             }
 
             if (answers.cfUser) {
-                const cfConf = {
+                sdm.cloudfoundry = {
                     user: answers.cfUser,
                     password: answers.cfPassword,
                     org: answers.cfOrg,
@@ -359,21 +357,11 @@ and run \`atomist config\` again.
                     spaceProduction: answers.cfSpaceProd,
                     api: answers.cfApi,
                 };
-                if (userConfig.cloudFoundry) {
-                    _.merge(userConfig.cloudFoundry, cfConf);
-                } else {
-                    userConfig.cloudFoundry = cfConf;
-                }
             }
 
             if (answers.npm) {
                 try {
-                    const npmConf = JSON.parse(answers.npm);
-                    if (userConfig.npm) {
-                        _.merge(userConfig.npm, npmConf);
-                    } else {
-                        userConfig.npm = npmConf;
-                    }
+                    sdm.npm = JSON.parse(answers.npm);
                 } catch (e) {
                     e.message = `Failed to parse NPM configuration as JSON: ${e.message}`;
                     return Promise.reject(e);
@@ -381,15 +369,16 @@ and run \`atomist config\` again.
             }
 
             if (answers.checkstylePath) {
-                const checkstyleConf = {
+                sdm.checkstyle = {
                     enable: answers.checkstyle,
                     path: answers.checkstylePath,
                 };
-                if (userConfig.checkstyle) {
-                    _.merge(userConfig.checkstyle, checkstyleConf);
-                } else {
-                    userConfig.checkstyle = checkstyleConf;
-                }
+            }
+
+            if (userConfig.sdm) {
+                _.merge(userConfig.sdm, sdm);
+            } else {
+                userConfig.sdm = sdm;
             }
 
             if (!userConfig.token) {
@@ -404,10 +393,10 @@ and run \`atomist config\` again.
         })
         .then(() => writeUserConfig(userConfig))
         .then(() => {
-            console.info(`Successfully created Atomist user configuration`);
+            console.info(`Successfully created Atomist user configuration: ${configPath}`);
             return 0;
         }, err => {
-            console.error(`Failed to create user config: ${stringify(err)}`);
+            console.error(`Failed to create user config '${configPath}': ${stringify(err)}`);
             return 1;
         });
 }
