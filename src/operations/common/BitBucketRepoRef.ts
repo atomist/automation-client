@@ -5,7 +5,6 @@ import { AbstractRepoRef } from "./AbstractRemoteRepoRef";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 
 import axios from "axios";
-import stringify = require("json-stringify-safe");
 import { encode } from "../../internal/util/base64";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
 
@@ -21,13 +20,6 @@ export class BitBucketRepoRef extends AbstractRepoRef {
                 public apiBase = BitBucketDotComBase,
                 path?: string) {
         super(ProviderType.bitbucket_cloud, "bitbucket.org", owner, repo, sha, path);
-    }
-
-    public cloneUrl(creds: ProjectOperationCredentials) {
-        if (!isBasicAuthCredentials(creds)) {
-            throw new Error("Only basic credentials supported: " + stringify(creds));
-        }
-        return `https://${encodeURIComponent(creds.username)}:${encodeURIComponent(creds.password)}@${this.remoteBase}/${this.pathComponent}.git`;
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
