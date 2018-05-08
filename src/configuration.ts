@@ -318,7 +318,7 @@ export function defaultConfiguration(): Configuration {
  * @param {string} path the property path evaluated against the configuration instance
  * @returns {T}
  */
-export function configurationValue<T>(path: string, defaultValue?: T): T  {
+export function configurationValue<T>(path: string, defaultValue?: T): T {
     const conf = automationClientInstance().configuration;
     const value = _.get(conf, path) as T;
 
@@ -747,6 +747,8 @@ function validateConfiguration(cfg: Configuration) {
     if (!cfg.token) {
         errors.push("you must set a 'token' property in your configuration or the ATOMIST_TOKEN environment variable");
     }
+    cfg.teamIds = cfg.teamIds || [];
+    cfg.groups = cfg.groups || [];
     if (cfg.teamIds.length < 1 && cfg.groups.length < 1) {
         errors.push("you must either provide an array of 'groups' in your configuration or, more likely, provide " +
             "an array of 'teamIds' in your configuration or set the ATOMIST_TEAMS environment variable " +
