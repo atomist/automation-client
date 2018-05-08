@@ -196,6 +196,8 @@ function execJs(opts: ExecOptions): number {
  * @return integer return value of command, 0 if command is successful
  */
 function execCmd(opts: ExecOptions): number {
+    // if --install or --no-install is provided, do that
+    // otherwise run install only if the node_modules directory does not exist
     if (opts.runInstall === true ||
         (opts.runInstall !== false && !fs.existsSync(path.join(opts.cwd, "node_modules")))) {
         const installStatus = install(opts.cwd);
