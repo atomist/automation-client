@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 -   Make sure teamIds and groups are set in configuration
+-   Put SDM configuration under "sdm"
 
 ## [0.15.0][] - 2018-05-07
 
