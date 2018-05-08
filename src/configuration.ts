@@ -654,7 +654,6 @@ export function resolvePort(cfg: Configuration): number {
 }
 
 const EnvironmentVariablePrefix = "ATOMIST_";
-const EnvironmentVariablesToIgnore = ["CONFIG", "CONFIG_PATH", "TEAMS", "TEAM", "TOKEN", "ENV"];
 
 /**
  * Resolve ATOMIST_ environment variables and add them to config.
@@ -665,10 +664,11 @@ const EnvironmentVariablesToIgnore = ["CONFIG", "CONFIG_PATH", "TEAMS", "TEAM", 
 export function resolveEnvironmentVariables(cfg: Configuration) {
     for (const key in process.env) {
         if (key.startsWith(EnvironmentVariablePrefix)
-            && !EnvironmentVariablesToIgnore.some(v => `${EnvironmentVariablePrefix}${v}` === key)
             && process.env.hasOwnProperty(key)) {
-            const path = key.slice(EnvironmentVariablePrefix.length).split("_").join(".");
-            _.update(cfg, path, () => process.env[key]);
+            const cleanKey = key.slice(EnvironmentVariablePrefix.length).split("_").join(".");
+            if (cleanKey[0] !== cleanKey[0].toUpperCase()) {
+                _.update(cfg, cleanKey, () => process.env[key]);
+            }
         }
     }
 }
