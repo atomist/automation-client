@@ -1,7 +1,4 @@
-import {
-    evaluateExpression, evaluateScalar, evaluateScalarValue,
-    evaluateScalarValues,
-} from "@atomist/tree-path/path/expressionEngine";
+import { evaluateScalar, evaluateScalarValue, evaluateScalarValues, } from "@atomist/tree-path/path/expressionEngine";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { TreeVisitor, visit } from "@atomist/tree-path/visitor";
 import "mocha";
@@ -14,6 +11,10 @@ import {
     TypeScriptES6FileParser,
     TypeScriptFileParser,
 } from "../../../../src/tree/ast/typescript/TypeScriptFileParser";
+import { Project } from "../../../../src/project/Project";
+import { CFamilyLangHelper } from "@atomist/microgrammar/matchers/lang/cfamily/CFamilyLangHelper";
+import { FileParser } from "../../../../src/tree/ast/FileParser";
+import { MatchResult } from "../../../../src/tree/ast/FileHits";
 
 describe("TypeScriptFileParser", () => {
 
@@ -110,7 +111,7 @@ describe("TypeScriptFileParser", () => {
     });
 
     it("should parse project and use a path expression to find a value", done => {
-        const p = InMemoryProject.of({ path: "script.ts", content: "const x = 1;" });
+        const p = InMemoryProject.of({path: "script.ts", content: "const x = 1;"});
         findMatches(p, TypeScriptES6FileParser,
             "**/*.ts",
             "//VariableDeclaration/Identifier")
@@ -123,7 +124,7 @@ describe("TypeScriptFileParser", () => {
     });
 
     it("should parse project and use a path expression to find and update a value", done => {
-        const p = InMemoryProject.of({ path: "script.ts", content: "const x = 1;" });
+        const p = InMemoryProject.of({path: "script.ts", content: "const x = 1;"});
         findMatches(p, TypeScriptES6FileParser,
             "**/*.ts",
             "//VariableDeclaration/Identifier")
@@ -141,7 +142,7 @@ describe("TypeScriptFileParser", () => {
     });
 
     it("should parse project and use a path expression to find and update a value in an inner search", done => {
-        const p = InMemoryProject.of({ path: "script.ts", content: "const x = 1;" });
+        const p = InMemoryProject.of({path: "script.ts", content: "const x = 1;"});
         findMatches(p, TypeScriptES6FileParser,
             "**/*.ts",
             "//VariableDeclaration")
@@ -160,4 +161,100 @@ describe("TypeScriptFileParser", () => {
             }).catch(done);
     });
 
+    it("shas functions", async () => {
+        const p = InMemoryProject.of({
+            path: "script.js",
+            content:
+                "function it(a, b) { // get rid of this \nreturn \n 'frogs'; }",
+        });
+        const functions = await getFunctionSignatures(p);
+
+        // console.log(stringify(root, null, 2));
+        assert(functions.length === 1);
+        assert.equal(functions[0].identifier, "it");
+        console.log(JSON.stringify(functions[0]));
+        assert.equal(functions[0].canonicalBody,
+            "function it(a, b){return 'frogs';}");
+        assert.equal(functions[0].path,
+            "script.js");
+    });
+
 });
+
+export interface SignatureRequest {
+    /**
+     * Parser to use to parse the content
+     */
+    fileParser: FileParser;
+
+    /**
+     * Path expression for the elements we want
+     */
+    pathExpression: string;
+
+    /**
+     * Glob patterns for the files we want to parse
+     */
+    globPattern: string;
+
+    /**
+     * Function to extract the identifier from each matched element
+     * @param {MatchResult} m
+     * @return {string}
+     */
+    extractIdentifier: (m: MatchResult) => string;
+}
+
+const JavaScriptFunctionSignatureRequest: SignatureRequest = {
+    fileParser: TypeScriptES6FileParser,
+    pathExpression: "//FunctionDeclaration",
+    globPattern: "**/*.js",
+    extractIdentifier: m => {
+        const ids = m.evaluateExpression("//Identifier") as TreeNode[];
+        return ids[0].$value;
+    },
+};
+
+async function getFunctionSignatures(p: Project,
+                                     opts: Partial<SignatureRequest> = {}): Promise<Signature[]> {
+    const optsToUse: SignatureRequest = {
+        ...JavaScriptFunctionSignatureRequest,
+        ...opts,
+    };
+    const matches = await findMatches(p,
+        optsToUse.fileParser,
+        optsToUse.globPattern,
+        optsToUse.pathExpression,
+    );
+    const helper = new CFamilyLangHelper();
+    return matches.map(m => {
+        const identifier = optsToUse.extractIdentifier(m);
+        const body = m.$value;
+        return {
+            path: m.sourceLocation.path,
+            identifier,
+            body,
+            canonicalBody: helper.canonicalize(body),
+        };
+    });
+}
+
+/**
+ * Function signature we've found
+ */
+interface Signature {
+
+    /**
+     * Path of the file within the project
+     */
+    path: string;
+
+    /**
+     * Identifier of the element
+     */
+    identifier: string;
+
+    body: string;
+
+    canonicalBody: string;
+}
