@@ -792,9 +792,9 @@ function validateConfiguration(cfg: Configuration) {
  * ATOMIST_TOKEN and ATOMIST_TEAMS environment variables,
  * respectively.
  *
- * Placeholders in string config values will get resolved against the
- * environment. The resolution happens at the very end when all configs
- * have been merged.
+ * Placeholder of the form `${ENV_VARIABLE}` in string configuration
+ * values will get resolved against the environment. The resolution
+ * happens at the very end when all configs have been merged.
  *
  * The configuration exported from the atomist.config.js is modified
  * to contain the final configuration values and returned from this
