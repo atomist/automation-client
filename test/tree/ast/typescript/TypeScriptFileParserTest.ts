@@ -1,4 +1,5 @@
-import { evaluateScalar, evaluateScalarValue, evaluateScalarValues, } from "@atomist/tree-path/path/expressionEngine";
+import { CFamilyLangHelper } from "@atomist/microgrammar/matchers/lang/cfamily/CFamilyLangHelper";
+import { evaluateScalar, evaluateScalarValue, evaluateScalarValues } from "@atomist/tree-path/path/expressionEngine";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { TreeVisitor, visit } from "@atomist/tree-path/visitor";
 import "mocha";
@@ -6,15 +7,14 @@ import * as assert from "power-assert";
 import { fail } from "power-assert";
 import { InMemoryFile } from "../../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../../src/project/mem/InMemoryProject";
+import { Project } from "../../../../src/project/Project";
 import { findMatches } from "../../../../src/tree/ast/astUtils";
+import { MatchResult } from "../../../../src/tree/ast/FileHits";
+import { FileParser } from "../../../../src/tree/ast/FileParser";
 import {
     TypeScriptES6FileParser,
     TypeScriptFileParser,
 } from "../../../../src/tree/ast/typescript/TypeScriptFileParser";
-import { Project } from "../../../../src/project/Project";
-import { CFamilyLangHelper } from "@atomist/microgrammar/matchers/lang/cfamily/CFamilyLangHelper";
-import { FileParser } from "../../../../src/tree/ast/FileParser";
-import { MatchResult } from "../../../../src/tree/ast/FileHits";
 
 describe("TypeScriptFileParser", () => {
 

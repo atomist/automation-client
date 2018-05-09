@@ -1,8 +1,8 @@
 import { ActionResult } from "../../action/ActionResult";
 import { Configurable } from "../../project/git/Configurable";
+import { isBasicAuthCredentials } from "./BasicAuthCredentials";
 import { isTokenCredentials, ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import { ProviderType, RemoteRepoRef } from "./RepoId";
-import { isBasicAuthCredentials } from "./BasicAuthCredentials";
 
 export abstract class AbstractRepoRef implements RemoteRepoRef {
 
