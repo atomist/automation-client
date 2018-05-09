@@ -331,8 +331,8 @@ export function configurationValue<T>(path: string, defaultValue?: T): T {
 }
 
 /**
- * Return the default configuration based on NODE_ENV or ATOMIST_ENV.  ATOMIST_ENV
- * takes precedence if it is set.
+ * Return the default configuration based on NODE_ENV or ATOMIST_ENV.
+ * ATOMIST_ENV takes precedence if it is set.
  */
 function loadDefaultConfiguration(): Configuration {
     const cfg = LocalDefaultConfiguration;
