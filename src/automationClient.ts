@@ -1,6 +1,7 @@
 import * as cluster from "cluster";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
+import * as p from "path";
 import { Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
@@ -93,7 +94,7 @@ export class AutomationClient {
         setLogLevel(this.configuration.logging.level);
 
         if (this.configuration.logging.file.enabled === true) {
-            let filename = "./log/automation-client.log";
+            let filename = p.join(".", "log", `${this.configuration.name.replace(/^.*\//, "")}.log`);
             if (this.configuration.logging.file.name) {
                 filename = this.configuration.logging.file.name;
             }
