@@ -3,14 +3,12 @@ import * as inquirer from "inquirer";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as os from "os";
-import * as path from "path";
 
 import {
     getUserConfig,
     userConfigPath,
     writeUserConfig,
 } from "../configuration";
-import { obfuscateJson } from "../internal/util/string";
 
 const github = new GitHubApi();
 
@@ -142,7 +140,7 @@ token nor your GitHub username and password.
         }
     } else {
         console.log(`
-Your Atomist user configuration already has an access token.
+Your Atomist client configuration already has an access token.
 To generate a new token, remove the existing token from
 '${configPath}'
 and run \`atomist config\` again.
@@ -274,7 +272,7 @@ and run \`atomist config\` again.
             message: "Cloud Foundry API endpoint",
             validate: value => {
                 if (!/\S/.test(value) && !process.env.PCF_API) {
-                    return `The Cloud Foundry API enpoint you entered is empty`;
+                    return `The Cloud Foundry API endpoint you entered is empty`;
                 }
                 return true;
             },
@@ -353,8 +351,10 @@ and run \`atomist config\` again.
                     user: answers.cfUser,
                     password: answers.cfPassword,
                     org: answers.cfOrg,
-                    spaceStaging: answers.cfSpaceStaging,
-                    spaceProduction: answers.cfSpaceProd,
+                    space: {
+                        staging: answers.cfSpaceStaging,
+                        production: answers.cfSpaceProd,
+                    },
                     api: answers.cfApi,
                 };
             }
@@ -393,10 +393,10 @@ and run \`atomist config\` again.
         })
         .then(() => writeUserConfig(userConfig))
         .then(() => {
-            console.info(`Successfully created Atomist user configuration: ${configPath}`);
+            console.info(`Successfully created Atomist client configuration: ${configPath}`);
             return 0;
         }, err => {
-            console.error(`Failed to create user config '${configPath}': ${stringify(err)}`);
+            console.error(`Failed to create client configuration '${configPath}': ${stringify(err)}`);
             return 1;
         });
 }
