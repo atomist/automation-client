@@ -1,11 +1,12 @@
 import { MappedParameter, MappedParameters, Parameter } from "../../../decorators";
+import { FallbackParams } from "./FallbackParams";
 import { GitBranchRegExp } from "./gitHubPatterns";
 import { GitHubTargetsParams } from "./GitHubTargetsParams";
 
 /**
  * Resolve from a Mapped parameter or from a supplied repos regex if no repo mapping
  */
-export class GitHubFallbackReposParameters extends GitHubTargetsParams {
+export class GitHubFallbackReposParameters extends GitHubTargetsParams implements FallbackParams {
 
     @MappedParameter(MappedParameters.GitHubOwner, false)
     public owner: string;
