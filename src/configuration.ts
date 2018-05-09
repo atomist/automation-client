@@ -777,7 +777,11 @@ function validateConfiguration(cfg: Configuration) {
  *     Configuration
  * 4.  The contents of the user's client.config.json as UserConfig
  *     resolving user and per-module configuration into Configuration
- * 5.  Values in DefaultConfiguration
+ * 5.  ProductionDefaultConfiguration if ATOMIST_ENV or NODE_ENV is set
+ *     to "production" or TestingDefaultConfiguration if ATOMIST_ENV or
+ *     NODE_ENV is set to "staging" or "testing", with ATOMIST_ENV
+ *     taking precedence over NODE_ENV.
+ * 6.  LocalDefaultConfiguration
  *
  * If any of the sources are missing, they are ignored.  Any truthy
  * configuration values specified by sources of higher precedence
@@ -835,6 +839,10 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
         });
 }
 
+/**
+ * Default configuration when running in neither testing or
+ * production.
+ */
 export const LocalDefaultConfiguration: Configuration = {
     teamIds: [],
     groups: [],
@@ -894,6 +902,9 @@ export const LocalDefaultConfiguration: Configuration = {
     postProcessors: [],
 };
 
+/**
+ * Configuration defaults for production environments.
+ */
 export const ProductionDefaultConfiguration: Partial<Configuration> = {
     environment: "production",
     policy: "durable",
@@ -930,6 +941,9 @@ export const ProductionDefaultConfiguration: Partial<Configuration> = {
     },
 };
 
+/**
+ * Configuration defaults for pre-production environments.
+ */
 export const TestingDefaultConfiguration: Partial<Configuration> = {
     environment: "testing",
     policy: "durable",
