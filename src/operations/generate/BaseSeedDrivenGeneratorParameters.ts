@@ -2,14 +2,15 @@ import { Parameter, Parameters } from "../../decorators";
 import { GitHubSourceRepoParameters } from "../common/params/GitHubSourceRepoParameters";
 import { SourceRepoParameters } from "../common/params/SourceRepoParameters";
 import { GitHubRepoCreationParameters } from "./GitHubRepoCreationParameters";
-import { NewRepoCreationParameters } from "./NewRepoCreationParameters";
+import { RepoCreationParameters } from "./RepoCreationParameters";
+import { SeedDrivenGeneratorParameters } from "./SeedDrivenGeneratorParameters";
 
 /**
- * The parameters needed to create a new repo from a seed.
+ * Default parameters needed to create a new repo from a seed.
  * Defaults to use GitHub.com, but subclasses can override the source and target parameters.
  */
 @Parameters()
-export class BaseSeedDrivenGeneratorParameters {
+export class BaseSeedDrivenGeneratorParameters implements SeedDrivenGeneratorParameters {
 
     @Parameter({
         pattern: /^(?:true|false)$/,
@@ -28,6 +29,6 @@ export class BaseSeedDrivenGeneratorParameters {
      * @param {NewRepoCreationParameters} target
      */
     constructor(public source: SourceRepoParameters = new GitHubSourceRepoParameters(),
-                public target: NewRepoCreationParameters = new GitHubRepoCreationParameters()) {}
+                public target: RepoCreationParameters = new GitHubRepoCreationParameters()) {}
 
 }

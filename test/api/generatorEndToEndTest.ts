@@ -8,14 +8,10 @@ import * as fs from "fs";
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 
 import { ActionResult } from "../../src/action/ActionResult";
-import { HandlerContext } from "../../src/HandlerContext";
 import { GitHubDotComBase, GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../../src/operations/common/ProjectOperationCredentials";
 import { RemoteRepoRef } from "../../src/operations/common/RepoId";
-import { BaseSeedDrivenGeneratorParameters } from "../../src/operations/generate/BaseSeedDrivenGeneratorParameters";
 import { generate } from "../../src/operations/generate/generatorUtils";
-import { GenericGenerator } from "../../src/operations/generate/GenericGenerator";
-import { GitHubRepoCreationParameters } from "../../src/operations/generate/GitHubRepoCreationParameters";
 import { RemoteGitProjectPersister } from "../../src/operations/generate/remoteGitProjectPersister";
 import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
 import { LocalProject } from "../../src/project/local/LocalProject";
@@ -49,36 +45,6 @@ describe("generator end to end", () => {
             TargetOwner = response.data.login;
         }).then(() => done(), done);
     });
-
-    it("should create a new GitHub repo using GenericGenerator", function(done) {
-        this.retries(3);
-        const repoName = tempRepoName();
-        const rr = new GitHubRepoRef(TargetOwner, repoName);
-        const cleanupDone = (err: Error | void = null) => {
-            deleteOrIgnore(rr, { token: GitHubToken }).then(done(err));
-        };
-
-        const generator = new GenericGenerator(BaseSeedDrivenGeneratorParameters,
-            () => p => Promise.resolve(p));
-        const params = generator.freshParametersInstance();
-        params.source.owner = "atomist-seeds";
-        params.source.repo = "spring-rest-seed";
-        params.target.owner = TargetOwner;
-        params.target.repo = repoName;
-        (params.target as GitHubRepoCreationParameters).githubToken = GitHubToken;
-        generator.handle(MockHandlerContext as HandlerContext, params)
-            .then(result => {
-                assert.equal(result.code, 0);
-                // Check the repo
-                return hasFile(GitHubToken, TargetOwner, repoName, "pom.xml")
-                    .then(r => {
-                        assert(r);
-                        return GitCommandGitProject.cloned({ token: GitHubToken },
-                            new GitHubRepoRef(TargetOwner, repoName))
-                            .then(verifyPermissions);
-                    });
-            }).then(() => cleanupDone(), cleanupDone);
-    }).timeout(20000);
 
     it("should create a new GitHub repo using generate function", function(done) {
         this.retries(3);

@@ -1,14 +1,13 @@
 import { MappedParameter, MappedParameters, Parameter } from "../../decorators";
-import { Credentialed } from "../common/params/Credentialed";
 import { GitHubNameRegExp } from "../common/params/gitHubPatterns";
-import { RemoteLocator } from "../common/params/RemoteLocator";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
-import { RemoteRepoRef, RepoId } from "../common/RepoId";
+import { RemoteRepoRef } from "../common/RepoId";
+import { RepoCreationParameters } from "./RepoCreationParameters";
 
 /**
  * Parameters common to all generators that create new repositories
  */
-export abstract class NewRepoCreationParameters implements Credentialed, RepoId, RemoteLocator {
+export abstract class NewRepoCreationParameters implements RepoCreationParameters {
 
     @MappedParameter(MappedParameters.GitHubOwner)
     public owner: string;
