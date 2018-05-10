@@ -2,7 +2,7 @@ import { Parameter, Parameters } from "../../decorators";
 import { GitHubSourceRepoParameters } from "../common/params/GitHubSourceRepoParameters";
 import { SourceRepoParameters } from "../common/params/SourceRepoParameters";
 import { GitHubRepoCreationParameters } from "./GitHubRepoCreationParameters";
-import { NewRepoCreationParameters } from "./NewRepoCreationParameters";
+import { RepoCreationParameters } from "./RepoCreationParameters";
 import { SeedDrivenGeneratorParameters } from "./SeedDrivenGeneratorParameters";
 
 /**
@@ -29,6 +29,6 @@ export class BaseSeedDrivenGeneratorParameters implements SeedDrivenGeneratorPar
      * @param {NewRepoCreationParameters} target
      */
     constructor(public source: SourceRepoParameters = new GitHubSourceRepoParameters(),
-                public target: NewRepoCreationParameters = new GitHubRepoCreationParameters()) {}
+                public target: RepoCreationParameters = new GitHubRepoCreationParameters()) {}
 
 }

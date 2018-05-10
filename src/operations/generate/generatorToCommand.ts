@@ -80,7 +80,7 @@ function handle<P extends SeedDrivenGeneratorParameters>(ctx: HandlerContext,
                                                          params: P,
                                                          details: GeneratorCommandDetails<P>): Promise<RedirectResult> {
 
-    return ctx.messageClient.respond(`Starting project generation for ${params.target.owner}/${params.target.repo}`)
+    return ctx.messageClient.respond(`Starting project generation for ${params.target.repoRef.owner}/${params.target.repoRef.repo}`)
         .then(() => {
             return generate(
                 startingPoint(params, ctx, details.repoLoader(params), details)
@@ -92,8 +92,7 @@ function handle<P extends SeedDrivenGeneratorParameters>(ctx: HandlerContext,
                 params.target.credentials,
                 editorFactory(params, ctx),
                 details.projectPersister,
-                // IT'S A REPO ID
-                params.target,
+                params.target.repoRef,
                 params,
                 details.afterAction,
             )
@@ -102,7 +101,7 @@ function handle<P extends SeedDrivenGeneratorParameters>(ctx: HandlerContext,
         })
         .then(r => {
             if (isGitHubRepoRef(r.target.id)) {
-                return hasOrgWebhook(params.target.owner, ctx)
+                return hasOrgWebhook(params.target.repoRef.owner, ctx)
                     .then(webhookInstalled => {
                         if (!webhookInstalled) {
                             return addAtomistWebhook((r.target as GitProject), params);
@@ -117,7 +116,7 @@ function handle<P extends SeedDrivenGeneratorParameters>(ctx: HandlerContext,
         .then(r => ({
             code: 0,
             // Redirect to our local project page
-            redirect: details.redirecter(params.target),
+            redirect: details.redirecter(params.target.repoRef),
         }));
 }
 

@@ -15,7 +15,7 @@
  */
 
 import { RemoteLocator } from "../common/params/RemoteLocator";
-import { NewRepoCreationParameters } from "./NewRepoCreationParameters";
+import { RepoCreationParameters } from "./RepoCreationParameters";
 
 /**
  * The parameters needed to create a new repo from a seed.
@@ -26,6 +26,6 @@ export interface SeedDrivenGeneratorParameters {
 
     source: RemoteLocator;
 
-    target: NewRepoCreationParameters;
+    target: RepoCreationParameters;
 
 }
