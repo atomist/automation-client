@@ -51,6 +51,9 @@ function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: strin
 
 /**
  * Create a generator function wrapping the given transform
+ *
+ * DEPRECATED: use the one in @atomist/sdm
+ *
  * @param {AnyProjectEditor} editorFactory editor for the transformation
  * @param factory construction function
  * @param {string} name name of the generator

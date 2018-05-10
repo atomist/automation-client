@@ -9,6 +9,9 @@ import { encode } from "../../internal/util/base64";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
 import { ProviderType } from "./RepoId";
 
+/*
+ * TODO: move code down from sdm, it's better
+ */
 export class BitBucketServerRepoRef extends AbstractRepoRef {
 
     private readonly apiBase: string;

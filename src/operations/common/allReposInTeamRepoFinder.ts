@@ -12,6 +12,9 @@ const PageSize = 100;
 /**
  * Use a GraphQL query to find all repos for the current team,
  * or look locally if appropriate, in current working directory
+ *
+ * DEPRECATED: there's a better one in @atomist/sdm
+ *
  * @param cwd directory to look in if this is local
  * @constructor
  */
