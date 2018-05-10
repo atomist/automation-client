@@ -3,13 +3,14 @@ import { GitHubSourceRepoParameters } from "../common/params/GitHubSourceRepoPar
 import { SourceRepoParameters } from "../common/params/SourceRepoParameters";
 import { GitHubRepoCreationParameters } from "./GitHubRepoCreationParameters";
 import { NewRepoCreationParameters } from "./NewRepoCreationParameters";
+import { SeedDrivenGeneratorParameters } from "./SeedDrivenGeneratorParameters";
 
 /**
- * The parameters needed to create a new repo from a seed.
+ * Default parameters needed to create a new repo from a seed.
  * Defaults to use GitHub.com, but subclasses can override the source and target parameters.
  */
 @Parameters()
-export class BaseSeedDrivenGeneratorParameters {
+export class BaseSeedDrivenGeneratorParameters implements SeedDrivenGeneratorParameters {
 
     @Parameter({
         pattern: /^(?:true|false)$/,

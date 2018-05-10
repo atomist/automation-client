@@ -7,23 +7,23 @@ import { addRepoWebhook, GitHubRepoWebhookPayload } from "../../../util/gitHub";
 import { isGitHubRepoRef } from "../../common/GitHubRepoRef";
 import { ProjectAction } from "../../common/projectAction";
 import { isTokenCredentials } from "../../common/ProjectOperationCredentials";
-import { BaseSeedDrivenGeneratorParameters } from "../BaseSeedDrivenGeneratorParameters";
+import { SeedDrivenGeneratorParameters } from "../SeedDrivenGeneratorParameters";
 
 /**
  * afterAction for use in generatorUtils.generate function that adds the Atomist web hook
  * for the repo
  * @param {GitProject} p
- * @param {BaseSeedDrivenGeneratorParameters} params
+ * @param {SeedDrivenGeneratorParameters} params
  * @return {any}
  */
-export const addAtomistWebhook: ProjectAction<BaseSeedDrivenGeneratorParameters, GitProject> =
+export const addAtomistWebhook: ProjectAction<SeedDrivenGeneratorParameters, GitProject> =
     (p, params) => addWebhook(p, params)
         .then(r => ({
             ...r,
             target: p,
         }));
 
-function addWebhook(p: GitProject, params: BaseSeedDrivenGeneratorParameters): Promise<ActionResult<any>> {
+function addWebhook(p: GitProject, params: SeedDrivenGeneratorParameters): Promise<ActionResult<any>> {
     if (!params.addAtomistWebhook) {
         return Promise.resolve(successOn(p));
     }

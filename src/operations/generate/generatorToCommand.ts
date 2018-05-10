@@ -2,10 +2,7 @@ import * as _ from "lodash";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { RedirectResult } from "../../HandlerResult";
-import {
-    commandHandlerFrom,
-    OnCommand,
-} from "../../onCommand";
+import { commandHandlerFrom, OnCommand } from "../../onCommand";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
 import { CachingDirectoryManager } from "../../spi/clone/CachingDirectoryManager";
@@ -19,12 +16,9 @@ import { ProjectAction } from "../common/projectAction";
 import { RepoRef } from "../common/RepoId";
 import { RepoLoader } from "../common/repoLoader";
 import { AnyProjectEditor } from "../edit/projectEditor";
-import { BaseSeedDrivenGeneratorParameters } from "./BaseSeedDrivenGeneratorParameters";
-import {
-    generate,
-    ProjectPersister,
-} from "./generatorUtils";
+import { generate, ProjectPersister } from "./generatorUtils";
 import { RemoteGitProjectPersister } from "./remoteGitProjectPersister";
+import { SeedDrivenGeneratorParameters } from "./SeedDrivenGeneratorParameters";
 import { addAtomistWebhook } from "./support/addAtomistWebhook";
 
 export type EditorFactory<P> = (params: P, ctx: HandlerContext) => AnyProjectEditor<P>;
@@ -32,14 +26,14 @@ export type EditorFactory<P> = (params: P, ctx: HandlerContext) => AnyProjectEdi
 /**
  * Further details of a generator to allow selective customization
  */
-export interface GeneratorCommandDetails<P extends BaseSeedDrivenGeneratorParameters> extends CommandDetails {
+export interface GeneratorCommandDetails<P extends SeedDrivenGeneratorParameters> extends CommandDetails {
 
     redirecter: (r: RepoRef) => string;
     projectPersister?: ProjectPersister;
     afterAction?: ProjectAction<P>;
 }
 
-function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: string): GeneratorCommandDetails<P> {
+function defaultDetails<P extends SeedDrivenGeneratorParameters>(name: string): GeneratorCommandDetails<P> {
     return {
         description: name,
         repoFinder: allReposInTeam(),
@@ -60,10 +54,10 @@ function defaultDetails<P extends BaseSeedDrivenGeneratorParameters>(name: strin
  * @param {string} details object allowing customization beyond reasonable defaults
  * @return {HandleCommand}
  */
-export function generatorHandler<P extends BaseSeedDrivenGeneratorParameters>(editorFactory: EditorFactory<P>,
-                                                                              factory: Maker<P>,
-                                                                              name: string,
-                                                                              details: Partial<GeneratorCommandDetails<P>> = {}): HandleCommand {
+export function generatorHandler<P extends SeedDrivenGeneratorParameters>(editorFactory: EditorFactory<P>,
+                                                                          factory: Maker<P>,
+                                                                          name: string,
+                                                                          details: Partial<GeneratorCommandDetails<P>> = {}): HandleCommand {
 
     const detailsToUse: GeneratorCommandDetails<P> = {
         ...defaultDetails(name),
@@ -73,25 +67,25 @@ export function generatorHandler<P extends BaseSeedDrivenGeneratorParameters>(ed
         detailsToUse.description, detailsToUse.intent, detailsToUse.tags);
 }
 
-function handleGenerate<P extends BaseSeedDrivenGeneratorParameters>(editorFactory: EditorFactory<P>,
-                                                                     details: GeneratorCommandDetails<P>): OnCommand<P> {
+function handleGenerate<P extends SeedDrivenGeneratorParameters>(editorFactory: EditorFactory<P>,
+                                                                 details: GeneratorCommandDetails<P>): OnCommand<P> {
 
     return (ctx: HandlerContext, parameters: P) => {
         return handle(ctx, editorFactory, parameters, details);
     };
 }
 
-function handle<P extends BaseSeedDrivenGeneratorParameters>(ctx: HandlerContext,
-                                                             editorFactory: EditorFactory<P>,
-                                                             params: P,
-                                                             details: GeneratorCommandDetails<P>): Promise<RedirectResult> {
+function handle<P extends SeedDrivenGeneratorParameters>(ctx: HandlerContext,
+                                                         editorFactory: EditorFactory<P>,
+                                                         params: P,
+                                                         details: GeneratorCommandDetails<P>): Promise<RedirectResult> {
 
     return ctx.messageClient.respond(`Starting project generation for ${params.target.owner}/${params.target.repo}`)
         .then(() => {
             return generate(
                 startingPoint(params, ctx, details.repoLoader(params), details)
                     .then(p => {
-                        return ctx.messageClient.respond(`Cloned seed project from \`${params.source.owner}/${params.source.repo}\``)
+                        return ctx.messageClient.respond(`Cloned seed project from \`${params.source.repoRef.owner}/${params.source.repoRef.repo}\``)
                             .then(() => p);
                     }),
                 ctx,
@@ -155,10 +149,10 @@ async function hasOrgWebhook(owner: string, ctx: HandlerContext): Promise<boolea
  * @param details command details
  * @return {Promise<Project>}
  */
-function startingPoint<P extends BaseSeedDrivenGeneratorParameters>(params: P,
-                                                                    ctx: HandlerContext,
-                                                                    repoLoader: RepoLoader,
-                                                                    details: GeneratorCommandDetails<any>): Promise<Project> {
+function startingPoint<P extends SeedDrivenGeneratorParameters>(params: P,
+                                                                ctx: HandlerContext,
+                                                                repoLoader: RepoLoader,
+                                                                details: GeneratorCommandDetails<any>): Promise<Project> {
 
     return repoLoader(params.source.repoRef);
 }
