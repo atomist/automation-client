@@ -340,7 +340,7 @@ export function configurationValue<T>(path: string, defaultValue?: T): T {
 
     if (value) {
         return value;
-    } else if (defaultValue) {
+    } else if (defaultValue !== undefined) {
         return defaultValue;
     }
     throw new Error(`Required @Value '${path}' not available`);

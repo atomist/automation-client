@@ -11,6 +11,7 @@ import * as tmp from "tmp-promise";
 import {
     AutomationServerOptions,
     Configuration,
+    configurationValue,
     defaultConfiguration,
     loadAtomistConfig,
     loadAtomistConfigPath,
@@ -860,6 +861,42 @@ describe("configuration", () => {
 
             assert.equal(c.custom.foo.bar, "bla");
             assert.equal(c.token, "some token");
+        });
+
+    });
+
+    describe("configurationValue", () => {
+
+        it("should resolve simple config value", () => {
+            (global as any).__runningAutomationClient = {
+                configuration: {
+                    test: {
+                        foo: "bla",
+                    },
+                },
+            };
+            const v = configurationValue<string>("test.foo");
+            assert.equal(v, "bla");
+        });
+
+        it("should resolve simple config value from default", () => {
+            (global as any).__runningAutomationClient = {
+                configuration: {
+
+                },
+            };
+            const v = configurationValue<string>("test.foo", "bla");
+            assert.equal(v, "bla");
+        });
+
+        it("should resolve simple config value from null", () => {
+            (global as any).__runningAutomationClient = {
+                configuration: {
+
+                },
+            };
+            const v = configurationValue<string>("test.foo", null);
+            assert.equal(v, null);
         });
 
     });
