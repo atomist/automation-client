@@ -127,6 +127,7 @@ export function githubTeam(maker: Maker<HandleCommand>, team: string): () => Han
     return () => {
         const command = toFactory(maker)();
         declareMappedParameter(command, "__atomist_slack_user", MappedParameters.SlackUser, true);
+        declareMappedParameter(command, "__atomist_slack_team", MappedParameters.SlackTeam, true);
         declareMappedParameter(command, "__atomist_github_owner", MappedParameters.GitHubOwner, true);
         declareSecret(command, "__atomist_user_token", Secrets.userToken("read:org"));
         const handleMethod = command.handle;
@@ -135,9 +136,10 @@ export function githubTeam(maker: Maker<HandleCommand>, team: string): () => Han
             const user = (command as any).__atomist_slack_user;
             const owner = (command as any).__atomist_github_owner;
             const token = (command as any).__atomist_user_token;
+            const team = (command as any).__atomist_slack_team;
 
             return ctx.graphClient.executeQuery(GitHubIdQuery,
-                { teamId: ctx.teamId, chatId: user })
+                { teamId: team, chatId: user })
                 .then(result => {
                     const login = _.get(result, "ChatTeam[0].members[0].person.gitHubId.login");
 
