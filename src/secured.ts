@@ -123,7 +123,7 @@ function isGitHubOrgMember(org: string, login: string, token: string): Promise<b
  * @param {string} team
  * @returns {() => HandleCommand}
  */
-export function githubTeam(maker: Maker<HandleCommand>, team: string): () => HandleCommand {
+export function githubTeam(maker: Maker<HandleCommand>, gTeam: string): () => HandleCommand {
     return () => {
         const command = toFactory(maker)();
         declareMappedParameter(command, "__atomist_slack_user", MappedParameters.SlackUser, true);
@@ -134,16 +134,16 @@ export function githubTeam(maker: Maker<HandleCommand>, team: string): () => Han
         command.handle = (ctx: HandlerContext) => {
 
             const user = (command as any).__atomist_slack_user;
+            const team = (command as any).__atomist_slack_team;
             const owner = (command as any).__atomist_github_owner;
             const token = (command as any).__atomist_user_token;
-            const team = (command as any).__atomist_slack_team;
 
             return ctx.graphClient.executeQuery(GitHubIdQuery,
                 { teamId: team, chatId: user })
                 .then(result => {
                     const login = _.get(result, "ChatTeam[0].members[0].person.gitHubId.login");
 
-                    return isGitHubTeamMember(owner, login, team, token)
+                    return isGitHubTeamMember(owner, login, gTeam, token)
                         .then(isTeamMember => {
                             if (isTeamMember === true) {
                                 return handleMethod.bind(command)(ctx);
