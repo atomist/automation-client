@@ -5,6 +5,17 @@ import { Configurable } from "./Configurable";
 import { GitStatus } from "./gitStatus";
 
 /**
+ * Git push options.  See git-push(1) for more information.
+ */
+export interface GitPushOptions {
+    follow_tags?: boolean;
+    force?: boolean;
+    force_with_lease?: boolean | string;
+    quiet?: boolean;
+    verbose?: boolean;
+}
+
+/**
  * Local project using git. Provides the ability to perform git operations
  * such as commit, and to set and push to a remote.
  */
@@ -22,7 +33,7 @@ export interface GitProject extends LocalProject, Configurable {
     init(): Promise<ActionResult<this>>;
 
     /**
-     * get some status information
+     * Get some status information
      */
     gitStatus(): Promise<GitStatus>;
 
@@ -86,7 +97,7 @@ export interface GitProject extends LocalProject, Configurable {
     /**
      * Push to the remote.
      */
-    push(): Promise<ActionResult<this>>;
+    push(options?: GitPushOptions): Promise<ActionResult<this>>;
 
     /**
      * Create a new branch and switch to it.
