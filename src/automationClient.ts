@@ -194,6 +194,7 @@ export class AutomationClient {
             auth: {
                 basic: _.cloneDeep(this.configuration.http.auth.basic),
                 bearer: _.cloneDeep(this.configuration.http.auth.bearer),
+                token: _.cloneDeep(this.configuration.http.auth.token),
             },
             endpoint: {
                 graphql: this.configuration.endpoints.graphql,

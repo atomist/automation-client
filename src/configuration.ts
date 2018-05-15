@@ -141,6 +141,10 @@ export interface AutomationOptions extends AnyOptions {
                 org?: string;
                 adminOrg?: string;
             };
+            token?: {
+                enabled?: boolean;
+                verify?: (token: string) => Promise<boolean>;
+            }
         };
     };
     /** websocket configuration */

@@ -67,6 +67,10 @@ export const configuration: Configuration = {
                 enabled: true,
                 adminOrg: "atomisthq",
             },
+            token: {
+                enabled: false,
+                verify: async token => "12222" === token,
+            },
         },
     },
     endpoints: {
