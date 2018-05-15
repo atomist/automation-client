@@ -1,14 +1,22 @@
 import { exec } from "child-process-promise";
+import * as _ from "lodash";
 import promiseRetry = require("promise-retry");
 
-import { isLocalProject, ReleaseFunction } from "../local/LocalProject";
-import { Project } from "../Project";
-
-import { ActionResult, successOn } from "../../action/ActionResult";
-import { CommandResult, runCommand } from "../../action/cli/commandLine";
+import {
+    ActionResult,
+    successOn,
+} from "../../action/ActionResult";
+import {
+    CommandResult,
+    runCommand,
+} from "../../action/cli/commandLine";
 import { logger } from "../../internal/util/logger";
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
-import { isRemoteRepoRef, RemoteRepoRef, RepoRef } from "../../operations/common/RepoId";
+import {
+    isRemoteRepoRef,
+    RemoteRepoRef,
+    RepoRef,
+} from "../../operations/common/RepoId";
 import {
     CloneDirectoryInfo,
     CloneOptions,
@@ -16,9 +24,20 @@ import {
     DirectoryManager,
 } from "../../spi/clone/DirectoryManager";
 import { TmpDirectoryManager } from "../../spi/clone/tmpDirectoryManager";
+import {
+    isLocalProject,
+    ReleaseFunction,
+} from "../local/LocalProject";
 import { NodeFsLocalProject } from "../local/NodeFsLocalProject";
-import { GitProject } from "./GitProject";
-import { GitStatus, runStatusIn } from "./gitStatus";
+import { Project } from "../Project";
+import {
+    GitProject,
+    GitPushOptions,
+} from "./GitProject";
+import {
+    GitStatus,
+    runStatusIn,
+} from "./gitStatus";
 
 export const DefaultDirectoryManager = TmpDirectoryManager;
 
@@ -204,18 +223,32 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         return clean(this.baseDir);
     }
 
-    public push(): Promise<CommandResult<this>> {
+    public push(options?: GitPushOptions): Promise<CommandResult<this>> {
+        let gitPushCmd: string = "git push";
+        _.forOwn(options, (v, k) => {
+            const opt = k.replace(/_/g, "-");
+            if (typeof v === "boolean") {
+                if (v === false) {
+                    gitPushCmd += ` --no-${opt}`;
+                } else {
+                    gitPushCmd += ` --${opt}`;
+                }
+            } else if (typeof v === "string") {
+                gitPushCmd += ` --${opt}=${v}`;
+            }
+        });
+
         if (!!this.branch && !!this.remote) {
             // We need to set the remote
-            return this.runCommandInCurrentWorkingDirectory(`git push ${this.remote} ${this.branch}`)
-                .catch(err => {
-                    logger.error("Unable to push with existing remote: %s", err);
-                    return Promise.reject(err);
-                });
+            gitPushCmd += ` ${this.remote} ${this.branch}`;
+        } else {
+            gitPushCmd += ` --set-upstream origin ${this.branch}`;
         }
-        return this.runCommandInCurrentWorkingDirectory(`git push --set-upstream origin ${this.branch}`)
+
+        return this.runCommandInCurrentWorkingDirectory(gitPushCmd)
             .catch(err => {
-                logger.error("Unable to push with set upstream origin: %s", err);
+                err.message = `Unable to push '${gitPushCmd}': ${err.message}`;
+                logger.error(err.message);
                 return Promise.reject(err);
             });
     }
