@@ -1,7 +1,5 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import axios from "axios";
-import * as _ from "lodash";
-
 import {
     MappedParameters,
     Secrets,
@@ -17,18 +15,6 @@ import {
     Maker,
     toFactory,
 } from "./util/constructionUtils";
-
-const GitHubIdQuery = `query ChatId($teamId: ID!, $chatId: String!) {
-  ChatTeam(id: $teamId) {
-    members(userId: $chatId) {
-      person {
-        gitHubId {
-          login
-        }
-      }
-    }
-  }
-}`;
 
 const UnAuthorizedResult = Promise.resolve({ code: 403, message: "Access denied" });
 
@@ -63,32 +49,28 @@ export function slackUser(maker: Maker<HandleCommand>, ...users: string[]): () =
 export function githubOrg(maker: Maker<HandleCommand>, org: string): () => HandleCommand {
     return () => {
         const command = toFactory(maker)();
-        declareMappedParameter(command, "__atomist_slack_user", MappedParameters.SlackUser, true);
-        declareMappedParameter(command, "__atomist_slack_team", MappedParameters.SlackTeam, true);
+        declareMappedParameter(command, "__atomist_github_login", MappedParameters.GitHubUserLogin, false);
         declareSecret(command, "__atomist_user_token", Secrets.userToken("read:org"));
         const handleMethod = command.handle;
         command.handle = (ctx: HandlerContext) => {
 
-            const user = (command as any).__atomist_slack_user;
-            const team = (command as any).__atomist_slack_team;
+            const login = (command as any).__atomist_github_login;
             const token = (command as any).__atomist_user_token;
 
-            return ctx.graphClient.executeQuery(GitHubIdQuery,
-                { teamId: team, chatId: user })
-                .then(result => {
-                    const login = _.get(result, "ChatTeam[0].members[0].person.gitHubId.login");
+            if (!login) {
+                return sendUnauthorized(ctx);
+            }
 
-                    return isGitHubOrgMember(org, login, token)
-                        .then(isOrgMember => {
-                            if (isOrgMember === true) {
-                                return handleMethod.bind(command)(ctx);
-                            } else {
-                                return sendUnauthorized(ctx);
-                            }
-                        })
-                        .catch(err => {
-                            return sendUnauthorized(ctx);
-                        });
+            return isGitHubOrgMember(org, login, token)
+                .then(isOrgMember => {
+                    if (isOrgMember === true) {
+                        return handleMethod.bind(command)(ctx);
+                    } else {
+                        return sendUnauthorized(ctx);
+                    }
+                })
+                .catch(err => {
+                    return sendUnauthorized(ctx);
                 });
         };
         return command;
@@ -126,34 +108,30 @@ function isGitHubOrgMember(org: string, login: string, token: string): Promise<b
 export function githubTeam(maker: Maker<HandleCommand>, gTeam: string): () => HandleCommand {
     return () => {
         const command = toFactory(maker)();
-        declareMappedParameter(command, "__atomist_slack_user", MappedParameters.SlackUser, true);
-        declareMappedParameter(command, "__atomist_slack_team", MappedParameters.SlackTeam, true);
-        declareMappedParameter(command, "__atomist_github_owner", MappedParameters.GitHubOwner, true);
+        declareMappedParameter(command, "__atomist_github_owner", MappedParameters.GitHubOwner, false);
+        declareMappedParameter(command, "__atomist_github_login", MappedParameters.GitHubUserLogin, false);
         declareSecret(command, "__atomist_user_token", Secrets.userToken("read:org"));
         const handleMethod = command.handle;
         command.handle = (ctx: HandlerContext) => {
 
-            const user = (command as any).__atomist_slack_user;
-            const team = (command as any).__atomist_slack_team;
             const owner = (command as any).__atomist_github_owner;
+            const login = (command as any).__atomist_github_login;
             const token = (command as any).__atomist_user_token;
 
-            return ctx.graphClient.executeQuery(GitHubIdQuery,
-                { teamId: team, chatId: user })
-                .then(result => {
-                    const login = _.get(result, "ChatTeam[0].members[0].person.gitHubId.login");
+            if (!owner || !login) {
+                return sendUnauthorized(ctx);
+            }
 
-                    return isGitHubTeamMember(owner, login, gTeam, token)
-                        .then(isTeamMember => {
-                            if (isTeamMember === true) {
-                                return handleMethod.bind(command)(ctx);
-                            } else {
-                                return sendUnauthorized(ctx);
-                            }
-                        })
-                        .catch(err => {
-                            return sendUnauthorized(ctx);
-                        });
+            return isGitHubTeamMember(owner, login, gTeam, token)
+                .then(isTeamMember => {
+                    if (isTeamMember === true) {
+                        return handleMethod.bind(command)(ctx);
+                    } else {
+                        return sendUnauthorized(ctx);
+                    }
+                })
+                .catch(err => {
+                    return sendUnauthorized(ctx);
                 });
         };
         return command;
