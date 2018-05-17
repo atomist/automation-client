@@ -244,6 +244,7 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
                     || error.response.status === 403)) {
                     logger.error(`Registration failed with code '%s': '%s'`,
                         error.response.status, JSON.stringify(error.response.data));
+                    warnAboutChatTeamId(registrationPayload);
                     process.exit(1);
                 } else {
                     logger.error("Registration failed with '%s'", error);
@@ -251,6 +252,18 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
                 }
             });
     });
+}
+
+// Make some attempt to warn them if they are using the wrong team ID.
+// Now, if only the config had provenance and I knew where that was set, so I could tell them how to change it...
+function warnAboutChatTeamId(registrationPayload: any) {
+    if (registrationPayload.team_ids.length === 1) {
+        const singleTeam = registrationPayload.team_ids[0];
+        if (singleTeam.startsWith("T")) {
+            logger.error(`This looks like a Chat Team: ${singleTeam}. You might want your Atomist Team ID, which usually starts with A.` +
+                "Try `@atomist pwd` in Slack to see both.");
+        }
+    }
 }
 
 export interface WebSocketClientOptions {
