@@ -19,9 +19,9 @@ describe("GitCommandGitProject", () => {
 
         it("should execute a clean push", async () => {
             let pushCmd: string;
-            (gp as any).runCommandInCurrentWorkingDirectory = (cmd: string): Promise<typeof gp> => {
+            (gp as any).runCommandInCurrentWorkingDirectory = (cmd: string): Promise<any> => {
                 pushCmd = cmd;
-                return Promise.resolve(gp);
+                return Promise.resolve({ target: gp });
             };
             await gp.push();
             assert(pushCmd === "git push --set-upstream origin master");
@@ -29,9 +29,9 @@ describe("GitCommandGitProject", () => {
 
         it("should execute a force push", async () => {
             let pushCmd: string;
-            (gp as any).runCommandInCurrentWorkingDirectory = (cmd: string): Promise<typeof gp> => {
+            (gp as any).runCommandInCurrentWorkingDirectory = (cmd: string): Promise<any> => {
                 pushCmd = cmd;
-                return Promise.resolve(gp);
+                return Promise.resolve({ target: gp });
             };
             await gp.push({ force: true });
             assert(pushCmd === "git push --force --set-upstream origin master");
@@ -39,9 +39,9 @@ describe("GitCommandGitProject", () => {
 
         it("should be quiet and not verbose", async () => {
             let pushCmd: string;
-            (gp as any).runCommandInCurrentWorkingDirectory = (cmd: string): Promise<typeof gp> => {
+            (gp as any).runCommandInCurrentWorkingDirectory = (cmd: string): Promise<any> => {
                 pushCmd = cmd;
-                return Promise.resolve(gp);
+                return Promise.resolve({ target: gp });
             };
             await gp.push({ quiet: true, verbose: false });
             assert(pushCmd === "git push --quiet --no-verbose --set-upstream origin master");
@@ -49,9 +49,9 @@ describe("GitCommandGitProject", () => {
 
         it("should be treat --force-with-lease as a boolean", async () => {
             let pushCmd: string;
-            (gp as any).runCommandInCurrentWorkingDirectory = (cmd: string): Promise<typeof gp> => {
+            (gp as any).runCommandInCurrentWorkingDirectory = (cmd: string): Promise<any> => {
                 pushCmd = cmd;
-                return Promise.resolve(gp);
+                return Promise.resolve({ target: gp });
             };
             await gp.push({ force_with_lease: true });
             assert(pushCmd === "git push --force-with-lease --set-upstream origin master");
@@ -59,9 +59,9 @@ describe("GitCommandGitProject", () => {
 
         it("should be treat --force-with-lease as a string", async () => {
             let pushCmd: string;
-            (gp as any).runCommandInCurrentWorkingDirectory = (cmd: string): Promise<typeof gp> => {
+            (gp as any).runCommandInCurrentWorkingDirectory = (cmd: string): Promise<any> => {
                 pushCmd = cmd;
-                return Promise.resolve(gp);
+                return Promise.resolve({ target: gp });
             };
             await gp.push({ force_with_lease: "master" });
             assert(pushCmd === "git push --force-with-lease=master --set-upstream origin master");
@@ -72,12 +72,88 @@ describe("GitCommandGitProject", () => {
             const gh = GitCommandGitProject.fromProject(p, c);
             gh.branch = "gh-pages";
             gh.remote = "github";
-            (gh as any).runCommandInCurrentWorkingDirectory = (cmd: string): Promise<typeof gh> => {
+            (gh as any).runCommandInCurrentWorkingDirectory = (cmd: string): Promise<any> => {
                 pushCmd = cmd;
-                return Promise.resolve(gp);
+                return Promise.resolve({ target: gp });
             };
             await gh.push({ force: true });
             assert(pushCmd === "git push --force github gh-pages");
+        });
+
+    });
+
+    describe("checkout", () => {
+
+        const p = InMemoryProject.of();
+        (p as any).baseDir = "DRAM";
+        (p as any).id = {
+            sha: "master",
+        };
+        const c = { token: "blah" };
+        const gp = GitCommandGitProject.fromProject(p, c);
+
+        it("should checkout and set branch", async () => {
+            (gp as any).runCommandInCurrentWorkingDirectory = (cmd: string): Promise<any> => {
+                return Promise.resolve({ target: gp });
+            };
+            gp.branch = "master";
+            const branch = "16-horsepower";
+            await gp.checkout(branch);
+            assert(gp.branch === branch);
+        });
+
+        it("should not set branch if checkout fails", async () => {
+            (gp as any).runCommandInCurrentWorkingDirectory = (cmd: string): Promise<any> => {
+                return Promise.reject(new Error("testing"));
+            };
+            gp.branch = "master";
+            const branch = "16-horsepower";
+            let err: string;
+            try {
+                await gp.checkout(branch);
+            } catch (e) {
+                err = e.message;
+            }
+            assert(gp.branch === "master");
+            assert(err === "testing");
+        });
+
+    });
+
+    describe("createBranch", () => {
+
+        const p = InMemoryProject.of();
+        (p as any).baseDir = "DRAM";
+        (p as any).id = {
+            sha: "master",
+        };
+        const c = { token: "blah" };
+        const gp = GitCommandGitProject.fromProject(p, c);
+
+        it("should create and set branch", async () => {
+            (gp as any).runCommandInCurrentWorkingDirectory = (cmd: string): Promise<any> => {
+                return Promise.resolve({ target: gp });
+            };
+            gp.branch = "master";
+            const branch = "16-horsepower";
+            await gp.createBranch(branch);
+            assert(gp.branch === branch);
+        });
+
+        it("should not set branch if create fails", async () => {
+            (gp as any).runCommandInCurrentWorkingDirectory = (cmd: string): Promise<any> => {
+                return Promise.reject(new Error("testing"));
+            };
+            gp.branch = "master";
+            const branch = "16-horsepower";
+            let err: string;
+            try {
+                await gp.createBranch(branch);
+            } catch (e) {
+                err = e.message;
+            }
+            assert(gp.branch === "master");
+            assert(err === "testing");
         });
 
     });
