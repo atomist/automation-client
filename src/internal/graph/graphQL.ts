@@ -16,7 +16,7 @@ const OperationNameExpression = /(subscription|query)[\s]*([^({\s]*)/i;
 const FragmentExpression = /\.\.\.\s*([_A-Za-z][_0-9A-Za-z]*)/gi;
 
 export class ParameterEnum {
-    constructor(public value: string | string[]) {}
+    constructor(public value: string | string[]) { }
 }
 
 export function enumValue(value: string | string[]): ParameterEnum {
@@ -236,8 +236,8 @@ export function prettyPrintErrors(errors: GraphQLError[], q?: string): string {
 
 export function replaceParameters(q: string,
                                   parameters: {
-                               [name: string]: string | boolean | number | ParameterEnum;
-                           } = {}): string {
+        [name: string]: string | boolean | number | ParameterEnum;
+    } = {}): string {
     if (Object.keys(parameters).length > 0) {
         const exp = OperationParameterExpression;
         if (exp.test(q)) {
@@ -310,12 +310,15 @@ function inlineFragments(q: string, name: string, moduleDir: string, fragmentDir
     return q;
 }
 
-function locateAndLoadGraphql(options: {
-                                  path?: string,
-                                  name?: string,
-                              },
-                              subfolder: string,
-                              moduleDir: string): string {
+function locateAndLoadGraphql(
+    options: {
+        path?: string,
+        name?: string,
+    },
+    subfolder: string,
+    moduleDir: string,
+): string {
+
     let path = options.path;
     let name = options.name;
     // Read subscription from file if given
@@ -327,13 +330,18 @@ function locateAndLoadGraphql(options: {
             path = p.resolve(p.dirname(moduleDir), path);
         }
     } else if (options.name) {
-        const graphqlDir = findUp.sync("graphql", { cwd: p.resolve(p.dirname(moduleDir)) });
+        const cwd = p.resolve(p.dirname(moduleDir));
+        const graphqlDir = findUp.sync("graphql", { cwd });
         if (graphqlDir) {
             if (!name.endsWith(".graphql")) {
                 name = `${name}.graphql`;
             }
             path = p.resolve(graphqlDir, subfolder, name);
+        } else {
+            throw new Error(`No graphql folder found anywhere above directory ${cwd}\nConsider specifying a path`);
         }
+    } else {
+        throw new Error("No name or path specified");
     }
 
     if (fs.existsSync(path)) {
@@ -346,8 +354,8 @@ function locateAndLoadGraphql(options: {
 export function resolveAndReadFileSync(path: string,
                                        current: string = appRoot.path,
                                        parameters: {
-                                    [name: string]: string | boolean | number | ParameterEnum;
-                                } = {}): string {
+        [name: string]: string | boolean | number | ParameterEnum;
+    } = {}): string {
     if (!path.endsWith(".graphql")) {
         path = `${path}.graphql`;
     }
