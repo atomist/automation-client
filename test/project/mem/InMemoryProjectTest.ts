@@ -5,6 +5,7 @@ import * as assert from "power-assert";
 import { File } from "../../../src/project/File";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { toPromise } from "../../../src/project/util/projectUtils";
+import { AllFiles } from "../../../src/project/fileGlobs";
 
 describe("InMemoryProject", () => {
 
@@ -90,6 +91,47 @@ describe("InMemoryProject", () => {
             },
         ).on("end", () => {
             assert.equal(count, 2);
+            done();
+        });
+    });
+
+    it("streamFiles excludes .git by default", done => {
+        let count = 0;
+        const thisProject = InMemoryProject.of(
+            { path: "config/thing.js", content: "{ node: true }" },
+            { path: "config/other.ts", content: "{ node: true }" },
+            { path: "notconfig/other.ts", content: "{ node: true }" },
+            { path: ".git/junk", content: "whatever"},
+        );
+        thisProject.streamFiles(AllFiles)
+            .on("data", (f: File) => {
+                    // console.log(`File path is [${f.path}]`);
+                    assert(f.name);
+                    count++;
+                },
+            ).on("end", () => {
+            assert.equal(count, 3);
+            done();
+        });
+    });
+
+    it("streamFiles excludes nested .git and node_modules by default", done => {
+        let count = 0;
+        const thisProject = InMemoryProject.of(
+            { path: "config/thing.js", content: "{ node: true }" },
+            { path: "config/other.ts", content: "{ node: true }" },
+            { path: "notconfig/other.ts", content: "{ node: true }" },
+            { path: "nested/.git/junk", content: "whatever"},
+            { path: "sub/project/node_modules/thing", content: "whatever"},
+        );
+        thisProject.streamFiles(AllFiles)
+            .on("data", (f: File) => {
+                    // console.log(`File path is [${f.path}]`);
+                    assert(f.name);
+                    count++;
+                },
+            ).on("end", () => {
+            assert.equal(count, 3);
             done();
         });
     });

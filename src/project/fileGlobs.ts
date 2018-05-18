@@ -15,7 +15,7 @@ export const ExcludeGit = "!.git/**";
  * this when handling node projects, for performance reasons.
  * @type {string}
  */
-export const ExcludeNodeModules = "!node_modules/**";
+export const ExcludeNodeModules = "!**/node_modules/**";
 
 export const ExcludeTarget = "!target/**";
 
