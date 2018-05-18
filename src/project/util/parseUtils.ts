@@ -4,7 +4,7 @@ import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { PatternMatch } from "@atomist/microgrammar/PatternMatch";
 import { logger } from "../../internal/util/logger";
 import { ProjectAsync } from "../Project";
-import { doWithFiles, saveFromFilesAsync } from "./projectUtils";
+import { doWithFiles, GlobOptions, saveFromFilesAsync } from "./projectUtils";
 
 export type Match<M> = M & PatternMatch;
 
@@ -57,7 +57,7 @@ export const DefaultOpts: Opts = {
  * @param opts options
  */
 export function findMatches<M>(p: ProjectAsync,
-                               globPatterns: string | string[],
+                               globPatterns: GlobOptions,
                                microgrammar: Microgrammar<M>,
                                opts: Opts = DefaultOpts): Promise<Array<Match<M>>> {
     return findFileMatches(p, globPatterns, microgrammar, opts)
@@ -76,7 +76,7 @@ export function findMatches<M>(p: ProjectAsync,
  * @param opts options
  */
 export function findFileMatches<M>(p: ProjectAsync,
-                                   globPatterns: string | string[],
+                                   globPatterns: GlobOptions,
                                    microgrammar: Microgrammar<M>,
                                    opts: Opts = DefaultOpts): Promise<Array<FileWithMatches<M>>> {
     return saveFromFilesAsync(p, globPatterns, file => {
@@ -103,7 +103,7 @@ export function findFileMatches<M>(p: ProjectAsync,
  * @param opts options
  */
 export function doWithFileMatches<M, P extends ProjectAsync = ProjectAsync>(p: P,
-                                                                            globPatterns: string | string[],
+                                                                            globPatterns: GlobOptions,
                                                                             microgrammar: Microgrammar<M>,
                                                                             action: (fh: FileWithMatches<M>) => void,
                                                                             opts: Opts = DefaultOpts): Promise<P> {
@@ -136,7 +136,7 @@ export function doWithFileMatches<M, P extends ProjectAsync = ProjectAsync>(p: P
  * @param {{makeUpdatable: boolean}} opts
  */
 export function doWithMatches<M, P extends ProjectAsync = ProjectAsync>(p: P,
-                                                                        globPatterns: string | string[],
+                                                                        globPatterns: GlobOptions,
                                                                         microgrammar: Microgrammar<M>,
                                                                         action: (m: M) => void,
                                                                         opts: Opts = DefaultOpts): Promise<P> {
@@ -156,7 +156,7 @@ export function doWithMatches<M, P extends ProjectAsync = ProjectAsync>(p: P,
  * @param {{makeUpdatable: boolean}} opts
  */
 export function doWithUniqueMatch<M, P extends ProjectAsync = ProjectAsync>(p: P,
-                                                                            globPatterns: string | string[],
+                                                                            globPatterns: GlobOptions,
                                                                             microgrammar: Microgrammar<M>,
                                                                             action: (m: M) => void,
                                                                             opts: Opts = DefaultOpts): Promise<P> {
@@ -189,7 +189,7 @@ export function doWithUniqueMatch<M, P extends ProjectAsync = ProjectAsync>(p: P
  * @param {{makeUpdatable: boolean}} opts
  */
 export function doWithAtMostOneMatch<M, P extends ProjectAsync = ProjectAsync>(p: P,
-                                                                               globPatterns: string | string[],
+                                                                               globPatterns: GlobOptions,
                                                                                microgrammar: Microgrammar<M>,
                                                                                action: (m: M) => void,
                                                                                opts: Opts = DefaultOpts): Promise<P> {

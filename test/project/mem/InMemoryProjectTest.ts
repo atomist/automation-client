@@ -3,9 +3,9 @@ import "mocha";
 import * as assert from "power-assert";
 
 import { File } from "../../../src/project/File";
+import { AllFiles } from "../../../src/project/fileGlobs";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { toPromise } from "../../../src/project/util/projectUtils";
-import { AllFiles } from "../../../src/project/fileGlobs";
 
 describe("InMemoryProject", () => {
 

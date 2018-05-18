@@ -7,7 +7,7 @@ import { toPathExpression } from "@atomist/tree-path/path/utils";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { logger } from "../../internal/util/logger";
 import { ProjectAsync } from "../../project/Project";
-import { saveFromFilesAsync } from "../../project/util/projectUtils";
+import { GlobOptions, saveFromFilesAsync } from "../../project/util/projectUtils";
 import { LocatedTreeNode } from "../LocatedTreeNode";
 import { FileHit, MatchResult, NodeReplacementOptions } from "./FileHits";
 import { FileParser, isFileParser } from "./FileParser";
@@ -57,7 +57,7 @@ export function findByExpression(p: ProjectAsync,
  */
 export function findMatches(p: ProjectAsync,
                             parserOrRegistry: FileParser | FileParserRegistry,
-                            globPatterns: string | string[],
+                            globPatterns: GlobOptions,
                             pathExpression: string | PathExpression,
                             functionRegistry?: object): Promise<MatchResult[]> {
     return findFileMatches(p, parserOrRegistry, globPatterns, pathExpression, functionRegistry)
@@ -66,7 +66,7 @@ export function findMatches(p: ProjectAsync,
 
 export function findFileMatches(p: ProjectAsync,
                                 parserOrRegistry: FileParser | FileParserRegistry,
-                                globPatterns: string | string[],
+                                globPatterns: GlobOptions,
                                 pathExpression: string | PathExpression,
                                 functionRegistry?: object): Promise<FileHit[]> {
     const parsed: PathExpression = toPathExpression(pathExpression);
@@ -129,7 +129,7 @@ function fillInSourceLocations(f: File, nodes: TreeNode[]): Promise<LocatedTreeN
  * Convenient method to find all values of matching nodes--
  * typically, terminals such as identifiers
  * @param p project
- * @param globPattern file glob pattern
+ * @param globPatterns file glob pattern
  * @param parserOrRegistry parser for files
  * @param pathExpression path expression string or parsed
  * @param functionRegistry registry to look for path expression functions in
@@ -137,10 +137,10 @@ function fillInSourceLocations(f: File, nodes: TreeNode[]): Promise<LocatedTreeN
  */
 export function findValues(p: ProjectAsync,
                            parserOrRegistry: FileParser | FileParserRegistry,
-                           globPattern: string,
+                           globPatterns: GlobOptions,
                            pathExpression: string | PathExpression,
                            functionRegistry?: object): Promise<string[]> {
-    return findFileMatches(p, parserOrRegistry, globPattern, pathExpression, functionRegistry)
+    return findFileMatches(p, parserOrRegistry, globPatterns, pathExpression, functionRegistry)
         .then(fileHits => _.flatten(fileHits.map(f => f.matches))
             .map(m => m.$value));
 }
@@ -157,7 +157,7 @@ export function findValues(p: ProjectAsync,
  */
 export function zapAllMatches<P extends ProjectAsync = ProjectAsync>(p: P,
                                                                      parserOrRegistry: FileParser | FileParserRegistry,
-                                                                     globPatterns: string | string[],
+                                                                     globPatterns: GlobOptions,
                                                                      pathExpression: string | PathExpression,
                                                                      opts: NodeReplacementOptions = {}): Promise<P> {
     return findFileMatches(p, parserOrRegistry, globPatterns, pathExpression)

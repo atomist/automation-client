@@ -17,6 +17,8 @@ export function toPromise(stream: FileStream): Promise<File[]> {
     });
 }
 
+export type GlobOptions = string | string[];
+
 /**
  * Does at least one file matching the given predicate exist in this project?
  * No guarantees about ordering
@@ -26,7 +28,7 @@ export function toPromise(stream: FileStream): Promise<File[]> {
  * @return {Promise<boolean>}
  */
 export function fileExists<T>(p: ProjectAsync,
-                              globPatterns: string | string[],
+                              globPatterns: GlobOptions,
                               test: (f: File) => boolean): Promise<boolean> {
     return saveFromFiles<boolean>(p, globPatterns, f => test(f) === true)
         .then(results => results.length > 0);
@@ -41,7 +43,7 @@ export function fileExists<T>(p: ProjectAsync,
  * @return {Promise<T>}
  */
 export function saveFromFiles<T>(project: ProjectAsync,
-                                 globPatterns: string | string[],
+                                 globPatterns: GlobOptions,
                                  gather: (f: File) => T | undefined): Promise<T[]> {
     return new Promise((resolve, reject) => {
         const gathered: T[] = [];
@@ -67,7 +69,7 @@ export function saveFromFiles<T>(project: ProjectAsync,
  * @return {Promise<T[]>}
  */
 export function saveFromFilesAsync<T>(project: ProjectAsync,
-                                      globPatterns: string | string[],
+                                      globPatterns: GlobOptions,
                                       gather: (f: File) => Promise<T> | undefined): Promise<T[]> {
     return new Promise((resolve, reject) => {
         const gathered: Array<Promise<T>> = [];
@@ -92,7 +94,7 @@ export function saveFromFilesAsync<T>(project: ProjectAsync,
  * @param op operation to perform on files. Can return void or a promise.
  */
 export function doWithFiles<P extends ProjectAsync>(project: P,
-                                                    globPatterns: string | string[],
+                                                    globPatterns: GlobOptions,
                                                     op: (f: File) => void | Promise<any>): Promise<P> {
     return new Promise(
         (resolve, reject) => {
@@ -122,7 +124,7 @@ export function doWithFiles<P extends ProjectAsync>(project: P,
  * @param test additional, optional test for files to be deleted
  */
 export function deleteFiles<T>(project: ProjectAsync,
-                               globPatterns: string | string[],
+                               globPatterns: GlobOptions,
                                test: (f: File) => boolean = () => true): Promise<number> {
     return new Promise((resolve, reject) => {
         let deleted = 0;

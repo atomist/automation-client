@@ -84,7 +84,7 @@ export interface ProjectAsync extends ProjectCore, ScriptedFlushable<Project> {
      * Return a node stream of the files in the project meeting
      * the given path criteria. Uses default exclusions in the glob path.
      * @param globPatterns glob patterns. If none is provided,
-     * included all files. If at least one positive pattern is provided,
+     * include all files. If at least one positive pattern is provided,
      * one or more negative glob patterns can be provided.
      */
     streamFiles(...globPatterns: string[]): FileStream;
