@@ -49,6 +49,20 @@ describe("astUtils", () => {
                 }).catch(done);
         });
 
+        it("should zap simple with globs array", done => {
+            const f = new InMemoryFile("src/test.ts", "const x: number = 10;");
+            const p = InMemoryProject.of(f);
+            zapAllMatches(p, TypeScriptES6FileParser,
+                ["src/**/*.ts", "src/never/match/*"],
+                `//VariableDeclaration//ColonToken/following-sibling::* |
+                                    //VariableDeclaration//ColonToken`)
+                .then(() => {
+                    const f2 = p.findFileSync(f.path);
+                    assert.equal(f2.getContentSync(), "const x  = 10;");
+                    done();
+                }).catch(done);
+        });
+
         it("#105: should zap match and zap following whitespace", done => {
             const f = new InMemoryFile("src/test.ts", "const x: number = 10;");
             const p = InMemoryProject.of(f);

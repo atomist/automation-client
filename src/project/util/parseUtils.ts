@@ -52,15 +52,15 @@ export const DefaultOpts: Opts = {
 /**
  * Integrate microgrammars with project operations to find all matches
  * @param p project
- * @param globPattern file glob pattern
+ * @param globPatterns file glob patterns
  * @param microgrammar microgrammar to run against each eligible file
  * @param opts options
  */
 export function findMatches<M>(p: ProjectAsync,
-                               globPattern: string,
+                               globPatterns: string | string[],
                                microgrammar: Microgrammar<M>,
                                opts: Opts = DefaultOpts): Promise<Array<Match<M>>> {
-    return findFileMatches(p, globPattern, microgrammar, opts)
+    return findFileMatches(p, globPatterns, microgrammar, opts)
         .then(fileHits => {
             let matches: Array<Match<M>> = [];
             fileHits.forEach(fh => matches = matches.concat(fh.matches));
@@ -71,15 +71,15 @@ export function findMatches<M>(p: ProjectAsync,
 /**
  * Integrate microgrammars with project operations to find all matches
  * @param p project
- * @param globPattern file glob pattern
+ * @param globPatterns file glob patterns
  * @param microgrammar microgrammar to run against each eligible file
  * @param opts options
  */
 export function findFileMatches<M>(p: ProjectAsync,
-                                   globPattern: string,
+                                   globPatterns: string | string[],
                                    microgrammar: Microgrammar<M>,
                                    opts: Opts = DefaultOpts): Promise<Array<FileWithMatches<M>>> {
-    return saveFromFilesAsync(p, globPattern, file => {
+    return saveFromFilesAsync(p, globPatterns, file => {
         return file.getContent()
             .then(content => {
                 const matches = microgrammar.findMatches(transformIfNecessary(content, opts));
@@ -97,17 +97,17 @@ export function findFileMatches<M>(p: ProjectAsync,
 /**
  * Manipulate each file match containing an actual match. Will automatically match if necessary.
  * @param p project
- * @param {string} globPattern
+ * @param {string} globPatterns
  * @param {Microgrammar<M>} microgrammar
  * @param {(fh: FileWithMatches<M>) => void} action
  * @param opts options
  */
 export function doWithFileMatches<M, P extends ProjectAsync = ProjectAsync>(p: P,
-                                                                            globPattern: string,
+                                                                            globPatterns: string | string[],
                                                                             microgrammar: Microgrammar<M>,
                                                                             action: (fh: FileWithMatches<M>) => void,
                                                                             opts: Opts = DefaultOpts): Promise<P> {
-    return doWithFiles(p, globPattern, file => {
+    return doWithFiles(p, globPatterns, file => {
         return file.getContent()
             .then(content => {
                 const matches = microgrammar.findMatches(transformIfNecessary(content, opts));
@@ -130,33 +130,33 @@ export function doWithFileMatches<M, P extends ProjectAsync = ProjectAsync>(p: P
  * Convenience function to operate on matches in the project.
  * Works regardless of the number of matches
  * @param p project
- * @param {string} globPattern
+ * @param {string} globPatterns
  * @param {Microgrammar<M>} microgrammar
  * @param {(m: M) => void} action
  * @param {{makeUpdatable: boolean}} opts
  */
 export function doWithMatches<M, P extends ProjectAsync = ProjectAsync>(p: P,
-                                                                        globPattern: string,
+                                                                        globPatterns: string | string[],
                                                                         microgrammar: Microgrammar<M>,
                                                                         action: (m: M) => void,
                                                                         opts: Opts = DefaultOpts): Promise<P> {
     const fileAction = (fh: FileWithMatches<M>) => {
         fh.matches.forEach(action);
     };
-    return doWithFileMatches(p, globPattern, microgrammar, fileAction, opts);
+    return doWithFileMatches(p, globPatterns, microgrammar, fileAction, opts);
 }
 
 /**
  * Convenience function to operate on the sole match in the project.
  * Fail if zero or more than one.
  * @param p project
- * @param {string} globPattern
+ * @param {string} globPatterns
  * @param {Microgrammar<M>} microgrammar
  * @param {(m: M) => void} action
  * @param {{makeUpdatable: boolean}} opts
  */
 export function doWithUniqueMatch<M, P extends ProjectAsync = ProjectAsync>(p: P,
-                                                                            globPattern: string,
+                                                                            globPatterns: string | string[],
                                                                             microgrammar: Microgrammar<M>,
                                                                             action: (m: M) => void,
                                                                             opts: Opts = DefaultOpts): Promise<P> {
@@ -171,7 +171,7 @@ export function doWithUniqueMatch<M, P extends ProjectAsync = ProjectAsync>(p: P
         const m0 = fh.matches[0];
         action(m0);
     };
-    return doWithFileMatches(p, globPattern, microgrammar, guardedAction, opts)
+    return doWithFileMatches(p, globPatterns, microgrammar, guardedAction, opts)
         .then(files => {
             if (count++ === 0) {
                 throw new Error("No unique match found in project");
@@ -183,13 +183,13 @@ export function doWithUniqueMatch<M, P extends ProjectAsync = ProjectAsync>(p: P
 /**
  * Similar to doWithUniqueMatch, but accepts zero matches without error
  * @param p project
- * @param {string} globPattern
+ * @param {string} globPatterns
  * @param {Microgrammar<M>} microgrammar
  * @param {(m: M) => void} action
  * @param {{makeUpdatable: boolean}} opts
  */
 export function doWithAtMostOneMatch<M, P extends ProjectAsync = ProjectAsync>(p: P,
-                                                                               globPattern: string,
+                                                                               globPatterns: string | string[],
                                                                                microgrammar: Microgrammar<M>,
                                                                                action: (m: M) => void,
                                                                                opts: Opts = DefaultOpts): Promise<P> {
@@ -204,7 +204,7 @@ export function doWithAtMostOneMatch<M, P extends ProjectAsync = ProjectAsync>(p
         const m0 = fh.matches[0];
         action(m0);
     };
-    return doWithFileMatches(p, globPattern, microgrammar, guardedAction, opts);
+    return doWithFileMatches(p, globPatterns, microgrammar, guardedAction, opts);
 }
 
 /**

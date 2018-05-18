@@ -8,6 +8,8 @@ import { AbstractProject } from "../support/AbstractProject";
 import { copyFiles } from "../support/projectUtils";
 import { InMemoryFile } from "./InMemoryFile";
 
+import * as _ from "lodash";
+
 /**
  * In memory Project implementation. Primarily intended
  * for testing. BE WARNED: Does not correctly handle permissions and binary files!
@@ -132,16 +134,16 @@ export class InMemoryProject extends AbstractProject {
         return this.memFiles.some(f => f.path === path);
     }
 
-    public streamFilesRaw(globPatterns: string[]): FileStream {
-        // TODO allow more than one glob pattern
-        // if (globPatterns.length !== 0) {
-        //     throw new Error("Only one glob pattern supported");
-        // }
-        const matchingPaths =
-            minimatch.match(this.memFiles.map(f => f.path), globPatterns[0]);
-        this.memFiles.map(f => matchingPaths.includes(f.path));
-        return spigot.array({ objectMode: true },
-            this.memFiles.filter(f => matchingPaths.some(mp => mp === f.path)),
+    public streamFilesRaw(globPatterns: string[], opts: {}): FileStream {
+        const positiveMatches = _.flatten(
+            this.memFiles.filter(f =>
+                globPatterns.some(gp => !gp.startsWith("!") && minimatch.match([f.path], gp).includes(f.path)),
+            ));
+        const matchingFiles = _.reject(positiveMatches,
+            f => globPatterns.some(gp => gp.startsWith("!") && minimatch.match([f.path], gp.substring(1)).includes(f.path)),
+        );
+        return spigot.array({objectMode: true},
+            matchingFiles,
         );
     }
 

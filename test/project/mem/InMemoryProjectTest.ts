@@ -89,7 +89,26 @@ describe("InMemoryProject", () => {
                 count++;
             },
         ).on("end", () => {
-            assert(count === 2, "Found " + count);
+            assert.equal(count, 2);
+            done();
+        });
+    });
+
+    it("streamFiles respects negative globs", done => {
+        let count = 0;
+        const thisProject = InMemoryProject.of(
+            { path: "config/thing.js", content: "{ node: true }" },
+            { path: "config/other.ts", content: "{ node: true }" },
+            { path: "config/exclude.ts", content: "{ node: true }" },
+        );
+        thisProject.streamFilesRaw(["config/**", "!**/exclude.*"], {})
+            .on("data", (f: File) => {
+                    // console.log(`File path is [${f.path}]`);
+                    assert(f.name);
+                    count++;
+                },
+            ).on("end", () => {
+            assert.equal(count, 2);
             done();
         });
     });

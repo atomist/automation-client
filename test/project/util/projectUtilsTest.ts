@@ -189,6 +189,19 @@ describe("projectUtils", () => {
             .then(done, done);
     });
 
+    it("replaces literals across project using array glob", done => {
+        const p = tempProject();
+        p.addFileSync("Thing", "A");
+        p.addFileSync("config/Thing", "B");
+        p.addFileSync("config/Cat", "A");
+        doWithFiles(p, ["**/Thing", "**/Cat"], f => f.replaceAll("A", "alpha"))
+            .then(_ => {
+                assert(p.findFileSync("Thing").getContentSync() === "alpha");
+                assert(p.findFileSync("config/Cat").getContentSync() === "alpha");
+            })
+            .then(done, done);
+    });
+
     it.skip("replaces regex across project", done => {
         const p = tempProject();
         p.addFileSync("Thing", "A");

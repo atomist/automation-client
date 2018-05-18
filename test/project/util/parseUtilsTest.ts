@@ -72,6 +72,25 @@ describe("parseUtils", () => {
             }).catch(done);
     });
 
+    it("gathers matches from files with multiple globs", done => {
+        const t = new InMemoryProject();
+        t.addFileSync("src/main/java/com/foo/bar/Thing.java",
+            "package com.foo.bar;\npublic class Thing {}");
+        t.addFileSync("src/main/java/com/foo/baz/Thing2.java",
+            "package com.foo.baz;\npublic class Thing2 {}");
+        t.addFileSync("src/main/kotlin/com/foo/baz/Thing2.kt",
+            "package com.foo.baz;\npublic class Thing2 {}");
+        findFileMatches<{ name: string }>(t, ["**/*.kt", AllJavaFiles], JavaPackageDeclaration)
+            .then(fileMatches => {
+                assert.equal(fileMatches.length, 3, fileMatches.map(m => m.file.path).join("\n"));
+                assert.deepEqual(fileMatches.map(m => m.file.path), t.filesSync.map(m => m.path));
+                fileMatches[0].matches.forEach(m => {
+                    assert(m.$offset !== undefined);
+                });
+                done();
+            }).catch(done);
+    });
+
     it("gathers matches from files with transform", done => {
         interface Person {
             name: string;

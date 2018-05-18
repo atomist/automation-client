@@ -1,5 +1,6 @@
 import { defer } from "../../internal/common/Flushable";
 import { isPromise } from "../../internal/util/async";
+import { toStringArray } from "../../internal/util/string";
 import { File } from "../File";
 import { FileStream, ProjectAsync } from "../Project";
 
@@ -20,31 +21,31 @@ export function toPromise(stream: FileStream): Promise<File[]> {
  * Does at least one file matching the given predicate exist in this project?
  * No guarantees about ordering
  * @param p
- * @param globPattern
+ * @param globPatterns positive and negative globs to match
  * @param test
  * @return {Promise<boolean>}
  */
 export function fileExists<T>(p: ProjectAsync,
-                              globPattern: string,
+                              globPatterns: string | string[],
                               test: (f: File) => boolean): Promise<boolean> {
-    return saveFromFiles<boolean>(p, globPattern, f => test(f) === true)
+    return saveFromFiles<boolean>(p, globPatterns, f => test(f) === true)
         .then(results => results.length > 0);
 }
 
 /**
  * Gather data from a set of files
  * @param project project to act on
- * @param globPattern glob pattern for files to match
+ * @param globPatterns glob patterns for files to match
  * @param gather function that saves a value from a file or discards it
  * by returning undefined
  * @return {Promise<T>}
  */
 export function saveFromFiles<T>(project: ProjectAsync,
-                                 globPattern: string,
+                                 globPatterns: string | string[],
                                  gather: (f: File) => T | undefined): Promise<T[]> {
     return new Promise((resolve, reject) => {
         const gathered: T[] = [];
-        project.streamFiles(globPattern)
+        project.streamFiles(...toStringArray(globPatterns))
             .on("data", f => {
                 const g = gather(f);
                 if (g) {
@@ -61,16 +62,16 @@ export function saveFromFiles<T>(project: ProjectAsync,
 /**
  * Same as saveFromFiles, but works with promise returns
  * @param {ProjectAsync} project to act on
- * @param {string} globPattern glob pattern for files to match
+ * @param {string} globPatterns glob pattern for files to match
  * @param {(f: File) => Promise<T>} gather function returning a promise from each file
  * @return {Promise<T[]>}
  */
 export function saveFromFilesAsync<T>(project: ProjectAsync,
-                                      globPattern: string,
+                                      globPatterns: string | string[],
                                       gather: (f: File) => Promise<T> | undefined): Promise<T[]> {
     return new Promise((resolve, reject) => {
         const gathered: Array<Promise<T>> = [];
-        project.streamFiles(globPattern)
+        project.streamFiles(...toStringArray(globPatterns))
             .on("data", f => {
                 const g = gather(f);
                 if (g) {
@@ -87,16 +88,16 @@ export function saveFromFilesAsync<T>(project: ProjectAsync,
 /**
  * Perform the same operation on all the files.
  * @param project project to act on
- * @param globPattern glob pattern to match
+ * @param globPatterns glob patterns to match
  * @param op operation to perform on files. Can return void or a promise.
  */
 export function doWithFiles<P extends ProjectAsync>(project: P,
-                                                    globPattern: string,
+                                                    globPatterns: string | string[],
                                                     op: (f: File) => void | Promise<any>): Promise<P> {
     return new Promise(
         (resolve, reject) => {
             const filePromises: Array<Promise<File>> = [];
-            return project.streamFiles(globPattern)
+            return project.streamFiles(...toStringArray(globPatterns))
                 .on("data", f => {
                     const r = op(f);
                     if (isPromise(r)) {
@@ -117,15 +118,15 @@ export function doWithFiles<P extends ProjectAsync>(project: P,
 /**
  * Delete files matching the glob pattern and extra test (if supplied)
  * @param project project to act on
- * @param globPattern glob pattern for files to delete
+ * @param globPatterns glob patterns for files to delete
  * @param test additional, optional test for files to be deleted
  */
 export function deleteFiles<T>(project: ProjectAsync,
-                               globPattern: string,
-                               test: (f: File) => boolean = f => true): Promise<number> {
+                               globPatterns: string | string[],
+                               test: (f: File) => boolean = () => true): Promise<number> {
     return new Promise((resolve, reject) => {
         let deleted = 0;
-        project.streamFiles(globPattern)
+        project.streamFiles(...toStringArray(globPatterns))
             .on("data", f => {
                 if (test(f)) {
                     ++deleted;
