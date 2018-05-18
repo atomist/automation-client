@@ -1,0 +1,4 @@
+type SdmGoalTest @rootType {
+    sha: String!
+    commit: Commit @linkTo(queryName: "commitBySha", variables: [{name: "sha", path: "$.sha"}])
+}

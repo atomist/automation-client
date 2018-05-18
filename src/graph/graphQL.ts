@@ -1,8 +1,7 @@
 import * as appRoot from "app-root-path";
-import * as fs from "fs";
 import { murmur3 } from "murmurhash-js/";
-import * as p from "path";
 import * as trace from "stack-trace";
+import { IngesterOptions } from "../internal/graph/graphQL";
 import * as internalGraphQL from "../internal/graph/graphQL";
 import { SubscriptionOptions } from "../internal/graph/graphQL";
 
@@ -72,4 +71,38 @@ export function subscriptionFromFile(path: string,
                                      } = {}): string {
     // TODO cd add validation that we only read subscriptions here
     return internalGraphQL.resolveAndReadFileSync(path, current, parameters);
+}
+
+/**
+ * Prepare a GraphQL ingester SDL string for the register with the automation client.
+ *
+ * Ingester can be provided by the following options:
+ *
+ * * path:  absolute or relative path to a .graphql file to load; if provided a relative
+ *          path this will resolve the relative path to an absolute given the location of
+ *          the calling script.
+ * * name:  name of the .graphql file to load; this will walk up the directory structure
+ *          starting a t the location of the calling script and look for a folder called
+ *          'graphql'. Once that folder is found, by convention name is being looked for
+ *          in the 'ingester' sub directory.
+ *
+ * @param {IngesterOptions | string} optionsOrName
+ * @returns {string}
+ */
+export function ingester(optionsOrName: IngesterOptions | string): string {
+    const pathToCallingFunction = trace.get()[1].getFileName();
+
+    let options: IngesterOptions;
+
+    // Allow passing over a single string which would be the name of ingester file
+    if (typeof optionsOrName === "string") {
+        options = {
+            name: optionsOrName,
+        };
+    } else {
+        options = optionsOrName as IngesterOptions;
+    }
+    options.moduleDir = options.moduleDir || pathToCallingFunction;
+
+    return internalGraphQL.ingester(options);
 }

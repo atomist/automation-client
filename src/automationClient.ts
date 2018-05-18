@@ -67,7 +67,7 @@ export class AutomationClient {
         return this;
     }
 
-    public withIngester(ingester: Ingester): AutomationClient {
+    public withIngester(ingester: Ingester | string): AutomationClient {
         this.automations.registerIngester(ingester);
         return this;
     }
@@ -216,7 +216,9 @@ export function automationClient(configuration: Configuration): AutomationClient
         client.withEventHandler(e);
     });
     configuration.ingesters.forEach(e => {
-        if ((e as any).build) {
+        if (typeof e === "string") {
+            client.withIngester(e as string);
+        } else  if ((e as any).build) {
             client.withIngester((e as IngesterBuilder).build());
         } else {
             client.withIngester(e as Ingester);

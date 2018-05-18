@@ -166,6 +166,24 @@ export interface MutationOptions {
 }
 
 /**
+ * see src/graph/graphQL.ts
+ */
+export function ingester(options: IngesterOptions): string {
+
+    const path = options.path;
+    const name = options.name;
+    const pathToCallingFunction = options.moduleDir;
+
+    return locateAndLoadGraphql({ path, name }, "ingester", pathToCallingFunction);
+}
+
+export interface IngesterOptions {
+    name?: string;
+    path?: string;
+    moduleDir?: string;
+}
+
+/**
  * Extract operationName from the provided query or subscription
  * @param {string} q
  * @returns {string}
