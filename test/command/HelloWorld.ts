@@ -38,7 +38,7 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
 
         return ctx.messageClient.send(helloWorld, addressEvent("HelloWorld"))
             .then(result => {
-                //result.bla.bla;
+                // result.bla.bla;
                 return Success;
             })
             .catch(failure);
