@@ -17,6 +17,9 @@ export function toPromise(stream: FileStream): Promise<File[]> {
     });
 }
 
+/**
+ * Allows conveniently passing one or many glob patterns to utility functions
+ */
 export type GlobOptions = string | string[];
 
 /**

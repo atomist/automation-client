@@ -7,7 +7,7 @@ import { toPathExpression } from "@atomist/tree-path/path/utils";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { logger } from "../../internal/util/logger";
 import { ProjectAsync } from "../../project/Project";
-import { GlobOptions, saveFromFilesAsync } from "../../project/util/projectUtils";
+import { GlobOptions, saveFromFiles } from "../../project/util/projectUtils";
 import { LocatedTreeNode } from "../LocatedTreeNode";
 import { FileHit, MatchResult, NodeReplacementOptions } from "./FileHits";
 import { FileParser, isFileParser } from "./FileParser";
@@ -64,44 +64,48 @@ export function findMatches(p: ProjectAsync,
         .then(fileHits => _.flatten(fileHits.map(f => f.matches)));
 }
 
-export function findFileMatches(p: ProjectAsync,
-                                parserOrRegistry: FileParser | FileParserRegistry,
-                                globPatterns: GlobOptions,
-                                pathExpression: string | PathExpression,
-                                functionRegistry?: object): Promise<FileHit[]> {
+export async function findFileMatches(p: ProjectAsync,
+                                      parserOrRegistry: FileParser | FileParserRegistry,
+                                      globPatterns: GlobOptions,
+                                      pathExpression: string | PathExpression,
+                                      functionRegistry?: object): Promise<FileHit[]> {
     const parsed: PathExpression = toPathExpression(pathExpression);
     const parser = findParser(parsed, parserOrRegistry);
     if (!parser) {
         throw new Error(`Cannot find parser for path expression [${pathExpression}]: Using ${parserOrRegistry}`);
     }
-    return saveFromFilesAsync<FileHit>(p, globPatterns, file => {
-        return parser.toAst(file)
-            .then(topLevelProduction => {
-                logger.debug("Successfully parsed file '%s' to AST with root node named '%s'. Will execute '%s'",
-                    file.path, topLevelProduction.$name, stringify(parsed));
-                defineDynamicProperties(topLevelProduction);
-                const fileNode = {
-                    path: file.path,
-                    name: file.name,
-                    $name: file.name,
-                    $children: [topLevelProduction],
-                };
-                const r = evaluateExpression(fileNode, parsed, functionRegistry);
-                if (isSuccessResult(r)) {
-                    logger.debug("%d matches in file '%s'", r.length, file.path);
-                    return fillInSourceLocations(file, r)
-                        .then(locatedNodes => new FileHit(p, file, fileNode, locatedNodes));
-                } else {
-                    logger.debug("No matches in file '%s'", file.path);
-                    return undefined;
-                }
-            })
-            .catch(err => {
-                logger.info("Failed to parse file '%s': %s", file.path, err);
-                return undefined;
-            });
-    });
+    const files = await saveFromFiles(p, globPatterns, file => parseFile(parser, parsed, functionRegistry, p, file));
+    const all = await Promise.all(files);
+    return all.filter(x => !!x);
+}
 
+async function parseFile(parser: FileParser, pex: PathExpression, functionRegistry: object,
+                         p: ProjectAsync, file: File): Promise<FileHit> {
+    return parser.toAst(file)
+        .then(topLevelProduction => {
+            logger.debug("Successfully parsed file '%s' to AST with root node named '%s'. Will execute '%s'",
+                file.path, topLevelProduction.$name, stringify(pex));
+            defineDynamicProperties(topLevelProduction);
+            const fileNode = {
+                path: file.path,
+                name: file.name,
+                $name: file.name,
+                $children: [topLevelProduction],
+            };
+            const r = evaluateExpression(fileNode, pex, functionRegistry);
+            if (isSuccessResult(r)) {
+                logger.debug("%d matches in file '%s'", r.length, file.path);
+                return fillInSourceLocations(file, r)
+                    .then(locatedNodes => new FileHit(p, file, fileNode, locatedNodes));
+            } else {
+                logger.debug("No matches in file '%s'", file.path);
+                return undefined;
+            }
+        })
+        .catch(err => {
+            logger.info("Failed to parse file '%s': %s", file.path, err);
+            return undefined;
+        });
 }
 
 /**
