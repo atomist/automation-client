@@ -10,6 +10,7 @@ import { HandlerContext } from "../../src/HandlerContext";
 import {
     failure,
     HandlerResult,
+    Success,
     success,
 } from "../../src/HandlerResult";
 import { addressEvent } from "../../src/spi/message/MessageClient";
@@ -36,7 +37,11 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
         };
 
         return ctx.messageClient.send(helloWorld, addressEvent("HelloWorld"))
-            .then(success, failure);
+            .then(result => {
+                //result.bla.bla;
+                return Success;
+            })
+            .catch(failure);
 
     }
 }

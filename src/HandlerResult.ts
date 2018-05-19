@@ -72,7 +72,7 @@ export const FailurePromise = Promise.resolve(Failure);
  * Function that returns a handler failure result.
  */
 export function failure(err: Error): HandlerError {
-    return { code: 1, message: err.message, stack: err.stack };
+    return { code: 1, message: err.message, stack: err.stack, error: err } as any as HandlerError;
 }
 
 /**
