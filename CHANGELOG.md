@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.16.0...HEAD
 
+### Fixed
+
+-   Checking out a branch sets the branch [#293][293]
+
+[293]: https://github.com/atomist/automation-client-ts/issues/293
+
 ## [0.16.0][] - 2018-05-15
 
 [0.16.0]: https://github.com/atomist/automation-client-ts/compare/0.15.1...0.16.0

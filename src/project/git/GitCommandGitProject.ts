@@ -176,7 +176,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @param body
      */
     public raisePullRequest(title: string, body: string = name, targetBranch: string = "master"): Promise<ActionResult<this>> {
-        if (!(this.branch)) {
+        if (!this.branch) {
             throw new Error("Cannot create a PR: no branch has been created");
         }
         if (!isRemoteRepoRef(this.id)) {
@@ -212,7 +212,11 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @return {any}
      */
     public checkout(sha: string): Promise<CommandResult<this>> {
-        return this.runCommandInCurrentWorkingDirectory(`git checkout ${sha} --`);
+        return this.runCommandInCurrentWorkingDirectory(`git checkout ${sha} --`)
+            .then(res => {
+                this.branch = sha;
+                return res;
+            });
     }
 
     /**
@@ -235,6 +239,8 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                 }
             } else if (typeof v === "string") {
                 gitPushCmd += ` --${opt}=${v}`;
+            } else {
+                return Promise.reject(new Error(`Unknown option key type for ${k}: ${typeof v}`));
             }
         });
 
@@ -254,14 +260,17 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     public createBranch(name: string): Promise<CommandResult<this>> {
-        this.branch = name;
-        return this.runCommandInCurrentWorkingDirectory(`git branch ${name}`).then(() =>
-            this.runCommandInCurrentWorkingDirectory(`git checkout ${name} --`));
+        return this.runCommandInCurrentWorkingDirectory(`git branch ${name}`)
+            .then(() => this.runCommandInCurrentWorkingDirectory(`git checkout ${name} --`))
+            .then(res => {
+                this.branch = name;
+                return res;
+            });
     }
 
     public hasBranch(name: string): Promise<boolean> {
-        return this.runCommandInCurrentWorkingDirectory(`git branch --list ${name}`).then(
-            commandResult => {
+        return this.runCommandInCurrentWorkingDirectory(`git branch --list ${name}`)
+            .then(commandResult => {
                 if (commandResult.success && commandResult.stdout.includes(name)) {
                     return Promise.resolve(true);
                 } else if (commandResult.success) {
@@ -292,11 +301,14 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
  * @param opts options for clone
  * @param directoryManager strategy for cloning
  */
-function clone(credentials: ProjectOperationCredentials,
-               id: RemoteRepoRef,
-               opts: CloneOptions,
-               directoryManager: DirectoryManager,
-               secondTry: boolean = false): Promise<GitProject> {
+function clone(
+    credentials: ProjectOperationCredentials,
+    id: RemoteRepoRef,
+    opts: CloneOptions,
+    directoryManager: DirectoryManager,
+    secondTry: boolean = false,
+): Promise<GitProject> {
+
     return directoryManager.directoryFor(id.owner, id.repo, id.sha, opts)
         .then(cloneDirectoryInfo => {
             switch (cloneDirectoryInfo.type) {
