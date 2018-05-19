@@ -336,7 +336,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             ...failure(err),
         };
 
-        this.listeners.map(l => () => l.commandFailed(ci, ctx, result))
+        this.listeners.map(l => () => l.commandFailed(ci, ctx, err))
             .reduce((p, f) => p.then(f), Promise.resolve())
             .then(() => {
                 return this.sendCommandStatus(false, result.code, command, ctx)
@@ -358,7 +358,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             ...failure(err),
         };
 
-        this.listeners.map(l => () => l.eventFailed(ef, ctx, result))
+        this.listeners.map(l => () => l.eventFailed(ef, ctx, err))
             .reduce((p, f) => p.then(f), Promise.resolve())
             .then(() => {
                 return this.sendEventStatus(false, ef, event, ctx)

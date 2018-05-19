@@ -342,31 +342,37 @@ authentication.
 
 #### Invoking a command handler
 
-Command handlers are exposed via HTTP GET like the following:
-
-```
-$ curl -X GET \
-     http://localhost:2866/command/hello-world?name=cd \
-     -H 'authorization: Bearer 34563sdf......................wq455eze"'
-```
-
-This would invoke the `HelloWorld` command handler from above using `cd` as value of `name`.
-
-You can also post the following payload to your command handler:
+Command handlers can be invoked via a HTTP POST with the following payload:
 
 ```
 $ curl -X POST \
-    http://localhost:2866/command/hello-world \
+    http://localhost:2866/command \
     -H 'content-type: application/json' \
     -H 'authorization: Bearer 34563sdf......................wq455eze"'
     -d '{
-    "parameters": [{
-      "name": "name", "value": "cd"
-    }],
-    "mapped_parameters": [{
-      "name": "slackUser", "value": "U095T3BPF"
-    }]
-  }'
+          "parameters": [{
+            "name": "name",
+            "value": "cd"
+          }],
+          "mapped_parameters": [{
+            "name": "sender",
+            "value": "kipz"
+          },{
+            "name": "userName",
+            "value": "cd"
+          }],
+          "secrets": [{
+          	"uri": "github://user_token?scopes=repo",
+          	"value":"4...d"
+          }],
+          "command": "HelloWorld",
+          "correlation_id": "6cb72bf7-77b4-4939-b892-00000701fa53",
+          "team": {
+            "id": "T1L0VDKJP",
+            "name": "Atomist QA"
+          },
+          "api_version": "1"
+        }'
 ```
 
 ## Support

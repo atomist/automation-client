@@ -5,6 +5,7 @@ import * as passport from "passport";
 import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
 import { IStrategyOptions } from "passport-http-bearer";
+import * as tokenHeader from "passport-http-header-token";
 import * as retry from "retry";
 import { ExpressCustomizer } from "../../../configuration";
 import * as globals from "../../../globals";
@@ -197,7 +198,7 @@ export class ExpressServer {
             const user: string = this.options.auth.basic.username ? this.options.auth.basic.username : "admin";
             const pwd: string = this.options.auth.basic.password ? this.options.auth.basic.password : guid();
 
-            passport.use(new http.BasicStrategy(
+            passport.use("basic", new http.BasicStrategy(
                 (username, password, done) => {
                     if (user === username && pwd === password) {
                         done(null, { user: username });
@@ -216,7 +217,7 @@ export class ExpressServer {
             const org = this.options.auth.bearer.org;
             const adminOrg = this.options.auth.bearer.adminOrg;
 
-            passport.use(new bearer.Strategy({
+            passport.use("bearer", new bearer.Strategy({
                 passReqToCallback: true,
             } as IStrategyOptions,
                 (req, token, done) => {
@@ -245,13 +246,34 @@ export class ExpressServer {
                             }
                         })
                         .then(user => {
-                            done(null, { token, user });
+                            return done(null, { token, user });
                         })
                         .catch(err => {
                             console.log(err);
-                            done(null, false);
+                            return done(null, false);
                         });
                 },
+            ));
+        }
+
+        if (this.options.auth && this.options.auth.token && this.options.auth.token.enabled) {
+            const cb = this.options.auth.token.verify || (token => Promise.resolve(false));
+
+            passport.use("token", new tokenHeader.Strategy(
+                (token, done) => {
+                    cb(token)
+                        .then(valid => {
+                            if (valid) {
+                                return done(null, { user: token });
+                            } else {
+                                return done(null, false);
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err);
+                            return done(null, false);
+                        });
+                    },
             ));
         }
     }
@@ -269,6 +291,9 @@ export class ExpressServer {
             }
             if (this.options.auth.basic && this.options.auth.basic.enabled === true) {
                 strategies.push("basic");
+            }
+            if (this.options.auth.token && this.options.auth.token.enabled === true) {
+                strategies.push("token");
             }
             if (strategies.length > 0) {
                 passport.authenticate(strategies, { session: false })(req, res, next);
@@ -298,6 +323,10 @@ export interface ExpressServerOptions {
             enabled?: boolean;
             org?: string;
             adminOrg?: string;
+        },
+        token: {
+            enabled?: boolean;
+            verify?: (token: string) => Promise<boolean>;
         },
     };
     endpoint: {

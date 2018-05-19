@@ -67,7 +67,7 @@ export class AutomationClient {
         return this;
     }
 
-    public withIngester(ingester: Ingester): AutomationClient {
+    public withIngester(ingester: Ingester | string): AutomationClient {
         this.automations.registerIngester(ingester);
         return this;
     }
@@ -194,6 +194,7 @@ export class AutomationClient {
             auth: {
                 basic: _.cloneDeep(this.configuration.http.auth.basic),
                 bearer: _.cloneDeep(this.configuration.http.auth.bearer),
+                token: _.cloneDeep(this.configuration.http.auth.token),
             },
             endpoint: {
                 graphql: this.configuration.endpoints.graphql,
@@ -215,7 +216,9 @@ export function automationClient(configuration: Configuration): AutomationClient
         client.withEventHandler(e);
     });
     configuration.ingesters.forEach(e => {
-        if ((e as any).build) {
+        if (typeof e === "string") {
+            client.withIngester(e as string);
+        } else  if ((e as any).build) {
             client.withIngester((e as IngesterBuilder).build());
         } else {
             client.withIngester(e as Ingester);

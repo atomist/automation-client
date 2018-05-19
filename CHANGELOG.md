@@ -7,7 +7,32 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.15.1...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.16.0...HEAD
+
+## [0.16.0][] - 2018-05-15
+
+[0.16.0]: https://github.com/atomist/automation-client-ts/compare/0.15.1...0.16.0
+
+Provider release
+
+### Changed
+
+-   Change generator seed repository parameters to include Git provider
+
+### Fixed
+
+-   Default @Value handling
+
+### Added
+
+-   Options for Git push()
+-   Token-based authentication
+
+### Deprecated
+
+-   `BitBucketServerRepoRef`
+-   `allReposInTeam()`
+-   `generatorHandler()`
 
 ## [0.15.1][] - 2018-05-09
 

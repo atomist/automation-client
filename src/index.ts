@@ -47,9 +47,10 @@ export { GraphQL };
 export { logger } from "./internal/util/logger";
 
 export {
-    type,
+    buildEnum,
+    buildIngester,
+    buildType,
     IngesterBuilder,
-    ingester,
 } from "./ingesters";
 
 export { AutomationEventListener } from "./server/AutomationEventListener";
@@ -64,6 +65,3 @@ export {
 export { LogHandler } from "./internal/transport/OnLog";
 
 export { automationClientInstance } from "./globals";
-
-// causes mocha tests in dependent projects to not exist cleanly
-// export { automationClientInstance } from "./automationClient";

@@ -1,5 +1,4 @@
 import { SlackMessage } from "@atomist/slack-messages";
-import axios from "axios";
 import { ApolloGraphClient } from "../../../graph/ApolloGraphClient";
 import {
     AutomationContextAware,
@@ -15,7 +14,6 @@ import {
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import * as namespace from "../../util/cls";
-import { logger } from "../../util/logger";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
     CommandIncoming,

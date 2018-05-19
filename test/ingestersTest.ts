@@ -2,15 +2,15 @@ import "mocha";
 import * as assert from "power-assert";
 import {
     buildEnum,
-    ingester,
-    type,
+    buildIngester,
+    buildType,
 } from "../src/ingesters";
 
 describe("ingesters", () => {
 
     it("should create simple root type with no field", () => {
-        const barType = type("bar");
-        const barIngester = ingester(barType).build();
+        const barType = buildType("bar");
+        const barIngester = buildIngester(barType).build();
         assert.deepEqual(barIngester, {
             root_type: "bar",
             types: [{
@@ -22,8 +22,8 @@ describe("ingesters", () => {
     });
 
     it("should create simple root type with one string field", () => {
-        const barType = type("bar").withStringField("poo");
-        const barIngester = ingester(barType).build();
+        const barType = buildType("bar").withStringField("poo");
+        const barIngester = buildIngester(barType).build();
         assert.deepStrictEqual(barIngester, {
             root_type: "bar",
             types: [{
@@ -42,8 +42,8 @@ describe("ingesters", () => {
 
     it("should create simple root type with one enum field", () => {
         const enumType = buildEnum("Color", ["red", "black", "blue"]);
-        const barType = type("bar").withEnumField("color", "Color");
-        const barIngester = ingester(barType).withEnum(enumType).build();
+        const barType = buildType("bar").withEnumField("color", "Color");
+        const barIngester = buildIngester(barType).withEnum(enumType).build();
         assert.deepEqual(barIngester, {
             root_type: "bar",
             types: [{
@@ -72,8 +72,8 @@ describe("ingesters", () => {
     });
 
     it("should create simple root type with two fields", () => {
-        const barType = type("bar").withStringField("poo").withIntField("puu");
-        const barIngester = ingester(barType).build();
+        const barType = buildType("bar").withStringField("poo").withIntField("puu");
+        const barIngester = buildIngester(barType).build();
         assert.deepEqual(barIngester, {
             root_type: "bar",
             types: [{
@@ -97,9 +97,9 @@ describe("ingesters", () => {
     });
 
     it("should create simple root type with an object field", () => {
-        const fooType = type("foo").withStringField("fuu");
-        const barType = type("bar").withObjectField("foo", fooType);
-        const barIngester = ingester(barType).withType(fooType).build();
+        const fooType = buildType("foo").withStringField("fuu");
+        const barType = buildType("bar").withObjectField("foo", fooType);
+        const barIngester = buildIngester(barType).withType(fooType).build();
         assert.deepEqual(barIngester, {
             root_type: "bar",
             types: [{
@@ -127,10 +127,10 @@ describe("ingesters", () => {
     });
 
     it("should create root type with two fields and another type", () => {
-        const fooType = type("foo").withBooleanField("fuu").withListScalarField("nums", "Int");
-        const barType = type("bar").withStringField("poo")
+        const fooType = buildType("foo").withBooleanField("fuu").withListScalarField("nums", "Int");
+        const barType = buildType("bar").withStringField("poo")
             .withFloatField("puu").withListObjectField("foos", fooType);
-        const barIngester = ingester(barType).withType(fooType).build();
+        const barIngester = buildIngester(barType).withType(fooType).build();
         assert.deepEqual(barIngester, {
             root_type: "bar",
             types: [{
@@ -182,9 +182,9 @@ describe("ingesters", () => {
     });
 
     it("should create root type with directive", () => {
-        const barType = type("bar").withStringField("poo", "test desc", ["compositeId"])
+        const barType = buildType("bar").withStringField("poo", "test desc", ["compositeId"])
             .withFloatField("puu");
-        const barIngester = ingester(barType).build();
+        const barIngester = buildIngester(barType).build();
         assert.deepEqual(barIngester, {
             root_type: "bar",
             types: [{
@@ -212,10 +212,10 @@ describe("ingesters", () => {
     });
 
     it("should create root type with argument", () => {
-        const fooType = type("foo").withBooleanField("fuu").withListScalarField("nums", "Int");
-        const barType = type("bar").withStringField("poo")
+        const fooType = buildType("foo").withBooleanField("fuu").withListScalarField("nums", "Int");
+        const barType = buildType("bar").withStringField("poo")
             .withFloatField("puu").withListObjectField("foos", fooType, "foos desc", ["fuu"]);
-        const barIngester = ingester("bar").withType(fooType).withType(barType).build();
+        const barIngester = buildIngester("bar").withType(fooType).withType(barType).build();
         assert.deepEqual(barIngester, {
             root_type: "bar",
             types: [{

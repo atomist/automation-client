@@ -306,18 +306,8 @@ export class EnumBuilder {
  * @param {string | TypeBuilder} rootType
  * @returns {IngesterBuilder}
  */
-export function ingester(rootType: string | TypeBuilder): IngesterBuilder {
+export function buildIngester(rootType: string | TypeBuilder): IngesterBuilder {
     return new IngesterBuilder(rootType);
-}
-
-/**
- * Create a TypeBuilder for the provided name
- * @param {string} name
- * @returns {TypeBuilder}
- * Deprecated
- */
-export function type(name: string): TypeBuilder {
-    return new TypeBuilder(name);
 }
 
 /**

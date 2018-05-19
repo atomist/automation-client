@@ -1,11 +1,4 @@
 import { Configuration } from "../src/configuration";
-import {
-    buildEnum,
-    buildType,
-    ingester,
-    IngesterBuilder,
-    type,
-} from "../src/ingesters";
 import { FileMessageTest } from "./command/FileMessageTest";
 import { HelloWorld } from "./command/HelloWorld";
 import { MessageTest } from "./command/MessageTest";
@@ -40,13 +33,16 @@ export const configuration: Configuration = {
     ingesters: [
         // CircleCIPayload,
         // GitLabPushPayload,
-        ingester("HelloWorld")
+        /* buildIngester("HelloWorld")
             .withType(buildType("HelloWorldPerson").withStringField("name", "Name of the person"))
             .withEnum(buildEnum("Urgency", ["high", "low", "normal"], "How important is your message"))
             .withType(buildType("HelloWorld")
                 .withEnumField("urgency", "Urgency", "Field description")
                 .withObjectField("sender", "HelloWorldPerson", "sender desc", ["name"])
-                .withObjectField("recipient", "HelloWorldPerson", "recipient desc", ["name"])),
+                .withObjectField("recipient", "HelloWorldPerson", "recipient desc", ["name"])),*/
+        // fs.readFileSync(p.join(appRoot.path, "test", "graphql", "ingester", "helloWorld.graphql")).toString(),
+        // fs.readFileSync(p.join(appRoot.path, "test", "graphql", "ingester", "sdmGoal.graphql")).toString(),
+        // ingester("helloWorld"),
     ],
     ws: {
         enabled: true,
@@ -66,6 +62,10 @@ export const configuration: Configuration = {
             bearer: {
                 enabled: true,
                 adminOrg: "atomisthq",
+            },
+            token: {
+                enabled: false,
+                verify: async token => "12222" === token,
             },
         },
     },
@@ -95,7 +95,7 @@ export const configuration: Configuration = {
             level: "debug",
         },
         logEvents: {
-            enabled: true,
+            enabled: false,
         },
     },
 };
