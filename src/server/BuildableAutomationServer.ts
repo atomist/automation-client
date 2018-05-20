@@ -1,6 +1,9 @@
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
-import { AutomationServerOptions } from "../configuration";
+import {
+    AutomationServerOptions,
+    Configuration,
+} from "../configuration";
 import { ApolloGraphClient } from "../graph/ApolloGraphClient";
 import { HandleCommand } from "../HandleCommand";
 import {
@@ -41,6 +44,10 @@ import {
     isValidationError,
     ValidationResult,
 } from "../SmartParameters";
+import {
+    AutomationMetadataProcessor,
+    PassThroughMetadataProcessor,
+} from "../spi/env/MetadataProcessor";
 import { SecretResolver } from "../spi/env/SecretResolver";
 import { GraphClient } from "../spi/graph/GraphClient";
 import {
@@ -77,9 +84,21 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
 
     private ingesters: Array<Ingester | string> = [];
 
-    constructor(public opts: AutomationServerOptions,
-                private fallbackSecretResolver: SecretResolver = new NodeConfigSecretResolver()) {
+    private secretResolver: SecretResolver = new NodeConfigSecretResolver();
+
+    private metadataProcessor: AutomationMetadataProcessor = new PassThroughMetadataProcessor();
+
+    constructor(public opts: Configuration) {
         super();
+
+        if (opts.secretResolver) {
+            this.secretResolver = opts.secretResolver;
+        }
+
+        if (opts.metadataProcessor) {
+            this.metadataProcessor = opts.metadataProcessor;
+        }
+
         if (opts.endpoints && opts.endpoints.graphql) {
             if (opts.teamIds) {
                 let teamId: string;
@@ -107,7 +126,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                 throw new Error(`Cannot get metadata from handler '${stringify(instanceToInspect)}'`);
             }
             this.commandHandlers.push({
-                metadata: md,
+                metadata: this.metadataProcessor.process(md, this.opts),
                 invoke: (i, ctx) => {
                     const newHandler = factory();
                     const params = !!newHandler.freshParametersInstance ? newHandler.freshParametersInstance() : newHandler;
@@ -121,7 +140,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
     public fromCommandHandler<P>(hc: HandleCommand<P>): this {
         const md = isCommandHandlerMetadata(hc) ? hc : metadataFromInstance(hc);
         this.commandHandlers.push({
-            metadata: md,
+            metadata: this.metadataProcessor.process<CommandHandlerMetadata>(md, this.opts),
             invoke: (i, ctx) => {
                 const freshParams = !!hc.freshParametersInstance ? hc.freshParametersInstance() : hc as any as P;
                 return this.invokeCommandHandlerWithFreshParametersInstance<P>(hc, md, freshParams, i, ctx);
@@ -139,7 +158,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                 throw new Error(`Cannot get metadata from event handler '${stringify(instanceToInspect)}'`);
             }
             this.eventHandlers.push({
-                metadata: md,
+                metadata: this.metadataProcessor.process<EventHandlerMetadata>(md, this.opts),
                 invoke: (e, ctx) => this.invokeFreshEventHandlerInstance(factory(), md, e, ctx),
             });
         }
@@ -252,7 +271,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
 
         const mrResolver = invocation.mappedParameters ?
             new InvocationSecretResolver(invocation.mappedParameters) :
-            this.fallbackSecretResolver;
+            this.secretResolver;
         // logger.debug("Applying mapped parameters");
         const mappedParameters = metadata.mapped_parameters || [];
         const invMps = invocation.mappedParameters || [];
@@ -279,7 +298,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         }
 
         const secretResolver = invocationSecrets ? new InvocationSecretResolver(invocationSecrets) :
-            this.fallbackSecretResolver;
+            this.secretResolver;
         // logger.debug("Applying secrets");
         const secrets = metadata.secrets || [];
         secrets.forEach(s => {

@@ -39,6 +39,8 @@ import {
     obfuscateJson,
 } from "./internal/util/string";
 import { AutomationEventListener } from "./server/AutomationEventListener";
+import { AutomationMetadataProcessor } from "./spi/env/MetadataProcessor";
+import { SecretResolver } from "./spi/env/SecretResolver";
 import { Maker } from "./util/constructionUtils";
 
 /**
@@ -252,6 +254,10 @@ export interface AutomationServerOptions extends AutomationOptions {
          */
         port?: number;
     };
+    /** Register a custom secret resolver */
+    secretResolver?: SecretResolver;
+    /** Register a custom AutomationMetadataProcessor */
+    metadataProcessor?: AutomationMetadataProcessor;
 }
 
 /**

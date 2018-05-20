@@ -1,7 +1,15 @@
 import stringify = require("json-stringify-safe");
 import "mocha";
 import * as assert from "power-assert";
-import { CommandHandler, EventHandler, MappedParameter, Parameter, Parameters, Secret } from "../../../src/decorators";
+import {
+    CommandHandler,
+    EventHandler,
+    MappedParameter,
+    Parameter,
+    Parameters,
+    Secret,
+    Secrets,
+} from "../../../src/decorators";
 import { HandleCommand, SelfDescribingHandleCommand } from "../../../src/HandleCommand";
 import { HandleEvent } from "../../../src/HandleEvent";
 import { consoleMessageClient } from "../../../src/internal/message/ConsoleMessageClient";
@@ -9,6 +17,7 @@ import { succeed } from "../../../src/operations/support/contextUtils";
 import { AutomationServer } from "../../../src/server/AutomationServer";
 import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
 import { SmartParameters } from "../../../src/SmartParameters";
+import { AutomationMetadataProcessor } from "../../../src/spi/env/MetadataProcessor";
 import { SecretResolver } from "../../../src/spi/env/SecretResolver";
 import { HelloWorld } from "../../command/HelloWorld";
 import { AddAtomistSpringAgent, AlwaysOkEventHandler, FooBarEventHandler, TrustMeIGaveMySecret } from "./TestHandlers";
@@ -174,8 +183,7 @@ describe("BuildableAutomationServer", () => {
             },
         };
         const s = new BuildableAutomationServer(
-            { name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] },
-            sr);
+            { name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [], secretResolver: sr });
         s.registerEventHandler(TrustMeIGaveMySecret);
         s.onEvent({
             extensions: {
@@ -586,5 +594,43 @@ describe("BuildableAutomationServer", () => {
                 done();
             },
             done);
+    });
+
+    it("should use registered metadata processor", () => {
+
+        class TestAutomationMetadataProcessor implements AutomationMetadataProcessor {
+             public process(metadata) {
+                 assert.equal(1, metadata.secrets.length);
+                 metadata.values.push({name: "orgToken", path: "token", required: true, type: "string" });
+                 metadata.secrets = [];
+                 return metadata;
+             }
+        }
+
+        const s = new BuildableAutomationServer({
+            name: "foobar",
+            version: "1.0.0",
+            teamIds: ["bar"],
+            keywords: [],
+            metadataProcessor: new TestAutomationMetadataProcessor(),
+        });
+
+        @EventHandler("goo bar", "subscription Test { Issue { title }}")
+        class Handler implements HandleEvent<any> {
+
+            @Secret(Secrets.OrgToken)
+            public orgToken;
+
+            public handle(ch, params) {
+                return Promise.resolve(undefined);
+            }
+        }
+
+        s.registerEventHandler(Handler);
+        const handler = s.automations.events[0];
+        assert.equal(1, handler.values.length);
+        assert.equal("orgToken", handler.values[0].name);
+        assert.equal("token", handler.values[0].path);
+        assert.equal(0, handler.secrets.length);
     });
 });
