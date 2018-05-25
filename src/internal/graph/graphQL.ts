@@ -248,7 +248,7 @@ export function replaceParameters(q: string,
                 if (parameters.hasOwnProperty(key)) {
                     const value = parameters[key] as any;
                     if (!value) {
-                        throw new Error(`The value of variable ${key} is undefined`)
+                        throw new Error(`The value of variable ${key} is undefined`);
                     }
                     // If value is defined it is a enum value
                     if (value.value) {
