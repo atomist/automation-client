@@ -825,6 +825,9 @@ function validateConfiguration(cfg: Configuration) {
  * @return merged configuration object
  */
 export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
+    // Register the logger globally so that downstream modules can see it
+    (global as any).__logger = logger;
+    
     let cfg: Configuration;
     try {
         const defCfg = defaultConfiguration();
