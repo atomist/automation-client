@@ -74,6 +74,8 @@ export class AutomationClient {
 
     public run(): Promise<any> {
         (global as any).__runningAutomationClient = this as AutomationClient;
+        // Register the logger globally so that downstream modules can see it
+        (global as any).__logger = logger;
 
         const webSocketOptions: WebSocketClientOptions = {
             graphUrl: this.configuration.endpoints.graphql,
