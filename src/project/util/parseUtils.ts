@@ -81,8 +81,8 @@ export function findFileMatches<M>(p: ProjectAsync,
                                    opts: Opts = DefaultOpts): Promise<Array<FileWithMatches<M>>> {
     return saveFromFilesAsync(p, globPatterns, file => {
         return file.getContent()
-            .then(content => {
-                const matches = microgrammar.findMatches(transformIfNecessary(content, opts));
+            .then(async content => {
+                const matches = await microgrammar.findMatchesAsync(transformIfNecessary(content, opts));
                 if (matches.length > 0) {
                     logger.debug(`${matches.length} matches in '${file.path}'`);
                     return new UpdatingFileHits(p, file, matches, content);
@@ -109,8 +109,8 @@ export function doWithFileMatches<M, P extends ProjectAsync = ProjectAsync>(p: P
                                                                             opts: Opts = DefaultOpts): Promise<P> {
     return doWithFiles(p, globPatterns, file => {
         return file.getContent()
-            .then(content => {
-                const matches = microgrammar.findMatches(transformIfNecessary(content, opts));
+            .then(async content => {
+                const matches = await microgrammar.findMatchesAsync(transformIfNecessary(content, opts));
                 if (matches && matches.length > 0) {
                     logger.debug(`${matches.length} matches in '${file.path}'`);
                     const fh = new UpdatingFileHits(p, file, matches, content);

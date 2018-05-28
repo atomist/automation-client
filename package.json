@@ -17,7 +17,7 @@
     "url": "https://github.com/atomist/automation-client-ts/issues"
   },
   "dependencies": {
-    "@atomist/microgrammar": "^0.7.0",
+    "@atomist/microgrammar": "https://r.atomist.com/SkY2_gHYkm",
     "@atomist/slack-messages": "^0.12.1",
     "@atomist/tree-path": "^0.1.9",
     "@octokit/rest": "^14.0.9",
