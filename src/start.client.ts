@@ -13,7 +13,7 @@ try {
         })
         .then(configuration => automationClient(configuration).run())
         .catch(e => {
-            console.error(`Error: ${e.message}`);
+            console.error(e);
             process.exit(1);
         });
 } catch (e) {
