@@ -57,7 +57,7 @@ export function cliAtomistConfig(argv: any): Promise<number> {
     const teamsQuestion: inquirer.Question = {
         type: "input",
         name: "teamIds",
-        message: "Team IDs (space delimited)",
+        message: "Atomist Workspace IDs (space delimited)",
         validate: value => {
             if (!/\S/.test(value) && userConfig.teamIds.length < 1) {
                 return `The list of team IDs you entered is empty`;
