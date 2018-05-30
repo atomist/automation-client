@@ -4,6 +4,7 @@ import {
 } from "../../../metadata/automationMetadata";
 import { Automations } from "../../metadata/metadata";
 import { info } from "../../util/info";
+import { toStringArray } from "../../util/string";
 
 export function prepareRegistration(automations: Automations, options: any = {}): any {
     return {
@@ -43,8 +44,8 @@ function prepareCommandRegistration(c: CommandHandlerMetadata) {
     return {
         name: c.name,
         description: c.description,
-        tags: c.tags.map(t => t.name),
-        intent: c.intent,
+        tags: typeof c.tags === "string" ? [c.tags] : c.tags.map(t => t.name),
+        intent: toStringArray(c.intent),
         auto_submit: c.auto_submit ? c.auto_submit : false,
         parameters: c.parameters,
         mapped_parameters: c.mapped_parameters,
