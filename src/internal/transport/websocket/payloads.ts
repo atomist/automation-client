@@ -44,7 +44,7 @@ function prepareCommandRegistration(c: CommandHandlerMetadata) {
     return {
         name: c.name,
         description: c.description,
-        tags: typeof c.tags === "string" ? [c.tags] : c.tags.map(t => t.name),
+        tags: typeof c.tags === "string" ? [c.tags] : (c.tags || []).map(t => t.name),
         intent: toStringArray(c.intent),
         auto_submit: c.auto_submit ? c.auto_submit : false,
         parameters: c.parameters,
