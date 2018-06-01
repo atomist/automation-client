@@ -53,9 +53,6 @@ function addWebhook(p: GitProject, params: SeedDrivenGeneratorParameters): Promi
             content_type: "json",
         },
     };
-    if (!isTokenCredentials(params.target.credentials)) {
-        return logAndFail("GitHub token must be provided");
-    }
     return addRepoWebhook(params.target.credentials.token, p.id, payload)
         .then(() => Promise.resolve(successOn(p)), err => {
             const status: number = (err.response && err.response.status) ? err.response.status : -1;

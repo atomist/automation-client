@@ -42,7 +42,9 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
     /**
      * Construct a new RemoteRepoRef
      * @param {ProviderType} providerType
-     * @param {string} rawRemote remote url. Should start with a scheme.
+     * @param {string} rawRemote remote url, like for cloning or linking into the repo. Should start with a scheme.
+     * May have a trailing slash, which will be stripped
+     * @param rawApiBase raw API base url. Should start with a scheme.
      * May have a trailing slash, which will be stripped
      * @param {string} owner
      * @param {string} repo
@@ -51,18 +53,19 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
      */
     protected constructor(public readonly providerType: ProviderType,
                           rawRemote: string,
+                          rawApiBase: string,
                           public readonly owner: string,
                           public readonly repo: string,
                           public readonly sha: string = "master",
                           public readonly path?: string) {
-        if (!rawRemote.startsWith("http")) {
-            throw new Error(`Scheme required in remoteBase: '${rawRemote}'`);
+        const [remoteScheme, remoteBase] = splitSchemeFromUrl(rawRemote);
+        const [apiScheme, apiBase] = splitSchemeFromUrl(rawApiBase);
+        if (apiScheme !== remoteScheme) { // that's confusing, don't handle it
+            throw new Error(`Scheme is different between remoteBase ${rawRemote} and apiBase ${rawApiBase}`);
         }
-        // Strip any trailing /
-        const remote = rawRemote.replace(/\/$/, "");
-        this.scheme = remote.startsWith("http://") ? "http://" : "https://";
-        this.apiBase = remote.substr(this.scheme.length);
-        this.remoteBase = remote.substr(this.scheme.length);
+        this.apiBase = apiBase;
+        this.scheme = remoteScheme;
+        this.remoteBase = remoteBase;
     }
 
     get url() {
@@ -92,4 +95,13 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
                                      title: string, body: string, head: string, base: string): Promise<ActionResult<this>>;
 
     public abstract deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>>;
+}
+
+function splitSchemeFromUrl(urlWithSchemeAndPossibleTrailingSlash: string): ["http://" | "https://", string] {
+    if (!urlWithSchemeAndPossibleTrailingSlash.startsWith("http")) {
+        throw new Error(`This URL needs to start with http or https: '${urlWithSchemeAndPossibleTrailingSlash}'`);
+    }
+    const scheme = urlWithSchemeAndPossibleTrailingSlash.startsWith("http://") ? "http://" : "https://";
+    const base = urlWithSchemeAndPossibleTrailingSlash.substr(scheme.length).replace(/\/$/, "");
+    return [scheme, base];
 }

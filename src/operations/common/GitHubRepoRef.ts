@@ -39,7 +39,7 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
                 path?: string) {
         super(
             rawApiBase === GitHubDotComBase ? ProviderType.github_com : ProviderType.ghe,
-            rawApiBase, owner, repo, sha, path);
+            apiBaseToRemoteBase(rawApiBase), rawApiBase, owner, repo, sha, path);
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
@@ -117,4 +117,14 @@ function headers(credentials: ProjectOperationCredentials): { headers: any } {
             Authorization: `token ${credentials.token}`,
         },
     };
+}
+
+function apiBaseToRemoteBase(rawApiBase: string) {
+    if (rawApiBase.includes("api.github.com")) {
+        return "https://github.com";
+    }
+    if (rawApiBase.includes("api/v3")) {
+        return rawApiBase.substring(0, rawApiBase.indexOf("api/v3"));
+    }
+    return rawApiBase;
 }

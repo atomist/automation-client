@@ -3,6 +3,7 @@ import * as assert from "power-assert";
 
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
+import * as stringify from "json-stringify-safe";
 import { HandlerContext } from "../../../src/HandlerContext";
 import { RedirectResult } from "../../../src/HandlerResult";
 import { BaseSeedDrivenGeneratorParameters } from "../../../src/operations/generate/BaseSeedDrivenGeneratorParameters";
@@ -10,7 +11,7 @@ import { generatorHandler } from "../../../src/operations/generate/generatorToCo
 import { GitHubRepoCreationParameters } from "../../../src/operations/generate/GitHubRepoCreationParameters";
 import { mockProjectPersister } from "./generatorUtilsTest";
 
-describe("generatorToCommand", () => {
+describe("generatorToCommand in action", () => {
 
     it("adds Atomist webhook to repo", done => {
         const owner = "metric";
@@ -18,10 +19,11 @@ describe("generatorToCommand", () => {
         const url = "https://webhook.atomist.com/atomist/github/teams/TMETRIC/brokensocialscene";
         let postedHook = false;
         const mock = new MockAdapter(axios);
-        mock.onPost(`https://api.github.com/repos/${owner}/${repo}/hooks`).replyOnce(config => {
+        mock.onPost(/.*/).replyOnce(config => {
             const postData = JSON.parse(config.data);
-            assert(postData.active === true, "posted webhook data activates");
-            assert(postData.config.url === url);
+            assert.equal(config.url, `https://api.github.com/repos/${owner}/${repo}/hooks`);
+            assert(postData.active, "posted webhook data activates");
+            assert.equal(postData.config.url, url);
             postedHook = true;
             return [201, {
                 id: 1,
@@ -71,6 +73,7 @@ describe("generatorToCommand", () => {
 
         const pp = gen.handle(ctx, params) as Promise<RedirectResult>;
         pp.then(r => {
+            assert(r.code === 0, stringify(r));
             assert(postedHook, "posted Atomist webhook to api.github.com");
             assert(responseMessage === "Successfully created new project");
         }).then(() => done(), done);
