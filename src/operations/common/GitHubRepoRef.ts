@@ -6,7 +6,7 @@ import { ProviderType, RepoRef } from "./RepoId";
 import axios from "axios";
 import { logger } from "../../internal/util/logger";
 import { Configurable } from "../../project/git/Configurable";
-import { AbstractRepoRef } from "./AbstractRemoteRepoRef";
+import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { GitShaRegExp } from "./params/gitHubPatterns";
 
 export const GitHubDotComBase = "https://api.github.com";
@@ -14,7 +14,7 @@ export const GitHubDotComBase = "https://api.github.com";
 /**
  * GitHub repo ref
  */
-export class GitHubRepoRef extends AbstractRepoRef {
+export class GitHubRepoRef extends AbstractRemoteRepoRef {
 
     public static from(params: { owner: string, repo: string, sha?: string, rawApiBase?: string, path?: string, branch?: string }): GitHubRepoRef {
         if (params.sha && !params.sha.match(GitShaRegExp.pattern)) {
@@ -33,10 +33,10 @@ export class GitHubRepoRef extends AbstractRepoRef {
     public readonly apiBase: string;
 
     constructor(owner: string,
-                repo: string,
-                sha: string = "master",
-                rawApiBase = GitHubDotComBase,
-                path?: string) {
+        repo: string,
+        sha: string = "master",
+        rawApiBase = GitHubDotComBase,
+        path?: string) {
         super(
             rawApiBase === GitHubDotComBase ? ProviderType.github_com : ProviderType.ghe,
             "github.com", owner, repo, sha, path);
@@ -55,7 +55,7 @@ export class GitHubRepoRef extends AbstractRepoRef {
     public setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>> {
         const config = headers(credentials);
         return Promise.all([axios.get(`${this.apiBase}/user`, config),
-            axios.get(`${this.apiBase}/user/emails`, config)])
+        axios.get(`${this.apiBase}/user/emails`, config)])
             .then(results => {
                 const name = results[0].data.name || results[0].data.login;
                 let email = results[0].data.email;
@@ -74,7 +74,7 @@ export class GitHubRepoRef extends AbstractRepoRef {
     }
 
     public raisePullRequest(credentials: ProjectOperationCredentials,
-                            title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
+        title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
         const url = `${this.apiBase}/repos/${this.owner}/${this.repo}/pulls`;
         const config = headers(credentials);
         logger.debug(`Making request to '${url}' to raise PR`);
