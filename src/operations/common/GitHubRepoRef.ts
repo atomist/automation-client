@@ -33,14 +33,15 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
     public readonly apiBase: string;
 
     constructor(owner: string,
-                repo: string,
-                sha: string = "master",
-                rawApiBase = GitHubDotComBase,
-                path?: string) {
+        repo: string,
+        sha: string = "master",
+        rawApiBase = GitHubDotComBase,
+        path?: string) {
         super(
             rawApiBase === GitHubDotComBase ? ProviderType.github_com : ProviderType.ghe,
-            rawApiBase, owner, repo, sha, path);
+            apiBaseToRemoteBase(rawApiBase), owner, repo, sha, path);
     }
+
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
         if (!isTokenCredentials(creds)) {
@@ -72,7 +73,7 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
     }
 
     public raisePullRequest(credentials: ProjectOperationCredentials,
-                            title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
+        title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
         const url = `${this.apiBase}/repos/${this.owner}/${this.repo}/pulls`;
         const config = headers(credentials);
         logger.debug(`Making request to '${url}' to raise PR`);
@@ -117,4 +118,14 @@ function headers(credentials: ProjectOperationCredentials): { headers: any } {
             Authorization: `token ${credentials.token}`,
         },
     };
+}
+
+function apiBaseToRemoteBase(rawApiBase: string) {
+    if (rawApiBase.includes("api.github.com")) {
+        return "https://github.com";
+    }
+    if (rawApiBase.includes("api/v3")) {
+        return rawApiBase.substring(0, rawApiBase.indexOf("api/v3"));
+    }
+    return rawApiBase;
 }
