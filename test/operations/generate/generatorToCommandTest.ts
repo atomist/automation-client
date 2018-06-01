@@ -9,6 +9,7 @@ import { BaseSeedDrivenGeneratorParameters } from "../../../src/operations/gener
 import { generatorHandler } from "../../../src/operations/generate/generatorToCommand";
 import { GitHubRepoCreationParameters } from "../../../src/operations/generate/GitHubRepoCreationParameters";
 import { mockProjectPersister } from "./generatorUtilsTest";
+import * as stringify from "json-stringify-safe";
 
 describe("generatorToCommand in action", () => {
 
@@ -18,10 +19,11 @@ describe("generatorToCommand in action", () => {
         const url = "https://webhook.atomist.com/atomist/github/teams/TMETRIC/brokensocialscene";
         let postedHook = false;
         const mock = new MockAdapter(axios);
-        mock.onPost(`https://api.github.com/repos/${owner}/${repo}/hooks`).replyOnce(config => {
+        mock.onPost(/.*/).replyOnce(config => {
             const postData = JSON.parse(config.data);
-            assert(postData.active === true, "posted webhook data activates");
-            assert(postData.config.url === url);
+            assert.equal(config.url, `https://api.github.com/repos/${owner}/${repo}/hooks`);
+            assert(postData.active, "posted webhook data activates");
+            assert.equal(postData.config.url, url);
             postedHook = true;
             return [201, {
                 id: 1,
@@ -71,6 +73,7 @@ describe("generatorToCommand in action", () => {
 
         const pp = gen.handle(ctx, params) as Promise<RedirectResult>;
         pp.then(r => {
+            assert(r.code === 0, stringify(r));
             assert(postedHook, "posted Atomist webhook to api.github.com");
             assert(responseMessage === "Successfully created new project");
         }).then(() => done(), done);

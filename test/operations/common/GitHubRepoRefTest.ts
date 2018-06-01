@@ -30,9 +30,9 @@ describe("GitHubRepoRef tests", () => {
     });
 
     it("strips new apiBase trailing / correctly", () => {
-        const apiBase = "https//somewhere.com";
+        const apiBase = "https://somewhere.com/api/v3";
         const gh = new GitHubRepoRef("owner", "repo", undefined, apiBase + "/");
-        assert(gh.apiBase === apiBase);
+        assert.equal(gh.apiBase, "somewhere.com/api/v3");
     });
 
     it("puts the branch in the sha if sha is not provided", () => {

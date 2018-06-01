@@ -55,9 +55,9 @@ function defaultDetails<P extends SeedDrivenGeneratorParameters>(name: string): 
  * @return {HandleCommand}
  */
 export function generatorHandler<P extends SeedDrivenGeneratorParameters>(editorFactory: EditorFactory<P>,
-                                                                          factory: Maker<P>,
-                                                                          name: string,
-                                                                          details: Partial<GeneratorCommandDetails<P>> = {}): HandleCommand {
+    factory: Maker<P>,
+    name: string,
+    details: Partial<GeneratorCommandDetails<P>> = {}): HandleCommand {
 
     const detailsToUse: GeneratorCommandDetails<P> = {
         ...defaultDetails(name),
@@ -68,7 +68,7 @@ export function generatorHandler<P extends SeedDrivenGeneratorParameters>(editor
 }
 
 function handleGenerate<P extends SeedDrivenGeneratorParameters>(editorFactory: EditorFactory<P>,
-                                                                 details: GeneratorCommandDetails<P>): OnCommand<P> {
+    details: GeneratorCommandDetails<P>): OnCommand<P> {
 
     return (ctx: HandlerContext, parameters: P) => {
         return handle(ctx, editorFactory, parameters, details);
@@ -76,9 +76,9 @@ function handleGenerate<P extends SeedDrivenGeneratorParameters>(editorFactory: 
 }
 
 function handle<P extends SeedDrivenGeneratorParameters>(ctx: HandlerContext,
-                                                         editorFactory: EditorFactory<P>,
-                                                         params: P,
-                                                         details: GeneratorCommandDetails<P>): Promise<RedirectResult> {
+    editorFactory: EditorFactory<P>,
+    params: P,
+    details: GeneratorCommandDetails<P>): Promise<RedirectResult> {
 
     return ctx.messageClient.respond(`Starting project generation for ${params.target.repoRef.owner}/${params.target.repoRef.repo}`)
         .then(() => {
@@ -149,9 +149,9 @@ async function hasOrgWebhook(owner: string, ctx: HandlerContext): Promise<boolea
  * @return {Promise<Project>}
  */
 function startingPoint<P extends SeedDrivenGeneratorParameters>(params: P,
-                                                                ctx: HandlerContext,
-                                                                repoLoader: RepoLoader,
-                                                                details: GeneratorCommandDetails<any>): Promise<Project> {
+    ctx: HandlerContext,
+    repoLoader: RepoLoader,
+    details: GeneratorCommandDetails<any>): Promise<Project> {
 
     return repoLoader(params.source.repoRef);
 }

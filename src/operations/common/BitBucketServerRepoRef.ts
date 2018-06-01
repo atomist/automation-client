@@ -49,7 +49,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
                 private readonly isProject: boolean = true,
                 sha: string = "master",
                 path?: string) {
-        super(ProviderType.bitbucket, remoteBase, owner, repo, sha, path);
+        super(ProviderType.bitbucket, remoteBase, noTrailingSlash(remoteBase) + "/rest/api/1.0/", owner, repo, sha, path);
         this.ownerType = isProject ? "projects" : "users";
         logger.info("Constructed BitBucketServerRepoRef: %j", this);
     }
@@ -142,7 +142,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
     }
 
     private get apiBasePathComponent(): string {
-        return `rest/api/1.0/projects/${this.maybeTilde}${this.owner}/repos/`;
+        return `projects/${this.maybeTilde}${this.owner}/repos/`;
     }
 
     get apiPathComponent(): string {
@@ -162,4 +162,8 @@ function headers(creds: ProjectOperationCredentials) {
             Authorization: `Basic ${encoded}`,
         },
     };
+}
+
+function noTrailingSlash(s: string): string {
+    return s.replace(/\/$/, "");
 }
