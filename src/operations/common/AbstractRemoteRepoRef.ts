@@ -68,7 +68,6 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
         this.remoteBase = remoteBase;
     }
 
-
     get url() {
         return `${this.scheme}${this.remoteBase}/${this.owner}/${this.repo}`;
     }
@@ -97,7 +96,6 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
 
     public abstract deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>>;
 }
-
 
 function splitSchemeFromUrl(urlWithSchemeAndPossibleTrailingSlash: string): ["http://" | "https://", string] {
     if (!urlWithSchemeAndPossibleTrailingSlash.startsWith("http")) {

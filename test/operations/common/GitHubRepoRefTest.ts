@@ -14,14 +14,14 @@ describe("GitHubRepoRef tests", () => {
     it("guesses the remote from the apiBase for github.com", () => {
         const gh = new GitHubRepoRef("owner", "repo");
         assert(gh.remoteBase === "github.com");
-    })
+    });
 
     it("guesses the remote from the apiBase for GHE", () => {
         // Note: I am basing this on docs, not empirical testing.
         const gh = new GitHubRepoRef("owner", "repo", undefined, "https://my.ghe.host/api/v3/");
         assert(gh.remoteBase === "my.ghe.host");
-        assert(gh.scheme === "https://")
-    })
+        assert(gh.scheme === "https://");
+    });
 
     it("takes new apiBase correctly", () => {
         const apiBase = "https://somewhere.com";

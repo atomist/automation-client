@@ -3,13 +3,13 @@ import * as assert from "power-assert";
 
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
+import * as stringify from "json-stringify-safe";
 import { HandlerContext } from "../../../src/HandlerContext";
 import { RedirectResult } from "../../../src/HandlerResult";
 import { BaseSeedDrivenGeneratorParameters } from "../../../src/operations/generate/BaseSeedDrivenGeneratorParameters";
 import { generatorHandler } from "../../../src/operations/generate/generatorToCommand";
 import { GitHubRepoCreationParameters } from "../../../src/operations/generate/GitHubRepoCreationParameters";
 import { mockProjectPersister } from "./generatorUtilsTest";
-import * as stringify from "json-stringify-safe";
 
 describe("generatorToCommand in action", () => {
 
