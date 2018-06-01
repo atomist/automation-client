@@ -39,9 +39,7 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
                 path?: string) {
         super(
             rawApiBase === GitHubDotComBase ? ProviderType.github_com : ProviderType.ghe,
-            "github.com", owner, repo, sha, path);
-        // Strip trailing / if present on API base
-        this.apiBase = rawApiBase.replace(/\/$/, "");
+            rawApiBase, owner, repo, sha, path);
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
