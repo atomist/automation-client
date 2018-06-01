@@ -31,12 +31,13 @@ export class GraphClientFactory {
             teamId = event.extensions.team_id;
         }
 
-        if (this.graphClients.get(teamId)) {
+        let graphClient = this.graphClients.get(teamId);
+        if (graphClient) {
             logger.debug("Re-using cached graph client for team '%s'", teamId);
-            return this.graphClients.get(teamId);
+            return graphClient;
         } else if (this.registration) {
             logger.debug("Creating new graph client for team '%s'", teamId);
-            const graphClient = new ApolloGraphClient(`${this.options.graphUrl}/${teamId}`,
+            graphClient = new ApolloGraphClient(`${this.options.graphUrl}/${teamId}`,
                 { Authorization: `Bearer ${this.registration.jwt}` });
             this.graphClients.set(teamId, graphClient);
             return graphClient;
