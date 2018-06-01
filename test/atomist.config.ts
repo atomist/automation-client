@@ -46,8 +46,8 @@ export class SdmTokenRewritingMetadataProcessor implements AutomationMetadataPro
 
             cmd.values.filter(s => s.path === "token")
                 .forEach(s => {
-                    s.path === "sdm.token";
-                });            
+                    s.path = "sdm.token";
+                });
 
             // Rewrite GitHub token requests to the sdm.token configuration property
             cmd.secrets.filter(s => s.uri.startsWith("github://"))
