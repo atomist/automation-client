@@ -1,8 +1,8 @@
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import * as assert from "power-assert";
-import {BasicAuthCredentials} from "../../src/operations/common/BasicAuthCredentials";
-import {BitBucketServerRepoRef} from "../../src/operations/common/BitBucketServerRepoRef";
+import { BasicAuthCredentials } from "../../src/operations/common/BasicAuthCredentials";
+import { BitBucketServerRepoRef } from "../../src/operations/common/BitBucketServerRepoRef";
 
 export const BitBucketServerUsername = "username";
 export const BitBucketServerPassword = "password";
@@ -16,12 +16,12 @@ describe("BitBucketServer support", () => {
 
     describe("should return correct clone url", () => {
         it("for project", () => {
-            const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organisation.co.za", "a-project", "test-app");
+            const bitbucketServerRepoRef = new BitBucketServerRepoRef("https://bitbucket.organisation.co.za", "a-project", "test-app");
             assert(bitbucketServerRepoRef.cloneUrl(BitBucketServerCredentials)
                 === "https://username:password@bitbucket.organisation.co.za/scm/a-project/test-app.git");
         });
         it("for user", () => {
-            const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organisation.co.za", "a-user", "test-app", false);
+            const bitbucketServerRepoRef = new BitBucketServerRepoRef("https://bitbucket.organisation.co.za", "a-user", "test-app", false);
             assert(bitbucketServerRepoRef.cloneUrl(BitBucketServerCredentials)
                 === "https://username:password@bitbucket.organisation.co.za/scm/~a-user/test-app.git");
         });
@@ -29,11 +29,11 @@ describe("BitBucketServer support", () => {
 
     describe("should return correct api path url component", () => {
         it("for project", () => {
-            const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organisation.co.za", "a-project", "test-app");
+            const bitbucketServerRepoRef = new BitBucketServerRepoRef("https://bitbucket.organisation.co.za", "a-project", "test-app");
             assert(bitbucketServerRepoRef.apiPathComponent === "projects/a-project/repos/test-app");
         });
         it("for user", () => {
-            const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organisation.co.za", "a-user", "test-app", false);
+            const bitbucketServerRepoRef = new BitBucketServerRepoRef("https://bitbucket.organisation.co.za", "a-user", "test-app", false);
             assert(bitbucketServerRepoRef.apiPathComponent === "projects/~a-user/repos/test-app");
         });
     });
@@ -50,7 +50,7 @@ describe("BitBucketServer support", () => {
                 return [201, {}];
             });
 
-        const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organisation.co.za", "a-project", "test-app");
+        const bitbucketServerRepoRef = new BitBucketServerRepoRef("https://bitbucket.organisation.co.za", "a-project", "test-app");
         return bitbucketServerRepoRef.createRemote(BitBucketServerCredentials, "a description", "true");
     });
 
@@ -60,7 +60,7 @@ describe("BitBucketServer support", () => {
         mock.onDelete("https://bitbucket.organisation.co.za/rest/api/1.0/projects/a-project/repos/test-app")
             .reply(202, {});
 
-        const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organisation.co.za", "a-project", "test-app");
+        const bitbucketServerRepoRef = new BitBucketServerRepoRef("https://bitbucket.organisation.co.za", "a-project", "test-app");
         return bitbucketServerRepoRef.deleteRemote(BitBucketServerCredentials);
     });
 
@@ -77,7 +77,7 @@ describe("BitBucketServer support", () => {
                 return [201, {}];
             });
 
-        const bitbucketServerRepoRef = new BitBucketServerRepoRef("bitbucket.organisation.co.za", "a-project", "test-app");
+        const bitbucketServerRepoRef = new BitBucketServerRepoRef("https://bitbucket.organisation.co.za", "a-project", "test-app");
         return bitbucketServerRepoRef.raisePullRequest(
             BitBucketServerCredentials, "Add a thing",
             "Mr Peanut Butter goes woof", "refs/heads/thing1",

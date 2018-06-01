@@ -10,7 +10,7 @@ import { generatorHandler } from "../../../src/operations/generate/generatorToCo
 import { GitHubRepoCreationParameters } from "../../../src/operations/generate/GitHubRepoCreationParameters";
 import { mockProjectPersister } from "./generatorUtilsTest";
 
-describe("generatorToCommand", () => {
+describe("generatorToCommand in action", () => {
 
     it("adds Atomist webhook to repo", done => {
         const owner = "metric";
