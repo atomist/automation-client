@@ -1,8 +1,12 @@
 import { Configuration } from "../src/configuration";
-import { isCommandHandlerMetadata } from "../src/internal/metadata/metadata";
+import {
+    isCommandHandlerMetadata,
+    isEventHandlerMetadata,
+} from "../src/internal/metadata/metadata";
 import {
     AutomationMetadata,
     CommandHandlerMetadata,
+    EventHandlerMetadata,
 } from "../src/metadata/automationMetadata";
 import { AutomationMetadataProcessor } from "../src/spi/env/MetadataProcessor";
 import { FileMessageTest } from "./command/FileMessageTest";
@@ -26,6 +30,32 @@ export class LocalSecretRewritingMetadataProcessor implements AutomationMetadata
                     cmd.values.push({ name: s.name, path: "token", required: true, type: "string" });
                 });
             cmd.secrets = cmd.secrets.filter(s => !s.uri.startsWith("github://"));
+        }
+        return metadata;
+    }
+}
+
+/**
+ * AutomationMetadataProcessor that rewrites all requested token values to use sdm.token
+ */
+export class SdmTokenRewritingMetadataProcessor implements AutomationMetadataProcessor {
+
+    public process<T extends AutomationMetadata>(metadata: T): T {
+        if (isEventHandlerMetadata(metadata)) {
+            const cmd = metadata as EventHandlerMetadata;
+
+            cmd.values.filter(s => s.path === "token")
+                .forEach(s => {
+                    s.path === "sdm.token";
+                });            
+
+            // Rewrite GitHub token requests to the sdm.token configuration property
+            cmd.secrets.filter(s => s.uri.startsWith("github://"))
+                .forEach(s => {
+                    cmd.values.push({ name: s.name, path: "sdm.token", required: true, type: "string" });
+                });
+            cmd.secrets = cmd.secrets.filter(s => !s.uri.startsWith("github://"));
+
         }
         return metadata;
     }
@@ -122,5 +152,5 @@ export const configuration: Configuration = {
             enabled: false,
         },
     },
-    // metadataProcessor: new LocalSecretRewritingMetadataProcessor(),
+    // metadataProcessor: new SdmTokenRewritingMetadataProcessor(),
 };
