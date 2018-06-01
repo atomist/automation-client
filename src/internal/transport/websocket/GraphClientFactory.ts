@@ -31,7 +31,7 @@ export class GraphClientFactory {
             teamId = event.extensions.team_id;
         }
 
-        let graphClient = this.graphClients.get(teamId);
+        let graphClient = this.graphClients.get(teamId) as GraphClient;
         if (graphClient) {
             logger.debug("Re-using cached graph client for team '%s'", teamId);
             return graphClient;
