@@ -21,18 +21,18 @@ export interface AutomationEventListener {
 
     commandIncoming(payload: CommandIncoming): void;
     commandStarting(payload: CommandInvocation, ctx: HandlerContext): void;
-    commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<any>;
-    commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): Promise<any>;
+    commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<void>;
+    commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): Promise<void>;
 
     eventIncoming(payload: EventIncoming): void;
     eventStarting(payload: EventFired<any>, ctx: HandlerContext): void;
-    eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): Promise<any>;
-    eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): Promise<any>;
+    eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): Promise<void>;
+    eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): Promise<void>;
 
     messageSent(message: any,
                 destinations: Destination | Destination[],
                 options: MessageOptions,
-                ctx: HandlerContext): void;
+                ctx: HandlerContext): Promise<void>;
 
 }
 
@@ -54,11 +54,11 @@ export class AutomationEventListenerSupport implements AutomationEventListener {
         // This is intentionally left empty
     }
 
-    public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<any> {
+    public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<void> {
         return Promise.resolve();
     }
 
-    public commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): Promise<any> {
+    public commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): Promise<void> {
         return Promise.resolve();
     }
 
@@ -70,18 +70,18 @@ export class AutomationEventListenerSupport implements AutomationEventListener {
         // This is intentionally left empty
     }
 
-    public eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): Promise<any> {
+    public eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): Promise<void> {
         return Promise.resolve();
     }
 
-    public eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): Promise<any> {
+    public eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): Promise<void> {
         return Promise.resolve();
     }
 
     public messageSent(message: any,
                        destinations: Destination | Destination[],
                        options: MessageOptions,
-                       ctx: HandlerContext) {
-        // This is intentionally left empty
+                       ctx: HandlerContext): Promise<void> {
+        return Promise.resolve();
     }
 }

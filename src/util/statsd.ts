@@ -244,6 +244,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
             `atomist_message_type:${type}`,
             ...this.teamDetail(ctx),
         ]);
+        return Promise.resolve();
     }
 
     /** Do-nothing callback */

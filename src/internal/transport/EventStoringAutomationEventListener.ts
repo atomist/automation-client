@@ -27,5 +27,6 @@ export class EventStoringAutomationEventListener extends AutomationEventListener
                        options: MessageOptions,
                        ctx: HandlerContext) {
         eventStore().recordMessage(options && options.id ? options.id : guid(), ctx.correlationId, message);
+        return Promise.resolve();
     }
 }
