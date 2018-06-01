@@ -7,18 +7,18 @@ import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import axios from "axios";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
 
-import { ProviderType } from "./RepoId";
 import { encode } from "../../internal/util/base64";
+import { ProviderType } from "./RepoId";
 
 export const BitBucketDotComBase = "https://bitbucket.org/api/2.0";
 
 export class BitBucketRepoRef extends AbstractRemoteRepoRef {
 
     constructor(owner: string,
-        repo: string,
-        sha: string = "master",
-        public apiBase = BitBucketDotComBase,
-        path?: string) {
+                repo: string,
+                sha: string = "master",
+                public apiBase = BitBucketDotComBase,
+                path?: string) {
         super(ProviderType.bitbucket_cloud, "bitbucket.org", owner, repo, sha, path);
     }
 
@@ -67,7 +67,7 @@ export class BitBucketRepoRef extends AbstractRemoteRepoRef {
     }
 
     public raisePullRequest(credentials: ProjectOperationCredentials,
-        title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
+                            title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
         const url = `${this.apiBase}/repositories/${this.owner}/${this.repo}/pullrequests`;
         logger.debug(`Making request to '${url}' to raise PR`);
         return axios.post(url, {

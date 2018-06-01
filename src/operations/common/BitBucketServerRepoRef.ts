@@ -18,12 +18,12 @@ import { ActionResult, successOn } from "../../action/ActionResult";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import { ProviderType } from "./RepoId";
 
-import { isBasicAuthCredentials } from "./BasicAuthCredentials";
-import { Configurable } from "../../project/git/Configurable";
 import axios from "axios";
-import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
-import { encode } from '../../internal/util/base64';
+import { encode } from "../../internal/util/base64";
 import { logger } from "../../internal/util/logger";
+import { Configurable } from "../../project/git/Configurable";
+import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
+import { isBasicAuthCredentials } from "./BasicAuthCredentials";
 
 /**
  * RemoteRepoRef implementation for BitBucket server (not BitBucket Cloud)
@@ -44,11 +44,11 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
      * @param {string} path
      */
     constructor(remoteBase: string,
-        owner: string,
-        repo: string,
-        private readonly isProject: boolean = true,
-        sha: string = "master",
-        path?: string) {
+                owner: string,
+                repo: string,
+                private readonly isProject: boolean = true,
+                sha: string = "master",
+                path?: string) {
         super(ProviderType.bitbucket, remoteBase, owner, repo, sha, path);
         this.ownerType = isProject ? "projects" : "users";
         logger.info("Constructed BitBucketServerRepoRef: %j", this);
@@ -99,7 +99,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
     }
 
     public raisePullRequest(credentials: ProjectOperationCredentials,
-        title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
+                            title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
         const url = `${this.scheme}${this.apiBase}/${this.apiPathComponent}/pull-requests`;
         logger.debug(`Making request to '${url}' to raise PR`);
         return axios.post(url, {

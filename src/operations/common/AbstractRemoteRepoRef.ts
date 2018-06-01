@@ -16,9 +16,9 @@
 
 import { ActionResult } from "../../action/ActionResult";
 import { isBasicAuthCredentials } from "../../operations/common/BasicAuthCredentials";
+import { Configurable } from "../../project/git/Configurable";
 import { isTokenCredentials, ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import { ProviderType, RemoteRepoRef } from "./RepoId";
-import { Configurable } from "../../project/git/Configurable";
 
 /**
  * Superclass for RemoteRepoRef implementations.
@@ -50,11 +50,11 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
      * @param {string} path
      */
     protected constructor(public readonly providerType: ProviderType,
-        rawRemote: string,
-        public readonly owner: string,
-        public readonly repo: string,
-        public readonly sha: string = "master",
-        public readonly path?: string) {
+                          rawRemote: string,
+                          public readonly owner: string,
+                          public readonly repo: string,
+                          public readonly sha: string = "master",
+                          public readonly path?: string) {
         if (!rawRemote.startsWith("http")) {
             throw new Error(`Scheme required in remoteBase: '${rawRemote}'`);
         }
@@ -89,7 +89,7 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
     public abstract setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>>;
 
     public abstract raisePullRequest(creds: ProjectOperationCredentials,
-        title: string, body: string, head: string, base: string): Promise<ActionResult<this>>;
+                                     title: string, body: string, head: string, base: string): Promise<ActionResult<this>>;
 
     public abstract deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>>;
 }

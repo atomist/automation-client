@@ -33,10 +33,10 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
     public readonly apiBase: string;
 
     constructor(owner: string,
-        repo: string,
-        sha: string = "master",
-        rawApiBase = GitHubDotComBase,
-        path?: string) {
+                repo: string,
+                sha: string = "master",
+                rawApiBase = GitHubDotComBase,
+                path?: string) {
         super(
             rawApiBase === GitHubDotComBase ? ProviderType.github_com : ProviderType.ghe,
             "github.com", owner, repo, sha, path);
@@ -74,7 +74,7 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
     }
 
     public raisePullRequest(credentials: ProjectOperationCredentials,
-        title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
+                            title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
         const url = `${this.apiBase}/repos/${this.owner}/${this.repo}/pulls`;
         const config = headers(credentials);
         logger.debug(`Making request to '${url}' to raise PR`);
