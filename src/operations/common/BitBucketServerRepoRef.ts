@@ -120,7 +120,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
                 };
             })
             .catch(err => {
-                logger.error(`Error attempting to raise PR: ${err}`);
+                logger.error(`Error attempting to raise PR. url: ${url}  ${err}`);
                 return Promise.reject(err);
             });
     }

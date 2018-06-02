@@ -19,8 +19,12 @@ describe("generatorToCommand in action", () => {
         const url = "https://webhook.atomist.com/atomist/github/teams/TMETRIC/brokensocialscene";
         let postedHook = false;
         const mock = new MockAdapter(axios);
-        mock.onPost(/.*/).replyOnce(config => {
+        mock.onPost(`https://api.github.com/repos/${owner}/${repo}/hooks`).replyOnce(config => {
             const postData = JSON.parse(config.data);
+            /*
+             If this test is failing and you think it might be posting the wrong URL, change the onPost above
+             to regex .* and then the following assertion will tell you what URL is really being hit.
+             */
             assert.equal(config.url, `https://api.github.com/repos/${owner}/${repo}/hooks`);
             assert(postData.active, "posted webhook data activates");
             assert.equal(postData.config.url, url);
