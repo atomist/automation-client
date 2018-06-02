@@ -109,7 +109,7 @@ export function deleteRepoIfExists(ownerAndRepo: { owner: string, repo: string }
     const url = `${GitHubDotComBase}/repos/${ownerAndRepo.owner}/${ownerAndRepo.repo}`;
     return axios.delete(url, config)
         .catch(err => {
-            logger.error(`error deleting ${ownerAndRepo.repo}, ignoring. ${err.response.status}`);
+            logger.error(`error deleting ${ownerAndRepo.owner}/${ownerAndRepo.repo}, ignoring. ${err.response.status}`);
         });
 }
 
