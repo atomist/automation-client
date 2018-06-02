@@ -44,22 +44,6 @@ describe("editorUtils tests with GitHub pull requests", () => {
             });
     }).timeout(15000);
 
-    it("creates PR with changes in simple editor using apiBase with trailing slash", async () => {
-        await newRepo()
-            .then(repo => {
-                return GitCommandGitProject.cloned(Creds, new GitHubRepoRef(repo.owner, repo.repo,
-                    "master", "https://api.github.com/"))
-                    .then(p => {
-                        return editProjectUsingPullRequest(undefined, p, EditorThatChangesProject,
-                            new PullRequest("x", "y"))
-                            .then(er => {
-                                assert(er.edited);
-                            }).then(() => deleteRepoIfExists(repo));
-                    }).catch(err => deleteRepoIfExists(repo)
-                        .then(() => Promise.reject(err)));
-            });
-    }).timeout(15000);
-
 });
 
 const TinyChangeEditor: ProjectEditor = (p: Project) => {
