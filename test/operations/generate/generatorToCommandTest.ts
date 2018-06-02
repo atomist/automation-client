@@ -24,8 +24,6 @@ describe("generatorToCommand in action", () => {
             /*
              If this test is failing and you think it might be posting the wrong URL, change the onPost above
              to regex .* and then the following assertion will tell you what URL is really being hit.
-             But don't push the code that way, because MockAdapter will interfere with other tests that use axios
-             against the real internet.
              */
             assert.equal(config.url, `https://api.github.com/repos/${owner}/${repo}/hooks`);
             assert(postData.active, "posted webhook data activates");
