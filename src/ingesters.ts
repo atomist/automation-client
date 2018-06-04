@@ -56,6 +56,7 @@ export interface FieldType {
 
 /**
  * Builder to construct Ingester instances fluently
+ * @Deprecated use the SDL (GraphQL Schema definition language) ingester definition.
  */
 export class IngesterBuilder {
 
