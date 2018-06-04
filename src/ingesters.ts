@@ -5,6 +5,8 @@ import { isString } from "util";
  *
  * An Ingester is a collection of GraphQL types and a pointer to the root type in the
  * root_type field.
+ *
+ * @Deprecated use the SDL (GraphQL Schema definition language) ingester definition.
  */
 export interface Ingester {
     root_type: any | string;

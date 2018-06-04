@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][]
 
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.16.0...HEAD
+[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.17.1...HEAD
+
+## [0.17.1][] - 2018-06-04
+
+### Deprecated
+
+- Ingester and IngesterBuilder are deprecated in favor of GraphQL SDM definitions.
+
+
+## [0.17.0][] - 2018-06-04
 
 ### Fixed
 
