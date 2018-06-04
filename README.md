@@ -1,7 +1,6 @@
 # @atomist/automation-client
 
 [![npm version](https://badge.fury.io/js/%40atomist%2Fautomation-client.svg)](https://badge.fury.io/js/%40atomist%2Fautomation-client)
-[![Build Status](https://travis-ci.org/atomist/automation-client-ts.svg?branch=master)](https://travis-ci.org/atomist/automation-client-ts)
 
 [Node][node] module [`@atomist/automation-client`][automation-client]
 for creating Atomist development automations.  Development automations take the following forms:
@@ -411,24 +410,8 @@ Command | Reason
 
 ### Release
 
-To create a new release of the project, update the version in
-package.json and then push a tag for the version.  The version must be
-of the form `M.N.P` where `M`, `N`, and `P` are integers that form the
-next appropriate [semantic version][semver] for release.  The version
-in the package.json must be the same as the tag.  For example:
-
-[semver]: http://semver.org
-
-```
-$ npm version 1.2.3
-$ git tag -a -m 'The ABC release' 1.2.3
-$ git push origin 1.2.3
-```
-
-The Travis CI build (see badge at the top of this page) will publish
-the NPM module and automatically create a GitHub release using the tag
-name for the release and the comment provided on the annotated tag as
-the contents of the release notes.
+To create a new release of the project, we push a button on the Atomist lifecycle message
+in the #automation-client-ts [channel](https://atomist-community.slack.com/messages/C74J6MFL0/) in Atomist Community Slack.
 
 ---
 
