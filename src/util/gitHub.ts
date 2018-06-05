@@ -13,8 +13,7 @@ import { SourceLocation } from "../operations/common/SourceLocation";
  * @return {string}
  */
 export function deepLink(grr: GitHubRepoRef, sourceLocation: SourceLocation) {
-    // TODO need to allow for GHE
-    return `https://github.com/${grr.owner}/${grr.repo}/blob/${grr.sha}` +
+    return `${grr.scheme}${grr.remoteBase}/${grr.owner}/${grr.repo}/blob/${grr.sha}` +
         (!!sourceLocation ? `/${sourceLocation.path}` : "") +
         (!!sourceLocation && !!sourceLocation.lineFrom1 ? `#L${sourceLocation.lineFrom1}` : "");
 }
@@ -74,7 +73,7 @@ export interface Issue {
 
 export function raiseIssue(token: string, rr: RepoRef, issue: Issue): AxiosPromise {
     const grr = isGitHubRepoRef(rr) ? rr : new GitHubRepoRef(rr.owner, rr.repo, rr.sha);
-    const url = `${grr.apiBase}/repos/${rr.owner}/${rr.repo}/issues`;
+    const url = `${grr.scheme}${grr.apiBase}/repos/${rr.owner}/${rr.repo}/issues`;
     logger.debug(`Request to '${url}' to raise issue`);
     return axios.post(url, issue, authHeaders(token));
 }
@@ -94,7 +93,7 @@ export interface GitHubRepoWebhookPayload {
 }
 
 export function addRepoWebhook(token: string, rr: GitHubRepoRef, webhookData: GitHubRepoWebhookPayload): AxiosPromise {
-    const url = `${rr.apiBase}/repos/${rr.owner}/${rr.repo}/hooks`;
+    const url = `${rr.scheme}${rr.apiBase}/repos/${rr.owner}/${rr.repo}/hooks`;
     logger.debug(`Request to '${url}' to create webhook`);
     return axios.post(url, webhookData, authHeaders(token));
 }
@@ -115,20 +114,20 @@ export interface Comment {
 }
 
 export function createCommitComment(token: string, rr: GitHubRepoRef, comment: Comment): AxiosPromise {
-    const url = `${rr.apiBase}/repos/${rr.owner}/${rr.repo}/commits/${rr.sha}/comments`;
+    const url = `${rr.scheme}${rr.apiBase}/repos/${rr.owner}/${rr.repo}/commits/${rr.sha}/comments`;
     logger.debug(`Request to '${url}' to create comment`);
     return axios.post(url, comment, authHeaders(token));
 }
 
 export function createRepo(token: string, rr: GitHubRepoRef, description: string, priv: boolean): AxiosPromise {
     const config = authHeaders(token);
-    return axios.get(`${rr.apiBase}/orgs/${rr.owner}`, config)
+    return axios.get(`${rr.scheme}${rr.apiBase}/orgs/${rr.owner}`, config)
         .then(result => {
             // We now know the owner is an org
-            return `${rr.apiBase}/orgs/${rr.owner}/repos`;
+            return `${rr.scheme}${rr.apiBase}/orgs/${rr.owner}/repos`;
         }, err => {
             // We now know the owner is an user
-            return `${rr.apiBase}/user/repos`;
+            return `${rr.scheme}${rr.apiBase}/user/repos`;
         })
         .then(url => {
             const payload = {

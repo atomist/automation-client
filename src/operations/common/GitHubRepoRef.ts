@@ -6,7 +6,7 @@ import { ProviderType, RepoRef } from "./RepoId";
 import axios from "axios";
 import { logger } from "../../internal/util/logger";
 import { Configurable } from "../../project/git/Configurable";
-import { AbstractRepoRef } from "./AbstractRemoteRepoRef";
+import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { GitShaRegExp } from "./params/gitHubPatterns";
 
 export const GitHubDotComBase = "https://api.github.com";
@@ -14,7 +14,7 @@ export const GitHubDotComBase = "https://api.github.com";
 /**
  * GitHub repo ref
  */
-export class GitHubRepoRef extends AbstractRepoRef {
+export class GitHubRepoRef extends AbstractRemoteRepoRef {
 
     public static from(params: { owner: string, repo: string, sha?: string, rawApiBase?: string, path?: string, branch?: string }): GitHubRepoRef {
         if (params.sha && !params.sha.match(GitShaRegExp.pattern)) {
@@ -39,9 +39,7 @@ export class GitHubRepoRef extends AbstractRepoRef {
                 path?: string) {
         super(
             rawApiBase === GitHubDotComBase ? ProviderType.github_com : ProviderType.ghe,
-            "github.com", owner, repo, sha, path);
-        // Strip trailing / if present on API base
-        this.apiBase = rawApiBase.replace(/\/$/, "");
+            apiBaseToRemoteBase(rawApiBase), rawApiBase, owner, repo, sha, path);
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
@@ -54,8 +52,8 @@ export class GitHubRepoRef extends AbstractRepoRef {
 
     public setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>> {
         const config = headers(credentials);
-        return Promise.all([axios.get(`${this.apiBase}/user`, config),
-            axios.get(`${this.apiBase}/user/emails`, config)])
+        return Promise.all([axios.get(`${this.scheme}${this.apiBase}/user`, config),
+        axios.get(`${this.scheme}${this.apiBase}/user/emails`, config)])
             .then(results => {
                 const name = results[0].data.name || results[0].data.login;
                 let email = results[0].data.email;
@@ -75,7 +73,7 @@ export class GitHubRepoRef extends AbstractRepoRef {
 
     public raisePullRequest(credentials: ProjectOperationCredentials,
                             title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
-        const url = `${this.apiBase}/repos/${this.owner}/${this.repo}/pulls`;
+        const url = `${this.scheme}${this.apiBase}/repos/${this.owner}/${this.repo}/pulls`;
         const config = headers(credentials);
         logger.debug(`Making request to '${url}' to raise PR`);
         return axios.post(url, {
@@ -92,13 +90,13 @@ export class GitHubRepoRef extends AbstractRepoRef {
                 };
             })
             .catch(err => {
-                logger.error("Error attempting to raise PR: " + err);
+                logger.error(`Error attempting to raise PR. ${url}  ${err}`);
                 return Promise.reject(err);
             });
     }
 
     public deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>> {
-        const url = `${this.apiBase}/repos/${this.owner}/${this.repo}`;
+        const url = `${this.scheme}${this.apiBase}/repos/${this.owner}/${this.repo}`;
         return axios.delete(url, headers(creds))
             .then(r => successOn(this));
     }
@@ -119,4 +117,14 @@ function headers(credentials: ProjectOperationCredentials): { headers: any } {
             Authorization: `token ${credentials.token}`,
         },
     };
+}
+
+function apiBaseToRemoteBase(rawApiBase: string) {
+    if (rawApiBase.includes("api.github.com")) {
+        return "https://github.com";
+    }
+    if (rawApiBase.includes("api/v3")) {
+        return rawApiBase.substring(0, rawApiBase.indexOf("api/v3"));
+    }
+    return rawApiBase;
 }

@@ -1,29 +1,29 @@
 import { ActionResult, successOn } from "../../action/ActionResult";
 import { logger } from "../../internal/util/logger";
 import { Configurable } from "../../project/git/Configurable";
-import { AbstractRepoRef } from "./AbstractRemoteRepoRef";
+import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 
 import axios from "axios";
-import { encode } from "../../internal/util/base64";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
 
+import { encode } from "../../internal/util/base64";
 import { ProviderType } from "./RepoId";
 
 export const BitBucketDotComBase = "https://bitbucket.org/api/2.0";
 
-export class BitBucketRepoRef extends AbstractRepoRef {
+export class BitBucketRepoRef extends AbstractRemoteRepoRef {
 
     constructor(owner: string,
                 repo: string,
                 sha: string = "master",
                 public apiBase = BitBucketDotComBase,
                 path?: string) {
-        super(ProviderType.bitbucket_cloud, "bitbucket.org", owner, repo, sha, path);
+        super(ProviderType.bitbucket_cloud, "https://bitbucket.org", apiBase, owner, repo, sha, path);
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
-        const url = `${this.apiBase}/repositories/${this.owner}/${this.repo}`;
+        const url = `${this.scheme}${this.apiBase}/repositories/${this.owner}/${this.repo}`;
         return axios.post(url, {
             scm: "git",
             is_private: visibility === "private",
@@ -46,7 +46,7 @@ export class BitBucketRepoRef extends AbstractRepoRef {
     }
 
     public deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>> {
-        const url = `${this.apiBase}/repositories/${this.owner}/${this.repo}`;
+        const url = `${this.scheme}${this.apiBase}/repositories/${this.owner}/${this.repo}`;
         logger.debug(`Making request to '${url}' to delete repo`);
         return axios.delete(url, headers(creds))
             .then(axiosResponse => {
@@ -68,7 +68,7 @@ export class BitBucketRepoRef extends AbstractRepoRef {
 
     public raisePullRequest(credentials: ProjectOperationCredentials,
                             title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
-        const url = `${this.apiBase}/repositories/${this.owner}/${this.repo}/pullrequests`;
+        const url = `${this.scheme}${this.apiBase}/repositories/${this.owner}/${this.repo}/pullrequests`;
         logger.debug(`Making request to '${url}' to raise PR`);
         return axios.post(url, {
             title,
@@ -92,7 +92,7 @@ export class BitBucketRepoRef extends AbstractRepoRef {
                 };
             })
             .catch(err => {
-                logger.error("Error attempting to raise PR: " + err);
+                logger.error(`Error attempting to raise PR. ${url} ${err}`);
                 return Promise.reject(err);
             });
     }
