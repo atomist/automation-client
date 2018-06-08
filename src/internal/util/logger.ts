@@ -115,6 +115,22 @@ const winstonLogger = new winston.Logger({
 
 export const logger: Logger = winstonLogger;
 
+const originalConsole = {
+    error: console.error,
+    info: console.info,
+    log: console.log,
+    trace: console.trace,
+    warn: console.warn,
+};
+
+export function restoreOriginalConsole() {
+    console.error = originalConsole.error;
+    console.info = originalConsole.info;
+    console.log = originalConsole.log;
+    console.trace = originalConsole.trace;
+    console.warn = originalConsole.warn;
+}
+
 // Redirect console logging methods to our logging setup
 console.error = (message?: any, ...optionalParams: any[]) => {
     winstonLogger.error(message, ...optionalParams);
