@@ -115,22 +115,43 @@ const winstonLogger = new winston.Logger({
 
 export const logger: Logger = winstonLogger;
 
+const originalConsole = {
+    error: console.error,
+    info: console.info,
+    log: console.log,
+    trace: console.trace,
+    warn: console.warn,
+};
+
+export function restoreOriginalConsole() {
+    console.error = originalConsole.error;
+    console.info = originalConsole.info;
+    console.log = originalConsole.log;
+    console.trace = originalConsole.trace;
+    console.warn = originalConsole.warn;
+}
+
+export function directConsoleToLogger() {
 // Redirect console logging methods to our logging setup
-console.error = (message?: any, ...optionalParams: any[]) => {
-    winstonLogger.error(message, ...optionalParams);
-};
-console.info = (message?: any, ...optionalParams: any[]) => {
-    winstonLogger.info(message, ...optionalParams);
-};
-console.log = (message?: any, ...optionalParams: any[]) => {
-    winstonLogger.info(message, ...optionalParams);
-};
-console.trace = (message?: any, ...optionalParams: any[]) => {
-    winstonLogger.debug(message, ...optionalParams);
-};
-console.warn = (message?: any, ...optionalParams: any[]) => {
-    winstonLogger.warn(message, ...optionalParams);
-};
+    console.error = (message?: any, ...optionalParams: any[]) => {
+        winstonLogger.error(message, ...optionalParams);
+    };
+    console.info = (message?: any, ...optionalParams: any[]) => {
+        winstonLogger.info(message, ...optionalParams);
+    };
+    console.log = (message?: any, ...optionalParams: any[]) => {
+        winstonLogger.info(message, ...optionalParams);
+    };
+    console.trace = (message?: any, ...optionalParams: any[]) => {
+        winstonLogger.debug(message, ...optionalParams);
+    };
+    console.warn = (message?: any, ...optionalParams: any[]) => {
+        winstonLogger.warn(message, ...optionalParams);
+    };
+}
+
+// If you load this file, default to routing all console prints through the logger.
+directConsoleToLogger();
 
 // Ideally we wouldn't need this, but I'm still adding proper error handling
 process.on("uncaughtException", err => {
