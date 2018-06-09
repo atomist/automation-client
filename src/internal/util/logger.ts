@@ -113,23 +113,19 @@ const winstonLogger = new winston.Logger({
     ],
 });
 
-export const logger: Logger = winstonLogger;
-
-const originalConsole = {
-    error: console.error,
-    info: console.info,
-    log: console.log,
-    trace: console.trace,
-    warn: console.warn,
-};
-
-export function restoreOriginalConsole() {
-    console.error = originalConsole.error;
-    console.info = originalConsole.info;
-    console.log = originalConsole.log;
-    console.trace = originalConsole.trace;
-    console.warn = originalConsole.warn;
+function initLogging() {
+    // Normal startup of a client will redirect console logging
+    // If startup happens with ATOMIST_DISABLE_LOGGING no console output will be redirect
+    // and winston's log level for the console transport is set to error to prevent any
+    // other output to show up.
+    if (process.env.ATOMIST_DISABLE_LOGGING !== "true") {
+        directConsoleToLogger();
+    } else {
+        winstonLogger.transports.console.silent = true;
+    }
 }
+
+export const logger: Logger = winstonLogger;
 
 export function directConsoleToLogger() {
 // Redirect console logging methods to our logging setup
@@ -150,8 +146,7 @@ export function directConsoleToLogger() {
     };
 }
 
-// If you load this file, default to routing all console prints through the logger.
-directConsoleToLogger();
+initLogging();
 
 // Ideally we wouldn't need this, but I'm still adding proper error handling
 process.on("uncaughtException", err => {
