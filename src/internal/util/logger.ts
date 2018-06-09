@@ -1,3 +1,4 @@
+import * as appRoot from "app-root-path";
 import * as cluster from "cluster";
 import * as fs from "fs";
 import * as stringify from "json-stringify-safe";
@@ -113,21 +114,7 @@ const winstonLogger = new winston.Logger({
     ],
 });
 
-function initLogging() {
-    // Normal startup of a client will redirect console logging
-    // If startup happens with ATOMIST_DISABLE_LOGGING no console output will be redirect
-    // and winston's log level for the console transport is set to error to prevent any
-    // other output to show up.
-    if (process.env.ATOMIST_DISABLE_LOGGING !== "true") {
-        directConsoleToLogger();
-    } else {
-        winstonLogger.transports.console.silent = true;
-    }
-}
-
-export const logger: Logger = winstonLogger;
-
-export function directConsoleToLogger() {
+function directConsoleToLogger() {
 // Redirect console logging methods to our logging setup
     console.error = (message?: any, ...optionalParams: any[]) => {
         winstonLogger.error(message, ...optionalParams);
@@ -146,7 +133,24 @@ export function directConsoleToLogger() {
     };
 }
 
-initLogging();
+function initLogging() {
+    // Normal startup of a client will redirect console logging
+    // If startup happens with ATOMIST_DISABLE_LOGGING no console output will be redirect
+    // and winston's console transport is set to silent to allow full control over logging
+    // output
+    if (process.env.ATOMIST_DISABLE_LOGGING !== "true") {
+        directConsoleToLogger();
+    } else {
+        winstonLogger.transports.console.silent = true;
+
+        // Add file logging into log directory
+        const pj = require(p.join(appRoot.path, "package.json"));
+        const filename = p.join(".", "log", `${pj.name.replace(/^.*\//, "")}.log`);
+        addFileTransport(filename, "debug");
+    }
+}
+
+export const logger: Logger = winstonLogger;
 
 // Ideally we wouldn't need this, but I'm still adding proper error handling
 process.on("uncaughtException", err => {
@@ -176,3 +180,5 @@ export interface LeveledLogMethod {
 }
 
 export type LogCallback = (error?: any, level?: string, msg?: string, meta?: any) => void;
+
+initLogging();
