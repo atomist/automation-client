@@ -13,7 +13,10 @@ import {
     Success,
     success,
 } from "../../src/HandlerResult";
-import { addressEvent } from "../../src/spi/message/MessageClient";
+import {
+    addressEvent,
+    addressSlackChannels,
+} from "../../src/spi/message/MessageClient";
 import { SecretBaseHandler } from "./SecretBaseHandler";
 
 @ConfigurableCommandHandler("Send a hello back to the client", { intent: "hello cd", autoSubmit: true })
@@ -25,7 +28,7 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
     @MappedParameter(MappedParameters.SlackUserName)
     public sender: string;
 
-    public handle(ctx: HandlerContext): Promise<HandlerResult> {
+    public async handle(ctx: HandlerContext): Promise<HandlerResult> {
 
         const helloWorld = {
             sender: {
@@ -36,6 +39,7 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
             },
         };
 
+        await ctx.messageClient.send("test", addressSlackChannels(ctx.teamId, "handlers"));
         return ctx.messageClient.send(helloWorld, addressEvent("HelloWorld"))
             .then(result => {
                 // result.bla.bla;

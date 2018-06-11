@@ -1,4 +1,5 @@
-import { SlackMessage } from "@atomist/slack-messages";
+import WebSocket = require("ws");
+import { automationClientInstance } from "../../../globals";
 import { ApolloGraphClient } from "../../../graph/ApolloGraphClient";
 import {
     AutomationContextAware,
@@ -12,13 +13,18 @@ import {
     MessageClient,
     MessageOptions,
 } from "../../../spi/message/MessageClient";
-import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import * as namespace from "../../util/cls";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
     CommandIncoming,
     EventIncoming,
+    isCommandIncoming,
+    isEventIncoming,
 } from "../RequestProcessor";
+import {
+    WebSocketCommandMessageClient,
+    WebSocketEventMessageClient,
+} from "../websocket/WebSocketMessageClient";
 import { ExpressServerOptions } from "./ExpressServer";
 
 /**
@@ -49,20 +55,41 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
 
     protected createMessageClient(event: EventIncoming | CommandIncoming,
                                   context: AutomationContextAware): MessageClient {
-        return new ExpressMessageClient(this.messages);
+        return new ExpressMessageClient(this.messages, event);
     }
 }
 
-class ExpressMessageClient extends MessageClientSupport {
+class ExpressMessageClient implements MessageClient {
 
-    constructor(private messages: any[]) {
-        super();
+    private delegate: MessageClient;
+
+    constructor(private messages: any[], private event: EventIncoming | CommandIncoming) {
+        if (automationClientInstance().webSocketHandler
+            && (automationClientInstance().webSocketHandler as any).webSocket) {
+            const ws = (automationClientInstance().webSocketHandler as any).webSocket as WebSocket;
+            if (isCommandIncoming(this.event)) {
+                this.delegate = new WebSocketCommandMessageClient(this.event, ws);
+             } else if (isEventIncoming(this.event)) {
+                 this.delegate = new WebSocketEventMessageClient(this.event, ws);
+             }
+        }
     }
 
-    protected doSend(msg: string | SlackMessage,
-                     destinations: Destination | Destination[],
-                     options?: MessageOptions): Promise<any> {
-         this.messages.push(msg);
-         return Promise.resolve();
+    public respond(msg: any, options?: MessageOptions): Promise<any> {
+        this.messages.push(msg);
+        if (this.delegate) {
+            return this.delegate.respond(msg, options);
+        } else {
+            return Promise.resolve();
+        }
+    }
+
+    public send(msg: any, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
+        this.messages.push(msg);
+        if (this.delegate) {
+            return this.delegate.send(msg, destinations, options);
+        } else {
+            return Promise.resolve();
+        }
     }
 }

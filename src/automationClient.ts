@@ -42,7 +42,7 @@ export class AutomationClient {
     public automations: BuildableAutomationServer;
     public webSocketClient: WebSocketClient;
     public httpServer: ExpressServer;
-    public wsHandler: WebSocketRequestProcessor;
+    public webSocketHandler: WebSocketRequestProcessor;
 
     private defaultListeners = [
         new MetricEnabledAutomationEventListener(),
@@ -113,9 +113,9 @@ export class AutomationClient {
             logger.debug(`Using automation client configuration: ${clientConf}`);
 
             if (this.configuration.ws.enabled) {
-                this.wsHandler = this.setupWebSocketRequestHandler(webSocketOptions);
+                this.webSocketHandler = this.setupWebSocketRequestHandler(webSocketOptions);
                 return Promise.all([
-                    this.runWs(this.wsHandler, webSocketOptions),
+                    this.runWs(this.webSocketHandler, webSocketOptions),
                     Promise.resolve(this.runHttp()),
                     this.setupApplicationEvents(),
                 ]);
@@ -129,11 +129,11 @@ export class AutomationClient {
             logger.info(`Starting Atomist automation client master ${clientSig}`);
             logger.debug(`Using automation client configuration: ${clientConf}`);
 
-            this.wsHandler = this.setupWebSocketClusterRequestHandler(webSocketOptions);
-            return (this.wsHandler as ClusterMasterRequestProcessor).run()
+            this.webSocketHandler = this.setupWebSocketClusterRequestHandler(webSocketOptions);
+            return (this.webSocketHandler as ClusterMasterRequestProcessor).run()
                 .then(() => {
                     return Promise.all([
-                        this.runWs(this.wsHandler, webSocketOptions),
+                        this.runWs(this.webSocketHandler, webSocketOptions),
                         Promise.resolve(this.runHttp()),
                         this.setupApplicationEvents(),
                     ]);
