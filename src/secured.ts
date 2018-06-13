@@ -15,6 +15,7 @@ import {
     Maker,
     toFactory,
 } from "./util/constructionUtils";
+import * as _ from "lodash";
 
 const UnAuthorizedResult = Promise.resolve({ code: 403, message: "Access denied" });
 
@@ -99,6 +100,15 @@ function isGitHubOrgMember(org: string, login: string, token: string): Promise<b
     }
 }
 
+const ProviderForOrgQuery = `query ProviderForOrg($owner: String!) {
+  Org(owner: $owner) {
+    provider {
+      providerType
+    }
+  }
+}
+`;
+
 /**
  * Protect the given HandleCommand by only allowing members of a certain GitHub team
  * @param {Maker<HandleCommand>} maker
@@ -118,20 +128,40 @@ export function githubTeam(maker: Maker<HandleCommand>, gTeam: string): () => Ha
             const login = (command as any).__atomist_github_login;
             const token = (command as any).__atomist_user_token;
 
-            if (!owner || !login) {
+            if (!owner) {
                 return sendUnauthorized(ctx);
             }
 
-            return isGitHubTeamMember(owner, login, gTeam, token)
-                .then(isTeamMember => {
-                    if (isTeamMember === true) {
-                        return handleMethod.bind(command)(ctx);
-                    } else {
-                        return sendUnauthorized(ctx);
+            return ctx.graphClient.query<any, any>({
+                    query: ProviderForOrgQuery,
+                    variables: {
+                        owner,
                     }
                 })
-                .catch(err => {
-                    return sendUnauthorized(ctx);
+                .then(providerResult => {
+
+                    const provider = _.get(providerResult, "Org[0].provider.providerType");
+
+                    if (provider === "github_com" || provider === "ghe") {
+                        if (!owner || !login) {
+                            return sendUnauthorized(ctx);
+                        }
+
+                        return isGitHubTeamMember(owner, login, gTeam, token)
+                            .then(isTeamMember => {
+                                if (isTeamMember === true) {
+                                    return handleMethod.bind(command)(ctx);
+                                } else {
+                                    return sendUnauthorized(ctx);
+                                }
+                            })
+                            .catch(err => {
+                                return sendUnauthorized(ctx);
+                            });
+                        
+                    } else {
+                        return handleMethod.bind(command)(ctx);
+                    }
                 });
         };
         return command;

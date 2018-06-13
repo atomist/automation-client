@@ -8,6 +8,7 @@ import {
     CommandHandlerMetadata,
     EventHandlerMetadata,
 } from "../src/metadata/automationMetadata";
+import { githubTeam } from "../src/secured";
 import { AutomationMetadataProcessor } from "../src/spi/env/MetadataProcessor";
 import { FileMessageTest } from "./command/FileMessageTest";
 import { HelloWorld } from "./command/HelloWorld";
@@ -70,7 +71,7 @@ export const configuration: Configuration = {
     token: process.env.GITHUB_TOKEN,
     commands: [
         // ...scanCommands( ["**/metadata/addAtomistSpringAgent.js", "**/command/Search*.js"] ),
-        HelloWorld,
+        githubTeam(HelloWorld, "atomist-automation"),
         MessageTest,
         FileMessageTest,
         () => {
