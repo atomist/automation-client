@@ -1,5 +1,6 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import axios from "axios";
+import * as _ from "lodash";
 import {
     MappedParameters,
     Secrets,
@@ -15,7 +16,6 @@ import {
     Maker,
     toFactory,
 } from "./util/constructionUtils";
-import * as _ from "lodash";
 
 const UnAuthorizedResult = Promise.resolve({ code: 403, message: "Access denied" });
 
@@ -136,7 +136,7 @@ export function githubTeam(maker: Maker<HandleCommand>, gTeam: string): () => Ha
                     query: ProviderForOrgQuery,
                     variables: {
                         owner,
-                    }
+                    },
                 })
                 .then(providerResult => {
 
@@ -158,7 +158,7 @@ export function githubTeam(maker: Maker<HandleCommand>, gTeam: string): () => Ha
                             .catch(err => {
                                 return sendUnauthorized(ctx);
                             });
-                        
+
                     } else {
                         return handleMethod.bind(command)(ctx);
                     }
