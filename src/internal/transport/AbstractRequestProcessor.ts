@@ -384,20 +384,18 @@ class AutomationEventListenerEnabledMessageClient implements MessageClient {
 
     public respond(msg: any,
                    options?: MessageOptions): Promise<any> {
-        return this.listeners.map(l => () => l.messageSent(msg, [], options, this.ctx))
-            .reduce((p, f) => p.then(f), Promise.resolve())
+        return this.delegate.respond(msg, options)
             .then(() => {
-                return this.delegate.respond(msg, options);
+                return Promise.all(this.listeners.map(l => l.messageSent(msg, [], options, this.ctx)))
             });
     }
 
     public send(msg: any,
                 destinations: Destination | Destination[],
                 options?: MessageOptions): Promise<any> {
-        return this.listeners.map(l => () => l.messageSent(msg, destinations, options, this.ctx))
-            .reduce((p, f) => p.then(f), Promise.resolve())
+        return this.delegate.send(msg, destinations, options)
             .then(() => {
-                return this.delegate.send(msg, destinations, options);
+                return Promise.all(this.listeners.map(l => l.messageSent(msg, destinations, options, this.ctx)));
             });
     }
 }
