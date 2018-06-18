@@ -107,7 +107,7 @@ export const configuration: Configuration = {
         compress: true,
     },
     http: {
-        enabled: true, 
+        enabled: true,
         auth: {
             basic: {
                 enabled: false,
