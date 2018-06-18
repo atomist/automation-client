@@ -70,7 +70,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 invocationId: np ? np.invocationId : undefined,
                 messageClient: undefined,
                 context: cls,
-                trigger: command,
+                trigger: _.cloneDeep(command),
             };
 
             ctx.graphClient = this.createGraphClient(command, ctx);
@@ -112,7 +112,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 invocationId: np ? np.invocationId : undefined,
                 messageClient: undefined,
                 context: cls,
-                trigger: event,
+                trigger: _.cloneDeep(event),
             };
 
             ctx.graphClient = this.createGraphClient(event, ctx);
