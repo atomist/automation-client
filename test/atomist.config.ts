@@ -133,7 +133,7 @@ export const configuration: Configuration = {
         teamId: "T1L0VDKJP",
     },
     cluster: {
-        enabled: false
+        enabled: false,
         // workers: 4,
     },
     postProcessors: [
