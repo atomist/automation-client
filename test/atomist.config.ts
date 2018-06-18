@@ -130,7 +130,7 @@ export const configuration: Configuration = {
     },
     applicationEvents: {
         enabled: true,
-        teamId: "T1L0VDKJP"
+        teamId: "T1L0VDKJP",
     },
     cluster: {
         enabled: false,
