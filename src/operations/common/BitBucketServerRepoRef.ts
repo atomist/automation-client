@@ -49,7 +49,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
                 private readonly isProject: boolean = true,
                 sha: string = "master",
                 path?: string) {
-        super(ProviderType.bitbucket, remoteBase, owner, repo, sha, path);
+        super(ProviderType.bitbucket, remoteBase, noTrailingSlash(remoteBase) + "/rest/api/1.0/", owner, repo, sha, path);
         this.ownerType = isProject ? "projects" : "users";
         logger.info("Constructed BitBucketServerRepoRef: %j", this);
     }
@@ -63,29 +63,17 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
         };
         const hdrs = headers(creds);
         logger.info("Making request to BitBucket '%s' to create repo, data=%j, headers=%j", url, data, hdrs);
-        return this.postWithCurl(creds, url, data)
-            .catch(error => {
-                logger.error("Error attempting to create repository %j: %s", this, error);
-                return Promise.reject(error);
-            });
-    }
-
-    private postWithCurl(creds: ProjectOperationCredentials, url: string, data: any) {
-        return spawnAndWatch({
-            command: "curl", args: [
-                "-u", usernameColonPassword(creds),
-                "-X", "POST",
-                "-H", "Content-Type: application/json",
-                "-d", JSON.stringify(data),
-                url,
-            ],
-        }, {}, new LoggingProgressLog("postWithCurl"))
-            .then(curlResponse => {
+        return axios.post(url, data, hdrs)
+            .then(axiosResponse => {
                 return {
                     target: this,
                     success: true,
-                    curlResponse,
+                    axiosResponse,
                 };
+            })
+            .catch(error => {
+                logger.error("Error attempting to create repository %j: %s", this, error);
+                return Promise.reject(error);
             });
     }
 
@@ -114,7 +102,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
                             title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
         const url = `${this.scheme}${this.apiBase}/${this.apiPathComponent}/pull-requests`;
         logger.debug(`Making request to '${url}' to raise PR`);
-        return this.postWithCurl(credentials, url, {
+        return axios.post(url, {
             title,
             description: body,
             fromRef: {
@@ -123,10 +111,18 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
             toRef: {
                 id: base,
             },
-        }) .catch(err => {
-            logger.error(`Error attempting to raise PR: ${err}`);
-            return Promise.reject(err);
-        });
+        }, headers(credentials))
+            .then(axiosResponse => {
+                return {
+                    target: this,
+                    success: true,
+                    axiosResponse,
+                };
+            })
+            .catch(err => {
+                logger.error(`Error attempting to raise PR. url: ${url}  ${err}`);
+                return Promise.reject(err);
+            });
     }
 
     get url() {
@@ -146,7 +142,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
     }
 
     private get apiBasePathComponent(): string {
-        return `rest/api/1.0/projects/${this.maybeTilde}${this.owner}/repos/`;
+        return `projects/${this.maybeTilde}${this.owner}/repos/`;
     }
 
     get apiPathComponent(): string {
@@ -155,18 +151,19 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
 
 }
 
-function usernameColonPassword(creds: ProjectOperationCredentials): string {
+function headers(creds: ProjectOperationCredentials) {
     if (!isBasicAuthCredentials(creds)) {
         throw new Error("Only Basic auth supported: Had " + JSON.stringify(creds));
     }
-    return `${creds.username}:${creds.password}`;
-}
-
-function headers(creds: ProjectOperationCredentials) {
-    const encoded = encode(usernameColonPassword(creds));
+    const upwd = `${creds.username}:${creds.password}`;
+    const encoded = encode(upwd);
     return {
         headers: {
             Authorization: `Basic ${encoded}`,
         },
     };
+}
+
+function noTrailingSlash(s: string): string {
+    return s.replace(/\/$/, "");
 }
