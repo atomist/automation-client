@@ -22,13 +22,14 @@ import * as strip_ansi from "strip-ansi";
 import {logger} from "../internal/util/logger";
 
 export interface WritableLog {
-    write(what: string): void;
 
     /**
      * Some implementations expose their log as a string.
      * Others may not, as it could be too long etc.
      */
     log?: string;
+
+    write(what: string): void;
 }
 
 /**
@@ -85,8 +86,8 @@ export async function spawnAndWatch(spawnCommand: SpawnCommand,
  * @return {Promise<ChildProcessResult>}
  */
 function watchSpawned(childProcess: ChildProcess,
-                             log: WritableLog,
-                             opts: Partial<SpawnWatchOptions> = {}): Promise<ChildProcessResult> {
+                      log: WritableLog,
+                      opts: Partial<SpawnWatchOptions> = {}): Promise<ChildProcessResult> {
     return new Promise<ChildProcessResult>((resolve, reject) => {
         const optsToUse = {
             errorFinder: SuccessIsReturn0ErrorFinder,

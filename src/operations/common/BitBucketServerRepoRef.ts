@@ -22,9 +22,9 @@ import axios from "axios";
 import { encode } from "../../internal/util/base64";
 import { logger } from "../../internal/util/logger";
 import { Configurable } from "../../project/git/Configurable";
+import { spawnAndWatch, WritableLog } from "../../util/spawned";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
-import { spawnAndWatch, WritableLog } from "../../util/spawned";
 
 /**
  * RemoteRepoRef implementation for BitBucket server (not BitBucket Cloud)
@@ -128,15 +128,15 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
 }
 
 interface HttpPostResult<T> {
-    target: T,
-    success: boolean,
-    fullResponse: any
+    target: T;
+    success: boolean;
+    fullResponse: any;
 }
 
 interface HttpStrategy {
-    doPost<T>(target: T, creds: ProjectOperationCredentials, url: string, data: any): Promise<HttpPostResult<T>>
+    doPost<T>(target: T, creds: ProjectOperationCredentials, url: string, data: any): Promise<HttpPostResult<T>>;
 
-    doDelete<T>(target: T, creds: ProjectOperationCredentials, url: string): Promise<HttpPostResult<T>>
+    doDelete<T>(target: T, creds: ProjectOperationCredentials, url: string): Promise<HttpPostResult<T>>;
 }
 
 const AxiosHttpStrategy: HttpStrategy = {
@@ -148,7 +148,7 @@ const AxiosHttpStrategy: HttpStrategy = {
                     success: true,
                     fullResponse,
                 };
-            })
+            });
     },
 
     doDelete<T>(target: T, creds: ProjectOperationCredentials, url: string): Promise<HttpPostResult<T>> {
@@ -159,16 +159,16 @@ const AxiosHttpStrategy: HttpStrategy = {
                     success: true,
                     fullResponse,
                 };
-            })
-    }
+            });
+    },
 };
 
 const CurlHttpStrategy: HttpStrategy = {
     doPost<T>(target: T, creds: ProjectOperationCredentials, url: string, data: any): Promise<HttpPostResult<T>> {
         const passthroughLog: WritableLog = {
-            write(string) {
-                logger.info(string);
-            }
+            write(str: string) {
+                logger.info(str);
+            },
         };
         return spawnAndWatch({
             command: "curl", args: [
@@ -190,8 +190,8 @@ const CurlHttpStrategy: HttpStrategy = {
 
     doDelete<T>(target: T, creds: ProjectOperationCredentials, url: string): Promise<HttpPostResult<T>> {
         throw new Error("Not implemented");
-    }
-}
+    },
+};
 
 function usernameColonPassword(creds: ProjectOperationCredentials): string {
     if (!isBasicAuthCredentials(creds)) {
