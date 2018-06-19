@@ -899,5 +899,19 @@ describe("configuration", () => {
             assert.equal(v, null);
         });
 
+        it("should resolve boolean config value from null", () => {
+            (global as any).__runningAutomationClient = {
+                configuration: {
+                    sdm: {
+                        build: {
+                            tag: false,
+                        },
+                    },
+                },
+            };
+            const v = configurationValue<boolean>("sdm.build.tag", true);
+            assert.equal(v, false);
+        });
+
     });
 });

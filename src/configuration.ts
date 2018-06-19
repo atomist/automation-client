@@ -348,7 +348,7 @@ export function configurationValue<T>(path: string, defaultValue?: T): T {
     const conf = automationClientInstance().configuration;
     const value = _.get(conf, path) as T;
 
-    if (value) {
+    if (value != null) {
         return value;
     } else if (defaultValue !== undefined) {
         return defaultValue;
