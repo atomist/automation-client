@@ -88,13 +88,6 @@ export const configuration: Configuration = {
     ingesters: [
         // CircleCIPayload,
         // GitLabPushPayload,
-        /* buildIngester("HelloWorld")
-            .withType(buildType("HelloWorldPerson").withStringField("name", "Name of the person"))
-            .withEnum(buildEnum("Urgency", ["high", "low", "normal"], "How important is your message"))
-            .withType(buildType("HelloWorld")
-                .withEnumField("urgency", "Urgency", "Field description")
-                .withObjectField("sender", "HelloWorldPerson", "sender desc", ["name"])
-                .withObjectField("recipient", "HelloWorldPerson", "recipient desc", ["name"])),*/
         // fs.readFileSync(p.join(appRoot.path, "test", "graphql", "ingester", "helloWorld.graphql")).toString(),
         // fs.readFileSync(p.join(appRoot.path, "test", "graphql", "ingester", "sdmGoal.graphql")).toString(),
         // ingester("helloWorld"),
