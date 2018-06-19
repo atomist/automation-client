@@ -4,7 +4,10 @@ import { DirectoryManager } from "../../spi/clone/DirectoryManager";
 import { gitHubRepoLoader } from "./gitHubRepoLoader";
 import { LocalRepoLoader } from "./localRepoLoader";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
-import { isLocalRepoRef, RepoRef } from "./RepoId";
+import {
+    isLocalRepoRef,
+    RepoRef,
+} from "./RepoId";
 import { RepoLoader } from "./repoLoader";
 
 /**

@@ -2,8 +2,10 @@ import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as serializeError from "serialize-error";
 import { EventFired } from "../../HandleEvent";
-import { AutomationContextAware } from "../../HandlerContext";
-import { HandlerContext } from "../../HandlerContext";
+import {
+    AutomationContextAware,
+    HandlerContext,
+} from "../../HandlerContext";
 import {
     failure,
     HandlerResult,
@@ -35,9 +37,7 @@ import {
     RequestProcessor,
     Source,
 } from "./RequestProcessor";
-import {
-    HandlerResponse,
-} from "./websocket/WebSocketMessageClient";
+import { HandlerResponse } from "./websocket/WebSocketMessageClient";
 
 export abstract class AbstractRequestProcessor implements RequestProcessor {
 

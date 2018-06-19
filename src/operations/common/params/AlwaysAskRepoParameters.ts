@@ -1,5 +1,11 @@
-import { Parameter, Parameters } from "../../../decorators";
-import { GitBranchRegExp, GitHubNameRegExp } from "./gitHubPatterns";
+import {
+    Parameter,
+    Parameters,
+} from "../../../decorators";
+import {
+    GitBranchRegExp,
+    GitHubNameRegExp,
+} from "./gitHubPatterns";
 import { GitHubTargetsParams } from "./GitHubTargetsParams";
 
 /**

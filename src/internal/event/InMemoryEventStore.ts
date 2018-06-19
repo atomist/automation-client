@@ -1,7 +1,13 @@
 import { LRUMap } from "lru_map";
 import { EventStore } from "../../spi/event/EventStore";
-import { CommandIncoming, EventIncoming } from "../transport/RequestProcessor";
-import { guid, hideString } from "../util/string";
+import {
+    CommandIncoming,
+    EventIncoming,
+} from "../transport/RequestProcessor";
+import {
+    guid,
+    hideString,
+} from "../util/string";
 
 /**
  * Simple {EventStore} implementation that stores events in memory.

@@ -1,10 +1,13 @@
-import { File } from "../File";
-
 import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { PatternMatch } from "@atomist/microgrammar/PatternMatch";
 import { logger } from "../../internal/util/logger";
+import { File } from "../File";
 import { ProjectAsync } from "../Project";
-import { doWithFiles, GlobOptions, saveFromFilesAsync } from "./projectUtils";
+import {
+    doWithFiles,
+    GlobOptions,
+    saveFromFilesAsync,
+} from "./projectUtils";
 
 export type Match<M> = M & PatternMatch;
 

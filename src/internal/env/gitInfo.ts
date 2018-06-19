@@ -1,7 +1,5 @@
 import * as fs from "fs-extra";
 import * as path from "path";
-
-import { runCommand } from "../../action/cli/commandLine";
 import { logger } from "../util/logger";
 
 /**

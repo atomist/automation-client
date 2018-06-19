@@ -1,10 +1,9 @@
+import * as _ from "lodash";
 import { ActionResult } from "../../action/ActionResult";
 import { HandlerContext } from "../../HandlerContext";
 import { Project } from "../../project/Project";
 import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewerParameters";
 import { RepoRef } from "../common/RepoId";
-
-import * as _ from "lodash";
 
 export interface Tags {
 

@@ -1,10 +1,5 @@
 #!/usr/bin/env node
 import * as stringify from "json-stringify-safe";
-
-import { LoggingConfig } from "../internal/util/logger";
-process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
-LoggingConfig.format = "cli";
-
 import * as yargs from "yargs";
 import { automationClient } from "../automationClient";
 import {
@@ -14,10 +9,14 @@ import {
 import { HandlerContext } from "../HandlerContext";
 import { CommandInvocation } from "../internal/invoker/Payload";
 import { consoleMessageClient } from "../internal/message/ConsoleMessageClient";
+
+import { LoggingConfig } from "../internal/util/logger";
 import { guid } from "../internal/util/string";
 
 import { AutomationServer } from "../server/AutomationServer";
-import { DefaultSlackMessageClient } from "../spi/message/MessageClientSupport";
+
+process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
+LoggingConfig.format = "cli";
 
 if (yargs.argv.request) {
     try {

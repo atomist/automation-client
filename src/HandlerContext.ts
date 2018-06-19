@@ -5,7 +5,10 @@ import {
 } from "./internal/transport/RequestProcessor";
 import { AutomationContext } from "./internal/util/cls";
 import { GraphClient } from "./spi/graph/GraphClient";
-import { MessageClient, SlackMessageClient } from "./spi/message/MessageClient";
+import {
+    MessageClient,
+    SlackMessageClient,
+} from "./spi/message/MessageClient";
 
 /**
  * Context available to all handlers

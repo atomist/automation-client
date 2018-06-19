@@ -6,11 +6,11 @@
 
 import axios, { AxiosPromise } from "axios";
 import * as stringify from "json-stringify-safe";
-import promiseRetry = require("promise-retry");
 import { WrapOptions } from "retry";
-
-import { logger } from "./internal/util/logger";
-import { DefaultRetryOptions, doWithRetry } from "./util/retry";
+import {
+    DefaultRetryOptions,
+    doWithRetry,
+} from "./util/retry";
 
 /**
  * Scheme and hostname (authority) of the Atomist webhook URL.

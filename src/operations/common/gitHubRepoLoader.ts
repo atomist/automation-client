@@ -1,6 +1,12 @@
-import { DefaultDirectoryManager, GitCommandGitProject } from "../../project/git/GitCommandGitProject";
+import {
+    DefaultDirectoryManager,
+    GitCommandGitProject,
+} from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
-import { DefaultCloneOptions, DirectoryManager } from "../../spi/clone/DirectoryManager";
+import {
+    DefaultCloneOptions,
+    DirectoryManager,
+} from "../../spi/clone/DirectoryManager";
 import { GitHubRepoRef } from "./GitHubRepoRef";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import { isRemoteRepoRef } from "./RepoId";

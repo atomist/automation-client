@@ -1,5 +1,7 @@
-import { SelfDescribingHandleCommand } from "./HandleCommand";
-import { HandleCommand } from "./HandleCommand";
+import {
+    HandleCommand,
+    SelfDescribingHandleCommand,
+} from "./HandleCommand";
 import { HandlerContext } from "./HandlerContext";
 import { HandlerResult } from "./HandlerResult";
 import { metadataFromInstance } from "./internal/metadata/metadataReading";
@@ -13,7 +15,10 @@ import {
     ValueDeclaration,
 } from "./metadata/automationMetadata";
 import { registerCommand } from "./scan";
-import { Maker, toFactory } from "./util/constructionUtils";
+import {
+    Maker,
+    toFactory,
+} from "./util/constructionUtils";
 
 /**
  * Handle the given command. Parameters will have been set on a fresh

@@ -6,7 +6,8 @@ import {
     addressSlackUsers,
     Destination,
     MessageClient,
-    MessageOptions, SlackMessageClient,
+    MessageOptions,
+    SlackMessageClient,
 } from "./MessageClient";
 
 export abstract class MessageClientSupport implements MessageClient {

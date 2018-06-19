@@ -1,4 +1,9 @@
-import { MappedParameter, MappedParameters, Parameter, Parameters } from "../../../decorators";
+import {
+    MappedParameter,
+    MappedParameters,
+    Parameter,
+    Parameters,
+} from "../../../decorators";
 import { GitBranchRegExp } from "./gitHubPatterns";
 import { GitHubTargetsParams } from "./GitHubTargetsParams";
 

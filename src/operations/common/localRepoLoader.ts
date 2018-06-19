@@ -1,6 +1,9 @@
 import stringify = require("json-stringify-safe");
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";
-import { isLocalRepoRef, RepoRef } from "./RepoId";
+import {
+    isLocalRepoRef,
+    RepoRef,
+} from "./RepoId";
 import { RepoLoader } from "./repoLoader";
 
 export const LocalRepoLoader: RepoLoader =

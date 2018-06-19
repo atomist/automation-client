@@ -1,17 +1,28 @@
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
-import { commandHandlerFrom, OnCommand } from "../../onCommand";
+import {
+    commandHandlerFrom,
+    OnCommand,
+} from "../../onCommand";
 import { Maker } from "../../util/constructionUtils";
 import { CommandDetails } from "../CommandDetails";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewerParameters";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
-import { AllRepos, andFilter, RepoFilter } from "../common/repoFilter";
+import {
+    AllRepos,
+    andFilter,
+    RepoFilter,
+} from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
 import { RepoLoader } from "../common/repoLoader";
 import { doWithAllRepos } from "../common/repoUtils";
-import { Tagger, TagRouter, Tags } from "./Tagger";
+import {
+    Tagger,
+    TagRouter,
+    Tags,
+} from "./Tagger";
 
 export interface TaggerCommandDetails<PARAMS extends EditorOrReviewerParameters> extends CommandDetails<PARAMS> {
 

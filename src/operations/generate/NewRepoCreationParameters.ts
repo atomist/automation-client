@@ -1,4 +1,8 @@
-import { MappedParameter, MappedParameters, Parameter } from "../../decorators";
+import {
+    MappedParameter,
+    MappedParameters,
+    Parameter,
+} from "../../decorators";
 import { GitHubNameRegExp } from "../common/params/gitHubPatterns";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { RemoteRepoRef } from "../common/RepoId";

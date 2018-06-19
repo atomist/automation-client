@@ -1,8 +1,10 @@
-import { logger } from "../../internal/util/logger";
-
 import { evaluateExpression } from "@atomist/tree-path/path/expressionEngine";
-import { isSuccessResult, PathExpression } from "@atomist/tree-path/path/pathExpression";
+import {
+    isSuccessResult,
+    PathExpression,
+} from "@atomist/tree-path/path/pathExpression";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
+import { logger } from "../../internal/util/logger";
 import { File } from "../../project/File";
 import { ProjectAsync } from "../../project/Project";
 import { LocatedTreeNode } from "../LocatedTreeNode";

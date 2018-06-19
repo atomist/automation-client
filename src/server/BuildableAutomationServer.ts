@@ -1,9 +1,6 @@
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
-import {
-    AutomationServerOptions,
-    Configuration,
-} from "../configuration";
+import { Configuration } from "../configuration";
 import { ApolloGraphClient } from "../graph/ApolloGraphClient";
 import { HandleCommand } from "../HandleCommand";
 import {

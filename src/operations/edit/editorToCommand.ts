@@ -1,15 +1,28 @@
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
-import { commandHandlerFrom, OnCommand } from "../../onCommand";
+import {
+    commandHandlerFrom,
+    OnCommand,
+} from "../../onCommand";
 import { Maker } from "../../util/constructionUtils";
 import { CommandDetails } from "../CommandDetails";
 import {
     BaseEditorOrReviewerParameters,
     EditorOrReviewerParameters,
 } from "../common/params/BaseEditorOrReviewerParameters";
-import { andFilter, RepoFilter } from "../common/repoFilter";
-import { editAll, editOne } from "./editAll";
-import { EditMode, isEditMode, PullRequest } from "./editModes";
+import {
+    andFilter,
+    RepoFilter,
+} from "../common/repoFilter";
+import {
+    editAll,
+    editOne,
+} from "./editAll";
+import {
+    EditMode,
+    isEditMode,
+    PullRequest,
+} from "./editModes";
 import { AnyProjectEditor } from "./projectEditor";
 
 /**

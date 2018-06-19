@@ -1,9 +1,16 @@
 import * as util from "util";
 
-import { ActionResult, failureOn, successOn } from "../../../action/ActionResult";
+import {
+    ActionResult,
+    failureOn,
+    successOn,
+} from "../../../action/ActionResult";
 import { logger } from "../../../internal/util/logger";
 import { GitProject } from "../../../project/git/GitProject";
-import { addRepoWebhook, GitHubRepoWebhookPayload } from "../../../util/gitHub";
+import {
+    addRepoWebhook,
+    GitHubRepoWebhookPayload,
+} from "../../../util/gitHub";
 import { isGitHubRepoRef } from "../../common/GitHubRepoRef";
 import { ProjectAction } from "../../common/projectAction";
 import { isTokenCredentials } from "../../common/ProjectOperationCredentials";

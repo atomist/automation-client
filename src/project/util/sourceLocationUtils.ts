@@ -1,7 +1,9 @@
-
 import { SourceLocation } from "../../operations/common/SourceLocation";
 
-import { File, isFile } from "../../project/File";
+import {
+    File,
+    isFile,
+} from "../../project/File";
 
 /**
  * Find the given source location within this project

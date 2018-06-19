@@ -1,4 +1,7 @@
-import { CommandIncoming, EventIncoming } from "../../internal/transport/RequestProcessor";
+import {
+    CommandIncoming,
+    EventIncoming,
+} from "../../internal/transport/RequestProcessor";
 
 /**
  * Implementations of {EventStore} can be used to store and retrieve automation node releated events.

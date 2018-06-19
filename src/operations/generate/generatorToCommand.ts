@@ -2,7 +2,10 @@ import * as _ from "lodash";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { RedirectResult } from "../../HandlerResult";
-import { commandHandlerFrom, OnCommand } from "../../onCommand";
+import {
+    commandHandlerFrom,
+    OnCommand,
+} from "../../onCommand";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
 import { CachingDirectoryManager } from "../../spi/clone/CachingDirectoryManager";
@@ -16,7 +19,10 @@ import { ProjectAction } from "../common/projectAction";
 import { RepoRef } from "../common/RepoId";
 import { RepoLoader } from "../common/repoLoader";
 import { AnyProjectEditor } from "../edit/projectEditor";
-import { generate, ProjectPersister } from "./generatorUtils";
+import {
+    generate,
+    ProjectPersister,
+} from "./generatorUtils";
 import { RemoteGitProjectPersister } from "./remoteGitProjectPersister";
 import { SeedDrivenGeneratorParameters } from "./SeedDrivenGeneratorParameters";
 import { addAtomistWebhook } from "./support/addAtomistWebhook";

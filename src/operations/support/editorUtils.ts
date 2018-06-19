@@ -3,7 +3,6 @@ import { logger } from "../../internal/util/logger";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
 import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewerParameters";
-import { RepoRef } from "../common/RepoId";
 import {
     BranchCommit,
     EditMode,
@@ -12,7 +11,11 @@ import {
     isPullRequest,
     PullRequest,
 } from "../edit/editModes";
-import { EditResult, ProjectEditor, successfulEdit } from "../edit/projectEditor";
+import {
+    EditResult,
+    ProjectEditor,
+    successfulEdit,
+} from "../edit/projectEditor";
 
 /**
  * Edit a GitHub project using a PR or branch.

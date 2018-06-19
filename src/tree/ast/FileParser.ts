@@ -1,4 +1,3 @@
-
 import { PathExpression } from "@atomist/tree-path/path/pathExpression";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { File } from "../../project/File";

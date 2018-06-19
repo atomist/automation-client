@@ -1,11 +1,17 @@
 import { ActionResult } from "../../action/ActionResult";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
-import { commandHandlerFrom, OnCommand } from "../../onCommand";
+import {
+    commandHandlerFrom,
+    OnCommand,
+} from "../../onCommand";
 import { Maker } from "../../util/constructionUtils";
 import { CommandDetails } from "../CommandDetails";
 import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewerParameters";
-import { andFilter, RepoFilter } from "../common/repoFilter";
+import {
+    andFilter,
+    RepoFilter,
+} from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
 import { RepoRef } from "../common/RepoId";
 import { issueRaisingReviewRouter } from "./issueRaisingReviewRouter";

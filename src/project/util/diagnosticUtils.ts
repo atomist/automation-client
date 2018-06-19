@@ -1,8 +1,8 @@
 import { File } from "../File";
 import { AllFiles } from "../fileGlobs";
-import { saveFromFiles } from "./projectUtils";
 
 import { Project } from "../Project";
+import { saveFromFiles } from "./projectUtils";
 
 const Separator = "-------------------";
 

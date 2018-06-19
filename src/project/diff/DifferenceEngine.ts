@@ -1,11 +1,11 @@
 import * as _ from "lodash";
 
-import { Chain } from "./Chain";
-
 import { GitHubRepoRef } from "../../operations/common/GitHubRepoRef";
 import { RepoRef } from "../../operations/common/RepoId";
 import { GitCommandGitProject } from "../git/GitCommandGitProject";
 import { GitProject } from "../git/GitProject";
+
+import { Chain } from "./Chain";
 
 /**
  * Extracts fingerprints, diffs them, and invokes actions on Github shas that are being compared

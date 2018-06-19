@@ -1,20 +1,33 @@
-import * as _ from "lodash";
-
 import { defineDynamicProperties } from "@atomist/tree-path/manipulation/enrichment";
 import { evaluateExpression } from "@atomist/tree-path/path/expressionEngine";
-import { isSuccessResult, PathExpression, stringify } from "@atomist/tree-path/path/pathExpression";
+import {
+    isSuccessResult,
+    PathExpression,
+    stringify,
+} from "@atomist/tree-path/path/pathExpression";
 import { toPathExpression } from "@atomist/tree-path/path/utils";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
+import * as _ from "lodash";
 import { logger } from "../../internal/util/logger";
-import { ProjectAsync } from "../../project/Project";
-import { GlobOptions, saveFromFiles } from "../../project/util/projectUtils";
-import { LocatedTreeNode } from "../LocatedTreeNode";
-import { FileHit, MatchResult, NodeReplacementOptions } from "./FileHits";
-import { FileParser, isFileParser } from "./FileParser";
-import { FileParserRegistry } from "./FileParserRegistry";
 
 import { File } from "../../project/File";
+import { ProjectAsync } from "../../project/Project";
+import {
+    GlobOptions,
+    saveFromFiles,
+} from "../../project/util/projectUtils";
 import { toSourceLocation } from "../../project/util/sourceLocationUtils";
+import { LocatedTreeNode } from "../LocatedTreeNode";
+import {
+    FileHit,
+    MatchResult,
+    NodeReplacementOptions,
+} from "./FileHits";
+import {
+    FileParser,
+    isFileParser,
+} from "./FileParser";
+import { FileParserRegistry } from "./FileParserRegistry";
 
 /**
  * Separates glob patterns from path expressions in unified expression syntax

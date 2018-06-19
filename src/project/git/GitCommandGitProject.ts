@@ -1,7 +1,7 @@
 import { exec } from "child-process-promise";
 import * as _ from "lodash";
-import promiseRetry = require("promise-retry");
 
+import promiseRetry = require("promise-retry");
 import {
     ActionResult,
     successOn,

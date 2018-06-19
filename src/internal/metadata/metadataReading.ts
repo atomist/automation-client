@@ -9,7 +9,6 @@ import {
     SecretDeclaration,
     ValueDeclaration,
 } from "../../metadata/automationMetadata";
-import { BaseValue } from "./decoratorSupport";
 import * as decorators from "./decoratorSupport";
 import {
     isCommandHandlerMetadata,

@@ -10,7 +10,11 @@ import { TmpDirectoryManager } from "../../spi/clone/tmpDirectoryManager";
 import { ProjectAction } from "../common/projectAction";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { RepoId } from "../common/RepoId";
-import { AnyProjectEditor, ProjectEditor, toEditor } from "../edit/projectEditor";
+import {
+    AnyProjectEditor,
+    ProjectEditor,
+    toEditor,
+} from "../edit/projectEditor";
 
 /**
  * Function that knows how to persist a project using the given credentials.

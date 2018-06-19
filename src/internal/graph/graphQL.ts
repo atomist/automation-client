@@ -1,7 +1,12 @@
 import * as appRoot from "app-root-path";
 import * as findUp from "find-up";
 import * as fs from "fs";
-import { buildClientSchema, GraphQLError, IntrospectionQuery, parse } from "graphql";
+import {
+    buildClientSchema,
+    GraphQLError,
+    IntrospectionQuery,
+    parse,
+} from "graphql";
 import gql from "graphql-tag";
 import { validate } from "graphql/validation";
 import { murmur3 } from "murmurhash-js/";

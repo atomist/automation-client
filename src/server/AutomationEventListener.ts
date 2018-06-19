@@ -1,4 +1,3 @@
-import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import { EventFired } from "../HandleEvent";
 import { HandlerContext } from "../HandlerContext";
 import { HandlerResult } from "../HandlerResult";

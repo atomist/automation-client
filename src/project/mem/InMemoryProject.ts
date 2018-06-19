@@ -1,14 +1,19 @@
+import * as _ from "lodash";
 import * as minimatch from "minimatch";
 import * as spigot from "stream-spigot";
 
 import { RepoRef } from "../../operations/common/RepoId";
-import { File, isFile } from "../File";
-import { FileStream, Project } from "../Project";
+import {
+    File,
+    isFile,
+} from "../File";
+import {
+    FileStream,
+    Project,
+} from "../Project";
 import { AbstractProject } from "../support/AbstractProject";
 import { copyFiles } from "../support/projectUtils";
 import { InMemoryFile } from "./InMemoryFile";
-
-import * as _ from "lodash";
 
 /**
  * In memory Project implementation. Primarily intended

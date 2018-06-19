@@ -1,6 +1,5 @@
-import { SecretResolver } from "../../spi/env/SecretResolver";
-
 import * as config from "config";
+import { SecretResolver } from "../../spi/env/SecretResolver";
 import { logger } from "../util/logger";
 import { hideString } from "../util/string";
 

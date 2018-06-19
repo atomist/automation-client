@@ -1,9 +1,11 @@
-import { RemoteRepoRef, RepoRef } from "../RepoId";
-import { GitHubNameRegExp } from "./gitHubPatterns";
-
 import { ProjectOperationCredentials } from "../ProjectOperationCredentials";
 import { RepoFilter } from "../repoFilter";
+import {
+    RemoteRepoRef,
+    RepoRef,
+} from "../RepoId";
 import { Credentialed } from "./Credentialed";
+import { GitHubNameRegExp } from "./gitHubPatterns";
 import { RemoteLocator } from "./RemoteLocator";
 
 /**

@@ -1,12 +1,16 @@
-import * as stringify from "json-stringify-safe";
+import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
+import {
+    isTreePatternMatch,
+    PatternMatch,
+} from "@atomist/microgrammar/PatternMatch";
+import {
+    defineDynamicProperties,
+    fillInEmptyNonTerminalValues,
+} from "@atomist/tree-path/manipulation/enrichment";
 
 import { TreeNode } from "@atomist/tree-path/TreeNode";
-import { FileParser } from "../FileParser";
-
-import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
-import { isTreePatternMatch, PatternMatch } from "@atomist/microgrammar/PatternMatch";
-import { defineDynamicProperties, fillInEmptyNonTerminalValues } from "@atomist/tree-path/manipulation/enrichment";
 import { File } from "../../../project/File";
+import { FileParser } from "../FileParser";
 
 /**
  * Allow path expressions against results from a single microgrammar

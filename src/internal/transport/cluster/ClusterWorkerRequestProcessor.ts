@@ -36,7 +36,10 @@ import {
 import { GraphClientFactory } from "../websocket/GraphClientFactory";
 import { WebSocketClientOptions } from "../websocket/WebSocketClient";
 import { RegistrationConfirmation } from "../websocket/WebSocketRequestProcessor";
-import { MasterMessage, workerSend } from "./messages";
+import {
+    MasterMessage,
+    workerSend,
+} from "./messages";
 
 /**
  * A RequestProcessor that is being run as Node.JS Cluster worker handling all the actual work.

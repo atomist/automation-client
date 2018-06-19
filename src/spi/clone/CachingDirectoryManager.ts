@@ -1,6 +1,7 @@
 import * as os from "os";
 import * as path from "path";
 import { logger } from "../../internal/util/logger";
+import { increment } from "../../internal/util/metric";
 import {
     CloneDirectoryInfo,
     CloneOptions,
@@ -91,7 +92,6 @@ function keyFor(owner: string, repo: string): string {
  * file locking. only used here
  */
 import lockfile = require("proper-lockfile");
-import { increment } from "../../internal/util/metric";
 
 interface LockAcquired {
     success: true;

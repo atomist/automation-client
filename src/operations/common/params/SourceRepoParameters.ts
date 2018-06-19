@@ -1,6 +1,12 @@
 import { Parameter } from "../../../decorators";
-import { RemoteRepoRef, RepoRef } from "../RepoId";
-import { GitBranchRegExp, GitHubNameRegExp } from "./gitHubPatterns";
+import {
+    RemoteRepoRef,
+    RepoRef,
+} from "../RepoId";
+import {
+    GitBranchRegExp,
+    GitHubNameRegExp,
+} from "./gitHubPatterns";
 import { RemoteLocator } from "./RemoteLocator";
 
 /**

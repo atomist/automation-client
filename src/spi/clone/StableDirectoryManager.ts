@@ -3,7 +3,11 @@ import * as path from "path";
 
 import { logger } from "../../internal/util/logger";
 import { registerShutdownHook } from "../../internal/util/shutdown";
-import { CloneDirectoryInfo, CloneOptions, DirectoryManager } from "./DirectoryManager";
+import {
+    CloneDirectoryInfo,
+    CloneOptions,
+    DirectoryManager,
+} from "./DirectoryManager";
 
 export interface StableDirectoryManagerOpts {
 

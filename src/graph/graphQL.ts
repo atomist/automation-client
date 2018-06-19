@@ -1,9 +1,11 @@
 import * as appRoot from "app-root-path";
 import { murmur3 } from "murmurhash-js/";
 import * as trace from "stack-trace";
-import { IngesterOptions } from "../internal/graph/graphQL";
 import * as internalGraphQL from "../internal/graph/graphQL";
-import { SubscriptionOptions } from "../internal/graph/graphQL";
+import {
+    IngesterOptions,
+    SubscriptionOptions,
+} from "../internal/graph/graphQL";
 
 export class ParameterEnum {
     constructor(public value: string | string[]) {

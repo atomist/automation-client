@@ -6,9 +6,15 @@ import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
 import { doWithRetry } from "../../util/retry";
-import { GitHubRepoRef, isGitHubRepoRef } from "../common/GitHubRepoRef";
+import {
+    GitHubRepoRef,
+    isGitHubRepoRef,
+} from "../common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
-import { isRemoteRepoRef, RepoId } from "../common/RepoId";
+import {
+    isRemoteRepoRef,
+    RepoId,
+} from "../common/RepoId";
 import { ProjectPersister } from "./generatorUtils";
 
 /**

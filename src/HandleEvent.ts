@@ -1,6 +1,6 @@
 import { HandlerContext } from "./HandlerContext";
 import { HandlerResult } from "./HandlerResult";
-import { Arg, Secret } from "./internal/invoker/Payload";
+import { Secret } from "./internal/invoker/Payload";
 import { OnEvent } from "./onEvent";
 
 export interface EventFired<T> {

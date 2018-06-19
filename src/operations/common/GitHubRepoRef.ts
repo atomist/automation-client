@@ -1,13 +1,21 @@
-import { ActionResult, successOn } from "../../action/ActionResult";
-import { createRepo } from "../../util/gitHub";
-import { isTokenCredentials, ProjectOperationCredentials } from "./ProjectOperationCredentials";
-import { ProviderType, RepoRef } from "./RepoId";
-
 import axios from "axios";
+import {
+    ActionResult,
+    successOn,
+} from "../../action/ActionResult";
 import { logger } from "../../internal/util/logger";
 import { Configurable } from "../../project/git/Configurable";
+import { createRepo } from "../../util/gitHub";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { GitShaRegExp } from "./params/gitHubPatterns";
+import {
+    isTokenCredentials,
+    ProjectOperationCredentials,
+} from "./ProjectOperationCredentials";
+import {
+    ProviderType,
+    RepoRef,
+} from "./RepoId";
 
 export const GitHubDotComBase = "https://api.github.com";
 

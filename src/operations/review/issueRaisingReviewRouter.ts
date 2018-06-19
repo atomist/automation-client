@@ -1,11 +1,23 @@
-
-import { failureOn, successOn } from "../../action/ActionResult";
-import { deepLink, Issue, raiseIssue } from "../../util/gitHub";
-import { GitHubRepoRef, isGitHubRepoRef } from "../common/GitHubRepoRef";
+import {
+    failureOn,
+    successOn,
+} from "../../action/ActionResult";
+import {
+    deepLink,
+    Issue,
+    raiseIssue,
+} from "../../util/gitHub";
+import {
+    GitHubRepoRef,
+    isGitHubRepoRef,
+} from "../common/GitHubRepoRef";
 import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewerParameters";
 import { TokenCredentials } from "../common/ProjectOperationCredentials";
 import { ReviewRouter } from "./reviewerToCommand";
-import { ProjectReview, ReviewComment } from "./ReviewResult";
+import {
+    ProjectReview,
+    ReviewComment,
+} from "./ReviewResult";
 
 /**
  * Create an issue from a review, using Markdown

@@ -2,19 +2,28 @@ import { HandlerContext } from "../../HandlerContext";
 import { Project } from "../../project/Project";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
-import {
-    BaseEditorOrReviewerParameters,
-    EditorOrReviewerParameters,
-} from "../common/params/BaseEditorOrReviewerParameters";
+import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewerParameters";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
-import { AllRepos, RepoFilter } from "../common/repoFilter";
+import {
+    AllRepos,
+    RepoFilter,
+} from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
 import { RepoRef } from "../common/RepoId";
 import { RepoLoader } from "../common/repoLoader";
 import { doWithAllRepos } from "../common/repoUtils";
 import { editRepo } from "../support/editorUtils";
-import { EditMode, EditModeFactory, toEditModeFactory } from "./editModes";
-import { AnyProjectEditor, EditResult, ProjectEditor, toEditor } from "./projectEditor";
+import {
+    EditMode,
+    EditModeFactory,
+    toEditModeFactory,
+} from "./editModes";
+import {
+    AnyProjectEditor,
+    EditResult,
+    ProjectEditor,
+    toEditor,
+} from "./projectEditor";
 
 /**
  * Edit all the given repos with the given editor

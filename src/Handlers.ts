@@ -4,7 +4,8 @@
 import {
     CommandHandler,
     EventHandler,
-    MappedParameter, MappedParameters,
+    MappedParameter,
+    MappedParameters,
     Parameter,
     Secret,
     Tags,

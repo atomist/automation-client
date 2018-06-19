@@ -1,4 +1,9 @@
-import { ActionResult, failureOn, isActionResult, successOn } from "./ActionResult";
+import {
+    ActionResult,
+    failureOn,
+    isActionResult,
+    successOn,
+} from "./ActionResult";
 
 export type TOp<T> = (p: T) => Promise<T>;
 

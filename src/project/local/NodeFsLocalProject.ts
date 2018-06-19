@@ -1,17 +1,26 @@
-import { File } from "../File";
-import { FileStream, Project } from "../Project";
-
 import * as fs from "fs-extra";
 import * as gs from "glob-stream";
 import * as fpath from "path";
 import * as stream from "stream";
 import { deleteFolderRecursive } from "../../internal/util/file";
 import { logger } from "../../internal/util/logger";
-import { RepoRef, SimpleRepoId } from "../../operations/common/RepoId";
+import {
+    RepoRef,
+    SimpleRepoId,
+} from "../../operations/common/RepoId";
+import { File } from "../File";
 import { isInMemoryProject } from "../mem/InMemoryProject";
+import {
+    FileStream,
+    Project,
+} from "../Project";
 import { AbstractProject } from "../support/AbstractProject";
 import { copyFiles } from "../support/projectUtils";
-import { isLocalProject, LocalProject, ReleaseFunction } from "./LocalProject";
+import {
+    isLocalProject,
+    LocalProject,
+    ReleaseFunction,
+} from "./LocalProject";
 import { NodeFsLocalFile } from "./NodeFsLocalFile";
 
 export class NodeFsLocalProject extends AbstractProject implements LocalProject {

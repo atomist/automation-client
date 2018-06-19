@@ -1,13 +1,15 @@
-import { ActionResult, successOn } from "../../action/ActionResult";
+import axios from "axios";
+import {
+    ActionResult,
+    successOn,
+} from "../../action/ActionResult";
+
+import { encode } from "../../internal/util/base64";
 import { logger } from "../../internal/util/logger";
 import { Configurable } from "../../project/git/Configurable";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
-import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
-
-import axios from "axios";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
-
-import { encode } from "../../internal/util/base64";
+import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import { ProviderType } from "./RepoId";
 
 export const BitBucketDotComBase = "https://bitbucket.org/api/2.0";

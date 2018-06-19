@@ -1,8 +1,15 @@
-import axios, { AxiosPromise, AxiosRequestConfig } from "axios";
-import { logger } from "../internal/util/logger";
+import axios, {
+    AxiosPromise,
+    AxiosRequestConfig,
+} from "axios";
 
 import { decode } from "../internal/util/base64";
-import { GitHubDotComBase, GitHubRepoRef, isGitHubRepoRef } from "../operations/common/GitHubRepoRef";
+import { logger } from "../internal/util/logger";
+import {
+    GitHubDotComBase,
+    GitHubRepoRef,
+    isGitHubRepoRef,
+} from "../operations/common/GitHubRepoRef";
 import { RepoRef } from "../operations/common/RepoId";
 import { SourceLocation } from "../operations/common/SourceLocation";
 

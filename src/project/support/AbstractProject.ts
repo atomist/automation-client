@@ -1,9 +1,18 @@
 import { AbstractScriptedFlushable } from "../../internal/common/AbstractScriptedFlushable";
 import { logger } from "../../internal/util/logger";
 import { RepoRef } from "../../operations/common/RepoId";
-import { File, FileNonBlocking } from "../File";
-import { DefaultExcludes, DefaultFiles } from "../fileGlobs";
-import { FileStream, Project } from "../Project";
+import {
+    File,
+    FileNonBlocking,
+} from "../File";
+import {
+    DefaultExcludes,
+    DefaultFiles,
+} from "../fileGlobs";
+import {
+    FileStream,
+    Project,
+} from "../Project";
 
 /**
  * Support for implementations of Project interface

@@ -1,4 +1,7 @@
-import { MappedParameter, MappedParameters } from "../../../decorators";
+import {
+    MappedParameter,
+    MappedParameters,
+} from "../../../decorators";
 import { GitHubRepoRef } from "../GitHubRepoRef";
 import { SourceRepoParameters } from "./SourceRepoParameters";
 

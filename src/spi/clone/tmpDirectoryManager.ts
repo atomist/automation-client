@@ -1,8 +1,11 @@
+import * as fs from "fs-extra";
 import * as tmp from "tmp-promise";
 
-import { CloneDirectoryInfo, CloneOptions, DirectoryManager } from "./DirectoryManager";
-
-import * as fs from "fs-extra";
+import {
+    CloneDirectoryInfo,
+    CloneOptions,
+    DirectoryManager,
+} from "./DirectoryManager";
 
 /**
  * Uses tmp-promise (built on tmp) to create clean temporary directories

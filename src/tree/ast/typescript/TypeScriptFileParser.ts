@@ -1,13 +1,20 @@
-import * as _ from "lodash";
+import {
+    AllNodeTest,
+    isNamedNodeTest,
+} from "@atomist/tree-path/path/nodeTests";
+import {
+    isUnionPathExpression,
+    LocationStep,
+    PathExpression,
+    stringify,
+} from "@atomist/tree-path/path/pathExpression";
 
 import { TreeNode } from "@atomist/tree-path/TreeNode";
-import { FileParser } from "../FileParser";
-
-import { AllNodeTest, isNamedNodeTest } from "@atomist/tree-path/path/nodeTests";
-import { isUnionPathExpression, LocationStep, PathExpression, stringify } from "@atomist/tree-path/path/pathExpression";
+import * as _ from "lodash";
 import * as ts from "typescript";
 import { logger } from "../../../internal/util/logger";
 import { File } from "../../../project/File";
+import { FileParser } from "../FileParser";
 
 /**
  * Allow path expressions against ASTs from the TypeScript parser.

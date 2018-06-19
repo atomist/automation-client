@@ -5,7 +5,10 @@ import {
     MessageClient,
     MessageOptions,
 } from "../../spi/message/MessageClient";
-import { DefaultSlackMessageClient, MessageClientSupport } from "../../spi/message/MessageClientSupport";
+import {
+    DefaultSlackMessageClient,
+    MessageClientSupport,
+} from "../../spi/message/MessageClientSupport";
 import { logger } from "../util/logger";
 
 /**

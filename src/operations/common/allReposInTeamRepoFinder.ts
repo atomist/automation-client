@@ -1,6 +1,9 @@
 import * as _ from "lodash";
 import { HandlerContext } from "../../HandlerContext";
-import { ReposQuery, ReposQueryVariables } from "../../schema/schema";
+import {
+    ReposQuery,
+    ReposQueryVariables,
+} from "../../schema/schema";
 import { GitHubRepoRef } from "./GitHubRepoRef";
 import { twoTierDirectoryRepoFinder } from "./localRepoFinder";
 import { RepoFinder } from "./repoFinder";

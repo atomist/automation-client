@@ -1,4 +1,3 @@
-
 import * as assert from "power-assert";
 
 import { Parameters } from "../../../decorators";

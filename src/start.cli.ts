@@ -1,10 +1,6 @@
 #!/usr/bin/env node
 // unified Atomist CLI
 
-import { LoggingConfig } from "./internal/util/logger";
-LoggingConfig.format = "cli";
-process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
-
 import * as yargs from "yargs";
 import {
     config,
@@ -17,6 +13,10 @@ import {
     start,
 } from "./cli/commands";
 import { CommandInvocation } from "./internal/invoker/Payload";
+import { LoggingConfig } from "./internal/util/logger";
+
+LoggingConfig.format = "cli";
+process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
 
 const Package = "atomist";
 

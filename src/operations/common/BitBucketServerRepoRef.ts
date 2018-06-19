@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-import { ActionResult, successOn } from "../../action/ActionResult";
-import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
-import { ProviderType } from "./RepoId";
-
 import axios from "axios";
+import {
+    ActionResult,
+    successOn,
+} from "../../action/ActionResult";
 import { encode } from "../../internal/util/base64";
 import { logger } from "../../internal/util/logger";
 import { Configurable } from "../../project/git/Configurable";
 import { spawnAndWatch, WritableLog } from "../../util/spawned";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
+import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
+import { ProviderType } from "./RepoId";
 
 /**
  * RemoteRepoRef implementation for BitBucket server (not BitBucket Cloud)

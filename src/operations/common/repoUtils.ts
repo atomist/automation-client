@@ -4,7 +4,10 @@ import { Project } from "../../project/Project";
 import { allReposInTeam } from "./allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "./defaultRepoLoader";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
-import { AllRepos, RepoFilter } from "./repoFilter";
+import {
+    AllRepos,
+    RepoFilter,
+} from "./repoFilter";
 import { RepoFinder } from "./repoFinder";
 import { RepoRef } from "./RepoId";
 import { RepoLoader } from "./repoLoader";

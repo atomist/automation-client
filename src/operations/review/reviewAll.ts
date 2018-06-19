@@ -4,12 +4,18 @@ import { GitProject } from "../../project/git/GitProject";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
-import { AllRepos, RepoFilter } from "../common/repoFilter";
+import {
+    AllRepos,
+    RepoFilter,
+} from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
 import { RepoLoader } from "../common/repoLoader";
 import { doWithAllRepos } from "../common/repoUtils";
 import { ProjectReviewer } from "./projectReviewer";
-import { ProjectReview, ReviewResult } from "./ReviewResult";
+import {
+    ProjectReview,
+    ReviewResult,
+} from "./ReviewResult";
 
 /**
  * Review all the repos

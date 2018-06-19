@@ -1,6 +1,12 @@
 import { logger } from "../../internal/util/logger";
 import { Project } from "../../project/Project";
-import { AnyProjectEditor, EditResult, ProjectEditor, successfulEdit, toEditor } from "./projectEditor";
+import {
+    AnyProjectEditor,
+    EditResult,
+    ProjectEditor,
+    successfulEdit,
+    toEditor,
+} from "./projectEditor";
 
 /**
  * Chain the editors, in the given order

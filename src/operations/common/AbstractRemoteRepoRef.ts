@@ -17,8 +17,14 @@
 import { ActionResult } from "../../action/ActionResult";
 import { isBasicAuthCredentials } from "../../operations/common/BasicAuthCredentials";
 import { Configurable } from "../../project/git/Configurable";
-import { isTokenCredentials, ProjectOperationCredentials } from "./ProjectOperationCredentials";
-import { ProviderType, RemoteRepoRef } from "./RepoId";
+import {
+    isTokenCredentials,
+    ProjectOperationCredentials,
+} from "./ProjectOperationCredentials";
+import {
+    ProviderType,
+    RemoteRepoRef,
+} from "./RepoId";
 
 /**
  * Superclass for RemoteRepoRef implementations.

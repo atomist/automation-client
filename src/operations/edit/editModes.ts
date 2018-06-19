@@ -1,6 +1,9 @@
 import { HandlerContext } from "../../HandlerContext";
 import { Project } from "../../project/Project";
-import { EditResult, ProjectEditor } from "./projectEditor";
+import {
+    EditResult,
+    ProjectEditor,
+} from "./projectEditor";
 
 /**
  * Used to determine EditMode on a per project basis,
