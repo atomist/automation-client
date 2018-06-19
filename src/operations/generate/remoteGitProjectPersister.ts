@@ -10,6 +10,7 @@ import { GitHubRepoRef, isGitHubRepoRef } from "../common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { isRemoteRepoRef, RepoId } from "../common/RepoId";
 import { ProjectPersister } from "./generatorUtils";
+import * as _ from "lodash";
 
 /**
  * Persist project to GitHub or another remote, returning remote details. Use retry.
@@ -21,7 +22,8 @@ import { ProjectPersister } from "./generatorUtils";
 export const RemoteGitProjectPersister: ProjectPersister<GitProject> =
     (p: Project,
      creds: ProjectOperationCredentials,
-     targetId: RepoId) => {
+     targetId: RepoId,
+     params?: any) => {
         // Default to github.com if we don't have more information
         const gid = isRemoteRepoRef(targetId) ? targetId : new GitHubRepoRef(targetId.owner, targetId.repo);
         const gp: GitProject =
@@ -32,9 +34,11 @@ export const RemoteGitProjectPersister: ProjectPersister<GitProject> =
             })
             .then(() => {
                 logger.debug(`Creating new repo '${targetId.owner}/${targetId.repo}'`);
+                const description = _.get(params, "target.description", "");
+                const visibility = _.get(params, "target.visibility", "public");
                 return gp.createAndSetRemote(
                     gid,
-                    this.targetRepo, this.visibility)
+                    description, visibility)
                     .catch(err => {
                         return Promise.reject(new Error(`Unable to create new repo '${targetId.owner}/${targetId.repo}': ` +
                             `Probably exists: ${err}`));

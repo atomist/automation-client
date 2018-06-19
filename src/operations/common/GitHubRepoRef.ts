@@ -42,11 +42,11 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
             apiBaseToRemoteBase(rawApiBase), rawApiBase, owner, repo, sha, path);
     }
 
-    public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
+    public createRemote(creds: ProjectOperationCredentials, description: string, visibility: string): Promise<ActionResult<this>> {
         if (!isTokenCredentials(creds)) {
             throw new Error("Only token auth supported");
         }
-        return createRepo(creds.token, this, description, visibility)
+        return createRepo(creds.token, this, description, visibility === "private")
             .then(() => successOn(this));
     }
 
