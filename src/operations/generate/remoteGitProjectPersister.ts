@@ -1,5 +1,6 @@
 import { WrapOptions } from "retry";
 
+import * as _ from "lodash";
 import { ActionResult } from "../../action/ActionResult";
 import { logger } from "../../internal/util/logger";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
@@ -27,7 +28,8 @@ import { ProjectPersister } from "./generatorUtils";
 export const RemoteGitProjectPersister: ProjectPersister<GitProject> =
     (p: Project,
      creds: ProjectOperationCredentials,
-     targetId: RepoId) => {
+     targetId: RepoId,
+     params?: any) => {
         // Default to github.com if we don't have more information
         const gid = isRemoteRepoRef(targetId) ? targetId : new GitHubRepoRef(targetId.owner, targetId.repo);
         const gp: GitProject =
@@ -38,9 +40,11 @@ export const RemoteGitProjectPersister: ProjectPersister<GitProject> =
             })
             .then(() => {
                 logger.debug(`Creating new repo '${targetId.owner}/${targetId.repo}'`);
+                const description = _.get(params, "target.description", "");
+                const visibility = _.get(params, "target.visibility", "public");
                 return gp.createAndSetRemote(
                     gid,
-                    this.targetRepo, this.visibility)
+                    description, visibility)
                     .catch(err => {
                         return Promise.reject(new Error(`Unable to create new repo '${targetId.owner}/${targetId.repo}': ` +
                             `Probably exists: ${err}`));
