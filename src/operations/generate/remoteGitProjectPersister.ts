@@ -1,5 +1,6 @@
 import { WrapOptions } from "retry";
 
+import * as _ from "lodash";
 import { ActionResult } from "../../action/ActionResult";
 import { logger } from "../../internal/util/logger";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
@@ -10,7 +11,6 @@ import { GitHubRepoRef, isGitHubRepoRef } from "../common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { isRemoteRepoRef, RepoId } from "../common/RepoId";
 import { ProjectPersister } from "./generatorUtils";
-import * as _ from "lodash";
 
 /**
  * Persist project to GitHub or another remote, returning remote details. Use retry.
