@@ -1,14 +1,12 @@
+import chalk from "chalk";
 import * as _ from "lodash";
 import { promisify } from "util";
 import { automationClientInstance } from "../../globals";
-import { CommandHandlerMetadata } from "../../metadata/automationMetadata";
 import { Automations } from "../metadata/metadata";
 import { info } from "../util/info";
 import { logger } from "../util/logger";
 import { OnLogName } from "./OnLog";
 import { RegistrationConfirmation } from "./websocket/WebSocketRequestProcessor";
-
-const chalk = require("chalk");
 
 /**
  * Build and log startup message, including any user banner
