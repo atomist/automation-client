@@ -1,11 +1,14 @@
 import * as _ from "lodash";
 import { promisify } from "util";
 import { automationClientInstance } from "../../globals";
+import { CommandHandlerMetadata } from "../../metadata/automationMetadata";
 import { Automations } from "../metadata/metadata";
 import { info } from "../util/info";
 import { logger } from "../util/logger";
 import { OnLogName } from "./OnLog";
 import { RegistrationConfirmation } from "./websocket/WebSocketRequestProcessor";
+
+const chalk = require("chalk");
 
 /**
  * Build and log startup message, including any user banner
@@ -19,7 +22,6 @@ export async function showStartupMessages(registration: RegistrationConfirmation
         return;
     }
 
-    const chalk = require("chalk");
     let message = automations.name;
     const b = _.get(automationClientInstance(), "configuration.logging.banner");
     if (typeof b === "string") {
@@ -56,13 +58,7 @@ ${message}
   ${chalk.grey("Version")} ${automations.version}${gitInfo.git ? `  ${chalk.grey("Sha")} ${gitInfo.git.sha.slice(0, 7)}  ${chalk.grey("Repository")} ${gitInfo.git.repository}` : ""}
   ${automations.groups && automations.groups.length > 0 ? `${chalk.grey("Groups")} all` : `${chalk.grey(`${automations.team_ids.length > 1 ? "Teams" : "Team"}`)} ${automations.team_ids.join(", ")}`}  ${chalk.grey("Policy")} ${automations.policy ? automations.policy : "ephemeral"}  ${chalk.grey("Cluster")} ${automationClientInstance().configuration.cluster.enabled ? "enabled" : "disabled"}
   ${chalk.grey(commands.length === 1 ? "Command" : "Commands")} ${commands.length}  ${chalk.grey(events.length === 1 ? "Event" : "Events")} ${events.length}  ${chalk.grey(automations.ingesters.length === 1 ? "Ingester" : "Ingesters")} ${automations.ingesters.length}
-  ${chalk.grey("JWT")} ${registration.jwt}
-  ${commands.length > 0 ? `
-  ${chalk.grey(commands.length === 1 ? "Command" : "Commands")}
-${commands.join("\n")}` : ""}
-  ${events.length > 0 ? `
-  ${chalk.grey(events.length === 1 ? "Event" : "Events")}
-${events.join("\n")}` : ""}
+  ${chalk.grey("JWT")} ${registration.jwt}${handlers(commands, events)}
 ${urls.join("\n")}
 ${urls.length > 0 ? "\n" : ""}  ${chalk.grey("Docs")} https://docs.atomist.com  ${chalk.grey("Support")} https://join.atomist.com
 `;
@@ -78,4 +74,23 @@ async function toAscii(s: string): Promise<string> {
     } catch {
         return s;
     }
+}
+
+function handlers(commands: string[], events: string[]): string {
+    let c = "";
+    if (commands.length > 0 || events.length > 0) {
+        c += "\n\n";
+    }
+    if (commands.length > 0) {
+        c += `${chalk.grey(commands.length === 1 ? "  Command" : "  Commands")}
+${commands.join("\n")}`;
+    }
+    if (commands.length > 0 && events.length > 0) {
+        c += "\n\n";
+    }
+    if (events.length > 0) {
+        c += `${chalk.grey(events.length === 1 ? "  Event" : "  Events")}
+${events.join("\n")}`;
+    }
+    return c;
 }
