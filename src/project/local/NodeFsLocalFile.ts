@@ -3,6 +3,7 @@ import * as fs from "fs-extra";
 import * as isBinaryFile from "isbinaryfile";
 
 import { promisify } from "util";
+import { logger } from "../..";
 import { AbstractFile } from "../support/AbstractFile";
 import { LocalFile } from "./LocalFile";
 
@@ -43,7 +44,7 @@ export class NodeFsLocalFile extends AbstractFile implements LocalFile {
 
     public setPath(path: string): Promise<this> {
         if (path !== this.path) {
-            console.debug(`setPath: from ${this.path} to ${path}: Unlinking ${this.realPath}`);
+            logger.debug(`setPath: from ${this.path} to ${path}: Unlinking ${this.realPath}`);
             const oldPath = this.realPath;
             this.path = path;
             return fs.move(oldPath, this.realPath).then(_ => this);
