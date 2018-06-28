@@ -6,7 +6,7 @@ import { Automations } from "../../metadata/metadata";
 import { info } from "../../util/info";
 import { toStringArray } from "../../util/string";
 
-export function prepareRegistration(automations: Automations, options: any = {}): any {
+export function prepareRegistration(automations: Automations, options: any = {}, metadata: any = {}): any {
     return {
         api_version: "1",
         name: automations.name,
@@ -17,12 +17,12 @@ export function prepareRegistration(automations: Automations, options: any = {})
         commands: automations.commands.map(prepareCommandRegistration),
         events: automations.events.map(prepareEventRegistration),
         ingesters: automations.ingesters,
-        metadata: { labels: prepareMetadata(automations) },
+        metadata: { labels: prepareMetadata(automations, metadata) },
         ...options,
     };
 }
 
-function prepareMetadata(automations: Automations) {
+function prepareMetadata(automations: Automations, metadata: any) {
     const i = info(automations);
     return {
         "atomist.description": i.description,
@@ -37,6 +37,7 @@ function prepareMetadata(automations: Automations) {
         "atomist.system.type": i.system ? i.system.type : undefined,
         "atomist.system.release": i.system ? i.system.release : undefined,
         "atomist.system.platform": i.system ? i.system.platform : undefined,
+        ...metadata,
     };
 }
 

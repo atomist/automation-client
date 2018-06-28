@@ -169,7 +169,8 @@ export class AutomationClient {
         return Promise.resolve();
     }
 
-    private runWs(handler: WebSocketRequestProcessor, options: WebSocketClientOptions): Promise<void> {
+    private runWs(handler: WebSocketRequestProcessor,
+                  options: WebSocketClientOptions): Promise<void> {
 
         const payloadOptions: any = {};
         if (options.compress) {
@@ -177,7 +178,9 @@ export class AutomationClient {
         }
 
         this.webSocketClient = new WebSocketClient(
-            () => prepareRegistration(this.automations.automations, payloadOptions),
+            () => prepareRegistration(this.automations.automations,
+                payloadOptions,
+                this.configuration.metadata),
             options,
             handler);
         return this.webSocketClient.start();

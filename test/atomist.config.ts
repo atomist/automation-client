@@ -132,6 +132,7 @@ export const configuration: Configuration = {
     postProcessors: [
         config => {
             config.custom = { test: "123456" };
+            config.metadata = { bla: "this is a test" };
             return Promise.resolve(config);
         },
     ],
