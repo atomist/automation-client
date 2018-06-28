@@ -1,3 +1,4 @@
+import { Parameters } from "./decorators";
 
 export interface ValidationError {
     message: string;
@@ -24,4 +25,9 @@ export interface SmartParameters {
 export function isSmartParameters(a: any): a is SmartParameters {
     const mightBeSmart = a as SmartParameters;
     return !!mightBeSmart && !!mightBeSmart.bindAndValidate;
+}
+
+@Parameters()
+export class NoParameters {
+
 }

@@ -1,9 +1,10 @@
 import { HandlerContext } from "./HandlerContext";
 import { HandlerResult } from "./HandlerResult";
 import { Secret } from "./internal/invoker/Payload";
+import { EventHandlerMetadata } from "./metadata/automationMetadata";
 import { OnEvent } from "./onEvent";
 
-export interface EventFired<T> {
+export interface EventFired<T = any> {
 
     data: T;
     extensions: {
@@ -18,7 +19,10 @@ export interface EventFired<T> {
  * necessary to run further queries.
  * @return {Promise<HandlerResult>} result containing status and any command-specific data
  */
-export interface HandleEvent<T> {
+export interface HandleEvent<T = any, P = any> {
 
-    handle: OnEvent<T>;
+    handle: OnEvent<T, P>;
+
 }
+
+export type SelfDescribingHandleEvent<T = any, P = any> = HandleEvent<T, P> & EventHandlerMetadata;

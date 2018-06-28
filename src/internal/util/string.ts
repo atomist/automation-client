@@ -1,3 +1,4 @@
+import * as mmh3 from "murmurhash3js";
 import * as uuid from "uuid/v4";
 
 export function hideString(value) {
@@ -64,4 +65,8 @@ export function obfuscateJson(key: string, value: any) {
         return undefined;
     }
     return value;
+}
+
+export function generateHash(url: string): string {
+    return mmh3.x86.hash32(url);
 }
