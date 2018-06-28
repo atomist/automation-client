@@ -29,7 +29,7 @@ function prepareMetadata(automations: Automations, metadata: any) {
         "atomist.license": i.license,
         "atomist.author": i.author,
         "atomist.homepage": i.homepage,
-        "atomist.client": i.client ? `${i.client.name}#${i.client.version}` : undefined,
+        "atomist.client": i.client ? `${i.client.name}:${i.client.version}` : undefined,
         "atomist.git.sha": i.git ? i.git.sha : undefined,
         "atomist.git.branch": i.git ? i.git.branch : undefined,
         "atomist.git.repository": i.git ? i.git.repository : undefined,
