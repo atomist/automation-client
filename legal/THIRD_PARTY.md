@@ -8,17 +8,17 @@ This page details all runtime OSS dependencies of `@atomist/automation-client`.
 
 | License | Count |
 |---------|-------|
-|AFLv2.1|1|
-|Apache-2.0|10|
-|BSD-2-Clause|8|
-|BSD-3-Clause|16|
-|BSD|5|
-|Custom: https://github.com/douglascrockford/JSON-js|1|
-|GPL-3.0|4|
-|ISC|35|
-|MIT|418|
-|Public Domain|1|
-|Unlicense|2|
+|[AFLv2.1](#aflv21)|1|
+|[Apache-2.0](#apache-20)|10|
+|[BSD-2-Clause](#bsd-2-clause)|8|
+|[BSD-3-Clause](#bsd-3-clause)|16|
+|[BSD](#bsd)|5|
+|[Custom: https://github.com/douglascrockford/JSON-js](#custom-httpsgithubcomdouglascrockfordjson-js)|1|
+|[GPL-3.0](#gpl-30)|4|
+|[ISC](#isc)|35|
+|[MIT](#mit)|418|
+|[Public Domain](#public-domain)|1|
+|[Unlicense](#unlicense)|2|
 
 #### AFLv2.1
 
