@@ -275,7 +275,7 @@ export interface Configuration extends AutomationServerOptions {
      * null, the package will be scanned for event handlers, which
      * must be under a directory named "events".
      */
-    events?: Array<Maker<HandleEvent<any>>>;
+    events?: Array<Maker<HandleEvent>>;
     /** Custom event ingester */
     ingesters?: Array<Ingester | IngesterBuilder | string>;
     /** Log and metric sinks */

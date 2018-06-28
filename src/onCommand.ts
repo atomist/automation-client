@@ -5,7 +5,10 @@ import {
 import { HandlerContext } from "./HandlerContext";
 import { HandlerResult } from "./HandlerResult";
 import { metadataFromInstance } from "./internal/metadata/metadataReading";
-import { toStringArray } from "./internal/util/string";
+import {
+    generateHash,
+    toStringArray,
+} from "./internal/util/string";
 import {
     CommandHandlerMetadata,
     MappedParameterDeclaration,
@@ -44,13 +47,10 @@ export type OnCommand<P = undefined> =
  */
 export function commandHandlerFrom<P>(h: OnCommand<P>,
                                       factory: Maker<P>,
-                                      name: string = h.name,
+                                      name: string = h.name || `Command-${generateHash(h.toString())}`,
                                       description: string = name,
                                       intent: string | string[] = [],
                                       tags: string | string[] = []): HandleCommand<P> & CommandHandlerMetadata {
-    if (!name) {
-        throw new Error(`Cannot derive name from function '${h}': Provide name explicitly`);
-    }
     const handler = new FunctionWrappingCommandHandler(name, description, h, factory, tags, intent);
     registerCommand(handler);
     return handler;

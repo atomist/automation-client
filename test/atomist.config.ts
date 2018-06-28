@@ -1,4 +1,6 @@
+import { EventFired } from "../src";
 import { Configuration } from "../src/configuration";
+import { subscription } from "../src/graph/graphQL";
 import {
     isCommandHandlerMetadata,
     isEventHandlerMetadata,
@@ -8,7 +10,9 @@ import {
     CommandHandlerMetadata,
     EventHandlerMetadata,
 } from "../src/metadata/automationMetadata";
+import { eventHandlerFrom } from "../src/onEvent";
 import { githubTeam } from "../src/secured";
+import { NoParameters } from "../src/SmartParameters";
 import { AutomationMetadataProcessor } from "../src/spi/env/MetadataProcessor";
 import { FileMessageTest } from "./command/FileMessageTest";
 import { HelloWorld } from "./command/HelloWorld";
@@ -62,11 +66,18 @@ export class SdmTokenRewritingMetadataProcessor implements AutomationMetadataPro
     }
 }
 
+const HelloHandler = eventHandlerFrom<string, NoParameters>(async (e: EventFired<string>, ctx) => {
+        return ctx.messageClient.addressChannels("Test", "handlers");
+    },
+    NoParameters,
+    subscription("subscriptionWithFragmentInGraphql"),
+);
+
 export const configuration: Configuration = {
     name: "@atomist/automation-node-tests",
     version: "0.0.7",
     // policy: "durable",
-    teamIds: ["T1L0VDKJP"],
+    // teamIds: ["T1L0VDKJP"],
     keywords: ["test", "automation"],
     token: process.env.GITHUB_TOKEN,
     commands: [
@@ -84,6 +95,7 @@ export const configuration: Configuration = {
         // HelloWorldIngester,
         HelloIssueViaProperties,
         // ...scanEvents("**/event/*.js"),
+        // () => HelloHandler,
     ],
     ingesters: [
         // CircleCIPayload,
