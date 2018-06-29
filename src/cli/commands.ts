@@ -10,6 +10,7 @@ import {
 import { logger } from "../internal/util/logger";
 import { cliAtomistConfig } from "./config";
 import { cliGitInfo } from "./gitInfo";
+import { cliAtomistKube } from "./kube";
 
 /**
  * Parse positional parameters into parameter name/value pairs.  The
@@ -96,7 +97,7 @@ export function gqlFetch(
             const opts: ExecOptions = {
                 cmd: "apollo-codegen",
                 args: `introspect-schema https://automation.atomist.com/graphql/team/${teamId} ` +
-                `--output ${outSchema} --header "Authorization: token ${token}"`,
+                    `--output ${outSchema} --header "Authorization: token ${token}"`,
                 message: `Introspecting GraphQL schema for team ${teamId}`,
                 cwd,
                 runInstall,
@@ -139,6 +140,10 @@ export function gqlGen(
 
 export function config(argv: any): Promise<number> {
     return cliAtomistConfig(argv);
+}
+
+export function kube(argv: any): Promise<number> {
+    return cliAtomistKube(argv);
 }
 
 export function gitInfo(argv: any): Promise<number> {
