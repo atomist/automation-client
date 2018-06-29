@@ -7,21 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/0.17.1...HEAD)
 
-### BREAKING
-
--   GitHubRepoRef's `apiBase` does not include the scheme (https&#x3A;//). It mostly did before. Prepend it with the `scheme` property.
-
 ### Added
 
 -   Add command to install kube utilities [#311](https://github.com/atomist/automation-client-ts/issues/311)
 
-## [0.17.1][] - 2018-06-04
+## [0.17.1][https://github.com/atomist/automation-client-ts/compare/0.17.0...0.17.1] - 2018-06-04
 
 ### Deprecated
 
 -   Ingester and IngesterBuilder are deprecated in favor of GraphQL SDM definitions.
 
-## [0.17.0][] - 2018-06-04
+## [0.17.0][https://github.com/atomist/automation-client-ts/compare/0.16.0...0.17.0] - 2018-06-04
 
 ### Fixed
 
