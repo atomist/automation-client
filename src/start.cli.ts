@@ -25,6 +25,7 @@ import {
     gitInfo,
     gqlFetch,
     gqlGen,
+    kube,
     readVersion,
     run,
     start,
@@ -188,6 +189,23 @@ yargs.completion("completion")
             });
     }, argv => {
         config(argv)
+            .then(status => process.exit(status), err => {
+                console.error(`${Package}: Unhandled Error: ${err.message}`);
+                process.exit(101);
+            });
+    })
+    .command("kube", "Deploy Atomist Kubernetes utilities to your Kubernetes cluster", ya => {
+        return ya
+            .option("environment", {
+                describe: "Informative name for yout Kubernetes cluster",
+                type: "string",
+            })
+            .option("namespace", {
+                describe: "Deploy utilities in namespace mode",
+                type: "string",
+            });
+    }, argv => {
+        kube(argv)
             .then(status => process.exit(status), err => {
                 console.error(`${Package}: Unhandled Error: ${err.message}`);
                 process.exit(101);
