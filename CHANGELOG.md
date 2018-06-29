@@ -5,13 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased][]
-
-[Unreleased]: https://github.com/atomist/automation-client-ts/compare/0.17.1...HEAD
+## [Unreleased](https://github.com/atomist/automation-client-ts/compare/0.17.1...HEAD)
 
 ### BREAKING
 
--   GitHubRepoRef's `apiBase` does not include the scheme (https://). It mostly did before. Prepend it with the `scheme` property.
+-   GitHubRepoRef's `apiBase` does not include the scheme (https&#x3A;//). It mostly did before. Prepend it with the `scheme` property.
+
+### Added
+
+-   Add command to install kube utilities [#311](https://github.com/atomist/automation-client-ts/issues/311)
 
 ## [0.17.1][] - 2018-06-04
 
@@ -23,15 +25,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
--   Checking out a branch sets the branch [#293][293]
+-   Checking out a branch sets the branch [#293](https://github.com/atomist/automation-client-ts/issues/293)
 
-[293]: https://github.com/atomist/automation-client-ts/issues/293
-
-## [0.16.0][] - 2018-05-15
-
-[0.16.0]: https://github.com/atomist/automation-client-ts/compare/0.15.1...0.16.0
-
-Provider release
+## [0.16.0](https://github.com/atomist/automation-client-ts/compare/0.15.1...0.16.0) - 2018-05-15
 
 ### Changed
 
@@ -52,11 +48,7 @@ Provider release
 -   `allReposInTeam()`
 -   `generatorHandler()`
 
-## [0.15.1][] - 2018-05-09
-
-[0.15.1]: https://github.com/atomist/automation-client-ts/compare/0.15.0...0.15.1
-
-CfgFix release
+## [0.15.1](https://github.com/atomist/automation-client-ts/compare/0.15.0...0.15.1) - 2018-05-09
 
 ### Changed
 
@@ -68,17 +60,12 @@ CfgFix release
 -   Make sure teamIds and groups are set in configuration
 -   Put SDM configuration under "sdm"
 
-## [0.15.0][] - 2018-05-07
-
-[0.15.0]: https://github.com/atomist/automation-client-ts/compare/0.14.1...0.15.0
-
-Multi release
+## [0.15.0](https://github.com/atomist/automation-client-ts/compare/0.14.1...0.15.0) - 2018-05-07
 
 ### Changed
 
 -   Reduce default websocket grace period to 10 seconds
 -   Default for `--install` command-line options is to install if the
-    node_modules directory does not exist
 -   Support `ATOMIST_config_path` environment variables
 -   Support injection of configuration values
 -   Support arbitrary top-level configuration
@@ -87,13 +74,8 @@ Multi release
 ### Added
 
 -   The config command now probes environment for known SDM variables
-    and persists them to the user configuration
 
-## [0.14.1][] - 2018-04-30
-
-[0.14.1]: https://github.com/atomist/automation-client-ts/compare/0.14.0...0.14.1
-
-Banner release
+## [0.14.1](https://github.com/atomist/automation-client-ts/compare/0.14.0...0.14.1) - 2018-04-30
 
 ### Added
 
@@ -103,17 +85,13 @@ Banner release
 
 -   Upgrade to TypeScript 2.8.3
 
-## [0.14.0][] - 2018-04-27
-
-[0.14.0]: https://github.com/atomist/automation-client-ts/compare/0.13.1...0.14.0
-
-Client release
+## [0.14.0](https://github.com/atomist/automation-client-ts/compare/0.13.1...0.14.0) - 2018-04-27
 
 ### Fixed
 
 -   Call listeners on workers in cluster mode
 -   Fix team vs chatTeam usage
--   Add enums to ingester [#276][276]
+-   Add enums to ingester [#276](https://github.com/atomist/automation-client-ts/issues/276)
 
 ### Added
 
@@ -130,31 +108,18 @@ Client release
 
 -   **BREAKING** `runningAutomationClient`, use `automationClientInstance()`
 
-[276]: https://github.com/atomist/automation-client-ts/issues/276
-
-## [0.13.1][] - 2018-04-12
-
-[0.13.1]: https://github.com/atomist/automation-client-ts/compare/0.13.0...0.13.1
-
-Win release
+## [0.13.1](https://github.com/atomist/automation-client-ts/compare/0.13.0...0.13.1) - 2018-04-12
 
 ### Fixed
 
--   Fix running node on MS Windows [#271][271]
+-   Fix running node on MS Windows [#271](https://github.com/atomist/automation-client-ts/issues/271)
 -   Ensure gql-fetch works in clients
 
-[271]: https://github.com/atomist/automation-client-ts/issues/271
-
-## [0.13.0][] - 2018-04-10
-
-[0.13.0]: https://github.com/atomist/automation-client-ts/compare/0.12.1...0.13.0
-
-Config release
+## [0.13.0](https://github.com/atomist/automation-client-ts/compare/0.12.1...0.13.0) - 2018-04-10
 
 ### Added
 
 -   Production and testing configurations keyed on ATOMIST_ENV or
-    NODE_ENV
 
 ### Changed
 
@@ -165,21 +130,13 @@ Config release
 
 -   statsd reporting in workers
 
-## [0.12.1][] - 2018-04-03
-
-[0.12.1]: https://github.com/atomist/automation-client-ts/compare/0.12.0...0.12.1
-
-bin release
+## [0.12.1](https://github.com/atomist/automation-client-ts/compare/0.12.0...0.12.1) - 2018-04-03
 
 ### Fixed
 
 -   Removed removed scripts from package "bin"
 
-## [0.12.0][] - 2018-04-03
-
-[0.12.0]: https://github.com/atomist/automation-client-ts/compare/0.11.2...0.12.0
-
-Helper release
+## [0.12.0](https://github.com/atomist/automation-client-ts/compare/0.11.2...0.12.0) - 2018-04-03
 
 ### Added
 
@@ -189,13 +146,8 @@ Helper release
 ### Removed
 
 -   Remove previously deprecated command-line utilities now superseded
-    by the combined `atomist` CLI
 
-## [0.11.2][] - 2018-03-28
-
-[0.11.2]: https://github.com/atomist/automation-client-ts/compare/0.11.1...0.11.2
-
-ID release
+## [0.11.2](https://github.com/atomist/automation-client-ts/compare/0.11.1...0.11.2) - 2018-03-28
 
 ### Changed
 
@@ -209,37 +161,21 @@ ID release
 
 -   Silent `atomist config` crash
 
-## [0.11.1][] - 2018-03-26
-
-[0.11.1]: https://github.com/atomist/automation-client-ts/compare/0.11.0...0.11.1
-
-Run release
+## [0.11.1](https://github.com/atomist/automation-client-ts/compare/0.11.0...0.11.1) - 2018-03-26
 
 ### Fixed
 
 -   Do not immediately exit client
 
-## [0.11.0][] - 2018-03-26
-
-[0.11.0]: https://github.com/atomist/automation-client-ts/compare/0.10.0...0.11.0
-
-Usability release
+## [0.11.0](https://github.com/atomist/automation-client-ts/compare/0.10.0...0.11.0) - 2018-03-26
 
 ### Changed
 
--   Improved configuration error messages [#253][253]
--   Provide user configuration if reporting it is valid [#251][251]
--   Error and exit if any provided configuration is invalid [#254][254]
+-   Improved configuration error messages [#253](https://github.com/atomist/automation-client-ts/issues/253)
+-   Provide user configuration if reporting it is valid [#251](https://github.com/atomist/automation-client-ts/issues/251)
+-   Error and exit if any provided configuration is invalid [#254](https://github.com/atomist/automation-client-ts/issues/254)
 
-[253]: https://github.com/atomist/automation-client-ts/issues/253
-[251]: https://github.com/atomist/automation-client-ts/issues/251
-[254]: https://github.com/atomist/automation-client-ts/issues/254
-
-## [0.10.0][] - 2018-03-26
-
-[0.10.0]: https://github.com/atomist/automation-client-ts/compare/0.9.0...0.10.0
-
-Schema release
+## [0.10.0](https://github.com/atomist/automation-client-ts/compare/0.9.0...0.10.0) - 2018-03-26
 
 ### Added
 
@@ -250,11 +186,7 @@ Schema release
 -   Better worker shutdown behavior
 -   Cleaner logs
 
-## [0.9.0][] - 2018-03-21
-
-[0.9.0]: https://github.com/atomist/automation-client-ts/compare/0.8.0...0.9.0
-
-Fragment release
+## [0.9.0](https://github.com/atomist/automation-client-ts/compare/0.8.0...0.9.0) - 2018-03-21
 
 ### Added
 
@@ -269,11 +201,7 @@ Fragment release
 
 -   Export combineEditResults
 
-## [0.8.0][] - 2018-03-19
-
-[0.8.0]: https://github.com/atomist/automation-client-ts/compare/0.7.0...0.8.0
-
-Configuration release
+## [0.8.0](https://github.com/atomist/automation-client-ts/compare/0.7.0...0.8.0) - 2018-03-19
 
 ### Changed
 
@@ -283,7 +211,7 @@ Configuration release
 
 ### Fixed
 
--   --version command-line option
+-   \--version command-line option
 
 ### Added
 
@@ -293,11 +221,7 @@ Configuration release
 -   statsd support
 -   Logging to file
 
-## [0.7.0][] - 2018-03-07
-
-[0.7.0]: https://github.com/atomist/automation-client-ts/compare/0.6.6...0.7.0
-
-Card release
+## [0.7.0](https://github.com/atomist/automation-client-ts/compare/0.6.6...0.7.0) - 2018-03-07
 
 ### Added
 
@@ -306,15 +230,9 @@ Card release
 
 ### Deprecated
 
--   config --slack-team command-line option, use --team instead [#234][234]
+-   config --slack-team command-line option, use --team instead [#234](https://github.com/atomist/automation-client-ts/issues/234)
 
-[234]: https://github.com/atomist/automation-client-ts/issues/234
-
-## [0.6.6][] - 2018-01-31
-
-[0.6.6]: https://github.com/atomist/automation-client-ts/compare/0.6.5...0.6.6
-
-Command release
+## [0.6.6](https://github.com/atomist/automation-client-ts/compare/0.6.5...0.6.6) - 2018-01-31
 
 ### Changed
 
@@ -322,28 +240,17 @@ Command release
 
 ### Fixed
 
--   Make config command-line options optional [#208][208]
--   Git branch regular expression [#211][211]
+-   Make config command-line options optional [#208](https://github.com/atomist/automation-client-ts/issues/208)
+-   Git branch regular expression [#211](https://github.com/atomist/automation-client-ts/issues/211)
 -   Properly shutdown and restart cluster workers
 
-[208]: https://github.com/atomist/automation-client-ts/issues/208
-[211]: https://github.com/atomist/automation-client-ts/issues/211
-
-## [0.6.5][] - 2018-01-24
-
-[0.6.5]: https://github.com/atomist/automation-client-ts/compare/0.6.4...0.6.5
-
-Seed release
+## [0.6.5](https://github.com/atomist/automation-client-ts/compare/0.6.4...0.6.5) - 2018-01-24
 
 ### Changed
 
 -   Make seed repository parameters visible to users
 
-## [0.6.4][] - 2018-01-23
-
-[0.6.4]: https://github.com/atomist/automation-client-ts/compare/0.6.3...0.6.4
-
-Kubernetes release
+## [0.6.4](https://github.com/atomist/automation-client-ts/compare/0.6.3...0.6.4) - 2018-01-23
 
 ### Changed
 
@@ -353,11 +260,7 @@ Kubernetes release
 
 -   `setChatUserPreference` mutation
 
-## [0.6.3][] - 2018-01-16
-
-[0.6.3]: https://github.com/atomist/automation-client-ts/compare/0.6.2...0.6.3
-
-Enterprise release
+## [0.6.3](https://github.com/atomist/automation-client-ts/compare/0.6.2...0.6.3) - 2018-01-16
 
 ### Added
 
@@ -367,11 +270,7 @@ Enterprise release
 
 -   Some log statements
 
-## [0.6.2][] - 2018-01-15
-
-[0.6.2]: https://github.com/atomist/automation-client-ts/compare/0.6.1...0.6.2
-
-Conscious uncoupling release
+## [0.6.2](https://github.com/atomist/automation-client-ts/compare/0.6.1...0.6.2) - 2018-01-15
 
 ### Added
 
@@ -382,30 +281,20 @@ Conscious uncoupling release
 -   Migrate from `update_only` to `post_mode` when creating Slack messages
 -   Further decouple GitHub operations from project creation
 
-## [0.6.1][] - 2018-01-12
-
-[0.6.1]: https://github.com/atomist/automation-client-ts/compare/0.6.0...0.6.1
-
-Eproxy release
+## [0.6.1](https://github.com/atomist/automation-client-ts/compare/0.6.0...0.6.1) - 2018-01-12
 
 ### Fixed
 
 -   Slack message timestamp and TTL
 -   Connecting via proxy
 
-## [0.6.0][] - 2018-01-11
-
-[0.6.0]: https://github.com/atomist/automation-client-ts/compare/0.5.2...0.6.0
-
-Proxy release
+## [0.6.0](https://github.com/atomist/automation-client-ts/compare/0.5.2...0.6.0) - 2018-01-11
 
 ### Changed
 
 -   Many changes to make more portable, i.e., runnable on MS Windows
 -   Trying to get Git information on a non-git project will now return
-    empty values instead of failing [#131][131]
 -   Allow GraphQL glob pattern to return no files when generation code
-    from GraphQL [#130][130]
 -   Update to latest GraphQL data model
 
 ### Added
@@ -413,12 +302,7 @@ Proxy release
 -   Basic BitBucket support, thanks @kbristow!
 -   Support for connecting via a proxy
 
-[131]: https://github.com/atomist/automation-client-ts/issues/131
-[130]: https://github.com/atomist/automation-client-ts/issues/130
-
-## [0.5.2][] - 2017-12-04
-
-[0.5.2]: https://github.com/atomist/automation-client-ts/compare/0.5.0...0.5.2
+## [0.5.2](https://github.com/atomist/automation-client-ts/compare/0.5.0...0.5.2) - 2017-12-04
 
 ### Added
 
@@ -436,21 +320,16 @@ Proxy release
 
 -   keep newlines in commit messages
 
-## [0.5.0][] - 2017-12-07
-
-[0.5.0]: https://github.com/atomist/automation-client-ts/compare/0.4.0...0.5.0
+## [0.5.0](https://github.com/atomist/automation-client-ts/compare/0.4.0...0.5.0) - 2017-12-07
 
 ### Changed
 
 -   **Breaking** Removed old class hierarchy for editors, generators
-    and reviewers (`AbstractGenerator/UniversalSeed`, etc), use new
-    functional style as in [spring-automation][]
 -   The `AllFiles` glob pattern was simplified to `**`
 -   Move cache directory to ~/.atomist/cache
 -   Generators now cache seed
 -   Several improvements to reviewer interfaces
 -   Scan all commands and events directories for command and event
-    handlers, respectively
 
 ### Fixed
 
@@ -468,13 +347,7 @@ Proxy release
 -   Caching metrics
 -   afterAction to generate
 
-[spring-automation]: https://github.com/atomist/spring-automation (@atomist/spring-automation)
-
-## [0.4.0][] - 2017-11-28
-
-[0.4.0]: https://github.com/atomist/automation-client-ts/compare/0.3.5...0.4.0
-
-Less is more release
+## [0.4.0](https://github.com/atomist/automation-client-ts/compare/0.3.5...0.4.0) - 2017-11-28
 
 ### Added
 
@@ -489,25 +362,16 @@ Less is more release
 ### Removed
 
 -   **Breaking** Removed Spring and Java related generators and
-    support, which belong in a language-specific module.  Now in
-    `atomist/spring-automation`
 -   **Breaking** Removed embedded dashboard web ui
 
-## [0.3.5][] - 2017-11-22
-
-[0.3.5]: https://github.com/atomist/automation-client-ts/compare/0.3.4...0.3.5
+## [0.3.5](https://github.com/atomist/automation-client-ts/compare/0.3.4...0.3.5) - 2017-11-22
 
 ### Changed
 
 -   Moved `@types/continuation-local-storage` to dependencies since it
-    has exported types
 -   Added more types to default exports in index.ts
 
-## [0.3.4][] - 2017-11-22
-
-[0.3.4]: https://github.com/atomist/automation-client-ts/compare/0.3.3...0.3.4
-
-Edit release
+## [0.3.4](https://github.com/atomist/automation-client-ts/compare/0.3.3...0.3.4) - 2017-11-22
 
 ### Added
 
@@ -516,24 +380,16 @@ Edit release
 ### Changed
 
 -   **Breaking** `successfulEdit` function `edited` argument is now required instead of defaulting
-    to true
 -   `EditResult.edited` is now optional. An undefined value is valid and means that the
-    editor didn't keep track of whether it made changes. This is the norm for simple functions
-    taking `Project`.
 -   Moved `@types/graphql` to dependencies since its types are exported
 -   Command parameters now provided as PARAM=VALUE on `exec` command line
 
 ### Fixed
 
 -   Bug where a `SimpleProjectEditor` that did not return an `EditResult` and made
-    no changes would fail due to unsuccessful git commit
 -   Add missing team ID to BuildableAutomationServer GraphQL endpoint
 
-## [0.3.3][] - 2017-11-20
-
-[0.3.3]: https://github.com/atomist/automation-client-ts/compare/0.3.2...0.3.3
-
-Scope release
+## [0.3.3](https://github.com/atomist/automation-client-ts/compare/0.3.2...0.3.3) - 2017-11-20
 
 ### Added
 
@@ -543,19 +399,12 @@ Scope release
 
 -   `generate` utility function now takes `RepoId` argument before optional params
 -   Split out tests into test and test-api so non-Atomist developers
-    can run non-API tests
 -   Improve `atomist config` handling of existing config file so it
-    can be used to add additional teams
 -   Run `config` and `git` commands in same node process
 -   Added "repo" scope to GitHub personal access token created by
-    `config` since so many sample automations require it
 -   @Parameter() will default to empty options, so you don't have to pass {}
 
-## [0.3.2][] - 2017-11-13
-
-[0.3.2]: https://github.com/atomist/automation-client-ts/compare/0.3.1...0.3.2
-
-Unification release
+## [0.3.2](https://github.com/atomist/automation-client-ts/compare/0.3.1...0.3.2) - 2017-11-13
 
 ### Added
 
@@ -564,7 +413,6 @@ Unification release
 ### Deprecated
 
 -   atomist-cli, atomist-client, atomist-config, and git-info CLI
-    utilities
 
 ### Changed
 
@@ -574,78 +422,40 @@ Unification release
 
 -   Make tests more reliable
 
-## [0.3.1][] - 2017-11-13
-
-[0.3.1]: https://github.com/atomist/automation-client-ts/compare/0.3.0...0.3.1
+## [0.3.1](https://github.com/atomist/automation-client-ts/compare/0.3.0...0.3.1) - 2017-11-13
 
 ### Added
 
-*   Reintroduced exports for backwards compatibility to 0.2.7
+-   Reintroduced exports for backwards compatibility to 0.2.7
 
-## [0.3.0][] - 2017-11-13
-
-[0.3.0]: https://github.com/atomist/automation-client-ts/compare/0.2.8...0.3.0
+## [0.3.0](https://github.com/atomist/automation-client-ts/compare/0.2.8...0.3.0) - 2017-11-13
 
 ### Added
 
-*   Upgraded tree-path library (more support for abbreviated syntax, union path expression support, additional axis specifiers)
-*   Support for parsing TypeScript, including path expression support
+-   Upgraded tree-path library (more support for abbreviated syntax, union path expression support, additional axis specifiers)
+-   Support for parsing TypeScript, including path expression support
 
 ### Changed
 
-*   allow `handle` to return `Promise<any>`
-*   enable graphql client-side caching
+-   allow `handle` to return `Promise<any>`
+-   enable graphql client-side caching
 
 ### Fixed
 
-*   Fixed #86: Preserved empty directories when caching in memory project. Ability to cache a projcect in memory
-*   Fix #79: Check permissions from seed project (#83)
+-   Fixed #86: Preserved empty directories when caching in memory project. Ability to cache a projcect in memory
+-   Fix #79: Check permissions from seed project (#83)
 
-## [0.2.8][] - 2017-11-07
+## [0.2.8](https://github.com/atomist/automation-client-ts/compare/0.2.5...0.2.7) - 2017-11-07
 
-[0.2.8]: https://github.com/atomist/automation-client-ts/compare/0.2.5...0.2.7
+## [0.2.7](https://github.com/atomist/automation-client-ts/compare/0.2.5...0.2.8) - 2017-11-07
 
--   export commonly used things from root
-
-## [0.2.7][] - 2017-11-07
-
-[0.2.7]: https://github.com/atomist/automation-client-ts/compare/0.2.5...0.2.8
-
--   Fix TypeDoc generation
--   Convenience to edit exactly one repo
--   ability to make a file executable
--   ts defaults to Date.now()
--   switch intent on CommandHandler decorator to vararg
--   add test app events
--   add support for protecting command handlers
--   Secret.userToken now takes string[] or string
--   More functional approach to generation flow
--   merge parameters from an instance
--   Added FreeChoices value for parameter types to take arbitrary string arrays
--   support redirect from handler invocations
--   Added array parameters (#61)
--   add RequestHandlers to express customizer
--   Add ability to customize Express server instance
--   allow graphql files to be loaded with relative paths
--   update cortex schema
--   retry generator pushes after repo creation
-
-
-## [0.2.5][] - 2017-10-26
-
-[0.2.5]: https://github.com/atomist/automation-client-ts/compare/0.2.4...0.2.5
-
-Backward compatibility release
+## [0.2.5](https://github.com/atomist/automation-client-ts/compare/0.2.4...0.2.5) - 2017-10-26
 
 ### Fixed
 
 -   Much closer to backward compatible with 0.2.3 project operations than 0.2.4.
 
-## [0.2.4][] - 2017-10-26
-
-[0.2.4]: https://github.com/atomist/automation-client-ts/compare/0.2.3...0.2.4
-
-Git provider pluggability release
+## [0.2.4](https://github.com/atomist/automation-client-ts/compare/0.2.3...0.2.4) - 2017-10-26
 
 ### Changed
 
@@ -658,22 +468,14 @@ Git provider pluggability release
 -   Various generator issues
 -   Handler metadata inheritance
 
-## [0.2.3][] - 2017-10-24
-
-[0.2.3]: https://github.com/atomist/automation-client-ts/compare/0.2.2...0.2.3
-
-Refactoring release
+## [0.2.3](https://github.com/atomist/automation-client-ts/compare/0.2.2...0.2.3) - 2017-10-24
 
 ### Changed
 
 -   Generator and editor refactoring
 -   Update command page
 
-## [0.2.2][] - 2017-10-24
-
-[0.2.2]: https://github.com/atomist/automation-client-ts/compare/0.2.1...0.2.2
-
-Administrative release
+## [0.2.2](https://github.com/atomist/automation-client-ts/compare/0.2.1...0.2.2) - 2017-10-24
 
 ### Added
 
@@ -682,27 +484,17 @@ Administrative release
 ### Changed
 
 -   Pulled up ProjectOperationCredentials and DirectoryManager
-    interfaces
 
 ### Fixed
 
--   Create client config in proper directory on win32 [#44][44],
-    thanks to [jwalter][]
+-   Create client config in proper directory on win32 [#44](https://github.com/atomist/automation-client-ts/issues/44),
 
-[44]: https://github.com/atomist/automation-client-ts/issues/44
-[jwalter]: https://github.com/jwalter
-
-## [0.2.1][] - 2017-10-23
-
-[0.2.1]: https://github.com/atomist/automation-client-ts/compare/0.2.0...0.2.1
-
-Functional invocation release
+## [0.2.1](https://github.com/atomist/automation-client-ts/compare/0.2.0...0.2.1) - 2017-10-23
 
 ### Added
 
 -   Allow `CommandHandler` instances to be created from functions
 -   Allow a class to be passed into a command handler list, as well as
-    `() => handler` function
 -   Add channel mutations
 
 ### Changed
@@ -711,32 +503,19 @@ Functional invocation release
 
 ### Fixed
 
--   RepoId included in InMemory project [#33][33]
--   Can continue after failed attempt to load a repo [#30][30]
--   Updated docs after removal of RunOrDefer [#24][24]
--   Documentation for editors and generators [#32][32]
+-   RepoId included in InMemory project [#33](https://github.com/atomist/automation-client-ts/issues/33)
+-   Can continue after failed attempt to load a repo [#30](https://github.com/atomist/automation-client-ts/issues/30)
+-   Updated docs after removal of RunOrDefer [#24](https://github.com/atomist/automation-client-ts/issues/24)
+-   Documentation for editors and generators [#32](https://github.com/atomist/automation-client-ts/issues/32)
 
-[33]: https://github.com/atomist/automation-client-ts/issues/33
-[30]: https://github.com/atomist/automation-client-ts/issues/30
-[24]: https://github.com/atomist/automation-client-ts/issues/24
-[32]: https://github.com/atomist/automation-client-ts/issues/32
-
-## [0.2.0][] - 2017-10-18
-
-[0.2.0]: https://github.com/atomist/automation-client-ts/compare/0.1.50...0.2.0
-
-Alignment Release
+## [0.2.0](https://github.com/atomist/automation-client-ts/compare/0.1.50...0.2.0) - 2017-10-18
 
 ### Changed
 
 -   Make atomist-setup script quieter and more robust
 -   Align generators with ProjectEditor
 
-## [0.1.50][] - 2017-10-19
-
-[0.1.50]: https://github.com/atomist/automation-client-ts/compare/0.1.49...0.1.50
-
-Curry Release
+## [0.1.50](https://github.com/atomist/automation-client-ts/compare/0.1.49...0.1.50) - 2017-10-19
 
 ### Changed
 
@@ -751,48 +530,31 @@ Curry Release
 
 -   Issue with SpringBootSeed
 
-## [0.1.49][] - 2017-10-18
-
-[0.1.49]: https://github.com/atomist/automation-client-ts/compare/0.1.48...0.1.49
-
-Move Release
+## [0.1.49](https://github.com/atomist/automation-client-ts/compare/0.1.48...0.1.49) - 2017-10-18
 
 ### Changed
 
 -   Moved moveFile from AbstractProject to Project
 -   Exec npm start in atomist-setup script
 
-## [0.1.48][] - 2017-10-18
-
-[0.1.48]: https://github.com/atomist/automation-client-ts/compare/0.1.47...0.1.48
-
-Spring Release
+## [0.1.48](https://github.com/atomist/automation-client-ts/compare/0.1.47...0.1.48) - 2017-10-18
 
 ### Changed
 
 -   Spring and Java inference improvements
 
-## [0.1.47][] - 2017-10-18
-
-[0.1.47]: https://github.com/atomist/automation-client-ts/compare/0.1.46...0.1.47
-
-Tree Release
+## [0.1.47](https://github.com/atomist/automation-client-ts/compare/0.1.46...0.1.47) - 2017-10-18
 
 ### Changed
 
 -   Update tree-path dependency
 
-## [0.1.46][] - 2017-10-18
-
-[0.1.46]: https://github.com/atomist/automation-client-ts/compare/0.1.44...0.1.46
-
-Config Release
+## [0.1.46](https://github.com/atomist/automation-client-ts/compare/0.1.44...0.1.46) - 2017-10-18
 
 ### Changed
 
 -   The client will look for config under ~/.atomist/client.config.json
 -   Handlers can be called via instance or class name in addition to
-    name string
 -   Improve error messages
 -   Various project operation improvements
 
@@ -800,11 +562,7 @@ Config Release
 
 -   Scripts to setup and configure Atomist API client
 
-## [0.1.44][] - 2017-10-16
-
-[0.1.44]: https://github.com/atomist/automation-client-ts/compare/0.1.43...0.1.44
-
-Pre Release
+## [0.1.44](https://github.com/atomist/automation-client-ts/compare/0.1.43...0.1.44) - 2017-10-16
 
 ### Changed
 
@@ -815,17 +573,12 @@ Pre Release
 ### Added
 
 -   Publish master and PR builds as pre-release versions to Atomist
-    NPM registry
 
-## [0.1.43][] - 2017-10-11
-
-[0.1.43]: https://github.com/atomist/automation-client-ts/compare/0.1.42...0.1.43
-
-Light Release
+## [0.1.43](https://github.com/atomist/automation-client-ts/compare/0.1.42...0.1.43) - 2017-10-11
 
 ### Changed
 
--  GraphClient executeFile is now executeQueryFromFile
+-   GraphClient executeFile is now executeQueryFromFile
 
 ### Added
 
@@ -835,21 +588,13 @@ Light Release
 
 -   Tree and path expression support moved to own module
 
-## [0.1.37][] - 2017-10-02
-
-File Release
-
-[0.1.37]: https://github.com/atomist/automation-client-ts/compare/0.1.36...0.1.37
+## [0.1.37](https://github.com/atomist/automation-client-ts/compare/0.1.36...0.1.37) - 2017-10-02
 
 ### Added
 
 -   File replace and replaceAll
 
-## [0.1.0][] - 2017-09-19
-
-Initial Release
-
-[0.1.0]: https://github.com/atomist/automation-client-ts/tree/0.1.0
+## [0.1.0](https://github.com/atomist/automation-client-ts/tree/0.1.0) - 2017-09-19
 
 ### Added
 
