@@ -48,7 +48,7 @@ export type OnEvent<T = any, P = any> =
 export function eventHandlerFrom<T, P>(h: OnEvent<T, P>,
                                        factory: Maker<P>,
                                        subscription: string,
-                                       name: string = h.name || `Event-${generateHash(h.toString())}`,
+                                       name: string = h.name || `Event${generateHash(h.toString())}`,
                                        description: string = name,
                                        tags: string | string[] = []): HandleEvent<T, P> & EventHandlerMetadata {
     const handler = new FunctionWrappingEventHandler(name, description, h, factory, subscription, tags);

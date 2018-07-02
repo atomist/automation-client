@@ -47,7 +47,7 @@ export type OnCommand<P = undefined> =
  */
 export function commandHandlerFrom<P>(h: OnCommand<P>,
                                       factory: Maker<P>,
-                                      name: string = h.name || `Command-${generateHash(h.toString())}`,
+                                      name: string = h.name || `Command${generateHash(h.toString())}`,
                                       description: string = name,
                                       intent: string | string[] = [],
                                       tags: string | string[] = []): HandleCommand<P> & CommandHandlerMetadata {
