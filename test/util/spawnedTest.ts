@@ -19,7 +19,7 @@ describe("spawned", () => {
         {
             timeout: 1000,
         })
-            .then(() => done())
+        .then(() => done());
     });
 
 });
