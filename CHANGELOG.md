@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
+-   Allow to set timeout on spawned commands [#312](https://github.com/atomist/automation-client-ts/issues/312)
 -   Add command to install kube utilities [#311](https://github.com/atomist/automation-client-ts/issues/311)
 
 ## [0.17.1](https://github.com/atomist/automation-client-ts/compare/0.17.0...0.17.1) - 2018-06-04
