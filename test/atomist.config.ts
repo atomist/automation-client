@@ -1,6 +1,4 @@
-import { EventFired } from "../src";
 import { Configuration } from "../src/configuration";
-import { subscription } from "../src/graph/graphQL";
 import {
     isCommandHandlerMetadata,
     isEventHandlerMetadata,
@@ -10,14 +8,11 @@ import {
     CommandHandlerMetadata,
     EventHandlerMetadata,
 } from "../src/metadata/automationMetadata";
-import { eventHandlerFrom } from "../src/onEvent";
 import { githubTeam } from "../src/secured";
-import { NoParameters } from "../src/SmartParameters";
 import { AutomationMetadataProcessor } from "../src/spi/env/MetadataProcessor";
 import { FileMessageTest } from "./command/FileMessageTest";
 import { HelloWorld } from "./command/HelloWorld";
 import { MessageTest } from "./command/MessageTest";
-import { HelloIssueViaProperties } from "./event/HelloIssue";
 
 // const host = "https://automation.atomist.com";
 const host = "https://automation-staging.atomist.services";
@@ -65,13 +60,6 @@ export class SdmTokenRewritingMetadataProcessor implements AutomationMetadataPro
         return metadata;
     }
 }
-
-const HelloHandler = eventHandlerFrom<string, NoParameters>(async (e: EventFired<string>, ctx) => {
-        return ctx.messageClient.addressChannels("Test", "handlers");
-    },
-    NoParameters,
-    subscription("subscriptionWithFragmentInGraphql"),
-);
 
 export const configuration: Configuration = {
     name: "@atomist/automation-node-tests",
