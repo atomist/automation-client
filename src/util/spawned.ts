@@ -75,12 +75,6 @@ export async function spawnAndWatch(spawnCommand: SpawnCommand,
                                     log: WritableLog,
                                     spOpts: Partial<SpawnWatchOptions> = {}): Promise<ChildProcessResult> {
     const childProcess = spawn(spawnCommand.command, spawnCommand.args || [], options);
-    if (spOpts.timeout) {
-        setTimeout(() => {
-                logger.warn("Spawn timeout expired. Killing command with pid '%s'", childProcess.pid);
-                childProcess.kill();
-            }, spOpts.timeout);
-    }
     logger.info("%s > %s (spawn with pid '%d')", options.cwd, stringifySpawnCommand(spawnCommand), childProcess.pid);
     return watchSpawned(childProcess, log, spOpts);
 }
@@ -96,6 +90,14 @@ export async function spawnAndWatch(spawnCommand: SpawnCommand,
 function watchSpawned(childProcess: ChildProcess,
                       log: WritableLog,
                       opts: Partial<SpawnWatchOptions> = {}): Promise<ChildProcessResult> {
+    let timer;
+    if (opts.timeout) {
+        timer = setTimeout(() => {
+            logger.warn("Spawn timeout expired. Killing command with pid '%s'", childProcess.pid);
+            childProcess.kill();
+        }, opts.timeout);
+    }
+
     return new Promise<ChildProcessResult>((resolve, reject) => {
         const optsToUse = {
             errorFinder: SuccessIsReturn0ErrorFinder,
@@ -116,6 +118,7 @@ function watchSpawned(childProcess: ChildProcess,
         childProcess.stderr.on("data", sendToLog);
         childProcess.addListener("exit", (code, signal) => {
             logger.info("Spawn exit (pid=%d): code=%d, signal=%d", childProcess.pid, code, signal);
+            clearTimeout(timer);
             resolve({
                 error: optsToUse.errorFinder(code, signal, log),
                 code,
@@ -124,6 +127,7 @@ function watchSpawned(childProcess: ChildProcess,
         childProcess.addListener("error", err => {
             // Process could not be spawned or killed
             logger.warn("Spawn failure: %s", err);
+            clearTimeout(timer);
             reject(err);
         });
     });
