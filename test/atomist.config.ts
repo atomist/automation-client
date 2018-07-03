@@ -93,7 +93,7 @@ export const configuration: Configuration = {
         // HelloCircle,
         // GitLabPush,
         // HelloWorldIngester,
-        HelloIssueViaProperties,
+        // HelloIssueViaProperties,
         // ...scanEvents("**/event/*.js"),
         // () => HelloHandler,
     ],
