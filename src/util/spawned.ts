@@ -59,6 +59,7 @@ export interface ChildProcessResult {
 export interface SpawnWatchOptions {
     errorFinder: ErrorFinder;
     stripAnsi: boolean;
+    timeout: number;
 }
 
 /**
@@ -74,7 +75,13 @@ export async function spawnAndWatch(spawnCommand: SpawnCommand,
                                     log: WritableLog,
                                     spOpts: Partial<SpawnWatchOptions> = {}): Promise<ChildProcessResult> {
     const childProcess = spawn(spawnCommand.command, spawnCommand.args || [], options);
-    logger.info("%s > %s (spawn with pid=%d)", options.cwd, stringifySpawnCommand(spawnCommand), childProcess.pid);
+    if (spOpts.timeout) {
+        setTimeout(() => {
+                logger.warn("Spawn timeout expired. Killing command with pid '%s'", childProcess.pid);
+                childProcess.kill();
+            }, spOpts.timeout);
+    }
+    logger.info("%s > %s (spawn with pid '%d')", options.cwd, stringifySpawnCommand(spawnCommand), childProcess.pid);
     return watchSpawned(childProcess, log, spOpts);
 }
 
