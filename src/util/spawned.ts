@@ -91,10 +91,13 @@ function watchSpawned(childProcess: ChildProcess,
                       log: WritableLog,
                       opts: Partial<SpawnWatchOptions> = {}): Promise<ChildProcessResult> {
     let timer;
+    let running = true;
     if (opts.timeout) {
         timer = setTimeout(() => {
-            logger.warn("Spawn timeout expired. Killing command with pid '%s'", childProcess.pid);
-            childProcess.kill();
+            if (running) {
+                logger.warn("Spawn timeout expired. Killing command with pid '%s'", childProcess.pid);
+                childProcess.kill();
+            }
         }, opts.timeout);
     }
 
@@ -117,7 +120,8 @@ function watchSpawned(childProcess: ChildProcess,
         childProcess.stdout.on("data", sendToLog);
         childProcess.stderr.on("data", sendToLog);
         childProcess.addListener("exit", (code, signal) => {
-            logger.info("Spawn exit (pid=%d): code=%d, signal=%d", childProcess.pid, code, signal);
+            running = false;
+            logger.info("Spawn exit with pid '%d': code '%d', signal '%d'", childProcess.pid, code, signal);
             clearTimeout(timer);
             resolve({
                 error: optsToUse.errorFinder(code, signal, log),
@@ -125,6 +129,7 @@ function watchSpawned(childProcess: ChildProcess,
             });
         });
         childProcess.addListener("error", err => {
+            running = false;
             // Process could not be spawned or killed
             logger.warn("Spawn failure: %s", err);
             clearTimeout(timer);
