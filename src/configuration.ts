@@ -346,12 +346,17 @@ export function defaultConfiguration(): Configuration {
  * @returns {T}
  */
 export function configurationValue<T>(path: string, defaultValue?: T): T {
-    const conf = automationClientInstance().configuration;
-    const value = _.get(conf, path) as T;
+    if (automationClientInstance())  {
+        const conf = automationClientInstance().configuration;
+        const value = _.get(conf, path) as T;
+        if (value != null) {
 
-    if (value != null) {
-        return value;
-    } else if (defaultValue !== undefined) {
+            return value;
+        } else if (defaultValue !== undefined) {
+            return defaultValue;
+        }
+
+    } else if (defaultValue) {
         return defaultValue;
     }
     throw new Error(`Required @Value '${path}' not available`);
