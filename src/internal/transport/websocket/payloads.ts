@@ -1,3 +1,4 @@
+import { automationClientInstance } from "../../../globals";
 import {
     CommandHandlerMetadata,
     EventHandlerMetadata,
@@ -24,6 +25,7 @@ export function prepareRegistration(automations: Automations, options: any = {},
 
 function prepareMetadata(automations: Automations, metadata: any) {
     const i = info(automations);
+    const cfg = automationClientInstance().configuration;
     return {
         "atomist.description": i.description,
         "atomist.license": i.license,
@@ -37,6 +39,9 @@ function prepareMetadata(automations: Automations, metadata: any) {
         "atomist.system.type": i.system ? i.system.type : undefined,
         "atomist.system.release": i.system ? i.system.release : undefined,
         "atomist.system.platform": i.system ? i.system.platform : undefined,
+        "atomist.environment": cfg.environment,
+        "atomist.cluster": cfg.cluster ? cfg.cluster.enabled : false,
+        "atomist.policy": cfg.policy,
         ...metadata,
     };
 }
