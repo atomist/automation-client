@@ -40,7 +40,7 @@ function prepareMetadata(automations: Automations, metadata: any) {
         "atomist.system.release": i.system ? i.system.release : undefined,
         "atomist.system.platform": i.system ? i.system.platform : undefined,
         "atomist.environment": cfg.environment,
-        "atomist.cluster": cfg.cluster ? cfg.cluster.enabled : false,
+        "atomist.cluster": cfg.cluster ? `${cfg.cluster.enabled}` : "false",
         "atomist.policy": cfg.policy,
         ...metadata,
     };
