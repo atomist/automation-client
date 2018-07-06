@@ -42,6 +42,10 @@ const compileDescribe = "Run 'npm run compile' before running";
 const installDescribe = "Run 'npm install' before running/compiling, default is to install if no " +
     "'node_modules' directory exists";
 
+console.warn(`\n${Package}: WARNING: The Atomist CLI has moved to @atomist/cli and will be`);
+console.warn(`${Package}: WARNING: removed from @atomist/automation-client in a future release.`);
+console.warn(`${Package}: WARNING: Install the latest Atomist CLI using "npm i -g @atomist/cli".\n`);
+
 // tslint:disable-next-line:no-unused-expression
 yargs.completion("completion")
     .command(["execute <name>", "exec <name>", "cmd <name>"], "Run a command", ya => {
