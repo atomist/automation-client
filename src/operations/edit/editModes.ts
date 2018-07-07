@@ -27,9 +27,10 @@ export interface EditMode {
      * Optional method to perform any additional actions on the project after
      * applying the edit to persistent store--for example, setting a GitHub status
      * @param {Project} p
+     * @param ctx HandlerContext for the current edit operation
      * @return {Promise<any>}
      */
-    afterPersist?(p: Project): Promise<any>;
+    afterPersist?(p: Project, ctx: HandlerContext): Promise<any>;
 }
 
 export function isEditMode(em: any): em is EditMode {
