@@ -80,8 +80,8 @@ async function toAscii(s: string): Promise<string> {
 }
 
 async function handlers(commands: string[],
-                  events: string[],
-                  details: () => Promise<string>): Promise<string> {
+                        events: string[],
+                        details: () => Promise<string>): Promise<string> {
     let c = "";
     if (commands.length > 0 || events.length > 0) {
         c += "\n\n";
@@ -101,9 +101,9 @@ ${events.join("\n")}`;
     const d = await details();
     if (d && d.length > 0) {
         if (commands.length > 0 || events.length > 0) {
-            c += "\n\n"
+            c += "\n\n";
         }
-        c+= d;
+        c += d;
     }
     return c;
 }
