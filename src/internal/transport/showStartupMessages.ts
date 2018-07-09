@@ -15,7 +15,11 @@ import { RegistrationConfirmation } from "./websocket/WebSocketRequestProcessor"
  */
 export async function showStartupMessages(registration: RegistrationConfirmation,
                                           automations: Automations) {
+    logger.info(await createStartupMessage(registration, automations));
+}
 
+export async function createStartupMessage(registration: RegistrationConfirmation,
+                                           automations: Automations) {
     if (!automationClientInstance()) {
         return;
     }
@@ -45,7 +49,7 @@ export async function showStartupMessages(registration: RegistrationConfirmation
         .sort((c1, c2) => c1.name.localeCompare(c2.name))
         .map(c => `    ${c.name} ${c.description ? `(${_.upperFirst(c.description)})` : ""}`);
     const events = automations.events
-        // filter internal atomist log event handler
+    // filter internal atomist log event handler
         .filter(e => e.name !== OnLogName)
         .sort((e1, e2) => e1.name.localeCompare(e2.name))
         .map(e => `    ${e.name} ${e.description ? `(${_.upperFirst(e.description)})` : ""}`);
@@ -61,7 +65,7 @@ ${urls.join("\n")}
 ${urls.length > 0 ? "\n" : ""}  ${chalk.grey("Docs")} https://docs.atomist.com  ${chalk.grey("Support")} https://join.atomist.com
 `;
     /* tslint:enable */
-    logger.info(msg);
+    return msg;
 }
 
 async function toAscii(s: string): Promise<string> {
