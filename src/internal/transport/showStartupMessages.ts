@@ -19,7 +19,8 @@ export async function showStartupMessages(registration: RegistrationConfirmation
 }
 
 export async function createStartupMessage(registration: RegistrationConfirmation,
-                                           automations: Automations) {
+                                           automations: Automations,
+                                           details: () => Promise<string> = async () => undefined) {
     if (!automationClientInstance()) {
         return;
     }
@@ -60,7 +61,7 @@ ${message}
   ${chalk.grey("Version")} ${automations.version}${gitInfo.git ? `  ${chalk.grey("Sha")} ${gitInfo.git.sha.slice(0, 7)}  ${chalk.grey("Repository")} ${gitInfo.git.repository}` : ""}
   ${automations.groups && automations.groups.length > 0 ? `${chalk.grey("Groups")} all` : `${chalk.grey(`${automations.team_ids.length > 1 ? "Teams" : "Team"}`)} ${automations.team_ids.join(", ")}`}  ${chalk.grey("Policy")} ${automations.policy ? automations.policy : "ephemeral"}  ${chalk.grey("Cluster")} ${automationClientInstance().configuration.cluster.enabled ? "enabled" : "disabled"}
   ${chalk.grey(commands.length === 1 ? "Command" : "Commands")} ${commands.length}  ${chalk.grey(events.length === 1 ? "Event" : "Events")} ${events.length}  ${chalk.grey(automations.ingesters.length === 1 ? "Ingester" : "Ingesters")} ${automations.ingesters.length}
-  ${chalk.grey("JWT")} ${registration.jwt}${handlers(commands, events)}
+  ${chalk.grey("JWT")} ${registration.jwt}${await handlers(commands, events, details)}
 ${urls.join("\n")}
 ${urls.length > 0 ? "\n" : ""}  ${chalk.grey("Docs")} https://docs.atomist.com  ${chalk.grey("Support")} https://join.atomist.com
 `;
@@ -78,7 +79,9 @@ async function toAscii(s: string): Promise<string> {
     }
 }
 
-function handlers(commands: string[], events: string[]): string {
+async function handlers(commands: string[],
+                  events: string[],
+                  details: () => Promise<string>): Promise<string> {
     let c = "";
     if (commands.length > 0 || events.length > 0) {
         c += "\n\n";
@@ -93,6 +96,14 @@ ${commands.join("\n")}`;
     if (events.length > 0) {
         c += `${chalk.grey(events.length === 1 ? "  Event" : "  Events")}
 ${events.join("\n")}`;
+    }
+
+    const d = await details();
+    if (d && d.length > 0) {
+        if (commands.length > 0 || events.length > 0) {
+            c += "\n\n"
+        }
+        c+= d;
     }
     return c;
 }
