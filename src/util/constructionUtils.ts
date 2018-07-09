@@ -5,6 +5,10 @@ export interface Constructor<T> {
     new(): T;
 }
 
+/**
+ * A no-arg constructor or a no-arg function that can create
+ * type T
+ */
 export type Maker<T> = Factory<T> | Constructor<T>;
 
 export function toFactory<T>(fact: Maker<T>): Factory<T> {
