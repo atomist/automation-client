@@ -17,7 +17,6 @@
 
 import * as appRoot from "app-root-path";
 import * as cluster from "cluster";
-import * as config from "config";
 import * as exp from "express";
 import * as fs from "fs-extra";
 import * as glob from "glob";
@@ -34,6 +33,7 @@ import {
 } from "./ingesters";
 import { LogHandler } from "./internal/transport/OnLog";
 import { RegistrationConfirmation } from "./internal/transport/websocket/WebSocketRequestProcessor";
+import { config } from "./internal/util/config";
 import { logger } from "./internal/util/logger";
 import {
     guid,
@@ -627,8 +627,8 @@ export function resolveTeamIds(cfg: Configuration): string[] {
         cfg.teamIds = process.env.ATOMIST_TEAMS.split(",");
     } else if (process.env.ATOMIST_TEAM) {
         cfg.teamIds = [process.env.ATOMIST_TEAM];
-    } else if (config.has("teamIds")) {
-        cfg.teamIds = config.get("teamIds");
+    } else if (config("teamIds")) {
+        cfg.teamIds = config("teamIds");
     }
     return cfg.teamIds;
 }
@@ -656,8 +656,8 @@ export function resolveConfigurationValue(
         }
     }
     for (const cv of configKeyPaths) {
-        if (config.has(cv)) {
-            return config.get(cv);
+        if (config(cv)) {
+            return config(cv);
         }
     }
     return defaultValue;
