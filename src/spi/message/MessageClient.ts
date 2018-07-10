@@ -3,6 +3,7 @@ import {
     SlackMessage,
 } from "@atomist/slack-messages/SlackMessages";
 import * as _ from "lodash";
+import { AnyOptions } from "../../configuration";
 import { metadataFromInstance } from "../../internal/metadata/metadataReading";
 
 /**
@@ -144,7 +145,7 @@ export interface SlackFileMessage {
 
 }
 
-export interface MessageOptions {
+export interface MessageOptions extends AnyOptions {
 
     /**
      * Unique message id per channel and team. This is required
