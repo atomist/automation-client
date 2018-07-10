@@ -16,7 +16,7 @@ This page details all runtime OSS dependencies of `@atomist/automation-client`.
 |[Custom: https://github.com/douglascrockford/JSON-js](#custom-httpsgithubcomdouglascrockfordjson-js)|1|
 |[GPL-3.0](#gpl-30)|4|
 |[ISC](#isc)|35|
-|[MIT](#mit)|419|
+|[MIT](#mit)|416|
 |[Public Domain](#public-domain)|1|
 |[Unlicense](#unlicense)|2|
 
@@ -242,7 +242,6 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`commander`|`2.15.0`|TJ Holowaychuk|[https://github.com/tj/commander.js](https://github.com/tj/commander.js)|
 |`common-tags`|`1.7.2`|Declan de Wet|[https://github.com/declandewet/common-tags](https://github.com/declandewet/common-tags)|
 |`concat-map`|`0.0.1`|James Halliday|[https://github.com/substack/node-concat-map](https://github.com/substack/node-concat-map)|
-|`config`|`1.30.0`|Loren West|[https://github.com/lorenwest/node-config](https://github.com/lorenwest/node-config)|
 |`constant-case`|`2.0.0`|Blake Embrey|[https://github.com/blakeembrey/constant-case](https://github.com/blakeembrey/constant-case)|
 |`content-disposition`|`0.5.2`||[https://github.com/jshttp/content-disposition](https://github.com/jshttp/content-disposition)|
 |`content-security-policy-builder`|`2.0.0`|Evan Hahn|[https://github.com/helmetjs/content-security-policy-builder](https://github.com/helmetjs/content-security-policy-builder)|
@@ -383,7 +382,6 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`jsesc`|`2.5.1`|Mathias Bynens|[https://github.com/mathiasbynens/jsesc](https://github.com/mathiasbynens/jsesc)|
 |`json-schema-traverse`|`0.3.1`|Evgeny Poberezkin|[https://github.com/epoberezkin/json-schema-traverse](https://github.com/epoberezkin/json-schema-traverse)|
 |`json-stable-stringify`|`1.0.1`|James Halliday|[https://github.com/substack/json-stable-stringify](https://github.com/substack/json-stable-stringify)|
-|`json5`|`0.4.0`|Aseem Kishore|[https://github.com/aseemk/json5](https://github.com/aseemk/json5)|
 |`jsonfile`|`4.0.0`|JP Richardson|[https://github.com/jprichardson/node-jsonfile](https://github.com/jprichardson/node-jsonfile)|
 |`jsprim`|`1.4.1`||[https://github.com/joyent/node-jsprim](https://github.com/joyent/node-jsprim)|
 |`kind-of`|`3.2.2`|Jon Schlinkert|[https://github.com/jonschlinkert/kind-of](https://github.com/jonschlinkert/kind-of)|
@@ -431,7 +429,6 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`onetime`|`2.0.1`|Sindre Sorhus|[https://github.com/sindresorhus/onetime](https://github.com/sindresorhus/onetime)|
 |`optimist`|`0.6.1`|James Halliday|[https://github.com/substack/node-optimist](https://github.com/substack/node-optimist)|
 |`ordered-read-streams`|`1.0.1`|Artem Medeusheyev|[https://github.com/armed/ordered-read-streams](https://github.com/armed/ordered-read-streams)|
-|`os-homedir`|`1.0.2`|Sindre Sorhus|[https://github.com/sindresorhus/os-homedir](https://github.com/sindresorhus/os-homedir)|
 |`os-locale`|`2.1.0`|Sindre Sorhus|[https://github.com/sindresorhus/os-locale](https://github.com/sindresorhus/os-locale)|
 |`os-tmpdir`|`1.0.2`|Sindre Sorhus|[https://github.com/sindresorhus/os-tmpdir](https://github.com/sindresorhus/os-tmpdir)|
 |`p-finally`|`1.0.0`|Sindre Sorhus|[https://github.com/sindresorhus/p-finally](https://github.com/sindresorhus/p-finally)|
