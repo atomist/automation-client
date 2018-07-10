@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Allow to set timeout on spawned commands. [#312](https://github.com/atomist/automation-client-ts/issues/312)
 -   Add command to install kube utilities. [#311](https://github.com/atomist/automation-client-ts/issues/311)
 
+### Removed
+
+-   Remove dependency to config module. [#317](https://github.com/atomist/automation-client-ts/issues/317)
+
 ## [0.17.1](https://github.com/atomist/automation-client-ts/compare/0.17.0...0.17.1) - 2018-06-04
 
 ### Deprecated
@@ -26,24 +30,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.16.0](https://github.com/atomist/automation-client-ts/compare/0.15.1...0.16.0) - 2018-05-15
 
-### Changed
-
--   Change generator seed repository parameters to include Git provider.
-
-### Fixed
-
--   Default @Value handling.
-
 ### Added
 
 -   Options for Git push().
 -   Token-based authentication.
+
+### Changed
+
+-   Change generator seed repository parameters to include Git provider.
 
 ### Deprecated
 
 -   `BitBucketServerRepoRef`.
 -   `allReposInTeam()`.
 -   `generatorHandler()`.
+
+### Fixed
+
+-   Default @Value handling.
 
 ## [0.15.1](https://github.com/atomist/automation-client-ts/compare/0.15.0...0.15.1) - 2018-05-09
 
@@ -59,6 +63,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.15.0](https://github.com/atomist/automation-client-ts/compare/0.14.1...0.15.0) - 2018-05-07
 
+### Added
+
+-   The config command now probes environment for known SDM variables.
+
 ### Changed
 
 -   Reduce default websocket grace period to 10 seconds.
@@ -67,10 +75,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Support injection of configuration values.
 -   Support arbitrary top-level configuration.
 -   **BREAKING** moved `automationClientInstance()` to `globals.ts`.
-
-### Added
-
--   The config command now probes environment for known SDM variables.
 
 ## [0.14.1](https://github.com/atomist/automation-client-ts/compare/0.14.0...0.14.1) - 2018-04-30
 
@@ -83,12 +87,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Upgrade to TypeScript 2.8.3.
 
 ## [0.14.0](https://github.com/atomist/automation-client-ts/compare/0.13.1...0.14.0) - 2018-04-27
-
-### Fixed
-
--   Call listeners on workers in cluster mode.
--   Fix team vs chatTeam usage.
--   Add enums to ingester. [#276](https://github.com/atomist/automation-client-ts/issues/276)
 
 ### Added
 
@@ -104,6 +102,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 -   **BREAKING** `runningAutomationClient`, use `automationClientInstance()`.
+
+### Fixed
+
+-   Call listeners on workers in cluster mode.
+-   Fix team vs chatTeam usage.
+-   Add enums to ingester. [#276](https://github.com/atomist/automation-client-ts/issues/276)
 
 ## [0.13.1](https://github.com/atomist/automation-client-ts/compare/0.13.0...0.13.1) - 2018-04-12
 
@@ -146,13 +150,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.11.2](https://github.com/atomist/automation-client-ts/compare/0.11.1...0.11.2) - 2018-03-28
 
-### Changed
-
--   Clean up logging.
-
 ### Added
 
 -   ID to ingester messages.
+
+### Changed
+
+-   Clean up logging.
 
 ### Fixed
 
@@ -200,6 +204,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.8.0](https://github.com/atomist/automation-client-ts/compare/0.7.0...0.8.0) - 2018-03-19
 
+### Added
+
+-   Mapped parameters for all repos.
+-   Print banner on successful registration.
+-   Branch as optional parameter in RepoRef.
+-   statsd support.
+-   Logging to file.
+
 ### Changed
 
 -   Custom ingester types now use array arguments.
@@ -209,14 +221,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 -   \--version command-line option.
-
-### Added
-
--   Mapped parameters for all repos.
--   Print banner on successful registration.
--   Branch as optional parameter in RepoRef.
--   statsd support.
--   Logging to file.
 
 ## [0.7.0](https://github.com/atomist/automation-client-ts/compare/0.6.6...0.7.0) - 2018-03-07
 
@@ -287,17 +291,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.6.0](https://github.com/atomist/automation-client-ts/compare/0.5.2...0.6.0) - 2018-01-11
 
+### Added
+
+-   Basic BitBucket support, thanks @kbristow!.
+-   Support for connecting via a proxy.
+
 ### Changed
 
 -   Many changes to make more portable, i.e., runnable on MS Windows.
 -   Trying to get Git information on a non-git project will now return.
 -   Allow GraphQL glob pattern to return no files when generation code.
 -   Update to latest GraphQL data model.
-
-### Added
-
--   Basic BitBucket support, thanks @kbristow!.
--   Support for connecting via a proxy.
 
 ## [0.5.2](https://github.com/atomist/automation-client-ts/compare/0.5.0...0.5.2) - 2017-12-04
 
@@ -319,6 +323,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.5.0](https://github.com/atomist/automation-client-ts/compare/0.4.0...0.5.0) - 2017-12-07
 
+### Added
+
+-   Optionally add Atomist webhook to create GitHub repo.
+-   Generator benchmark tests.
+-   Caching metrics.
+-   afterAction to generate.
+
 ### Changed
 
 -   **Breaking** Removed old class hierarchy for editors, generators.
@@ -328,21 +339,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Several improvements to reviewer interfaces.
 -   Scan all commands and events directories for command and event.
 
-### Fixed
-
--   Issues with deleting files and directories in an InMemoryProject.
--   Ensure GitHub sees a token in a clone URL as a token.
-
 ### Removed
 
 -   RemoveSeedFiles as it was not generic nor provided much convenience.
 
-### Added
+### Fixed
 
--   Optionally add Atomist webhook to create GitHub repo.
--   Generator benchmark tests.
--   Caching metrics.
--   afterAction to generate.
+-   Issues with deleting files and directories in an InMemoryProject.
+-   Ensure GitHub sees a token in a clone URL as a token.
 
 ## [0.4.0](https://github.com/atomist/automation-client-ts/compare/0.3.5...0.4.0) - 2017-11-28
 
@@ -407,13 +411,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Unified `atomist` CLI.
 
-### Deprecated
-
--   atomist-cli, atomist-client, atomist-config, and git-info CLI.
-
 ### Changed
 
 -   Improved TypeScript parsing.
+
+### Deprecated
+
+-   atomist-cli, atomist-client, atomist-config, and git-info CLI.
 
 ### Fixed
 
@@ -514,14 +518,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.1.50](https://github.com/atomist/automation-client-ts/compare/0.1.49...0.1.50) - 2017-10-19
 
+### Added
+
+-   RepoId to Project.
+
 ### Changed
 
 -   More currying.
 -   Overhauled edit and review models.
-
-### Added
-
--   RepoId to Project.
 
 ### Fixed
 
@@ -548,6 +552,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.1.46](https://github.com/atomist/automation-client-ts/compare/0.1.44...0.1.46) - 2017-10-18
 
+### Added
+
+-   Scripts to setup and configure Atomist API client.
+
 ### Changed
 
 -   The client will look for config under ~/.atomist/client.config.json.
@@ -555,11 +563,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Improve error messages.
 -   Various project operation improvements.
 
+## [0.1.44](https://github.com/atomist/automation-client-ts/compare/0.1.43...0.1.44) - 2017-10-16
+
 ### Added
 
--   Scripts to setup and configure Atomist API client.
-
-## [0.1.44](https://github.com/atomist/automation-client-ts/compare/0.1.43...0.1.44) - 2017-10-16
+-   Publish master and PR builds as pre-release versions to Atomist.
 
 ### Changed
 
@@ -567,19 +575,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Cleaned up dependencies.
 -   Dashboard improvements.
 
-### Added
-
--   Publish master and PR builds as pre-release versions to Atomist.
-
 ## [0.1.43](https://github.com/atomist/automation-client-ts/compare/0.1.42...0.1.43) - 2017-10-11
-
-### Changed
-
--   GraphClient executeFile is now executeQueryFromFile.
 
 ### Added
 
 -   Mutation support in GraphQL.
+
+### Changed
+
+-   GraphClient executeFile is now executeQueryFromFile.
 
 ### Removed
 
