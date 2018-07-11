@@ -4,9 +4,10 @@ import {
     PathExpression,
 } from "@atomist/tree-path/path/pathExpression";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
+import { ScriptedFlushable } from "../../internal/common/Flushable";
 import { logger } from "../../internal/util/logger";
 import { File } from "../../project/File";
-import { ProjectAsync } from "../../project/Project";
+import { Project, ProjectAsync } from "../../project/Project";
 import { LocatedTreeNode } from "../LocatedTreeNode";
 
 /**
@@ -75,7 +76,6 @@ export class FileHit {
                 public file: File,
                 public fileNode: TreeNode,
                 public readonly nodes: LocatedTreeNode[]) {
-
         const updates: Update[] = [];
 
         function doReplace(): Promise<File> {
@@ -105,7 +105,7 @@ export class FileHit {
 
         this.matches = nodes as MatchResult[];
         makeUpdatable(this.matches, updates);
-        project.recordAction(p => doReplace());
+        (project as any as ScriptedFlushable<Project>).recordAction(() => doReplace());
     }
 }
 

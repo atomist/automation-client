@@ -1,5 +1,4 @@
 import { Stream } from "stream";
-import { ScriptedFlushable } from "../internal/common/Flushable";
 import { RepoRef } from "../operations/common/RepoId";
 import { File } from "./File";
 
@@ -78,7 +77,7 @@ export interface ProjectSync extends ProjectCore {
 /**
  * Asynchronous Project operations, returning promises or node streams.
  */
-export interface ProjectAsync extends ProjectCore, ScriptedFlushable<Project> {
+export interface ProjectAsync extends ProjectCore {
 
     /**
      * Return a node stream of the files in the project meeting
