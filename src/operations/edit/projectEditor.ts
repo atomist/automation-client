@@ -12,7 +12,7 @@ import {
  * @param params params, if available
  */
 export type ProjectEditor<P = any, ER extends EditResult = EditResult> =
-    (p: Project, context: HandlerContext, params?: P) => Promise<ER>;
+    (p: Project, context?: HandlerContext, params?: P) => Promise<ER>;
 
 export type SimpleProjectEditor<P = any> =
     (p: Project, context?: HandlerContext, params?: P) => Promise<Project>;
