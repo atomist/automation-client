@@ -1,5 +1,6 @@
 import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { PatternMatch } from "@atomist/microgrammar/PatternMatch";
+import { ScriptedFlushable } from "../../internal/common/Flushable";
 import { logger } from "../../internal/util/logger";
 import { File } from "../File";
 import { ProjectAsync } from "../Project";
@@ -236,7 +237,7 @@ class UpdatingFileHits<M> implements FileWithMatches<M> {
                 });
             });
             // Track the file
-            this.project.recordAction(p => this.file.flush());
+            (this.project as any as ScriptedFlushable<any>).recordAction(p => this.file.flush());
             this.updatable = true;
         }
     }

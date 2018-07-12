@@ -1,9 +1,6 @@
 import { ActionResult } from "../../action/ActionResult";
 import { HandlerContext } from "../../HandlerContext";
-import {
-    isProject,
-    Project,
-} from "../../project/Project";
+import { isProject, Project } from "../../project/Project";
 
 /**
  * Modifies the given project, returning information about the modification.
@@ -57,8 +54,4 @@ export function failedEdit<P extends Project>(p: P, error: Error, edited: boolea
         error,
         edited,
     };
-}
-
-export function flushAndSucceed<P extends Project>(p: P): Promise<EditResult<P>> {
-    return p.flush().then(pf => successfulEdit(pf, undefined));
 }

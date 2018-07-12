@@ -9,11 +9,12 @@ import { LocalProject } from "../../../src/project/local/LocalProject";
 import { File } from "../../../src/project/File";
 
 import * as fs from "fs";
-import { defer } from "../../../src/internal/common/Flushable";
+import { defer, ScriptedFlushable } from "../../../src/internal/common/Flushable";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { AllFiles, ExcludeNodeModules } from "../../../src/project/fileGlobs";
 import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProject";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
+import { Project } from "../../../src/project/Project";
 import { toPromise } from "../../../src/project/util/projectUtils";
 import { tempProject } from "../utils";
 
@@ -241,7 +242,7 @@ describe("NodeFsLocalProject", () => {
     });
 
     it("adds file", done => {
-        const p = tempProject();
+        const p = tempProject() as any as Project & ScriptedFlushable<any>;
         defer(p, p.addFile("thing", "1"));
         assert(p.dirty);
         p.flush()
@@ -253,7 +254,7 @@ describe("NodeFsLocalProject", () => {
     });
 
     it("moves file that's there", done => {
-        const p = tempProject();
+        const p = tempProject() as any as Project & ScriptedFlushable<any>;
         defer(p, p.addFile("thing", "1"));
         assert(p.dirty);
         p.flush()
@@ -268,7 +269,7 @@ describe("NodeFsLocalProject", () => {
     });
 
     it("attempts to move file that's not there without error", done => {
-        const p = tempProject();
+        const p = tempProject() as any as Project & ScriptedFlushable<any>;
         defer(p, p.addFile("thing", "1"));
         assert(p.dirty);
         p.flush()
@@ -283,7 +284,7 @@ describe("NodeFsLocalProject", () => {
     });
 
     it("adds nested file", done => {
-        const p = tempProject();
+        const p = tempProject() as any as Project & ScriptedFlushable<any>;
         defer(p, p.addFile("config/thing", "1"));
         assert(p.dirty);
         p.flush()
@@ -295,7 +296,7 @@ describe("NodeFsLocalProject", () => {
     });
 
     it("adds deeply nested file", done => {
-        const p = tempProject();
+        const p = tempProject() as any as Project & ScriptedFlushable<any>;
         defer(p, p.addFile("config/and/more/thing", "1"));
         assert(p.dirty);
         p.flush()
@@ -307,7 +308,7 @@ describe("NodeFsLocalProject", () => {
     });
 
     it("deletes file", done => {
-        const p = tempProject();
+        const p = tempProject() as any as Project & ScriptedFlushable<any>;
         p.addFileSync("thing", "1");
         const f1 = p.findFileSync("thing");
         assert(f1.getContentSync() === "1");

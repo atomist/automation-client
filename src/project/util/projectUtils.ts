@@ -1,4 +1,4 @@
-import { defer } from "../../internal/common/Flushable";
+import { defer, ScriptedFlushable } from "../../internal/common/Flushable";
 import { isPromise } from "../../internal/util/async";
 import { toStringArray } from "../../internal/util/string";
 import { File } from "../File";
@@ -132,18 +132,19 @@ export function doWithFiles<P extends ProjectAsync>(project: P,
 export function deleteFiles<T>(project: ProjectAsync,
                                globPatterns: GlobOptions,
                                test: (f: File) => boolean = () => true): Promise<number> {
+    const fp = project as any as ScriptedFlushable<any>;
     return new Promise((resolve, reject) => {
         let deleted = 0;
         project.streamFiles(...toStringArray(globPatterns))
             .on("data", f => {
                 if (test(f)) {
                     ++deleted;
-                    defer(project, project.deleteFile(f.path));
+                    defer(fp, project.deleteFile(f.path));
                 }
             })
             .on("error", reject)
             .on("end", () => {
-                resolve(project.flush()
+                resolve(fp.flush()
                     .then(() => deleted));
             });
     });

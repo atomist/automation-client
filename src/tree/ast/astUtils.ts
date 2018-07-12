@@ -185,7 +185,7 @@ export function zapAllMatches<P extends ProjectAsync = ProjectAsync>(p: P,
                     m.zap(opts);
                 });
             });
-            return p.flush();
+            return (p as any).flush();
         });
 }
 
