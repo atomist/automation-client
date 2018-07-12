@@ -70,8 +70,8 @@ export function editorHandler<PARAMS extends EditorOrReviewerParameters>(pe: (pa
  * If owner and repo are required, edit just one repo. Otherwise edit all repos
  * in the present team
  */
-function handleEditOneOrMany<PARAMS extends BaseEditorOrReviewerParameters>(pe: (params: PARAMS) => AnyProjectEditor,
-                                                                            details: EditorCommandDetails): OnCommand<PARAMS> {
+export function handleEditOneOrMany<PARAMS extends BaseEditorOrReviewerParameters>(pe: (params: PARAMS) => AnyProjectEditor,
+                                                                                   details: EditorCommandDetails): OnCommand<PARAMS> {
     return (ctx: HandlerContext, parameters: PARAMS) => {
         const credentials = parameters.targets.credentials;
         if (!!parameters.targets.repoRef) {
