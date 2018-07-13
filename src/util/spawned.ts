@@ -82,9 +82,9 @@ export async function spawnAndWatch(spawnCommand: SpawnCommand,
                                     spOpts: Partial<SpawnWatchOptions> = {}): Promise<ChildProcessResult> {
     const childProcess = spawn(spawnCommand.command, spawnCommand.args || [], options);
     if (spOpts.logCommand === false) {
-        log.write(`${options.cwd || path.resolve(".")} > ${stringifySpawnCommand(spawnCommand)} (pid '${childProcess.pid}')`);
-    } else {
         logger.debug(`${options.cwd || path.resolve(".")} > ${stringifySpawnCommand(spawnCommand)} (pid '${childProcess.pid}')`);
+    } else {
+        log.write(`${options.cwd || path.resolve(".")} > ${stringifySpawnCommand(spawnCommand)} (pid '${childProcess.pid}')`);
     }
     return watchSpawned(childProcess, log, spOpts);
 }
