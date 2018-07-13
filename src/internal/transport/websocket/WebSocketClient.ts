@@ -249,7 +249,7 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
                     logger.error("Registration failed with '%s'", error);
                     retry(error);
                 }
-            });
+            }) as Promise<RegistrationConfirmation>;
     });
 }
 

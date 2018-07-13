@@ -35,5 +35,5 @@ export function doWithRetry<R>(what: () => Promise<R>, description: string,
                 logger.warn(`Error occurred attempting '${description}': ${err.message}`);
                 retry(err);
             });
-    });
+    }) as Promise<R>;
 }

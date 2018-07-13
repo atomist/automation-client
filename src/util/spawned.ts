@@ -80,8 +80,7 @@ export async function spawnAndWatch(spawnCommand: SpawnCommand,
                                     log: WritableLog,
                                     spOpts: Partial<SpawnWatchOptions> = {}): Promise<ChildProcessResult> {
     const childProcess = spawn(spawnCommand.command, spawnCommand.args || [], options);
-    logger.info("%s > %s (spawn with pid '%d')", options.cwd || path.resolve("."),
-        stringifySpawnCommand(spawnCommand), childProcess.pid);
+    log.write(`${options.cwd || path.resolve(".")} > ${stringifySpawnCommand(spawnCommand)} (pid '${childProcess.pid}')`);
     return watchSpawned(childProcess, log, spOpts);
 }
 
