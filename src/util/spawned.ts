@@ -65,6 +65,7 @@ export interface SpawnWatchOptions {
     errorFinder: ErrorFinder;
     stripAnsi: boolean;
     timeout: number;
+    logCommand: boolean;
 }
 
 /**
@@ -80,7 +81,11 @@ export async function spawnAndWatch(spawnCommand: SpawnCommand,
                                     log: WritableLog,
                                     spOpts: Partial<SpawnWatchOptions> = {}): Promise<ChildProcessResult> {
     const childProcess = spawn(spawnCommand.command, spawnCommand.args || [], options);
-    log.write(`${options.cwd || path.resolve(".")} > ${stringifySpawnCommand(spawnCommand)} (pid '${childProcess.pid}')`);
+    if (spOpts.logCommand === false) {
+        log.write(`${options.cwd || path.resolve(".")} > ${stringifySpawnCommand(spawnCommand)} (pid '${childProcess.pid}')`);
+    } else {
+        logger.debug(`${options.cwd || path.resolve(".")} > ${stringifySpawnCommand(spawnCommand)} (pid '${childProcess.pid}')`);
+    }
     return watchSpawned(childProcess, log, spOpts);
 }
 
