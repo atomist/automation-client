@@ -1,4 +1,3 @@
-import * as appRoot from "app-root-path";
 import * as cluster from "cluster";
 import * as fs from "fs";
 import * as stringify from "json-stringify-safe";
@@ -144,8 +143,9 @@ function initLogging() {
         winstonLogger.transports.console.silent = true;
 
         // Add file logging into log directory
-        const pj = require(p.join(appRoot.path, "package.json"));
-        const filename = p.join(".", "log", `${pj.name.replace(/^.*\//, "")}.log`);
+        const appDir = __dirname.split(p.join("node_modules", "@atomist"))[0];
+        const pj = require(p.join(appDir, "package.json"));
+        const filename = p.join(".", "log", `${pj.name.replace(/^.*\//, "")}-slalom.log`);
         addFileTransport(filename, "debug");
     }
 }
