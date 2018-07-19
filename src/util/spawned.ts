@@ -84,7 +84,9 @@ export async function spawnAndWatch(spawnCommand: SpawnCommand,
     if (spOpts.logCommand === false) {
         logger.debug(`${options.cwd || path.resolve(".")} > ${stringifySpawnCommand(spawnCommand)} (pid '${childProcess.pid}')`);
     } else {
-        log.write(`${options.cwd || path.resolve(".")} > ${stringifySpawnCommand(spawnCommand)} (pid '${childProcess.pid}')`);
+        log.write(`---`);
+        log.write(`${options.cwd || path.resolve(".")} > ${stringifySpawnCommand(spawnCommand)} (pid '${childProcess.pid}')`)
+        log.write(`---`);
     }
     return watchSpawned(childProcess, log, spOpts);
 }
