@@ -43,6 +43,7 @@ import { AutomationEventListener } from "./server/AutomationEventListener";
 import { AutomationMetadataProcessor } from "./spi/env/MetadataProcessor";
 import { SecretResolver } from "./spi/env/SecretResolver";
 import { Maker } from "./util/constructionUtils";
+import { ExpressServerOptions } from "./internal/transport/express/ExpressServer";
 
 /**
  * Customize the express server configuration: For example to add custom routes
@@ -128,28 +129,7 @@ export interface AutomationOptions extends AnyOptions {
      */
     token?: string;
     /** HTTP configuration, useful for health checks */
-    http?: {
-        enabled?: boolean;
-        port?: number;
-        host?: string;
-        customizers?: ExpressCustomizer[],
-        auth?: {
-            basic?: {
-                enabled?: boolean;
-                username?: string;
-                password?: string;
-            }
-            bearer?: {
-                enabled?: boolean;
-                org?: string;
-                adminOrg?: string;
-            };
-            token?: {
-                enabled?: boolean;
-                verify?: (token: string) => Promise<boolean>;
-            }
-        };
-    };
+    http?: { enabled?: boolean } & Partial<ExpressServerOptions>;
     /** websocket configuration */
     ws?: {
         enabled?: boolean;
@@ -315,9 +295,11 @@ export interface UserConfig extends AutomationServerOptions {
 export function defaultConfiguration(): Configuration {
     interface SimplePackage {
         name?: string;
-        version?; string;
+        version?;
+        string;
         keywords?: string[];
     }
+
     let pj: SimplePackage;
     try {
         // tslint:disable-next-line:no-var-requires
@@ -346,7 +328,7 @@ export function defaultConfiguration(): Configuration {
  * @returns {T}
  */
 export function configurationValue<T>(path: string, defaultValue?: T): T {
-    if (automationClientInstance())  {
+    if (automationClientInstance()) {
         const conf = automationClientInstance().configuration;
         const value = _.get(conf, path) as T;
         if (value != null) {

@@ -314,17 +314,17 @@ export interface ExpressServerOptions {
     host?: string;
     customizers?: ExpressCustomizer[];
     auth?: {
-        basic: {
+        basic?: {
             enabled?: boolean;
             username?: string;
             password?: string;
         },
-        bearer: {
+        bearer?: {
             enabled?: boolean;
             org?: string;
             adminOrg?: string;
         },
-        token: {
+        token?: {
             enabled?: boolean;
             verify?: (token: string) => Promise<boolean>;
         },
