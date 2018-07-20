@@ -202,6 +202,7 @@ export class AutomationClient {
             endpoint: {
                 graphql: this.configuration.endpoints.graphql,
             },
+            messageClientFactory: this.configuration.http.messageClientFactory,
         };
         this.httpServer = new ExpressServer(
             this.automations,
