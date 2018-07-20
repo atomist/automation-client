@@ -12,6 +12,8 @@ import * as globals from "../../../globals";
 import { automationClientInstance } from "../../../globals";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
+import { GraphClient } from "../../../spi/graph/GraphClient";
+import { MessageClient } from "../../../spi/message/MessageClient";
 import {
     health,
     HealthStatus,
@@ -314,17 +316,17 @@ export interface ExpressServerOptions {
     host?: string;
     customizers?: ExpressCustomizer[];
     auth?: {
-        basic: {
+        basic?: {
             enabled?: boolean;
             username?: string;
             password?: string;
         },
-        bearer: {
+        bearer?: {
             enabled?: boolean;
             org?: string;
             adminOrg?: string;
         },
-        token: {
+        token?: {
             enabled?: boolean;
             verify?: (token: string) => Promise<boolean>;
         },
@@ -332,4 +334,6 @@ export interface ExpressServerOptions {
     endpoint: {
         graphql: string;
     };
+    messageClientFactory?: (teamId: string) => MessageClient;
+    graphClientFactory?: (teamId: string) => GraphClient;
 }

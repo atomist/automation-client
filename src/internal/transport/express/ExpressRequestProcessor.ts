@@ -49,13 +49,18 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
     protected createGraphClient(event: EventIncoming | CommandIncoming,
                                 context: AutomationContextAware): GraphClient {
         const teamId = namespace.get().teamId;
-        return new ApolloGraphClient(`${this.options.endpoint.graphql}/${teamId}`,
-            { Authorization: `token ${this.token}` });
+        return !!this.options.graphClientFactory ?
+            this.options.graphClientFactory(teamId) :
+            new ApolloGraphClient(`${this.options.endpoint.graphql}/${teamId}`,
+                { Authorization: `token ${this.token}` });
     }
 
     protected createMessageClient(event: EventIncoming | CommandIncoming,
                                   context: AutomationContextAware): MessageClient {
-        return new ExpressMessageClient(this.messages, event);
+        const teamId = namespace.get().teamId;
+        return !!this.options.messageClientFactory ?
+            this.options.messageClientFactory(teamId) :
+            new ExpressMessageClient(this.messages, event);
     }
 }
 
@@ -69,9 +74,9 @@ class ExpressMessageClient implements MessageClient {
             const ws = (automationClientInstance().webSocketHandler as any).webSocket as WebSocket;
             if (isCommandIncoming(this.event)) {
                 this.delegate = new WebSocketCommandMessageClient(this.event, ws);
-             } else if (isEventIncoming(this.event)) {
-                 this.delegate = new WebSocketEventMessageClient(this.event, ws);
-             }
+            } else if (isEventIncoming(this.event)) {
+                this.delegate = new WebSocketEventMessageClient(this.event, ws);
+            }
         }
     }
 
