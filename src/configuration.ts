@@ -31,6 +31,7 @@ import {
     Ingester,
     IngesterBuilder,
 } from "./ingesters";
+import { ExpressServerOptions } from "./internal/transport/express/ExpressServer";
 import { LogHandler } from "./internal/transport/OnLog";
 import { RegistrationConfirmation } from "./internal/transport/websocket/WebSocketRequestProcessor";
 import { config } from "./internal/util/config";
@@ -43,7 +44,6 @@ import { AutomationEventListener } from "./server/AutomationEventListener";
 import { AutomationMetadataProcessor } from "./spi/env/MetadataProcessor";
 import { SecretResolver } from "./spi/env/SecretResolver";
 import { Maker } from "./util/constructionUtils";
-import { ExpressServerOptions } from "./internal/transport/express/ExpressServer";
 
 /**
  * Customize the express server configuration: For example to add custom routes

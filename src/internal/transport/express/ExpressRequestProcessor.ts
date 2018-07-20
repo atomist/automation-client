@@ -55,7 +55,9 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
 
     protected createMessageClient(event: EventIncoming | CommandIncoming,
                                   context: AutomationContextAware): MessageClient {
-        return new ExpressMessageClient(this.messages, event);
+        return !!this.options.messageClientFactory ?
+            this.options.messageClientFactory() :
+            new ExpressMessageClient(this.messages, event);
     }
 }
 
