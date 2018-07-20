@@ -12,6 +12,7 @@ import * as globals from "../../../globals";
 import { automationClientInstance } from "../../../globals";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
+import { GraphClient } from "../../../spi/graph/GraphClient";
 import { MessageClient } from "../../../spi/message/MessageClient";
 import {
     health,
@@ -333,5 +334,6 @@ export interface ExpressServerOptions {
     endpoint: {
         graphql: string;
     };
-    messageClientFactory?: () => MessageClient;
+    messageClientFactory?: (teamId: string) => MessageClient;
+    graphClientFactory?: (teamId: string) => GraphClient;
 }
