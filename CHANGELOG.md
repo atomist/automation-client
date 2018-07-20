@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Allow to set timeout on spawned commands. [#312](https://github.com/atomist/automation-client-ts/issues/312)
 -   Add command to install kube utilities. [#311](https://github.com/atomist/automation-client-ts/issues/311)
 
+### Changed
+
+-   Open up configuration. [#320](https://github.com/atomist/automation-client-ts/issues/320)
+
 ### Deprecated
 
 -   Migrate atomist CLI to its own package. [#315](https://github.com/atomist/automation-client-ts/issues/315)
