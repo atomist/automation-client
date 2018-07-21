@@ -1,6 +1,6 @@
 # @atomist/automation-client
 
-[![npm version](https://badge.fury.io/js/%40atomist%2Fautomation-client.svg)](https://badge.fury.io/js/%40atomist%2Fautomation-client)
+[![atomist sdm goals](http://badge.atomist.com/T29E48P34/atomist/automation-client-ts/bdaca35b-0cb1-4fbf-8596-a27777b46974)](https://app.atomist.com/workspace/T29E48P34) [![npm version](https://badge.fury.io/js/%40atomist%2Fautomation-client.svg)](https://badge.fury.io/js/%40atomist%2Fautomation-client)
 
 [Node][node] module [`@atomist/automation-client`][automation-client]
 for creating Atomist development automations.  Development automations take the following forms:
