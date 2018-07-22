@@ -10,6 +10,7 @@ import * as retry from "retry";
 import { ExpressCustomizer } from "../../../configuration";
 import * as globals from "../../../globals";
 import { automationClientInstance } from "../../../globals";
+import { AutomationContextAware } from "../../../HandlerContext";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
@@ -334,6 +335,6 @@ export interface ExpressServerOptions {
     endpoint: {
         graphql: string;
     };
-    messageClientFactory?: (teamId: string) => MessageClient;
-    graphClientFactory?: (teamId: string) => GraphClient;
+    messageClientFactory?: (aca: AutomationContextAware) => MessageClient;
+    graphClientFactory?: (aca: AutomationContextAware) => GraphClient;
 }

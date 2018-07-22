@@ -50,16 +50,15 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
                                 context: AutomationContextAware): GraphClient {
         const teamId = namespace.get().teamId;
         return !!this.options.graphClientFactory ?
-            this.options.graphClientFactory(teamId) :
+            this.options.graphClientFactory(context) :
             new ApolloGraphClient(`${this.options.endpoint.graphql}/${teamId}`,
                 { Authorization: `token ${this.token}` });
     }
 
     protected createMessageClient(event: EventIncoming | CommandIncoming,
                                   context: AutomationContextAware): MessageClient {
-        const teamId = namespace.get().teamId;
         return !!this.options.messageClientFactory ?
-            this.options.messageClientFactory(teamId) :
+            this.options.messageClientFactory(context) :
             new ExpressMessageClient(this.messages, event);
     }
 }
