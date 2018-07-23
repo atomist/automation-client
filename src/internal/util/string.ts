@@ -49,7 +49,7 @@ export function toStringArray(strings: string | string[]): string[] {
 }
 
 export function obfuscateJson(key: string, value: any) {
-    if (/token|password|jwt|url|secret|authorization/i.test(key)) {
+    if (/token|password|jwt|url|secret|authorization|accessKey|cert|pass|user/i.test(key)) {
         return hideString(value);
     } else if (key === "commands") {
         return undefined;

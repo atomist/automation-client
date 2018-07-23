@@ -418,7 +418,7 @@ export function defaultErrorResult(context: AutomationContextAware): HandlerResu
     return result as HandlerResult;
 }
 
-function replacer(key: string, value: any) {
+export function replacer(key: string, value: any) {
     if (key === "secrets" && value) {
         return value.map(v => ({ uri: v.uri, value: hideString(v.value) }));
     } else {
