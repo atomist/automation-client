@@ -3,7 +3,10 @@ import "mocha";
 import * as assert from "power-assert";
 import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
 import { CommandHandlerMetadata } from "../../../src/metadata/automationMetadata";
-import { fromListRepoFinder, fromListRepoLoader } from "../../../src/operations/common/fromProjectList";
+import {
+    fromListRepoFinder,
+    fromListRepoLoader,
+} from "../../../src/operations/common/fromProjectList";
 import { AlwaysAskRepoParameters } from "../../../src/operations/common/params/AlwaysAskRepoParameters";
 import { BaseEditorOrReviewerParameters } from "../../../src/operations/common/params/BaseEditorOrReviewerParameters";
 import { SimpleRepoId } from "../../../src/operations/common/RepoId";

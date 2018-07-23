@@ -1,17 +1,22 @@
-import "mocha";
-
 import * as appRoot from "app-root-path";
-import * as assert from "power-assert";
-import * as tmp from "tmp-promise";
-
-import { LocalProject } from "../../../src/project/local/LocalProject";
-
-import { File } from "../../../src/project/File";
 
 import * as fs from "fs";
-import { defer, ScriptedFlushable } from "../../../src/internal/common/Flushable";
+import "mocha";
+import * as assert from "power-assert";
+import * as tmp from "tmp-promise";
+import {
+    defer,
+    ScriptedFlushable,
+} from "../../../src/internal/common/Flushable";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
-import { AllFiles, ExcludeNodeModules } from "../../../src/project/fileGlobs";
+
+import { File } from "../../../src/project/File";
+import {
+    AllFiles,
+    ExcludeNodeModules,
+} from "../../../src/project/fileGlobs";
+
+import { LocalProject } from "../../../src/project/local/LocalProject";
 import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProject";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../src/project/Project";

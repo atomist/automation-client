@@ -3,7 +3,10 @@ import * as assert from "power-assert";
 import { fromListRepoFinder } from "../../../src/operations/common/fromProjectList";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { RepoFilter } from "../../../src/operations/common/repoFilter";
-import { RepoId, RepoRef } from "../../../src/operations/common/RepoId";
+import {
+    RepoId,
+    RepoRef,
+} from "../../../src/operations/common/RepoId";
 import { RepoLoader } from "../../../src/operations/common/repoLoader";
 import { doWithAllRepos } from "../../../src/operations/common/repoUtils";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";

@@ -3,7 +3,10 @@ import "mocha";
 import * as assert from "power-assert";
 import { ActionResult } from "../../../src/action/ActionResult";
 import { runCommand } from "../../../src/action/cli/commandLine";
-import { GitHubDotComBase, GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
+import {
+    GitHubDotComBase,
+    GitHubRepoRef,
+} from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../../src/project/git/GitProject";
 import { Project } from "../../../src/project/Project";

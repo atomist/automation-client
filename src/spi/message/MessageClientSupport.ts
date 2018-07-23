@@ -1,5 +1,4 @@
 import { SlackMessage } from "@atomist/slack-messages";
-import { HandlerContext } from "../../HandlerContext";
 import { toStringArray } from "../../internal/util/string";
 import {
     GraphClient,

@@ -1,4 +1,7 @@
-import { defer, ScriptedFlushable } from "../../internal/common/Flushable";
+import {
+    defer,
+    ScriptedFlushable,
+} from "../../internal/common/Flushable";
 import { isPromise } from "../../internal/util/async";
 import { toStringArray } from "../../internal/util/string";
 import { File } from "../File";

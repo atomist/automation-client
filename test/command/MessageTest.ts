@@ -1,9 +1,18 @@
-
-import { bold, SlackMessage } from "@atomist/slack-messages";
-import { CommandHandler, Parameter } from "../../src/decorators";
+import {
+    bold,
+    SlackMessage,
+} from "@atomist/slack-messages";
+import {
+    CommandHandler,
+    Parameter,
+} from "../../src/decorators";
 import { HandleCommand } from "../../src/HandleCommand";
 import { HandlerContext } from "../../src/HandlerContext";
-import { failure, HandlerResult, Success } from "../../src/HandlerResult";
+import {
+    failure,
+    HandlerResult,
+    Success,
+} from "../../src/HandlerResult";
 import { guid } from "../../src/internal/util/string";
 import { buttonForCommand } from "../../src/spi/message/MessageClient";
 

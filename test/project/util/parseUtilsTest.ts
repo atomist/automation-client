@@ -1,16 +1,21 @@
-import "mocha";
-
 import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { Integer } from "@atomist/microgrammar/Primitives";
+import "mocha";
 import * as assert from "power-assert";
-import { defer, ScriptedFlushable } from "../../../src/internal/common/Flushable";
+import {
+    defer,
+    ScriptedFlushable,
+} from "../../../src/internal/common/Flushable";
 import { AllFiles } from "../../../src/project/fileGlobs";
 import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../src/project/Project";
 import {
     DefaultOpts,
-    doWithFileMatches, doWithUniqueMatch, findFileMatches, findMatches,
+    doWithFileMatches,
+    doWithUniqueMatch,
+    findFileMatches,
+    findMatches,
     Match,
 } from "../../../src/project/util/parseUtils";
 import { tempProject } from "../utils";

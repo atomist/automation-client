@@ -2,7 +2,10 @@ import "mocha";
 
 import * as assert from "power-assert";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { doWithJson, manipulate } from "../../../src/project/util/jsonUtils";
+import {
+    doWithJson,
+    manipulate,
+} from "../../../src/project/util/jsonUtils";
 
 describe("jsonUtils", () => {
 

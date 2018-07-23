@@ -1,9 +1,8 @@
-import "mocha";
-import * as assert from "power-assert";
-
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import * as stringify from "json-stringify-safe";
+import "mocha";
+import * as assert from "power-assert";
 import { HandlerContext } from "../../../src/HandlerContext";
 import { RedirectResult } from "../../../src/HandlerResult";
 import { BaseSeedDrivenGeneratorParameters } from "../../../src/operations/generate/BaseSeedDrivenGeneratorParameters";

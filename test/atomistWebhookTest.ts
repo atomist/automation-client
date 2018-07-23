@@ -4,11 +4,10 @@
  * See LICENSE file.
  */
 
-import "mocha";
-import * as assert from "power-assert";
-
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
+import "mocha";
+import * as assert from "power-assert";
 
 import {
     AtomistWebhookType,

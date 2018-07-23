@@ -1,8 +1,7 @@
 import "mocha";
-import { Configuration } from "../../../src";
-import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
 
 import * as assert from "power-assert";
+import { Configuration } from "../../../src";
 import {
     CommandHandler,
     ConfigurableCommandHandler,
@@ -14,9 +13,13 @@ import {
     Value,
 } from "../../../src/decorators";
 import { HandleCommand } from "../../../src/HandleCommand";
-import { EventFired, HandleEvent } from "../../../src/HandleEvent";
+import {
+    EventFired,
+    HandleEvent,
+} from "../../../src/HandleEvent";
 import { HandlerContext } from "../../../src/HandlerContext";
 import { HandlerResult } from "../../../src/HandlerResult";
+import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
 
 import {
     populateParameters,
@@ -27,7 +30,10 @@ import {
     EventHandlerMetadata,
     FreeChoices,
 } from "../../../src/metadata/automationMetadata";
-import { oneOf, someOf } from "../../../src/metadata/parameterUtils";
+import {
+    oneOf,
+    someOf,
+} from "../../../src/metadata/parameterUtils";
 import { AddAtomistSpringAgent } from "../invoker/TestHandlers";
 
 describe("class style metadata reading", () => {

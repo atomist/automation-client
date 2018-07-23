@@ -1,11 +1,10 @@
-import "mocha";
-import * as assert from "power-assert";
-
 import * as appRoot from "app-root-path";
 import * as fs from "fs-extra";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
+import "mocha";
 import * as path from "path";
+import * as assert from "power-assert";
 import * as tmp from "tmp-promise";
 
 import {

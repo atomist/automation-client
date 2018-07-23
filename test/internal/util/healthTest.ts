@@ -1,7 +1,12 @@
 import * as stringify from "json-stringify-safe";
 import "mocha";
 import * as assert from "power-assert";
-import { health, HealthStatus, Indicators, registerHealthIndicator } from "../../../src/internal/util/health";
+import {
+    health,
+    HealthStatus,
+    Indicators,
+    registerHealthIndicator,
+} from "../../../src/internal/util/health";
 
 describe("health", () => {
 

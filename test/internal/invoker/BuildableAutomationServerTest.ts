@@ -10,7 +10,10 @@ import {
     Secret,
     Secrets,
 } from "../../../src/decorators";
-import { HandleCommand, SelfDescribingHandleCommand } from "../../../src/HandleCommand";
+import {
+    HandleCommand,
+    SelfDescribingHandleCommand,
+} from "../../../src/HandleCommand";
 import { HandleEvent } from "../../../src/HandleEvent";
 import { consoleMessageClient } from "../../../src/internal/message/ConsoleMessageClient";
 import { succeed } from "../../../src/operations/support/contextUtils";
@@ -20,7 +23,11 @@ import { SmartParameters } from "../../../src/SmartParameters";
 import { AutomationMetadataProcessor } from "../../../src/spi/env/MetadataProcessor";
 import { SecretResolver } from "../../../src/spi/env/SecretResolver";
 import { HelloWorld } from "../../command/HelloWorld";
-import { AddAtomistSpringAgent, AlwaysOkEventHandler, FooBarEventHandler, TrustMeIGaveMySecret } from "./TestHandlers";
+import {
+    AddAtomistSpringAgent,
+    AlwaysOkEventHandler,
+    TrustMeIGaveMySecret,
+} from "./TestHandlers";
 
 const messageClient = consoleMessageClient;
 

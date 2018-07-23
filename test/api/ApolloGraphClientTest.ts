@@ -5,8 +5,14 @@ import { ApolloGraphClient } from "../../src/graph/ApolloGraphClient";
 import { logger } from "../../src/internal/util/logger";
 import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
-import { ReposQuery, ReposQueryVariables } from "../../src/schema/schema";
-import { GitHubToken, SlackTeamId } from "./gitHubTest";
+import {
+    ReposQuery,
+    ReposQueryVariables,
+} from "../../src/schema/schema";
+import {
+    GitHubToken,
+    SlackTeamId,
+} from "./gitHubTest";
 
 describe("ApolloGraphClient", () => {
 

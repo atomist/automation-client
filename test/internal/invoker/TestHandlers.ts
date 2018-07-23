@@ -1,6 +1,3 @@
-import { HandleCommand } from "../../../src/HandleCommand";
-import { HandlerContext } from "../../../src/HandlerContext";
-
 import * as assert from "power-assert";
 import {
     CommandHandler,
@@ -12,7 +9,12 @@ import {
     Secrets,
     Tags,
 } from "../../../src/decorators";
-import { EventFired, HandleEvent } from "../../../src/HandleEvent";
+import { HandleCommand } from "../../../src/HandleCommand";
+import {
+    EventFired,
+    HandleEvent,
+} from "../../../src/HandleEvent";
+import { HandlerContext } from "../../../src/HandlerContext";
 import { HandlerResult } from "../../../src/HandlerResult";
 
 @CommandHandler("add the Atomist Spring Boot agent to a Spring Boot project")

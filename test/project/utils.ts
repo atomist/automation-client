@@ -1,8 +1,7 @@
-import { LocalProject } from "../../src/project/local/LocalProject";
-
 import * as tmp from "tmp-promise";
 import { ScriptedFlushable } from "../../src/internal/common/Flushable";
 import { RepoRef } from "../../src/operations/common/RepoId";
+import { LocalProject } from "../../src/project/local/LocalProject";
 import { NodeFsLocalProject } from "../../src/project/local/NodeFsLocalProject";
 
 tmp.setGracefulCleanup();

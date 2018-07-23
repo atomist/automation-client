@@ -1,8 +1,7 @@
-import "mocha";
+import * as appRoot from "app-root-path";
 
 import * as fs from "fs";
-
-import * as appRoot from "app-root-path";
+import "mocha";
 
 import * as assert from "power-assert";
 import { NodeFsLocalFile } from "../../../src/project/local/NodeFsLocalFile";

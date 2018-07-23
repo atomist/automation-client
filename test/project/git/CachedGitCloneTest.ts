@@ -2,13 +2,20 @@ import "mocha";
 import * as assert from "power-assert";
 
 import { runCommand } from "../../../src/action/cli/commandLine";
-import { getCounter, metrics } from "../../../src/internal/util/metric";
+import { getCounter } from "../../../src/internal/util/metric";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../../src/project/git/GitProject";
 import { isFullyClean } from "../../../src/project/git/gitStatus";
-import { CachingDirectoryManager, FallbackKey, ReuseKey } from "../../../src/spi/clone/CachingDirectoryManager";
-import { CloneOptions, DefaultCloneOptions } from "../../../src/spi/clone/DirectoryManager";
+import {
+    CachingDirectoryManager,
+    FallbackKey,
+    ReuseKey,
+} from "../../../src/spi/clone/CachingDirectoryManager";
+import {
+    CloneOptions,
+    DefaultCloneOptions,
+} from "../../../src/spi/clone/DirectoryManager";
 import { TmpDirectoryManager } from "../../../src/spi/clone/tmpDirectoryManager";
 import { GitHubToken } from "../../credentials";
 

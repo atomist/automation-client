@@ -1,7 +1,14 @@
 import "mocha";
 import * as assert from "power-assert";
-import { ProjectEditor, SimpleProjectEditor, successfulEdit } from "../../../src/operations/edit/projectEditor";
-import { chainEditors, NoOpEditor } from "../../../src/operations/edit/projectEditorOps";
+import {
+    ProjectEditor,
+    SimpleProjectEditor,
+    successfulEdit,
+} from "../../../src/operations/edit/projectEditor";
+import {
+    chainEditors,
+    NoOpEditor,
+} from "../../../src/operations/edit/projectEditorOps";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../src/project/Project";
 import { tempProject } from "../../project/utils";

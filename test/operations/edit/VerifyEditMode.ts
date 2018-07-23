@@ -1,6 +1,9 @@
 import { HandlerContext } from "../../../src/HandlerContext";
 import { CustomExecutionEditMode } from "../../../src/operations/edit/editModes";
-import { EditResult, ProjectEditor } from "../../../src/operations/edit/projectEditor";
+import {
+    EditResult,
+    ProjectEditor,
+} from "../../../src/operations/edit/projectEditor";
 import { Project } from "../../../src/project/Project";
 
 /**

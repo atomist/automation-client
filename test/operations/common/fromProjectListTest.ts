@@ -1,8 +1,10 @@
-
 import "mocha";
 
 import * as assert from "power-assert";
-import { fromListRepoFinder, fromListRepoLoader } from "../../../src/operations/common/fromProjectList";
+import {
+    fromListRepoFinder,
+    fromListRepoLoader,
+} from "../../../src/operations/common/fromProjectList";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 
 describe("fromProjectList.ts", () => {

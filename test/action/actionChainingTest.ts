@@ -2,7 +2,11 @@ import * as stringify from "json-stringify-safe";
 import "mocha";
 import * as assert from "power-assert";
 import { promisify } from "util";
-import { actionChain, actionChainWithCombiner, NoAction } from "../../src/action/actionOps";
+import {
+    actionChain,
+    actionChainWithCombiner,
+    NoAction,
+} from "../../src/action/actionOps";
 import { ActionResult } from "../../src/action/ActionResult";
 import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
 import { InMemoryProject } from "../../src/project/mem/InMemoryProject";

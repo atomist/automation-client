@@ -1,20 +1,29 @@
+import axios from "axios";
+import * as _ from "lodash";
 import "mocha";
 import * as assert from "power-assert";
 
-import axios from "axios";
-import * as _ from "lodash";
-import promiseRetry = require("promise-retry");
+import * as winston from "winston";
+import {
+    logger,
+    LoggingConfig,
+} from "../../src/internal/util/logger";
 
 import { guid } from "../../src/internal/util/string";
-import { GitHubDotComBase, GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
+import {
+    GitHubDotComBase,
+    GitHubRepoRef,
+} from "../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../src/project/git/GitProject";
 import { TestRepositoryVisibility } from "../credentials";
 import { tempProject } from "../project/utils";
-import { Creds, GitHubToken } from "./gitHubTest";
+import {
+    Creds,
+    GitHubToken,
+} from "./gitHubTest";
+import promiseRetry = require("promise-retry");
 
-import * as winston from "winston";
-import { logger, LoggingConfig } from "../../src/internal/util/logger";
 LoggingConfig.format = "cli";
 (logger as winston.LoggerInstance).transports.console.level = process.env.LOG_LEVEL || "info";
 

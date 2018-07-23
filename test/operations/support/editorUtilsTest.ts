@@ -3,9 +3,15 @@ import * as assert from "power-assert";
 
 import { PullRequest } from "../../../src/operations/edit/editModes";
 import { toEditor } from "../../../src/operations/edit/projectEditor";
-import { editProjectUsingBranch, editProjectUsingPullRequest } from "../../../src/operations/support/editorUtils";
+import {
+    editProjectUsingBranch,
+    editProjectUsingPullRequest,
+} from "../../../src/operations/support/editorUtils";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
-import { Creds, RepoThatExists } from "../../credentials";
+import {
+    Creds,
+    RepoThatExists,
+} from "../../credentials";
 
 const NoOpEditor = toEditor(p => {
     return Promise.resolve(p);

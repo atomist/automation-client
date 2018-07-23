@@ -1,11 +1,20 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import { ActionResult, successOn } from "../../../src/action/ActionResult";
+import {
+    ActionResult,
+    successOn,
+} from "../../../src/action/ActionResult";
 import { ProjectOperationCredentials } from "../../../src/operations/common/ProjectOperationCredentials";
-import { RepoId, SimpleRepoId } from "../../../src/operations/common/RepoId";
+import {
+    RepoId,
+    SimpleRepoId,
+} from "../../../src/operations/common/RepoId";
 import { BaseSeedDrivenGeneratorParameters } from "../../../src/operations/generate/BaseSeedDrivenGeneratorParameters";
-import { generate, ProjectPersister } from "../../../src/operations/generate/generatorUtils";
+import {
+    generate,
+    ProjectPersister,
+} from "../../../src/operations/generate/generatorUtils";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../src/project/Project";
 

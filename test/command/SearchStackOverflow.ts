@@ -1,10 +1,16 @@
+import {
+    Attachment,
+    SlackMessage,
+} from "@atomist/slack-messages/SlackMessages";
+import axios from "axios";
+import {
+    CommandHandler,
+    Parameter,
+    Tags,
+} from "../../src/decorators";
 import { HandleCommand } from "../../src/HandleCommand";
 import { HandlerContext } from "../../src/HandlerContext";
 import { HandlerResult } from "../../src/HandlerResult";
-
-import { Attachment, SlackMessage } from "@atomist/slack-messages/SlackMessages";
-import axios from "axios";
-import { CommandHandler, Parameter, Tags } from "../../src/decorators";
 
 const apiSearchUrl =
     `http://api.stackexchange.com/2.2/search/advanced?pagesize=3&order=desc&sort=relevance&site=stackoverflow&q=`;

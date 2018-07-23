@@ -1,12 +1,17 @@
-import "mocha";
-
 import { SlackMessage } from "@atomist/slack-messages";
+import "mocha";
 import * as assert from "power-assert";
-import { fromListRepoFinder, fromListRepoLoader } from "../../../src/operations/common/fromProjectList";
+import {
+    fromListRepoFinder,
+    fromListRepoLoader,
+} from "../../../src/operations/common/fromProjectList";
 import { BaseEditorOrReviewerParameters } from "../../../src/operations/common/params/BaseEditorOrReviewerParameters";
 import { SimpleRepoId } from "../../../src/operations/common/RepoId";
 import { reviewerHandler } from "../../../src/operations/review/reviewerToCommand";
-import { DefaultReviewComment, ReviewResult } from "../../../src/operations/review/ReviewResult";
+import {
+    DefaultReviewComment,
+    ReviewResult,
+} from "../../../src/operations/review/ReviewResult";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 
 describe("reviewerHandler", () => {

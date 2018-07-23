@@ -1,6 +1,9 @@
 import { ActionResult } from "../../action/ActionResult";
 import { HandlerContext } from "../../HandlerContext";
-import { isProject, Project } from "../../project/Project";
+import {
+    isProject,
+    Project,
+} from "../../project/Project";
 
 /**
  * Modifies the given project, returning information about the modification.

@@ -1,11 +1,14 @@
-import "mocha";
-import * as assert from "power-assert";
-
 import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { Integer } from "@atomist/microgrammar/Primitives";
+import "mocha";
+import * as assert from "power-assert";
 import { AllFiles } from "../../../../src/project/fileGlobs";
 import { InMemoryProject } from "../../../../src/project/mem/InMemoryProject";
-import { findByExpression, findFileMatches, findMatches } from "../../../../src/tree/ast/astUtils";
+import {
+    findByExpression,
+    findFileMatches,
+    findMatches,
+} from "../../../../src/tree/ast/astUtils";
 import { DefaultFileParserRegistry } from "../../../../src/tree/ast/FileParserRegistry";
 import { MicrogrammarBasedFileParser } from "../../../../src/tree/ast/microgrammar/MicrogrammarBasedFileParser";
 

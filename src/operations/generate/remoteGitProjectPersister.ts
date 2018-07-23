@@ -1,6 +1,5 @@
-import { WrapOptions } from "retry";
-
 import * as _ from "lodash";
+import { WrapOptions } from "retry";
 import { ActionResult } from "../../action/ActionResult";
 import { logger } from "../../internal/util/logger";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";

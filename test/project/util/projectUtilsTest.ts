@@ -5,7 +5,12 @@ import * as assert from "power-assert";
 import { defer } from "../../../src/internal/common/Flushable";
 import { AllFiles } from "../../../src/project/fileGlobs";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { deleteFiles, doWithFiles, fileExists, saveFromFiles } from "../../../src/project/util/projectUtils";
+import {
+    deleteFiles,
+    doWithFiles,
+    fileExists,
+    saveFromFiles,
+} from "../../../src/project/util/projectUtils";
 import { tempProject } from "../utils";
 
 describe("projectUtils", () => {

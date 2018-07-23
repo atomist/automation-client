@@ -1,13 +1,15 @@
+import * as appRoot from "app-root-path";
 import "mocha";
 import * as assert from "power-assert";
-import { findMatches, findValues } from "../../../../src/tree/ast/astUtils";
+import { NodeFsLocalProject } from "../../../../src/project/local/NodeFsLocalProject";
+import {
+    findMatches,
+    findValues,
+} from "../../../../src/tree/ast/astUtils";
 import {
     TypeScriptES6FileParser,
     TypeScriptFileParser,
 } from "../../../../src/tree/ast/typescript/TypeScriptFileParser";
-
-import * as appRoot from "app-root-path";
-import { NodeFsLocalProject } from "../../../../src/project/local/NodeFsLocalProject";
 
 /**
  * Parse sources in this project

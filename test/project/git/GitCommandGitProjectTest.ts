@@ -3,7 +3,6 @@ import * as assert from "power-assert";
 
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { Project } from "../../../src/project/Project";
 
 describe("GitCommandGitProject", () => {
 

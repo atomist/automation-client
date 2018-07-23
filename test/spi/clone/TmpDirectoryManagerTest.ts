@@ -1,6 +1,5 @@
-import "mocha";
-
 import * as fs from "fs-extra";
+import "mocha";
 import * as assert from "power-assert";
 import { runCommand } from "../../../src/action/cli/commandLine";
 import { TmpDirectoryManager } from "../../../src/spi/clone/tmpDirectoryManager";

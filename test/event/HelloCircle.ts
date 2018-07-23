@@ -1,4 +1,3 @@
-import { user } from "@atomist/slack-messages/SlackMessages";
 import { EventHandler } from "../../src/decorators";
 import {
     EventFired,

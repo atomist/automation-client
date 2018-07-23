@@ -2,7 +2,12 @@ import "mocha";
 import * as assert from "power-assert";
 
 import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
-import { createCommitComment, deepLink, fileContent, hasFile } from "../../src/util/gitHub";
+import {
+    createCommitComment,
+    deepLink,
+    fileContent,
+    hasFile,
+} from "../../src/util/gitHub";
 
 function barf(): string {
     throw new Error("<please set GITHUB_TOKEN env variable>");

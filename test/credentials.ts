@@ -1,6 +1,9 @@
 import * as winston from "winston";
 
-import { logger, LoggingConfig } from "../src/internal/util/logger";
+import {
+    logger,
+    LoggingConfig,
+} from "../src/internal/util/logger";
 import { GitHubRepoRef } from "../src/operations/common/GitHubRepoRef";
 
 LoggingConfig.format = "cli";

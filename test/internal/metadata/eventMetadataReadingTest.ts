@@ -1,4 +1,6 @@
 import "mocha";
+
+import * as assert from "power-assert";
 import {
     Configuration,
     Parameters,
@@ -7,8 +9,6 @@ import {
 } from "../../../src";
 import { subscription } from "../../../src/graph/graphQL";
 import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
-
-import * as assert from "power-assert";
 import { populateValues } from "../../../src/internal/parameterPopulation";
 import { EventHandlerMetadata } from "../../../src/metadata/automationMetadata";
 import { eventHandlerFrom } from "../../../src/onEvent";

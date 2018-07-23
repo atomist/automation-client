@@ -5,8 +5,14 @@ import { BitBucketRepoRef } from "../../src/operations/common/BitBucketRepoRef";
 import { generate } from "../../src/operations/generate/generatorUtils";
 import { RemoteGitProjectPersister } from "../../src/operations/generate/remoteGitProjectPersister";
 import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
-import { deleteOrIgnore, tempRepoName } from "../api/generatorEndToEndTest";
-import { BitBucketCredentials, BitBucketUser } from "./BitBucketGitTest";
+import {
+    deleteOrIgnore,
+    tempRepoName,
+} from "../api/generatorEndToEndTest";
+import {
+    BitBucketCredentials,
+    BitBucketUser,
+} from "./BitBucketGitTest";
 
 describe("BitBucket generator end to end", () => {
 

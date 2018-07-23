@@ -1,8 +1,11 @@
-
 import { CommandHandler } from "../../src/decorators";
 import { HandleCommand } from "../../src/HandleCommand";
 import { HandlerContext } from "../../src/HandlerContext";
-import { failure, HandlerResult, success } from "../../src/HandlerResult";
+import {
+    failure,
+    HandlerResult,
+    success,
+} from "../../src/HandlerResult";
 import { SlackFileMessage } from "../../src/spi/message/MessageClient";
 
 @CommandHandler("Handler to test different types of messages", "file_message_test")

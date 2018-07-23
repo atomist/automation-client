@@ -1,11 +1,10 @@
-import "mocha";
-
 import * as fs from "fs";
+import "mocha";
 import * as assert from "power-assert";
-import { LocalRepoLoader } from "../../../src/operations/common/localRepoLoader";
 
 import * as tmp from "tmp-promise";
 import { twoTierDirectoryRepoFinder } from "../../../src/operations/common/localRepoFinder";
+import { LocalRepoLoader } from "../../../src/operations/common/localRepoLoader";
 
 describe("twoTierRepoFinder & LocalRepoLoader", () => {
 

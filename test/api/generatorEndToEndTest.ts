@@ -1,14 +1,16 @@
+import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
+
+import axios from "axios";
+import * as fs from "fs";
 import "mocha";
 import * as assert from "power-assert";
 import { fail } from "power-assert";
 
-import axios from "axios";
-import * as fs from "fs";
-
-import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
-
 import { ActionResult } from "../../src/action/ActionResult";
-import { GitHubDotComBase, GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
+import {
+    GitHubDotComBase,
+    GitHubRepoRef,
+} from "../../src/operations/common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../../src/operations/common/ProjectOperationCredentials";
 import { RemoteRepoRef } from "../../src/operations/common/RepoId";
 import { generate } from "../../src/operations/generate/generatorUtils";

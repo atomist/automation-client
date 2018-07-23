@@ -1,11 +1,13 @@
+import * as _ from "lodash";
 import "mocha";
 import * as assert from "power-assert";
 
-import * as _ from "lodash";
-
 import { ApolloGraphClient } from "../../src/graph/ApolloGraphClient";
 import { allReposInTeam } from "../../src/operations/common/allReposInTeamRepoFinder";
-import { GitHubToken, SlackTeamId } from "./gitHubTest";
+import {
+    GitHubToken,
+    SlackTeamId,
+} from "./gitHubTest";
 
 describe("allReposInOrgRepoFinder", () => {
 

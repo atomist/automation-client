@@ -1,11 +1,12 @@
-import * as stringify from "json-stringify-safe";
-import "mocha";
-import * as assert from "power-assert";
-
 import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { Integer } from "@atomist/microgrammar/Primitives";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
-import { TreeVisitor, visit } from "@atomist/tree-path/visitor";
+import {
+    TreeVisitor,
+    visit,
+} from "@atomist/tree-path/visitor";
+import "mocha";
+import * as assert from "power-assert";
 import { InMemoryFile } from "../../../../src/project/mem/InMemoryFile";
 import { MicrogrammarBasedFileParser } from "../../../../src/tree/ast/microgrammar/MicrogrammarBasedFileParser";
 

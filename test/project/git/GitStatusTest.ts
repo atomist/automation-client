@@ -1,7 +1,6 @@
+import * as stringify from "json-stringify-safe";
 import "mocha";
 import * as assert from "power-assert";
-
-import * as stringify from "json-stringify-safe";
 
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";

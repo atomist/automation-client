@@ -3,7 +3,6 @@ import {
     MappedParameter,
     MappedParameters,
     Parameter,
-    Value,
 } from "../../src/decorators";
 import { HandleCommand } from "../../src/HandleCommand";
 import {
@@ -14,7 +13,6 @@ import {
     failure,
     HandlerResult,
     Success,
-    success,
 } from "../../src/HandlerResult";
 import {
     addressEvent,

@@ -1,10 +1,11 @@
-import * as assert from "power-assert";
-
-import stringify = require("json-stringify-safe");
 import "mocha";
+import * as assert from "power-assert";
 import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { findMatches, zapAllMatches } from "../../../src/tree/ast/astUtils";
+import {
+    findMatches,
+    zapAllMatches,
+} from "../../../src/tree/ast/astUtils";
 import { ZapTrailingWhitespace } from "../../../src/tree/ast/FileHits";
 import { TypeScriptES6FileParser } from "../../../src/tree/ast/typescript/TypeScriptFileParser";
 

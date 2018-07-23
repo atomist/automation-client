@@ -1,7 +1,7 @@
 import "mocha";
-import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
 
 import * as assert from "power-assert";
+import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
 import { CommandHandlerMetadata } from "../../../src/metadata/automationMetadata";
 import { addAtomistSpringAgent } from "./addAtomistSpringAgent";
 

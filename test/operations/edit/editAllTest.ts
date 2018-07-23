@@ -3,15 +3,19 @@ import "mocha";
 
 import * as assert from "power-assert";
 
-import { fromListRepoFinder, fromListRepoLoader } from "../../../src/operations/common/fromProjectList";
+import {
+    fromListRepoFinder,
+    fromListRepoLoader,
+} from "../../../src/operations/common/fromProjectList";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { AlwaysAskRepoParameters } from "../../../src/operations/common/params/AlwaysAskRepoParameters";
 import { BaseEditorOrReviewerParameters } from "../../../src/operations/common/params/BaseEditorOrReviewerParameters";
-import { MappedRepoParameters } from "../../../src/operations/common/params/MappedRepoParameters";
 import { editAll } from "../../../src/operations/edit/editAll";
 import { CustomExecutionEditMode } from "../../../src/operations/edit/editModes";
 import {
-    failedEdit, ProjectEditor, SimpleProjectEditor,
+    failedEdit,
+    ProjectEditor,
+    SimpleProjectEditor,
     successfulEdit,
 } from "../../../src/operations/edit/projectEditor";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";

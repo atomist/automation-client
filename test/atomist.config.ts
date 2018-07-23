@@ -8,7 +8,6 @@ import {
     CommandHandlerMetadata,
     EventHandlerMetadata,
 } from "../src/metadata/automationMetadata";
-import { githubTeam } from "../src/secured";
 import { AutomationMetadataProcessor } from "../src/spi/env/MetadataProcessor";
 import { FileMessageTest } from "./command/FileMessageTest";
 import { HelloWorld } from "./command/HelloWorld";
@@ -65,12 +64,12 @@ export const configuration: Configuration = {
     name: "@atomist/automation-node-tests",
     version: "0.0.7",
     // policy: "durable",
-    teamIds: ["T1L0VDKJP"],
+    // teamIds: ["T1L0VDKJP"],
     keywords: ["test", "automation"],
     token: process.env.GITHUB_TOKEN,
     commands: [
         // ...scanCommands( ["**/metadata/addAtomistSpringAgent.js", "**/command/Search*.js"] ),
-        githubTeam(HelloWorld, "atomist-automation"),
+        HelloWorld,
         MessageTest,
         FileMessageTest,
         () => {
@@ -126,7 +125,7 @@ export const configuration: Configuration = {
         teamId: "T1L0VDKJP",
     },
     cluster: {
-        enabled: false,
+        enabled: true,
         // workers: 4,
     },
     postProcessors: [

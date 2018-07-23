@@ -7,7 +7,10 @@ import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { ScriptedFlushable } from "../../internal/common/Flushable";
 import { logger } from "../../internal/util/logger";
 import { File } from "../../project/File";
-import { Project, ProjectAsync } from "../../project/Project";
+import {
+    Project,
+    ProjectAsync,
+} from "../../project/Project";
 import { LocatedTreeNode } from "../LocatedTreeNode";
 
 /**

@@ -23,7 +23,10 @@ import {
 import { encode } from "../../internal/util/base64";
 import { logger } from "../../internal/util/logger";
 import { Configurable } from "../../project/git/Configurable";
-import { spawnAndWatch, WritableLog } from "../../util/spawned";
+import {
+    spawnAndWatch,
+    WritableLog,
+} from "../../util/spawned";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";

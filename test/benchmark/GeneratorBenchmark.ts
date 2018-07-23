@@ -1,12 +1,21 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import { ActionResult, successOn } from "../../src/action/ActionResult";
-import { logger, LoggingConfig } from "../../src/internal/util/logger";
+import {
+    ActionResult,
+    successOn,
+} from "../../src/action/ActionResult";
+import {
+    logger,
+    LoggingConfig,
+} from "../../src/internal/util/logger";
 import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../../src/operations/common/ProjectOperationCredentials";
 import { RepoId } from "../../src/operations/common/RepoId";
-import { generate, ProjectPersister } from "../../src/operations/generate/generatorUtils";
+import {
+    generate,
+    ProjectPersister,
+} from "../../src/operations/generate/generatorUtils";
 import { LocalProject } from "../../src/project/local/LocalProject";
 import { NodeFsLocalProject } from "../../src/project/local/NodeFsLocalProject";
 import { InMemoryProject } from "../../src/project/mem/InMemoryProject";

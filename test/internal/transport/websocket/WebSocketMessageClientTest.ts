@@ -1,7 +1,6 @@
 import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
-import WebSocket = require("ws");
 import {
     clean,
     WebSocketCommandMessageClient,
@@ -10,8 +9,10 @@ import {
 import { guid } from "../../../../src/internal/util/string";
 import {
     buttonForCommand,
-    SlackDestination, SlackFileMessage,
+    SlackDestination,
+    SlackFileMessage,
 } from "../../../../src/spi/message/MessageClient";
+import WebSocket = require("ws");
 
 describe("WebSocketMessageClient", () => {
 
