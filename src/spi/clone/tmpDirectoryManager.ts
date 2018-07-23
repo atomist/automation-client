@@ -17,7 +17,7 @@ export const TmpDirectoryManager: DirectoryManager = {
         return tmp.dir({ keep: opts.keep })// the lack of typings here causes lack of typechecking in this function
             .then(fromTmp => ({
                 ...fromTmp,
-                type: "empty-directory",
+                type: "empty-directory" as "empty-directory" | "existing-directory",
                 release: () => cleanup(fromTmp.path, opts.keep),
                 invalidate: () => Promise.resolve(), // and here
                 transient: true,
