@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 import * as HttpsProxyAgent from "https-proxy-agent";
 import * as stringify from "json-stringify-safe";
+import promiseRetry = require("promise-retry");
 import * as serializeError from "serialize-error";
 import * as url from "url";
 import * as WebSocket from "ws";
@@ -21,7 +22,6 @@ import {
     RegistrationConfirmation,
     WebSocketRequestProcessor,
 } from "./WebSocketRequestProcessor";
-import promiseRetry = require("promise-retry");
 import Timer = NodeJS.Timer;
 
 export class WebSocketClient {

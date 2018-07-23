@@ -9,6 +9,7 @@ import {
     LoggingConfig,
 } from "../../src/internal/util/logger";
 
+import promiseRetry = require("promise-retry");
 import { guid } from "../../src/internal/util/string";
 import {
     GitHubDotComBase,
@@ -22,7 +23,6 @@ import {
     Creds,
     GitHubToken,
 } from "./gitHubTest";
-import promiseRetry = require("promise-retry");
 
 LoggingConfig.format = "cli";
 (logger as winston.LoggerInstance).transports.console.level = process.env.LOG_LEVEL || "info";

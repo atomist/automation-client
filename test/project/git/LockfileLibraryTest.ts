@@ -2,11 +2,11 @@ import "mocha";
 
 import * as assert from "power-assert";
 import { fail } from "power-assert";
+import lockfile = require("proper-lockfile");
 import {
     LockAcquired,
     pleaseLock,
 } from "../../../src/spi/clone/CachingDirectoryManager";
-import lockfile = require("proper-lockfile");
 
 describe("exploratory tests for proper-locking", () => {
     it("should be able to release a lock", done => {
