@@ -4,7 +4,9 @@ import {
 } from "@atomist/slack-messages/SlackMessages";
 import * as _ from "lodash";
 import { AnyOptions } from "../../configuration";
+import { HandlerContext } from "../../HandlerContext";
 import { metadataFromInstance } from "../../internal/metadata/metadataReading";
+import { lookupChatTeam } from "./MessageClientSupport";
 
 /**
  * Implemented by classes that can send bot messages, whether to
@@ -105,6 +107,19 @@ export function addressSlackUsers(team: string, ...users: string[]): SlackDestin
 }
 
 /**
+ * Shortcut for creating a SlackDestination which addresses the given users in all connected Slack teams.
+ * @param {HandlerContext} ctx
+ * @param {string} users
+ * @returns {Promise<SlackDestination>}
+ */
+export function addressSlackUsersFromContext(ctx: HandlerContext, ...users: string[]): Promise<SlackDestination> {
+    return lookupChatTeam(ctx.graphClient)
+        .then(chatTeamId => {
+            return addressSlackUsers(chatTeamId, ...users);
+        });
+}
+
+/**
  * Shortcut for creating a SlackDestination which addresses the given channels.
  * @param {string} team
  * @param {string} channels
@@ -114,6 +129,19 @@ export function addressSlackChannels(team: string, ...channels: string[]): Slack
     const sd = new SlackDestination(team);
     channels.forEach(c => sd.addressChannel(c));
     return sd;
+}
+
+/**
+ * Shortcut for creating a SlackDestination which addresses the given channels in all connected Slack teams.
+ * @param {HandlerContext} ctx
+ * @param {string} channels
+ * @returns {Promise<SlackDestination>}
+ */
+export function addressSlackChannelsFromContext(ctx: HandlerContext, ...channels: string[]): Promise<SlackDestination> {
+    return lookupChatTeam(ctx.graphClient)
+        .then(chatTeamId => {
+            return addressSlackChannels(chatTeamId, ...channels);
+        });
 }
 
 /**

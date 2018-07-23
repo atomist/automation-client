@@ -1,6 +1,10 @@
 import { SlackMessage } from "@atomist/slack-messages";
+import { HandlerContext } from "../../HandlerContext";
 import { toStringArray } from "../../internal/util/string";
-import { GraphClient } from "../graph/GraphClient";
+import {
+    GraphClient,
+    QueryNoCacheOptions,
+} from "../graph/GraphClient";
 import {
     addressSlackChannels,
     addressSlackUsers,
@@ -60,7 +64,7 @@ export class DefaultSlackMessageClient implements MessageClient, SlackMessageCli
         if (!users || Array.isArray(users) && users.length === 0) {
             throw new Error("Please pass at least one user");
         }
-        return this.lookupChatTeam()
+        return lookupChatTeam(this.graphClient)
             .then(chatTeamId =>
                 this.delegate.send(msg, addressSlackUsers(chatTeamId, ...toStringArray(users)), options));
     }
@@ -71,26 +75,30 @@ export class DefaultSlackMessageClient implements MessageClient, SlackMessageCli
         if (!channels || Array.isArray(channels) && channels.length === 0) {
             throw new Error("Please pass at least one channel");
         }
-        return this.lookupChatTeam()
+        return lookupChatTeam(this.graphClient)
             .then(chatTeamId =>
                 this.delegate.send(msg, addressSlackChannels(chatTeamId, ...toStringArray(channels)), options));
 
     }
+}
 
-    private lookupChatTeam(): Promise<string> {
-        if (this.graphClient) {
-            return this.graphClient.executeQuery<any, any>(Query, {})
-                .then(result => {
-                    if (result.ChatTeam.length > 1) {
-                        return Promise.reject("More then 1 ChatTeam found. Please use fully qualified " +
-                            "message addressing available on MessageClient");
-                    } else {
-                        return result.ChatTeam[0].id;
-                    }
-                });
-        } else {
-            return Promise.reject("No GraphClient to lookup ChatTeam. Please use fully qualified message " +
-                "addressing available on MessageClient");
-        }
+export function lookupChatTeam(graphClient: GraphClient): Promise<string> {
+    if (graphClient) {
+        return graphClient.query<any, any>({
+                query: Query,
+                variables: {},
+                options: QueryNoCacheOptions,
+            })
+            .then(result => {
+                if (result.ChatTeam.length > 1) {
+                    return Promise.reject("More then 1 ChatTeam found. Please use fully qualified " +
+                        "message addressing available on MessageClient");
+                } else {
+                    return result.ChatTeam[0].id;
+                }
+            });
+    } else {
+        return Promise.reject("No GraphClient to lookup ChatTeam. Please use fully qualified message " +
+            "addressing available on MessageClient");
     }
 }
