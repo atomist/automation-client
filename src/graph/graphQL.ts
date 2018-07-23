@@ -1,5 +1,4 @@
 import * as appRoot from "app-root-path";
-import { murmur3 } from "murmurhash-js/";
 import * as trace from "stack-trace";
 import * as internalGraphQL from "../internal/graph/graphQL";
 import {

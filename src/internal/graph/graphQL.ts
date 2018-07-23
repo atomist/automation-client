@@ -9,9 +9,11 @@ import {
 } from "graphql";
 import gql from "graphql-tag";
 import { validate } from "graphql/validation";
-import { murmur3 } from "murmurhash-js/";
 import * as p from "path";
-import { findLine } from "../util/string";
+import {
+    findLine,
+    generateHash,
+} from "../util/string";
 
 // tslint:disable-next-line:no-var-requires
 const schema = require("../../graph/schema.cortex.json");
@@ -269,7 +271,7 @@ export function replaceParameters(q: string,
             }
 
             // Calulate hash to suffix the subscriptionName
-            const hash = murmur3(q, 37);
+            const hash = generateHash(q);
             q = replaceOperationName(q, `${result[1]}_${hash}`);
         }
     }
