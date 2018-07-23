@@ -29,6 +29,7 @@ import {
     TestingDefaultConfiguration,
     UserConfig,
 } from "../src/configuration";
+import { DefaultHttpClientFactory } from "../src/spi/http/axiosHttpClient";
 
 describe("configuration", () => {
 
@@ -69,6 +70,9 @@ describe("configuration", () => {
                 },
             },
             customizers: [],
+            client: {
+                factory: DefaultHttpClientFactory,
+            },
         },
         ws: {
             enabled: true,
