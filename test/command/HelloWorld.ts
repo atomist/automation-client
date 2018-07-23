@@ -6,7 +6,10 @@ import {
     Value,
 } from "../../src/decorators";
 import { HandleCommand } from "../../src/HandleCommand";
-import { HandlerContext } from "../../src/HandlerContext";
+import {
+    ConfigurationAware,
+    HandlerContext,
+} from "../../src/HandlerContext";
 import {
     failure,
     HandlerResult,
@@ -30,6 +33,8 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
     public sender: string;
 
     public async handle(ctx: HandlerContext): Promise<HandlerResult> {
+
+        const conf = (ctx as any as ConfigurationAware).configuration;
 
         const helloWorld = {
             sender: {

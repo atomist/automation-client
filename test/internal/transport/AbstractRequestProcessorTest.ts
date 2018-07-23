@@ -113,7 +113,7 @@ describe("the processCommand method", () => {
         };
 
         return new Promise((resolve, reject) =>
-            new ConcreteRequestProcessor(automationServer).invokeCommandPlease(
+            new ConcreteRequestProcessor(automationServer, {}).invokeCommandPlease(
                 commandInvocation,
                 context,
                 command, resultPromise => {
@@ -230,7 +230,7 @@ describe("the processEvent method", () => {
         };
 
         return new Promise((resolve, reject) =>
-            new ConcreteRequestProcessor(automationServer).invokeEventPlease(
+            new ConcreteRequestProcessor(automationServer, {}).invokeEventPlease(
                 invocation,
                 context,
                 incoming, resultPromise => {

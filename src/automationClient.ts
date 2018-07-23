@@ -21,10 +21,7 @@ import { MetricEnabledAutomationEventListener } from "./internal/transport/Metri
 import { onLogMaker } from "./internal/transport/OnLog";
 import { DefaultWebSocketRequestProcessor } from "./internal/transport/websocket/DefaultWebSocketRequestProcessor";
 import { prepareRegistration } from "./internal/transport/websocket/payloads";
-import {
-    WebSocketClient,
-    WebSocketClientOptions,
-} from "./internal/transport/websocket/WebSocketClient";
+import { WebSocketClient } from "./internal/transport/websocket/WebSocketClient";
 import { WebSocketRequestProcessor } from "./internal/transport/websocket/WebSocketRequestProcessor";
 import {
     addFileTransport,
@@ -75,15 +72,6 @@ export class AutomationClient {
     public run(): Promise<any> {
         (global as any).__runningAutomationClient = this as AutomationClient;
 
-        const webSocketOptions: WebSocketClientOptions = {
-            graphUrl: this.configuration.endpoints.graphql,
-            registrationUrl: this.configuration.endpoints.api,
-            token: this.configuration.token,
-            termination: this.configuration.ws.termination,
-            compress: this.configuration.ws.compress,
-            timeout: this.configuration.ws.timeout,
-        };
-
         if (this.configuration.logging.logEvents.enabled) {
             this.withEventHandler(
                 onLogMaker(this.configuration.name,
@@ -105,7 +93,7 @@ export class AutomationClient {
             this.defaultListeners.push(new StatsdAutomationEventListener(this.configuration));
         }
 
-        const clientSig = `${this.configuration.name}@${this.configuration.version}`;
+        const clientSig = `${this.configuration.name}:${this.configuration.version}`;
         const clientConf = stringify(this.configuration, obfuscateJson);
 
         if (!this.configuration.cluster.enabled) {
@@ -113,9 +101,9 @@ export class AutomationClient {
             logger.debug(`Using automation client configuration: ${clientConf}`);
 
             if (this.configuration.ws.enabled) {
-                this.webSocketHandler = this.setupWebSocketRequestHandler(webSocketOptions);
+                this.webSocketHandler = this.setupWebSocketRequestHandler();
                 return Promise.all([
-                    this.runWs(this.webSocketHandler, webSocketOptions),
+                    this.runWs(this.webSocketHandler),
                     Promise.resolve(this.runHttp()),
                     this.setupApplicationEvents(),
                 ]);
@@ -129,33 +117,31 @@ export class AutomationClient {
             logger.info(`Starting Atomist automation client master ${clientSig}`);
             logger.debug(`Using automation client configuration: ${clientConf}`);
 
-            this.webSocketHandler = this.setupWebSocketClusterRequestHandler(webSocketOptions);
+            this.webSocketHandler = this.setupWebSocketClusterRequestHandler();
             return (this.webSocketHandler as ClusterMasterRequestProcessor).run()
                 .then(() => {
                     return Promise.all([
-                        this.runWs(this.webSocketHandler, webSocketOptions),
+                        this.runWs(this.webSocketHandler),
                         Promise.resolve(this.runHttp()),
                         this.setupApplicationEvents(),
                     ]);
                 });
         } else if (cluster.isWorker) {
             logger.info(`Starting Atomist automation client worker ${clientSig}`);
-            return Promise.resolve(startWorker(this.automations, webSocketOptions,
-                [...this.defaultListeners, ...this.configuration.listeners]));
+            return Promise.resolve(startWorker(this.automations, this.configuration,
+                [ ...this.defaultListeners, ...this.configuration.listeners ]));
         }
     }
 
-    private setupWebSocketClusterRequestHandler(
-        webSocketOptions: WebSocketClientOptions,
-    ): ClusterMasterRequestProcessor {
-        return new ClusterMasterRequestProcessor(this.automations, webSocketOptions,
-            [...this.defaultListeners, ...this.configuration.listeners],
+    private setupWebSocketClusterRequestHandler(): ClusterMasterRequestProcessor {
+        return new ClusterMasterRequestProcessor(this.automations, this.configuration,
+            [ ...this.defaultListeners, ...this.configuration.listeners ],
             this.configuration.cluster.workers);
     }
 
-    private setupWebSocketRequestHandler(webSocketOptions: WebSocketClientOptions): WebSocketRequestProcessor {
-        return new DefaultWebSocketRequestProcessor(this.automations, webSocketOptions,
-            [...this.defaultListeners, ...this.configuration.listeners]);
+    private setupWebSocketRequestHandler(): WebSocketRequestProcessor {
+        return new DefaultWebSocketRequestProcessor(this.automations, this.configuration,
+            [ ...this.defaultListeners, ...this.configuration.listeners ]);
     }
 
     private setupApplicationEvents(): Promise<any> {
@@ -163,17 +149,16 @@ export class AutomationClient {
             if (this.configuration.applicationEvents.teamId) {
                 return registerApplicationEvents(this.configuration.applicationEvents.teamId);
             } else if (this.configuration.teamIds.length > 0) {
-                return registerApplicationEvents(this.configuration.teamIds[0]);
+                return registerApplicationEvents(this.configuration.teamIds[ 0 ]);
             }
         }
         return Promise.resolve();
     }
 
-    private runWs(handler: WebSocketRequestProcessor,
-                  options: WebSocketClientOptions): Promise<void> {
+    private runWs(handler: WebSocketRequestProcessor): Promise<void> {
 
         const payloadOptions: any = {};
-        if (options.compress) {
+        if (this.configuration.ws && this.configuration.ws.compress) {
             payloadOptions.accept_encoding = "gzip";
         }
 
@@ -181,7 +166,7 @@ export class AutomationClient {
             () => prepareRegistration(this.automations.automations,
                 payloadOptions,
                 this.configuration.metadata),
-            options,
+            this.configuration,
             handler);
         return this.webSocketClient.start();
     }
@@ -207,7 +192,7 @@ export class AutomationClient {
         };
         this.httpServer = new ExpressServer(
             this.automations,
-            [...this.defaultListeners, ...this.configuration.listeners],
+            [ ...this.defaultListeners, ...this.configuration.listeners ],
             expressOptions);
     }
 }
@@ -223,7 +208,7 @@ export function automationClient(configuration: Configuration): AutomationClient
     configuration.ingesters.forEach(e => {
         if (typeof e === "string") {
             client.withIngester(e as string);
-        } else  if ((e as any).build) {
+        } else if ((e as any).build) {
             client.withIngester((e as IngesterBuilder).build());
         } else {
             client.withIngester(e as Ingester);

@@ -1,3 +1,4 @@
+import { Configuration } from "./configuration";
 import { Contextual } from "./internal/invoker/Payload";
 import {
     CommandIncoming,
@@ -40,6 +41,14 @@ export interface AutomationContextAware {
     context: AutomationContext;
 
     trigger: CommandIncoming | EventIncoming;
+}
+
+/**
+ * Access to the currently running automation client configuration
+ */
+export interface ConfigurationAware {
+
+    configuration: Configuration;
 }
 
 /**

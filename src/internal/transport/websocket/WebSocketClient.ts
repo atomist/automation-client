@@ -6,6 +6,7 @@ import * as serializeError from "serialize-error";
 import * as url from "url";
 import * as WebSocket from "ws";
 import * as zlib from "zlib";
+import { Configuration } from "../../../configuration";
 import { Deferred } from "../../util/Deferred";
 import { configureProxy } from "../../util/http";
 import { logger } from "../../util/logger";
@@ -27,21 +28,21 @@ export class WebSocketClient {
 
     public constructor(
         private registrationCallback: () => any,
-        private options: WebSocketClientOptions,
+        private configuration: Configuration,
         private requestProcessor: WebSocketRequestProcessor,
     ) { }
 
     public start(): Promise<void> {
 
-        const connection = register(this.registrationCallback, this.options, this.requestProcessor, 5)
+        const connection = register(this.registrationCallback, this.configuration, this.requestProcessor, 5)
             .then(registration =>
-                connect(this.registrationCallback, registration, this.options, this.requestProcessor));
+                connect(this.registrationCallback, registration, this.configuration, this.requestProcessor));
         return connection.then(() => {
 
             registerShutdownHook(() => {
                 reconnect = false;
 
-                if (this.options.termination && this.options.termination.graceful === true) {
+                if (this.configuration.ws.termination && this.configuration.ws.termination.graceful === true) {
                     logger.info("Initiating WebSocket connection shutdown");
 
                     // Now wait for configured timeout to let in-flight messages finish processing
@@ -50,7 +51,7 @@ export class WebSocketClient {
                         ws.close();
                         logger.info("Closing WebSocket connection");
                         deferred.resolve(0);
-                    }, this.options.termination.gracePeriod);
+                    }, this.configuration.ws.termination.gracePeriod);
 
                     return deferred.promise
                         .then(code => {
@@ -75,8 +76,10 @@ let ping = 0;
 let pong;
 let ws;
 
-function connect(registrationCallback: () => any, registration: RegistrationConfirmation,
-                 options: WebSocketClientOptions, requestProcessor: WebSocketRequestProcessor): Promise<WebSocket> {
+function connect(registrationCallback: () => any,
+                 registration: RegistrationConfirmation,
+                 configuration: Configuration,
+                 requestProcessor: WebSocketRequestProcessor): Promise<WebSocket> {
 
     // Functions are inline to avoid "this" peculiarities
     function invokeCommandHandler(chr: CommandIncoming) {
@@ -154,7 +157,7 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
                 }
             }
 
-            if (options.compress) {
+            if (configuration.ws.compress) {
                 zlib.gunzip(data as Buffer, (err, result) => {
                     if (!err) {
                         handleMessage(result.toString());
@@ -178,8 +181,8 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
             reset();
             // Only attempt to reconnect if we aren't shutting down
             if (reconnect) {
-                register(registrationCallback, options, requestProcessor)
-                    .then(reg => connect(registrationCallback, reg, options, requestProcessor));
+                register(registrationCallback, configuration, requestProcessor)
+                    .then(reg => connect(registrationCallback, reg, configuration, requestProcessor));
             }
         });
 
@@ -198,12 +201,14 @@ function connect(registrationCallback: () => any, registration: RegistrationConf
     });
 }
 
-function register(registrationCallback: () => any, options: WebSocketClientOptions,
-                  handler: WebSocketRequestProcessor, retries: number = 100): Promise<RegistrationConfirmation> {
+function register(registrationCallback: () => any,
+                  configuration: Configuration,
+                  handler: WebSocketRequestProcessor,
+                  retries: number = 100): Promise<RegistrationConfirmation> {
     const registrationPayload = registrationCallback();
 
-    logger.debug(`Registering ${registrationPayload.name}@${registrationPayload.version} ` +
-        `with Atomist at '${options.registrationUrl}': ${stringify(registrationPayload)}`);
+    logger.debug(`Registering ${registrationPayload.name}:${registrationPayload.version} ` +
+        `with Atomist at '${configuration.endpoints.api}': ${stringify(registrationPayload)}`);
 
     const retryOptions = {
         retries,
@@ -220,11 +225,11 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
         }
 
         const config: AxiosRequestConfig = {
-            headers: { Authorization: `token ${options.token}` },
-            timeout: options.timeout || 10000,
+            headers: { Authorization: `token ${configuration.token}` },
+            timeout: configuration.ws.timeout || 10000,
         };
 
-        return axios.post(options.registrationUrl, registrationPayload, configureProxy(config))
+        return axios.post(configuration.endpoints.api, registrationPayload, configureProxy(config))
             .then(result => {
                 const registration = result.data as RegistrationConfirmation;
 
@@ -251,18 +256,6 @@ function register(registrationCallback: () => any, options: WebSocketClientOptio
                 }
             }) as Promise<RegistrationConfirmation>;
     });
-}
-
-export interface WebSocketClientOptions {
-    registrationUrl: string;
-    graphUrl: string;
-    token: string;
-    termination?: {
-        gracePeriod?: number;
-        graceful?: boolean;
-    };
-    compress?: boolean;
-    timeout?: number;
 }
 
 function isPing(a: any): a is Ping {

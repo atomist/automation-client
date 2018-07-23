@@ -1,5 +1,6 @@
 import * as stringify from "json-stringify-safe";
 import * as WebSocket from "ws";
+import { Configuration } from "../../../configuration";
 import * as global from "../../../globals";
 import {
     AutomationContextAware,
@@ -23,7 +24,6 @@ import {
 } from "../RequestProcessor";
 import { showStartupMessages } from "../showStartupMessages";
 import { GraphClientFactory } from "./GraphClientFactory";
-import { WebSocketClientOptions } from "./WebSocketClient";
 import {
     sendMessage,
     WebSocketCommandMessageClient,
@@ -42,7 +42,7 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
     private webSocket?: WebSocket;
 
     constructor(protected automations: AutomationServer,
-                protected options: WebSocketClientOptions,
+                protected configuration: Configuration,
                 protected listeners: AutomationEventListener[] = []) {
         super(automations, listeners);
 
@@ -59,7 +59,7 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
         logger.info("Registration successful: %s", stringify(registration));
         global.setJwtToken(registration.jwt);
         this.registration = registration;
-        this.graphClients = new GraphClientFactory(this.registration, this.options);
+        this.graphClients = new GraphClientFactory(this.registration, this.configuration);
         showStartupMessages(registration, this.automations.automations)
             .then(() => {
                 // intentionally left empty

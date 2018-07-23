@@ -1,5 +1,6 @@
 import * as stringify from "json-stringify-safe";
 import * as NodeCache from "node-cache";
+import { Configuration } from "../../../configuration";
 import { ApolloGraphClient } from "../../../graph/ApolloGraphClient";
 import { GraphClient } from "../../../spi/graph/GraphClient";
 import { logger } from "../../util/logger";
@@ -9,7 +10,6 @@ import {
     isCommandIncoming,
     isEventIncoming,
 } from "../RequestProcessor";
-import { WebSocketClientOptions } from "./WebSocketClient";
 import { RegistrationConfirmation } from "./WebSocketRequestProcessor";
 
 /**
@@ -21,7 +21,7 @@ export class GraphClientFactory {
 
     private graphClients = new NodeCache({ stdTTL: 1 * 60, checkperiod: 1 * 30, useClones: false });
 
-    constructor(private registration: RegistrationConfirmation, private options: WebSocketClientOptions) { }
+    constructor(private registration: RegistrationConfirmation, private configuration: Configuration) { }
 
     public createGraphClient(event: CommandIncoming | EventIncoming): GraphClient {
         let teamId;
@@ -37,7 +37,7 @@ export class GraphClientFactory {
             return graphClient;
         } else if (this.registration) {
             logger.debug("Creating new graph client for team '%s'", teamId);
-            graphClient = new ApolloGraphClient(`${this.options.graphUrl}/${teamId}`,
+            graphClient = new ApolloGraphClient(`${this.configuration.endpoints.graphql}/${teamId}`,
                 { Authorization: `Bearer ${this.registration.jwt}` });
             this.graphClients.set(teamId, graphClient);
             return graphClient;

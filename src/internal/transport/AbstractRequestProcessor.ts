@@ -1,9 +1,11 @@
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as serializeError from "serialize-error";
+import { Configuration } from "../../configuration";
 import { EventFired } from "../../HandleEvent";
 import {
     AutomationContextAware,
+    ConfigurationAware,
     HandlerContext,
 } from "../../HandlerContext";
 import {
@@ -42,11 +44,12 @@ import { HandlerResponse } from "./websocket/WebSocketMessageClient";
 export abstract class AbstractRequestProcessor implements RequestProcessor {
 
     constructor(protected automations: AutomationServer,
+                protected configuration: Configuration,
                 protected listeners: AutomationEventListener[] = []) {
     }
 
     public processCommand(command: CommandIncoming,
-        // tslint:disable-next-line:no-empty
+                          // tslint:disable-next-line:no-empty
                           callback: (result: Promise<HandlerResult>) => void = () => { }) {
         // setup context
         const ses = namespace.init();
@@ -63,7 +66,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 mappedParameters: command.mapped_parameters,
                 secrets: command.secrets,
             };
-            const ctx: HandlerContext & AutomationContextAware = {
+            const ctx: HandlerContext & AutomationContextAware & ConfigurationAware = {
                 teamId: command.team.id,
                 source: command.source,
                 correlationId: command.correlation_id,
@@ -71,6 +74,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 messageClient: undefined,
                 context: cls,
                 trigger: _.cloneDeep(command),
+                configuration: this.configuration,
             };
 
             ctx.graphClient = this.createGraphClient(command, ctx);
@@ -106,13 +110,14 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 },
                 secrets: event.secrets,
             };
-            const ctx: HandlerContext & AutomationContextAware = {
+            const ctx: HandlerContext & AutomationContextAware & ConfigurationAware = {
                 teamId: event.extensions.team_id,
                 correlationId: event.extensions.correlation_id,
                 invocationId: np ? np.invocationId : undefined,
                 messageClient: undefined,
                 context: cls,
                 trigger: _.cloneDeep(event),
+                configuration: this.configuration,
             };
 
             ctx.graphClient = this.createGraphClient(event, ctx);

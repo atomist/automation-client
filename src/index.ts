@@ -1,4 +1,7 @@
-export { Configuration } from "./configuration";
+export {
+    Configuration,
+    configurationValue,
+} from "./configuration";
 
 export {
     CommandHandler,
@@ -22,8 +25,9 @@ export {
 } from "./HandleEvent";
 
 export {
-    HandlerContext,
     AutomationContextAware,
+    ConfigurationAware,
+    HandlerContext,
     HandlerLifecycle,
 } from "./HandlerContext";
 

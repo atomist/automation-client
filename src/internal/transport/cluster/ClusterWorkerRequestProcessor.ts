@@ -1,5 +1,6 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import * as stringify from "json-stringify-safe";
+import { Configuration } from "../../../configuration";
 import { EventFired } from "../../../HandleEvent";
 import {
     AutomationContextAware,
@@ -34,7 +35,6 @@ import {
     RequestProcessor,
 } from "../RequestProcessor";
 import { GraphClientFactory } from "../websocket/GraphClientFactory";
-import { WebSocketClientOptions } from "../websocket/WebSocketClient";
 import { RegistrationConfirmation } from "../websocket/WebSocketRequestProcessor";
 import {
     MasterMessage,
@@ -52,15 +52,17 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
     /* tslint:disable:variable-name */
     constructor(
         private _automations: AutomationServer,
-        private _options: WebSocketClientOptions,
+        private _configuration: Configuration,
         private _listeners: AutomationEventListener[] = [],
     ) {
 
-        super(_automations, [..._listeners, new ClusterWorkerAutomationEventListener()]);
+        super(_automations, _configuration, [..._listeners, new ClusterWorkerAutomationEventListener()]);
         workerSend({ type: "online", context: null });
         registerShutdownHook(() => {
 
-            if (this._options.termination && this._options.termination.graceful === true) {
+            if (this._configuration.ws &&
+                this._configuration.ws.termination &&
+                this._configuration.ws.termination.graceful === true) {
                 logger.info("Initiating worker shutdown");
 
                 // Now wait for configured timeout to let in-flight messages finish processing
@@ -68,7 +70,7 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
                 setTimeout(() => {
                     logger.info("Shutting down worker");
                     deferred.resolve(0);
-                }, this._options.termination.gracePeriod + 2500);
+                }, this._configuration.ws.termination.gracePeriod + 2500);
 
                 return deferred.promise
                     .then(code => {
@@ -85,7 +87,7 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
     public setRegistration(registration: RegistrationConfirmation) {
         logger.debug("Receiving registration '%s'", stringify(registration));
         this.registration = registration;
-        this.graphClients = new GraphClientFactory(this.registration, this._options);
+        this.graphClients = new GraphClientFactory(this.registration, this._configuration);
     }
 
     public setRegistrationIfRequired(data: any) {
@@ -190,9 +192,9 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
  * @returns {RequestProcessor}
  */
 export function startWorker(automations: AutomationServer,
-                            options: WebSocketClientOptions,
+                            configuration: Configuration,
                             listeners: AutomationEventListener[] = []): RequestProcessor {
-    const worker = new ClusterWorkerRequestProcessor(automations, options, listeners);
+    const worker = new ClusterWorkerRequestProcessor(automations, configuration, listeners);
     process.on("message", msg => {
         if (msg.type === "registration") {
             worker.setRegistration(msg.registration as RegistrationConfirmation);

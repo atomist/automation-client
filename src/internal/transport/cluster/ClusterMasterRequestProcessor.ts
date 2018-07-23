@@ -1,6 +1,7 @@
 import * as cluster from "cluster";
 import * as stringify from "json-stringify-safe";
 import * as WebSocket from "ws";
+import { Configuration } from "../../../configuration";
 import * as global from "../../../globals";
 import { EventFired } from "../../../HandleEvent";
 import {
@@ -29,7 +30,6 @@ import {
     isEventIncoming,
 } from "../RequestProcessor";
 import { showStartupMessages } from "../showStartupMessages";
-import { WebSocketClientOptions } from "../websocket/WebSocketClient";
 import {
     sendMessage,
     WebSocketCommandMessageClient,
@@ -60,10 +60,10 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
     private shutdownInitiated: boolean = false;
 
     constructor(protected automations: AutomationServer,
-                protected options: WebSocketClientOptions,
+                protected configuration: Configuration,
                 protected listeners: AutomationEventListener[] = [],
                 protected numWorkers: number = require("os").cpus().length) {
-        super(automations, listeners);
+        super(automations, configuration, listeners);
 
         registerHealthIndicator(() => {
             if (this.webSocket && this.registration) {
