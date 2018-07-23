@@ -33,6 +33,7 @@ export interface Subscription {
 
 export interface AtomistLog {
     level?: string | null;
+    category?: string | null;
     timestamp?: number | null;
     message?: string | null;
     correlation_context?: CorrelationContext | null;
