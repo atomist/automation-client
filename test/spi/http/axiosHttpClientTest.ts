@@ -4,6 +4,8 @@
  * See LICENSE file.
  */
 
+import axios from "axios";
+import MockAdapter from "axios-mock-adapter";
 import * as http from "http";
 import "mocha";
 import * as os from "os";
@@ -11,87 +13,76 @@ import * as assert from "power-assert";
 import { AxiosHttpClientFactory } from "../../../src/spi/http/axiosHttpClient";
 import { HttpMethod } from "../../../src/spi/http/httpClient";
 
-const hostname = os.hostname();
-
 describe("axiosHttpClient", () => {
 
-    let server;
+    const noRetries = {
+        retries: 0,
+    };
 
-    afterEach(() => {
-        server.close();
+    it("should exchange simple get", async () => {
+        const url = "http://somewhere.com/foo/bar.html";
+        const mock = new MockAdapter(axios);
+        mock.onGet(url).replyOnce(200, "foo and bar");
+
+        const hcf = new AxiosHttpClientFactory();
+        const hc = hcf.create(url);
+
+        const r = await hc.exchange(url, { retry: noRetries });
+        assert.strictEqual(r.status, 200);
+        assert.strictEqual(r.body, "foo and bar");
     });
 
-    it("should exchange simple get",  done => {
-        server = http.createServer((req, res) => {
-            assert.strictEqual(req.method, "GET");
-            assert.strictEqual(req.url, "/foo/bar.html");
-            res.writeHead(200, {"Content-Type": "text/plain"});
-            res.end("foo and bar");
-        }).listen(9999, hostname);
+    it("should exchange simple put", async () => {
+        const url = "http://api.elsewhere.com/foo";
+        const payload = { blupp: "bla" };
+        let posted = false;
+        const mock = new MockAdapter(axios);
+        mock.onPut(url, payload).replyOnce(config => {
+            posted = true;
+            assert(config.headers["Content-Type"] === "application/json");
+            return [201];
+        });
 
-        setTimeout(async () => {
-            const hcf = new AxiosHttpClientFactory();
-            const hc = hcf.create(`http://${hostname}:9999/foo/bar.html`);
+        const hcf = new AxiosHttpClientFactory();
+        const hc = hcf.create(url);
 
-            const r = await hc.exchange(`http://${hostname}:9999/foo/bar.html`);
-            assert.strictEqual(r.status, 200);
-            assert.strictEqual(r.body, "foo and bar");
-            done();
-        }, 3000);
+        const r = await hc.exchange(url, {
+            method: HttpMethod.Put,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: payload,
+            retry: noRetries,
+        });
+        assert(posted);
+        assert.strictEqual(r.status, 201);
+    });
 
-    }).timeout(10000);
+    it("should exchange simple post with response", async () => {
+        const url = "http://api.nowhere.com/foo";
+        const payload = { blupp: "bla" };
+        let posted = false;
+        const mock = new MockAdapter(axios);
+        mock.onPost(url, payload).replyOnce(config => {
+            posted = true;
+            assert(config.headers["Content-Type"] === "application/json");
+            return [201, config.data];
+        });
 
-    it("should exchange simple put",  done => {
-        server = http.createServer((req, res) => {
-            assert.strictEqual(req.method, "PUT");
-            assert.strictEqual(req.url, "/foo");
-            assert.strictEqual(req.headers["content-type"], "application/json");
+        const hcf = new AxiosHttpClientFactory();
+        const hc = hcf.create(url);
 
-            res.writeHead(201);
-            res.end();
-        }).listen(9999, hostname);
-
-        setTimeout(async () => {
-            const hcf = new AxiosHttpClientFactory();
-            const hc = hcf.create(`http://${hostname}:9999/foo`);
-
-            const r = await hc.exchange(`http://${hostname}:9999/foo`, {
-                method: HttpMethod.Put,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: { blupp: "bla" },
-            });
-            assert.strictEqual(r.status, 201);
-            done();
-        }, 3000);
-    }).timeout(10000);
-
-    it("should exchange simple post with response", done => {
-        server = http.createServer((req, res) => {
-            assert.strictEqual(req.method, "POST");
-            assert.strictEqual(req.url, "/foo");
-            assert.strictEqual(req.headers["content-type"], "application/json");
-
-            res.writeHead(201);
-            res.end(JSON.stringify({ bla: "blupp" }));
-        }).listen(9999, hostname);
-
-        setTimeout(async () => {
-            const hcf = new AxiosHttpClientFactory();
-            const hc = hcf.create(`http://${hostname}:9999/foo`);
-
-            const r = await hc.exchange(`http://${hostname}:9999/foo`, {
-                method: HttpMethod.Post,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: { bla: "blupp" },
-            });
-            assert.strictEqual(r.status, 201);
-            assert.deepEqual(r.body, { bla: "blupp" });
-            done();
-        }, 3000);
-    }).timeout(10000);
+        const r = await hc.exchange(url, {
+            method: HttpMethod.Post,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: payload,
+            retry: noRetries,
+        });
+        assert(posted);
+        assert.strictEqual(r.status, 201);
+        assert.deepStrictEqual(r.body, payload);
+    });
 
 });
