@@ -29,18 +29,14 @@ export class CurlHttpClient implements HttpClient {
         };
 
         // Prepare headers
-        const headers = [];
-        _.forEach(optionsToUse.headers, (v, k) => {
-            headers.push(`${k}: ${v}`);
-        });
+        const headers = _.map(optionsToUse.headers, (v, k) => `${k}: ${v}`);
 
         // Prepare the provided raw curl options
-        const rawOptions = [];
-        _.forEach(optionsToUse.options, (v, k) => {
+        const rawOptions = _.map(optionsToUse.options, (v, k) => {
             if (k.length === 1) {
-                rawOptions.push([ `-${k}`, v ]);
+                return [ `-${k}`, v ];
             } else {
-                rawOptions.push([ `--${k}`, v ]);
+                return [ `--${k}`, v ];
             }
         });
 
