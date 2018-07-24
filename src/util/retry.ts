@@ -22,7 +22,8 @@ export const DefaultRetryOptions: WrapOptions = {
  * @param {Object} opts
  * @return {Promise<R>}
  */
-export function doWithRetry<R>(what: () => Promise<R>, description: string,
+export function doWithRetry<R>(what: () => Promise<R>,
+                               description: string,
                                opts: WrapOptions = {}): Promise<R> {
     const retryOptions: WrapOptions = {
         ...DefaultRetryOptions,

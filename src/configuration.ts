@@ -43,6 +43,8 @@ import {
 import { AutomationEventListener } from "./server/AutomationEventListener";
 import { AutomationMetadataProcessor } from "./spi/env/MetadataProcessor";
 import { SecretResolver } from "./spi/env/SecretResolver";
+import { DefaultHttpClientFactory } from "./spi/http/axiosHttpClient";
+import { HttpClientFactory } from "./spi/http/httpClient";
 import { Maker } from "./util/constructionUtils";
 
 /**
@@ -129,7 +131,12 @@ export interface AutomationOptions extends AnyOptions {
      */
     token?: string;
     /** HTTP configuration, useful for health checks */
-    http?: { enabled?: boolean } & Partial<ExpressServerOptions>;
+    http?: {
+        enabled?: boolean
+        client?: {
+            factory?: HttpClientFactory,
+        },
+    } & Partial<ExpressServerOptions>;
     /** websocket configuration */
     ws?: {
         enabled?: boolean;
@@ -882,6 +889,9 @@ export const LocalDefaultConfiguration: Configuration = {
             },
         },
         customizers: [],
+        client: {
+            factory: DefaultHttpClientFactory,
+        },
     },
     ws: {
         enabled: true,
