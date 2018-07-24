@@ -47,6 +47,7 @@
     "express": "^4.16.2",
     "express-session": "^1.15.6",
     "find-up": "^2.1.0",
+    "flat": "^4.1.0",
     "fs-extra": "^5.0.0",
     "git-url-parse": "^8.3.1",
     "glob-promise": "^3.3.0",

@@ -56,6 +56,15 @@ describe("MessageClient", () => {
             assert.deepEqual(mergeParameters(handler, { name: "dd" }),
                 { name: "dd", userToken: "token_bla" });
         });
+
+        it("overwrite nested parameters from instance with explicit parameters", () => {
+            const handler = new HelloWorld();
+            handler.name = "cd";
+            handler.userToken = "token_bla";
+            (handler as any).foo = { bar: "bla" };
+            assert.deepEqual(mergeParameters(handler, { name: "dd" }),
+                { "name": "dd", "userToken": "token_bla", "foo.bar": "bla" });
+        });
     });
 
 });

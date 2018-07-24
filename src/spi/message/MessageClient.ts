@@ -2,6 +2,7 @@ import {
     Action,
     SlackMessage,
 } from "@atomist/slack-messages/SlackMessages";
+import { flatten } from "flat";
 import * as _ from "lodash";
 import { AnyOptions } from "../../configuration";
 import { HandlerContext } from "../../HandlerContext";
@@ -304,13 +305,12 @@ export function commandName(command: any): string {
 export function mergeParameters(command: any, parameters: any): any {
     // Reuse parameters defined on the instance
     if (typeof command !== "string" && typeof command !== "function") {
-        parameters = {
-            ...command,
-            ...parameters,
-        };
+        const newParameters = _.merge(command, parameters);
+        return flatten(newParameters);
     }
     return parameters;
 }
+
 function rugButtonFrom(action: ButtonSpecification, command: any): Action {
     if (!command.id) {
         throw new Error(`Please provide a valid non-empty command id`);
