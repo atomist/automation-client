@@ -93,9 +93,6 @@ describe("configuration", () => {
                 level: "debug",
             },
             banner: true,
-            logEvents: {
-                enabled: true,
-            },
         },
         statsd: {
             enabled: false,

@@ -5,7 +5,6 @@ import { automationClientInstance } from "../../globals";
 import { Automations } from "../metadata/metadata";
 import { info } from "../util/info";
 import { logger } from "../util/logger";
-import { OnLogName } from "./OnLog";
 import { RegistrationConfirmation } from "./websocket/WebSocketRequestProcessor";
 
 /**
@@ -50,8 +49,6 @@ export async function createStartupMessage(registration: RegistrationConfirmatio
         .sort((c1, c2) => c1.name.localeCompare(c2.name))
         .map(c => `    ${c.name} ${c.description ? `(${_.upperFirst(c.description)})` : ""}`);
     const events = automations.events
-    // filter internal atomist log event handler
-        .filter(e => e.name !== OnLogName)
         .sort((e1, e2) => e1.name.localeCompare(e2.name))
         .map(e => `    ${e.name} ${e.description ? `(${_.upperFirst(e.description)})` : ""}`);
 

@@ -32,7 +32,6 @@ import {
     IngesterBuilder,
 } from "./ingesters";
 import { ExpressServerOptions } from "./internal/transport/express/ExpressServer";
-import { LogHandler } from "./internal/transport/OnLog";
 import { RegistrationConfirmation } from "./internal/transport/websocket/WebSocketRequestProcessor";
 import { config } from "./internal/util/config";
 import { logger } from "./internal/util/logger";
@@ -218,13 +217,6 @@ export interface AutomationServerOptions extends AutomationOptions {
             enabled?: boolean,
             name?: string,
             level?: string,
-        },
-        /**
-         * Register LogHandler to subscribe to AtomistLog events
-         */
-        logEvents?: {
-            enabled?: boolean,
-            handlers?: LogHandler[],
         },
     };
     /** statsd config */
@@ -915,9 +907,6 @@ export const LocalDefaultConfiguration: Configuration = {
             level: "debug",
         },
         banner: true,
-        logEvents: {
-            enabled: true,
-        },
     },
     statsd: {
         enabled: false,
