@@ -94,11 +94,19 @@ export class IngesterBuilder {
 }
 
 /**
+ * @Deprecated use SDL (schema definition language) style instead
  * Builder to construct TypeBuilder instances fluently
  */
 export class TypeBuilder {
 
-    private fields: FieldType[] = [];
+    /**
+     * do not use! This is public only to prevent compiler errors when the location of automation-client is not
+     * identical for dependencies within an SDM.
+     *
+     * @Deprecated
+     * @type {any[]}
+     */
+    public readonly fields: FieldType[] = [];
 
     constructor(public name: string, public description?: string) { }
 
