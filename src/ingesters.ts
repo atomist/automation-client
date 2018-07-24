@@ -95,10 +95,18 @@ export class IngesterBuilder {
 
 /**
  * Builder to construct TypeBuilder instances fluently
+ * @Deprecated use the SDL (GraphQL Schema definition language) ingester definition.
  */
 export class TypeBuilder {
 
-    private fields: FieldType[] = [];
+    /**
+     * do not use! This is public only to prevent compiler errors when the location of automation-client is not
+     * identical for dependencies within an SDM.
+     *
+     * @Deprecated
+     * @type {any[]}
+     */
+    public readonly fields: FieldType[] = [];
 
     constructor(public name: string, public description?: string) { }
 
