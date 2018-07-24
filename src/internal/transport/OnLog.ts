@@ -9,6 +9,7 @@ import {
     Success,
 } from "../../HandlerResult";
 import { EventHandlerMetadata } from "../../metadata/automationMetadata";
+import { addressEvent } from "../../spi/message/MessageClient";
 import { logger } from "../util/logger";
 
 // Subscription to retrieve all Log events for this automation client
@@ -49,7 +50,7 @@ export interface Automation {
     version?: string | null;
 }
 
-export const OnLogName = "OnLog";
+export const OnLogName: string = "OnLog";
 
 /**
  * Subscribe to AtomistLog events from the API.
@@ -99,7 +100,20 @@ export function onLogMaker(name: string,
     return () => new OnLog(name, version, logHandlers);
 }
 
+/**
+ * Handler that can get added to the automation client configuration to handle log messages
+ */
 export type LogHandler = (log: AtomistLog, ctx: HandlerContext) => Promise<void>;
+
+/**
+ * Send AtomistLog message.
+ * @param {AtomistLog} log
+ * @param {HandlerContext} ctx
+ * @returns {Promise<any>}
+ */
+export function sendLog(log: AtomistLog, ctx: HandlerContext): Promise<any> {
+    return ctx.messageClient.send(log, addressEvent("AtomistLog"));
+}
 
 /**
  * Default console logging LogHandler
@@ -108,7 +122,7 @@ export type LogHandler = (log: AtomistLog, ctx: HandlerContext) => Promise<void>
  * @returns {Promise<void>}
  * @constructor
  */
-const ConsoleLogHandler = async (log: AtomistLog, ctx: HandlerContext) => {
+const ConsoleLogHandler: LogHandler = async log => {
     const date = new Date(log.timestamp);
     logger.log(log.level, `Incoming log message '${date} [${log.correlation_context.correlation_id}] ${log.message}'`);
 };
