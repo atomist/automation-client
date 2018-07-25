@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Remove dependency to config module. [#317](https://github.com/atomist/automation-client-ts/issues/317)
 -   **BREAKING** `Project` no longer extends `AbstractScriptedFlushable`. This is no longer necessary given async/await. [#318](https://github.com/atomist/automation-client-ts/issues/318)
 
+### Fixed
+
+-   Github's email setting "Block command line pushes that expose my email" breaks `@atomist generate`. [#322](https://github.com/atomist/automation-client-ts/issues/322)
+
 ## [0.17.1](https://github.com/atomist/automation-client-ts/compare/0.17.0...0.17.1) - 2018-06-04
 
 ### Deprecated
