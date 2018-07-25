@@ -62,9 +62,24 @@ export interface FieldType {
  */
 export class IngesterBuilder {
 
-    private types: ObjectType[] = [];
-    private enums: EnumType[] = [];
-    private name: string;
+    /**
+     * @Deprecated do not use
+     * Public to prevent type errors. This whole class will be removed in the future
+     * @type {any[]}
+     */
+    public types: ObjectType[] = [];
+    /**
+     * @Deprecated do not use
+     * Public to prevent type errors. This whole class will be removed in the future
+     * @type {any[]}
+     */
+    public enums: EnumType[] = [];
+    /**
+     * @Deprecated do not use
+     * Public to prevent type errors. This whole class will be removed in the future
+     * @type {any[]}
+     */
+    public name: string;
 
     constructor(public rootType: string | TypeBuilder) {
         if (isString(rootType)) {
