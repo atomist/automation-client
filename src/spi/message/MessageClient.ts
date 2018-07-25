@@ -43,11 +43,11 @@ export interface MessageClient {
  */
 export interface SlackMessageClient {
 
-    addressUsers(msg: string | SlackMessage,
+    addressUsers(msg: string | SlackMessage | SlackFileMessage,
                  users: string | string[],
                  options?: MessageOptions): Promise<any>;
 
-    addressChannels(msg: string | SlackMessage,
+    addressChannels(msg: string | SlackMessage | SlackFileMessage,
                     channels: string | string[],
                     options?: MessageOptions): Promise<any>;
 }
