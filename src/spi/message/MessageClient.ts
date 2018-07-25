@@ -39,14 +39,30 @@ export interface MessageClient {
 /**
  * MessageClient to send messages to the default Slack team.
  *
- * Note: This implementation is deprecated in favor of MessageClient.
+ * @deprecated This interface is deprecated. Please use MessageClient instead.
  */
 export interface SlackMessageClient {
 
+    /**
+     * Send a message to a Slack user
+     * @param {string | SlackMessage | SlackFileMessage} msg
+     * @param {string | string[]} users
+     * @param {MessageOptions} options
+     * @returns {Promise<any>}
+     * @deprecated use MessageClient.send
+     */
     addressUsers(msg: string | SlackMessage | SlackFileMessage,
                  users: string | string[],
                  options?: MessageOptions): Promise<any>;
 
+    /**
+     * Send a message to a Slack channel
+     * @param {string | SlackMessage | SlackFileMessage} msg
+     * @param {string | string[]} channels
+     * @param {MessageOptions} options
+     * @returns {Promise<any>}
+     * @deprecated use MessageClient.send
+     */
     addressChannels(msg: string | SlackMessage | SlackFileMessage,
                     channels: string | string[],
                     options?: MessageOptions): Promise<any>;
