@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Deprecated
 
 -   Migrate atomist CLI to its own package. [#315](https://github.com/atomist/automation-client-ts/issues/315)
+-   Replace run.ts with start.command.ts. [#325](https://github.com/atomist/automation-client-ts/issues/325)
 
 ### Removed
 
