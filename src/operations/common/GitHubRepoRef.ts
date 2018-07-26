@@ -66,8 +66,8 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
                 const name = results[0].data.name || results[0].data.login;
                 let email = results[0].data.email;
 
-                if (!email) {
-                    email = results[1].data.find(e => e.primary === true && e.visibility === "public").email;
+                if (!email && results[1].data && results[1].data.length > 0) {
+                    email = results[1].data[0].email;
                 }
 
                 if (name && email) {
