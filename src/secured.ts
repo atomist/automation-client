@@ -103,6 +103,7 @@ function isGitHubOrgMember(org: string, login: string, token: string): Promise<b
 const ProviderForOrgQuery = `query ProviderForOrg($owner: String!) {
   Org(owner: $owner) {
     provider {
+      apiUrl
       providerType
     }
   }
@@ -141,13 +142,14 @@ export function githubTeam(maker: Maker<HandleCommand>, gTeam: string): () => Ha
                 .then(providerResult => {
 
                     const provider = _.get(providerResult, "Org[0].provider.providerType");
+                    const apiUrl = _.get(providerResult, "Org[0].provider.apiUrl");
 
                     if (provider === "github_com" || provider === "ghe") {
                         if (!owner || !login) {
                             return sendUnauthorized(ctx);
                         }
 
-                        return isGitHubTeamMember(owner, login, gTeam, token)
+                        return isGitHubTeamMember(owner, login, gTeam, token, apiUrl)
                             .then(isTeamMember => {
                                 if (isTeamMember === true) {
                                     return handleMethod.bind(command)(ctx);
@@ -168,7 +170,11 @@ export function githubTeam(maker: Maker<HandleCommand>, gTeam: string): () => Ha
     };
 }
 
-function isGitHubTeamMember(owner: string, login: string, team: string, token: string): Promise<boolean> {
+export function isGitHubTeamMember(owner: string,
+                                   login: string,
+                                   team: string,
+                                   token: string,
+                                   apiUrl: string = "https://api.github.com/"): Promise<boolean> {
     if (login) {
 
         const config = {
@@ -178,14 +184,14 @@ function isGitHubTeamMember(owner: string, login: string, team: string, token: s
             },
         };
 
-        return axios.get(`https://api.github.com/orgs/${owner}/teams`, config)
+        return axios.get(`${apiUrl}orgs/${owner}/teams`, config)
             .then(gitHubTeams => {
                 return gitHubTeams.data.find(t => t.name === team);
             })
             .then(gitHubTeam => {
                 if (gitHubTeam) {
                     return axios.get(
-                        `https://api.github.com/teams/${gitHubTeam.id}/memberships/${login}`,
+                        `${apiUrl}teams/${gitHubTeam.id}/memberships/${login}`,
                         config)
                         .then(() => {
                             return true;
@@ -205,7 +211,7 @@ function isGitHubTeamMember(owner: string, login: string, team: string, token: s
     }
 }
 
-function sendUnauthorized(ctx: HandlerContext): Promise<HandlerResult> {
+export function sendUnauthorized(ctx: HandlerContext): Promise<HandlerResult> {
     const msg: SlackMessage = {
         attachments: [{
             author_icon: `https://images.atomist.com/rug/cross-circle.png`,
