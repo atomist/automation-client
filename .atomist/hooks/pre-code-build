@@ -2,3 +2,6 @@
 
 git config --global user.email "bot@atomist.com"
 git config --global user.name "Atomist Bot"
+
+echo "NODE_ENV=$NODE_ENV"
+echo "ATOMIST_ENV=$ATOMIST_ENV"
