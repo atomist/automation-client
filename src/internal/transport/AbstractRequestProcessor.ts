@@ -192,7 +192,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 .then(() => {
                     callback(Promise.resolve(result));
                     logger.info(`Finished invocation of command '%s': %s`,
-                        command.command, stringify(result));
+                        command.command, stringify(result, possibleAxiosObjectReplacer));
                     this.clearNamespace();
                 });
         };
@@ -251,7 +251,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 .then(() => {
                     callback(Promise.resolve(results));
                     logger.info(`Finished invocation of event subscription '%s': %s`,
-                        event.extensions.operationName, stringify(results));
+                        event.extensions.operationName, stringify(results, possibleAxiosObjectReplacer));
                     this.clearNamespace();
                 });
         };
@@ -426,6 +426,14 @@ export function defaultErrorResult(context: AutomationContextAware): HandlerResu
 export function replacer(key: string, value: any) {
     if (key === "secrets" && value) {
         return value.map(v => ({ uri: v.uri, value: hideString(v.value) }));
+    } else {
+        return value;
+    }
+}
+
+export function possibleAxiosObjectReplacer(key: string, value: any) {
+    if ((key === "request" || key === "response") && stringify(value).length > 200) {
+        return `<...elided because it might be a really long axios ${key}...>`;
     } else {
         return value;
     }
