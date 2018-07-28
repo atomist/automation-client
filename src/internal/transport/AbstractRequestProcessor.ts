@@ -186,7 +186,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                             callback: (result: Promise<HandlerResult>) => void) {
 
         const finalize = (result: HandlerResult) => {
-            this.sendCommandStatus(result.code === 0 ? true : false, result.code, command, ctx)
+            this.sendCommandStatus(result.code === 0, result.code, command, ctx)
                 .catch(err =>
                     logger.warn("Unable to send status for command '%s': %s", command.command, err.message))
                 .then(() => {
@@ -432,7 +432,7 @@ export function replacer(key: string, value: any) {
 }
 
 export function possibleAxiosObjectReplacer(key: string, value: any) {
-    if ((key === "request" || key === "response") && stringify(value).length > 200) {
+    if ((key === "request" || key === "response") && !!value && stringify(value).length > 200) {
         return `<...elided because it might be a really long axios ${key}...>`;
     } else {
         return value;
