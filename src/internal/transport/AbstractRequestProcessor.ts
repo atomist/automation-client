@@ -248,18 +248,19 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             try {
                 JSON.stringify(noncircularResults)
             } catch (err) {
-                logger.error("Circular JSON returned from event handler: %s", stringify(results));
-                noncircularResults = results.map(r => ({ code: r.code, message: stringify(r.message) }))
+                logger.error("Circular object returned from event handler: %s", stringify(results));
+                noncircularResults = results.map(r => ({ code: r.code, message: stringify(r.message) }));
+                logger.error("Substituting for circular object: %j", noncircularResults);
             }
 
-            this.sendEventStatus(!results.some(r => r.code !== 0), ef, event, ctx)
+            this.sendEventStatus(!noncircularResults.some(r => r.code !== 0), ef, event, ctx)
                 .catch(err =>
                     logger.warn("Unable to send status for event subscription'%s': %s",
                         event.extensions.operationName, err.message))
                 .then(() => {
                     callback(Promise.resolve(noncircularResults));
                     logger.info(`Finished invocation of event subscription '%s': %s`,
-                        event.extensions.operationName, stringify(results, possibleAxiosObjectReplacer));
+                        event.extensions.operationName, stringify(noncircularResults, possibleAxiosObjectReplacer));
                     this.clearNamespace();
                 });
         };
