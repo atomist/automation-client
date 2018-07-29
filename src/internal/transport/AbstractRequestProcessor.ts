@@ -246,7 +246,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         const finalize = (results: HandlerResult[]) => {
             let noncircularResults = results;
             try {
-                JSON.stringify(noncircularResults)
+                JSON.stringify(noncircularResults);
             } catch (err) {
                 logger.error("Circular object returned from event handler: %s", stringify(results));
                 noncircularResults = results.map(r => ({ code: r.code, message: stringify(r.message) }));
