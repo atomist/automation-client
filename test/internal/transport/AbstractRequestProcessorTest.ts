@@ -87,8 +87,8 @@ describe("the processCommand method", () => {
         const commandInvocation: CommandInvocation = { args: [], name: "DoTheWave" };
         const automationContext: AutomationContext = {
             correlationId: "abc",
-            teamId: "TEAM",
-            teamName: "my team",
+            workspaceId: "TEAM",
+            workspaceName: "my team",
             operation: "DoTheWave operation",
             name: "DoTheWave name",
             version: "0.3.17",
@@ -113,7 +113,7 @@ describe("the processCommand method", () => {
 
         const context: HandlerContext & AutomationContextAware = {
             messageClient: null,
-            teamId: automationContext.teamId,
+            workspaceId: automationContext.workspaceId,
             correlationId: automationContext.correlationId,
             context: automationContext,
             trigger: command,
@@ -209,8 +209,8 @@ describe("the processEvent method", () => {
         };
         const automationContext: AutomationContext = {
             correlationId: "abc",
-            teamId: "TEAM",
-            teamName: "my team",
+            workspaceId: "TEAM",
+            workspaceName: "my team",
             operation: "DoTheWave operation",
             name: "DoTheWave name",
             version: "0.3.17",
@@ -230,7 +230,7 @@ describe("the processEvent method", () => {
 
         const context: HandlerContext & AutomationContextAware = {
             messageClient: null,
-            teamId: automationContext.teamId,
+            workspaceId: automationContext.workspaceId,
             correlationId: automationContext.correlationId,
             context: automationContext,
             trigger: incoming,

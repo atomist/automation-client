@@ -97,17 +97,20 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         }
 
         if (opts.endpoints && opts.endpoints.graphql) {
-            if (opts.teamIds) {
-                let teamId: string;
-                if (opts.teamIds.length === 1) {
-                    teamId = opts.teamIds[0];
-                } else if (opts.teamIds.length > 1) {
-                    teamId = opts.teamIds[0];
+            if (opts.workspaceIds) {
+                let workspaceIds: string;
+                if (opts.workspaceIds.length === 1) {
+                    workspaceIds = opts.workspaceIds[0];
+                } else if (opts.workspaceIds.length > 1) {
+                    workspaceIds = opts.workspaceIds[0];
                 }
-                if (teamId) {
+                if (workspaceIds) {
                     if (opts.token) {
-                        this.graphClient = new ApolloGraphClient(`${opts.endpoints.graphql}/${teamId}`,
+                        this.graphClient = new ApolloGraphClient(`${opts.endpoints.graphql}/${workspaceIds}`,
                             { Authorization: `token ${opts.token}` });
+                    } else if (opts.apiKey) {
+                        this.graphClient = new ApolloGraphClient(`${opts.endpoints.graphql}/${workspaceIds}`,
+                            { Authorization: `Bearer ${opts.apiKey}` });
                     }
                 }
             }
@@ -308,7 +311,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
             name: this.opts.name,
             version: this.opts.version,
             policy: this.opts.policy,
-            team_ids: toStringArray(this.opts.teamIds),
+            team_ids: toStringArray(this.opts.workspaceIds),
             groups: toStringArray((this.opts as any).groups),
             keywords: this.opts.keywords,
             commands: this.commandHandlers.map(e => e.metadata),

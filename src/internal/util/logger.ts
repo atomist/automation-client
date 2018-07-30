@@ -58,12 +58,12 @@ export function formatter(options: any): string {
             ctx += ":" + (options.colorize ? winston.config.colorize(options.level, executionContext.invocationId)
                 : executionContext.invocationId);
         }
-        if (executionContext.teamName) {
-            ctx += ":" + (options.colorize ? winston.config.colorize(options.level, executionContext.teamName)
-                : executionContext.teamName);
-        } else if (executionContext.teamId) {
-            ctx += ":" + (options.colorize ? winston.config.colorize(options.level, executionContext.teamId)
-                : executionContext.teamId);
+        if (executionContext.workspaceName) {
+            ctx += ":" + (options.colorize ? winston.config.colorize(options.level, executionContext.workspaceName)
+                : executionContext.workspaceName);
+        } else if (executionContext.workspaceId) {
+            ctx += ":" + (options.colorize ? winston.config.colorize(options.level, executionContext.workspaceId)
+                : executionContext.workspaceId);
         }
         if (executionContext.operation) {
             ctx += ":" + (options.colorize ? winston.config.colorize(options.level, executionContext.operation)

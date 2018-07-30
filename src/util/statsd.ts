@@ -309,10 +309,10 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
     private teamDetail(ctx: HandlerContext): string[] {
         if (ctx && (ctx as any as AutomationContextAware).context) {
             const context = (ctx as any as AutomationContextAware).context;
-            const safeTeamName = context.teamName ?
-                context.teamName.trim().replace(/ /g, "_").replace(/\W/g, "") : undefined;
+            const safeTeamName = context.workspaceName ?
+                context.workspaceName.trim().replace(/ /g, "_").replace(/\W/g, "") : undefined;
             return [
-                `atomist_team_id:${context.teamId}`,
+                `atomist_team_id:${context.workspaceId}`,
                 `atomist_team_name:${safeTeamName}`,
             ];
         } else {

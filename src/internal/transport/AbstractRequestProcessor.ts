@@ -68,6 +68,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             };
             const ctx: HandlerContext & AutomationContextAware & ConfigurationAware = {
                 teamId: command.team.id,
+                workspaceId: command.team.id,
                 source: command.source,
                 correlationId: command.correlation_id,
                 invocationId: np ? np.invocationId : undefined,
@@ -112,6 +113,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             };
             const ctx: HandlerContext & AutomationContextAware & ConfigurationAware = {
                 teamId: event.extensions.team_id,
+                workspaceId: event.extensions.team_id,
                 correlationId: event.extensions.correlation_id,
                 invocationId: np ? np.invocationId : undefined,
                 messageClient: undefined,
@@ -299,8 +301,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                              ts: number = Date.now()) {
         return {
             correlationId: _.get(request, "correlation_id") || _.get(request, "extensions.correlation_id"),
-            teamId: _.get(request, "team.id") || _.get(request, "extensions.team_id"),
-            teamName: _.get(request, "team.name") || _.get(request, "extensions.team_name"),
+            workspaceId: _.get(request, "team.id") || _.get(request, "extensions.team_id"),
+            workspaceName: _.get(request, "team.name") || _.get(request, "extensions.team_name"),
             operation: _.get(request, "command") || _.get(request, "extensions.operationName"),
             name: automations.automations.name,
             version: automations.automations.version,
@@ -312,8 +314,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
     protected clearNamespace() {
         namespace.set({
             correlationId: null,
-            teamId: null,
-            teamName: null,
+            workspaceId: null,
+            workspaceName: null,
             operation: null,
             name: null,
             version: null,
