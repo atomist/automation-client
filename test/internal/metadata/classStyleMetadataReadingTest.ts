@@ -208,14 +208,14 @@ describe("class style metadata reading", () => {
         const mp = md.values[0];
         assert(mp.required === false);
         assert(mp.name === "teams");
-        assert(mp.path === "teamIds");
+        assert(mp.path === "workspaceIds");
 
         const config: Configuration = {
-            teamIds: ["123", "456"],
+            workspaceIds: ["123", "456"],
         };
 
         populateValues(h, md, config);
-        assert.equal(h.teams, config.teamIds);
+        assert.equal(h.teams, config.workspaceIds);
 
     });
 
@@ -351,7 +351,7 @@ export class HasDefaultedBooleanParam implements HandleCommand {
     })
     public booleanParam: boolean = true;
 
-    @Value({ path: "teamIds", required: false })
+    @Value({ path: "workspaceIds", required: false })
     public teams: string[];
 
     public handle(context: HandlerContext): Promise<HandlerResult> {

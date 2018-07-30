@@ -44,7 +44,7 @@ describe("editorHandler", () => {
             BaseEditorOrReviewerParameters,
             "editor");
         assert(metadataFromInstance(h).name === "editor");
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
         s.registerCommandHandler(() => h);
     });
 
@@ -65,13 +65,13 @@ describe("editorHandler", () => {
             "editor", {
                 repoFinder: fromListRepoFinder([]),
             });
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
         s.registerCommandHandler(() => h);
         await s.invokeCommand({
             name: "editor",
             args: [{ name: "slackTeam", value: "T1691" }, { name: "owner", value: "foo" }],
             secrets: [{ uri: "github://user_token?scopes=repo,user:email,read:user", value: "antechinus" }],
-        }, { teamId: "T666", correlationId: "555", messageClient: null });
+        }, { workspaceId: "T666", correlationId: "555", messageClient: null });
     }).timeout(6000);
 
     it("should use custom repo loader and verify result", async () => {
@@ -96,13 +96,13 @@ describe("editorHandler", () => {
                     assert(p.findFileSync("Thing").getContentSync() === "1");
                 }),
             });
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
         s.registerCommandHandler(() => h);
         await s.invokeCommand({
             name: "editor",
             args: [{ name: "slackTeam", value: "T1691" }, { name: "owner", value: "foo" }],
             secrets: [{ uri: "github://user_token?scopes=repo,user:email,read:user", value: "antechinus" }],
-        }, { teamId: "T666", correlationId: "555", messageClient: null })
+        }, { workspaceId: "T666", correlationId: "555", messageClient: null })
             .then(() => assert(proj.findFileSync("Thing").getContentSync() === "1"));
     });
 

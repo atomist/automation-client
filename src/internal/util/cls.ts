@@ -27,8 +27,8 @@ export function get(): AutomationContext {
 export interface AutomationContext {
 
     correlationId: string;
-    teamId: string;
-    teamName: string;
+    workspaceId: string;
+    workspaceName: string;
     operation: string;
     name: string;
     version: string;
