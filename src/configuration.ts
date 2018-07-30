@@ -32,7 +32,6 @@ import {
     IngesterBuilder,
 } from "./ingesters";
 import { ExpressServerOptions } from "./internal/transport/express/ExpressServer";
-import { RegistrationConfirmation } from "./internal/transport/websocket/WebSocketRequestProcessor";
 import { config } from "./internal/util/config";
 import { logger } from "./internal/util/logger";
 import {
@@ -105,8 +104,16 @@ export interface AutomationOptions extends AnyOptions {
      * Atomist teams this automation will be registered with.  Must be
      * specified if groups is not specified.  Cannot be specified if
      * groups is specified.
+     * @deprecated The usage of teamIds is deprecated and will be removed
+     * in a future release. Please use workspaceIds instead.
      */
     teamIds?: string[];
+    /**
+     * Atomist workspaces this automation will be registered with.  Must be
+     * specified if groups is not specified.  Cannot be specified if
+     * groups is specified.
+     */
+    workspaceIds?: string[];
     /**
      * DO NOT USE.  Groups this automation will be registered with.
      * Must be specified if teams is not specified.  Cannot be
@@ -127,8 +134,15 @@ export interface AutomationOptions extends AnyOptions {
      * Atomist person with the developer role.  Additional scopes may
      * be necessary if the automation uses the token to perform
      * actions against the GitHub API.
+     * @deprecated The usage of tokens is deprecated and will be removed in
+     * a future release. Please use apiKey instead.
      */
     token?: string;
+    /**
+     * Atomist API Key used to authenticate the user starting the client.
+     * If apiKey is specified it will be used over a provided token.
+     */
+    apiKey?: string;
     /** HTTP configuration, useful for health checks */
     http?: {
         enabled?: boolean
@@ -602,6 +616,9 @@ export function loadAtomistConfig(): AutomationServerOptions {
  * ATOMIST_TEAM environment variable, which takes precedence over the
  * configuration "teamdIds", which takes precedence over cfg.teamIds,
  * which may be undefined, null, or an empty array.
+ *
+ * @deprecated The usage of teamIds is deprecated and will be removed
+ * in a future release
  */
 export function resolveTeamIds(cfg: Configuration): string[] {
     if (process.env.ATOMIST_TEAMS) {
@@ -612,6 +629,24 @@ export function resolveTeamIds(cfg: Configuration): string[] {
         cfg.teamIds = config("teamIds");
     }
     return cfg.teamIds;
+}
+
+/**
+ * Examine environment, config, and cfg for Atomist workspace IDs.  The
+ * ATOMIST_WORKSPACES environment variable takes precedence over the
+ * ATOMIST_WORKSPACE environment variable, which takes precedence over the
+ * configuration "workspaceIds", which takes precedence over cfg.workspaceId,
+ * which may be undefined, null, or an empty array.
+ */
+export function resolveWorkspaceIds(cfg: Configuration): string[] {
+    if (process.env.ATOMIST_WORKSPACES) {
+        cfg.workspaceIds = process.env.ATOMIST_WORKSPACES.split(",");
+    } else if (process.env.ATOMIST_WORKSPACE) {
+        cfg.workspaceIds = [process.env.ATOMIST_WORKSPACE];
+    } else if (config("workspaceIds")) {
+        cfg.workspaceIds = config("workspaceIds");
+    }
+    return cfg.workspaceIds;
 }
 
 /**
@@ -649,6 +684,9 @@ export function resolveConfigurationValue(
  * ATOMIST_TOKEN environment variable takes precedence over the
  * GITHUB_TOKEN environment variable, which takes precedence over the
  * config value, which takes precedence over the passed in value.
+ *
+ * @deprecated The usage of tokens is deprecated and will be removed
+ * in a future release
  */
 export function resolveToken(cfg: Configuration): string {
     cfg.token = resolveConfigurationValue(["ATOMIST_TOKEN", "GITHUB_TOKEN"], ["token"], cfg.token);
@@ -757,18 +795,30 @@ function validateConfiguration(cfg: Configuration) {
     if (!cfg.version) {
         errors.push("you must set a 'version' property in your configuration");
     }
-    if (!cfg.token) {
-        errors.push("you must set a 'token' property in your configuration or the ATOMIST_TOKEN environment variable");
+    if (!cfg.token && !cfg.apiKey) {
+        errors.push("you must set an 'apiKey' property in your configuration");
+    }
+    if (cfg.token && !cfg.apiKey) {
+        console.warn("WARNING: Usage of 'token' is deprecated and support for it will be removed in a " +
+            "future release. Please use 'apiKey' instead.");
+    }
+    if ((cfg.teamIds || cfg.teamIds.length > 0) && (!cfg.workspaceIds || cfg.workspaceIds.length === 0)) {
+        console.warn("WARNING: Usage of 'teamIds' is deprecated and support for it will be removed in a " +
+            "future release. Please use 'workspaceIds' instead.");
     }
     cfg.teamIds = cfg.teamIds || [];
-    cfg.groups = cfg.groups || [];
-    if (cfg.teamIds.length < 1 && cfg.groups.length < 1) {
-        errors.push("you must either provide an array of 'groups' in your configuration or, more likely, provide " +
-            "an array of 'teamIds' in your configuration or set the ATOMIST_TEAMS environment variable " +
-            "to a comma-separated list of team IDs");
+    cfg.workspaceIds = cfg.workspaceIds || [];
+    if (cfg.workspaceIds.length === 0) {
+        cfg.workspaceIds = cfg.teamIds;
     }
-    if (cfg.teamIds.length > 0 && cfg.groups.length > 0) {
-        errors.push("you cannot specify both 'teamIds' and 'groups' in your configuration, you must set one " +
+    cfg.groups = cfg.groups || [];
+    if (cfg.workspaceIds.length < 1 && cfg.groups.length < 1) {
+        errors.push("you must either provide an array of 'groups' in your configuration or, more likely, provide " +
+            "an array of 'workspaceIds' in your configuration or set the ATOMIST_WORKSPACES environment variable " +
+            "to a comma-separated list of workspace IDs");
+    }
+    if (cfg.workspaceIds.length > 0 && cfg.groups.length > 0) {
+        errors.push("you cannot specify both 'workspaceIds' and 'groups' in your configuration, you must set one " +
             "to an empty array");
     }
     if (errors.length > 0) {
@@ -801,9 +851,7 @@ function validateConfiguration(cfg: Configuration) {
  * cause any values provided by sources of lower precedence to be
  * ignored.  Arrays are replaced, not merged.  Typically the only
  * required values in the configuration for a successful registration
- * are the token and non-empty teamIds.  These can be provided via the
- * ATOMIST_TOKEN and ATOMIST_TEAMS environment variables,
- * respectively.
+ * are the apiKey or token and non-empty teamIds.
  *
  * Placeholder of the form `${ENV_VARIABLE}` in string configuration
  * values will get resolved against the environment. The resolution
@@ -830,6 +878,7 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
         const atmCfg = loadAtomistConfig();
         cfg = mergeConfigs({}, defCfg, userCfg, autoCfg, atmPathCfg, atmCfg);
         resolveTeamIds(cfg);
+        resolveWorkspaceIds(cfg);
         resolveToken(cfg);
         resolvePort(cfg);
         resolveEnvironmentVariables(cfg);

@@ -84,18 +84,18 @@ export class AutomationClient {
             if (this.configuration.ws.enabled) {
                 this.webSocketHandler = this.setupWebSocketRequestHandler();
                 return Promise.all([
-                        this.runWs(this.webSocketHandler),
-                        Promise.resolve(this.runHttp()),
-                        this.setupApplicationEvents(),
-                    ])
+                    this.runWs(this.webSocketHandler),
+                    Promise.resolve(this.runHttp()),
+                    this.setupApplicationEvents(),
+                ])
                     .then(() => {
                         return this.printStartupMessage();
                     });
             } else {
                 return Promise.all([
-                        Promise.resolve(this.runHttp()),
-                        this.setupApplicationEvents(),
-                    ])
+                    Promise.resolve(this.runHttp()),
+                    this.setupApplicationEvents(),
+                ])
                     .then(() => {
                         return this.printStartupMessage();
                     });
@@ -108,10 +108,10 @@ export class AutomationClient {
             return (this.webSocketHandler as ClusterMasterRequestProcessor).run()
                 .then(() => {
                     return Promise.all([
-                            this.runWs(this.webSocketHandler),
-                            Promise.resolve(this.runHttp()),
-                            this.setupApplicationEvents(),
-                        ])
+                        this.runWs(this.webSocketHandler),
+                        Promise.resolve(this.runHttp()),
+                        this.setupApplicationEvents(),
+                    ])
                         .then(() => {
                             return this.printStartupMessage();
                         });
@@ -119,7 +119,7 @@ export class AutomationClient {
         } else if (cluster.isWorker) {
             logger.info(`Starting Atomist automation client worker ${clientSig}`);
             return Promise.resolve(startWorker(this.automations, this.configuration,
-                [ ...this.defaultListeners, ...this.configuration.listeners ]))
+                [...this.defaultListeners, ...this.configuration.listeners]))
                 .then(() => {
                     return Promise.resolve();
                 });
@@ -146,21 +146,21 @@ export class AutomationClient {
 
     private setupWebSocketClusterRequestHandler(): ClusterMasterRequestProcessor {
         return new ClusterMasterRequestProcessor(this.automations, this.configuration,
-            [ ...this.defaultListeners, ...this.configuration.listeners ],
+            [...this.defaultListeners, ...this.configuration.listeners],
             this.configuration.cluster.workers);
     }
 
     private setupWebSocketRequestHandler(): WebSocketRequestProcessor {
         return new DefaultWebSocketRequestProcessor(this.automations, this.configuration,
-            [ ...this.defaultListeners, ...this.configuration.listeners ]);
+            [...this.defaultListeners, ...this.configuration.listeners]);
     }
 
     private setupApplicationEvents(): Promise<any> {
         if (this.configuration.applicationEvents.enabled) {
             if (this.configuration.applicationEvents.teamId) {
                 return registerApplicationEvents(this.configuration.applicationEvents.teamId);
-            } else if (this.configuration.teamIds.length > 0) {
-                return registerApplicationEvents(this.configuration.teamIds[ 0 ]);
+            } else if (this.configuration.workspaceIds.length > 0) {
+                return registerApplicationEvents(this.configuration.workspaceIds[0]);
             }
         }
         return Promise.resolve();
@@ -203,7 +203,7 @@ export class AutomationClient {
         };
         this.httpServer = new ExpressServer(
             this.automations,
-            [ ...this.defaultListeners, ...this.configuration.listeners ],
+            [...this.defaultListeners, ...this.configuration.listeners],
             expressOptions);
     }
 

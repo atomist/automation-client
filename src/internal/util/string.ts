@@ -5,17 +5,23 @@ export function hideString(value) {
     if (!value) {
         return value;
     }
-    let newValue = "";
-    for (let i = 0; i < value.length; i++) {
-        if (i === 0) {
-            newValue = value.charAt(0);
-        } else if (i < value.length - 1) {
-            newValue += "*";
-        } else {
-            newValue += value.slice(-1);
+
+    if (typeof value === "string") {
+        let newValue = "";
+        for (let i = 0; i < value.length; i++) {
+            if (i === 0) {
+                newValue = value.charAt(0);
+            } else if (i < value.length - 1) {
+                newValue += "*";
+            } else {
+                newValue += value.slice(-1);
+            }
         }
+        return newValue;
+    } else if (Array.isArray(value)) {
+        return value.map(v => hideString(v));
     }
-    return newValue;
+    return value;
 }
 
 export function guid() {
@@ -49,7 +55,9 @@ export function toStringArray(strings: string | string[]): string[] {
 }
 
 export function obfuscateJson(key: string, value: any) {
-    if (/token|password|jwt|url|secret|authorization|accessKey|cert|pass|user/i.test(key)) {
+    if (key === "keywords") {
+        return value;
+    } else if (/token|password|jwt|url|secret|authorization|key|cert|pass|user/i.test(key)) {
         return hideString(value);
     } else if (key === "commands") {
         return undefined;

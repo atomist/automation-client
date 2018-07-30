@@ -34,13 +34,13 @@ const messageClient = consoleMessageClient;
 describe("BuildableAutomationServer", () => {
 
     it("should start with no automations", () => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
         assert(s.automations.commands.length === 0);
         assert(s.automations.events.length === 0);
     });
 
     it("should register one no-arg handler and return its metadataFromInstance", () => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
         const h: SelfDescribingHandleCommand = {
             name: "foo", description: "foo", parameters: [], tags: [], intent: [], mapped_parameters: [],
             handle: succeed,
@@ -53,7 +53,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should register one single arg handler and return its metadataFromInstance", () => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
         const h: SelfDescribingHandleCommand = {
             name: "foo", description: "foo", parameters: [{
                 name: "one", description: "a thing", pattern: ".*", required: true,
@@ -69,7 +69,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should register one single arg handler and complain on invocation without parameter", () => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
         const h: SelfDescribingHandleCommand = {
             name: "foo", description: "foo", parameters: [{
                 name: "one", description: "a thing", pattern: ".*", required: true,
@@ -83,7 +83,7 @@ describe("BuildableAutomationServer", () => {
                 name: "foo",
                 args: [],
             }, {
-                    teamId: "T666",
+                    workspaceId: "T666",
                     correlationId: "555",
                     messageClient,
                 });
@@ -91,7 +91,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should register one single arg handler and not complain on invocation without defaulted parameter", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
         const h: SelfDescribingHandleCommand = {
             name: "foo", description: "foo", parameters: [{
                 name: "one", description: "a thing", pattern: ".*", required: true, default_value: "banana",
@@ -104,7 +104,7 @@ describe("BuildableAutomationServer", () => {
             name: "foo",
             args: [],
         }, {
-                teamId: "T666",
+                workspaceId: "T666",
                 correlationId: "555",
                 messageClient,
             }).then(res => {
@@ -114,7 +114,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should register one single arg handler and invoke with valid parameter", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
         const h: SelfDescribingHandleCommand = {
             name: "foo", description: "foo", parameters: [{
                 name: "one", description: "a thing", pattern: ".*", required: true,
@@ -136,7 +136,7 @@ describe("BuildableAutomationServer", () => {
             name: "foo",
             args: [{ name: "one", value: "value" }],
         }, {
-                teamId: "T666",
+                workspaceId: "T666",
                 correlationId: "555",
                 messageClient,
             }).then(hr => {
@@ -146,14 +146,14 @@ describe("BuildableAutomationServer", () => {
     }
 
     it("should register one command handler instance and invoke with valid parameter", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
         s.registerCommandHandler(AddAtomistSpringAgent);
         s.invokeCommand({
             name: "AddAtomistSpringAgent",
             args: [{ name: "slackTeam", value: "T1691" }],
             secrets: [{ uri: "atomist://some_secret", value: "some_secret" }],
         }, {
-                teamId: "T666",
+                workspaceId: "T666",
                 correlationId: "555",
                 messageClient,
             })
@@ -161,7 +161,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should register one event handler instance and invoke with valid event data", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
         s.registerEventHandler(AlwaysOkEventHandler);
         s.onEvent({
             extensions: {
@@ -173,7 +173,7 @@ describe("BuildableAutomationServer", () => {
                 }],
             },
         }, {
-                teamId: "T666",
+                workspaceId: "T666",
                 correlationId: "555",
                 messageClient,
             }).then(_ => {
@@ -190,7 +190,7 @@ describe("BuildableAutomationServer", () => {
             },
         };
         const s = new BuildableAutomationServer(
-            { name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [], secretResolver: sr });
+            { name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [], secretResolver: sr });
         s.registerEventHandler(TrustMeIGaveMySecret);
         s.onEvent({
             extensions: {
@@ -202,7 +202,7 @@ describe("BuildableAutomationServer", () => {
                 }],
             },
         }, {
-                teamId: "T666",
+                workspaceId: "T666",
                 correlationId: "555",
                 messageClient,
             }).then(_ => {
@@ -212,7 +212,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should register one single arg handler using nested parameters and invoke with valid parameter", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
 
         class Params {
             @Parameter()
@@ -236,7 +236,7 @@ describe("BuildableAutomationServer", () => {
             name: "Handler",
             args: [{ name: "nested.one", value: "value" }],
         }, {
-                teamId: "T666",
+                workspaceId: "T666",
                 correlationId: "555",
                 messageClient,
             }).then(hr => {
@@ -252,7 +252,7 @@ describe("BuildableAutomationServer", () => {
         mappedParameterTest(done, false));
 
     function mappedParameterTest(done: any, required: boolean) {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
 
         class Params {
             @Parameter()
@@ -280,7 +280,7 @@ describe("BuildableAutomationServer", () => {
             args: [{ name: "nested.one", value: "value" }],
             mappedParameters: [{ name: "nested.mapped", value: "resolved" }],
         }, {
-                teamId: "T666",
+                workspaceId: "T666",
                 correlationId: "555",
                 messageClient,
             }).then(hr => {
@@ -290,7 +290,7 @@ describe("BuildableAutomationServer", () => {
     }
 
     it("should register single arg handler using nested optional mapped parameters and invoke with valid parameter", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
 
         class Params {
             @Parameter()
@@ -318,7 +318,7 @@ describe("BuildableAutomationServer", () => {
             args: [{ name: "nested.one", value: "value" }],
             mappedParameters: [],
         }, {
-                teamId: "T666",
+                workspaceId: "T666",
                 correlationId: "555",
                 messageClient,
             }).then(hr => {
@@ -328,7 +328,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should register single arg handler using nested secrets and invoke with valid parameter", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
 
         class Params {
             @Parameter()
@@ -356,7 +356,7 @@ describe("BuildableAutomationServer", () => {
             args: [{ name: "nested.one", value: "value" }],
             secrets: [{ uri: "pathOfMySecret", value: "resolved" }],
         }, {
-                teamId: "T666",
+                workspaceId: "T666",
                 correlationId: "555",
                 messageClient,
             }).then(hr => {
@@ -366,7 +366,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should fail parameter validation", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
 
         class Params {
             @Parameter({ required: true })
@@ -397,7 +397,7 @@ describe("BuildableAutomationServer", () => {
             args: [{ name: "nested.isSmart", value: "value" }],
             secrets: [{ uri: "pathOfMySecret", value: "resolved" }],
         }, {
-                teamId: "T666",
+                workspaceId: "T666",
                 correlationId: "555",
                 messageClient,
             })
@@ -411,7 +411,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should use bind call to compute property", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
 
         class Params {
             @Parameter({ required: true })
@@ -443,7 +443,7 @@ describe("BuildableAutomationServer", () => {
             args: [{ name: "nested.isSmart", value: "value" }],
             secrets: [{ uri: "pathOfMySecret", value: "resolved" }],
         }, {
-                teamId: "T666",
+                workspaceId: "T666",
                 correlationId: "555",
                 messageClient,
             })
@@ -455,7 +455,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should use bind call to compute on external parameters", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
 
         @Parameters()
         class SParams implements SmartParameters {
@@ -494,7 +494,7 @@ describe("BuildableAutomationServer", () => {
             args: [{ name: "isSmartExternal", value: "value1" }],
             secrets: [{ uri: "pathOfMySecret", value: "resolved" }],
         }, {
-                teamId: "T666",
+                workspaceId: "T666",
                 correlationId: "555",
                 messageClient,
             })
@@ -506,21 +506,21 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should allow registration of null command handler", () => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
         s.registerCommandHandler(() => null);
         assert.equal(s.automations.commands.length, 0);
         assert.equal(s.automations.events.length, 0);
     });
 
     it("should allow registration of null event handler", () => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
         s.registerEventHandler(() => null);
         assert.equal(s.automations.commands.length, 0);
         assert.equal(s.automations.events.length, 0);
     });
 
     it("should allow dynamic registration of command handler", () => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
         let register = false;
         s.registerCommandHandler(() => {
             if (register) {
@@ -543,7 +543,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should succeed if command handler returns undefined or null", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
 
         @CommandHandler("goo bar")
         class Handler implements HandleCommand {
@@ -559,7 +559,7 @@ describe("BuildableAutomationServer", () => {
             args: [],
             secrets: [],
         }, {
-            teamId: "T666",
+            workspaceId: "T666",
             correlationId: "555",
             messageClient,
         })
@@ -571,7 +571,7 @@ describe("BuildableAutomationServer", () => {
     });
 
     it("should succeed if event handler returns undefined or null", done => {
-        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", teamIds: ["bar"], keywords: [] });
+        const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
 
         @EventHandler("goo bar", "subscription Test { Issue { title }}")
         class Handler implements HandleEvent<any> {
@@ -592,7 +592,7 @@ describe("BuildableAutomationServer", () => {
                 operationName: "Handler",
             },
         }, {
-            teamId: "T666",
+            workspaceId: "T666",
             correlationId: "555",
             messageClient,
         })
@@ -617,7 +617,7 @@ describe("BuildableAutomationServer", () => {
         const s = new BuildableAutomationServer({
             name: "foobar",
             version: "1.0.0",
-            teamIds: ["bar"],
+            workspaceIds: ["bar"],
             keywords: [],
             metadataProcessor: new TestAutomationMetadataProcessor(),
         });

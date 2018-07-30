@@ -48,10 +48,10 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
 
     protected createGraphClient(event: EventIncoming | CommandIncoming,
                                 context: AutomationContextAware): GraphClient {
-        const teamId = namespace.get().teamId;
+        const workspaceId = namespace.get().workspaceId;
         return !!this.options.graphClientFactory ?
             this.options.graphClientFactory(context) :
-            new ApolloGraphClient(`${this.options.endpoint.graphql}/${teamId}`,
+            new ApolloGraphClient(`${this.options.endpoint.graphql}/${workspaceId}`,
                 { Authorization: `token ${this.token}` });
     }
 

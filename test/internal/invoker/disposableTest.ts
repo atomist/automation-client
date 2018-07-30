@@ -12,7 +12,7 @@ describe("disposing resources", () => {
     it("should happily release all the things", done => {
         const ctx: HandlerContext = {
             messageClient: undefined,
-            teamId: "Txxxxxx",
+            workspaceId: "Txxxxxx",
             correlationId: guid(),
             invocationId: guid(),
         };
@@ -39,7 +39,7 @@ describe("disposing resources", () => {
     it("should release resources even when some fail", done => {
         const ctx: HandlerContext = {
             messageClient: undefined,
-            teamId: "Txxxxxx",
+            workspaceId: "Txxxxxx",
             correlationId: guid(),
             invocationId: guid(),
         };
@@ -70,7 +70,7 @@ describe("disposing resources", () => {
     it("should release resources even when some fail, reverse order", done => {
         const ctx: HandlerContext = {
             messageClient: undefined,
-            teamId: "Txxxxxx",
+            workspaceId: "Txxxxxx",
             correlationId: guid(),
             invocationId: guid(),
         };
@@ -101,7 +101,7 @@ describe("disposing resources", () => {
     it("returns quickly when there are no steps", done => {
         const ctx: HandlerContext = {
             messageClient: undefined,
-            teamId: "Txxxxxx",
+            workspaceId: "Txxxxxx",
             correlationId: guid(),
             invocationId: guid(),
         };

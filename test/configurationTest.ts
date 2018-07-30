@@ -26,6 +26,7 @@ import {
     resolvePlaceholders,
     resolveTeamIds,
     resolveToken,
+    resolveWorkspaceIds,
     TestingDefaultConfiguration,
     UserConfig,
 } from "../src/configuration";
@@ -302,7 +303,7 @@ describe("configuration", () => {
             const c = loadAutomationConfig();
             assert.equal(c.name, "@atomist/automation-node-tests");
             assert.equal(c.version, "0.0.7");
-            assert.deepStrictEqual(c.teamIds, ["T1L0VDKJP"]);
+            assert.deepStrictEqual(c.workspaceIds, ["T1L0VDKJP"]);
             assert.deepStrictEqual(c.keywords, ["test", "automation"]);
             assert.equal(c.ws.enabled, true);
             assert.equal(c.ws.termination.graceful, false);
@@ -463,6 +464,85 @@ describe("configuration", () => {
                 delete process.env.ATOMIST_TEAM;
             }
         });
+    });
+
+    describe("resolveWorkspaceIds", () => {
+
+        it("should fall through to the default", () => {
+            const saveTeams = process.env.ATOMIST_WORKSPACES;
+            const saveTeam = process.env.ATOMIST_WORKSPACE;
+            delete process.env.ATOMIST_WORKSPACES;
+            delete process.env.ATOMIST_WORKSPACE;
+            const ts = resolveTeamIds({ teamIds: ["thing1", "thing2"] });
+            assert.deepStrictEqual(ts, ["thing1", "thing2"]);
+            if (saveTeams) {
+                process.env.ATOMIST_WORKSPACES = saveTeams;
+            }
+            if (saveTeam) {
+                process.env.ATOMIST_WORKSPACE = saveTeam;
+            }
+        });
+
+        it("should return nothing", () => {
+            const saveTeams = process.env.ATOMIST_WORKSPACES;
+            const saveTeam = process.env.ATOMIST_WORKSPACE;
+            delete process.env.ATOMIST_WORKSPACES;
+            delete process.env.ATOMIST_WORKSPACE;
+            const ts = resolveTeamIds({});
+            assert.equal(ts, undefined);
+            if (saveTeams) {
+                process.env.ATOMIST_WORKSPACES = saveTeams;
+            }
+            if (saveTeam) {
+                process.env.ATOMIST_WORKSPACE = saveTeam;
+            }
+        });
+
+        it("should parse ATOMIST_WORKSPACES", () => {
+            const save = process.env.ATOMIST_WORKSPACES;
+            const e = "thing1,thing2";
+            process.env.ATOMIST_WORKSPACES = e;
+            const ts = resolveWorkspaceIds({});
+            assert.deepStrictEqual(ts, ["thing1", "thing2"]);
+            if (save) {
+                process.env.ATOMIST_WORKSPACES = save;
+            } else {
+                delete process.env.ATOMIST_WORKSPACES;
+            }
+        });
+
+        it("should use ATOMIST_WORKSPACE", () => {
+            const save = process.env.ATOMIST_WORKSPACE;
+            const ets = "thing1";
+            process.env.ATOMIST_WORKSPACE = ets;
+            const ts = resolveWorkspaceIds({});
+            assert.deepStrictEqual(ts, ["thing1"]);
+            if (save) {
+                process.env.ATOMIST_WORKSPACE = save;
+            } else {
+                delete process.env.ATOMIST_WORKSPACE;
+            }
+        });
+
+        it("should prefer ATOMIST_WORKSPACES", () => {
+            const saveTeams = process.env.ATOMIST_WORKSPACES;
+            const saveTeam = process.env.ATOMIST_WORKSPACE;
+            const e = "thing1,thing2";
+            process.env.ATOMIST_WORKSPACES = e;
+            process.env.ATOMIST_WORKSPACE = "no";
+            const ts = resolveWorkspaceIds({});
+            assert.deepStrictEqual(ts, ["thing1", "thing2"]);
+            if (saveTeams) {
+                process.env.ATOMIST_WORKSPACES = saveTeams;
+            } else {
+                delete process.env.ATOMIST_WORKSPACES;
+            }
+            if (saveTeam) {
+                process.env.ATOMIST_WORKSPACE = saveTeam;
+            } else {
+                delete process.env.ATOMIST_WORKSPACE;
+            }
+        });
 
     });
 
@@ -606,7 +686,7 @@ describe("configuration", () => {
                 await loadConfiguration(emptyConfig);
                 assert.fail("Failed to throw an exception");
             } catch (e) {
-                assert(e.message.includes(`cannot specify both 'teamIds' and 'groups'`));
+                assert(e.message.includes(`cannot specify both 'workspaceIds' and 'groups'`));
             }
             _.forEach(save, (v, k) => {
                 if (v) {
@@ -634,6 +714,7 @@ describe("configuration", () => {
             const e = _.cloneDeep(defCfg);
             e.token = "bogus";
             e.teamIds = ["non-team"];
+            e.workspaceIds = ["non-team"];
             const c = await loadConfiguration(emptyConfig);
             assert.deepStrictEqual(c, e);
             _.forEach(save, (v, k) => {
@@ -726,6 +807,7 @@ describe("configuration", () => {
             e.cluster.enabled = true;
             e.cluster.workers = 2;
             e.teamIds = ["T61", "HELPMEMARY", "GLORY"];
+            e.workspaceIds = ["T61", "HELPMEMARY", "GLORY"];
             e.token = "lizphairexileinguyville";
             e.custom = { test: "123456" };
 
