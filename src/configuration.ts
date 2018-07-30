@@ -208,7 +208,7 @@ export interface AutomationServerOptions extends AutomationOptions {
          * Print welcome banner; set to an arbitrary string to display,
          * default is name of automation-client
          */
-        banner?: boolean | string | ((registration: RegistrationConfirmation) => Banner);
+        banner?: boolean | string | ((configuration: Configuration) => Banner);
         /**
          * Log to file; set to file path to overwrite location and name of logfile,
          * defaults to ./log/automation-client.log in current working directory

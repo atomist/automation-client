@@ -57,13 +57,9 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
 
     public onRegistration(registration: RegistrationConfirmation) {
         logger.info("Registration successful: %s", stringify(registration));
-        global.setJwtToken(registration.jwt);
+        (this.configuration.ws as any).session = registration;
         this.registration = registration;
         this.graphClients = new GraphClientFactory(this.registration, this.configuration);
-        showStartupMessages(registration, this.automations.automations)
-            .then(() => {
-                // intentionally left empty
-            });
     }
 
     public onConnect(ws: WebSocket) {

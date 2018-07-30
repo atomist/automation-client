@@ -3,17 +3,6 @@ import { InMemoryEventStore } from "./internal/event/InMemoryEventStore";
 import { EventStore } from "./spi/event/EventStore";
 
 ////////////////////////////////////////////////////////
-let jwtT: string = "";
-
-export function setJwtToken(token: string) {
-    jwtT = token;
-}
-
-export function jwtToken() {
-    return jwtT;
-}
-
-////////////////////////////////////////////////////////
 let es: EventStore;
 
 function initEventStore() {

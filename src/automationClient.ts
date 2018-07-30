@@ -18,6 +18,7 @@ import {
     ExpressServerOptions,
 } from "./internal/transport/express/ExpressServer";
 import { MetricEnabledAutomationEventListener } from "./internal/transport/MetricEnabledAutomationEventListener";
+import { showStartupMessages } from "./internal/transport/showStartupMessages";
 import { DefaultWebSocketRequestProcessor } from "./internal/transport/websocket/DefaultWebSocketRequestProcessor";
 import { prepareRegistration } from "./internal/transport/websocket/payloads";
 import { WebSocketClient } from "./internal/transport/websocket/WebSocketClient";
@@ -47,6 +48,7 @@ export class AutomationClient {
 
     constructor(public configuration: Configuration) {
         this.automations = new BuildableAutomationServer(configuration);
+        (global as any).__runningAutomationClient = this as AutomationClient;
     }
 
     get automationServer(): AutomationServer {
@@ -68,22 +70,9 @@ export class AutomationClient {
         return this;
     }
 
-    public run(): Promise<any> {
-        (global as any).__runningAutomationClient = this as AutomationClient;
-
-        setLogLevel(this.configuration.logging.level);
-
-        if (this.configuration.logging.file.enabled === true) {
-            let filename = p.join(".", "log", `${this.configuration.name.replace(/^.*\//, "")}.log`);
-            if (this.configuration.logging.file.name) {
-                filename = this.configuration.logging.file.name;
-            }
-            addFileTransport(filename, this.configuration.logging.file.level || this.configuration.logging.level);
-        }
-
-        if (this.configuration.statsd.enabled === true) {
-            this.defaultListeners.push(new StatsdAutomationEventListener(this.configuration));
-        }
+    public run(): Promise<void> {
+        this.configureLogging();
+        this.configureStatsd();
 
         const clientSig = `${this.configuration.name}:${this.configuration.version}`;
         const clientConf = stringify(this.configuration, obfuscateJson);
@@ -95,15 +84,21 @@ export class AutomationClient {
             if (this.configuration.ws.enabled) {
                 this.webSocketHandler = this.setupWebSocketRequestHandler();
                 return Promise.all([
-                    this.runWs(this.webSocketHandler),
-                    Promise.resolve(this.runHttp()),
-                    this.setupApplicationEvents(),
-                ]);
+                        this.runWs(this.webSocketHandler),
+                        Promise.resolve(this.runHttp()),
+                        this.setupApplicationEvents(),
+                    ])
+                    .then(() => {
+                        return this.printStartupMessage();
+                    });
             } else {
                 return Promise.all([
-                    Promise.resolve(this.runHttp()),
-                    this.setupApplicationEvents(),
-                ]);
+                        Promise.resolve(this.runHttp()),
+                        this.setupApplicationEvents(),
+                    ])
+                    .then(() => {
+                        return this.printStartupMessage();
+                    });
             }
         } else if (cluster.isMaster) {
             logger.info(`Starting Atomist automation client master ${clientSig}`);
@@ -113,15 +108,39 @@ export class AutomationClient {
             return (this.webSocketHandler as ClusterMasterRequestProcessor).run()
                 .then(() => {
                     return Promise.all([
-                        this.runWs(this.webSocketHandler),
-                        Promise.resolve(this.runHttp()),
-                        this.setupApplicationEvents(),
-                    ]);
+                            this.runWs(this.webSocketHandler),
+                            Promise.resolve(this.runHttp()),
+                            this.setupApplicationEvents(),
+                        ])
+                        .then(() => {
+                            return this.printStartupMessage();
+                        });
                 });
         } else if (cluster.isWorker) {
             logger.info(`Starting Atomist automation client worker ${clientSig}`);
             return Promise.resolve(startWorker(this.automations, this.configuration,
-                [ ...this.defaultListeners, ...this.configuration.listeners ]));
+                [ ...this.defaultListeners, ...this.configuration.listeners ]))
+                .then(() => {
+                    return Promise.resolve();
+                });
+        }
+    }
+
+    private configureStatsd() {
+        if (this.configuration.statsd.enabled === true) {
+            this.defaultListeners.push(new StatsdAutomationEventListener(this.configuration));
+        }
+    }
+
+    private configureLogging() {
+        setLogLevel(this.configuration.logging.level);
+
+        if (this.configuration.logging.file.enabled === true) {
+            let filename = p.join(".", "log", `${this.configuration.name.replace(/^.*\//, "")}.log`);
+            if (this.configuration.logging.file.name) {
+                filename = this.configuration.logging.file.name;
+            }
+            addFileTransport(filename, this.configuration.logging.file.level || this.configuration.logging.level);
         }
     }
 
@@ -186,6 +205,10 @@ export class AutomationClient {
             this.automations,
             [ ...this.defaultListeners, ...this.configuration.listeners ],
             expressOptions);
+    }
+
+    private printStartupMessage(): Promise<void> {
+        return showStartupMessages(this.configuration, this.automations.automations);
     }
 }
 

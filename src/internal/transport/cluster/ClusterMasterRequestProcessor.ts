@@ -81,8 +81,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
     public onRegistration(registration: RegistrationConfirmation) {
         logger.info("Registration successful: %s", stringify(registration));
-        showStartupMessages(registration, this.automations.automations);
-        global.setJwtToken(registration.jwt);
+        (this.configuration.ws as any).session = registration;
         this.registration = registration;
 
         broadcast({
