@@ -224,8 +224,9 @@ function register(registrationCallback: () => any,
             logger.warn("Retrying registration due to previous error");
         }
 
+        const authorization = configuration.apiKey ? `Bearer ${configuration.apiKey}` : `token ${configuration.token}`;
         const config: AxiosRequestConfig = {
-            headers: { Authorization: `token ${configuration.token}` },
+            headers: { Authorization:  authorization},
             timeout: configuration.ws.timeout || 10000,
         };
 

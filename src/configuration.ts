@@ -32,7 +32,6 @@ import {
     IngesterBuilder,
 } from "./ingesters";
 import { ExpressServerOptions } from "./internal/transport/express/ExpressServer";
-import { RegistrationConfirmation } from "./internal/transport/websocket/WebSocketRequestProcessor";
 import { config } from "./internal/util/config";
 import { logger } from "./internal/util/logger";
 import {
@@ -127,8 +126,15 @@ export interface AutomationOptions extends AnyOptions {
      * Atomist person with the developer role.  Additional scopes may
      * be necessary if the automation uses the token to perform
      * actions against the GitHub API.
+     * @deprecated The usage of tokens is deprecated and will be removed in
+     * a future release
      */
     token?: string;
+    /**
+     * Atomist API Key used to authenticate the user starting the client.
+     * If apiKey is specified it will be used over a provided token.
+     */
+    apiKey?: string;
     /** HTTP configuration, useful for health checks */
     http?: {
         enabled?: boolean
@@ -649,6 +655,8 @@ export function resolveConfigurationValue(
  * ATOMIST_TOKEN environment variable takes precedence over the
  * GITHUB_TOKEN environment variable, which takes precedence over the
  * config value, which takes precedence over the passed in value.
+ * @deprecated The usage of tokens is deperated and will be removed
+ * in a future release
  */
 export function resolveToken(cfg: Configuration): string {
     cfg.token = resolveConfigurationValue(["ATOMIST_TOKEN", "GITHUB_TOKEN"], ["token"], cfg.token);
@@ -757,8 +765,12 @@ function validateConfiguration(cfg: Configuration) {
     if (!cfg.version) {
         errors.push("you must set a 'version' property in your configuration");
     }
-    if (!cfg.token) {
-        errors.push("you must set a 'token' property in your configuration or the ATOMIST_TOKEN environment variable");
+    if (!cfg.token && !cfg.apiKey) {
+        errors.push("you must set an 'apiKey' property in your configuration");
+    }
+    if (cfg.token && !cfg.apiKey) {
+        console.warn("WARNING: Usage of 'token' is deprecated and support for it will be removed in a " +
+            "future release. Please use 'apiKey' instead.");
     }
     cfg.teamIds = cfg.teamIds || [];
     cfg.groups = cfg.groups || [];
@@ -801,9 +813,7 @@ function validateConfiguration(cfg: Configuration) {
  * cause any values provided by sources of lower precedence to be
  * ignored.  Arrays are replaced, not merged.  Typically the only
  * required values in the configuration for a successful registration
- * are the token and non-empty teamIds.  These can be provided via the
- * ATOMIST_TOKEN and ATOMIST_TEAMS environment variables,
- * respectively.
+ * are the apiKey or token and non-empty teamIds.
  *
  * Placeholder of the form `${ENV_VARIABLE}` in string configuration
  * values will get resolved against the environment. The resolution
