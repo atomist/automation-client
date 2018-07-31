@@ -1,8 +1,8 @@
 import { SpawnOptions } from "child_process";
 import * as fs from "fs-extra";
 import "mocha";
-import * as assert from "power-assert";
 import * as path from "path";
+import * as assert from "power-assert";
 import { obtainGitInfo } from "../../src/internal/env/gitInfo";
 
 /**
@@ -28,7 +28,6 @@ export async function git(opts: GitOptions): Promise<number> {
     }
     return 0;
 }
-
 
 describe("git", () => {
 
