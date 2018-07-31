@@ -634,7 +634,6 @@ export function resolveTeamIds(cfg: Configuration): string[] {
 /**
  * Examine environment, config, and cfg for Atomist workspace IDs.  The
  * ATOMIST_WORKSPACES environment variable takes precedence over the
- * ATOMIST_WORKSPACE environment variable, which takes precedence over the
  * configuration "workspaceIds", which takes precedence over cfg.workspaceId,
  * which may be undefined, null, or an empty array.
  */
