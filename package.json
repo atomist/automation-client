@@ -134,7 +134,7 @@
   "scripts": {
     "autostart": "npm-run-all --print-label --parallel watch:compile watch",
     "autotest": "supervisor --watch src,test --extensions ts --no-restart-on exit --quiet --exec npm -- test",
-    "build": "npm-run-all lint compile test test:api",
+    "build": "npm-run-all compile test test:api lint doc",
     "clean": "npm-run-all clean:js clean:build",
     "clean:benchmark": "rimraf isolate-*-v8.log",
     "clean:build": "rimraf *-v8.log profile.txt build",
@@ -144,6 +144,7 @@
     "compile": "npm-run-all compile:ts compile:gql",
     "compile:gql": "npm-run-all gql:copy",
     "compile:ts": "tsc --project .",
+    "doc": "typedoc --mode modules --excludeExternals --out build/typedoc src",
     "fmt": "tsfmt --replace",
     "gql:copy": "ncp src/graph/schema.cortex.json build/src/graph/schema.cortex.json",
     "lint": "tslint --format verbose --project . --exclude \"{build,node_modules}/**\" \"**/*.ts\"",
@@ -156,7 +157,7 @@
     "test:benchmark:process": "node --prof-process isolate-*-v8.log > profile.txt",
     "test:benchmark:run": "mocha --prof --require espower-typescript/guess \"test/benchmark/**/*.ts\"",
     "test:one": "mocha --require espower-typescript/guess \"test/**/${TEST:-*.ts}\"",
-    "typedoc": "typedoc --mode modules --excludeExternals --out build/typedoc src",
+    "typedoc": "npm run doc",
     "watch:compile": "tsc --project . --watch",
     "watch": "supervisor --watch build --quiet --exec npm -- run start"
   },
