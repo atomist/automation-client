@@ -265,7 +265,8 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         const dispatched = new Dispatched(new Deferred<HandlerResult[]>(), ctx);
         this.events.set(ctx.context.invocationId, dispatched);
         const worker = this.assignWorker();
-        logger.debug("Incoming event handler subscription '%s' dispatching to worker '%s'", ef.extensions.operationName, worker.id);
+        logger.debug("Incoming event handler subscription '%s' dispatching to worker '%s'",
+            ef.extensions.operationName, worker.id);
         worker.send(message);
         callback(dispatched.result.promise);
     }
@@ -311,7 +312,7 @@ function hydrateContext(msg: WorkerMessage): HandlerContext {
     return {
         invocationId: msg.context.invocationId,
         correlationId: msg.context.correlationId,
-        teamId: msg.context.teamId,
+        workspaceId: msg.context.workspaceId,
         context: msg.context,
     } as any as HandlerContext;
 }

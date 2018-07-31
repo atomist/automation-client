@@ -1,6 +1,6 @@
 {
   "name": "@atomist/automation-client",
-  "version": "0.18.2",
+  "version": "0.19.0",
   "description": "Atomist automation client for running command and event handlers",
   "author": "Atomist, Inc.",
   "license": "SEE LICENSE IN LICENSE",
@@ -141,11 +141,10 @@
     "clean:dist": "npm-run-all clean clean:npm",
     "clean:js": "rimraf \"{src,test}/**/*.js\"",
     "clean:npm": "rimraf node_modules",
-    "compile": "npm-run-all compile:ts compile:gql git:info",
+    "compile": "npm-run-all compile:ts compile:gql",
     "compile:gql": "npm-run-all gql:copy",
     "compile:ts": "tsc --project .",
     "fmt": "tsfmt --replace",
-    "git:info": "node build/src/start.cli.js git",
     "gql:copy": "ncp src/graph/schema.cortex.json build/src/graph/schema.cortex.json",
     "lint": "tslint --format verbose --project . --exclude \"{build,node_modules}/**\" \"**/*.ts\"",
     "lint:fix": "npm run lint -- --fix",
@@ -161,11 +160,8 @@
     "watch:compile": "tsc --project . --watch",
     "watch": "supervisor --watch build --quiet --exec npm -- run start"
   },
-  "bin": {
-    "atomist": "./start.cli.js"
-  },
   "engines": {
     "node": "9.x.x",
-    "npm": "5.x.x"
+    "npm": "6.x.x"
   }
 }

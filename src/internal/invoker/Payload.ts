@@ -5,9 +5,32 @@ import { Source } from "../transport/RequestProcessor";
 
 export interface Contextual {
 
-    teamId: string;
+    /**
+     * ID of the Atomist Workspace
+     * @deprecated use workspaceId instead
+     */
+    teamId?: string;
+
+    /**
+     * ID of the Atomist Workspace
+     */
+    workspaceId: string;
+
+    /**
+     * Correlation Id for this invocation
+     * Note: there can be more then one handler invocations per unique
+     * correlation id occurring.
+     */
     correlationId: string;
+
+    /**
+     * Client internal unique Id of the current handler invocation
+     */
     invocationId?: string;
+
+    /**
+     * Source of the request, eg. Slack, Dashboard or HTTP
+     */
     source?: Source;
 }
 
