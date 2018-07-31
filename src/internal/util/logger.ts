@@ -143,7 +143,13 @@ function initLogging() {
         winstonLogger.transports.console.silent = true;
 
         // Add file logging into log directory
-        const appDir = __dirname.split(p.join("node_modules", "@atomist"))[0];
+        const dirName = __dirname;
+        let appDir;
+        if (dirName.indexOf(p.join("node_modules", "@atomist")) > 0) {
+            appDir = __dirname.split(p.join("node_modules", "@atomist"))[0];
+        } else {
+            appDir = dirName;
+        }
         const pj = require(p.join(appDir, "package.json"));
         const filename = p.join(".", "log", `${pj.name.replace(/^.*\//, "")}-slalom.log`);
         addFileTransport(filename, "debug");
