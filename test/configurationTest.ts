@@ -50,6 +50,7 @@ describe("configuration", () => {
         version: pkgVersion,
         keywords: ["atomist", "automation"],
         teamIds: [],
+        workspaceIds: [],
         groups: [],
         environment: "local",
         application: "automation-client",

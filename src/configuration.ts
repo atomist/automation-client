@@ -908,6 +908,7 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
  */
 export const LocalDefaultConfiguration: Configuration = {
     teamIds: [],
+    workspaceIds: [],
     groups: [],
     environment: "local",
     policy: "ephemeral",
