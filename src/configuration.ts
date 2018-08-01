@@ -198,7 +198,12 @@ export interface AutomationServerOptions extends AutomationOptions {
     /** Whether and where to send application start and stop events to Atomist. */
     applicationEvents?: {
         enabled?: boolean;
+        /**
+         * @deprecated teamId is deprecated and will be removed in a future release.
+         * Use workspaceId instead.
+         */
         teamId?: string;
+        workspaceId?: string;
     };
     /**
      * Whether and how many workers to start up.  If enabled is true

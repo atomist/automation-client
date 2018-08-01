@@ -32,10 +32,10 @@ function sendEvent(state: "stopping" | "started", teamId: string, event: Applica
 /**
  * Register the automation client to send application events to Atomist.
  * This is useful to show starting and stopping automation clients as part of their general lifecycle in eg Slack.
- * @param {string} teamId
+ * @param {string} workspaceId
  * @returns {Promise<any>}
  */
-export function registerApplicationEvents(teamId: string): Promise<any> {
+export function registerApplicationEvents(workspaceId: string): Promise<any> {
 
     // tslint:disable-next-line:no-var-requires
     const git = require(`${appRoot.path}/git-info.json`);
@@ -65,13 +65,13 @@ export function registerApplicationEvents(teamId: string): Promise<any> {
 
     // register shutdown hook
     registerShutdownHook(() => {
-        return stopping(teamId, event)
+        return stopping(workspaceId, event)
             .then(() => Promise.resolve(0))
             .catch(() => Promise.resolve(1));
     });
 
     // trigger application started event
-    return started(teamId, event);
+    return started(workspaceId, event);
 }
 
 interface ApplicationEvent {
