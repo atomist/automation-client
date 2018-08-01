@@ -42,8 +42,8 @@ export class AutomationClient implements RequestProcessor {
     public automations: BuildableAutomationServer;
     public webSocketClient: WebSocketClient;
     public httpServer: ExpressServer;
-    public webSocketHandler: WebSocketRequestProcessor;
-    public httpHandler: ExpressRequestProcessor;
+    public webSocketHandler: RequestProcessor;
+    public httpHandler: RequestProcessor;
 
     private defaultListeners = [
         new MetricEnabledAutomationEventListener(),
@@ -132,7 +132,7 @@ export class AutomationClient implements RequestProcessor {
             return (this.webSocketHandler as ClusterMasterRequestProcessor).run()
                 .then(() => {
                     return Promise.all([
-                        this.runWs(() => this.webSocketHandler),
+                        this.runWs(() => this.webSocketHandler as ClusterMasterRequestProcessor),
                         Promise.resolve(this.runHttp(() => this.setupExpressRequestHandler())),
                         this.setupApplicationEvents(),
                     ])
@@ -144,7 +144,8 @@ export class AutomationClient implements RequestProcessor {
             logger.info(`Starting Atomist automation client worker ${clientSig}`);
             return Promise.resolve(startWorker(this.automations, this.configuration,
                 [...this.defaultListeners, ...this.configuration.listeners]))
-                .then(() => {
+                .then(workerProcessor => {
+                    this.webSocketHandler = workerProcessor;
                     return Promise.resolve();
                 });
         }
@@ -198,18 +199,19 @@ export class AutomationClient implements RequestProcessor {
     }
 
     private runWs(handlerMaker: () => WebSocketRequestProcessor): Promise<void> {
-
         const payloadOptions: any = {};
         if (this.configuration.ws && this.configuration.ws.compress) {
             payloadOptions.accept_encoding = "gzip";
         }
+
         this.webSocketHandler = handlerMaker();
         this.webSocketClient = new WebSocketClient(
             () => prepareRegistration(this.automations.automations,
                 payloadOptions,
                 this.configuration.metadata),
             this.configuration,
-            this.webSocketHandler);
+            this.webSocketHandler as WebSocketRequestProcessor);
+
         return this.webSocketClient.start();
     }
 
@@ -223,6 +225,7 @@ export class AutomationClient implements RequestProcessor {
             this.automations,
             this.configuration,
             this.httpHandler);
+
         return Promise.resolve();
     }
 
