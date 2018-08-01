@@ -59,6 +59,7 @@ export interface ChildProcessResult {
     error: boolean;
     code: number;
     message?: string;
+    childProcess: ChildProcess;
 }
 
 export interface SpawnWatchOptions {
@@ -138,6 +139,7 @@ function watchSpawned(childProcess: ChildProcess,
             resolve({
                 error: optsToUse.errorFinder(code, signal, log),
                 code,
+                childProcess,
             });
         });
         childProcess.addListener("error", err => {
