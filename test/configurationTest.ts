@@ -94,7 +94,10 @@ describe("configuration", () => {
                 enabled: true,
                 level: "debug",
             },
-            banner: true,
+            banner: {
+                enabled: true,
+                contributors: [],
+            },
         },
         statsd: {
             enabled: false,

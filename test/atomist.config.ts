@@ -137,7 +137,9 @@ export const configuration: Configuration = {
     ],
     logging: {
         level: "debug",
-        banner: true,
+        banner: {
+            enabled: true,
+        },
         file: {
             enabled: false,
             level: "debug",

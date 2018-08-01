@@ -227,7 +227,16 @@ export interface AutomationServerOptions extends AutomationOptions {
          * Print welcome banner; set to an arbitrary string to display,
          * default is name of automation-client
          */
-        banner?: boolean | string | ((configuration: Configuration) => Banner);
+        banner?: {
+            enabled?: boolean;
+            /** Message or Banner to be printed at the top of the banner */
+            message?: string | ((configuration: Configuration) => Banner);
+            /**
+             * Add content to the banner which shows up between handlers and
+             * footer
+             */
+            contributors?: Array<(configuration: Configuration) => string>;
+        } ;
         /**
          * Log to file; set to file path to overwrite location and name of logfile,
          * defaults to ./log/automation-client.log in current working directory
@@ -959,7 +968,10 @@ export const LocalDefaultConfiguration: Configuration = {
             enabled: true,
             level: "debug",
         },
-        banner: true,
+        banner: {
+            enabled: true,
+            contributors: [],
+        },
     },
     statsd: {
         enabled: false,
