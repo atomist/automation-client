@@ -7,7 +7,10 @@ import * as bearer from "passport-http-bearer";
 import { IStrategyOptions } from "passport-http-bearer";
 import * as tokenHeader from "passport-http-header-token";
 import * as retry from "retry";
-import { ExpressCustomizer } from "../../../configuration";
+import {
+    Configuration,
+    ExpressCustomizer,
+} from "../../../configuration";
 import * as globals from "../../../globals";
 import { automationClientInstance } from "../../../globals";
 import { AutomationContextAware } from "../../../HandlerContext";
@@ -27,6 +30,7 @@ import {
 } from "../../util/memory";
 import { metrics } from "../../util/metric";
 import { guid } from "../../util/string";
+import { RequestProcessor } from "../RequestProcessor";
 import { prepareRegistration } from "../websocket/payloads";
 import { ExpressRequestProcessor } from "./ExpressRequestProcessor";
 
@@ -37,8 +41,8 @@ import { ExpressRequestProcessor } from "./ExpressRequestProcessor";
 export class ExpressServer {
 
     constructor(private automations: AutomationServer,
-                private listeners: AutomationEventListener[] = [],
-                private options: ExpressServerOptions) {
+                private configuration: Configuration,
+                private handler: RequestProcessor) {
 
         const exp = express();
 
@@ -125,12 +129,14 @@ export class ExpressServer {
         this.exposeEventHandlerInvocationRoute(exp,
             `${ApiBase}/event`, cors,
             (req, res, result) => {
-                res.status(result.some(r => r.code !== 0) ? 500 : 200).json(result);
+                const results = Array.isArray(result) ? result : [result];
+                const code = results.some(r => r.code !== 0) ? 500 : 200;
+                res.status(code).json(result);
             });
 
-        if (this.options.customizers.length > 0) {
+        if (this.configuration.http.customizers.length > 0) {
             logger.debug("Invoking http server customizers");
-            this.options.customizers.forEach(c => c(exp, this.authenticate));
+            this.configuration.http.customizers.forEach(c => c(exp, this.authenticate));
         }
 
         const operation = retry.operation({
@@ -142,9 +148,10 @@ export class ExpressServer {
         });
 
         operation.attempt(() => {
-            exp.listen(this.options.port, () => {
+            exp.listen(this.configuration.http.port, () => {
                 logger.debug(
-                    `Atomist automation client api running at 'http://${this.options.host}:${this.options.port}'`);
+                    `Atomist automation client api running at 'http://${
+                        this.configuration.http.host}:${this.configuration.http.port}'`);
             }).on("error", err => {
                 logger.warn("Starting automation client api failed: %s", err.message);
                 if (operation.retry(err)) {
@@ -164,13 +171,7 @@ export class ExpressServer {
 
         exp.post(url, cors(), this.authenticate,
             (req, res) => {
-                const handler = new ExpressRequestProcessor(
-                    automationClientInstance().configuration.token,
-                    this.automations,
-                    this.listeners,
-                    this.options);
-
-                handler.processCommand(req.body, result => {
+                this.handler.processCommand(req.body, result => {
                     result.then(r => handle(req, res, r));
                 });
             });
@@ -183,13 +184,7 @@ export class ExpressServer {
 
         exp.post(url, cors(), this.authenticate,
             (req, res) => {
-                const handler = new ExpressRequestProcessor(
-                    automationClientInstance().configuration.token,
-                    this.automations,
-                    this.listeners,
-                    this.options);
-
-                handler.processEvent(req.body, result => {
+                this.handler.processEvent(req.body, result => {
                     result.then(r => handle(req, res, r));
                 });
             });
@@ -197,9 +192,9 @@ export class ExpressServer {
 
     private setupAuthentication() {
 
-        if (this.options.auth && this.options.auth.basic && this.options.auth.basic.enabled) {
-            const user: string = this.options.auth.basic.username ? this.options.auth.basic.username : "admin";
-            const pwd: string = this.options.auth.basic.password ? this.options.auth.basic.password : guid();
+        if (this.configuration.http.auth && this.configuration.http.auth.basic && this.configuration.http.auth.basic.enabled) {
+            const user: string = this.configuration.http.auth.basic.username ? this.configuration.http.auth.basic.username : "admin";
+            const pwd: string = this.configuration.http.auth.basic.password ? this.configuration.http.auth.basic.password : guid();
 
             passport.use("basic", new http.BasicStrategy(
                 (username, password, done) => {
@@ -211,14 +206,14 @@ export class ExpressServer {
                 },
             ));
 
-            if (!this.options.auth.basic.password) {
+            if (!this.configuration.http.auth.basic.password) {
                 logger.info(`Auto-generated credentials for web endpoints are user '${user}' and password '${pwd}'`);
             }
         }
 
-        if (this.options.auth && this.options.auth.bearer && this.options.auth.bearer.enabled) {
-            const org = this.options.auth.bearer.org;
-            const adminOrg = this.options.auth.bearer.adminOrg;
+        if (this.configuration.http.auth && this.configuration.http.auth.bearer && this.configuration.http.auth.bearer.enabled) {
+            const org = this.configuration.http.auth.bearer.org;
+            const adminOrg = this.configuration.http.auth.bearer.adminOrg;
 
             passport.use("bearer", new bearer.Strategy({
                 passReqToCallback: true,
@@ -259,8 +254,8 @@ export class ExpressServer {
             ));
         }
 
-        if (this.options.auth && this.options.auth.token && this.options.auth.token.enabled) {
-            const cb = this.options.auth.token.verify || (token => Promise.resolve(false));
+        if (this.configuration.http.auth && this.configuration.http.auth.token && this.configuration.http.auth.token.enabled) {
+            const cb = this.configuration.http.auth.token.verify || (token => Promise.resolve(false));
 
             passport.use("token", new tokenHeader.Strategy(
                 (token, done) => {
@@ -287,15 +282,15 @@ export class ExpressServer {
     }
 
     private authenticate = (req, res, next) => {
-        if (this.options.auth) {
+        if (this.configuration.http.auth) {
             const strategies = [];
-            if (this.options.auth.bearer && this.options.auth.bearer.enabled === true) {
+            if (this.configuration.http.auth.bearer && this.configuration.http.auth.bearer.enabled === true) {
                 strategies.push("bearer");
             }
-            if (this.options.auth.basic && this.options.auth.basic.enabled === true) {
+            if (this.configuration.http.auth.basic && this.configuration.http.auth.basic.enabled === true) {
                 strategies.push("basic");
             }
-            if (this.options.auth.token && this.options.auth.token.enabled === true) {
+            if (this.configuration.http.auth.token && this.configuration.http.auth.token.enabled === true) {
                 strategies.push("token");
             }
             if (strategies.length > 0) {

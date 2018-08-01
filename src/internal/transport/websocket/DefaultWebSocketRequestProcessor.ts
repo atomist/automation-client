@@ -1,7 +1,7 @@
 import * as stringify from "json-stringify-safe";
 import * as WebSocket from "ws";
 import { Configuration } from "../../../configuration";
-import * as global from "../../../globals";
+import { ApolloGraphClientFactory } from "../../../graph/ApolloGraphClientFactory";
 import {
     AutomationContextAware,
     HandlerContext,
@@ -22,8 +22,6 @@ import {
     isCommandIncoming,
     isEventIncoming,
 } from "../RequestProcessor";
-import { showStartupMessages } from "../showStartupMessages";
-import { GraphClientFactory } from "./GraphClientFactory";
 import {
     sendMessage,
     WebSocketCommandMessageClient,
@@ -37,7 +35,7 @@ import {
 export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
     implements WebSocketRequestProcessor {
 
-    private graphClients: GraphClientFactory;
+    private graphClients: ApolloGraphClientFactory;
     private registration?: RegistrationConfirmation;
     private webSocket?: WebSocket;
 
@@ -59,7 +57,8 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
         logger.info("Registration successful: %s", stringify(registration));
         (this.configuration.ws as any).session = registration;
         this.registration = registration;
-        this.graphClients = new GraphClientFactory(this.registration, this.configuration);
+        this.graphClients =
+            new ApolloGraphClientFactory(this.configuration, () => `Bearer ${registration.jwt}`);
     }
 
     public onConnect(ws: WebSocket) {

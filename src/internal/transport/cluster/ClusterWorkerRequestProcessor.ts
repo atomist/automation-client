@@ -1,6 +1,7 @@
 import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
 import * as stringify from "json-stringify-safe";
 import { Configuration } from "../../../configuration";
+import { ApolloGraphClientFactory } from "../../../graph/ApolloGraphClientFactory";
 import { EventFired } from "../../../HandleEvent";
 import {
     AutomationContextAware,
@@ -34,7 +35,6 @@ import {
     EventIncoming,
     RequestProcessor,
 } from "../RequestProcessor";
-import { GraphClientFactory } from "../websocket/GraphClientFactory";
 import { RegistrationConfirmation } from "../websocket/WebSocketRequestProcessor";
 import {
     MasterMessage,
@@ -46,7 +46,7 @@ import {
  */
 class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
 
-    private graphClients: GraphClientFactory;
+    private graphClients: ApolloGraphClientFactory;
     private registration?: RegistrationConfirmation;
 
     /* tslint:disable:variable-name */
@@ -87,7 +87,8 @@ class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
     public setRegistration(registration: RegistrationConfirmation) {
         logger.debug("Receiving registration '%s'", stringify(registration));
         this.registration = registration;
-        this.graphClients = new GraphClientFactory(this.registration, this._configuration);
+        this.graphClients =
+            new ApolloGraphClientFactory(this._configuration, () => `Bearer ${registration.jwt}`);
     }
 
     public setRegistrationIfRequired(data: any) {

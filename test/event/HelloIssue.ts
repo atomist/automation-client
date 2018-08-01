@@ -12,7 +12,10 @@ import {
 import { HandlerContext } from "../../src/HandlerContext";
 import { HandlerResult } from "../../src/HandlerResult";
 import { EventHandlerMetadata } from "../../src/metadata/automationMetadata";
-import { addressSlackChannels } from "../../src/spi/message/MessageClient";
+import {
+    addressSlackChannels,
+    addressSlackChannelsFromContext,
+} from "../../src/spi/message/MessageClient";
 
 @EventHandler("Notify channel on new issue", `subscription BlaBla
 {
@@ -41,16 +44,16 @@ export class HelloIssue implements HandleEvent<any> {
     @Value("http.port")
     public port: number;
 
-    public handle(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult> {
+    public async handle(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult> {
 
         const issue = e.data.Issue[0];
         let apiUrl = "https://api.github.com/";
         if (issue.repo.org.provider) {
-            apiUrl = issue.repo.org.provider.api_url;
+            apiUrl = issue.repo.org.provider.apiUrl;
         }
 
         return ctx.messageClient.send(`Got a new issue \`${issue.number}# ${issue.title}\``,
-            addressSlackChannels("FIXME", issue.repo.channels.map(c => c.name)))
+            await addressSlackChannelsFromContext(ctx, ...issue.repo.channels.map(c => c.name)))
             .then(() => {
                 return axios.post(
                     `${apiUrl}repos/${issue.repo.owner}/${issue.repo.name}/issues/${issue.number}/comments`,

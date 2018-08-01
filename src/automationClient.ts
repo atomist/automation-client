@@ -1,10 +1,10 @@
 import * as cluster from "cluster";
 import * as stringify from "json-stringify-safe";
-import * as _ from "lodash";
 import * as p from "path";
 import { Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
+import { HandlerResult } from "./HandlerResult";
 import {
     Ingester,
     IngesterBuilder,
@@ -13,11 +13,14 @@ import { registerApplicationEvents } from "./internal/env/applicationEvent";
 import { ClusterMasterRequestProcessor } from "./internal/transport/cluster/ClusterMasterRequestProcessor";
 import { startWorker } from "./internal/transport/cluster/ClusterWorkerRequestProcessor";
 import { EventStoringAutomationEventListener } from "./internal/transport/EventStoringAutomationEventListener";
-import {
-    ExpressServer,
-    ExpressServerOptions,
-} from "./internal/transport/express/ExpressServer";
+import { ExpressRequestProcessor } from "./internal/transport/express/ExpressRequestProcessor";
+import { ExpressServer } from "./internal/transport/express/ExpressServer";
 import { MetricEnabledAutomationEventListener } from "./internal/transport/MetricEnabledAutomationEventListener";
+import {
+    CommandIncoming,
+    EventIncoming,
+    RequestProcessor,
+} from "./internal/transport/RequestProcessor";
 import { showStartupMessages } from "./internal/transport/showStartupMessages";
 import { DefaultWebSocketRequestProcessor } from "./internal/transport/websocket/DefaultWebSocketRequestProcessor";
 import { prepareRegistration } from "./internal/transport/websocket/payloads";
@@ -34,12 +37,13 @@ import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
 import { Maker } from "./util/constructionUtils";
 import { StatsdAutomationEventListener } from "./util/statsd";
 
-export class AutomationClient {
+export class AutomationClient implements RequestProcessor {
 
     public automations: BuildableAutomationServer;
     public webSocketClient: WebSocketClient;
     public httpServer: ExpressServer;
     public webSocketHandler: WebSocketRequestProcessor;
+    public httpHandler: ExpressRequestProcessor;
 
     private defaultListeners = [
         new MetricEnabledAutomationEventListener(),
@@ -70,6 +74,26 @@ export class AutomationClient {
         return this;
     }
 
+    public processCommand(command: CommandIncoming, callback?: (result: Promise<HandlerResult>) => void) {
+        if (this.webSocketHandler) {
+            return this.webSocketHandler.processCommand(command, callback);
+        } else if (this.httpHandler) {
+            return this.httpHandler.processCommand(command, callback);
+        } else {
+            throw new Error("No request processor available");
+        }
+    }
+
+    public processEvent(event: EventIncoming, callback?: (results: Promise<HandlerResult[]>) => void) {
+        if (this.webSocketHandler) {
+            return this.webSocketHandler.processEvent(event, callback);
+        } else if (this.httpHandler) {
+            return this.httpHandler.processEvent(event, callback);
+        } else {
+            throw new Error("No request processor available");
+        }
+    }
+
     public run(): Promise<void> {
         this.configureLogging();
         this.configureStatsd();
@@ -82,10 +106,9 @@ export class AutomationClient {
             logger.debug(`Using automation client configuration: ${clientConf}`);
 
             if (this.configuration.ws.enabled) {
-                this.webSocketHandler = this.setupWebSocketRequestHandler();
                 return Promise.all([
-                    this.runWs(this.webSocketHandler),
-                    Promise.resolve(this.runHttp()),
+                    this.runWs(() => this.setupWebSocketRequestHandler()),
+                    Promise.resolve(this.runHttp(() => this.setupExpressRequestHandler())),
                     this.setupApplicationEvents(),
                 ])
                     .then(() => {
@@ -93,7 +116,7 @@ export class AutomationClient {
                     });
             } else {
                 return Promise.all([
-                    Promise.resolve(this.runHttp()),
+                    Promise.resolve(this.runHttp(() => this.setupExpressRequestHandler())),
                     this.setupApplicationEvents(),
                 ])
                     .then(() => {
@@ -104,12 +127,11 @@ export class AutomationClient {
             logger.info(`Starting Atomist automation client master ${clientSig}`);
             logger.debug(`Using automation client configuration: ${clientConf}`);
 
-            this.webSocketHandler = this.setupWebSocketClusterRequestHandler();
             return (this.webSocketHandler as ClusterMasterRequestProcessor).run()
                 .then(() => {
                     return Promise.all([
-                        this.runWs(this.webSocketHandler),
-                        Promise.resolve(this.runHttp()),
+                        this.runWs(() => this.setupWebSocketClusterRequestHandler()),
+                        Promise.resolve(this.runHttp(() => this.setupExpressRequestHandler())),
                         this.setupApplicationEvents(),
                     ])
                         .then(() => {
@@ -166,45 +188,38 @@ export class AutomationClient {
         return Promise.resolve();
     }
 
-    private runWs(handler: WebSocketRequestProcessor): Promise<void> {
+    private setupExpressRequestHandler(): ExpressRequestProcessor {
+        return new ExpressRequestProcessor(this.automations, this.configuration,
+            [...this.defaultListeners, ...this.configuration.listeners]);
+    }
+
+    private runWs(handlerMaker: () => WebSocketRequestProcessor): Promise<void> {
 
         const payloadOptions: any = {};
         if (this.configuration.ws && this.configuration.ws.compress) {
             payloadOptions.accept_encoding = "gzip";
         }
-
+        this.webSocketHandler = handlerMaker();
         this.webSocketClient = new WebSocketClient(
             () => prepareRegistration(this.automations.automations,
                 payloadOptions,
                 this.configuration.metadata),
             this.configuration,
-            handler);
+            this.webSocketHandler);
         return this.webSocketClient.start();
     }
 
-    private runHttp(): void {
+    private runHttp(handlerMaker: () => ExpressRequestProcessor): Promise<void> {
         if (!this.configuration.http.enabled) {
             return;
         }
-        const expressOptions: ExpressServerOptions = {
-            port: this.configuration.http.port,
-            customizers: this.configuration.http.customizers,
-            host: this.configuration.http.host,
-            auth: {
-                basic: _.cloneDeep(this.configuration.http.auth.basic),
-                bearer: _.cloneDeep(this.configuration.http.auth.bearer),
-                token: _.cloneDeep(this.configuration.http.auth.token),
-            },
-            endpoint: {
-                graphql: this.configuration.endpoints.graphql,
-            },
-            graphClientFactory: this.configuration.http.graphClientFactory,
-            messageClientFactory: this.configuration.http.messageClientFactory,
-        };
+
+        this.httpHandler = handlerMaker();
         this.httpServer = new ExpressServer(
             this.automations,
-            [...this.defaultListeners, ...this.configuration.listeners],
-            expressOptions);
+            this.configuration,
+            this.httpHandler);
+        return Promise.resolve();
     }
 
     private printStartupMessage(): Promise<void> {

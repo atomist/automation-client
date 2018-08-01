@@ -1,6 +1,8 @@
 import WebSocket = require("ws");
+import { Configuration } from "../../../configuration";
 import { automationClientInstance } from "../../../globals";
 import { ApolloGraphClient } from "../../../graph/ApolloGraphClient";
+import { ApolloGraphClientFactory } from "../../../graph/ApolloGraphClientFactory";
 import {
     AutomationContextAware,
     HandlerContext,
@@ -33,13 +35,19 @@ import { ExpressServerOptions } from "./ExpressServer";
  */
 export class ExpressRequestProcessor extends AbstractRequestProcessor {
 
-    private messages: any[] = [];
+    private graphClientFactory: ApolloGraphClientFactory;
 
-    constructor(private token: string,
-                protected automations: AutomationServer,
-                protected listeners: AutomationEventListener[] = [],
-                private options: ExpressServerOptions) {
+    constructor(protected automations: AutomationServer,
+                protected configuration: Configuration,
+                protected listeners: AutomationEventListener[] = []) {
         super(automations, listeners);
+        this.graphClientFactory = new ApolloGraphClientFactory(this.configuration, () => {
+            if (this.configuration.apiKey) {
+                return `Bearer ${this.configuration.apiKey}`;
+            } else {
+                return `token ${this.configuration.token}`;
+            }
+        });
     }
 
     protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {
@@ -48,18 +56,16 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
 
     protected createGraphClient(event: EventIncoming | CommandIncoming,
                                 context: AutomationContextAware): GraphClient {
-        const workspaceId = namespace.get().workspaceId;
-        return !!this.options.graphClientFactory ?
-            this.options.graphClientFactory(context) :
-            new ApolloGraphClient(`${this.options.endpoint.graphql}/${workspaceId}`,
-                { Authorization: `token ${this.token}` });
+        return !!this.configuration.http.graphClientFactory ?
+            this.configuration.http.graphClientFactory(context) :
+            this.graphClientFactory.createGraphClient(event);
     }
 
     protected createMessageClient(event: EventIncoming | CommandIncoming,
                                   context: AutomationContextAware): MessageClient {
-        return !!this.options.messageClientFactory ?
-            this.options.messageClientFactory(context) :
-            new ExpressMessageClient(this.messages, event);
+        return !!this.configuration.http.messageClientFactory ?
+            this.configuration.http.messageClientFactory(context) :
+            new ExpressMessageClient(event);
     }
 }
 
@@ -67,7 +73,7 @@ class ExpressMessageClient implements MessageClient {
 
     private delegate: MessageClient;
 
-    constructor(private messages: any[], private event: EventIncoming | CommandIncoming) {
+    constructor(private event: EventIncoming | CommandIncoming) {
         if (automationClientInstance().webSocketHandler
             && (automationClientInstance().webSocketHandler as any).webSocket) {
             const ws = (automationClientInstance().webSocketHandler as any).webSocket as WebSocket;
@@ -80,7 +86,6 @@ class ExpressMessageClient implements MessageClient {
     }
 
     public respond(msg: any, options?: MessageOptions): Promise<any> {
-        this.messages.push(msg);
         if (this.delegate) {
             return this.delegate.respond(msg, options);
         } else {
@@ -89,7 +94,6 @@ class ExpressMessageClient implements MessageClient {
     }
 
     public send(msg: any, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
-        this.messages.push(msg);
         if (this.delegate) {
             return this.delegate.send(msg, destinations, options);
         } else {

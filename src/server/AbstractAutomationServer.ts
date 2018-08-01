@@ -26,7 +26,7 @@ export abstract class AbstractAutomationServer implements AutomationServer {
 
     public onEvent(payload: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult[]> {
         const h = this.automations.events.filter(eh => eh.subscriptionName === payload.extensions.operationName);
-        if (!h) {
+        if (!h || h.length === 0) {
             throw new Error(`No event handler with name '${payload.extensions.operationName}'` +
                 `: Known event handlers are '${this.automations.events.map(e => e.name)}'`);
         } else {
