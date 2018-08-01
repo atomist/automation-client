@@ -127,10 +127,12 @@ export class AutomationClient implements RequestProcessor {
             logger.info(`Starting Atomist automation client master ${clientSig}`);
             logger.debug(`Using automation client configuration: ${clientConf}`);
 
+            this.webSocketHandler = this.setupWebSocketClusterRequestHandler();
+
             return (this.webSocketHandler as ClusterMasterRequestProcessor).run()
                 .then(() => {
                     return Promise.all([
-                        this.runWs(() => this.setupWebSocketClusterRequestHandler()),
+                        this.runWs(() => this.webSocketHandler),
                         Promise.resolve(this.runHttp(() => this.setupExpressRequestHandler())),
                         this.setupApplicationEvents(),
                     ])
