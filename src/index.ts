@@ -20,6 +20,7 @@ export {
     configurationValue,
     getUserConfig,
     resolveWorkspaceIds,
+    UserConfig,
     userConfigPath,
     writeUserConfig,
 } from "./configuration";
