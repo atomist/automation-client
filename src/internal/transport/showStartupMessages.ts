@@ -159,7 +159,7 @@ function contributors(configuration: Configuration): string {
             } else {
                 const bs = section as BannerSection;
                 return `  ${chalk.gray(bs.title)}
-    ${bs.body}`;
+    ${bs.body.split("\n").join("\n    ")}`;
             }
 
         }).join("\n\n");
