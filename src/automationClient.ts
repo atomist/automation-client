@@ -11,7 +11,10 @@ import {
 } from "./ingesters";
 import { registerApplicationEvents } from "./internal/env/applicationEvent";
 import { ClusterMasterRequestProcessor } from "./internal/transport/cluster/ClusterMasterRequestProcessor";
-import { startWorker } from "./internal/transport/cluster/ClusterWorkerRequestProcessor";
+import {
+    ClusterWorkerRequestProcessor,
+    startWorker,
+} from "./internal/transport/cluster/ClusterWorkerRequestProcessor";
 import { EventStoringAutomationEventListener } from "./internal/transport/EventStoringAutomationEventListener";
 import { ExpressRequestProcessor } from "./internal/transport/express/ExpressRequestProcessor";
 import { ExpressServer } from "./internal/transport/express/ExpressServer";
@@ -107,21 +110,15 @@ export class AutomationClient implements RequestProcessor {
 
             if (this.configuration.ws.enabled) {
                 return Promise.all([
-                    this.runWs(() => this.setupWebSocketRequestHandler()),
-                    Promise.resolve(this.runHttp(() => this.setupExpressRequestHandler())),
-                    this.setupApplicationEvents(),
-                ])
-                    .then(() => {
-                        return this.printStartupMessage();
-                    });
+                        this.runWs(() => this.setupWebSocketRequestHandler()),
+                        this.runHttp(() => this.setupExpressRequestHandler()),
+                    ])
+                    .then(() => this.setupApplicationEvents())
+                    .then(() => this.printStartupMessage());
             } else {
-                return Promise.all([
-                    Promise.resolve(this.runHttp(() => this.setupExpressRequestHandler())),
-                    this.setupApplicationEvents(),
-                ])
-                    .then(() => {
-                        return this.printStartupMessage();
-                    });
+                return this.runHttp(() => this.setupExpressRequestHandler())
+                    .then(() => this.setupApplicationEvents())
+                    .then(() => this.printStartupMessage());
             }
         } else if (cluster.isMaster) {
             logger.info(`Starting Atomist automation client master ${clientSig}`);
@@ -132,18 +129,15 @@ export class AutomationClient implements RequestProcessor {
             return (this.webSocketHandler as ClusterMasterRequestProcessor).run()
                 .then(() => {
                     return Promise.all([
-                        this.runWs(() => this.webSocketHandler as ClusterMasterRequestProcessor),
-                        Promise.resolve(this.runHttp(() => this.setupExpressRequestHandler())),
-                        this.setupApplicationEvents(),
-                    ])
-                        .then(() => {
-                            return this.printStartupMessage();
-                        });
+                            this.runWs(() => this.webSocketHandler as ClusterMasterRequestProcessor),
+                            this.runHttp(() => this.setupExpressRequestHandler()),
+                        ])
+                        .then(() => this.setupApplicationEvents())
+                        .then(() => this.printStartupMessage());
                 });
         } else if (cluster.isWorker) {
             logger.info(`Starting Atomist automation client worker ${clientSig}`);
-            return Promise.resolve(startWorker(this.automations, this.configuration,
-                [...this.defaultListeners, ...this.configuration.listeners]))
+            return Promise.resolve(this.setupWebSocketClusterWorkerRequestHandler())
                 .then(workerProcessor => {
                     this.webSocketHandler = workerProcessor;
                     return Promise.resolve();
@@ -173,6 +167,11 @@ export class AutomationClient implements RequestProcessor {
         return new ClusterMasterRequestProcessor(this.automations, this.configuration,
             [...this.defaultListeners, ...this.configuration.listeners],
             this.configuration.cluster.workers);
+    }
+
+    private setupWebSocketClusterWorkerRequestHandler(): ClusterWorkerRequestProcessor {
+        return startWorker(this.automations, this.configuration,
+            [...this.defaultListeners, ...this.configuration.listeners]);
     }
 
     private setupWebSocketRequestHandler(): WebSocketRequestProcessor {

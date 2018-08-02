@@ -44,7 +44,7 @@ import {
 /**
  * A RequestProcessor that is being run as Node.JS Cluster worker handling all the actual work.
  */
-class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
+export class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
 
     private graphClients: ApolloGraphClientFactory;
     private registration?: RegistrationConfirmation;
@@ -194,7 +194,7 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
  */
 export function startWorker(automations: AutomationServer,
                             configuration: Configuration,
-                            listeners: AutomationEventListener[] = []): RequestProcessor {
+                            listeners: AutomationEventListener[] = []): ClusterWorkerRequestProcessor {
     const worker = new ClusterWorkerRequestProcessor(automations, configuration, listeners);
     process.on("message", msg => {
         if (msg.type === "registration") {
