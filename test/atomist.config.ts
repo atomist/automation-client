@@ -139,6 +139,13 @@ export const configuration: Configuration = {
         level: "debug",
         banner: {
             enabled: true,
+            contributors: [
+                () => ({
+                    title: "Test",
+                    body: "Some body",
+                }),
+                () => "some more raw text",
+            ],
         },
         file: {
             enabled: false,

@@ -77,6 +77,16 @@ export interface Banner {
 }
 
 /**
+ * A section that should be displayed in the banner.
+ */
+export interface BannerSection {
+
+    title: string;
+
+    body: string;
+}
+
+/**
  * Custom configuration you can abuse to your benefit
  */
 export interface AnyOptions {
@@ -235,7 +245,7 @@ export interface AutomationServerOptions extends AutomationOptions {
              * Add content to the banner which shows up between handlers and
              * footer
              */
-            contributors?: Array<(configuration: Configuration) => string>;
+            contributors?: Array<(configuration: Configuration) => string | BannerSection>;
         } ;
         /**
          * Log to file; set to file path to overwrite location and name of logfile,

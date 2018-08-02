@@ -1,7 +1,10 @@
 import chalk from "chalk";
 import * as _ from "lodash";
 import { promisify } from "util";
-import { Configuration } from "../../configuration";
+import {
+    BannerSection,
+    Configuration,
+} from "../../configuration";
 import { automationClientInstance } from "../../globals";
 import { Automations } from "../metadata/metadata";
 import { info } from "../util/info";
@@ -148,7 +151,18 @@ function contributors(configuration: Configuration): string {
     let c: string = "";
     const contribs = configuration.logging.banner.contributors || [];
     if (contribs && contribs.length > 0) {
-        c += contribs.map(cfg => cfg(configuration)).join("\n\n");
+        c += contribs.map(cfg => {
+            const section = cfg(configuration);
+
+            if (typeof section === "string") {
+                return section;
+            } else {
+                const bs = section as BannerSection;
+                return `  ${chalk.gray(bs.title)}
+    ${bs.body}`;
+            }
+
+        }).join("\n\n");
     }
     return c;
 }
