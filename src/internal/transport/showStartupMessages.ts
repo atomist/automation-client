@@ -5,7 +5,6 @@ import {
     BannerSection,
     Configuration,
 } from "../../configuration";
-import { automationClientInstance } from "../../globals";
 import { Automations } from "../metadata/metadata";
 import { info } from "../util/info";
 import { logger } from "../util/logger";
@@ -23,10 +22,6 @@ export async function showStartupMessages(configuration: Configuration,
 
 export async function createStartupMessage(configuration: Configuration,
                                            automations: Automations) {
-    if (!automationClientInstance()) {
-        return;
-    }
-
     const msg = `
 ${await header(configuration, automations)}
 ${firstRow(configuration, automations)}
@@ -96,7 +91,8 @@ function secondRow(configuration: Configuration,
         c += `  ${chalk.grey(`${automations.team_ids.length > 1 ? "Workspaces" : "Workspace"}`)} ${automations.team_ids.join(", ")}`;
     }
     c += `  ${chalk.grey("Policy")} ${automations.policy ? automations.policy : "ephemeral"}`;
-    c += `  ${chalk.grey("Cluster")} ${automationClientInstance().configuration.cluster.enabled ? "enabled" : "disabled"}`;
+    c += `  ${chalk.grey("Cluster")} ${configuration.cluster.enabled ? "enabled" : "disabled"}`;
+    c += `  ${chalk.grey("Environment")} ${configuration.environment}`;
     return c;
 }
 
@@ -127,7 +123,7 @@ function handlers(configuration: Configuration,
     const commands = automations.commands
         .sort((c1, c2) => c1.name.localeCompare(c2.name))
         .map(cmd => `    ${cmd.name} ${cmd.description ?
-            `(${_.upperFirst(cmd.description)})` : ""} ${cmd.intent ? chalk.italic(cmd.intent.join(", ")) : ""}`);
+            `(${_.upperFirst(cmd.description)})` : ""} ${cmd.intent ? chalk.gray(cmd.intent.join(", ")) : ""}`);
 
     let c = "";
     if (commands.length > 0 || events.length > 0) {
