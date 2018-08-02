@@ -7,13 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/0.19.1...HEAD)
 
+### Changed
+
+-   Configuration workspaceIds will be set to teamIds if no workspaceIds are set.
+
 ## [0.19.1](https://github.com/atomist/automation-client-ts/compare/0.19.0...0.19.1) - 2018-08-01
 
 ### Fixed
 
--   Restore start.command.ts
+-   Restore start.command.ts.
 
-## [0.19.0](https://github.com/atomist/automation-client-ts/compare/0.19.0...HEAD)
+## [0.19.0](https://github.com/atomist/automation-client-ts/compare/0.18.1...0.19.0) - 2018-07-31
 
 ### Added
 

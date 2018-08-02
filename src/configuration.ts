@@ -656,16 +656,27 @@ export function resolveTeamIds(cfg: Configuration): string[] {
 }
 
 /**
- * Examine environment, config, and cfg for Atomist workspace IDs.  The
- * ATOMIST_WORKSPACES environment variable takes precedence over the
- * configuration "workspaceIds", which takes precedence over cfg.workspaceId,
- * which may be undefined, null, or an empty array.
+ * Examine environment, config, and cfg for Atomist workspace IDs.
+ * The ATOMIST_WORKSPACES environment variable takes precedence over
+ * the configuration "workspaceIds", which takes precedence over
+ * cfg.workspaceId, which may be undefined, null, or an empty array.
+ * If the ATOMIST_WORKSPACES environment variable is not set,
+ * workspaceIds is not set in config, and workspaceIds is falsey in
+ * cfg and teamIds is resolvable from the configuration, workspaceIds
+ * is set to teamIds.
+ *
+ * @param cfg current configuration, whose workspaceIds and teamIds
+ *            properties may be modified by this function
+ * @return the resolved workspace IDs
  */
 export function resolveWorkspaceIds(cfg: Configuration): string[] {
+    const teamIds = resolveTeamIds(cfg);
     if (process.env.ATOMIST_WORKSPACES) {
         cfg.workspaceIds = process.env.ATOMIST_WORKSPACES.split(",");
     } else if (config("workspaceIds")) {
         cfg.workspaceIds = config("workspaceIds");
+    } else if (!cfg.workspaceIds && teamIds) {
+        cfg.workspaceIds = teamIds;
     }
     return cfg.workspaceIds;
 }
@@ -899,7 +910,6 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
         const atmPathCfg = loadAtomistConfigPath();
         const atmCfg = loadAtomistConfig();
         cfg = mergeConfigs({}, defCfg, userCfg, autoCfg, atmPathCfg, atmCfg);
-        resolveTeamIds(cfg);
         resolveWorkspaceIds(cfg);
         resolveToken(cfg);
         resolvePort(cfg);
