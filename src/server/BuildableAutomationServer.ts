@@ -105,7 +105,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                     workspaceIds = opts.workspaceIds[0];
                 } else if (opts.teamIds.length === 1) {
                     workspaceIds = opts.teamIds[0];
-                } else if (opts.workspaceIds.length > 1) {
+                } else if (opts.teamIds.length > 1) {
                     workspaceIds = opts.teamIds[0];
                 }
                 if (workspaceIds) {
@@ -315,7 +315,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
             name: this.opts.name,
             version: this.opts.version,
             policy: this.opts.policy,
-            team_ids: toStringArray(this.opts.workspaceIds),
+            team_ids: this.opts.workspaceIds ? this.opts.workspaceIds : this.opts.teamIds,
             groups: toStringArray((this.opts as any).groups),
             keywords: this.opts.keywords,
             commands: this.commandHandlers.map(e => e.metadata),
