@@ -67,7 +67,6 @@ export {
 } from "./HandlerResult";
 
 import * as GraphQL from "./graph/graphQL";
-
 export { GraphQL };
 
 export {
