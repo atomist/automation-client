@@ -97,12 +97,16 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
         }
 
         if (opts.endpoints && opts.endpoints.graphql) {
-            if (opts.workspaceIds) {
+            if (opts.workspaceIds || opts.teamIds) {
                 let workspaceIds: string;
                 if (opts.workspaceIds.length === 1) {
                     workspaceIds = opts.workspaceIds[0];
                 } else if (opts.workspaceIds.length > 1) {
                     workspaceIds = opts.workspaceIds[0];
+                } else if (opts.teamIds.length === 1) {
+                    workspaceIds = opts.teamIds[0];
+                } else if (opts.workspaceIds.length > 1) {
+                    workspaceIds = opts.teamIds[0];
                 }
                 if (workspaceIds) {
                     if (opts.token) {
