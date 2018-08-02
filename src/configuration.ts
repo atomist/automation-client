@@ -246,7 +246,7 @@ export interface AutomationServerOptions extends AutomationOptions {
              * footer
              */
             contributors?: Array<(configuration: Configuration) => string | BannerSection>;
-        } ;
+        };
         /**
          * Log to file; set to file path to overwrite location and name of logfile,
          * defaults to ./log/automation-client.log in current working directory
@@ -675,7 +675,7 @@ export function resolveWorkspaceIds(cfg: Configuration): string[] {
         cfg.workspaceIds = process.env.ATOMIST_WORKSPACES.split(",");
     } else if (config("workspaceIds")) {
         cfg.workspaceIds = config("workspaceIds");
-    } else if (!cfg.workspaceIds && teamIds) {
+    } else if ((!cfg.workspaceIds || cfg.workspaceIds.length < 1) && teamIds && teamIds.length > 0) {
         cfg.workspaceIds = teamIds;
     }
     return cfg.workspaceIds;
