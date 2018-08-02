@@ -806,7 +806,7 @@ export function invokePostProcessors(cfg: Configuration): Promise<Configuration>
  *
  * @param cfg final configuration
  */
-function validateConfiguration(cfg: Configuration) {
+export function validateConfiguration(cfg: Configuration) {
     if (!cfg) {
         throw new Error(`no configuration defined`);
     }
