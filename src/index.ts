@@ -16,6 +16,14 @@
  */
 
 export {
+    AtomistBuild,
+    AtomistLinkImage,
+    AtomistWebhookType,
+    postAtomistWebhook,
+    webhookBaseUrl,
+} from "./atomistWebhook";
+
+export {
     Configuration,
     configurationValue,
     getUserConfig,
@@ -38,6 +46,11 @@ export {
     Value,
     Tags,
 } from "./decorators";
+
+export { automationClientInstance } from "./globals";
+
+import * as GraphQL from "./graph/graphQL";
+export { GraphQL };
 
 export { HandleCommand } from "./HandleCommand";
 
@@ -66,8 +79,12 @@ export {
     SuccessPromise,
 } from "./HandlerResult";
 
-import * as GraphQL from "./graph/graphQL";
-export { GraphQL };
+export {
+    buildEnum,
+    buildIngester,
+    buildType,
+    IngesterBuilder,
+} from "./ingesters";
 
 export {
     obtainGitInfo,
@@ -83,21 +100,16 @@ export {
     LoggingConfig,
 } from "./internal/util/logger";
 
-export {
-    buildEnum,
-    buildIngester,
-    buildType,
-    IngesterBuilder,
-} from "./ingesters";
-
 export { AutomationEventListener } from "./server/AutomationEventListener";
 
 export {
-    AtomistBuild,
-    AtomistLinkImage,
-    AtomistWebhookType,
-    postAtomistWebhook,
-    webhookBaseUrl,
-} from "./atomistWebhook";
+    GraphClient,
+    MutationOptions,
+    QueryOptions,
+} from "./spi/graph/GraphClient";
 
-export { automationClientInstance } from "./globals";
+export {
+    Destination,
+    MessageOptions,
+    SlackDestination,
+} from "./spi/message/MessageClient";
