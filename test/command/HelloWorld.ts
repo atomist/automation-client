@@ -44,7 +44,7 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
         };
 
         await ctx.messageClient.send({ text: "test" }, addressSlackChannels(ctx.teamId, "handlers"));
-        await ctx.messageClient.send({ text: "test" }, addressSlackUsers(ctx.teamId, "cd"));
+        await ctx.messageClient.send({ text: "test" }, addressSlackUsers(ctx.teamId, "cd"), { id: null });
 
         return ctx.messageClient.send(helloWorld, addressEvent("HelloWorld"))
             .then(result => {
