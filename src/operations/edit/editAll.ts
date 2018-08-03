@@ -49,7 +49,7 @@ export function editAll<R, P extends EditorOrReviewerParameters>(ctx: HandlerCon
         defaultRepoLoader(credentials)): Promise<EditResult[]> {
     const edit = (p: Project, parms: P) =>
         editRepo(ctx, p, toEditor(editor), toEditModeFactory(editInfo)(p),
-            parms);
+            parms).catch(err => ({ success: false, message: err.message, target: p }));
     return doWithAllRepos<EditResult, P>(ctx, credentials, edit, parameters,
         repoFinder, repoFilter, repoLoader);
 }

@@ -47,6 +47,7 @@ export function editRepo<P extends EditorOrReviewerParameters>(context: HandlerC
             .then(after);
     } else {
         // No edit to do
+        // TODO: ask Rod why we are setting edited to "true" here. historical reason?
         return Promise.resolve(successfulEdit(p, true));
     }
 }
