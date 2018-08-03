@@ -35,7 +35,8 @@ export function editRepo<P extends EditorOrReviewerParameters>(context: HandlerC
                                                                editor: ProjectEditor<P>,
                                                                editMode: EditMode,
                                                                parameters?: P): Promise<EditResult> {
-    const after = x => !!editMode.afterPersist ? editMode.afterPersist(p, context).then(() => x) : x;
+    const afterPersist = editMode.afterPersist || doNothing;
+    const after = x => afterPersist(p, context).then(() => addEditModeToResult(editMode, x));
     if (isPullRequest(editMode)) {
         return editProjectUsingPullRequest(context, p as GitProject, editor, editMode, parameters)
             .then(after);
@@ -48,6 +49,18 @@ export function editRepo<P extends EditorOrReviewerParameters>(context: HandlerC
     } else {
         // No edit to do
         return Promise.resolve(successfulEdit(p, true));
+    }
+}
+
+async function doNothing() {
+    return;
+}
+
+function addEditModeToResult(editMode: EditMode, x: EditResult) {
+    if (x.edited) {
+        return { editMode, ...x }
+    } else {
+        return x
     }
 }
 
