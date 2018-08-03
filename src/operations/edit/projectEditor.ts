@@ -4,6 +4,7 @@ import {
     isProject,
     Project,
 } from "../../project/Project";
+import { EditMode } from "./editModes";
 
 /**
  * Modifies the given project, returning information about the modification.
@@ -29,6 +30,11 @@ export interface EditResult<P extends Project = Project> extends ActionResult<P>
      * Undefined if we don't know, as not all editors keep track of their doings.
      */
     readonly edited?: boolean;
+
+    /**
+     * Populated only if editing was successful
+     */
+    readonly editMode?: EditMode;
 }
 
 export function toEditor<P = any>(ed: (SimpleProjectEditor<P> | ProjectEditor<P>)): ProjectEditor<P> {
