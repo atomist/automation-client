@@ -24,6 +24,7 @@ import {
     ProjectEditor,
     toEditor,
 } from "./projectEditor";
+import { logger } from "../..";
 
 /**
  * Edit all the given repos with the given editor
@@ -46,10 +47,13 @@ export function editAll<R, P extends EditorOrReviewerParameters>(ctx: HandlerCon
                                                                  repoFinder: RepoFinder = allReposInTeam(),
                                                                  repoFilter: RepoFilter = AllRepos,
                                                                  repoLoader: RepoLoader =
-        defaultRepoLoader(credentials)): Promise<EditResult[]> {
+                                                                     defaultRepoLoader(credentials)): Promise<EditResult[]> {
     const edit = (p: Project, parms: P) =>
         editRepo(ctx, p, toEditor(editor), toEditModeFactory(editInfo)(p),
-            parms).catch(err => ({ success: false, message: err.message, target: p }));
+            parms).catch(err => {
+            logger.warn("Caught error in editor: " + err);
+            return { success: false, message: err.message, target: p };
+        });
     return doWithAllRepos<EditResult, P>(ctx, credentials, edit, parameters,
         repoFinder, repoFilter, repoLoader);
 }
