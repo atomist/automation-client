@@ -1,3 +1,4 @@
+import { logger } from "../..";
 import { HandlerContext } from "../../HandlerContext";
 import { Project } from "../../project/Project";
 import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
@@ -24,7 +25,6 @@ import {
     ProjectEditor,
     toEditor,
 } from "./projectEditor";
-import { logger } from "../..";
 
 /**
  * Edit all the given repos with the given editor
