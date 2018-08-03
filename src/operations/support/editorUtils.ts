@@ -58,9 +58,9 @@ async function doNothing() {
 
 function addEditModeToResult(editMode: EditMode, x: EditResult) {
     if (x.edited) {
-        return { editMode, ...x }
+        return { editMode, ...x };
     } else {
-        return x
+        return x;
     }
 }
 
