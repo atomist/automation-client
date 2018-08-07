@@ -150,7 +150,7 @@ function initLogging() {
         } catch (e) {
             pj = { name: "local-client" };
         }
-        const filename = p.join(".", "log", `${pj.name.replace(/^.*\//, "")}-slalom.log`);
+        const filename = p.join(".", "log", `${pj.name.replace(/^.*\//, "")}-local.log`);
         addFileTransport(filename, "debug");
     }
 }
