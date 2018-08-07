@@ -17,7 +17,7 @@
     "url": "https://github.com/atomist/automation-client-ts/issues"
   },
   "dependencies": {
-    "@atomist/microgrammar": "https://r.atomist.com/SkY2_gHYkm",
+    "@atomist/microgrammar": "^0.8.0",
     "@atomist/slack-messages": "^0.12.1",
     "@atomist/tree-path": "^0.1.9",
     "@octokit/rest": "^14.0.9",
@@ -162,7 +162,7 @@
     "watch": "supervisor --watch build --quiet --exec npm -- run start"
   },
   "engines": {
-    "node": "9.x.x",
-    "npm": "6.x.x"
+    "node": ">=8.0.0",
+    "npm": ">=5.0.0"
   }
 }
