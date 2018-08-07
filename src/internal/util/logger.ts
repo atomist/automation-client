@@ -114,7 +114,7 @@ const winstonLogger = new winston.Logger({
 });
 
 function directConsoleToLogger() {
-// Redirect console logging methods to our logging setup
+    // Redirect console logging methods to our logging setup
     console.error = (message?: any, ...optionalParams: any[]) => {
         winstonLogger.error(message, ...optionalParams);
     };
@@ -143,14 +143,13 @@ function initLogging() {
         winstonLogger.transports.console.silent = true;
 
         // Add file logging into log directory
-        const dirName = __dirname;
-        let appDir;
-        if (dirName.indexOf(p.join("node_modules", "@atomist")) > 0) {
-            appDir = __dirname.split(p.join("node_modules", "@atomist"))[0];
-        } else {
-            appDir = dirName;
+        const appDir = __dirname.split(p.join("node_modules", "@atomist", "automation-client"))[0];
+        let pj: { name: string; };
+        try {
+            pj = require(p.join(appDir, "package.json"));
+        } catch (e) {
+            pj = { name: "local-client" };
         }
-        const pj = require(p.join(appDir, "package.json"));
         const filename = p.join(".", "log", `${pj.name.replace(/^.*\//, "")}-slalom.log`);
         addFileTransport(filename, "debug");
     }
