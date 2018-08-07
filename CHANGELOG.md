@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/0.19.4...HEAD)
 
+### Fixed
+
+-   Logging initialization when `ATOMIST_DISABLE_LOGGING` is true
+
 ## [0.19.4](https://github.com/atomist/automation-client-ts/compare/0.19.3...0.19.4) - 2018-08-02
 
 ### Changed
