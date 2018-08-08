@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/0.19.6...HEAD)
 
+### Changed
+
+-   Use name to lookup graphql by operation name. [#6d1a5b4](https://github.com/atomist/automation-client-ts/commit/6d1a5b4d689631a61a1ebe706a2e8822070df53f)
+
 ## [0.19.6](https://github.com/atomist/automation-client-ts/compare/0.19.5...0.19.6) - 2018-08-07
 
 ## [0.19.5](https://github.com/atomist/automation-client-ts/compare/0.19.4...0.19.5) - 2018-08-06
