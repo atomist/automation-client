@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/0.19.7...HEAD)
 
+### Fixed
+
+-   Allow local-sdm "new sdm" command to run from any directory.
+
 ## [0.19.7](https://github.com/atomist/automation-client-ts/compare/0.19.6...0.19.7) - 2018-08-09
 
 ### Added

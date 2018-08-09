@@ -332,8 +332,7 @@ export interface UserConfig extends AutomationServerOptions {
 export function defaultConfiguration(): Configuration {
     interface SimplePackage {
         name?: string;
-        version?;
-        string;
+        version?; string;
         keywords?: string[];
     }
 
@@ -343,6 +342,7 @@ export function defaultConfiguration(): Configuration {
         pj = require(`${appRoot.path}/package.json`);
     } catch (e) {
         logger.warn(`Failed to load package.json: ${e.message}`);
+        pj = {} as SimplePackage;
     }
     pj.name = pj.name || "atm-client-" + guid();
     pj.version = pj.version || "0.0.0";

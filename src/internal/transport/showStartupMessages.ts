@@ -44,7 +44,7 @@ async function toAscii(s: string): Promise<string> {
     const asciify = require("asciify");
     const promisified = promisify(asciify);
     try {
-        return promisified(s, {font: "ogre"});
+        return promisified(s, { font: "ogre" });
     } catch {
         return s;
     }
@@ -75,10 +75,10 @@ function firstRow(configuration: Configuration,
     let c: string = "";
 
     c += `  ${chalk.grey("Version")} ${automations.version}`;
-    if (gitInfo.git) {
+    if (gitInfo && gitInfo.git) {
         c += `  ${chalk.grey("Sha")} ${gitInfo.git.sha.slice(0, 7)}`;
+        c += `  ${chalk.grey("Repository")} ${gitInfo.git.repository}`;
     }
-    c += `  ${chalk.grey("Repository")} ${gitInfo.git.repository}`;
     return c;
 }
 
