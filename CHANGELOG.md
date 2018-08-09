@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Add more exports to index.ts
 
+### Changed
+
+-   **BREAKING** Feedback on graphClient.executeQueryFromFile versus graphClient.query. [#334](https://github.com/atomist/automation-client-ts/issues/334)
+
 ## [0.19.6](https://github.com/atomist/automation-client-ts/compare/0.19.5...0.19.6) - 2018-08-07
 
 ### Changed
