@@ -17,3 +17,6 @@ git-info.json
 /*-v8.log
 /profile.txt
 /log
+
+/coverage
+/.nyc_output
