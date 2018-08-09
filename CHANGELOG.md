@@ -7,7 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/0.19.6...HEAD)
 
+### Added
+
+-   Add more exports to index.ts
+
 ## [0.19.6](https://github.com/atomist/automation-client-ts/compare/0.19.5...0.19.6) - 2018-08-07
+
+### Changed
+
+-   Update microgrammar dependency.
+
+### Removed
+
+-   Reference to slalom
 
 ## [0.19.5](https://github.com/atomist/automation-client-ts/compare/0.19.4...0.19.5) - 2018-08-06
 

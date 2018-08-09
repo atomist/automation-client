@@ -100,6 +100,24 @@ export {
     LoggingConfig,
 } from "./internal/util/logger";
 
+export {
+    BitBucketRepoRef,
+} from "./operations/common/BitBucketRepoRef";
+export {
+    BitBucketServerRepoRef,
+} from "./operations/common/BitBucketServerRepoRef";
+export {
+    GitHubRepoRef,
+} from "./operations/common/GitHubRepoRef";
+export {
+    RemoteRepoRef,
+    RepoRef,
+} from "./operations/common/RepoId";
+
+export {
+    GeneratorCommandDetails,
+} from "./operations/generate/generatorToCommand";
+
 export { AutomationEventListener } from "./server/AutomationEventListener";
 
 export {
