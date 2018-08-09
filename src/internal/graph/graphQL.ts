@@ -10,6 +10,7 @@ import {
 import gql from "graphql-tag";
 import { validate } from "graphql/validation";
 import * as p from "path";
+import { logger } from "../..";
 import {
     findLine,
     generateHash,
@@ -330,7 +331,7 @@ function locateAndLoadGraphql(
 ): string {
 
     let path = options.path;
-    let name = options.name;
+    const name = options.name;
     // Read subscription from file if given
     if (options.path) {
         if (!path.endsWith(".graphql")) {
@@ -343,12 +344,30 @@ function locateAndLoadGraphql(
         const cwd = p.resolve(p.dirname(moduleDir));
         const graphqlDir = findUp.sync("graphql", { cwd });
         if (graphqlDir) {
-            if (!name.endsWith(".graphql")) {
-                name = `${name}.graphql`;
+            const queryDir = p.join(graphqlDir, subfolder);
+            const queries = fs.readdirSync(queryDir).filter(f => f.endsWith(".graphql")).filter(f => {
+                const content = fs.readFileSync(p.join(queryDir, f)).toString();
+                const graphql = gql(content);
+                return (graphql.definitions[0] as any).name.value === options.name;
+            });
+            if (queries.length === 1) {
+                path = p.join(queryDir, queries[0]);
+            } else if (queries.length === 0) {
+                // Remove for next major release
+                logger.warn(`WARNING: no ${subfolder} graphql operation found for name '${options.name}. ` +
+                    `Falling back to file name lookup. Support for file name lookup will be removed in a future release.'`);
+                if (!options.name.endsWith(".graphql")) {
+                    path = p.join(queryDir, `${options.name}.graphql`);
+                } else {
+                    path = p.join(queryDir, options.name);
+                }
+                // End of remove for next major release
+                // throw new Error(`No matching ${subfolder} graphql operation found for name '${options.name}'`);
+            } else {
+                throw new Error(`More then 1 matching ${subfolder} graphql operation found for name '${options.name}'`);
             }
-            path = p.resolve(graphqlDir, subfolder, name);
         } else {
-            throw new Error(`No graphql folder found anywhere above directory ${cwd}\nConsider specifying a path`);
+            throw new Error(`No graphql folder found anywhere above directory '${cwd}'. Consider specifying a path`);
         }
     } else {
         throw new Error("No name or path specified");
