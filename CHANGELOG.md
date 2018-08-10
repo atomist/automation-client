@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/0.20.0...HEAD)
 
+### Added
+
+-   Add git-info and gql-gen scripts. [#1ac65e6](https://github.com/atomist/automation-client-ts/commit/1ac65e68679e63ecf470f57f3014e96abb0630f1)
+
 ## [0.20.0](https://github.com/atomist/automation-client-ts/compare/0.19.7...0.20.0) - 2018-08-09
 
 ### Fixed
