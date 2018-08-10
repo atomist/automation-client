@@ -9,7 +9,9 @@ export function registerShutdownHook(cb: () => Promise<number>, priority: number
 
 exitHook.forceExitTimeout(60000 * 2);
 exitHook(callback => {
-    logger.info("Shutdown initiated. Calling shutdown hooks");
+    if (shutdownHooks.length > 0) {
+        logger.info("Shutdown initiated. Calling shutdown hooks");
+    }
     shutdownHooks
         .map(h => h.hook)
         .reduce((p, c, i, result) => p.then(c), Promise.resolve(0))
