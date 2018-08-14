@@ -62,7 +62,8 @@ async function main(): Promise<void> {
             "graph", "schema.cortex.json");
         const schema = fs.existsSync(customSchemaLocation) ? customSchemaLocation : defaultSchemaLocation;
 
-        const gqlGenCmd = path.join(cwd, "node_modules", ".bin", "gql-gen");
+        const gqlGenCmd = path.join(cwd, "node_modules", ".bin", "gql-gen") +
+            ((process.platform === "win32") ? ".cmd" : "");
         const gqlGenOutput = path.join(lib, "typings", "types.ts");
         const gqlGenArgs = [
             "--file", schema,

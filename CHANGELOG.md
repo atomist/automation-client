@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/0.20.1...HEAD)
 
+### Fixed
+
+-   Fix start.gql-gen.ts script for MS Windows.
+
 ## [0.20.1](https://github.com/atomist/automation-client-ts/compare/0.20.0...0.20.1) - 2018-08-10
 
 ### Added
