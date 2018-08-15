@@ -16,6 +16,7 @@
  */
 
 import * as child_process from "child_process";
+import * as spawn from "cross-spawn";
 import * as fs from "fs-extra";
 import * as glob from "glob";
 import * as path from "path";
@@ -87,7 +88,7 @@ async function main(): Promise<void> {
             logger.info("No GraphQL files found in project, generating default types");
         }
 
-        const cp = child_process.fork(gqlGenCmd, gqlGenArgs, opts);
+        const cp = spawn(gqlGenCmd, gqlGenArgs, opts);
         cp.on("exit", (code, signal) => {
             if (code === 0) {
                 process.exit(code);
