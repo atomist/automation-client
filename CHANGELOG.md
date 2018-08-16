@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/0.20.2...HEAD)
 
+### Changed
+
+-   Use cross-spawn to better support Windows. [#337](https://github.com/atomist/automation-client-ts/issues/337)
+
 ## [0.20.2](https://github.com/atomist/automation-client-ts/compare/0.20.1...0.20.2) - 2018-08-16
 
 ### Fixed
