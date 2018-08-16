@@ -8,6 +8,9 @@ export function configureProxy(config: AxiosRequestConfig): AxiosRequestConfig {
         config.proxy = {
             host: proxyOpts.hostname,
             port: +proxyOpts.port,
+            auth: proxyOpts.auth ?
+                { username: proxyOpts.auth.split(":")[0], password: proxyOpts.auth.split(":")[1] }
+                : undefined,
         };
         (config.proxy as any).protocol = proxyOpts.protocol;
     }
