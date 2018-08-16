@@ -17,9 +17,9 @@
 
 import {
     ChildProcess,
-    spawn,
     SpawnOptions,
 } from "child_process";
+import * as spawn from "cross-spawn";
 import * as path from "path";
 
 import { sprintf } from "sprintf-js";
