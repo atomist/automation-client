@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/0.20.3...HEAD)
 
+### Deprecated
+
+-   Move scripts to bin directory. [#338](https://github.com/atomist/automation-client-ts/issues/338)
+
 ## [0.20.3](https://github.com/atomist/automation-client-ts/compare/0.20.2...0.20.3) - 2018-08-16
 
 ### Changed
