@@ -1,6 +1,6 @@
 {
   "name": "@atomist/automation-client",
-  "version": "0.20.5",
+  "version": "0.21.0",
   "description": "Atomist automation client for running command and event handlers",
   "author": "Atomist, Inc.",
   "license": "SEE LICENSE IN LICENSE",
@@ -162,6 +162,12 @@
     "typedoc": "npm run doc",
     "watch:compile": "tsc --project . --watch",
     "watch": "supervisor --watch build --quiet --exec npm -- run start"
+  },
+  "bin": {
+    "atm-command": "./bin/command.js",
+    "atm-git-info": "./bin/git-info.js",
+    "atm-gql-gen": "./bin/gql-gen.js",
+    "atm-start": "./bin/start.js"
   },
   "engines": {
     "node": ">=8.0.0",
