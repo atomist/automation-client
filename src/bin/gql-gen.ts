@@ -25,11 +25,9 @@ import * as util from "util";
 import {
     logger,
     LoggingConfig,
-} from "./internal/util/logger";
+} from "../internal/util/logger";
 
 LoggingConfig.format = "cli";
-
-console.warn("[WARN] This script is deprecated, use 'bin/gql-gen.js'");
 
 /**
  * Figure out whether the lib directory is named lib or src.  lib is

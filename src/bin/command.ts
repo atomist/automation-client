@@ -9,22 +9,20 @@ process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
 
 import * as stringify from "json-stringify-safe";
 
-import { automationClient } from "./automationClient";
+import { automationClient } from "../automationClient";
 import {
     Configuration,
     loadConfiguration,
-} from "./configuration";
-import { HandlerContext } from "./HandlerContext";
-import { CommandInvocation } from "./internal/invoker/Payload";
-import { consoleMessageClient } from "./internal/message/ConsoleMessageClient";
-import { LoggingConfig } from "./internal/util/logger";
-import { guid } from "./internal/util/string";
-import { enableDefaultScanning } from "./scan";
-import { AutomationServer } from "./server/AutomationServer";
+} from "../configuration";
+import { HandlerContext } from "../HandlerContext";
+import { CommandInvocation } from "../internal/invoker/Payload";
+import { consoleMessageClient } from "../internal/message/ConsoleMessageClient";
+import { LoggingConfig } from "../internal/util/logger";
+import { guid } from "../internal/util/string";
+import { enableDefaultScanning } from "../scan";
+import { AutomationServer } from "../server/AutomationServer";
 
 LoggingConfig.format = "cli";
-
-console.warn("[WARN] This script is deprecated, use 'bin/command.js'");
 
 main();
 
