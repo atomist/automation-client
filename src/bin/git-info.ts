@@ -20,15 +20,13 @@ import * as path from "path";
 
 import {
     obtainGitInfo,
-} from "./internal/env/gitInfo";
+} from "../internal/env/gitInfo";
 import {
     logger,
     LoggingConfig,
-} from "./internal/util/logger";
+} from "../internal/util/logger";
 
 LoggingConfig.format = "cli";
-
-console.warn("[WARN] This script is deprecated, use 'bin/git-info.js'");
 
 /**
  * Generate git-info.json for automation client.
