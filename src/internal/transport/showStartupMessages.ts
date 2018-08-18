@@ -165,7 +165,7 @@ function contributors(configuration: Configuration): string {
 
 function urls(configuration: Configuration,
               automations: Automations): string {
-    const c = automations.team_ids.map(t => {
+    const c = automations.team_ids.filter(t => t !== "local").map(t => {
         return `
   ${chalk.grey("Url")} ${chalk.underline(`https://app.atomist.com/workspace/${t}/automations`)}
   ${chalk.grey("GraphiQL")} ${chalk.underline(`https://app.atomist.com/workspace/${t}/graphql`)}`;
