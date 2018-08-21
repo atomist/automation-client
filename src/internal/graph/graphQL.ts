@@ -355,7 +355,7 @@ function locateAndLoadGraphql(
             } else if (queries.length === 0) {
                 // Remove for next major release
                 logger.warn(`WARNING: No ${subfolder} graphql operation found for name '${options.name}'. ` +
-                    `Falling back to file name lookup. Support for file name lookup will be removed in a future release.'`);
+                    `Falling back to file name lookup. Support for file name lookup will be removed in a future release.`);
                 if (!options.name.endsWith(".graphql")) {
                     path = p.join(queryDir, `${options.name}.graphql`);
                 } else {
