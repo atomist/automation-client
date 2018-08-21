@@ -69,7 +69,7 @@ async function main(): Promise<void> {
             ((process.platform === "win32") ? ".cmd" : "");
         const gqlGenOutput = path.join(lib, "typings", "types.ts");
         const gqlGenArgs = [
-            "--file", schema,
+            "--schema", schema,
             "--template", "typescript",
             "--no-schema",
             "--out", gqlGenOutput,
