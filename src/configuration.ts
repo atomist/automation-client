@@ -835,7 +835,7 @@ export function validateConfiguration(cfg: Configuration) {
         console.warn("WARNING: Usage of 'token' is deprecated and support for it will be removed in a " +
             "future release. Please use 'apiKey' instead.");
     }
-    if ((cfg.teamIds || cfg.teamIds.length > 0) && (!cfg.workspaceIds || cfg.workspaceIds.length === 0)) {
+    if ((cfg.teamIds && cfg.teamIds.length > 0) && (!cfg.workspaceIds || cfg.workspaceIds.length === 0)) {
         console.warn("WARNING: Usage of 'teamIds' is deprecated and support for it will be removed in a " +
             "future release. Please use 'workspaceIds' instead.");
     }
@@ -855,7 +855,7 @@ export function validateConfiguration(cfg: Configuration) {
             "to an empty array");
     }
     if (errors.length > 0) {
-        const msg = `your configuration (${stringify(cfg, obfuscateJson)}) is not correct: ${errors.join("; ")}`;
+        const msg = `Configuration (${stringify(cfg, obfuscateJson)}) is not correct: ${errors.join("; ")}`;
         throw new Error(msg);
     }
 }
