@@ -76,7 +76,7 @@ export function formatter(options: any): string {
         }
     }
 
-    const level = options.colorize ? winston.config.colorize(options.level, _.padEnd(options.leve), 5)) :
+    const level = options.colorize ? winston.config.colorize(options.level, _.padEnd(options.level, 5)) :
         _.padEnd(options.level, 5);
 
     const formatted = (options.timestamp ? new Date().toISOString() : "") + (ctx ? " [" + ctx + "]" : "")
