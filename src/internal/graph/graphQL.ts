@@ -226,7 +226,7 @@ export function replaceOperationName(q: string, name: string): string {
 export function validateQuery(q: string): GraphQLError[] {
     const graphql = parse(q);
     const clientSchema = buildClientSchema(schema.data as IntrospectionQuery);
-    return validate(clientSchema, graphql);
+    return [...validate(clientSchema, graphql)];
 }
 
 export function prettyPrintErrors(errors: GraphQLError[], q?: string): string {

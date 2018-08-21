@@ -16,12 +16,12 @@ import {
 
 describe("BitBucket generator end to end", () => {
 
-    it("should create a new BitBucket repo using generate function", function(done) {
+    it("should create a new BitBucket repo using generate function", done => {
         this.retries(3);
         const repoName = tempRepoName();
         const targetRepo = new BitBucketRepoRef(BitBucketUser, repoName);
         const cleanupDone = (err: Error | void = null) => {
-            deleteOrIgnore(targetRepo, BitBucketCredentials).then(done(err));
+            deleteOrIgnore(targetRepo, BitBucketCredentials).then(() => done(err));
         };
 
         const clonedSeed = GitCommandGitProject.cloned(BitBucketCredentials,

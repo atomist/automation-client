@@ -48,7 +48,7 @@ describe("cached git clone projects", () => {
             Promise.all(clones)
                 .then(them =>
                     them.forEach(clone => clone.release()))
-                .then(done(err));
+                .then(() => done(err));
         };
 
         Promise.all(clones)

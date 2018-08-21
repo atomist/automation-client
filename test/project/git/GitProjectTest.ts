@@ -39,7 +39,7 @@ describe("GitProject cloning on filesystem", () => {
             Promise.all(clones)
                 .then(them =>
                     them.forEach(clone => clone.release()))
-                .then(done(err));
+                .then(() => done(err));
         };
 
         Promise.all(clones)

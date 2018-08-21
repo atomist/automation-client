@@ -25,7 +25,7 @@ import {
 } from "./gitHubTest";
 
 LoggingConfig.format = "cli";
-(logger as winston.LoggerInstance).transports.console.level = process.env.LOG_LEVEL || "info";
+(logger as winston.Logger).transports.console.level = process.env.LOG_LEVEL || "info";
 
 describe("GitProject remote", () => {
 
