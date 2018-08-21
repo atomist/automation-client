@@ -39,7 +39,7 @@ export function addFileTransport(filename: string, level: string) {
 
 export function formatter(options: any): string {
     if (LoggingConfig.format === "cli") {
-        return options.message;
+        return `atomist: [${options.level.toUpperCase()}] ${options.message}`;
     }
 
     const executionContext = context.get();
@@ -76,8 +76,8 @@ export function formatter(options: any): string {
         }
     }
 
-    const level = options.colorize ? winston.config.colorize(options.level, _.padEnd(options.level, 5)) :
-        _.padEnd(options.level, 5);
+    const level = options.colorize ? winston.config.colorize(options.level, _.padEnd(options.level.toUpperCase(), 5)) :
+        _.padEnd(options.level.toUpperCase(), 5);
 
     const formatted = (options.timestamp ? new Date().toISOString() : "") + (ctx ? " [" + ctx + "]" : "")
         + " [" + level + "] " + (options.message ? options.message : "") +
