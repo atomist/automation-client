@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 -   Expose ChildProcess on ChildProcessResult to allow it to be killed. [#342](https://github.com/atomist/automation-client-ts/issues/342)
+-   Add support for proxy authentication. [#343](https://github.com/atomist/automation-client-ts/issues/343)
 
 ## [0.21.2](https://github.com/atomist/automation-client-ts/compare/0.21.1...0.21.2) - 2018-08-21
 
