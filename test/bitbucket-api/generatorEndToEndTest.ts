@@ -21,7 +21,7 @@ describe("BitBucket generator end to end", () => {
         const repoName = tempRepoName();
         const targetRepo = new BitBucketRepoRef(BitBucketUser, repoName);
         const cleanupDone = (err: Error | void = null) => {
-            deleteOrIgnore(targetRepo, BitBucketCredentials).then(done(err));
+            deleteOrIgnore(targetRepo, BitBucketCredentials).then(() => done(err));
         };
 
         const clonedSeed = GitCommandGitProject.cloned(BitBucketCredentials,

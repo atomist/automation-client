@@ -53,7 +53,7 @@ describe("generator end to end", () => {
         const repoName = tempRepoName();
         const rr = new GitHubRepoRef(TargetOwner, repoName);
         const cleanupDone = (err: Error | void = null) => {
-            deleteOrIgnore(rr, { token: GitHubToken }).then(done(err));
+            deleteOrIgnore(rr, { token: GitHubToken }).then(() => done(err));
         };
 
         const clonedSeed = GitCommandGitProject.cloned({ token: GitHubToken },
