@@ -16,7 +16,7 @@ import {
 
 describe("BitBucket generator end to end", () => {
 
-    it("should create a new BitBucket repo using generate function", done => {
+    it("should create a new BitBucket repo using generate function", function(done) {
         this.retries(3);
         const repoName = tempRepoName();
         const targetRepo = new BitBucketRepoRef(BitBucketUser, repoName);
