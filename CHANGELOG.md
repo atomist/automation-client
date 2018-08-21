@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/0.21.1...HEAD)
 
+### Fixed
+
+-   Get rid of deprecation warnings when installing cli. [#340](https://github.com/atomist/automation-client-ts/issues/340)
+
 ## [0.21.1](https://github.com/atomist/automation-client-ts/compare/0.21.0...0.21.1) - 2018-08-18
 
 ## [0.21.0](https://github.com/atomist/automation-client-ts/compare/0.20.4...0.21.0) - 2018-08-17
