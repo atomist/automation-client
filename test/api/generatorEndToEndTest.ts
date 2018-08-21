@@ -48,12 +48,12 @@ describe("generator end to end", () => {
         }).then(() => done(), done);
     });
 
-    it("should create a new GitHub repo using generate function", done => {
+    it("should create a new GitHub repo using generate function", function(done) {
         this.retries(3);
         const repoName = tempRepoName();
         const rr = new GitHubRepoRef(TargetOwner, repoName);
         const cleanupDone = (err: Error | void = null) => {
-            deleteOrIgnore(rr, { token: GitHubToken }).then(err => done(err));
+            deleteOrIgnore(rr, { token: GitHubToken }).then(() => done(err));
         };
 
         const clonedSeed = GitCommandGitProject.cloned({ token: GitHubToken },
@@ -79,7 +79,7 @@ describe("generator end to end", () => {
             }).then(() => cleanupDone(), cleanupDone);
     }).timeout(20000);
 
-    it("should refuse to create a new GitHub repo using existing repo name", done => {
+    it("should refuse to create a new GitHub repo using existing repo name", function(done) {
         this.retries(5);
 
         const clonedSeed = GitCommandGitProject.cloned({ token: GitHubToken },
