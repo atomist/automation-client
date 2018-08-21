@@ -1,10 +1,7 @@
 import * as cluster from "cluster";
 import * as stringify from "json-stringify-safe";
 import * as p from "path";
-import {
-    Configuration,
-    validateConfiguration,
-} from "./configuration";
+import { Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { HandlerResult } from "./HandlerResult";
