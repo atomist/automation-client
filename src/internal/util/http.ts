@@ -24,7 +24,7 @@ function proxyAuth(proxyOpts: UrlWithStringQuery) {
             return {
                 username: parts[0],
                 password: parts[1],
-            }
+            };
         }
         throw new Error("Malformed Proxy authentication");
     }
