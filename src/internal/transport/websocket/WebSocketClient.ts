@@ -3,7 +3,6 @@ import * as HttpsProxyAgent from "https-proxy-agent";
 import * as stringify from "json-stringify-safe";
 import promiseRetry = require("promise-retry");
 import * as serializeError from "serialize-error";
-import * as url from "url";
 import * as WebSocket from "ws";
 import * as zlib from "zlib";
 import { Configuration } from "../../../configuration";
@@ -95,12 +94,7 @@ function connect(registrationCallback: () => any,
         if (process.env.HTTPS_PROXY || process.env.https_proxy) {
             const proxy = process.env.HTTPS_PROXY || process.env.https_proxy;
             logger.debug(`Opening WebSocket connection using proxy '${proxy}'`);
-            const proxyOptions = url.parse(proxy);
-            const agent = new HttpsProxyAgent({
-                host: proxyOptions.hostname,
-                port: +proxyOptions.port,
-                secureProxy: proxyOptions.protocol === "https" ? true : false,
-            });
+            const agent = new HttpsProxyAgent(proxy);
             ws = new WebSocket(registration.url, { agent });
         } else {
             logger.info(`Opening WebSocket connection`);
