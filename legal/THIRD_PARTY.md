@@ -16,7 +16,7 @@ This page details all runtime OSS dependencies of `@atomist/automation-client`.
 |[Custom: https://github.com/douglascrockford/JSON-js](#custom-httpsgithubcomdouglascrockfordjson-js)|1|
 |[GPL-3.0](#gpl-30)|3|
 |[ISC](#isc)|33|
-|[MIT](#mit)|442|
+|[MIT](#mit)|438|
 |[Public Domain](#public-domain)|1|
 |[Unlicense](#unlicense)|1|
 
@@ -146,8 +146,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 
 | Name | Version | Publisher | Repository |
 |------|---------|-----------|------------|
-|`@gimenete/type-writer`|`0.1.3`|Alberto Gimeno|[https://github.com/gimenete/typewriter](https://github.com/gimenete/typewriter)|
-|`@octokit/rest`|`15.10.0`|Gregor Martynus|[https://github.com/octokit/rest.js](https://github.com/octokit/rest.js)|
+|`@octokit/rest`|`14.0.9`|Gregor Martynus|[https://github.com/octokit/rest.js](https://github.com/octokit/rest.js)|
 |`@typed/curry`|`1.0.1`|Tylor Steinberger|[https://github.com/TylorS/typed-curry](https://github.com/TylorS/typed-curry)|
 |`@types/app-root-path`|`1.2.4`|Shant Marouti|[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/async`|`2.0.49`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
@@ -246,7 +245,6 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`body-parser`|`1.18.2`||[https://github.com/expressjs/body-parser](https://github.com/expressjs/body-parser)|
 |`body-parser`|`1.18.3`||[https://github.com/expressjs/body-parser](https://github.com/expressjs/body-parser)|
 |`brace-expansion`|`1.1.11`|Julian Gruber|[https://github.com/juliangruber/brace-expansion](https://github.com/juliangruber/brace-expansion)|
-|`btoa-lite`|`1.0.0`|Hugh Kennedy|[https://github.com/hughsk/btoa-lite](https://github.com/hughsk/btoa-lite)|
 |`buffer-alloc-unsafe`|`1.1.0`||[https://github.com/LinusU/buffer-alloc-unsafe](https://github.com/LinusU/buffer-alloc-unsafe)|
 |`buffer-alloc`|`1.2.0`||[https://github.com/LinusU/buffer-alloc](https://github.com/LinusU/buffer-alloc)|
 |`buffer-fill`|`1.0.0`||[https://github.com/LinusU/buffer-fill](https://github.com/LinusU/buffer-fill)|
@@ -256,7 +254,6 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`camel-case`|`3.0.0`|Blake Embrey|[https://github.com/blakeembrey/camel-case](https://github.com/blakeembrey/camel-case)|
 |`camelcase`|`1.2.1`|Sindre Sorhus|[https://github.com/sindresorhus/camelcase](https://github.com/sindresorhus/camelcase)|
 |`camelcase`|`4.1.0`|Sindre Sorhus|[https://github.com/sindresorhus/camelcase](https://github.com/sindresorhus/camelcase)|
-|`camelcase`|`5.0.0`|Sindre Sorhus|[https://github.com/sindresorhus/camelcase](https://github.com/sindresorhus/camelcase)|
 |`camelize`|`1.0.0`|James Halliday|[https://github.com/substack/camelize](https://github.com/substack/camelize)|
 |`center-align`|`0.1.3`|Jon Schlinkert|[https://github.com/jonschlinkert/center-align](https://github.com/jonschlinkert/center-align)|
 |`chalk`|`0.3.0`|Sindre Sorhus|[https://github.com/sindresorhus/chalk](https://github.com/sindresorhus/chalk)|
@@ -370,7 +367,6 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`hsts`|`2.1.0`|Adam Baldwin|[https://github.com/helmetjs/hsts](https://github.com/helmetjs/hsts)|
 |`http-errors`|`1.6.2`|Jonathan Ong|[https://github.com/jshttp/http-errors](https://github.com/jshttp/http-errors)|
 |`http-errors`|`1.6.3`|Jonathan Ong|[https://github.com/jshttp/http-errors](https://github.com/jshttp/http-errors)|
-|`http-proxy-agent`|`2.1.0`|Nathan Rajlich|[https://github.com/TooTallNate/node-http-proxy-agent](https://github.com/TooTallNate/node-http-proxy-agent)|
 |`http-signature`|`1.2.0`|Joyent, Inc|[https://github.com/joyent/node-http-signature](https://github.com/joyent/node-http-signature)|
 |`https-proxy-agent`|`2.2.1`|Nathan Rajlich|[https://github.com/TooTallNate/node-https-proxy-agent](https://github.com/TooTallNate/node-https-proxy-agent)|
 |`iconv-lite`|`0.4.19`|Alexander Shtuchkin|[https://github.com/ashtuchkin/iconv-lite](https://github.com/ashtuchkin/iconv-lite)|
@@ -383,6 +379,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`ipaddr.js`|`1.8.0`|whitequark|[https://github.com/whitequark/ipaddr.js](https://github.com/whitequark/ipaddr.js)|
 |`is-absolute`|`1.0.0`|Jon Schlinkert|[https://github.com/jonschlinkert/is-absolute](https://github.com/jonschlinkert/is-absolute)|
 |`is-accessor-descriptor`|`0.1.6`|Jon Schlinkert|[https://github.com/jonschlinkert/is-accessor-descriptor](https://github.com/jonschlinkert/is-accessor-descriptor)|
+|`is-array-buffer`|`1.0.1`|Chen Fengyuan|[https://github.com/fengyuanchen/is-array-buffer](https://github.com/fengyuanchen/is-array-buffer)|
 |`is-buffer`|`1.1.6`|Feross Aboukhadijeh|[https://github.com/feross/is-buffer](https://github.com/feross/is-buffer)|
 |`is-buffer`|`2.0.3`|Feross Aboukhadijeh|[https://github.com/feross/is-buffer](https://github.com/feross/is-buffer)|
 |`is-data-descriptor`|`0.1.4`|Jon Schlinkert|[https://github.com/jonschlinkert/is-data-descriptor](https://github.com/jonschlinkert/is-data-descriptor)|
@@ -491,7 +488,6 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`power-assert-util-string-width`|`1.2.0`|Takuto Wada|[https://github.com/twada/power-assert-runtime](https://github.com/twada/power-assert-runtime)|
 |`power-assert`|`1.6.0`|Takuto Wada|[https://github.com/power-assert-js/power-assert](https://github.com/power-assert-js/power-assert)|
 |`prettier`|`1.11.1`|James Long|[https://github.com/prettier/prettier](https://github.com/prettier/prettier)|
-|`prettier`|`1.14.2`|James Long|[https://github.com/prettier/prettier](https://github.com/prettier/prettier)|
 |`process-nextick-args`|`1.0.7`||[https://github.com/calvinmetcalf/process-nextick-args](https://github.com/calvinmetcalf/process-nextick-args)|
 |`process-nextick-args`|`2.0.0`||[https://github.com/calvinmetcalf/process-nextick-args](https://github.com/calvinmetcalf/process-nextick-args)|
 |`promise-polyfill`|`6.1.0`|Taylor Hakes|[git+https://taylorhakes@github.com/taylorhakes/promise-polyfill](git+https://taylorhakes@github.com/taylorhakes/promise-polyfill)|
