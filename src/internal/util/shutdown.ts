@@ -11,7 +11,6 @@ exitHook.forceExitTimeout(60000 * 2);
 exitHook(callback => {
     // Exit early if no shutdown hooks got registered
     if (shutdownHooks.length === 0) {
-        callback();
         process.exit(0);
     }
 
