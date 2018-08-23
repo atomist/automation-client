@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/0.21.5...HEAD)
 
+### Fixed
+
+-   Immediately shut down when no hooks are registered. [#c010ce1](https://github.com/atomist/automation-client-ts/commit/c010ce1ed2f5a888d7c7b605461e53093d35c58f)
+
 ## [0.21.5](https://github.com/atomist/automation-client-ts/compare/0.21.4...0.21.5) - 2018-08-23
 
 ## [0.21.4](https://github.com/atomist/automation-client-ts/compare/0.21.3...0.21.4) - 2018-08-21
