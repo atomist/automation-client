@@ -21,9 +21,7 @@ import {
 } from "child_process";
 import * as spawn from "cross-spawn";
 import * as path from "path";
-
 import { sprintf } from "sprintf-js";
-
 import * as strip_ansi from "strip-ansi";
 import { logger } from "../internal/util/logger";
 
@@ -85,9 +83,9 @@ export async function spawnAndWatch(spawnCommand: SpawnCommand,
     if (spOpts.logCommand === false) {
         logger.debug(`${options.cwd || path.resolve(".")} > ${stringifySpawnCommand(spawnCommand)} (pid '${childProcess.pid}')`);
     } else {
-        log.write(`---\n`);
+        log.write(`/--\n`);
         log.write(`${options.cwd || path.resolve(".")} > ${stringifySpawnCommand(spawnCommand)} (pid '${childProcess.pid}')\n`);
-        log.write(`---\n`);
+        log.write(`\\--\n`);
     }
     return watchSpawned(childProcess, log, spOpts);
 }
