@@ -150,7 +150,7 @@ function initLogging() {
         } catch (e) {
             pj = { name: "local-client" };
         }
-        const filename = p.join(".", "log", `${pj.name.replace(/^.*\//, "")}-local.log`);
+        const filename = p.join(appDir, "log", `${pj.name.replace(/^.*\//, "")}-local.log`);
         addFileTransport(filename, "debug");
     }
 }
