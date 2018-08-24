@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased](https://github.com/atomist/automation-client-ts/compare/0.21.7...HEAD)
+## [Unreleased](https://github.com/atomist/automation-client-ts/compare/0.21.8...HEAD)
+
+## [0.21.8](https://github.com/atomist/automation-client-ts/compare/0.21.7...0.21.8) - 2018-08-24
 
 ## [0.21.7](https://github.com/atomist/automation-client-ts/compare/0.21.6...0.21.7) - 2018-08-23
 
