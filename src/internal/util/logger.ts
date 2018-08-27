@@ -2,6 +2,7 @@ import * as cluster from "cluster";
 import * as fs from "fs";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
+import * as os from "os";
 import * as p from "path";
 import * as serializeError from "serialize-error";
 import * as stripAnsi from "strip-ansi";
@@ -134,7 +135,7 @@ function directConsoleToLogger() {
 
 function initLogging() {
     // Normal startup of a client will redirect console logging
-    // If startup happens with ATOMIST_DISABLE_LOGGING no console output will be redirect
+    // If startup happens with ATOMIST_DISABLE_LOGGING no console output will be redirected
     // and winston's console transport is set to silent to allow full control over logging
     // output
     if (process.env.ATOMIST_DISABLE_LOGGING !== "true") {
@@ -148,9 +149,13 @@ function initLogging() {
         try {
             pj = require(p.join(appDir, "package.json"));
         } catch (e) {
-            pj = { name: "local-client" };
+            pj = { name: "atm-client" };
         }
-        const filename = p.join(appDir, "log", `${pj.name.replace(/^.*\//, "")}-local.log`);
+        const filename = p.join(
+            os.homedir(),
+            ".atomist",
+            "log",
+            `${pj.name.replace(/^.*\//, "")}-local.log`);
         addFileTransport(filename, "debug");
     }
 }
