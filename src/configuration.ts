@@ -337,7 +337,7 @@ export function defaultConfiguration(): Configuration {
         keywords?: string[];
     }
 
-    let pj: SimplePackage = loadHostPackageJson() || {} as SimplePackage;
+    const pj: SimplePackage = loadHostPackageJson() || {} as SimplePackage;
     pj.name = pj.name || "atm-client-" + guid();
     pj.version = pj.version || "0.0.0";
     pj.keywords = pj.keywords || [];
