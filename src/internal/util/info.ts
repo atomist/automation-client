@@ -19,7 +19,7 @@ export function info(automations: Automations): AutomationInfo {
         const pj = require(`${appRoot.path}/package.json`);
         i.description = pj.description;
         i.license = pj.license;
-        i.author = pj.author;
+        i.author = pj.author && pj.author.name ? pj.author.name : pj.author;
         i.homepage = pj.homepage;
     } catch (err) {
         // Ignore missing app package.json
