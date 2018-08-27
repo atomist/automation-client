@@ -64,9 +64,9 @@ export abstract class AbstractAutomationServer implements AutomationServer {
     }
 
     protected abstract invokeCommandHandler(payload: CommandInvocation, h: CommandHandlerMetadata,
-        ctx: HandlerContext): Promise<HandlerResult>;
+                                            ctx: HandlerContext): Promise<HandlerResult>;
 
     protected abstract invokeEventHandler(payload: EventFired<any>, h: EventHandlerMetadata,
-        ctx: HandlerContext): Promise<HandlerResult>;
+                                          ctx: HandlerContext): Promise<HandlerResult>;
 
 }
