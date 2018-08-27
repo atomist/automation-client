@@ -14,6 +14,7 @@ import {
 import * as globals from "../../../globals";
 import { automationClientInstance } from "../../../globals";
 import { AutomationContextAware } from "../../../HandlerContext";
+import { noEventHandlersWereFound } from "../../../server/AbstractAutomationServer";
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
@@ -130,7 +131,8 @@ export class ExpressServer {
             `${ApiBase}/event`, cors,
             (req, res, result) => {
                 const results = Array.isArray(result) ? result : [result];
-                const code = results.some(r => r.code !== 0) ? 500 : 200;
+                const code = noEventHandlersWereFound(result) ? 404 :
+                    results.some(r => r.code !== 0) ? 500 : 200;
                 res.status(code).json(result);
             });
 
@@ -151,7 +153,7 @@ export class ExpressServer {
             exp.listen(this.configuration.http.port, () => {
                 logger.debug(
                     `Atomist automation client api running at 'http://${
-                        this.configuration.http.host}:${this.configuration.http.port}'`);
+                    this.configuration.http.host}:${this.configuration.http.port}'`);
             }).on("error", err => {
                 logger.warn("Starting automation client api failed: %s", err.message);
                 if (operation.retry(err)) {
@@ -271,7 +273,7 @@ export class ExpressServer {
                             console.log(err);
                             return done(null, false);
                         });
-                    },
+                },
             ));
         }
     }
