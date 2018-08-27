@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.1...HEAD)
 
+### Changed
+
+-   Support author as string or object. [#346](https://github.com/atomist/automation-client-ts/issues/346)
+
 ## [1.0.0-M.1](https://github.com/atomist/automation-client-ts/compare/0.21.8...1.0.0-M.1) - 2018-08-27
 
 ## [0.21.8](https://github.com/atomist/automation-client-ts/compare/0.21.7...0.21.8) - 2018-08-24
