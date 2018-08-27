@@ -44,6 +44,7 @@ import { SecretResolver } from "./spi/env/SecretResolver";
 import { DefaultHttpClientFactory } from "./spi/http/axiosHttpClient";
 import { HttpClientFactory } from "./spi/http/httpClient";
 import { Maker } from "./util/constructionUtils";
+import { loadHostPackageJson } from "./util/packageJson";
 
 /**
  * Customize the express server configuration: For example to add custom routes
@@ -308,7 +309,7 @@ export interface ModuleOptions extends AutomationServerOptions {
     name: string;
     /**
      * A valid version or version range, as defined by
-     * https://www.npmjs.com/package/semver, this configurarion
+     * https://www.npmjs.com/package/semver, this configuration
      * applies to.  If not provided, it applies to all versions of the
      * named automation.
      */
@@ -336,14 +337,7 @@ export function defaultConfiguration(): Configuration {
         keywords?: string[];
     }
 
-    let pj: SimplePackage;
-    try {
-        // tslint:disable-next-line:no-var-requires
-        pj = require(`${appRoot.path}/package.json`);
-    } catch (e) {
-        logger.warn(`Failed to load package.json: ${e.message}`);
-        pj = {} as SimplePackage;
-    }
+    let pj: SimplePackage = loadHostPackageJson() || {} as SimplePackage;
     pj.name = pj.name || "atm-client-" + guid();
     pj.version = pj.version || "0.0.0";
     pj.keywords = pj.keywords || [];
