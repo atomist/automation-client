@@ -12,6 +12,11 @@ import {
 } from "../metadata/automationMetadata";
 import { AutomationServer } from "./AutomationServer";
 
+export const NoEventHandlersError = "NO_EVENT_HANDLERS";
+export function noEventHandlersWereFound(result: HandlerResult) {
+    return result.code !== 0 && result.message.startsWith(NoEventHandlersError);
+}
+
 /**
  * Support for implementing an automation server.
  */
@@ -27,7 +32,7 @@ export abstract class AbstractAutomationServer implements AutomationServer {
     public onEvent(payload: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult[]> {
         const h = this.automations.events.filter(eh => eh.subscriptionName === payload.extensions.operationName);
         if (!h || h.length === 0) {
-            throw new Error(`No event handler with name '${payload.extensions.operationName}'` +
+            throw new Error(`${NoEventHandlersError}: No event handler with name '${payload.extensions.operationName}'` +
                 `: Known event handlers are '${this.automations.events.map(e => e.name)}'`);
         } else {
             return Promise.all(h.map(eh => this.invokeEventHandler(payload, eh, ctx)));
