@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.1...HEAD)
 
+### Added
+
+-   On startup, tell people how to get an ApiKey. [#348](https://github.com/atomist/automation-client-ts/issues/348)
+
 ### Changed
 
 -   Support author as string or object. [#346](https://github.com/atomist/automation-client-ts/issues/346)
