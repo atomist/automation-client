@@ -2,6 +2,7 @@ import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as serializeError from "serialize-error";
 import { Configuration } from "../../configuration";
+import { eventStore } from "../../globals";
 import { EventFired } from "../../HandleEvent";
 import {
     AutomationContextAware,
@@ -400,18 +401,42 @@ class AutomationEventListenerEnabledMessageClient implements MessageClient {
 
     public respond(msg: any,
                    options?: MessageOptions): Promise<any> {
+        eventStore().recordMessage(
+            options && options.id ? options.id : guid(),
+            this.ctx.correlationId,
+            msg);
         return this.delegate.respond(msg, options)
             .then(() => {
-                return Promise.all(this.listeners.map(l => l.messageSent(msg, [], options, this.ctx)));
+                return Promise.all(
+                    this.listeners.map(
+                        l => l.messageSent(
+                            msg,
+                            [],
+                            options,
+                            this.ctx),
+                    ),
+                );
             });
     }
 
     public send(msg: any,
                 destinations: Destination | Destination[],
                 options?: MessageOptions): Promise<any> {
+        eventStore().recordMessage(
+            options && options.id ? options.id : guid(),
+            this.ctx.correlationId,
+            msg);
         return this.delegate.send(msg, destinations, options)
             .then(() => {
-                return Promise.all(this.listeners.map(l => l.messageSent(msg, destinations, options, this.ctx)));
+                return Promise.all(
+                    this.listeners.map(
+                        l => l.messageSent(
+                            msg,
+                            destinations,
+                            options,
+                            this.ctx),
+                    ),
+                );
             });
     }
 }
