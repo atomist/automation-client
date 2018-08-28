@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Support author as string or object. [#346](https://github.com/atomist/automation-client-ts/issues/346)
 -   If no event handlers are found, return 404 not 500. [#347](https://github.com/atomist/automation-client-ts/issues/347)
+-   Don't show links in startup if not registered. [#da0c942](https://github.com/atomist/automation-client-ts/commit/da0c9425b5493588f39a1565d964dc7b17ca67c5)
 
 ## [1.0.0-M.1](https://github.com/atomist/automation-client-ts/compare/0.21.8...1.0.0-M.1) - 2018-08-27
 
