@@ -5,19 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.1...HEAD)
+## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.2...HEAD)
 
 ### Added
 
--   On startup, tell people how to get an ApiKey. [#348](https://github.com/atomist/automation-client-ts/issues/348)
+-   On startup, tell people how to get an API key. [#348](https://github.com/atomist/automation-client-ts/issues/348)
 
 ### Changed
 
 -   Support author as string or object. [#346](https://github.com/atomist/automation-client-ts/issues/346)
 -   If no event handlers are found, return 404 not 500. [#347](https://github.com/atomist/automation-client-ts/issues/347)
--   Don't show links in startup if not registered. [#da0c942](https://github.com/atomist/automation-client-ts/commit/da0c9425b5493588f39a1565d964dc7b17ca67c5)
+-   Do not show links in startup if not registered. [#da0c942](https://github.com/atomist/automation-client-ts/commit/da0c9425b5493588f39a1565d964dc7b17ca67c5)
+-   Log under user home directory.
+
+## [1.0.0-M.2](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.1...1.0.0-M.2) - 2018-08-27
+
+### Changed
+
+-   Update Atomist dependencies to 1.0.0-M.1.
+
+### Fixed
+
+-   Properly read client package.json.
 
 ## [1.0.0-M.1](https://github.com/atomist/automation-client-ts/compare/0.21.8...1.0.0-M.1) - 2018-08-27
+
+### Changed
+
+-   Prepare for 1.0.0 release.
 
 ## [0.21.8](https://github.com/atomist/automation-client-ts/compare/0.21.7...0.21.8) - 2018-08-24
 
