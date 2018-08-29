@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   On startup, tell people how to get an API key. [#348](https://github.com/atomist/automation-client-ts/issues/348)
 -   Add ConfigurationPostProcessor type. [#4dfbb0f](https://github.com/atomist/automation-client-ts/commit/4dfbb0f0cffae9fc45748c558d05d497361bd8c9)
+-   Add generic return type to ConfigurationPostProcessor. [#a564fce](https://github.com/atomist/automation-client-ts/commit/a564fce96107017001e4d47afc9dd229c36ba34a)
 
 ### Changed
 
