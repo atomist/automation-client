@@ -2,7 +2,11 @@
   "name": "@atomist/automation-client",
   "version": "1.0.0",
   "description": "Atomist API for software low-level client",
-  "author": "Atomist, Inc.",
+  "author": {
+    "name": "Atomist",
+    "email": "support@atomist.com",
+    "url": "https://atomist.com/"
+  },
   "license": "SEE LICENSE IN LICENSE",
   "homepage": "https://github.com/atomist/automation-client-ts#readme",
   "repository": {
