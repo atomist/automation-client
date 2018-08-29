@@ -60,6 +60,12 @@ import { loadHostPackageJson } from "./util/packageJson";
 export type ExpressCustomizer = (express: exp.Express, ...handlers: exp.RequestHandler[]) => void;
 
 /**
+ * Post process the configuration after is has been merged from the various locations, but
+ * before starting the automation client.
+ */
+export type ConfigurationPostProcessor = (configuration: Configuration) => Promise<Configuration>;
+
+/**
  * A computed banner
  */
 export interface Banner {
@@ -189,7 +195,7 @@ export interface AutomationOptions extends AnyOptions {
      * client is started.  Post-processors return a configuration
      * promise so they can be asynchronous.
      */
-    postProcessors?: Array<(configuration: Configuration) => Promise<Configuration>>;
+    postProcessors?: ConfigurationPostProcessor[];
 }
 
 /**
