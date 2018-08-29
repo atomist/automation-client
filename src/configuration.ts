@@ -63,7 +63,7 @@ export type ExpressCustomizer = (express: exp.Express, ...handlers: exp.RequestH
  * Post process the configuration after is has been merged from the various locations, but
  * before starting the automation client.
  */
-export type ConfigurationPostProcessor = (configuration: Configuration) => Promise<Configuration>;
+export type ConfigurationPostProcessor<T> = (configuration: Configuration) => Promise<Configuration & T>;
 
 /**
  * A computed banner
