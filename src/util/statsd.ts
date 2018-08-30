@@ -56,7 +56,6 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
             const tags = [
                 `atomist_operation:${context.operation}`,
                 `atomist_operation_type:command`,
-                ...this.teamDetail(ctx),
             ];
 
             ctx.graphClient = {
@@ -178,9 +177,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
 
     public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<any> {
         const tags = [
-            `atomist_operation:${payload.name}`,
             `atomist_operation_type:command`,
-            ...this.teamDetail(ctx),
         ];
         this.increment("counter.operation.success", tags);
         this.timing("timer.operation", ctx, tags);
@@ -201,9 +198,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
 
     public eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): Promise<any> {
         const tags = [
-            `atomist_operation:${payload.extensions.operationName}`,
             `atomist_operation_type:event`,
-            ...this.teamDetail(ctx),
         ];
         this.increment("counter.operation.success", tags);
         this.timing("timer.operation", ctx, tags);
