@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   If no event handlers are found, return 404 not 500. [#347](https://github.com/atomist/automation-client-ts/issues/347)
 -   Do not show links in startup if not registered. [#da0c942](https://github.com/atomist/automation-client-ts/commit/da0c9425b5493588f39a1565d964dc7b17ca67c5)
 -   Log under user home directory.
+-   Remove dimensions on metrics. [#349](https://github.com/atomist/automation-client-ts/issues/349)
 
 ## [1.0.0-M.2](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.1...1.0.0-M.2) - 2018-08-27
 
