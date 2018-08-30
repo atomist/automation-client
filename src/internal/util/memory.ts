@@ -29,6 +29,7 @@ export function initMemoryMonitoring(dataDirectory: string = `${appRoot.path}/he
 export function heapDump(): string {
     try {
         logger.debug("Memory statistics '%j'", memoryUsage());
+        // tslint:disable-next-line:no-implicit-dependencies
         const heapdump = require("heapdump");
         const name = `heapdump-${process.pid}-${Date.now()}.heapsnapshot`;
         if (!fs.existsSync(DataDirectory)) {
