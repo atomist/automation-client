@@ -38,10 +38,32 @@ export function isEditMode(em: any): em is EditMode {
 }
 
 /**
+ * Merge method to use when auto merging the branches
+ */
+export enum AutoMergeMethod {
+    Merge = "[auto-merge-method:merge]",
+    Rebase = "[auto-merge-method:rebase]",
+    Squash = "[auto-merge-method:squash]",
+}
+
+/**
+ * Trigger for branch auto merge
+ */
+export enum AutoMergeMode {
+    ApprovedReview = "[auto-merge:on-approve]",
+    SuccessfulCheck = "[auto-merge:on-check-success]",
+}
+
+/**
  * Represents a commit to a project on a branch
  */
 export interface BranchCommit extends EditMode {
     branch: string;
+
+    autoMerge?: {
+        mode: AutoMergeMode | string,
+        method?: AutoMergeMethod,
+    };
 }
 
 /**

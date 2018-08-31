@@ -132,8 +132,16 @@ export function createAndPushBranch(gp: GitProject, ci: BranchCommit): Promise<E
                 return gp.createBranch(ci.branch); // this also checks it out
             }
         }))
-        .then(x => gp.commit(ci.message))
-        .then(x => gp.push())
+        .then(() => {
+            let cm = ci.message;
+            if (ci.autoMerge) {
+                cm = `${cm}
+
+${ci.autoMerge.mode} ${ci.autoMerge.method ? ci.autoMerge.method : ""}`.trim();
+            }
+            return gp.commit(cm);
+        })
+        .then(() => gp.push())
         .then(r => successfulEdit(r.target, true));
 }
 

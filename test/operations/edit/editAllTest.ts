@@ -1,8 +1,6 @@
 import * as stringify from "json-stringify-safe";
 import "mocha";
-
 import * as assert from "power-assert";
-
 import {
     fromListRepoFinder,
     fromListRepoLoader,
