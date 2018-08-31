@@ -177,12 +177,31 @@ export function zapAllMatches<P extends ProjectAsync = ProjectAsync>(p: P,
                                                                      globPatterns: GlobOptions,
                                                                      pathExpression: string | PathExpression,
                                                                      opts: NodeReplacementOptions = {}): Promise<P> {
+    return doWithAllMatches(p, parserOrRegistry, globPatterns, pathExpression,
+        m => m.zap(opts));
+}
+
+/**
+ * Integrate path expressions with project operations to find all matches
+ * of a path expression and perform a mutation on them them. Use with care!
+ * @param p project
+ * @param globPatterns file glob pattern
+ * @param parserOrRegistry parser for files
+ * @param pathExpression path expression string or parsed
+ * @param todo what to do with matches
+ * @return {Promise<TreeNode[]>} hit record for each matching file
+ */
+export function doWithAllMatches<P extends ProjectAsync = ProjectAsync>(p: P,
+                                                                        parserOrRegistry: FileParser | FileParserRegistry,
+                                                                        globPatterns: GlobOptions,
+                                                                        pathExpression: string | PathExpression,
+                                                                        todo: (m: MatchResult) => void): Promise<P> {
     return findFileMatches(p, parserOrRegistry, globPatterns, pathExpression)
         .then(fileHits => {
             fileHits.forEach(fh => {
                 const sorted = fh.matches.sort((m1, m2) => m1.$offset - m2.$offset);
                 sorted.forEach(m => {
-                    m.zap(opts);
+                    todo(m);
                 });
             });
             return (p as any).flush();
