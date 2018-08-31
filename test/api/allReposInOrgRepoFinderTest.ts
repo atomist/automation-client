@@ -15,7 +15,7 @@ describe("allReposInOrgRepoFinder", () => {
         { Authorization: `token ${GitHubToken}` });
 
     it("finds over 100 repos in org", done => {
-        allReposInTeam()({ graphClient, teamId: SlackTeamId } as any)
+        allReposInTeam()({ graphClient, workspaceId: SlackTeamId } as any)
             .then(repos => {
                 assert(repos.length > 100, `Expected over 100 repos, not ${repos.length}`);
                 const names = repos.map(r => `${r.owner}/${r.repo}`).sort();

@@ -15,9 +15,6 @@ const PageSize = 100;
 /**
  * Use a GraphQL query to find all repos for the current team,
  * or look locally if appropriate, in current working directory
- *
- * DEPRECATED: there's a better one in @atomist/sdm
- *
  * @param cwd directory to look in if this is local
  * @constructor
  */
@@ -50,9 +47,11 @@ query Repos($teamId: ID!, $offset: Int!) {
  * @return {Promise<RepoRef[]>}
  */
 function queryForPage(context: HandlerContext, offset: number): Promise<RepoRef[]> {
-    return context.graphClient.executeQuery<ReposQuery, ReposQueryVariables>(
-        RepoQuery,
-        { teamId: context.teamId, offset })
+    return context.graphClient.query<ReposQuery, ReposQueryVariables>({
+            query: RepoQuery,
+            variables: { teamId: context.workspaceId, offset },
+            },
+        )
         .then(result => {
             return _.flatMap(result.ChatTeam[0].orgs, org =>
                 org.repo.map(r => new GitHubRepoRef(r.owner, r.name)));

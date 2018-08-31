@@ -4,8 +4,6 @@ import axios from "axios";
 import * as fs from "fs";
 import "mocha";
 import * as assert from "power-assert";
-import { fail } from "power-assert";
-
 import { ActionResult } from "../../src/action/ActionResult";
 import {
     GitHubDotComBase,
@@ -90,7 +88,7 @@ describe("generator end to end", () => {
             p => Promise.resolve(p), RemoteGitProjectPersister,
             targetRepo)
             .then(() => {
-                fail("Should not have succeeded");
+                assert.fail("Should not have succeeded");
             })
             .catch(err => {
                 assert(err.message.includes("exists")); // this is only because we put "Probably exists" in the string
@@ -103,7 +101,7 @@ describe("generator end to end", () => {
         assert(fs.statSync(path).isFile());
         fs.access(path, fs.constants.X_OK, err => {
             if (err) {
-                fail("Not executable");
+                assert.fail("Not executable");
             }
         });
         return Promise.resolve(p);

@@ -24,8 +24,6 @@ import {
     resolveEnvironmentVariables,
     resolveModuleConfig,
     resolvePlaceholders,
-    resolveTeamIds,
-    resolveToken,
     resolveWorkspaceIds,
     TestingDefaultConfiguration,
     UserConfig,
@@ -319,7 +317,7 @@ describe("configuration", () => {
             assert.equal(c.http.auth.bearer.enabled, true);
             assert.equal(c.http.auth.bearer.adminOrg, "atomisthq");
             assert.equal(c.applicationEvents.enabled, true);
-            assert.equal(c.applicationEvents.teamId, "T1L0VDKJP");
+            assert.equal(c.applicationEvents.workspaceId, "T1L0VDKJP");
             assert.equal(c.cluster.enabled, false);
         });
 
@@ -389,85 +387,6 @@ describe("configuration", () => {
             }
         });
 
-    });
-
-    describe("resolveTeamIds", () => {
-
-        it("should fall through to the default", () => {
-            const saveTeams = process.env.ATOMIST_TEAMS;
-            const saveTeam = process.env.ATOMIST_TEAM;
-            delete process.env.ATOMIST_TEAMS;
-            delete process.env.ATOMIST_TEAM;
-            const ts = resolveTeamIds({ teamIds: ["thing1", "thing2"] });
-            assert.deepStrictEqual(ts, ["thing1", "thing2"]);
-            if (saveTeams) {
-                process.env.ATOMIST_TEAMS = saveTeams;
-            }
-            if (saveTeam) {
-                process.env.ATOMIST_TEAM = saveTeam;
-            }
-        });
-
-        it("should return nothing", () => {
-            const saveTeams = process.env.ATOMIST_TEAMS;
-            const saveTeam = process.env.ATOMIST_TEAM;
-            delete process.env.ATOMIST_TEAMS;
-            delete process.env.ATOMIST_TEAM;
-            const ts = resolveTeamIds({});
-            assert.equal(ts, undefined);
-            if (saveTeams) {
-                process.env.ATOMIST_TEAMS = saveTeams;
-            }
-            if (saveTeam) {
-                process.env.ATOMIST_TEAM = saveTeam;
-            }
-        });
-
-        it("should parse ATOMIST_TEAMS", () => {
-            const save = process.env.ATOMIST_TEAMS;
-            const e = "thing1,thing2";
-            process.env.ATOMIST_TEAMS = e;
-            const ts = resolveTeamIds({});
-            assert.deepStrictEqual(ts, ["thing1", "thing2"]);
-            if (save) {
-                process.env.ATOMIST_TEAMS = save;
-            } else {
-                delete process.env.ATOMIST_TEAMS;
-            }
-        });
-
-        it("should use ATOMIST_TEAM", () => {
-            const save = process.env.ATOMIST_TEAM;
-            const ets = "thing1";
-            process.env.ATOMIST_TEAM = ets;
-            const ts = resolveTeamIds({});
-            assert.deepStrictEqual(ts, ["thing1"]);
-            if (save) {
-                process.env.ATOMIST_TEAM = save;
-            } else {
-                delete process.env.ATOMIST_TEAM;
-            }
-        });
-
-        it("should prefer ATOMIST_TEAMS", () => {
-            const saveTeams = process.env.ATOMIST_TEAMS;
-            const saveTeam = process.env.ATOMIST_TEAM;
-            const e = "thing1,thing2";
-            process.env.ATOMIST_TEAMS = e;
-            process.env.ATOMIST_TEAM = "no";
-            const ts = resolveTeamIds({});
-            assert.deepStrictEqual(ts, ["thing1", "thing2"]);
-            if (saveTeams) {
-                process.env.ATOMIST_TEAMS = saveTeams;
-            } else {
-                delete process.env.ATOMIST_TEAMS;
-            }
-            if (saveTeam) {
-                process.env.ATOMIST_TEAM = saveTeam;
-            } else {
-                delete process.env.ATOMIST_TEAM;
-            }
-        });
     });
 
     describe("resolveWorkspaceIds", () => {
@@ -542,81 +461,6 @@ describe("configuration", () => {
         it("should take first config match", () => {
             const c = resolveConfigurationValue(["BLAH_BLAH_BLAH", "NO_NO_NO"], ["targetOwner", "repo"], "no");
             assert.equal(c, "johnsonr");
-        });
-
-    });
-
-    describe("resolveToken", () => {
-
-        it("should return undefined", () => {
-            const save = process.env.GITHUB_TOKEN;
-            if (save) {
-                delete process.env.GITHUB_TOKEN;
-            }
-            const c = resolveToken({});
-            assert.equal(c, undefined);
-            if (save) {
-                process.env.GITHUB_TOKEN = save;
-            }
-        });
-
-        it("should fall through to the default", () => {
-            const save = process.env.GITHUB_TOKEN;
-            if (save) {
-                delete process.env.GITHUB_TOKEN;
-            }
-            const t = "not-a-real-token";
-            const c = resolveToken({ token: t });
-            assert.equal(c, t);
-            if (save) {
-                process.env.GITHUB_TOKEN = save;
-            }
-        });
-
-        it("should find the token in ATOMIST_TOKEN", () => {
-            const save = process.env.ATOMIST_TOKEN;
-            const t = "not-a-real-token";
-            process.env.ATOMIST_TOKEN = t;
-            const c = resolveToken({});
-            assert.equal(c, t);
-            if (save) {
-                process.env.ATOMIST_TOKEN = save;
-            } else {
-                delete process.env.ATOMIST_TOKEN;
-            }
-        });
-
-        it("should find the token in GITHUB_TOKEN", () => {
-            const save = process.env.GITHUB_TOKEN;
-            const t = "not-a-real-token";
-            process.env.GITHUB_TOKEN = t;
-            const c = resolveToken({});
-            assert.equal(c, t);
-            if (save) {
-                process.env.GITHUB_TOKEN = save;
-            } else {
-                delete process.env.GITHUB_TOKEN;
-            }
-        });
-
-        it("should prefer the token in ATOMIST_TOKEN", () => {
-            const saveAT = process.env.ATOMIST_TOKEN;
-            const saveGT = process.env.GITHUB_TOKEN;
-            const t = "atm-not-a-real-token";
-            process.env.ATOMIST_TOKEN = t;
-            process.env.GITHUB__TOKEN = "no";
-            const c = resolveToken({});
-            assert.equal(c, t);
-            if (saveAT) {
-                process.env.ATOMIST_TOKEN = saveAT;
-            } else {
-                delete process.env.ATOMIST_TOKEN;
-            }
-            if (saveGT) {
-                process.env.GITHUB_TOKEN = saveGT;
-            } else {
-                delete process.env.GITHUB_TOKEN;
-            }
         });
 
     });

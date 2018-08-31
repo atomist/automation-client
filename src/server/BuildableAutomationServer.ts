@@ -12,7 +12,6 @@ import {
     HandlerResult,
     SuccessPromise,
 } from "../HandlerResult";
-import { Ingester } from "../ingesters";
 import { NodeConfigSecretResolver } from "../internal/env/NodeConfigSecretResolver";
 import {
     Arg,
@@ -79,7 +78,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
 
     private eventHandlers: EventHandlerRegistration[] = [];
 
-    private ingesters: Array<Ingester | string> = [];
+    private ingesters: string[] = [];
 
     private secretResolver: SecretResolver = new NodeConfigSecretResolver();
 

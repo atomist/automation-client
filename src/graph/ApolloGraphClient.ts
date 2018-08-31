@@ -85,17 +85,24 @@ export class ApolloGraphClient implements GraphClient {
         return this.executeQuery<T, Q>(q, options.variables, options.options);
     }
 
-    public executeQueryFromFile<T, Q>(queryFile: string,
-                                      variables?: Q,
-                                      queryOptions?: any,
-                                      current?: string): Promise<T> {
-        return this.executeQuery<T, Q>(
-            internalGraphql.resolveAndReadFileSync(queryFile, current, {}), variables, queryOptions);
+    public mutate<T, Q>(options: MutationOptions<Q> | string): Promise<T> {
+        if (typeof options === "string") {
+            options = {
+                name: options,
+            };
+        }
+        const m = internalGraphql.mutate({
+            mutation: options.mutation,
+            path: options.path,
+            name: options.name,
+            moduleDir: trace.get()[1].getFileName(),
+        });
+        return this.executeMutation<T, Q>(m, options.variables, options.options);
     }
 
-    public executeQuery<T, Q>(q: string,
-                              variables?: Q,
-                              queryOptions?: any): Promise<T> {
+    private executeQuery<T, Q>(q: string,
+                               variables?: Q,
+                               queryOptions?: any): Promise<T> {
         logger.debug(`Querying '%s' with variables '%s' and query: %s`,
             this.endpoint, stringify(variables), internalGraphql.inlineQuery(q));
         const query = gql(q);
@@ -114,32 +121,9 @@ export class ApolloGraphClient implements GraphClient {
             .then(result => callback(result));
     }
 
-    public mutate<T, Q>(options: MutationOptions<Q> | string): Promise<T> {
-        if (typeof options === "string") {
-            options = {
-                name: options,
-            };
-        }
-        const m = internalGraphql.mutate({
-            mutation: options.mutation,
-            path: options.path,
-            name: options.name,
-            moduleDir: trace.get()[1].getFileName(),
-        });
-        return this.executeMutation<T, Q>(m, options.variables, options.options);
-    }
-
-    public executeMutationFromFile<T, Q>(mutationFile: string,
-                                         variables?: Q,
-                                         mutationOptions?: any,
-                                         current?: string): Promise<T> {
-        return this.executeMutation<T, Q>(
-            internalGraphql.resolveAndReadFileSync(mutationFile, current, {}), variables, mutationOptions);
-    }
-
-    public executeMutation<T, Q>(m: string,
-                                 variables?: Q,
-                                 mutationOptions?: any): Promise<any> {
+    private executeMutation<T, Q>(m: string,
+                                  variables?: Q,
+                                  mutationOptions?: any): Promise<any> {
         logger.debug(`Mutating '%s' with variables '%s' and mutation: %s`,
             this.endpoint, stringify(variables), internalGraphql.inlineQuery(m));
 
