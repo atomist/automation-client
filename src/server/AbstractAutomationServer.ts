@@ -14,7 +14,7 @@ import { AutomationServer } from "./AutomationServer";
 
 export const NoEventHandlersError = "NO_EVENT_HANDLERS";
 export function noEventHandlersWereFound(result: HandlerResult) {
-    return result.code !== 0 && result.message.startsWith(NoEventHandlersError);
+    return result.code !== 0 && !!result.message && result.message.startsWith(NoEventHandlersError);
 }
 
 /**
