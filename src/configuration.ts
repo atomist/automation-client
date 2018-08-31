@@ -27,10 +27,6 @@ import * as semver from "semver";
 import { automationClientInstance } from "./globals";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
-import {
-    Ingester,
-    IngesterBuilder,
-} from "./ingesters";
 import { ExpressServerOptions } from "./internal/transport/express/ExpressServer";
 import { config } from "./internal/util/config";
 import { logger } from "./internal/util/logger";
@@ -118,14 +114,6 @@ export interface AutomationOptions extends AnyOptions {
      */
     version?: string;
     /**
-     * Atomist teams this automation will be registered with.  Must be
-     * specified if groups is not specified.  Cannot be specified if
-     * groups is specified.
-     * @deprecated The usage of teamIds is deprecated and will be removed
-     * in a future release. Please use workspaceIds instead.
-     */
-    teamIds?: string[];
-    /**
      * Atomist workspaces this automation will be registered with.  Must be
      * specified if groups is not specified.  Cannot be specified if
      * groups is specified.
@@ -145,16 +133,6 @@ export interface AutomationOptions extends AnyOptions {
      * is suited for testing and running locally and is the default.
      */
     policy?: "ephemeral" | "durable";
-    /**
-     * GitHub personal access token with, at minimum, read:org scope.
-     * The GitHub user that owns this token must be associated with an
-     * Atomist person with the developer role.  Additional scopes may
-     * be necessary if the automation uses the token to perform
-     * actions against the GitHub API.
-     * @deprecated The usage of tokens is deprecated and will be removed in
-     * a future release. Please use apiKey instead.
-     */
-    token?: string;
     /**
      * Atomist API Key used to authenticate the user starting the client.
      * If apiKey is specified it will be used over a provided token.
@@ -215,11 +193,6 @@ export interface AutomationServerOptions extends AutomationOptions {
     /** Whether and where to send application start and stop events to Atomist. */
     applicationEvents?: {
         enabled?: boolean;
-        /**
-         * @deprecated teamId is deprecated and will be removed in a future release.
-         * Use workspaceId instead.
-         */
-        teamId?: string;
         workspaceId?: string;
     };
     /**
@@ -302,7 +275,7 @@ export interface Configuration extends AutomationServerOptions {
      */
     events?: Array<Maker<HandleEvent>>;
     /** Custom event ingester */
-    ingesters?: Array<Ingester | IngesterBuilder | string>;
+    ingesters?: string[];
     /** Log and metric sinks */
     listeners?: AutomationEventListener[];
 }
@@ -635,27 +608,6 @@ export function loadAtomistConfig(): AutomationServerOptions {
 }
 
 /**
- * Examine environment, config, and cfg for Atomist team IDs.  The
- * ATOMIST_TEAMS environment variable takes precedence over the
- * ATOMIST_TEAM environment variable, which takes precedence over the
- * configuration "teamdIds", which takes precedence over cfg.teamIds,
- * which may be undefined, null, or an empty array.
- *
- * @deprecated resolveTeamIds is deprecated and will be removed in a
- * future release
- */
-export function resolveTeamIds(cfg: Configuration): string[] {
-    if (process.env.ATOMIST_TEAMS) {
-        cfg.teamIds = process.env.ATOMIST_TEAMS.split(",");
-    } else if (process.env.ATOMIST_TEAM) {
-        cfg.teamIds = [process.env.ATOMIST_TEAM];
-    } else if (config("teamIds")) {
-        cfg.teamIds = config("teamIds");
-    }
-    return cfg.teamIds;
-}
-
-/**
  * Examine environment, config, and cfg for Atomist workspace IDs.
  * The ATOMIST_WORKSPACES environment variable takes precedence over
  * the configuration "workspaceIds", which takes precedence over
@@ -670,7 +622,7 @@ export function resolveTeamIds(cfg: Configuration): string[] {
  * @return the resolved workspace IDs
  */
 export function resolveWorkspaceIds(cfg: Configuration): string[] {
-    const teamIds = resolveTeamIds(cfg);
+    const teamIds = [];
     if (process.env.ATOMIST_WORKSPACES) {
         cfg.workspaceIds = process.env.ATOMIST_WORKSPACES.split(",");
     } else if (config("workspaceIds")) {
@@ -709,21 +661,6 @@ export function resolveConfigurationValue(
         }
     }
     return defaultValue;
-}
-
-/**
- * Resolve the token from the environment and configuration.  The
- * ATOMIST_TOKEN environment variable takes precedence over the
- * GITHUB_TOKEN environment variable, which takes precedence over the
- * config value, which takes precedence over the passed in value.
- *
- * @deprecated resolveToken is deprecated and will be removed in a
- * future release
- */
-export function resolveToken(cfg: Configuration): string {
-    cfg.token = resolveConfigurationValue(
-        ["ATOMIST_TOKEN", "GITHUB_TOKEN"], ["token"], cfg.token);
-    return cfg.token;
 }
 
 /**
@@ -833,14 +770,6 @@ export function validateConfiguration(cfg: Configuration) {
             "to configure the apiKey in your local configuration");
         errors.push("you must set an 'apiKey' property in your configuration");
     }
-    if (cfg.token && !cfg.apiKey) {
-        console.warn("WARNING: Usage of 'token' is deprecated and support for it will be removed in a " +
-            "future release. Please use 'apiKey' instead.");
-    }
-    if ((cfg.teamIds && cfg.teamIds.length > 0) && (!cfg.workspaceIds || cfg.workspaceIds.length === 0)) {
-        console.warn("WARNING: Usage of 'teamIds' is deprecated and support for it will be removed in a " +
-            "future release. Please use 'workspaceIds' instead.");
-    }
     cfg.teamIds = cfg.teamIds || [];
     cfg.workspaceIds = cfg.workspaceIds || [];
     if (cfg.workspaceIds.length === 0) {
@@ -913,7 +842,6 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
         const atmCfg = loadAtomistConfig();
         cfg = mergeConfigs({}, defCfg, userCfg, autoCfg, atmPathCfg, atmCfg);
         resolveWorkspaceIds(cfg);
-        resolveToken(cfg);
         resolvePort(cfg);
         resolveEnvironmentVariables(cfg);
         resolvePlaceholders(cfg);

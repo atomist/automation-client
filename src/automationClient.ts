@@ -5,10 +5,6 @@ import { Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { HandlerResult } from "./HandlerResult";
-import {
-    Ingester,
-    IngesterBuilder,
-} from "./ingesters";
 import { registerApplicationEvents } from "./internal/env/applicationEvent";
 import { ClusterMasterRequestProcessor } from "./internal/transport/cluster/ClusterMasterRequestProcessor";
 import {
@@ -72,7 +68,7 @@ export class AutomationClient implements RequestProcessor {
         return this;
     }
 
-    public withIngester(ingester: Ingester | string): AutomationClient {
+    public withIngester(ingester: string): AutomationClient {
         this.automations.registerIngester(ingester);
         return this;
     }
@@ -110,9 +106,9 @@ export class AutomationClient implements RequestProcessor {
 
             if (this.configuration.ws.enabled) {
                 return Promise.all([
-                        this.runWs(() => this.setupWebSocketRequestHandler()),
-                        this.runHttp(() => this.setupExpressRequestHandler()),
-                    ])
+                    this.runWs(() => this.setupWebSocketRequestHandler()),
+                    this.runHttp(() => this.setupExpressRequestHandler()),
+                ])
                     .then(() => this.setupApplicationEvents())
                     .then(() => this.printStartupMessage());
             } else {
@@ -129,9 +125,9 @@ export class AutomationClient implements RequestProcessor {
             return (this.webSocketHandler as ClusterMasterRequestProcessor).run()
                 .then(() => {
                     return Promise.all([
-                            this.runWs(() => this.webSocketHandler as ClusterMasterRequestProcessor),
-                            this.runHttp(() => this.setupExpressRequestHandler()),
-                        ])
+                        this.runWs(() => this.webSocketHandler as ClusterMasterRequestProcessor),
+                        this.runHttp(() => this.setupExpressRequestHandler()),
+                    ])
                         .then(() => this.setupApplicationEvents())
                         .then(() => this.printStartupMessage());
                 });
@@ -183,8 +179,6 @@ export class AutomationClient implements RequestProcessor {
         if (this.configuration.applicationEvents.enabled) {
             if (this.configuration.applicationEvents.workspaceId) {
                 return registerApplicationEvents(this.configuration.applicationEvents.workspaceId);
-            } else if (this.configuration.applicationEvents.teamId) {
-                return registerApplicationEvents(this.configuration.applicationEvents.teamId);
             } else if (this.configuration.workspaceIds.length > 0) {
                 return registerApplicationEvents(this.configuration.workspaceIds[0]);
             }
@@ -242,13 +236,7 @@ export function automationClient(configuration: Configuration): AutomationClient
         client.withEventHandler(e);
     });
     configuration.ingesters.forEach(e => {
-        if (typeof e === "string") {
-            client.withIngester(e as string);
-        } else if ((e as any).build) {
-            client.withIngester((e as IngesterBuilder).build());
-        } else {
-            client.withIngester(e as Ingester);
-        }
+        client.withIngester(e);
     });
     return client;
 }

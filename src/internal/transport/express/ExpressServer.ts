@@ -4,7 +4,6 @@ import * as express from "express";
 import * as passport from "passport";
 import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
-import { IStrategyOptions } from "passport-http-bearer";
 import * as tokenHeader from "passport-http-header-token";
 import * as retry from "retry";
 import {
@@ -12,10 +11,8 @@ import {
     ExpressCustomizer,
 } from "../../../configuration";
 import * as globals from "../../../globals";
-import { automationClientInstance } from "../../../globals";
 import { AutomationContextAware } from "../../../HandlerContext";
 import { noEventHandlersWereFound } from "../../../server/AbstractAutomationServer";
-import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
 import { MessageClient } from "../../../spi/message/MessageClient";
@@ -33,7 +30,6 @@ import { metrics } from "../../util/metric";
 import { guid } from "../../util/string";
 import { RequestProcessor } from "../RequestProcessor";
 import { prepareRegistration } from "../websocket/payloads";
-import { ExpressRequestProcessor } from "./ExpressRequestProcessor";
 
 /**
  * Registers an endpoint for every automation and exposes
@@ -219,7 +215,7 @@ export class ExpressServer {
 
             passport.use("bearer", new bearer.Strategy({
                 passReqToCallback: true,
-            } as IStrategyOptions,
+            } as bearer.IStrategyOptions,
                 (req, token, done) => {
                     const api = new GitHubApi();
                     api.authenticate({ type: "token", token });

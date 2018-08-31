@@ -16,6 +16,7 @@
         "max-classes-per-file": false,
         "object-literal-sort-keys": false,
         "no-console": false,
+        "no-duplicate-imports": true,
         "no-implicit-dependencies": [
             true,
             "dev"

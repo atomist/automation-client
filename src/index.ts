@@ -80,13 +80,6 @@ export {
 } from "./HandlerResult";
 
 export {
-    buildEnum,
-    buildIngester,
-    buildType,
-    IngesterBuilder,
-} from "./ingesters";
-
-export {
     obtainGitInfo,
 } from "./internal/env/gitInfo";
 
@@ -113,10 +106,6 @@ export {
     RemoteRepoRef,
     RepoRef,
 } from "./operations/common/RepoId";
-
-export {
-    GeneratorCommandDetails,
-} from "./operations/generate/generatorToCommand";
 
 export { AutomationEventListener } from "./server/AutomationEventListener";
 

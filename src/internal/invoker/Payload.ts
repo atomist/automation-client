@@ -7,12 +7,6 @@ export interface Contextual {
 
     /**
      * ID of the Atomist Workspace
-     * @deprecated use workspaceId instead
-     */
-    teamId?: string;
-
-    /**
-     * ID of the Atomist Workspace
      */
     workspaceId: string;
 
