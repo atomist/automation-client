@@ -30,36 +30,6 @@ import {
 import { FileParserRegistry } from "./FileParserRegistry";
 
 /**
- * Separates glob patterns from path expressions in unified expression syntax
- * @type {string}
- */
-export const ExpressionSeparator = "::";
-
-/**
- * Integrate path expressions with project operations to find all matches
- * using a unified string expression format of the form
- * <glob pattern>-><path expression>
- * This can be useful to foster reuse
- * @param p project
- * @param unifiedExpression file glob pattern + path expression to execute
- * @param parserOrRegistry parser for files
- * @return {Promise<TreeNode[]>} hit record for each matching file
- */
-export function findByExpression(p: ProjectAsync,
-                                 parserOrRegistry: FileParser | FileParserRegistry,
-                                 unifiedExpression: string): Promise<MatchResult[]> {
-    const split = unifiedExpression.split(ExpressionSeparator);
-    if (split.length !== 2) {
-        throw new Error(`Invalid unified expression syntax [${unifiedExpression}]: ` +
-            `Format is <glob pattern>${ExpressionSeparator}<path expr>`);
-    }
-    const globPattern = split[0];
-    const pathExpression = _.drop(split, 1).join("");
-    logger.debug("Glob is [%s], path expression [%s] from [%s]", globPattern, pathExpression, unifiedExpression);
-    return findMatches(p, parserOrRegistry, globPattern, pathExpression);
-}
-
-/**
  * Integrate path expressions with project operations to find all matches
  * @param p project
  * @param globPatterns file glob patterns
