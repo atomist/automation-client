@@ -11,7 +11,6 @@ import {
 } from "@atomist/tree-path/visitor";
 import "mocha";
 import * as assert from "power-assert";
-import { fail } from "power-assert";
 import { InMemoryFile } from "../../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../../src/project/mem/InMemoryProject";
 import { Project } from "../../../../src/project/Project";
@@ -56,7 +55,7 @@ describe("TypeScriptFileParser", () => {
             .then(root => {
                 try {
                     evaluateScalarValue(root, "//xxVariableDeclaration/Identifier");
-                    fail("Should have rejected invalid path expression");
+                    assert.fail("Should have rejected invalid path expression");
                 } catch (e) {
                     // Ok
                     done();

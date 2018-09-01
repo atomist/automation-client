@@ -5,7 +5,6 @@ import {
     StatsD,
 } from "hot-shots";
 import * as os from "os";
-import * as trace from "stack-trace";
 import { Configuration } from "../configuration";
 import { EventFired } from "../HandleEvent";
 import {
@@ -13,7 +12,6 @@ import {
     HandlerContext,
 } from "../HandlerContext";
 import { HandlerResult } from "../HandlerResult";
-import * as internalGraphql from "../internal/graph/graphQL";
 import { CommandInvocation } from "../internal/invoker/Payload";
 import { RequestProcessor } from "../internal/transport/RequestProcessor";
 import { logger } from "../internal/util/logger";
@@ -60,50 +58,9 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
 
             ctx.graphClient = {
                 endpoint: graphClient.endpoint,
-                executeMutation: (mutation: string, variables?: any, options?: any) => {
-                    const start = Date.now();
-                    return graphClient.executeMutation(mutation, variables, options)
-                        .then(result => {
-                            this.statsd.increment("counter.graphql.mutation.success", 1, 1, tags, this.callback);
-                            this.statsd.timing("timer.graphql.mutation", Date.now() - start, 1, tags, this.callback);
-                            return result;
-                        })
-                        .catch(err => {
-                            this.statsd.increment("counter.graphql.mutation.failure", 1, 1, tags, this.callback);
-                            this.statsd.timing("timer.graphql.mutation", Date.now() - start, 1, tags, this.callback);
-                            return err;
-                        });
-                },
-                executeMutationFromFile: (path: string, variables?: any, options?: any, current?: string) => {
-                    const start = Date.now();
-                    return graphClient.executeMutationFromFile(path, variables, options, current)
-                        .then(result => {
-                            this.statsd.increment("counter.graphql.mutation.success", 1, 1, tags, this.callback);
-                            this.statsd.timing("timer.graphql.mutation", Date.now() - start, 1, tags, this.callback);
-                            return result;
-                        })
-                        .catch(err => {
-                            this.statsd.increment("counter.graphql.mutation.failure", 1, 1, tags, this.callback);
-                            this.statsd.timing("timer.graphql.mutation", Date.now() - start, 1, tags, this.callback);
-                            return err;
-                        });
-                },
                 mutate: (optionsOrName: MutationOptions<any> | string) => {
                     const start = Date.now();
-
-                    if (typeof optionsOrName === "string") {
-                        optionsOrName = {
-                            name: optionsOrName,
-                        };
-                    }
-                    const m = internalGraphql.mutate({
-                        mutation: optionsOrName.mutation,
-                        path: optionsOrName.path,
-                        name: optionsOrName.name,
-                        moduleDir: trace.get()[1].getFileName(),
-                    });
-
-                    return graphClient.executeMutation(m, optionsOrName.variables, optionsOrName.options)
+                    return graphClient.mutate(optionsOrName)
                         .then(result => {
                             this.statsd.increment("counter.graphql.mutation.success", 1, 1, tags, this.callback);
                             this.statsd.timing("timer.graphql.mutation", Date.now() - start, 1, tags, this.callback);
@@ -112,54 +69,12 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                         .catch(err => {
                             this.statsd.increment("counter.graphql.mutation.failure", 1, 1, tags, this.callback);
                             this.statsd.timing("timer.graphql.mutation", Date.now() - start, 1, tags, this.callback);
-                            return err;
-                        });
-                },
-                executeQuery: (query: string, variables?: any, options?: any) => {
-                    const start = Date.now();
-                    return graphClient.executeQuery(query, variables, options)
-                        .then(result => {
-                            this.statsd.increment("counter.graphql.query.success", 1, 1, tags, this.callback);
-                            this.statsd.timing("timer.graphql.query", Date.now() - start, 1, tags, this.callback);
-                            return result;
-                        })
-                        .catch(err => {
-                            this.statsd.increment("counter.graphql.query.failure", 1, 1, tags, this.callback);
-                            this.statsd.timing("timer.graphql.query", Date.now() - start, 1, tags, this.callback);
-                            return err;
-                        });
-
-                },
-                executeQueryFromFile: (path: string, variables?: any, options?: any, current?: string) => {
-                    const start = Date.now();
-                    return graphClient.executeQueryFromFile(path, variables, options, current)
-                        .then(result => {
-                            this.statsd.increment("counter.graphql.query.success", 1, 1, tags, this.callback);
-                            this.statsd.timing("timer.graphql.query", Date.now() - start, 1, tags, this.callback);
-                            return result;
-                        })
-                        .catch(err => {
-                            this.statsd.increment("counter.graphql.query.failure", 1, 1, tags, this.callback);
-                            this.statsd.timing("timer.graphql.query", Date.now() - start, 1, tags, this.callback);
                             return err;
                         });
                 },
                 query: (optionsOrName: QueryOptions<any> | string) => {
                     const start = Date.now();
-
-                    if (typeof optionsOrName === "string") {
-                        optionsOrName = {
-                            name: optionsOrName,
-                        };
-                    }
-                    const q = internalGraphql.query({
-                        query: optionsOrName.query,
-                        path: optionsOrName.path,
-                        name: optionsOrName.name,
-                        moduleDir: trace.get()[1].getFileName(),
-                    });
-
-                    return graphClient.executeQuery(q, optionsOrName.variables, optionsOrName.options)
+                    return graphClient.query(optionsOrName)
                         .then(result => {
                             this.statsd.increment("counter.graphql.query.success", 1, 1, tags, this.callback);
                             this.statsd.timing("timer.graphql.query", Date.now() - start, 1, tags, this.callback);

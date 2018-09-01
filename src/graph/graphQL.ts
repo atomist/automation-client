@@ -1,8 +1,8 @@
-import * as appRoot from "app-root-path";
 import * as trace from "stack-trace";
-import * as internalGraphQL from "../internal/graph/graphQL";
 import {
+    ingester as ingesterInternal,
     IngesterOptions,
+    subscription as subscriptionInternal,
     SubscriptionOptions,
 } from "../internal/graph/graphQL";
 
@@ -52,26 +52,7 @@ export function subscription(optionsOrName: SubscriptionOptions | string): strin
     }
     options.moduleDir = options.moduleDir || pathToCallingFunction;
 
-    return internalGraphQL.subscription(options);
-}
-
-/**
- * Read a subscription from a file relative to the provided directory (or the module root by default)
- * Note: Use __dirname to get the current directory of the calling script.
- * @param {string} path
- * @param {string} current
- * @param {{[p: string]: string | boolean | number}} parameters
- * @returns {string}
- *
- * DEPRECATED: use subscription() instead
- */
-export function subscriptionFromFile(path: string,
-                                     current: string = appRoot.path,
-                                     parameters: {
-                                         [name: string]: string | boolean | number | ParameterEnum;
-                                     } = {}): string {
-    // TODO cd add validation that we only read subscriptions here
-    return internalGraphQL.resolveAndReadFileSync(path, current, parameters);
+    return subscriptionInternal(options);
 }
 
 /**
@@ -105,5 +86,5 @@ export function ingester(optionsOrName: IngesterOptions | string): string {
     }
     options.moduleDir = options.moduleDir || pathToCallingFunction;
 
-    return internalGraphQL.ingester(options);
+    return ingesterInternal(options);
 }

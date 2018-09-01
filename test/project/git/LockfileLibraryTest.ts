@@ -1,7 +1,5 @@
 import "mocha";
-
 import * as assert from "power-assert";
-import { fail } from "power-assert";
 import lockfile = require("proper-lockfile");
 import {
     LockAcquired,
@@ -48,7 +46,7 @@ describe("exploratory tests for proper-locking", () => {
                 return pleaseLock("docs")
                     .then(releaseAgain => {
                         if (releaseAgain.success) {
-                            fail("acquired lock twice");
+                            assert.fail("acquired lock twice");
                         } else {
                             // good
                             return (result as LockAcquired).release();

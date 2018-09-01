@@ -1,5 +1,4 @@
 import { AxiosRequestConfig } from "axios";
-import { UrlWithStringQuery } from "url";
 import * as url from "url";
 
 export function configureProxy(config: AxiosRequestConfig): AxiosRequestConfig {
@@ -17,7 +16,7 @@ export function configureProxy(config: AxiosRequestConfig): AxiosRequestConfig {
     return config;
 }
 
-function proxyAuth(proxyOpts: UrlWithStringQuery) {
+function proxyAuth(proxyOpts: url.UrlWithStringQuery) {
     if (proxyOpts.auth) {
         const parts = proxyOpts.auth.split(":");
         if (parts.length === 2) {

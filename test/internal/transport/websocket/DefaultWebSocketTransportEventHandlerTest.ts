@@ -1,6 +1,5 @@
 import "mocha";
 import * as assert from "power-assert";
-import { fail } from "power-assert";
 import * as WebSocket from "ws";
 import { EventFired } from "../../../../src/HandleEvent";
 import { HandlerContext } from "../../../../src/HandlerContext";
@@ -32,7 +31,7 @@ describe("DefaultWebSocketRequestProcessor", () => {
             }
 
             public invokeCommand(payload: CommandInvocation, ctx: HandlerContext): Promise<HandlerResult> {
-                fail();
+                assert.fail();
                 throw new Error("Method not implemented.");
             }
 
@@ -41,7 +40,7 @@ describe("DefaultWebSocketRequestProcessor", () => {
                 assert(payload.secrets.length === 0);
                 assert(payload.data.Foo.bar === 27);
 
-                assert(ctx.teamId === "x-team");
+                assert(ctx.workspaceId === "x-team");
                 assert(ctx.correlationId === "555");
                 assert(ctx.messageClient);
 
@@ -107,7 +106,7 @@ function verifyCommandHandler(code: number, callback: (result) => void) {
             assert(payload.args[0].name === "foo");
             assert(payload.args[0].value === "bar");
 
-            assert(ctx.teamId === "x-team");
+            assert(ctx.workspaceId === "x-team");
             assert(ctx.correlationId === "555");
             assert(ctx.messageClient);
 
@@ -115,7 +114,7 @@ function verifyCommandHandler(code: number, callback: (result) => void) {
         }
 
         public onEvent(payload: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult[]> {
-            fail();
+            assert.fail();
             throw new Error("Method not implemented.");
         }
     }

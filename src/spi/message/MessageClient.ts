@@ -37,8 +37,6 @@ export interface MessageClient {
 
 /**
  * MessageClient to send messages to the default Slack team.
- *
- * @deprecated This interface is deprecated. Please use MessageClient instead.
  */
 export interface SlackMessageClient {
 
@@ -48,7 +46,6 @@ export interface SlackMessageClient {
      * @param {string | string[]} users
      * @param {MessageOptions} options
      * @returns {Promise<any>}
-     * @deprecated use MessageClient.send
      */
     addressUsers(msg: string | SlackMessage | SlackFileMessage,
                  users: string | string[],
@@ -60,7 +57,6 @@ export interface SlackMessageClient {
      * @param {string | string[]} channels
      * @param {MessageOptions} options
      * @returns {Promise<any>}
-     * @deprecated use MessageClient.send
      */
     addressChannels(msg: string | SlackMessage | SlackFileMessage,
                     channels: string | string[],
