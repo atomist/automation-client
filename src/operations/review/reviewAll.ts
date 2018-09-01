@@ -1,7 +1,6 @@
 import { ActionResult } from "../../action/ActionResult";
 import { HandlerContext } from "../../HandlerContext";
 import { GitProject } from "../../project/git/GitProject";
-import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import {
@@ -32,8 +31,8 @@ export function reviewAll<P,
     R extends ProjectReview = ProjectReview>(ctx: HandlerContext,
                                              credentials: ProjectOperationCredentials,
                                              reviewer: ProjectReviewer<P, R>,
-                                             parameters?: P,
-                                             repoFinder: RepoFinder = allReposInTeam(),
+                                             parameters: P,
+                                             repoFinder: RepoFinder,
                                              repoFilter: RepoFilter = AllRepos,
                                              repoLoader: RepoLoader =
         defaultRepoLoader(
@@ -47,8 +46,8 @@ export function review<P,
     R extends ProjectReview = ProjectReview>(ctx: HandlerContext,
                                              credentials: ProjectOperationCredentials,
                                              reviewer: ProjectReviewer<P, R>,
-                                             parameters?: P,
-                                             repoFinder: RepoFinder = allReposInTeam(),
+                                             parameters: P,
+                                             repoFinder: RepoFinder,
                                              repoFilter: RepoFilter = AllRepos,
                                              repoLoader: RepoLoader =
         defaultRepoLoader(credentials)): Promise<ReviewResult> {

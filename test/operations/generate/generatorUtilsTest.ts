@@ -27,6 +27,7 @@ export const mockProjectPersister: ProjectPersister<Project, ActionResult<Projec
             p.id = {
                 owner: t.owner,
                 repo: t.repo,
+                url: "",
             };
         }
         return Promise.resolve(successOn(p));
