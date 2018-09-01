@@ -1,29 +1,16 @@
 import { HandlerContext } from "../../HandlerContext";
 import { Project } from "../../project/Project";
-import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewerParameters";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
-import {
-    AllRepos,
-    RepoFilter,
-} from "../common/repoFilter";
+import { AllRepos, RepoFilter } from "../common/repoFilter";
 import { RepoFinder } from "../common/repoFinder";
 import { RepoRef } from "../common/RepoId";
 import { RepoLoader } from "../common/repoLoader";
 import { doWithAllRepos } from "../common/repoUtils";
 import { editRepo } from "../support/editorUtils";
-import {
-    EditMode,
-    EditModeFactory,
-    toEditModeFactory,
-} from "./editModes";
-import {
-    AnyProjectEditor,
-    EditResult,
-    ProjectEditor,
-    toEditor,
-} from "./projectEditor";
+import { EditMode, EditModeFactory, toEditModeFactory } from "./editModes";
+import { AnyProjectEditor, EditResult, ProjectEditor, toEditor } from "./projectEditor";
 
 /**
  * Edit all the given repos with the given editor
@@ -42,8 +29,8 @@ export function editAll<R, P extends EditorOrReviewerParameters>(ctx: HandlerCon
                                                                  credentials: ProjectOperationCredentials,
                                                                  editor: AnyProjectEditor,
                                                                  editInfo: EditMode | EditModeFactory,
-                                                                 parameters?: P,
-                                                                 repoFinder: RepoFinder = allReposInTeam(),
+                                                                 parameters: P,
+                                                                 repoFinder: RepoFinder,
                                                                  repoFilter: RepoFilter = AllRepos,
                                                                  repoLoader: RepoLoader =
         defaultRepoLoader(credentials)): Promise<EditResult[]> {

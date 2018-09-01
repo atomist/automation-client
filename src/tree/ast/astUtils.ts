@@ -30,36 +30,6 @@ import {
 import { FileParserRegistry } from "./FileParserRegistry";
 
 /**
- * Separates glob patterns from path expressions in unified expression syntax
- * @type {string}
- */
-export const ExpressionSeparator = "::";
-
-/**
- * Integrate path expressions with project operations to find all matches
- * using a unified string expression format of the form
- * <glob pattern>-><path expression>
- * This can be useful to foster reuse
- * @param p project
- * @param unifiedExpression file glob pattern + path expression to execute
- * @param parserOrRegistry parser for files
- * @return {Promise<TreeNode[]>} hit record for each matching file
- */
-export function findByExpression(p: ProjectAsync,
-                                 parserOrRegistry: FileParser | FileParserRegistry,
-                                 unifiedExpression: string): Promise<MatchResult[]> {
-    const split = unifiedExpression.split(ExpressionSeparator);
-    if (split.length !== 2) {
-        throw new Error(`Invalid unified expression syntax [${unifiedExpression}]: ` +
-            `Format is <glob pattern>${ExpressionSeparator}<path expr>`);
-    }
-    const globPattern = split[0];
-    const pathExpression = _.drop(split, 1).join("");
-    logger.debug("Glob is [%s], path expression [%s] from [%s]", globPattern, pathExpression, unifiedExpression);
-    return findMatches(p, parserOrRegistry, globPattern, pathExpression);
-}
-
-/**
  * Integrate path expressions with project operations to find all matches
  * @param p project
  * @param globPatterns file glob patterns
@@ -177,12 +147,31 @@ export function zapAllMatches<P extends ProjectAsync = ProjectAsync>(p: P,
                                                                      globPatterns: GlobOptions,
                                                                      pathExpression: string | PathExpression,
                                                                      opts: NodeReplacementOptions = {}): Promise<P> {
+    return doWithAllMatches(p, parserOrRegistry, globPatterns, pathExpression,
+        m => m.zap(opts));
+}
+
+/**
+ * Integrate path expressions with project operations to find all matches
+ * of a path expression and perform a mutation on them them. Use with care!
+ * @param p project
+ * @param globPatterns file glob pattern
+ * @param parserOrRegistry parser for files
+ * @param pathExpression path expression string or parsed
+ * @param todo what to do with matches
+ * @return {Promise<TreeNode[]>} hit record for each matching file
+ */
+export function doWithAllMatches<P extends ProjectAsync = ProjectAsync>(p: P,
+                                                                        parserOrRegistry: FileParser | FileParserRegistry,
+                                                                        globPatterns: GlobOptions,
+                                                                        pathExpression: string | PathExpression,
+                                                                        todo: (m: MatchResult) => void): Promise<P> {
     return findFileMatches(p, parserOrRegistry, globPatterns, pathExpression)
         .then(fileHits => {
             fileHits.forEach(fh => {
                 const sorted = fh.matches.sort((m1, m2) => m1.$offset - m2.$offset);
                 sorted.forEach(m => {
-                    m.zap(opts);
+                    todo(m);
                 });
             });
             return (p as any).flush();

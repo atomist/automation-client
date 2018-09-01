@@ -5,7 +5,6 @@ import * as assert from "power-assert";
 import { AllFiles } from "../../../../src/project/fileGlobs";
 import { InMemoryProject } from "../../../../src/project/mem/InMemoryProject";
 import {
-    findByExpression,
     findFileMatches,
     findMatches,
 } from "../../../../src/tree/ast/astUtils";
@@ -207,26 +206,5 @@ describe("microgrammar integration and path expression", () => {
     });
 
     it("handles multiple updates to same property");
-
-    it("execute unified expression and update single terminal", done => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
-        const fpr = new DefaultFileParserRegistry().addParser(
-            new MicrogrammarBasedFileParser("people", "person", mg));
-        const p = InMemoryProject.of(
-            { path: "Thing1", content: "Tom:16 Mary:25" },
-            { path: "Thing2", content: "George:16 Kathy:25" });
-        findByExpression(p, fpr, "Thing1::/people/person/name")
-            .then(matches => {
-                assert(matches.length === 2);
-                assert(matches[0].$value === "Tom");
-                matches[1].$value = "Mark";
-                return p.flush()
-                    .then(_ => {
-                        assert(p.findFileSync("Thing1").getContentSync() === "Tom:16 Mark:25");
-                    });
-            }).then(() => done(), done);
-    });
 
 });

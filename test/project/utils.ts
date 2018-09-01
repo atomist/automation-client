@@ -9,6 +9,7 @@ tmp.setGracefulCleanup();
 export function tempProject(id: RepoRef = {
     owner: "dummyOwner",
     repo: "dummyRepo",
+    url: "",
 }): LocalProject & ScriptedFlushable<LocalProject> {
     const dir = tmp.dirSync({ unsafeCleanup: true });
     return new NodeFsLocalProject(id, dir.name,
