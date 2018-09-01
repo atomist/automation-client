@@ -5,7 +5,6 @@ import {
     ReposQueryVariables,
 } from "../../schema/schema";
 import { GitHubRepoRef } from "./GitHubRepoRef";
-import { twoTierDirectoryRepoFinder } from "./localRepoFinder";
 import { RepoFinder } from "./repoFinder";
 import { RepoRef } from "./RepoId";
 
@@ -18,11 +17,8 @@ const PageSize = 100;
  * @param cwd directory to look in if this is local
  * @constructor
  */
-export function allReposInTeam(cwd?: string): RepoFinder {
+export function allReposInTeam(): RepoFinder {
     return (context: HandlerContext) => {
-        if (cwd) {
-            return twoTierDirectoryRepoFinder(cwd)(context);
-        }
         return queryForPage(context, 0);
     };
 }
@@ -48,10 +44,10 @@ query Repos($teamId: ID!, $offset: Int!) {
  */
 function queryForPage(context: HandlerContext, offset: number): Promise<RepoRef[]> {
     return context.graphClient.query<ReposQuery, ReposQueryVariables>({
-            query: RepoQuery,
-            variables: { teamId: context.workspaceId, offset },
-            },
-        )
+        query: RepoQuery,
+        variables: { teamId: context.workspaceId, offset },
+    },
+    )
         .then(result => {
             return _.flatMap(result.ChatTeam[0].orgs, org =>
                 org.repo.map(r => new GitHubRepoRef(r.owner, r.name)));
