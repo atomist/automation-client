@@ -11,11 +11,18 @@ export interface RepoId {
 
     repo: string;
 
+    /**
+     * Entire url of the repo. Can be a file URL if this is local.
+     */
+    url: string;
+
 }
 
 export class SimpleRepoId implements RepoId {
 
-    constructor(public owner: string, public repo: string) {
+    constructor(public readonly owner: string,
+                public readonly repo: string,
+                public readonly url: string = `${owner}/${repo}`) {
     }
 }
 
@@ -62,11 +69,6 @@ export interface RemoteRepoRef extends RepoRef {
     readonly remoteBase: string;
 
     readonly providerType: ProviderType;
-
-    /**
-     * Entire url of the repo
-     */
-    url: string;
 
     /**
      * Return the clone URL for this to pass to git clone

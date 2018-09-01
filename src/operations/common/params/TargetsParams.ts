@@ -1,9 +1,6 @@
 import { ProjectOperationCredentials } from "../ProjectOperationCredentials";
 import { RepoFilter } from "../repoFilter";
-import {
-    RemoteRepoRef,
-    RepoRef,
-} from "../RepoId";
+import { RemoteRepoRef, RepoRef } from "../RepoId";
 import { Credentialed } from "./Credentialed";
 import { GitHubNameRegExp } from "./gitHubPatterns";
 import { RemoteLocator } from "./RemoteLocator";
@@ -12,7 +9,7 @@ import { RemoteLocator } from "./RemoteLocator";
  * Base parameters for working with repo(s).
  * Allows use of regex.
  */
-export abstract class TargetsParams implements Credentialed, RepoRef, RemoteLocator {
+export abstract class TargetsParams implements Credentialed, RemoteLocator {
 
     public abstract owner;
 

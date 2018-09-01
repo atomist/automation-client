@@ -12,7 +12,6 @@ import { CachingDirectoryManager } from "../../spi/clone/CachingDirectoryManager
 import { QueryNoCacheOptions } from "../../spi/graph/GraphClient";
 import { Maker } from "../../util/constructionUtils";
 import { CommandDetails } from "../CommandDetails";
-import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { isGitHubRepoRef } from "../common/GitHubRepoRef";
 import { ProjectAction } from "../common/projectAction";
@@ -42,7 +41,6 @@ export interface GeneratorCommandDetails<P extends SeedDrivenGeneratorParameters
 function defaultDetails<P extends SeedDrivenGeneratorParameters>(name: string): GeneratorCommandDetails<P> {
     return {
         description: name,
-        repoFinder: allReposInTeam(),
         repoLoader: (p: P) => defaultRepoLoader(p.target.credentials, CachingDirectoryManager),
         projectPersister: RemoteGitProjectPersister,
         redirecter: () => undefined,

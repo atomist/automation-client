@@ -1,13 +1,9 @@
 import { HandlerContext } from "../../HandlerContext";
 import { logger } from "../../internal/util/logger";
 import { Project } from "../../project/Project";
-import { allReposInTeam } from "./allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "./defaultRepoLoader";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
-import {
-    AllRepos,
-    RepoFilter,
-} from "./repoFilter";
+import { AllRepos, RepoFilter } from "./repoFilter";
 import { RepoFinder } from "./repoFinder";
 import { RepoRef } from "./RepoId";
 import { RepoLoader } from "./repoLoader";
@@ -28,7 +24,7 @@ export function doWithAllRepos<R, P>(ctx: HandlerContext,
                                      credentials: ProjectOperationCredentials,
                                      action: (p: Project, t: P) => Promise<R>,
                                      parameters: P,
-                                     repoFinder: RepoFinder = allReposInTeam(),
+                                     repoFinder: RepoFinder,
                                      repoFilter: RepoFilter = AllRepos,
                                      repoLoader: RepoLoader =
         defaultRepoLoader(credentials)): Promise<R[]> {
@@ -51,7 +47,7 @@ export function doWithAllRepos<R, P>(ctx: HandlerContext,
 }
 
 export function relevantRepos(ctx: HandlerContext,
-                              repoFinder: RepoFinder = allReposInTeam(),
+                              repoFinder: RepoFinder,
                               repoFilter: RepoFilter = AllRepos): Promise<RepoRef[]> {
     return repoFinder(ctx)
         .then(rids =>

@@ -6,7 +6,6 @@ import {
 } from "../../onCommand";
 import { Maker } from "../../util/constructionUtils";
 import { CommandDetails } from "../CommandDetails";
-import { allReposInTeam } from "../common/allReposInTeamRepoFinder";
 import { defaultRepoLoader } from "../common/defaultRepoLoader";
 import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewerParameters";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
@@ -90,8 +89,8 @@ function tagOneOrMany<PARAMS extends EditorOrReviewerParameters>(tagger: Tagger<
 function tagAll<P extends EditorOrReviewerParameters>(ctx: HandlerContext,
                                                       credentials: ProjectOperationCredentials,
                                                       tagger: Tagger<P>,
-                                                      parameters?: P,
-                                                      repoFinder: RepoFinder = allReposInTeam(),
+                                                      parameters: P,
+                                                      repoFinder: RepoFinder,
                                                       repoFilter: RepoFilter = AllRepos,
                                                       repoLoader: RepoLoader =
         defaultRepoLoader(

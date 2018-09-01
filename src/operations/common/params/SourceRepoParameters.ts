@@ -1,19 +1,13 @@
 import { Parameter } from "../../../decorators";
-import {
-    RemoteRepoRef,
-    RepoRef,
-} from "../RepoId";
-import {
-    GitBranchRegExp,
-    GitHubNameRegExp,
-} from "./gitHubPatterns";
+import { RemoteRepoRef, RepoRef } from "../RepoId";
+import { GitBranchRegExp, GitHubNameRegExp } from "./gitHubPatterns";
 import { RemoteLocator } from "./RemoteLocator";
 
 /**
  * Parameters common to anything that works with a single source repo,
  * such as a seed driven generator
  */
-export abstract class SourceRepoParameters implements RepoRef, RemoteLocator {
+export abstract class SourceRepoParameters implements RemoteLocator {
 
     @Parameter({
         pattern: GitHubNameRegExp.pattern,
