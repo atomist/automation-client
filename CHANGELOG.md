@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Log under user home directory.
 -   Remove dimensions on metrics. [#349](https://github.com/atomist/automation-client-ts/issues/349)
 -   **BREAKING** Pull up id to RepoId and remove unused code. [#351](https://github.com/atomist/automation-client-ts/issues/351)
+-   Export all of MessageClient. [#352](https://github.com/atomist/automation-client-ts/issues/352)
 
 ## [1.0.0-M.2](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.1...1.0.0-M.2) - 2018-08-27
 
