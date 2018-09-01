@@ -21,8 +21,7 @@ export interface MessageClient {
      * @param {MessageOptions} options
      * @returns {Promise<any>}
      */
-    respond(msg: any,
-            options?: MessageOptions): Promise<any>;
+    respond(msg: any, options?: MessageOptions): Promise<any>;
 
     /**
      * Send a message to any given destination.
@@ -73,6 +72,7 @@ export interface SlackMessageClient {
  */
 export interface Destination {
 
+    /** Type of Destination. */
     userAgent: string;
 }
 
@@ -85,15 +85,33 @@ export class SlackDestination implements Destination {
 
     public userAgent: string = SlackDestination.SLACK_USER_AGENT;
 
+    /** Slack user names to send message to. */
     public users: string[] = [];
+    /** Slack channel names to send message to. */
     public channels: string[] = [];
 
+    /**
+     * Create a Destination suitable for sending messages to a Slack
+     * workspace.
+     *
+     * @param team Slack workspace ID, which typically starts with the
+     *             letter "T", consists of numbers and upper-case letters,
+     *             and is nine characters long.  It can be obtained by
+     *             sending the Atomist Slack bot the message "team".
+     * @return {SlackDestination} A MessageClient suitable for sending messages.
+     */
     constructor(public team: string) { }
 
     /**
-     * Address certain users by their user name.
-     * @param {string} user
-     * @returns {SlackDestination}
+     * Address user by Slack user name.  This method appends the
+     * provided user to a list of users that will be sent the message
+     * via this Destination.  In other words, calling repeatedly with
+     * differing Slack user names results in the message being sent to
+     * all such users.
+     *
+     * @param {string} user Slack user name.
+     * @returns {SlackDestination} MessageClient Destination that results
+     *          in message being send to user.
      */
     public addressUser(user: string): SlackDestination {
         this.users.push(user);
@@ -101,9 +119,15 @@ export class SlackDestination implements Destination {
     }
 
     /**
-     * Address certains channels by their channel name.
-     * @param {string} channel
-     * @returns {SlackDestination}
+     * Address channel by Slack channel name.  This method appends the
+     * provided channel to a list of channels that will be sent the
+     * message via this Destination.  In other words, calling
+     * repeatedly with differing Slack channel names results in the
+     * message being sent to all such channels.
+     *
+     * @param {string} channel Slack channel name.
+     * @returns {SlackDestination} MessageClient Destination that results
+     *          in message being send to channel.
      */
     public addressChannel(channel: string): SlackDestination {
         this.channels.push(channel);
@@ -112,10 +136,12 @@ export class SlackDestination implements Destination {
 }
 
 /**
- * Shortcut for creating a SlackDestination which addresses the given users.
- * @param {string} team
- * @param {string} users
- * @returns {SlackDestination}
+ * Shortcut for creating a SlackDestination which addresses the given
+ * users.
+ *
+ * @param {string} team Slack workspace ID to create Destination for.
+ * @param {string} users Slack user names to send message to.
+ * @returns {SlackDestination} MessageClient Destination to pass to `send`.
  */
 export function addressSlackUsers(team: string, ...users: string[]): SlackDestination {
     const sd = new SlackDestination(team);
@@ -124,10 +150,12 @@ export function addressSlackUsers(team: string, ...users: string[]): SlackDestin
 }
 
 /**
- * Shortcut for creating a SlackDestination which addresses the given users in all connected Slack teams.
- * @param {HandlerContext} ctx
- * @param {string} users
- * @returns {Promise<SlackDestination>}
+ * Shortcut for creating a SlackDestination which addresses the given
+ * users in all Slack teams connected to the context.
+ *
+ * @param {HandlerContext} ctx Handler context as passed to the Handler handle method.
+ * @param {string} users Slack user names to send message to.
+ * @returns {Promise<SlackDestination>} MessageClient Destination to pass to `send`.
  */
 export function addressSlackUsersFromContext(ctx: HandlerContext, ...users: string[]): Promise<SlackDestination> {
     return lookupChatTeam(ctx.graphClient)
@@ -137,10 +165,12 @@ export function addressSlackUsersFromContext(ctx: HandlerContext, ...users: stri
 }
 
 /**
- * Shortcut for creating a SlackDestination which addresses the given channels.
- * @param {string} team
- * @param {string} channels
- * @returns {SlackDestination}
+ * Shortcut for creating a SlackDestination which addresses the given
+ * channels.
+ *
+ * @param {string} team Slack workspace ID to create Destination for.
+ * @param {string} channels Slack channel names to send messages to.
+ * @returns {SlackDestination} MessageClient Destination to pass to `send`.
  */
 export function addressSlackChannels(team: string, ...channels: string[]): SlackDestination {
     const sd = new SlackDestination(team);
@@ -149,10 +179,12 @@ export function addressSlackChannels(team: string, ...channels: string[]): Slack
 }
 
 /**
- * Shortcut for creating a SlackDestination which addresses the given channels in all connected Slack teams.
- * @param {HandlerContext} ctx
- * @param {string} channels
- * @returns {Promise<SlackDestination>}
+ * Shortcut for creating a SlackDestination which addresses the given
+ * channels in all Slack teams connected to the context.
+ *
+ * @param {HandlerContext} ctx Handler context as passed to the Handler handle method.
+ * @param {string} channels Slack channel names to send messages to.
+ * @returns {Promise<SlackDestination>} MessageClient Destination to pass to `send`.
  */
 export function addressSlackChannelsFromContext(ctx: HandlerContext, ...channels: string[]): Promise<SlackDestination> {
     return lookupChatTeam(ctx.graphClient)
@@ -170,9 +202,16 @@ export class CustomEventDestination implements Destination {
 
     public userAgent: string = CustomEventDestination.INGESTER_USER_AGENT;
 
+    /**
+     * Constructur returning a Destination for creating an instance of
+     * the Custom Event type `rootType`.
+     */
     constructor(public rootType: string) { }
 }
 
+/**
+ * Helper wrapping the constructor for CustomEventDestination.
+ */
 export function addressEvent(rootType: string): CustomEventDestination {
     return new CustomEventDestination(rootType);
 }
@@ -190,6 +229,9 @@ export interface SlackFileMessage {
 
 }
 
+/**
+ * Options for sending messages using the MessageClient.
+ */
 export interface MessageOptions extends AnyOptions {
 
     /**
@@ -221,6 +263,7 @@ export interface MessageOptions extends AnyOptions {
     post?: "update_only" | "always";
 }
 
+/** Valid MessageClient types. */
 export class MessageMimeTypes {
 
     public static SLACK_JSON = "application/x-atomist-slack+json";
@@ -234,6 +277,10 @@ export interface CommandReferencingAction extends Action {
     command: CommandReference;
 }
 
+/**
+ * Information about a command handler used to connect message actions
+ * to a command.
+ */
 export interface CommandReference {
 
     /**
@@ -259,6 +306,9 @@ export interface CommandReference {
     parameterName?: string;
 }
 
+/**
+ * Create a slack button that invokes a command handler.
+ */
 export function buttonForCommand(buttonSpec: ButtonSpecification,
                                  command: any,
                                  parameters: {
@@ -267,7 +317,7 @@ export function buttonForCommand(buttonSpec: ButtonSpecification,
     const cmd = commandName(command);
     parameters = mergeParameters(command, parameters);
     const id = cmd.toLocaleLowerCase();
-    const action = rugButtonFrom(buttonSpec, { id }) as CommandReferencingAction;
+    const action = chatButtonFrom(buttonSpec, { id }) as CommandReferencingAction;
     action.command = {
         id,
         name: cmd,
@@ -276,6 +326,9 @@ export function buttonForCommand(buttonSpec: ButtonSpecification,
     return action;
 }
 
+/**
+ * Create a Slack menu that invokes a command handler.
+ */
 export function menuForCommand(selectSpec: MenuSpecification,
                                command: any,
                                parameterName: string,
@@ -285,7 +338,7 @@ export function menuForCommand(selectSpec: MenuSpecification,
     const cmd = commandName(command);
     parameters = mergeParameters(command, parameters);
     const id = cmd.toLocaleLowerCase();
-    const action = rugMenuFrom(selectSpec, { id, parameterName }) as CommandReferencingAction;
+    const action = chatMenuFrom(selectSpec, { id, parameterName }) as CommandReferencingAction;
     action.command = {
         id,
         name: cmd,
@@ -294,15 +347,23 @@ export function menuForCommand(selectSpec: MenuSpecification,
     };
     return action;
 }
-
+/**
+ * Check if the object is a valid Slack message.
+ */
 export function isSlackMessage(object: any): object is SlackMessage {
     return (object.text || object.attachments) && !object.content;
 }
 
+/**
+ * Check if the object is a valid Slack file message, i.e., a snippet.
+ */
 export function isFileMessage(object: any): object is SlackFileMessage {
     return !object.length && object.content;
 }
 
+/**
+ * Extract command name from the argument.
+ */
 export function commandName(command: any): string {
     try {
         if (typeof command === "string") {
@@ -318,6 +379,10 @@ export function commandName(command: any): string {
     }
 }
 
+/**
+ * Merge the provided parameters into any parameters provided as
+ * command object instance variables.
+ */
 export function mergeParameters(command: any, parameters: any): any {
     // Reuse parameters defined on the instance
     if (typeof command !== "string" && typeof command !== "function") {
@@ -327,7 +392,7 @@ export function mergeParameters(command: any, parameters: any): any {
     return parameters;
 }
 
-function rugButtonFrom(action: ButtonSpecification, command: any): Action {
+function chatButtonFrom(action: ButtonSpecification, command: any): Action {
     if (!command.id) {
         throw new Error(`Please provide a valid non-empty command id`);
     }
@@ -342,7 +407,7 @@ function rugButtonFrom(action: ButtonSpecification, command: any): Action {
     return button;
 }
 
-function rugMenuFrom(action: MenuSpecification, command: any): Action {
+function chatMenuFrom(action: MenuSpecification, command: any): Action {
 
     if (!command.id) {
         throw new Error("SelectableIdentifiableInstruction must have id set");

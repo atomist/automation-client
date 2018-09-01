@@ -126,8 +126,4 @@ export {
     QueryOptions,
 } from "./spi/graph/GraphClient";
 
-export {
-    Destination,
-    MessageOptions,
-    SlackDestination,
-} from "./spi/message/MessageClient";
+export * from "./spi/message/MessageClient";
