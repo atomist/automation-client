@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Add ConfigurationPostProcessor type. [#4dfbb0f](https://github.com/atomist/automation-client-ts/commit/4dfbb0f0cffae9fc45748c558d05d497361bd8c9)
 -   Add generic return type to ConfigurationPostProcessor. [#a564fce](https://github.com/atomist/automation-client-ts/commit/a564fce96107017001e4d47afc9dd229c36ba34a)
 -   Add support for marking branch commits to auto merge. [#4c8f677](https://github.com/atomist/automation-client-ts/commit/4c8f677d2857f301abedd65d7fe9fe5eb37da56f)
+-   Cleanup own tmp directories. [#0de0100](https://github.com/atomist/automation-client-ts/commit/0de0100a7f26d296df808e128d2e785060e4de62)
 
 ### Changed
 
