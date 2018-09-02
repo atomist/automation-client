@@ -26,7 +26,7 @@ class CleaningTmpDirectoryManager implements DirectoryManager {
                     const p = path.join(os.tmpdir(), f);
                     const st = fs.statSync(p);
                     if (st.mtimeMs < ts) {
-                        logger.debug(`Deleting temp directory '${p}'`)
+                        logger.debug(`Deleting temp directory '${p}'`);
                         fs.removeSync(p);
                     }
                 });
