@@ -2,6 +2,7 @@ import * as fs from "fs-extra";
 import * as os from "os";
 import * as path from "path";
 import * as tmp from "tmp-promise";
+import { logger } from "../..";
 
 import {
     CloneDirectoryInfo,
@@ -22,12 +23,11 @@ class CleaningTmpDirectoryManager implements DirectoryManager {
             const ts = Date.now() - (1000 * 60 * 60 * 2); // 2 hour threshold
             fs.readdirSync(os.tmpdir()).filter(f => f.startsWith(this.prefix))
                 .forEach(f => {
-                    const st = fs.statSync(path.join(os.tmpdir(), f));
+                    const p = path.join(os.tmpdir(), f);
+                    const st = fs.statSync(p);
                     if (st.mtimeMs < ts) {
-                        console.log("<< deleting " + f);
-                        fs.removeSync(path.join(os.tmpdir(), f));
-                    } else {
-                        console.log(">> not deleting " + f);
+                        logger.debug(`Deleting temp directory '${p}'`)
+                        fs.removeSync(p);
                     }
                 });
         }, 1000 * 60 * 30).unref(); // 30 second intervals
