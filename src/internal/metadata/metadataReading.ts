@@ -143,18 +143,21 @@ function directParameters(r: any, prefix: string) {
     }) : [];
 }
 
-function secretsMetadataFromInstance(r: any, prefix: string = ""): SecretDeclaration[] {
+function secretsMetadataFromInstance(r: any, prefix: string = "", visited: any[]= []): SecretDeclaration[] {
+    visited.push(r);
     const directSecrets = !!r && r.__secrets ? r.__secrets.map(s => ({ name: prefix + s.name, uri: s.uri })) : [];
     const nestedParameters = _.flatten(Object.keys(r)
         .map(key => [key, r[key]])
         .filter(nestedFieldInfo => !!nestedFieldInfo[1])
         .filter(nestedFieldInfo => typeof nestedFieldInfo[1] === "object")
-        .map(nestedFieldInfo => secretsMetadataFromInstance(nestedFieldInfo[1], prefix + nestedFieldInfo[0] + ".")),
+        .filter(nestedFieldInfo => !visited.includes(nestedFieldInfo[1]))
+        .map(nestedFieldInfo => secretsMetadataFromInstance(nestedFieldInfo[1], prefix + nestedFieldInfo[0] + ".", visited)),
     );
     return directSecrets.concat(nestedParameters);
 }
 
-function mappedParameterMetadataFromInstance(r: any, prefix: string = ""): MappedParameterDeclaration[] {
+function mappedParameterMetadataFromInstance(r: any, prefix: string = "", visited: any[] = []): MappedParameterDeclaration[] {
+    visited.push(r);
     const directMappedParams = !!r && r.__mappedParameters ? r.__mappedParameters.map(mp =>
         ({
             name: prefix + mp.name,
@@ -165,12 +168,14 @@ function mappedParameterMetadataFromInstance(r: any, prefix: string = ""): Mappe
         .map(key => [key, r[key]])
         .filter(nestedFieldInfo => !!nestedFieldInfo[1])
         .filter(nestedFieldInfo => typeof nestedFieldInfo[1] === "object")
-        .map(nestedFieldInfo => mappedParameterMetadataFromInstance(nestedFieldInfo[1], prefix + nestedFieldInfo[0] + ".")),
+        .filter(nestedFieldInfo => !visited.includes(nestedFieldInfo[1]))
+        .map(nestedFieldInfo => mappedParameterMetadataFromInstance(nestedFieldInfo[1], prefix + nestedFieldInfo[0] + ".", visited)),
     );
     return directMappedParams.concat(nestedParameters);
 }
 
-function valueMetadataFromInstance(r: any, prefix: string = ""): ValueDeclaration[] {
+function valueMetadataFromInstance(r: any, prefix: string = "",  visited: any[] = []): ValueDeclaration[] {
+    visited.push(r);
     const directValues = !!r && r.__values ? r.__values.map(mp =>
         ({
             name: prefix + mp.name,
@@ -182,7 +187,8 @@ function valueMetadataFromInstance(r: any, prefix: string = ""): ValueDeclaratio
         .map(key => [key, r[key]])
         .filter(nestedFieldInfo => !!nestedFieldInfo[1])
         .filter(nestedFieldInfo => typeof nestedFieldInfo[1] === "object")
-        .map(nestedFieldInfo => valueMetadataFromInstance(nestedFieldInfo[1], prefix + nestedFieldInfo[0] + ".")),
+        .filter(nestedFieldInfo => !visited.includes(nestedFieldInfo[1]))
+        .map(nestedFieldInfo => valueMetadataFromInstance(nestedFieldInfo[1], prefix + nestedFieldInfo[0] + ".", visited)),
     );
     return directValues.concat(nestedValues);
 }
