@@ -13,7 +13,7 @@ import {
  * Uses tmp-promise (built on tmp) to create clean temporary directories
  * to work with git projects from remotes
  */
-class tmpDirectoryManager implements DirectoryManager {
+class CleaningTmpDirectoryManager implements DirectoryManager {
 
     private prefix = `atm-${process.pid}-`;
 
@@ -29,11 +29,11 @@ class tmpDirectoryManager implements DirectoryManager {
                     } else {
                         console.log(">> not deleting " + f);
                     }
-                })
+                });
         }, 1000 * 60 * 30).unref(); // 30 second intervals
     }
 
-    directoryFor(owner: string, repo: string, branch: string, opts: CloneOptions): Promise<CloneDirectoryInfo> {
+    public directoryFor(owner: string, repo: string, branch: string, opts: CloneOptions): Promise<CloneDirectoryInfo> {
         return tmp.dir({ keep: opts.keep, prefix: this.prefix }) // the lack of typings here causes lack of typechecking in this function
             .then(fromTmp => ({
                 ...fromTmp,
@@ -46,17 +46,17 @@ class tmpDirectoryManager implements DirectoryManager {
     }
 }
 
-export const TmpDirectoryManager = new tmpDirectoryManager();
+export const TmpDirectoryManager = new CleaningTmpDirectoryManager();
 
 /*
  * If !keep, attempts to delete directory. Swallows errors
  * because it is not that important.
  */
-function cleanup(path: string, keep: boolean): Promise<void> {
+function cleanup(p: string, keep: boolean): Promise<void> {
     if (keep) {
         return Promise.resolve();
     } else {
-        return fs.remove(path)
+        return fs.remove(p)
             .then(() => Promise.resolve(), err => Promise.resolve());
     }
 }
