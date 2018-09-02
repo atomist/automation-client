@@ -38,7 +38,7 @@ import {
     runStatusIn,
 } from "./gitStatus";
 
-export const DefaultDirectoryManager = TmpDirectoryManager;
+export const DefaultDirectoryManager: DirectoryManager = TmpDirectoryManager;
 
 /**
  * Implements GitProject interface using the Git binary from the command line.
