@@ -29,7 +29,12 @@ export function populateParameters(instanceToPopulate: any, hm: CommandHandlerMe
 
 export function populateValues(instanceToPopulate: any, am: AutomationMetadata, configuration: Configuration) {
     (am.values || []).forEach(v => {
-        const configValue = _.get(configuration, v.path);
+        let configValue;
+        if (!v.path || v.path.length === 0) {
+            configValue = configuration;
+        } else {
+            configValue = _.get(configuration, v.path);
+        }
         if (!configValue && v.required) {
             throw new Error(`Required @Value '${v.path}' in '${
                 instanceToPopulate.constructor.name}' is not available in configuration`);

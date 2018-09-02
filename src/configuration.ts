@@ -337,14 +337,14 @@ export function defaultConfiguration(): Configuration {
  * @param {string} path the property path evaluated against the configuration instance
  * @returns {T}
  */
-export function configurationValue<T>(path?: string, defaultValue?: T): T {
+export function configurationValue<T>(path: string, defaultValue?: T): T {
     if (automationClientInstance()) {
         const conf = automationClientInstance().configuration;
         let value;
-        if (path) {
-            value = _.get(conf, path);
-        } else {
+        if (!path || path.length === 0) {
             value = conf;
+        } else {
+            value = _.get(conf, path);
         }
         if (value != null) {
             return value;
