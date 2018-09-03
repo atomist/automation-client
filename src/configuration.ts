@@ -135,7 +135,6 @@ export interface AutomationOptions extends AnyOptions {
     policy?: "ephemeral" | "durable";
     /**
      * Atomist API Key used to authenticate the user starting the client.
-     * If apiKey is specified it will be used over a provided token.
      */
     apiKey?: string;
     /** HTTP configuration, useful for health checks */
@@ -626,13 +625,10 @@ export function loadAtomistConfig(): AutomationServerOptions {
  * @return the resolved workspace IDs
  */
 export function resolveWorkspaceIds(cfg: Configuration): string[] {
-    const teamIds = [];
     if (process.env.ATOMIST_WORKSPACES) {
         cfg.workspaceIds = process.env.ATOMIST_WORKSPACES.split(",");
     } else if (config("workspaceIds")) {
         cfg.workspaceIds = config("workspaceIds");
-    } else if ((!cfg.workspaceIds || cfg.workspaceIds.length < 1) && teamIds && teamIds.length > 0) {
-        cfg.workspaceIds = teamIds;
     }
     return cfg.workspaceIds;
 }
@@ -769,16 +765,12 @@ export function validateConfiguration(cfg: Configuration) {
     if (!cfg.version) {
         errors.push("you must set a 'version' property in your configuration");
     }
-    if (!cfg.token && !cfg.apiKey) {
+    if (!cfg.apiKey) {
         console.info("INFO: To obtain an 'apiKey' visit https://app.atomist.com/apikeys and run 'atomist config' " +
             "to configure the apiKey in your local configuration");
         errors.push("you must set an 'apiKey' property in your configuration");
     }
-    cfg.teamIds = cfg.teamIds || [];
     cfg.workspaceIds = cfg.workspaceIds || [];
-    if (cfg.workspaceIds.length === 0) {
-        cfg.workspaceIds = cfg.teamIds;
-    }
     cfg.groups = cfg.groups || [];
     if (cfg.workspaceIds.length < 1 && cfg.groups.length < 1) {
         errors.push("you must either provide an array of 'groups' in your configuration or, more likely, provide " +
@@ -819,7 +811,7 @@ export function validateConfiguration(cfg: Configuration) {
  * cause any values provided by sources of lower precedence to be
  * ignored.  Arrays are replaced, not merged.  Typically the only
  * required values in the configuration for a successful registration
- * are the apiKey or token and non-empty workspaceIds.
+ * are the apiKey and non-empty workspaceIds.
  *
  * Placeholder of the form `${ENV_VARIABLE}` in string configuration
  * values will get resolved against the environment. The resolution
@@ -875,7 +867,6 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
  * production.
  */
 export const LocalDefaultConfiguration: Configuration = {
-    teamIds: [],
     workspaceIds: [],
     groups: [],
     environment: "local",

@@ -47,7 +47,6 @@ describe("configuration", () => {
         name: "@atomist/automation-client",
         version: pkgVersion,
         keywords: ["atomist", "automation"],
-        teamIds: [],
         workspaceIds: [],
         groups: [],
         environment: "local",
@@ -114,93 +113,93 @@ describe("configuration", () => {
 
         it("should use the user default", () => {
             const userConfig: UserConfig = {
-                token: "the0con",
-                teamIds: ["TVAPOR", "TSIRE", "TWARNERBROS"],
+                apiKey: "the0con",
+                workspaceIds: ["TVAPOR", "TSIRE", "TWARNERBROS"],
                 modules: [
-                    { name: "@gainst/me", token: "Borne of the FM Waves of the Heart" },
+                    { name: "@gainst/me", apiKey: "Borne of the FM Waves of the Heart" },
                 ],
             };
             const moduleConfig = resolveModuleConfig(userConfig, "@tegan/sara");
-            assert.equal(moduleConfig.token, userConfig.token);
-            assert.deepStrictEqual(moduleConfig.teamIds, userConfig.teamIds);
+            assert.equal(moduleConfig.apiKey, userConfig.apiKey);
+            assert.deepStrictEqual(moduleConfig.workspaceIds, userConfig.workspaceIds);
         });
 
         it("should use the module configuration", () => {
             const userConfig: UserConfig = {
-                token: "the0con",
-                teamIds: ["TVAPOR", "TSIRE", "TWARNERBROS"],
+                apiKey: "the0con",
+                workspaceIds: ["TVAPOR", "TSIRE", "TWARNERBROS"],
                 modules: [
-                    { name: "@gainst/me", token: "Borne of the FM Waves of the Heart" },
-                    { name: "@tegan/sara", token: "sainthood", teamIds: ["TVAPOR"] },
+                    { name: "@gainst/me", apiKey: "Borne of the FM Waves of the Heart" },
+                    { name: "@tegan/sara", apiKey: "sainthood", workspaceIds: ["TVAPOR"] },
                 ],
             };
             const moduleConfig = resolveModuleConfig(userConfig, "@tegan/sara");
-            const e = { token: "sainthood", teamIds: ["TVAPOR"] };
+            const e = { apiKey: "sainthood", workspaceIds: ["TVAPOR"] };
             assert.deepStrictEqual(moduleConfig, e);
         });
 
-        it("should get the token from the module configuration", () => {
+        it("should get the apiKey from the module configuration", () => {
             const userConfig: UserConfig = {
-                token: "the0con",
-                teamIds: ["TVAPOR", "TSIRE", "TWARNERBROS"],
+                apiKey: "the0con",
+                workspaceIds: ["TVAPOR", "TSIRE", "TWARNERBROS"],
                 modules: [
-                    { name: "@gainst/me", token: "Borne of the FM Waves of the Heart" },
-                    { name: "@tegan/sara", token: "sainthood" },
+                    { name: "@gainst/me", apiKey: "Borne of the FM Waves of the Heart" },
+                    { name: "@tegan/sara", apiKey: "sainthood" },
                 ],
             };
             const moduleConfig = resolveModuleConfig(userConfig, "@tegan/sara");
-            const e = { token: "sainthood", teamIds: ["TVAPOR", "TSIRE", "TWARNERBROS"] };
+            const e = { apiKey: "sainthood", workspaceIds: ["TVAPOR", "TSIRE", "TWARNERBROS"] };
             assert.deepStrictEqual(moduleConfig, e);
         });
 
-        it("should get the teamIds from the module configuration", () => {
+        it("should get the workspaceIds from the module configuration", () => {
             const userConfig: UserConfig = {
-                token: "the0con",
-                teamIds: ["TVAPOR", "TSIRE", "TWARNERBROS"],
+                apiKey: "the0con",
+                workspaceIds: ["TVAPOR", "TSIRE", "TWARNERBROS"],
                 modules: [
-                    { name: "@gainst/me", token: "Borne of the FM Waves of the Heart" },
-                    { name: "@tegan/sara", teamIds: ["TVAPOR"] },
-                    { name: "@tegan/sara", teamIds: ["TSIRE"] },
+                    { name: "@gainst/me", apiKey: "Borne of the FM Waves of the Heart" },
+                    { name: "@tegan/sara", workspaceIds: ["TVAPOR"] },
+                    { name: "@tegan/sara", workspaceIds: ["TSIRE"] },
                 ],
             };
             const moduleConfig = resolveModuleConfig(userConfig, "@tegan/sara");
-            assert.equal(moduleConfig.token, userConfig.token);
-            assert.deepStrictEqual(moduleConfig.teamIds, ["TVAPOR"]);
+            assert.equal(moduleConfig.apiKey, userConfig.apiKey);
+            assert.deepStrictEqual(moduleConfig.workspaceIds, ["TVAPOR"]);
         });
 
         it("should get the verion-specific module configuration", () => {
             const userConfig: UserConfig = {
-                token: "the0con",
-                teamIds: ["TVAPOR", "TSIRE", "TWARNERBROS"],
+                apiKey: "the0con",
+                workspaceIds: ["TVAPOR", "TSIRE", "TWARNERBROS"],
                 modules: [
-                    { name: "@gainst/me", token: "Borne of the FM Waves of the Heart" },
-                    { name: "@tegan/sara", version: "<2.0.0", teamIds: ["TSIRE"] },
-                    { name: "@tegan/sara", version: "2.x.x", teamIds: ["TVAPOR"] },
-                    { name: "@tegan/sara", teamIds: ["TWARNERBROS"] },
+                    { name: "@gainst/me", apiKey: "Borne of the FM Waves of the Heart" },
+                    { name: "@tegan/sara", version: "<2.0.0", workspaceIds: ["TSIRE"] },
+                    { name: "@tegan/sara", version: "2.x.x", workspaceIds: ["TVAPOR"] },
+                    { name: "@tegan/sara", workspaceIds: ["TWARNERBROS"] },
                 ],
             };
             const moduleConfig = resolveModuleConfig(userConfig, "@tegan/sara", "2.1.0");
-            assert.equal(moduleConfig.token, userConfig.token);
-            assert.deepStrictEqual(moduleConfig.teamIds, ["TVAPOR"]);
+            assert.equal(moduleConfig.apiKey, userConfig.apiKey);
+            assert.deepStrictEqual(moduleConfig.workspaceIds, ["TVAPOR"]);
         });
 
         it("should return nothing", () => {
             const userConfig: UserConfig = {};
             const moduleConfig = resolveModuleConfig(userConfig);
-            assert.equal(moduleConfig.token, undefined);
-            assert.equal(moduleConfig.teamIds, undefined);
+            assert.equal(moduleConfig.apiKey, undefined);
+            assert.equal(moduleConfig.workspaceIds, undefined);
         });
 
         it("should handled undefined", () => {
             const moduleConfig = resolveModuleConfig(undefined);
-            assert.equal(moduleConfig.token, undefined);
-            assert.equal(moduleConfig.teamIds, undefined);
+            assert.equal(moduleConfig.apiKey, undefined);
+            assert.equal(moduleConfig.workspaceIds, undefined);
         });
 
         it("should handled null", () => {
             const moduleConfig = resolveModuleConfig(null);
-            assert.equal(moduleConfig.token, undefined);
-            assert.equal(moduleConfig.teamIds, undefined);
+            assert.equal(moduleConfig.apiKey, undefined);
+            assert.equal(moduleConfig.workspaceIds, undefined);
         });
 
     });
@@ -229,10 +228,10 @@ describe("configuration", () => {
             process.env.HOME = path.join(process.cwd(), "test");
             const c = loadUserConfiguration();
             const e = {
-                teamIds: [
+                workspaceIds: [
                     "T7GMF5USG",
                 ],
-                token: "6**************************************2",
+                apiKey: "6**************************************2",
                 endpoints: {
                     graphql: "https://user.graphql.ep:1313/gql/team",
                     api: "https://user.api.ep:4141/reg",
@@ -249,8 +248,8 @@ describe("configuration", () => {
             process.env.HOME = __dirname;
             const c = loadUserConfiguration("richie", "0.2.1");
             const e = {
-                token: "6**************************************2",
-                teamIds: [
+                apiKey: "6**************************************2",
+                workspaceIds: [
                     "T7GMF5USG",
                     "AT0M1ST01",
                 ],
@@ -277,8 +276,8 @@ describe("configuration", () => {
 
         it("should load provided path", () => {
             const e: Configuration = {
-                token: "nightclubjitters",
-                teamIds: ["TIM"],
+                apiKey: "nightclubjitters",
+                workspaceIds: ["TIM"],
                 http: {
                     enabled: false,
                     port: 1818,
@@ -286,8 +285,8 @@ describe("configuration", () => {
                 },
             };
             const atomistConfigJs = `exports.configuration = {
-    token: "nightclubjitters",
-    teamIds: ["TIM"],
+    apiKey: "nightclubjitters",
+    workspaceIds: ["TIM"],
     http: {
         enabled: false,
         port: 1818,
@@ -469,7 +468,7 @@ describe("configuration", () => {
 
         const emptyConfig = path.join(appRoot.path, "build", "test", "empty.config.js");
 
-        it("should throw an exception for no teamIds or groups", async () => {
+        it("should throw an exception for no workspaceIds or groups", async () => {
             const save = process.env.HOME;
             process.env.HOME = "/throw/loadConfiguration/off/the/trail";
             try {
@@ -481,12 +480,12 @@ describe("configuration", () => {
             process.env.HOME = save;
         });
 
-        it("should throw an exception for both teamIds or groups", async () => {
+        it("should throw an exception for both workspaceIds or groups", async () => {
             const save: { [key: string]: string } = {};
             save.HOME = process.env.HOME;
             process.env.HOME = "/throw/loadConfiguration/off/the/trail";
             save.ATOMIST_CONFIG = process.env.ATOMIST_CONFIG;
-            process.env.ATOMIST_CONFIG = stringify({ token: "x", teamIds: ["A"], groups: ["G"] });
+            process.env.ATOMIST_CONFIG = stringify({ apiKey: "x", workspaceIds: ["A"], groups: ["G"] });
             try {
                 await loadConfiguration(emptyConfig);
                 assert.fail("Failed to throw an exception");
@@ -506,19 +505,14 @@ describe("configuration", () => {
             const save: { [key: string]: string } = {};
             save.HOME = process.env.HOME;
             process.env.HOME = "/throw/loadConfiguration/off/the/trail";
-            save.GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-            if (save.GITHUB_TOKEN) {
-                delete process.env.GITHUB_TOKEN;
-            }
             const cfg: Configuration = {
-                token: "bogus",
-                teamIds: ["non-team"],
+                apiKey: "bogus",
+                workspaceIds: ["non-team"],
             };
             save.ATOMIST_CONFIG = process.env.ATOMIST_CONFIG;
             process.env.ATOMIST_CONFIG = stringify(cfg);
             const e = _.cloneDeep(defCfg);
-            e.token = "bogus";
-            e.teamIds = ["non-team"];
+            e.apiKey = "bogus";
             e.workspaceIds = ["non-team"];
             const c = await loadConfiguration(emptyConfig);
             assert.deepStrictEqual(c, e);
@@ -558,6 +552,7 @@ describe("configuration", () => {
             // ATOMIST_CONFIG_PATH
             save.ATOMIST_CONFIG_PATH = process.env.ATOMIST_CONFIG_PATH;
             const atomistConfigPath: Configuration = {
+                apiKey: "bad-key",
                 cluster: {
                     enabled: true,
                     workers: 2,
@@ -577,6 +572,7 @@ describe("configuration", () => {
             // ATOMIST_CONFIG
             save.ATOMIST_CONFIG = process.env.ATOMIST_CONFIG;
             const atomistConfig: Configuration = {
+                apiKey: "lizphairexileinguyville",
                 ws: {
                     enabled: true,
                     compress: true,
@@ -588,13 +584,9 @@ describe("configuration", () => {
             };
             process.env.ATOMIST_CONFIG = stringify(atomistConfig);
 
-            // ATOMIST_TEAMS
-            save.ATOMIST_TEAMS = process.env.ATOMIST_TEAMS;
-            process.env.ATOMIST_TEAMS = "T61,HELPMEMARY,GLORY";
-
-            // ATOMIST_TOKENS
-            save.ATOMIST_TOKEN = process.env.ATOMIST_TOKEN;
-            process.env.ATOMIST_TOKEN = "lizphairexileinguyville";
+            // ATOMIST_WORKSPACES
+            save.ATOMIST_WORKSPACES = process.env.ATOMIST_WORKSPACES;
+            process.env.ATOMIST_WORKSPACES = "T61,HELPMEMARY,GLORY";
 
             const c = await loadConfiguration(atomistConfigJsFile.name);
             const e = _.cloneDeep(defCfg);
@@ -611,9 +603,8 @@ describe("configuration", () => {
             e.ws.termination.gracePeriod = 30;
             e.cluster.enabled = true;
             e.cluster.workers = 2;
-            e.teamIds = ["T61", "HELPMEMARY", "GLORY"];
             e.workspaceIds = ["T61", "HELPMEMARY", "GLORY"];
-            e.token = "lizphairexileinguyville";
+            e.apiKey = "lizphairexileinguyville";
             e.custom = { test: "123456" };
 
             assert.deepStrictEqual(c, e);
@@ -741,13 +732,13 @@ describe("configuration", () => {
             const c = defaultConfiguration();
 
             process.env.ATOMIST_custom_foo_bar = "bla";
-            process.env.ATOMIST_token = "some token";
+            process.env.ATOMIST_apiKey = "some token";
             resolveEnvironmentVariables(c);
             delete process.env.ATOMIST_custom_foo_bar;
-            delete process.env.ATOMIST_token;
+            delete process.env.ATOMIST_apiKey;
 
             assert.equal(c.custom.foo.bar, "bla");
-            assert.equal(c.token, "some token");
+            assert.equal(c.apiKey, "some token");
         });
 
     });

@@ -37,8 +37,8 @@ describe("atomistWebhook", () => {
             the_replacements: "Alex Chilton",
         };
         const webhook: AtomistWebhookType = "build";
-        const teamId = "T31110TT";
-        const urlTail = `atomist/${webhook}/teams/${teamId}`;
+        const workspaceId = "T31110TT";
+        const urlTail = `atomist/${webhook}/teams/${workspaceId}`;
         const url = `https://webhook.atomist.com/${urlTail}`;
 
         it("should successfully post", async () => {
@@ -48,7 +48,7 @@ describe("atomistWebhook", () => {
                 posted = true;
                 return [200];
             });
-            const res = await postAtomistWebhook(webhook, payload, teamId, noRetryOptions);
+            const res = await postAtomistWebhook(webhook, payload, workspaceId, noRetryOptions);
             assert.equal(res.status, 200);
             assert(posted, "webhook not posted");
         });
@@ -62,7 +62,7 @@ describe("atomistWebhook", () => {
                     posted = true;
                     return [200];
                 });
-            const res = await postAtomistWebhook(webhook, payload, teamId, fastRetryOptions);
+            const res = await postAtomistWebhook(webhook, payload, workspaceId, fastRetryOptions);
             assert.equal(res.status, 200);
             assert(posted, "webhook not posted");
         });
@@ -76,7 +76,7 @@ describe("atomistWebhook", () => {
                 posted = true;
                 return [200];
             });
-            const res = await postAtomistWebhook(webhook, payload, teamId, noRetryOptions);
+            const res = await postAtomistWebhook(webhook, payload, workspaceId, noRetryOptions);
             delete process.env.ATOMIST_WEBHOOK_BASEURL;
             assert.equal(res.status, 200);
             assert(posted, "webhook not posted");
@@ -90,7 +90,7 @@ describe("atomistWebhook", () => {
                 return [200];
             });
             try {
-                const res = await postAtomistWebhook(webhook, payload, teamId, noRetryOptions);
+                const res = await postAtomistWebhook(webhook, payload, workspaceId, noRetryOptions);
                 assert.fail("should not have successfully posted wrong payload");
             } catch (e) {
                 assert.equal(e.response.status, 404);

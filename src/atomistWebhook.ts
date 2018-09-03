@@ -30,18 +30,18 @@ export type AtomistWebhookType = "application" | "build" | "link-image";
  *
  * @param webhook type of webhook
  * @param payload object to post
- * @param teamId Atomist team ID
+ * @param workspaceId Atomist team ID
  * @param retryOptions change default retry options
  * @return response of post operation
  */
 export function postAtomistWebhook(
     webhook: AtomistWebhookType,
     payload: any,
-    teamId: string,
+    workspaceId: string,
     retryOptions: WrapOptions = DefaultRetryOptions,
 ): AxiosPromise<any> {
 
-    const url = `${webhookBaseUrl()}/atomist/${webhook}/teams/${teamId}`;
+    const url = `${webhookBaseUrl()}/atomist/${webhook}/teams/${workspaceId}`;
     const desc = `posting '${stringify(payload)}' to '${url}'`;
     return doWithRetry(() => axios.post(url, payload), desc, retryOptions);
 }
