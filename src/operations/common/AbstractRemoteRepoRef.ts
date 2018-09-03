@@ -80,6 +80,9 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
     }
 
     public cloneUrl(creds: ProjectOperationCredentials) {
+        if (!creds) {
+            throw new Error("Credentials are undefined");
+        }
         if (isBasicAuthCredentials(creds)) {
             return `${this.scheme}${encodeURIComponent(creds.username)}:${encodeURIComponent(creds.password)}@` +
                 `${this.remoteBase}/${this.pathComponent}.git`;
