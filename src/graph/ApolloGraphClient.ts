@@ -80,7 +80,7 @@ export class ApolloGraphClient implements GraphClient {
             query: options.query,
             path: options.path,
             name: options.name,
-            moduleDir: trace.get()[1].getFileName(),
+            moduleDir: (options as any).moduleDir ? (options as any).moduleDir : trace.get()[1].getFileName(),
         });
         return this.executeQuery<T, Q>(q, options.variables, options.options);
     }
@@ -95,7 +95,7 @@ export class ApolloGraphClient implements GraphClient {
             mutation: options.mutation,
             path: options.path,
             name: options.name,
-            moduleDir: trace.get()[1].getFileName(),
+            moduleDir: (options as any).moduleDir ? (options as any).moduleDir : trace.get()[1].getFileName(),
         });
         return this.executeMutation<T, Q>(m, options.variables, options.options);
     }

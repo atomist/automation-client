@@ -5,6 +5,7 @@ import {
     StatsD,
 } from "hot-shots";
 import * as os from "os";
+import * as trace from "stack-trace";
 import { Configuration } from "../configuration";
 import { EventFired } from "../HandleEvent";
 import {
@@ -12,6 +13,7 @@ import {
     HandlerContext,
 } from "../HandlerContext";
 import { HandlerResult } from "../HandlerResult";
+import * as internalGraphql from "../internal/graph/graphQL";
 import { CommandInvocation } from "../internal/invoker/Payload";
 import { RequestProcessor } from "../internal/transport/RequestProcessor";
 import { logger } from "../internal/util/logger";
@@ -60,6 +62,12 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                 endpoint: graphClient.endpoint,
                 mutate: (optionsOrName: MutationOptions<any> | string) => {
                     const start = Date.now();
+                    if (typeof optionsOrName === "string") {
+                        optionsOrName = {
+                            name: optionsOrName,
+                        };
+                    }
+                    (optionsOrName as any).moduleDir = trace.get()[1].getFileName();
                     return graphClient.mutate(optionsOrName)
                         .then(result => {
                             this.statsd.increment("counter.graphql.mutation.success", 1, 1, tags, this.callback);
@@ -74,6 +82,12 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                 },
                 query: (optionsOrName: QueryOptions<any> | string) => {
                     const start = Date.now();
+                    if (typeof optionsOrName === "string") {
+                        optionsOrName = {
+                            name: optionsOrName,
+                        };
+                    }
+                    (optionsOrName as any).moduleDir = trace.get()[1].getFileName();
                     return graphClient.query(optionsOrName)
                         .then(result => {
                             this.statsd.increment("counter.graphql.query.success", 1, 1, tags, this.callback);
