@@ -51,44 +51,10 @@ describe("projectUtils", () => {
     it("withFiles: run", done => {
         const t = tempProject();
         t.addFileSync("Thing", "1");
-        doWithFiles(t, AllFiles, f => {
-            f.recordSetContent(f.getContentSync() + "2");
+        doWithFiles(t, AllFiles, async f => {
+            await f.setContent(f.getContentSync() + "2");
         })
             .then(p => {
-                const f = t.findFileSync("Thing");
-                assert(f.getContentSync() === "12");
-            })
-            .then(done, done);
-    });
-
-    it("withFiles: defer", done => {
-        const t = tempProject();
-        t.addFileSync("Thing", "1");
-        defer(t, doWithFiles(t, AllFiles, f => {
-            f.recordSetContent(f.getContentSync() + "2");
-        }));
-        assert(t.findFileSync("Thing").getContentSync() === "1");
-        assert(t.dirty);
-        t.flush()
-            .then(files => {
-                assert(!t.dirty);
-                const f = t.findFileSync("Thing");
-                assert(f.getContentSync() === "12");
-            })
-            .then(done, done);
-    });
-
-    it("withFiles: defer use of script", done => {
-        const t = tempProject();
-        t.addFileSync("Thing", "1");
-        defer(t, doWithFiles(t, AllFiles, f => {
-            return Promise.resolve(f.recordSetContent(f.getContentSync() + "2"));
-        }));
-        assert(t.findFileSync("Thing").getContentSync() === "1");
-        assert(t.dirty);
-        t.flush()
-            .then(files => {
-                assert(!t.dirty);
                 const f = t.findFileSync("Thing");
                 assert(f.getContentSync() === "12");
             })

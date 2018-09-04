@@ -232,20 +232,6 @@ describe("NodeFsLocalProject", () => {
             .then(() => done(), done);
     });
 
-    it("changes content", done => {
-        const p = tempProject();
-        p.addFileSync("thing", "1");
-        const f1 = p.findFileSync("thing");
-        assert(f1.getContentSync() === "1");
-        f1.recordSetContent("2")
-            .flush()
-            .then(_ => {
-                const f2 = p.findFileSync("thing");
-                assert(f2.getContentSync() === "2");
-            })
-            .then(() => done(), done);
-    });
-
     it("adds file", done => {
         const p = tempProject() as any as Project & ScriptedFlushable<any>;
         defer(p, p.addFile("thing", "1"));
