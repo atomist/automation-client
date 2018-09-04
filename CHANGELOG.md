@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Export all of MessageClient. [#352](https://github.com/atomist/automation-client-ts/issues/352)
 -   **BREAKING** Remove all deprecations. [#350](https://github.com/atomist/automation-client-ts/issues/350)
 
+### Fixed
+
+-   Fail when tests fail, remove team/token. [#354](https://github.com/atomist/automation-client-ts/issues/354)
+
 ## [1.0.0-M.2](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.1...1.0.0-M.2) - 2018-08-27
 
 ### Changed
