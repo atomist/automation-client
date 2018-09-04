@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.3...HEAD)
 
+### Fixed
+
+-   Make sure Apollo propagetes the GraphQL errors. [#448f89a](https://github.com/atomist/automation-client-ts/commit/448f89aa8bf9c8bcf226f29882dad26267fe665e)
+
 ## [1.0.0-M.3](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.2...1.0.0-M.3) - 2018-09-04
 
 ### Added
