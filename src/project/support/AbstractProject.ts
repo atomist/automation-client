@@ -23,7 +23,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
         return !!this.id ? this.id.repo : undefined;
     }
 
-    constructor(public id: RepoRef) {
+    protected constructor(public id: RepoRef) {
         super();
     }
 
@@ -35,6 +35,10 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
     public abstract findFile(path: string): Promise<File>;
 
     public abstract getFile(path: string): Promise<File | undefined>;
+
+    public async hasFile(path: string): Promise<boolean> {
+        return !!(await this.getFile(path));
+    }
 
     public abstract findFileSync(path: string): File;
 

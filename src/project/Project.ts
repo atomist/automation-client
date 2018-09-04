@@ -122,6 +122,13 @@ export interface ProjectAsync extends ProjectCore {
     getFile(path: string): Promise<File | undefined>;
 
     /**
+     * Does a file exist at this path?
+     * @param {string} path
+     * @return {Promise<boolean>}
+     */
+    hasFile(path: string): Promise<boolean>;
+
+    /**
      * Add a file preserving permissions
      * @param {File} f
      * @return {Promise<this>}
