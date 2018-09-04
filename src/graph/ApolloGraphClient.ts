@@ -116,6 +116,7 @@ export class ApolloGraphClient implements GraphClient {
         return this.client.query<T>({
                 query,
                 variables,
+                errorPolicy: "all",
                 ...queryOptions,
             })
             .then(result => callback(result));
@@ -138,6 +139,7 @@ export class ApolloGraphClient implements GraphClient {
         return this.client.mutate<T>({
                 mutation,
                 variables,
+                errorPolicy: "all",
                 ...mutationOptions,
             })
             .then(response => callback(response));
