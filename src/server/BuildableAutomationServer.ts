@@ -95,28 +95,9 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
             this.metadataProcessor = opts.metadataProcessor;
         }
 
-        if (opts.endpoints && opts.endpoints.graphql) {
-            if (opts.workspaceIds || opts.teamIds) {
-                let workspaceIds: string;
-                if (opts.workspaceIds.length === 1) {
-                    workspaceIds = opts.workspaceIds[0];
-                } else if (opts.workspaceIds.length > 1) {
-                    workspaceIds = opts.workspaceIds[0];
-                } else if (opts.teamIds.length === 1) {
-                    workspaceIds = opts.teamIds[0];
-                } else if (opts.teamIds.length > 1) {
-                    workspaceIds = opts.teamIds[0];
-                }
-                if (workspaceIds) {
-                    if (opts.token) {
-                        this.graphClient = new ApolloGraphClient(`${opts.endpoints.graphql}/${workspaceIds}`,
-                            { Authorization: `token ${opts.token}` });
-                    } else if (opts.apiKey) {
-                        this.graphClient = new ApolloGraphClient(`${opts.endpoints.graphql}/${workspaceIds}`,
-                            { Authorization: `Bearer ${opts.apiKey}` });
-                    }
-                }
-            }
+        if (opts.endpoints && opts.endpoints.graphql && opts.workspaceIds && opts.workspaceIds.length > 0 && opts.apiKey) {
+            this.graphClient = new ApolloGraphClient(`${opts.endpoints.graphql}/${opts.workspaceIds[0]}`,
+                { Authorization: `Bearer ${opts.apiKey}` });
         }
     }
 
@@ -196,7 +177,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                                                                invocation: CommandInvocation,
                                                                ctx: HandlerContext): Promise<HandlerResult> {
         populateParameters(params, md, invocation.args);
-        populateValues(params, md, this.opts );
+        populateValues(params, md, this.opts);
         this.populateMappedParameters(params, md, invocation);
         this.populateSecrets(params, md, invocation.secrets);
 
@@ -314,7 +295,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
             name: this.opts.name,
             version: this.opts.version,
             policy: this.opts.policy,
-            team_ids: this.opts.workspaceIds && this.opts.workspaceIds.length > 0 ? this.opts.workspaceIds : this.opts.teamIds,
+            team_ids: this.opts.workspaceIds,
             groups: toStringArray((this.opts as any).groups),
             keywords: this.opts.keywords,
             commands: this.commandHandlers.map(e => e.metadata),

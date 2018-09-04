@@ -41,13 +41,7 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
                 protected configuration: Configuration,
                 protected listeners: AutomationEventListener[] = []) {
         super(automations, listeners);
-        this.graphClientFactory = new ApolloGraphClientFactory(this.configuration, () => {
-            if (this.configuration.apiKey) {
-                return `Bearer ${this.configuration.apiKey}`;
-            } else {
-                return `token ${this.configuration.token}`;
-            }
-        });
+        this.graphClientFactory = new ApolloGraphClientFactory(this.configuration, () => `Bearer ${this.configuration.apiKey}`);
     }
 
     protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {

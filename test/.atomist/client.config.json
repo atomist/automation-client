@@ -1,8 +1,6 @@
 {
-  "teamIds": [
-    "T7GMF5USG"
-  ],
-  "token": "6**************************************2",
+  "workspaceIds": ["T7GMF5USG"],
+  "apiKey": "6**************************************2",
   "endpoints": {
     "graphql": "https://user.graphql.ep:1313/gql/team",
     "api": "https://user.api.ep:4141/reg"
@@ -12,40 +10,33 @@
   "modules": [
     {
       "name": "@test/something-else",
-      "token": "no",
-      "teamIds": ["negative"]
+      "apiKey": "no",
+      "workspaceIds": ["negative"]
     },
     {
       "name": "richie",
       "version": "<0.1.1",
-      "token": "nothing",
-      "teamIds": ["nope"]
+      "apiKey": "nothing",
+      "workspaceIds": ["nope"]
     },
     {
       "name": "richie",
       "version": ">0.1.1",
-      "teamIds": [
-        "T7GMF5USG",
-        "AT0M1ST01"
-      ],
+      "workspaceIds": ["T7GMF5USG", "AT0M1ST01"],
       "environment": "env-module",
       "application": "app-module"
     },
     {
       "name": "@atomist/automation-client",
       "version": "<0.0.1",
-      "teamIds": [
-        "T7GMF5USG",
-        "AT0M1ST01",
-        "BBD"
-      ],
+      "workspaceIds": ["T7GMF5USG", "AT0M1ST01", "BBD"],
       "environment": "env-module-bad",
       "application": "app-module-bad"
     },
     {
       "name": "@atomist/automation-client",
       "version": ">0.0.1",
-      "teamIds": ["AT0M1ST01"],
+      "workspaceIds": ["AT0M1ST01"],
       "environment": "env-module-load",
       "application": "app-module-load",
       "policy": "durable",
@@ -66,7 +57,7 @@
     {
       "name": "elvis",
       "version": "^0.0.1",
-      "teamIds": ["BLITZ"],
+      "workspaceIds": ["BLITZ"],
       "environment": "env-bop",
       "application": "app-bop"
     }
