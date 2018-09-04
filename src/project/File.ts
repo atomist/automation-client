@@ -22,29 +22,10 @@ export interface FileCore {
 }
 
 /**
+ * @deprecated
  * Convenient way to defer File operations with fluent API
  */
 export interface FileScripting extends ScriptedFlushable<File> {
-
-    /**
-     * Set entire file content to new string
-     *
-     * @param newContent {string} The content to set the file to
-     */
-    recordSetContent(newContent: string): this;
-
-    recordRename(name: string): this;
-
-    recordSetPath(name: string): this;
-
-    /**
-     * Replace all occurrences of the given regular expression with
-     * @param re
-     * @param replacement
-     */
-    recordReplace(re: RegExp, replacement: string): this;
-
-    recordReplaceAll(oldLiteral: string, newLiteral: string): this;
 
 }
 

@@ -190,20 +190,6 @@ describe("InMemoryProject", () => {
         }).catch(done);
     }).timeout(5000);
 
-    it("changes content", done => {
-        const p = new InMemoryProject();
-        p.addFileSync("thing", "1");
-        const f1 = p.findFileSync("thing");
-        assert(f1.getContentSync() === "1");
-        f1.recordSetContent("2")
-            .flush()
-            .then(_ => {
-                const f2 = p.findFileSync("thing");
-                assert(f2.getContentSync() === "2");
-                done();
-            }).catch(done);
-    });
-
     it("adds file", done => {
         const p = new InMemoryProject();
         p.recordAddFile("thing", "1");
