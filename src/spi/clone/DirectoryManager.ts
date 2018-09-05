@@ -17,7 +17,7 @@ export interface CloneOptions {
 
     /**
      * Set this to the number of commits that should be cloned into the transient
-     * place. This only applies to master branches with alwaysDeep set to false.
+     * place. This only applies when alwaysDeep is set to false.
      */
     depth?: number;
 }
