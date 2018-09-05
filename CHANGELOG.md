@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.3...HEAD)
 
+### Added
+
+-   Add depth for cloning the master branch. [#9ed45d8](https://github.com/atomist/automation-client-ts/commit/9ed45d8baa91572eec2424987f22368a6101f69b)
+
 ### Changed
 
 -   Set all execute bits in makeExecutable. [#345](https://github.com/atomist/automation-client-ts/issues/345)
