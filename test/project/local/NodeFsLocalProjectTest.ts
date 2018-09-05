@@ -1,7 +1,7 @@
 import * as appRoot from "app-root-path";
 
-import * as fs from "fs";
-import "mocha";
+import * as fs from "fs-extra";
+import * as path from "path";
 import * as assert from "power-assert";
 import * as tmp from "tmp-promise";
 import {
@@ -213,6 +213,7 @@ describe("NodeFsLocalProject", () => {
             },
         ).on("end", () => {
             assert(count === 2, "Found " + count);
+            fs.removeSync(p.baseDir);
             done();
         }).on("error", done);
     });
@@ -233,7 +234,7 @@ describe("NodeFsLocalProject", () => {
     });
 
     it("adds file", done => {
-        const p = tempProject() as any as Project & ScriptedFlushable<any>;
+        const p = tempProject();
         defer(p, p.addFile("thing", "1"));
         assert(p.dirty);
         p.flush()
@@ -241,11 +242,12 @@ describe("NodeFsLocalProject", () => {
                 const f2 = p.findFileSync("thing");
                 assert(f2);
             })
+            .then(() => p.release())
             .then(() => done(), done);
     });
 
     it("moves file that's there", done => {
-        const p = tempProject() as any as Project & ScriptedFlushable<any>;
+        const p = tempProject();
         defer(p, p.addFile("thing", "1"));
         assert(p.dirty);
         p.flush()
@@ -256,11 +258,12 @@ describe("NodeFsLocalProject", () => {
                     assert(_.findFileSync("thing2").getContentSync() === "1");
                 });
             })
+            .then(() => p.release())
             .then(() => done(), done);
     });
 
     it("attempts to move file that's not there without error", done => {
-        const p = tempProject() as any as Project & ScriptedFlushable<any>;
+        const p = tempProject();
         defer(p, p.addFile("thing", "1"));
         assert(p.dirty);
         p.flush()
@@ -271,11 +274,12 @@ describe("NodeFsLocalProject", () => {
                     assert(_.findFileSync("thing").getContentSync() === "1");
                 });
             })
+            .then(() => p.release())
             .then(() => done(), done);
     });
 
     it("adds nested file", done => {
-        const p = tempProject() as any as Project & ScriptedFlushable<any>;
+        const p = tempProject();
         defer(p, p.addFile("config/thing", "1"));
         assert(p.dirty);
         p.flush()
@@ -283,6 +287,7 @@ describe("NodeFsLocalProject", () => {
                 const f2 = p.findFileSync("config/thing");
                 assert(f2);
             })
+            .then(() => p.release())
             .then(() => done(), done);
     });
 
@@ -299,7 +304,7 @@ describe("NodeFsLocalProject", () => {
     });
 
     it("deletes file", done => {
-        const p = tempProject() as any as Project & ScriptedFlushable<any>;
+        const p = tempProject();
         p.addFileSync("thing", "1");
         const f1 = p.findFileSync("thing");
         assert(f1.getContentSync() === "1");
@@ -311,6 +316,7 @@ describe("NodeFsLocalProject", () => {
                 const f2 = p.findFileSync("thing");
                 assert(!f2);
             })
+            .then(() => p.release())
             .then(() => done(), done);
     });
 
@@ -323,6 +329,7 @@ describe("NodeFsLocalProject", () => {
                 const f2 = p.findFileSync("dir/thing");
                 assert(!f2);
             })
+            .then(() => p.release())
             .then(() => done(), done);
     });
 
@@ -338,7 +345,134 @@ describe("NodeFsLocalProject", () => {
                 const f3 = p.findFileSync("dir/this/that");
                 assert(!f3);
             })
+            .then(() => p.release())
             .then(() => done(), done);
+    });
+
+    describe("makeExecutable", () => {
+
+        /* tslint:disable:no-bitwise */
+
+        it("should make a file executable", async () => {
+            const p = tempProject();
+            const f = path.join("dir", "thing");
+            await p.addFile(f, "1");
+            await p.makeExecutable(f);
+            const s = await fs.stat(path.join(p.baseDir, f));
+            assert(s.mode & fs.constants.S_IXUSR);
+            assert(s.mode & fs.constants.S_IXGRP);
+            assert(s.mode & fs.constants.S_IXOTH);
+            await p.release();
+        });
+
+        it("should only make the requested file executable", async () => {
+            const p = tempProject();
+            const f = path.join("dir", "thing");
+            await p.addFile(f, "1");
+            const f2 = path.join("other", "thing");
+            await p.addFile(f2, "2");
+            await p.makeExecutable(f);
+            const s = await fs.stat(path.join(p.baseDir, f));
+            assert(s.mode & fs.constants.S_IXUSR);
+            assert(s.mode & fs.constants.S_IXGRP);
+            assert(s.mode & fs.constants.S_IXOTH);
+            const s2 = await fs.stat(path.join(p.baseDir, f2));
+            assert((s2.mode & fs.constants.S_IXUSR) === 0);
+            assert((s2.mode & fs.constants.S_IXGRP) === 0);
+            assert((s2.mode & fs.constants.S_IXOTH) === 0);
+            await p.release();
+        });
+
+        it("should leave a file executable", async () => {
+            const tmpDir = tmp.dirSync({ unsafeCleanup: true });
+            const f = path.join("dir", "thing");
+            await fs.outputFile(path.join(tmpDir.name, f), "1\n", { mode: 0o777 });
+            const p = await NodeFsLocalProject.fromExistingDirectory(new GitHubRepoRef("owner", "name"), tmpDir.name,
+                () => tmpDir.removeCallback());
+            await p.makeExecutable(f);
+            const s = await fs.stat(path.join(p.baseDir, f));
+            assert(s.mode & fs.constants.S_IXUSR);
+            assert(s.mode & fs.constants.S_IXGRP);
+            assert(s.mode & fs.constants.S_IXOTH);
+            await p.release();
+        });
+
+        it("should make a file executable sync", async () => {
+            const p = tempProject();
+            const f = path.join("dir", "thing");
+            p.addFileSync(f, "1");
+            p.makeExecutableSync(f);
+            const s = await fs.stat(path.join(p.baseDir, f));
+            assert(s.mode & fs.constants.S_IXUSR);
+            assert(s.mode & fs.constants.S_IXGRP);
+            assert(s.mode & fs.constants.S_IXOTH);
+            await p.release();
+        });
+
+        it("should only make the requested file executable sync", async () => {
+            const p = tempProject();
+            const f = path.join("dir", "thing");
+            await p.addFile(f, "1");
+            const f2 = path.join("other", "thing");
+            await p.addFile(f2, "2");
+            p.makeExecutableSync(f);
+            const s = await fs.stat(path.join(p.baseDir, f));
+            assert(s.mode & fs.constants.S_IXUSR);
+            assert(s.mode & fs.constants.S_IXGRP);
+            assert(s.mode & fs.constants.S_IXOTH);
+            const s2 = await fs.stat(path.join(p.baseDir, f2));
+            assert((s2.mode & fs.constants.S_IXUSR) === 0);
+            assert((s2.mode & fs.constants.S_IXGRP) === 0);
+            assert((s2.mode & fs.constants.S_IXOTH) === 0);
+            await p.release();
+        });
+
+        it("should leave a file executable sync", async () => {
+            const tmpDir = tmp.dirSync({ unsafeCleanup: true });
+            const f = path.join("dir", "thing");
+            await fs.outputFile(path.join(tmpDir.name, f), "1\n", { mode: 0o777 });
+            const p = await NodeFsLocalProject.fromExistingDirectory(new GitHubRepoRef("owner", "name"), tmpDir.name,
+                () => tmpDir.removeCallback());
+            p.makeExecutableSync(f);
+            const s = await fs.stat(path.join(p.baseDir, f));
+            assert(s.mode & fs.constants.S_IXUSR);
+            assert(s.mode & fs.constants.S_IXGRP);
+            assert(s.mode & fs.constants.S_IXOTH);
+            await p.release();
+        });
+
+        /* tslint:enable:no-bitwise */
+
+    });
+
+    describe("directoryExistsSync", () => {
+
+        it("should verify the directory exists", async () => {
+            const tmpDir = tmp.dirSync({ unsafeCleanup: true });
+            const dirs = ["dir", "nested", "deeply", "into", "project"];
+            const d = path.join(...dirs);
+            const f = path.join(d, "thing");
+            await fs.outputFile(path.join(tmpDir.name, f), "1\n");
+            const p = await NodeFsLocalProject.fromExistingDirectory(new GitHubRepoRef("owner", "name"),
+                tmpDir.name, () => tmpDir.removeCallback());
+            for (let i = 0; i < dirs.length; i++) {
+                assert(p.directoryExistsSync(path.join(...dirs.slice(0, i + 1))));
+            }
+            await p.release();
+        });
+
+        it("should return false if directory does not exist", async () => {
+            const tmpDir = tmp.dirSync({ unsafeCleanup: true });
+            const f = path.join(tmpDir.name, "dir", "nested", "deeply", "into", "project", "thing");
+            await fs.outputFile(f, "1\n");
+            const p = await NodeFsLocalProject.fromExistingDirectory(new GitHubRepoRef("owner", "name"),
+                tmpDir.name, () => tmpDir.removeCallback());
+            [path.join("does", "not", "exist"), path.join("nor", "this"), "nope"].forEach(d => {
+                assert(!p.directoryExistsSync(d));
+            });
+            await p.release();
+        });
+
     });
 
 });

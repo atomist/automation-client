@@ -157,24 +157,28 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         return fs.unlink(this.toRealPath(path)).then(_ => this);
     }
 
-    public makeExecutable(path: string): Promise<this> {
-        return fs.stat(this.toRealPath(path))
-            .then(stats => {
-                logger.debug("Starting mode: " + stats.mode);
-                // tslint:disable-next-line:no-bitwise
-                const newMode = stats.mode | fs.constants.S_IXUSR;
-                logger.debug("Setting mode to: " + newMode);
-                return fs.chmod(this.toRealPath(path), newMode);
-            })
-            .then(() => this);
+    public async makeExecutable(path: string): Promise<this> {
+        const stat = await fs.stat(this.toRealPath(path));
+        // tslint:disable-next-line:no-bitwise
+        const newMode = stat.mode | fs.constants.S_IXUSR | fs.constants.S_IXGRP | fs.constants.S_IXOTH;
+        await fs.chmod(this.toRealPath(path), newMode);
+        return this;
     }
 
     public makeExecutableSync(path: string): void {
-        throw new Error("makeExecutableSync not implemented.");
+        const stat = fs.statSync(this.toRealPath(path));
+        // tslint:disable-next-line:no-bitwise
+        const newMode = stat.mode | fs.constants.S_IXUSR | fs.constants.S_IXGRP | fs.constants.S_IXOTH;
+        fs.chmodSync(this.toRealPath(path), newMode);
     }
 
     public directoryExistsSync(path: string): boolean {
-        throw new Error("directoryExistsSync not implemented.");
+        try {
+            const stat = fs.statSync(this.toRealPath(path));
+            return stat.isDirectory();
+        } catch (e) {
+            return false;
+        }
     }
 
     public fileExistsSync(path: string): boolean {
@@ -186,7 +190,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
             .then(exists => exists ?
                 Promise.resolve(new NodeFsLocalFile(this.baseDir, path)) :
                 Promise.reject(fileNotFound(path)),
-            );
+        );
     }
 
     public async getFile(path: string): Promise<File> {
@@ -205,7 +209,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
     public streamFilesRaw(globPatterns: string[], opts: {}): FileStream {
         // Fight arrow function "this" issue
         const baseDir = this.baseDir;
-        const toFileTransform = new stream.Transform({objectMode: true});
+        const toFileTransform = new stream.Transform({ objectMode: true });
 
         toFileTransform._transform = function(chunk, encoding, done) {
             const f = new NodeFsLocalFile(baseDir, pathWithinArchive(baseDir, chunk.path));

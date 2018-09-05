@@ -13,5 +13,5 @@ export function tempProject(id: RepoRef = {
 }): LocalProject & ScriptedFlushable<LocalProject> {
     const dir = tmp.dirSync({ unsafeCleanup: true });
     return new NodeFsLocalProject(id, dir.name,
-        () => Promise.resolve()) as any as LocalProject & ScriptedFlushable<LocalProject>; // could delete the dir in release function
+        () => dir.removeCallback()) as any as LocalProject & ScriptedFlushable<LocalProject>;
 }
