@@ -343,10 +343,11 @@ function cloneInto(
 
     const repoDir = targetDirectoryInfo.path;
     const url = id.cloneUrl(credentials);
-    const command = ((!opts.alwaysDeep && targetDirectoryInfo.transient) ?
+    const command = (!opts.alwaysDeep && id.branch ?
         runIn(".", `git clone --depth ${opts.depth ? opts.depth : 1} ${url} ${repoDir} ${id.branch ? `--branch ${id.branch}` : ""}`) :
         runIn(".", `git clone ${url} ${repoDir}`))
-            .then(() => runIn(repoDir, `git checkout ${id.branch ? id.branch : id.sha} --`));
+            .then(() => id.branch ? runIn(repoDir, `git checkout ${id.branch}`) : null)
+            .then(() => runIn(repoDir, id.branch ? `git reset ${id.sha} --` : `git checkout ${id.sha}`));
 
     const cleanUrl = url.replace(/\/\/.*:x-oauth-basic/, "//TOKEN:x-oauth-basic");
     logger.debug(`Cloning repo '${cleanUrl}' in '${repoDir}'`);

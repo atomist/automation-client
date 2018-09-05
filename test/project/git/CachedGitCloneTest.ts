@@ -238,8 +238,9 @@ describe("cached git clone projects", () => {
 });
 
 describe("even transient clones have some properties", () => {
+
     function cloneTransiently(opts: CloneOptions = DefaultCloneOptions) {
-        const repositoryThatExists = new GitHubRepoRef(Owner, RepoName);
+        const repositoryThatExists = GitHubRepoRef.from({ owner: Owner, repo: RepoName, branch: "master" });
         return GitCommandGitProject.cloned(Creds, repositoryThatExists, opts, TmpDirectoryManager);
     }
 

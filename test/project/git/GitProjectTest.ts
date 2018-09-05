@@ -121,7 +121,7 @@ ding dong ding
                 assert(!clean.success);
                 assert(!!clean.target.branch);
                 assert(!!clean.target.id);
-                assert(clean.target.id.sha === "master");
+                assert(clean.target.id.sha === "HEAD");
                 done();
             })
             .catch(done);

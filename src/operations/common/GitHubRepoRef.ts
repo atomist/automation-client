@@ -28,10 +28,7 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
         if (params.sha && !params.sha.match(GitShaRegExp.pattern)) {
             throw new Error("You provided an invalid SHA: " + params.sha);
         }
-        /*
-         * Replicate legacy behavior of: if we have only a branch and not a sha, put it in the sha.
-         */
-        const result = new GitHubRepoRef(params.owner, params.repo, params.sha || params.branch, params.rawApiBase, params.path);
+        const result = new GitHubRepoRef(params.owner, params.repo, params.sha, params.rawApiBase, params.path);
         result.branch = params.branch;
         return result;
     }
@@ -42,7 +39,7 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
 
     constructor(owner: string,
                 repo: string,
-                sha: string = "master",
+                sha: string = "HEAD",
                 rawApiBase = GitHubDotComBase,
                 path?: string) {
         super(

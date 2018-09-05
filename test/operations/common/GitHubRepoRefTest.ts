@@ -35,10 +35,9 @@ describe("GitHubRepoRef tests", () => {
         assert.equal(gh.apiBase, "somewhere.com/api/v3");
     });
 
-    it("puts the branch in the sha if sha is not provided", () => {
-        // this is to replicate the behavior when branch wasn't an option
+    it("doesn't set sha when sha is not provided", () => {
         const gh = GitHubRepoRef.from({ owner: "owner", repo: "repo", branch: "fester" });
-        assert.equal(gh.sha, "fester");
+        assert.equal(gh.sha, "HEAD");
     });
 
     it("does not let you provide a sha that is not a sha, when you could put that in branch", () => {

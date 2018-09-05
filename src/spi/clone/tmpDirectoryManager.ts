@@ -40,7 +40,7 @@ class CleaningTmpDirectoryManager implements DirectoryManager {
                 type: "empty-directory" as "empty-directory" | "existing-directory",
                 release: () => cleanup(fromTmp.path, opts.keep),
                 invalidate: () => Promise.resolve(), // and here
-                transient: true,
+                transient: opts.keep === false,
                 provenance: "created with tmp, keep = " + opts.keep,
             }));
     }
