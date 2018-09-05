@@ -36,7 +36,11 @@ describe("cached git clone projects", () => {
     const getAClone = (opts: { branch?: string, repoName?: string, token?: string } = {}) => {
         const repoName = opts.repoName || RepoName;
         const repositoryThatExists =
-            opts.branch ? new GitHubRepoRef(Owner, repoName, opts.branch) : new GitHubRepoRef(Owner, repoName);
+            opts.branch ? GitHubRepoRef.from({
+                owner: Owner,
+                repo: repoName,
+                branch: opts.branch,
+            }) : new GitHubRepoRef(Owner, repoName);
         const creds = opts.token ? { token: opts.token } : Creds;
         return GitCommandGitProject.cloned(creds, repositoryThatExists, DefaultCloneOptions, CachingDirectoryManager);
     };
@@ -87,11 +91,11 @@ describe("cached git clone projects", () => {
                     clone2.createBranch("banana")
                         .then(() => clone2.push())
                         .then(() => assert.fail("that shouldn't work with an invalid token"),
-                        error => {
-                            // I did expect that to fail
-                            assert(0 <= error.message.indexOf("https://NOT-THE-SAME-YO:x-oauth-basic@github.com"),
-                                error.message);
-                        })
+                            error => {
+                                // I did expect that to fail
+                                assert(0 <= error.message.indexOf("https://NOT-THE-SAME-YO:x-oauth-basic@github.com"),
+                                    error.message);
+                            })
                         .then(() => clone2.release()));
         }).then(done, done);
     }).timeout(20000);

@@ -1,6 +1,5 @@
 import { exec } from "child-process-promise";
 import * as _ from "lodash";
-import promiseRetry = require("promise-retry");
 import {
     ActionResult,
     successOn,
@@ -37,6 +36,7 @@ import {
     GitStatus,
     runStatusIn,
 } from "./gitStatus";
+import promiseRetry = require("promise-retry");
 
 export const DefaultDirectoryManager: DirectoryManager = TmpDirectoryManager;
 
@@ -343,10 +343,10 @@ function cloneInto(
 
     const repoDir = targetDirectoryInfo.path;
     const url = id.cloneUrl(credentials);
-    const command = (!opts.alwaysDeep && id.sha === "master" && targetDirectoryInfo.transient) ?
-        runIn(".", `git clone --depth ${opts.depth ? opts.depth : 1} ${url} ${repoDir}`) :
-        runIn(".", `git clone ${url} ${repoDir}`)
-            .then(() => runIn(repoDir, `git checkout ${id.sha} --`));
+    const command = ((!opts.alwaysDeep && targetDirectoryInfo.transient) ?
+        runIn(".", `git clone --depth ${opts.depth ? opts.depth : 1} ${url} ${repoDir} ${id.branch ? `--branch ${id.branch}` : ""}`) :
+        runIn(".", `git clone ${url} ${repoDir}`))
+            .then(() => runIn(repoDir, `git checkout ${id.branch ? id.branch : id.sha} --`));
 
     const cleanUrl = url.replace(/\/\/.*:x-oauth-basic/, "//TOKEN:x-oauth-basic");
     logger.debug(`Cloning repo '${cleanUrl}' in '${repoDir}'`);
@@ -386,7 +386,7 @@ function checkout(repoDir: string, branch: string) {
 function clean(repoDir: string) {
     return pwd(repoDir)
         .then(() => runIn(repoDir, "git clean -dfx")) // also removes ignored files
-        .then(result => runIn(repoDir, "git checkout -- ."));
+        .then(() => runIn(repoDir, "git checkout -- ."));
 }
 
 function runIn(baseDir: string, command: string) {
