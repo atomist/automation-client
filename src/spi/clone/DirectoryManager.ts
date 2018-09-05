@@ -14,6 +14,12 @@ export interface CloneOptions {
      * place, then clone with `--depth 1` to save time.
      */
     alwaysDeep?: boolean;
+
+    /**
+     * Set this to the number of commits that should be cloned into the transient
+     * place. This only applies to master branches with alwaysDeep set to false.
+     */
+    depth?: number;
 }
 
 export const DefaultCloneOptions: CloneOptions = {

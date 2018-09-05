@@ -344,7 +344,7 @@ function cloneInto(
     const repoDir = targetDirectoryInfo.path;
     const url = id.cloneUrl(credentials);
     const command = (!opts.alwaysDeep && id.sha === "master" && targetDirectoryInfo.transient) ?
-        runIn(".", `git clone --depth 1 ${url} ${repoDir}`) :
+        runIn(".", `git clone --depth ${opts.depth ? opts.depth : 1} ${url} ${repoDir}`) :
         runIn(".", `git clone ${url} ${repoDir}`)
             .then(() => runIn(repoDir, `git checkout ${id.sha} --`));
 
