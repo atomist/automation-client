@@ -19,9 +19,7 @@ export function setLogLevel(level: string) {
 
 export function addFileTransport(filename: string, level: string) {
     const path = p.resolve(filename);
-    if (!fs.existsSync(p.dirname(path))) {
-        fs.mkdirsSync(p.dirname(path));
-    }
+    fs.mkdirsSync(p.dirname(path));
 
     winstonLogger.add(
         winston.transports.File,
