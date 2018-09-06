@@ -48,6 +48,28 @@ export function findMatches(p: ProjectAsync,
 }
 
 /**
+ * Integrate path expressions with project operations to save mapped values from all matches.
+ * Filter out undefined values
+ * @param p project
+ * @param parserOrRegistry parser or parsers to use to parse files
+ * @param globPatterns file glob patterns
+ * @param mapper mapping function from match result to result
+ * @param pathExpression path expression string or parsed
+ * @param functionRegistry registry to look for path expression functions in
+ * @return {Promise<MatchResult[]>} matches
+ */
+export function saveFromMatches<T>(p: ProjectAsync,
+                                   parserOrRegistry: FileParser | FileParserRegistry,
+                                   globPatterns: GlobOptions,
+                                   pathExpression: string | PathExpression,
+                                   mapper: (m: MatchResult) => T,
+                                   functionRegistry?: object): Promise<T[]> {
+    return findFileMatches(p, parserOrRegistry, globPatterns, pathExpression, functionRegistry)
+        .then(fileHits => _.flatten(
+            fileHits.map(f => f.matches.map(mapper).filter(x => !!x))));
+}
+
+/**
  * Integrate path expressions with project operations to find all matches
  * and their files
  * @param p project
