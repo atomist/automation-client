@@ -2,7 +2,7 @@ import * as fs from "fs-extra";
 import * as gs from "glob-stream";
 import * as fpath from "path";
 import * as stream from "stream";
-import { deleteFolderRecursive } from "../../internal/util/file";
+
 import { logger } from "../../internal/util/logger";
 import {
     RepoRef,
@@ -104,44 +104,37 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
     }
 
     public addFileSync(path: string, content: string): void {
-        const realName = this.baseDir + "/" + path;
-        const dir = fpath.dirname(realName);
-        if (!fs.existsSync(dir)) {
-            fs.mkdirsSync(dir);
+        const realName = this.toRealPath(path);
+        fs.outputFileSync(realName, content);
+    }
+
+    public async addFile(path: string, content: string): Promise<this> {
+        const realName = this.toRealPath(path);
+        await fs.outputFile(realName, content);
+        return this;
+    }
+
+    public async addDirectory(path: string): Promise<this> {
+        const realName = this.toRealPath(path);
+        await fs.ensureDir(realName);
+        return this;
+    }
+
+    public async deleteDirectory(path: string): Promise<this> {
+        try {
+            await fs.remove(this.toRealPath(path));
+        } catch (e) {
+            logger.warn("Unable to delete directory '%s': %s", path, e.message);
         }
-        fs.writeFileSync(realName, content);
-    }
-
-    public addFile(path: string, content: string): Promise<this> {
-        const realName = this.baseDir + "/" + path;
-        const dir = fpath.dirname(realName);
-        return fs.pathExists(dir).then(exists => exists ? Promise.resolve() : fs.mkdirs(dir))
-            .then(() => fs.writeFile(realName, content))
-            .then(() => this);
-    }
-
-    public addDirectory(path: string): Promise<this> {
-        const realName = this.baseDir + "/" + path;
-        return fs.mkdirp(realName)
-            .then(() => this);
-    }
-
-    public deleteDirectory(path: string): Promise<this> {
-        return fs.remove(this.toRealPath(path))
-            .then(_ => this)
-            .catch(err => {
-                logger.warn("Unable to delete directory '%s': %s", path, err);
-                return this;
-            });
+        return this;
     }
 
     public deleteDirectorySync(path: string): void {
         const localPath = this.toRealPath(path);
         try {
-            deleteFolderRecursive(localPath);
-            fs.unlinkSync(localPath);
+            fs.removeSync(localPath);
         } catch (e) {
-            logger.warn("Ignoring directory deletion error: " + e);
+            logger.warn("Unable to delete directory '%s': %s", path, e.message);
         }
     }
 
@@ -149,12 +142,17 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         try {
             fs.unlinkSync(this.toRealPath(path));
         } catch (e) {
-            logger.warn("Ignoring file deletion error: " + e);
+            logger.warn("Unable to delete file '%s': %s", path, e.message);
         }
     }
 
-    public deleteFile(path: string): Promise<this> {
-        return fs.unlink(this.toRealPath(path)).then(_ => this);
+    public async deleteFile(path: string): Promise<this> {
+        try {
+            await fs.unlink(this.toRealPath(path));
+        } catch (e) {
+            logger.warn("Unable to delete file '%s': %s", path, e.message);
+        }
+        return this;
     }
 
     public async makeExecutable(path: string): Promise<this> {
@@ -181,29 +179,53 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         }
     }
 
-    public fileExistsSync(path: string): boolean {
-        return fs.existsSync(this.baseDir + "/" + path);
+    public async hasDirectory(path: string): Promise<boolean> {
+        try {
+            const stat = await fs.stat(this.toRealPath(path));
+            return stat.isDirectory();
+        } catch (e) {
+            return false;
+        }
     }
 
-    public findFile(path: string): Promise<File> {
-        return fs.pathExists(this.baseDir + "/" + path)
-            .then(exists => exists ?
-                Promise.resolve(new NodeFsLocalFile(this.baseDir, path)) :
-                Promise.reject(fileNotFound(path)),
-        );
+    public fileExistsSync(path: string): boolean {
+        try {
+            const stat = fs.statSync(this.toRealPath(path));
+            return stat.isFile();
+        } catch (e) {
+            return false;
+        }
+    }
+
+    public async findFile(path: string): Promise<File> {
+        let stat: fs.Stats;
+        try {
+            stat = await fs.stat(this.toRealPath(path));
+        } catch (e) {
+            throw fileNotFound(path);
+        }
+        if (!stat.isFile()) {
+            throw new Error(`Path ${path} is not a regular file`);
+        }
+        return new NodeFsLocalFile(this.baseDir, path);
     }
 
     public async getFile(path: string): Promise<File> {
-        const exists = await fs.pathExists(this.baseDir + "/" + path);
-        return exists ? new NodeFsLocalFile(this.baseDir, path) :
-            undefined;
+        try {
+            const stat = await fs.stat(this.toRealPath(path));
+            return stat.isFile() ? new NodeFsLocalFile(this.baseDir, path) : undefined;
+        } catch (e) {
+            return undefined;
+        }
     }
 
     public findFileSync(path: string): File {
-        if (!this.fileExistsSync(path)) {
+        try {
+            const stat = fs.statSync(this.toRealPath(path));
+            return stat.isFile() ? new NodeFsLocalFile(this.baseDir, path) : undefined;
+        } catch (e) {
             return undefined;
         }
-        return new NodeFsLocalFile(this.baseDir, path);
     }
 
     public streamFilesRaw(globPatterns: string[], opts: {}): FileStream {
@@ -230,7 +252,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
     }
 
     private toRealPath(path: string): string {
-        return this.baseDir + "/" + path;
+        return fpath.join(this.baseDir, path);
     }
 
 }

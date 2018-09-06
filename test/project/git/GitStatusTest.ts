@@ -17,108 +17,70 @@ const ExistingRepoRef = new GitHubRepoRef(TargetOwner, ExistingRepo);
 
 const Creds = { token: GitHubToken };
 
-describe("git status analysis", () => {
+describe("GitStatus", () => {
 
     function freshClone(repoRef: GitHubRepoRef = ExistingRepoRef): Promise<GitProject> {
         return GitCommandGitProject.cloned(Creds, repoRef, {}, TmpDirectoryManager);
     }
 
-    it("should recognize a clean repository as clean", done => {
-        freshClone()
-            .then(project =>
-                project.gitStatus())
-            .then(status => {
-                assert(status.isClean, "full: " + status.raw);
-                assert(isFullyClean(status));
-            })
-            .then(done, done);
+    it("should recognize a clean repository as clean", async () => {
+        const project = await freshClone();
+        const status = await project.gitStatus();
+        assert(status.isClean, "full: " + status.raw);
+        assert(isFullyClean(status));
+        await project.release();
     }).timeout(5000);
 
-    it("should recognize a dirty project as not clean", done => {
-        freshClone()
-            .then(project =>
-                project.addFile("stuff", "oh yeah"))
-            .then(project =>
-                project.gitStatus())
-            .then(status => {
-                assert(!status.isClean);
-                assert(status.ignoredChanges.length === 0);
-            })
-            .then(done, done);
+    it("should recognize a dirty project as not clean", async () => {
+        const project = await freshClone();
+        await project.addFile("stuff", "oh yeah");
+        const status = await project.gitStatus();
+        assert(!status.isClean);
+        assert(status.ignoredChanges.length === 0);
+        await project.release();
     }).timeout(5000);
 
-    it("should recognize ignored files, but still call it clean", done => {
-        freshClone()
-            .then(project =>
-                project.addFile("ignored-file", "this file is gonna be ignored"))
-            .then(project =>
-                project.gitStatus())
-            .then(status => {
-                assert(status.isClean);
-                assert(status.raw === "!! ignored-file\n", status.raw);
-                assert.deepEqual(status.ignoredChanges, ["ignored-file"], stringify(status.ignoredChanges));
-            })
-            .then(done, done);
+    it("should recognize ignored files, but still call it clean", async () => {
+        const project = await freshClone();
+        await project.addFile("ignored-file", "this file is gonna be ignored");
+        const status = await project.gitStatus();
+        assert(status.isClean);
+        assert(status.raw === "!! ignored-file\n", status.raw);
+        assert.deepEqual(status.ignoredChanges, ["ignored-file"], stringify(status.ignoredChanges));
+        await project.release();
     }).timeout(5000);
 
-    it("should tell me the local sha", done => {
-        function makeACommit(project: GitProject): Promise<GitProject> {
-            return project.addFile("file-that-does-not-yet-exist", "something")
-                .then(p => p.commit("yassss"))
-                .then(result => result.target);
-        }
+    async function makeACommit(project: GitProject): Promise<GitProject> {
+        const p = await project.addFile("file-that-does-not-yet-exist", "something");
+        const result = await p.commit("yassss");
+        return result.target;
+    }
 
-        freshClone()
-            .then(project =>
-                project.gitStatus()
-                    .then(status1 => makeACommit(project)
-                        .then(() => project.gitStatus()
-                            .then(status2 => {
-                                assert(status2.sha !== status1.sha,
-                                    `${status1.sha}, after: ${status2.sha}`);
-                                return project.release();
-                            }))))
-            .then(done, done);
-
+    it("should tell me the local sha", async () => {
+        const project = await freshClone();
+        const status1 = await project.gitStatus();
+        await makeACommit(project);
+        const status2 = await project.gitStatus();
+        assert(status2.sha !== status1.sha, `${status1.sha}, after: ${status2.sha}`);
+        await project.release();
     }).timeout(5000);
 
-    it("should tell me the upstream sha", done => {
-        function makeACommit(project: GitProject): Promise<GitProject> {
-            return project.addFile("file-that-does-not-yet-exist", "something")
-                .then(p => p.commit("yassss"))
-                .then(result => result.target);
-        }
-
-        freshClone()
-            .then(project =>
-                project.gitStatus()
-                    .then(status1 => {
-                        assert(status1.upstream.branch === "origin/master",
-                            `upstream: ${status1.upstream.branch}`);
-                        assert(status1.upstream.inSync, "should be in sync to start with");
-                        return makeACommit(project)
-                            .then(() => project.gitStatus()
-                                .then(status2 => {
-                                    assert(!status2.upstream.inSync,
-                                        `should not be in sync with ${status1.upstream.branch}`);
-                                    return project.release();
-                                }));
-                    }))
-            .then(done, done);
-
+    it("should tell me the upstream sha", async () => {
+        const project = await freshClone();
+        const status1 = await project.gitStatus();
+        assert(status1.upstream.branch === "origin/master", `upstream: ${status1.upstream.branch}`);
+        assert(status1.upstream.inSync, "should be in sync to start with");
+        await makeACommit(project);
+        const status2 = await project.gitStatus();
+        assert(!status2.upstream.inSync, `should not be in sync with ${status1.upstream.branch}`);
+        await project.release();
     }).timeout(5000);
 
-    it("should work in detached HEAD", done => {
-
-        freshClone(new GitHubRepoRef(TargetOwner, ExistingRepo, ExistingSha))
-            .then(project =>
-                project.gitStatus()
-                    .then(status1 => {
-                        assert(status1.sha === ExistingSha,
-                            `asked for ${ExistingSha}, got ${status1.sha}`);
-                    }))
-            .then(() => done(), done);
-
+    it("should work in detached HEAD", async () => {
+        const project = await freshClone(new GitHubRepoRef(TargetOwner, ExistingRepo, ExistingSha));
+        const status1 = await project.gitStatus();
+        assert(status1.sha === ExistingSha, `asked for ${ExistingSha}, got ${status1.sha}`);
+        await project.release();
     }).timeout(5000);
 
     // I didn't figure out how to test the branch name independently. It's tested in CachedGitCloneTest

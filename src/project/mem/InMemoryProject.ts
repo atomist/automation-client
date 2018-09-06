@@ -73,8 +73,8 @@ export class InMemoryProject extends AbstractProject {
     }
 
     public findFile(path: string): Promise<File> {
-        const file = this.memFiles.find(f => f.path === path);
-        return file ? Promise.resolve(file) : Promise.reject(`File not found at ${path}`);
+        const file = this.findFileSync(path);
+        return file ? Promise.resolve(file) : Promise.reject(new Error(`File not found at ${path}`));
     }
 
     public async getFile(path: string): Promise<File> {
@@ -135,6 +135,10 @@ export class InMemoryProject extends AbstractProject {
         return this.memFiles.some(f => f.path.startsWith(`${path}/`));
     }
 
+    public async hasDirectory(path: string): Promise<boolean> {
+        return Promise.resolve(this.directoryExistsSync(path));
+    }
+
     public fileExistsSync(path: string): boolean {
         return this.memFiles.some(f => f.path === path);
     }
@@ -147,13 +151,13 @@ export class InMemoryProject extends AbstractProject {
         const matchingFiles = _.reject(positiveMatches,
             f => globPatterns.some(gp => gp.startsWith("!") && minimatch.match([f.path], gp.substring(1)).includes(f.path)),
         );
-        return spigot.array({objectMode: true},
+        return spigot.array({ objectMode: true },
             matchingFiles,
         );
     }
 
     public makeExecutable(path: string): Promise<this> {
-        throw new Error("makeExecutable not implemented.");
+        return Promise.reject(new Error("makeExecutable not implemented"));
     }
 
 }

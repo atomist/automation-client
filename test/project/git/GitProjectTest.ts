@@ -26,7 +26,7 @@ const Creds = { token: GitHubToken };
 const Owner = "atomist-travisorg";
 const RepoName = "this-repository-exists";
 
-describe("GitProject cloning on filesystem", () => {
+describe("GitProject", () => {
 
     const getAClone = (repoName: string = RepoName) => {
         const repositoryThatExists = new GitHubRepoRef(Owner, repoName);
@@ -49,10 +49,6 @@ describe("GitProject cloning on filesystem", () => {
             })
             .then(cleaningDone, cleaningDone);
     }).timeout(5000);
-
-});
-
-describe("GitProject", () => {
 
     it("knows about the branch passed by the repo ref", () => {
         const p = tempProject(new GitHubRepoRef("owneryo", "repoyo", "branchyo"));
@@ -155,33 +151,24 @@ ding dong ding
             .then(() => done(), done);
     });
 
-    it("check out commit", done => {
+    it("check out commit", async () => {
         const sha = "590ed8f7a2430d45127ea04cc5bdf736fe698712";
-        GitCommandGitProject.cloned(Creds, new GitHubRepoRef("atomist", "microgrammar", sha))
-            .then(p => {
-                checkProject(p);
-                return p.gitStatus()
-                    .then(gs1 => {
-                        const p2 = GitCommandGitProject.fromProject(p, Creds);
-                        return p2.gitStatus().then(gs2 => {
-                            assert(gs1.sha === gs2.sha);
-                        });
-                    });
-            })
-            .then(() => done(), done);
+        const p = await GitCommandGitProject.cloned(Creds, new GitHubRepoRef("atomist", "microgrammar", sha));
+        checkProject(p);
+        const gs1 = await p.gitStatus();
+        const p2 = GitCommandGitProject.fromProject(p, Creds);
+        const gs2 = await p2.gitStatus();
+        assert(gs1.sha === gs2.sha);
+        await p.release();
     }).timeout(5000);
 
-    it("clones a project subdirectory", done => {
-        GitCommandGitProject.cloned(Creds, new GitHubRepoRef("pallets", "flask", "0cbe698958f81efe202e71ac07446b87ad694789",
-            GitHubDotComBase, "examples/tutorial"))
-            .then(gp => {
-                assert(!!gp.findFileSync("flaskr/__init__.py"), "Should be able to find file under subdirectory");
-                gp.isClean()
-                    .then(r => {
-                        assert(r.success, "We should be able to get git status for a subdirectory");
-                        done();
-                    });
-            }).catch(done);
+    it("clones a project subdirectory", async () => {
+        const gp = await GitCommandGitProject.cloned(Creds, new GitHubRepoRef("pallets", "flask",
+            "0cbe698958f81efe202e71ac07446b87ad694789", GitHubDotComBase, "examples/tutorial"));
+        assert(!!gp.findFileSync("flaskr/__init__.py"), "Should be able to find file under subdirectory");
+        const r = await gp.isClean();
+        assert(r.success, "We should be able to get git status for a subdirectory");
+        gp.release();
     }).timeout(10000);
 
     it("can tell whether a branch exists", done => {

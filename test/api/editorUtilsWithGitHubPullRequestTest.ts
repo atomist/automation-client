@@ -1,4 +1,3 @@
-import "mocha";
 import * as assert from "power-assert";
 
 import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
@@ -13,68 +12,77 @@ import {
     editProjectUsingPullRequest,
 } from "../../src/operations/support/editorUtils";
 import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
+import { GitProject } from "../../src/project/git/GitProject";
 import { Project } from "../../src/project/Project";
-import { Creds } from "./gitHubTest";
 import {
-    deleteRepoIfExists,
+    cleanAfterTest,
+    Creds,
     newRepo,
-} from "./GitProjectRemoteTest";
+    TestRepo,
+} from "./apiUtils";
 
-const EditorThatChangesProject = toEditor(p => p.addFile("thing", "thing"));
+describe("editorUtils", () => {
 
-describe("editorUtils tests with GitHub pull requests", () => {
+    describe("GitHub pull requests", () => {
 
-    it("creates branch with changes in simple editor", async () => {
-        await newRepo()
-            .then(repo => {
-                return GitCommandGitProject.cloned(Creds, new GitHubRepoRef(repo.owner, repo.repo))
-                    .then(p => {
-                        return editProjectUsingBranch(undefined, p, EditorThatChangesProject,
-                            new PullRequest("x", "y"))
-                            .then(er => {
-                                assert(er.edited);
-                            }).then(() => deleteRepoIfExists(repo));
-                    }).catch(err => deleteRepoIfExists(repo)
-                        .then(() => Promise.reject(err)));
-            });
-    }).timeout(15000);
+        const EditorThatChangesProject = toEditor(p => p.addFile("thing", "thing"));
 
-    it("creates PR with changes in simple editor", async () => {
-        await newRepo()
-            .then(repo => {
-                return GitCommandGitProject.cloned(Creds, new GitHubRepoRef(repo.owner, repo.repo))
-                    .then(p => {
-                        return editProjectUsingPullRequest(undefined, p, EditorThatChangesProject,
-                            new PullRequest("x", "y"))
-                            .then(er => {
-                                assert(er.edited);
-                            }).then(() => deleteRepoIfExists(repo));
-                    }).catch(err => deleteRepoIfExists(repo)
-                        .then(() => Promise.reject(err)));
-            });
-    }).timeout(15000);
+        it("creates branch with changes in simple editor", async () => {
+            let p: GitProject;
+            let repo: TestRepo;
+            try {
+                repo = await newRepo();
+                p = await GitCommandGitProject.cloned(Creds, new GitHubRepoRef(repo.owner, repo.repo));
+                const er = await editProjectUsingBranch(undefined, p, EditorThatChangesProject, new PullRequest("x", "y"));
+                assert(er.edited);
+                await cleanAfterTest(p, repo);
+            } catch (e) {
+                await cleanAfterTest(p, repo);
+                throw e;
+            }
+        }).timeout(15000);
 
-});
+        it("creates PR with changes in simple editor", async () => {
+            let p: GitProject;
+            let repo: TestRepo;
+            try {
+                repo = await newRepo();
+                p = await GitCommandGitProject.cloned(Creds, new GitHubRepoRef(repo.owner, repo.repo));
+                const er = await editProjectUsingPullRequest(undefined, p, EditorThatChangesProject, new PullRequest("x", "y"));
+                assert(er.edited);
+                await cleanAfterTest(p, repo);
+            } catch (e) {
+                await cleanAfterTest(p, repo);
+                throw e;
+            }
+        }).timeout(15000);
 
-const TinyChangeEditor: ProjectEditor = (p: Project) => {
-    return p.findFile("README.md")
-        .then(f => f.getContent()
-            .then(fileContent => f.setContent(fileContent + "\nmore stuff\n")),
-        err => p.addFile("README.md", "stuff"))
-        .then(() => successfulEdit(p, true));
-};
+    });
 
-describe("editorUtils with branch commit", () => {
+    describe("branch commit", () => {
 
-    it("can edit a project on an existing branch", async () => {
-        await newRepo().then(rr =>
-            GitCommandGitProject.cloned(Creds, new GitHubRepoRef(rr.owner, rr.repo))
-                .then(p => editProjectUsingBranch(undefined, p,
-                    TinyChangeEditor, { branch: "hello", message: "thanks" })
-                    .then(r => editProjectUsingBranch(undefined, p,
-                        TinyChangeEditor, { branch: "hello", message: "thanks" })))
-                .then(() => deleteRepoIfExists(rr),
-                err => deleteRepoIfExists(rr).then(() => Promise.reject(err))));
-    }).timeout(25000);
+        const TinyChangeEditor: ProjectEditor = (p: Project) => {
+            return p.findFile("README.md")
+                .then(f => f.getContent()
+                    .then(fileContent => f.setContent(fileContent + "\nmore stuff\n")),
+                    err => p.addFile("README.md", "stuff"))
+                .then(() => successfulEdit(p, true));
+        };
 
+        it("can edit a project on an existing branch", async () => {
+            let p: GitProject;
+            let repo: TestRepo;
+            try {
+                repo = await newRepo();
+                p = await GitCommandGitProject.cloned(Creds, new GitHubRepoRef(repo.owner, repo.repo));
+                const r = await editProjectUsingBranch(undefined, p, TinyChangeEditor, { branch: "hello", message: "thanks" });
+                await editProjectUsingBranch(undefined, p, TinyChangeEditor, { branch: "hello", message: "thanks" });
+                await cleanAfterTest(p, repo);
+            } catch (e) {
+                await cleanAfterTest(p, repo);
+                throw e;
+            }
+        }).timeout(25000);
+
+    });
 });

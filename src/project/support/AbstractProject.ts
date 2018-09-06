@@ -40,6 +40,8 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
         return !!(await this.getFile(path));
     }
 
+    public abstract hasDirectory(path: string): Promise<boolean>;
+
     public abstract findFileSync(path: string): File;
 
     public streamFiles(...globPatterns: string[]): FileStream {

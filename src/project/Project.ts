@@ -20,54 +20,60 @@ export interface ProjectCore {
 export interface ProjectSync extends ProjectCore {
 
     /**
-     * Find file with the given path. Return undefined if not found.
+     * Find a regular file with the given path. Return undefined if
+     * file does not exist or is not a regular file.
      *
-     * @param path {string} Path of the file we want
+     * @param path {string} path to file relative to root of project
      * @returns {File}
      */
     findFileSync(path: string): File;
 
     /**
-     * Add the given file to the project. Path can contain /s. Content is a literal string
+     * Add the given file to the project. Path can be nested. Content
+     * is a literal string.  This method will throw an error if it is
+     * not successful.
      *
-     * @param path {string} The path to use
+     * @param path {string} path to file relative to root of project
      * @param content {string} The content to be placed in the new file
      */
     addFileSync(path: string, content: string): void;
 
     /**
-     * Deletes a directory with the given path
+     * Recursively deletes a directory and all its contents with the
+     * given path.  Errors when deleting the directory are caught.
      *
-     * @param path {string} The path to use
+     * @param path {string} path to directory relative to root of project
      */
     deleteDirectorySync(path: string): void;
 
     /**
-     * Delete the given file from the project. Path can contain /s.
+     * Delete the given file from the project.  Path can be nested.
+     * Errors when deleting the file are caught.
      *
-     * @param path {string} The path to use
+     * @param path {string} path to file relative to root of project
      */
     deleteFileSync(path: string): void;
 
     /**
-     * Makes a file executable
+     * Makes a file executable.  Other permissions are unchanged.
      *
-     * @param path {string} The path to use
+     * @param path {string} path to file relative to root of project
      */
     makeExecutableSync(path: string): void;
 
     /**
      * Does a directory with the given path exist?
      *
-     * @param path {string} The path to use
+     * @param path {string} path to directory relative to root of project
      * @returns {boolean}
      */
     directoryExistsSync(path: string): boolean;
 
     /**
-     * Does a file with the given path exist?
+     * Does a regular file with the given path exist?  It will return
+     * false if the file does not exist or is not a regular file.
      *
-     * @param path {string} The path to use
+     * @param path {string} path to file relative to root of project
      * @returns {boolean}
      */
     fileExistsSync(path: string): boolean;
@@ -85,13 +91,17 @@ export interface ProjectAsync extends ProjectCore {
      * @param globPatterns glob patterns. If none is provided,
      * include all files. If at least one positive pattern is provided,
      * one or more negative glob patterns can be provided.
+     *
+     * @param {string[]} globPatterns glob patterns per minimatch
+     * @return {FileStream}
      */
     streamFiles(...globPatterns: string[]): FileStream;
 
     /**
-     * Stream file with full control over globs.
-     * At least one glob must be provided. No default exclusions will be used.
-     * @param {string[]} globPatterns
+     * Stream file with full control over globs.  At least one glob
+     * must be provided. No default exclusions will be used.
+     *
+     * @param {string[]} globPatterns glob patterns per minimatch
      * @param opts for glob handling
      * @return {FileStream}
      */
@@ -100,33 +110,49 @@ export interface ProjectAsync extends ProjectCore {
     /**
      * The total number of files in this project or directory
      *
-     * @property {number} totalFileCount
+     * @return {number} totalFileCount
      */
     totalFileCount(): Promise<number>;
 
     /**
-     * Attempt to find a file.
-     * Use then or catch, depending on whether the file exists.
-     * You may well want getFile, which returns a Promise of the file or undefined.
-     * @param {string} path
+     * Attempt to find a regular file at path.  This method will
+     * return a rejected Promise if the file does not exist or is not
+     * a regular file.  You may well want getFile, which returns a
+     * Promise of the file or undefined.
+     *
+     * @param {string} path path to file relative to root of project
      * @return {Promise<File>}
      */
     findFile(path: string): Promise<File>;
 
     /**
-     * Attempt to find a file.
-     * Never throws an exception, returns undefined
-     * @param {string} path
+     * Attempt to find a regular file at path.  Never throws an
+     * exception, returns undefined if file does not exist or is not a
+     * regular file.
+     *
+     * @param {string} path path to file relative to root of project
      * @return {Promise<File>}
      */
     getFile(path: string): Promise<File | undefined>;
 
     /**
-     * Does a file exist at this path?
-     * @param {string} path
+     * Does a regular file exist at this path?  It will return false
+     * for non-existent files, directories, block devices, FIFOs,
+     * sockets, etc.
+     *
+     * @param {string} path path to file relative to root of project
      * @return {Promise<boolean>}
      */
     hasFile(path: string): Promise<boolean>;
+
+    /**
+     * Does a directory exist at this path?  It will return false if
+     * directory does not exist or if file at path is not a directory.
+     *
+     * @param {string} path path to directory relative to root of project
+     * @return {Promise<boolean>}
+     */
+    hasDirectory(path: string): Promise<boolean>;
 
     /**
      * Add a file preserving permissions
@@ -135,8 +161,22 @@ export interface ProjectAsync extends ProjectCore {
      */
     add(f: File): Promise<this>;
 
+    /**
+     * Add the given file to the project. Path can be nested. Content
+     * is a literal string.
+     *
+     * @param path {string} path to file relative to root of project
+     * @param content {string} The content to be placed in the new file
+     */
     addFile(path: string, content: string): Promise<this>;
 
+    /**
+     * Delete the given file from the project.  Path can be nested.
+     * Errors when deleting the file do not result in a rejected
+     * Promise being returned.
+     *
+     * @param path {string} path to file relative to root of project
+     */
     deleteFile(path: string): Promise<this>;
 
     /**
@@ -148,25 +188,29 @@ export interface ProjectAsync extends ProjectCore {
     moveFile(oldPath: string, newPath: string): Promise<this>;
 
     /**
-     * Add an empty directory to the project.
-     * Should be preserved through all transformations, although
-     * may not be accessible in some implementations
-     * @param {string} path
+     * Add an empty directory to the project.  Should be preserved
+     * through all transformations, although may not be accessible in
+     * some implementations.
+     *
+     * @param {string} path path to directory relative to root of project
      * @return {Promise<this>}
      */
     addDirectory(path: string): Promise<this>;
 
     /**
-     * Delete a directory. Do not throw an error if it doesn't exist
-     * @param {string} path
+     * Recursively delete a directory and all its contents.  Path can
+     * be nested.  Errors when deleting the directory do not result in
+     * a rejected Promise being returned.
+     *
+     * @param {string} path path to directory relative to root of project
      * @return {Promise<this>}
      */
     deleteDirectory(path: string): Promise<this>;
 
     /**
-     * Make a file executable by its owner.
-     * Other permissions are unchanged.
-     * @param {string} path
+     * Make a file executable.  Other permissions are unchanged.
+     *
+     * @param {string} path path to file relative to root of project
      * @return {Promise<this>}
      */
     makeExecutable(path: string): Promise<this>;
