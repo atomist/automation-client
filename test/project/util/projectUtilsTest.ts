@@ -1,4 +1,3 @@
-import "mocha";
 
 import * as assert from "power-assert";
 
@@ -38,7 +37,7 @@ describe("projectUtils", () => {
     it("saveFromFiles", done => {
         const t = tempProject();
         t.addFileSync("Thing", "1");
-        saveFromFiles<string>(t, AllFiles, f => {
+        saveFromFiles<string>(t, AllFiles, async f => {
             return f.path;
         })
             .then(gathered => {

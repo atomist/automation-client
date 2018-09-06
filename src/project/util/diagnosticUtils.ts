@@ -16,7 +16,7 @@ const Separator = "-------------------";
 export function diagnosticDump(stepName: string,
                                globPattern: string = AllFiles,
                                stringifier: (f: File) => string = f => f.path): (project: Project) => Promise<Project> {
-    return project => saveFromFiles(project, globPattern, f => f)
+    return project => saveFromFiles(project, globPattern, async f => f)
         .then(files =>
             console.log(`${Separator}\nProject name ${project.name}: Step=${stepName}; Files[${globPattern}]=\n` +
                 `${files.map(f => "\t" + stringifier(f)).join("\n")}\n${Separator}`))
