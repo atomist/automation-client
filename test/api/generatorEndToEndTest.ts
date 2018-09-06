@@ -1,105 +1,82 @@
-import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
-
-import axios from "axios";
-import * as fs from "fs";
-import "mocha";
+import * as fs from "fs-extra";
+import * as path from "path";
 import * as assert from "power-assert";
-import { ActionResult } from "../../src/action/ActionResult";
 import {
-    GitHubDotComBase,
     GitHubRepoRef,
 } from "../../src/operations/common/GitHubRepoRef";
-import { ProjectOperationCredentials } from "../../src/operations/common/ProjectOperationCredentials";
-import { RemoteRepoRef } from "../../src/operations/common/RepoId";
 import { generate } from "../../src/operations/generate/generatorUtils";
 import { RemoteGitProjectPersister } from "../../src/operations/generate/remoteGitProjectPersister";
 import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
-import { LocalProject } from "../../src/project/local/LocalProject";
+import { GitProject } from "../../src/project/git/GitProject";
 import { Project } from "../../src/project/Project";
 import { hasFile } from "../../src/util/gitHub";
-import { GitHubToken } from "./gitHubTest";
-
-export function tempRepoName() {
-    return `test-repo-${new Date().getTime()}`;
-}
-
-let TargetOwner = "atomist-travisorg";
-const config = {
-    headers: {
-        Authorization: `token ${GitHubToken}`,
-    },
-};
-
-export function deleteOrIgnore(rr: RemoteRepoRef, creds: ProjectOperationCredentials): Promise<ActionResult<any>> {
-    return rr.deleteRemote(creds)
-        .catch(err => {
-            console.log(`cleanup: deleting ${JSON.stringify(rr)} failed with ${err}. oh well`);
-            return null;
-        });
-}
+import {
+    Creds,
+    deleteOrIgnore,
+    getOwnerByToken,
+    GitHubToken,
+    tempRepoName,
+} from "./apiUtils";
 
 describe("generator end to end", () => {
 
-    before(done => {
-        axios.get(`${GitHubDotComBase}/user`, config).then(response => {
-            TargetOwner = response.data.login;
-        }).then(() => done(), done);
-    });
+    const noEd = (p: Project) => Promise.resolve(p);
 
-    it("should create a new GitHub repo using generate function", function(done) {
+    it("should create a new GitHub repo using generate function", async function() {
         this.retries(3);
-        const repoName = tempRepoName();
-        const rr = new GitHubRepoRef(TargetOwner, repoName);
-        const cleanupDone = (err: Error | void = null) => {
-            deleteOrIgnore(rr, { token: GitHubToken }).then(() => done(err));
-        };
 
-        const clonedSeed = GitCommandGitProject.cloned({ token: GitHubToken },
-            new GitHubRepoRef("atomist-seeds", "spring-rest-seed"));
-        const targetRepo = new GitHubRepoRef(TargetOwner, repoName);
-
-        generate(clonedSeed, undefined, { token: GitHubToken },
-            p => Promise.resolve(p), RemoteGitProjectPersister,
-            targetRepo)
-            .then(result => {
-                assert(result.success);
-                // Check the repo
-                return hasFile(GitHubToken, TargetOwner, repoName, "pom.xml")
-                    .then(r => {
-                        assert(r);
-                        return GitCommandGitProject.cloned({ token: GitHubToken },
-                            targetRepo)
-                            .then(verifyPermissions)
-                            .then(() => {
-                                return;
-                            }); // done() doesn't want your stuff
-                    });
-            }).then(() => cleanupDone(), cleanupDone);
+        let rr: GitHubRepoRef;
+        let clonedSeed: GitProject;
+        let gp: GitProject;
+        try {
+            const targetOwner = await getOwnerByToken();
+            const repoName = tempRepoName();
+            rr = new GitHubRepoRef(targetOwner, repoName);
+            clonedSeed = await GitCommandGitProject.cloned(Creds,
+                new GitHubRepoRef("atomist-seeds", "spring-rest-seed"));
+            const targetRepo = new GitHubRepoRef(targetOwner, repoName);
+            const result = await generate(clonedSeed, undefined, Creds, noEd, RemoteGitProjectPersister, targetRepo);
+            gp = result.target;
+            assert(result.success);
+            const r = await hasFile(GitHubToken, targetOwner, repoName, "pom.xml");
+            assert(r);
+            await verifyPermissions(gp);
+            await deleteOrIgnore(rr, Creds);
+            await Promise.all([clonedSeed, gp].map(p => p.release()));
+            // generate leaks local projects because the returned GitProject has a no-op release function
+            await fs.remove(gp.baseDir);
+        } catch (e) {
+            if (rr) {
+                await deleteOrIgnore(rr, Creds);
+            }
+            await Promise.all([clonedSeed, gp].filter(p => p).map(p => p.release()));
+            if (gp) {
+                await fs.remove(gp.baseDir);
+            }
+            throw e;
+        }
     }).timeout(20000);
 
-    it("should refuse to create a new GitHub repo using existing repo name", function(done) {
-        this.retries(5);
-
-        const clonedSeed = GitCommandGitProject.cloned({ token: GitHubToken },
+    it("should refuse to create a new GitHub repo using existing repo name", async () => {
+        const clonedSeed = await GitCommandGitProject.cloned(Creds,
             new GitHubRepoRef("atomist-seeds", "spring-rest-seed"));
         const targetRepo = new GitHubRepoRef("atomist-travisorg", "this-repository-exists");
 
-        generate(clonedSeed, undefined, { token: GitHubToken },
-            p => Promise.resolve(p), RemoteGitProjectPersister,
-            targetRepo)
-            .then(() => {
-                assert.fail("Should not have succeeded");
-            })
-            .catch(err => {
-                assert(err.message.includes("exists")); // this is only because we put "Probably exists" in the string
-            }).then(() => done(), done);
+        try {
+            const result = await generate(clonedSeed, undefined, Creds, noEd, RemoteGitProjectPersister, targetRepo);
+            await fs.remove(clonedSeed.baseDir);
+            assert.fail("Should not have succeeded");
+        } catch (e) {
+            await fs.remove(clonedSeed.baseDir);
+            assert(e.message.includes("exists")); // this is only because we put "Probably exists" in the string
+        }
     }).timeout(20000);
 
-    function verifyPermissions(p: LocalProject): Promise<Project> {
+    function verifyPermissions(p: GitProject): Promise<GitProject> {
         // Check that Maven wrapper mvnw from Spring project is executable
-        const path = p.baseDir + "/mvnw";
-        assert(fs.statSync(path).isFile());
-        fs.access(path, fs.constants.X_OK, err => {
+        const fp = path.join(p.baseDir, "mvnw");
+        assert(fs.statSync(fp).isFile());
+        fs.access(fp, fs.constants.X_OK, err => {
             if (err) {
                 assert.fail("Not executable");
             }
@@ -108,16 +85,3 @@ describe("generator end to end", () => {
     }
 
 });
-
-export const MockHandlerContext = {
-    messageClient: {
-        respond(msg: string | SlackMessage) {
-            return Promise.resolve();
-        },
-    },
-    graphClient: {
-        executeMutationFromFile(file: string, variables?: any): Promise<any> {
-            return Promise.resolve({ createSlackChannel: [{ id: "stts" }] });
-        },
-    },
-};

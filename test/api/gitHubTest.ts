@@ -1,4 +1,3 @@
-import "mocha";
 import * as assert from "power-assert";
 
 import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
@@ -8,16 +7,9 @@ import {
     fileContent,
     hasFile,
 } from "../../src/util/gitHub";
-
-function barf(): string {
-    throw new Error("<please set GITHUB_TOKEN env variable>");
-}
-
-export const GitHubToken: string = process.env.GITHUB_TOKEN || barf();
-
-export const Creds = { token: GitHubToken };
-
-export const SlackTeamId = "T095SFFBK";
+import {
+    GitHubToken,
+} from "./apiUtils";
 
 describe("gitHubUtils", () => {
 

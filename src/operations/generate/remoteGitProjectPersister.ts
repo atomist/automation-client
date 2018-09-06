@@ -31,8 +31,7 @@ export const RemoteGitProjectPersister: ProjectPersister<GitProject> =
      params?: any) => {
         // Default to github.com if we don't have more information
         const gid = isRemoteRepoRef(targetId) ? targetId : new GitHubRepoRef(targetId.owner, targetId.repo);
-        const gp: GitProject =
-            GitCommandGitProject.fromProject(p, creds);
+        const gp: GitProject = GitCommandGitProject.fromProject(p, creds);
         return gp.init()
             .then(() => {
                 return isGitHubRepoRef(gid) ? gp.configureFromRemote() : {};

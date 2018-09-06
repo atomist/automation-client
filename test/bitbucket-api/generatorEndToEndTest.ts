@@ -8,7 +8,7 @@ import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject
 import {
     deleteOrIgnore,
     tempRepoName,
-} from "../api/generatorEndToEndTest";
+} from "../api/apiUtils";
 import {
     BitBucketCredentials,
     BitBucketUser,

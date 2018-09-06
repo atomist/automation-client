@@ -329,7 +329,7 @@ function clone(
                             });
                         });
                 default:
-                    throw new Error("What is this type: " + cloneDirectoryInfo.type);
+                    return Promise.reject(new Error("What is this type: " + cloneDirectoryInfo.type));
             }
         });
 }

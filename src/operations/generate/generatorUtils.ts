@@ -1,3 +1,5 @@
+import * as fs from "fs-extra";
+import { newRepo } from "../../../test/api/apiUtils";
 import { ActionResult } from "../../action/ActionResult";
 import { HandlerContext } from "../../HandlerContext";
 import { logger } from "../../internal/util/logger";
@@ -80,6 +82,12 @@ export function generate<P extends Project = Project, PARAMS = object>(
                                 };
                             }) :
                         persistenceResult;
+                })
+                .catch(err => {
+                    logger.debug("Failed to generate %s/%s in %s, cleaning up: %s", targetId.owner, targetId.repo,
+                        newRepoDirectoryInfo.path, err.message);
+                    return newRepoDirectoryInfo.release()
+                        .then(() => Promise.reject(err), e => Promise.reject(err));
                 });
         });
 }

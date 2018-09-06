@@ -4,6 +4,7 @@ import { ApolloGraphClient } from "../../src/graph/ApolloGraphClient";
 import { logger } from "../../src/internal/util/logger";
 import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
+import { GitProject } from "../../src/project/git/GitProject";
 import {
     ReposQuery,
     ReposQueryVariables,
@@ -11,7 +12,7 @@ import {
 import {
     GitHubToken,
     SlackTeamId,
-} from "./gitHubTest";
+} from "./apiUtils";
 
 describe("ApolloGraphClient", () => {
 
@@ -23,7 +24,7 @@ describe("ApolloGraphClient", () => {
                 { Authorization: `token ${GitHubToken}` });
             let start = Date.now();
             agc.query<ReposQuery, ReposQueryVariables>({
-                name: "repos",
+                name: "Repos",
                 variables: { teamId: SlackTeamId, offset: 0 },
             })
                 .then(result => {
@@ -35,7 +36,7 @@ describe("ApolloGraphClient", () => {
                     assert(repo1.owner);
                     start = Date.now();
                     agc.query<ReposQuery, ReposQueryVariables>({
-                        name: "repos",
+                        name: "Repos",
                         variables: { teamId: SlackTeamId, offset: 0 },
                     })
                         .then(r1 => {
@@ -45,33 +46,35 @@ describe("ApolloGraphClient", () => {
                 .then(() => done(), done);
         }).timeout(5000);
 
-        it("should run repos query and clone repo", done => {
-            const agc = new ApolloGraphClient(`https://automation.atomist.com/graphql/team/${SlackTeamId}`,
-                { Authorization: `token ${GitHubToken}` });
-            agc.query<ReposQuery, ReposQueryVariables>({
-                name: "repos",
-                variables: { teamId: SlackTeamId, offset: 0 },
-            })
-                .then(result => {
-                    const org = result.ChatTeam[0].orgs[0];
-                    assert(org.repo.length > 0);
-                    const repo1 = org.repo[0];
-                    return GitCommandGitProject.cloned({ token: GitHubToken },
-                        new GitHubRepoRef(repo1.owner, repo1.name))
-                        .then(p => {
-                            const gitHead = p.findFileSync(".git/HEAD");
-                            assert(gitHead);
-                            assert.equal(gitHead.path, ".git/HEAD");
-                        });
-                })
-                .then(() => done(), done);
+        it("should run repos query and clone repo", async () => {
+            let p: GitProject;
+            try {
+                const agc = new ApolloGraphClient(`https://automation.atomist.com/graphql/team/${SlackTeamId}`,
+                    { Authorization: `token ${GitHubToken}` });
+                const result = await agc.query<ReposQuery, ReposQueryVariables>({
+                    name: "Repos",
+                    variables: { teamId: SlackTeamId, offset: 0 },
+                });
+                const org = result.ChatTeam[0].orgs[0];
+                assert(org.repo.length > 0);
+                const repo1 = org.repo[0];
+                p = await GitCommandGitProject.cloned({ token: GitHubToken },
+                    new GitHubRepoRef(repo1.owner, repo1.name));
+                const gitHead = p.findFileSync(".git/HEAD");
+                assert(gitHead);
+                assert(gitHead.path === ".git/HEAD");
+                await p.release();
+            } catch (e) {
+                await p.release();
+                throw e;
+            }
         }).timeout(10000);
 
         it("should mutate preferences", done => {
             const agc = new ApolloGraphClient(`https://automation.atomist.com/graphql/team/${SlackTeamId}`,
                 { Authorization: `token ${GitHubToken}` });
             agc.mutate({
-                name: "setChatUserPreference",
+                name: "SetChatUserPreference",
                 variables: {
                     teamId: SlackTeamId,
                     userId: "U095T3BPF",
