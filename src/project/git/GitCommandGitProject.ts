@@ -349,7 +349,7 @@ function cloneInto(
             .then(() => runIn(repoDir, `git checkout ${id.sha} --`)
                 // When the head moved on and we only cloned with depth; we might have to do a full clone to get to the commit we want
                 .catch(err => {
-                    logger.debug(`Sha ${id.sha} not in cloned history. Attempting full clone`)
+                    logger.debug(`Sha ${id.sha} not in cloned history. Attempting full clone`);
                     return runIn(repoDir, `git fetch --unshallow`)
                         .then(() => runIn(repoDir, `git checkout ${id.sha} --`));
                 }));
