@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
--   Make sure Apollo propagetes the GraphQL errors. [#448f89a](https://github.com/atomist/automation-client-ts/commit/448f89aa8bf9c8bcf226f29882dad26267fe665e)
+-   Make sure Apollo propagates the GraphQL errors. [#448f89a](https://github.com/atomist/automation-client-ts/commit/448f89aa8bf9c8bcf226f29882dad26267fe665e)
 -   No such file or directory `~/.atomist/log`. [#361](https://github.com/atomist/automation-client-ts/issues/361)
 
 ## [1.0.0-M.3](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.2...1.0.0-M.3) - 2018-09-04
@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Add generic return type to ConfigurationPostProcessor. [#a564fce](https://github.com/atomist/automation-client-ts/commit/a564fce96107017001e4d47afc9dd229c36ba34a)
 -   Add support for marking branch commits to auto merge. [#4c8f677](https://github.com/atomist/automation-client-ts/commit/4c8f677d2857f301abedd65d7fe9fe5eb37da56f)
 -   Cleanup own tmp directories. [#0de0100](https://github.com/atomist/automation-client-ts/commit/0de0100a7f26d296df808e128d2e785060e4de62)
+-   projectUtils.gatherFromMatches to build up data based on pieces of code
 
 ### Changed
 
@@ -41,6 +42,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   **BREAKING** Pull up id to RepoId and remove unused code. [#351](https://github.com/atomist/automation-client-ts/issues/351)
 -   Export all of MessageClient. [#352](https://github.com/atomist/automation-client-ts/issues/352)
 -   **BREAKING** Remove all deprecations. [#350](https://github.com/atomist/automation-client-ts/issues/350)
+-   renamed saveFromFiles to gatherFromFiles, deprecating the old function.
 
 ### Fixed
 
