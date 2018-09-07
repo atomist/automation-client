@@ -345,9 +345,14 @@ function cloneInto(
     const url = id.cloneUrl(credentials);
     const command = (!opts.alwaysDeep && id.branch ?
         runIn(".", `git clone --depth ${opts.depth ? opts.depth : 1} ${url} ${repoDir} ${id.branch ? `--branch ${id.branch}` : ""}`) :
-        runIn(".", `git clone ${url} ${repoDir}`))
-            .then(() => id.branch ? runIn(repoDir, `git checkout ${id.branch}`) : null)
-            .then(() => runIn(repoDir, id.branch ? `git reset ${id.sha} --` : `git checkout ${id.sha}`));
+        runIn(".", `git clone ${url} ${repoDir} ${id.branch ? `--branch ${id.branch}` : ""}`))
+            .then(() => runIn(repoDir, `git checkout ${id.sha} --`)
+                // When the head moved on and we only cloned with depth; we might have to do a full clone to get to the commit we want
+                .catch(err => {
+                    logger.debug(`Sha ${id.sha} not in cloned history. Attempting full clone`)
+                    return runIn(repoDir, `git fetch --unshallow`)
+                        .then(() => runIn(repoDir, `git checkout ${id.sha} --`));
+                }));
 
     const cleanUrl = url.replace(/\/\/.*:x-oauth-basic/, "//TOKEN:x-oauth-basic");
     logger.debug(`Cloning repo '${cleanUrl}' in '${repoDir}'`);
@@ -361,7 +366,7 @@ function cloneInto(
     return promiseRetry(retryOptions, (retry, count) => {
         return command
             .catch(err => {
-                logger.debug(`clone of ${id.owner}/${id.repo} attempt ${count} failed`);
+                logger.debug(`Clone of ${id.owner}/${id.repo} attempt ${count} failed`);
                 retry(err);
             });
     })
