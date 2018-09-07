@@ -14,7 +14,7 @@ import { File } from "../../project/File";
 import { ProjectAsync } from "../../project/Project";
 import {
     GlobOptions,
-    saveFromFiles,
+    gatherFromFiles,
 } from "../../project/util/projectUtils";
 import { toSourceLocation } from "../../project/util/sourceLocationUtils";
 import { LocatedTreeNode } from "../LocatedTreeNode";
@@ -89,7 +89,7 @@ export async function findFileMatches(p: ProjectAsync,
     if (!parser) {
         throw new Error(`Cannot find parser for path expression [${pathExpression}]: Using ${parserOrRegistry}`);
     }
-    const files = await saveFromFiles(p, globPatterns, file => parseFile(parser, parsed, functionRegistry, p, file));
+    const files = await gatherFromFiles(p, globPatterns, file => parseFile(parser, parsed, functionRegistry, p, file));
     const all = await Promise.all(files);
     return all.filter(x => !!x);
 }
