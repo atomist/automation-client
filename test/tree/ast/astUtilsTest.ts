@@ -3,7 +3,7 @@ import * as assert from "power-assert";
 import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import {
-    findMatches, saveFromMatches,
+    findMatches, gatherFromMatches,
     zapAllMatches,
 } from "../../../src/tree/ast/astUtils";
 import { ZapTrailingWhitespace } from "../../../src/tree/ast/FileHits";
@@ -34,13 +34,13 @@ describe("astUtils", () => {
 
     });
 
-    describe("saveFromMatches", () => {
+    describe("gatherFromMatches", () => {
 
         it("should save simple", done => {
             const f = new InMemoryFile("src/test.ts",
                 "const x: number = 10; const y = 13; const xylophone = 3;");
             const p = InMemoryProject.of(f);
-            saveFromMatches<number>(p,
+            gatherFromMatches<number>(p,
                 TypeScriptES6FileParser,
                 "src/**/*.ts",
                 "//VariableDeclaration[?check]/Identifier",
@@ -57,7 +57,7 @@ describe("astUtils", () => {
             const f = new InMemoryFile("src/test.ts",
                 "const x: number = 10; const y = 13; const xylophone = 3;");
             const p = InMemoryProject.of(f);
-            saveFromMatches<number>(p,
+            gatherFromMatches<number>(p,
                 TypeScriptES6FileParser,
                 "src/**/*.ts",
                 "//VariableDeclaration[?check]/Identifier",

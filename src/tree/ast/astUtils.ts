@@ -48,8 +48,10 @@ export function findMatches(p: ProjectAsync,
 }
 
 /**
- * Integrate path expressions with project operations to save mapped values from all matches.
- * Filter out undefined values
+ * Integrate path expressions with project operations to gather mapped values from all matches.
+ * Choose the files with globPatterns; choose the portions of code to match with the pathExpression.
+ * Choose what to return based on each match with the mapper function.
+ * Returns all of the values returned by the mapper (except undefined).
  * @param p project
  * @param parserOrRegistry parser or parsers to use to parse files
  * @param globPatterns file glob patterns
@@ -58,7 +60,7 @@ export function findMatches(p: ProjectAsync,
  * @param functionRegistry registry to look for path expression functions in
  * @return {Promise<MatchResult[]>} matches
  */
-export function saveFromMatches<T>(p: ProjectAsync,
+export function gatherFromMatches<T>(p: ProjectAsync,
                                    parserOrRegistry: FileParser | FileParserRegistry,
                                    globPatterns: GlobOptions,
                                    pathExpression: string | PathExpression,
