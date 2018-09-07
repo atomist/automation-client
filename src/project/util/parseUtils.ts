@@ -4,11 +4,7 @@ import { ScriptedFlushable } from "../../internal/common/Flushable";
 import { logger } from "../../internal/util/logger";
 import { File } from "../File";
 import { ProjectAsync } from "../Project";
-import {
-    doWithFiles,
-    GlobOptions,
-    saveFromFilesAsync,
-} from "./projectUtils";
+import { doWithFiles, GlobOptions, saveFromFiles } from "./projectUtils";
 
 export type Match<M> = M & PatternMatch;
 
@@ -83,7 +79,7 @@ export function findFileMatches<M>(p: ProjectAsync,
                                    globPatterns: GlobOptions,
                                    microgrammar: Microgrammar<M>,
                                    opts: Opts = DefaultOpts): Promise<Array<FileWithMatches<M>>> {
-    return saveFromFilesAsync(p, globPatterns, file => {
+    return saveFromFiles(p, globPatterns, file => {
         return file.getContent()
             .then(async content => {
                 const matches = await microgrammar.findMatchesAsync(transformIfNecessary(content, opts));

@@ -39,47 +39,21 @@ export type GlobOptions = string | string[];
 export function fileExists<T>(p: ProjectAsync,
                               globPatterns: GlobOptions,
                               test: (f: File) => boolean): Promise<boolean> {
-    return saveFromFiles<boolean>(p, globPatterns, f => test(f) === true)
+    return saveFromFiles<boolean>(p, globPatterns, async f => test(f) === true)
         .then(results => results.length > 0);
 }
 
 /**
- * Gather data from a set of files
- * @param project project to act on
- * @param globPatterns glob patterns for files to match
- * @param gather function that saves a value from a file or discards it
- * by returning undefined
- * @return {Promise<T>}
+ * Save values from files
+ * @param {ProjectAsync} project to act on
+ * @param {string} globPatterns glob pattern for files to match
+ * @param {(f: File) => Promise<T>} gather function returning a promise from each file.
+ * Undefined returns will be filtered out
+ * @return {Promise<T[]>}
  */
 export function saveFromFiles<T>(project: ProjectAsync,
                                  globPatterns: GlobOptions,
-                                 gather: (f: File) => T | undefined): Promise<T[]> {
-    return new Promise((resolve, reject) => {
-        const gathered: T[] = [];
-        project.streamFiles(...toStringArray(globPatterns))
-            .on("data", f => {
-                const g = gather(f);
-                if (g) {
-                    gathered.push(g);
-                }
-            })
-            .on("error", reject)
-            .on("end", _ => {
-                resolve(gathered);
-            });
-    });
-}
-
-/**
- * Same as saveFromFiles, but works with promise returns
- * @param {ProjectAsync} project to act on
- * @param {string} globPatterns glob pattern for files to match
- * @param {(f: File) => Promise<T>} gather function returning a promise from each file
- * @return {Promise<T[]>}
- */
-export function saveFromFilesAsync<T>(project: ProjectAsync,
-                                      globPatterns: GlobOptions,
-                                      gather: (f: File) => Promise<T> | undefined): Promise<T[]> {
+                                 gather: (f: File) => Promise<T> | undefined): Promise<T[]> {
     return new Promise((resolve, reject) => {
         const gathered: Array<Promise<T>> = [];
         project.streamFiles(...toStringArray(globPatterns))
@@ -95,6 +69,12 @@ export function saveFromFilesAsync<T>(project: ProjectAsync,
             });
     });
 }
+
+/**
+ * @deprecated use saveFromFiles
+ * @type {<T>(project: ProjectAsync, globPatterns: GlobOptions, gather: (f: File) => (Promise<T> | undefined)) => Promise<T[]>}
+ */
+export const saveFromFilesAsync = saveFromFiles;
 
 /**
  * Perform the same operation on all the files.

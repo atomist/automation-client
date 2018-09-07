@@ -3,7 +3,7 @@ import * as assert from "power-assert";
 import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
 import {
-    findMatches,
+    findMatches, saveFromMatches,
     zapAllMatches,
 } from "../../../src/tree/ast/astUtils";
 import { ZapTrailingWhitespace } from "../../../src/tree/ast/FileHits";
@@ -32,6 +32,43 @@ describe("astUtils", () => {
                 }).catch(done);
         });
 
+    });
+
+    describe("saveFromMatches", () => {
+
+        it("should save simple", done => {
+            const f = new InMemoryFile("src/test.ts",
+                "const x: number = 10; const y = 13; const xylophone = 3;");
+            const p = InMemoryProject.of(f);
+            saveFromMatches<number>(p,
+                TypeScriptES6FileParser,
+                "src/**/*.ts",
+                "//VariableDeclaration[?check]/Identifier",
+                m => m.$value.length,
+                { check: n => n.$value.includes("x") })
+                .then(matches => {
+                    assert.equal(matches.length, 2);
+                    assert.deepEqual(matches, ["x".length, "xylophone".length]);
+                    done();
+                }).catch(done);
+        });
+
+        it("should suppress undefined", done => {
+            const f = new InMemoryFile("src/test.ts",
+                "const x: number = 10; const y = 13; const xylophone = 3;");
+            const p = InMemoryProject.of(f);
+            saveFromMatches<number>(p,
+                TypeScriptES6FileParser,
+                "src/**/*.ts",
+                "//VariableDeclaration[?check]/Identifier",
+                m => m.$value.length <= 1 ? undefined : m.$value.length,
+                { check: n => n.$value.includes("x") })
+                .then(matches => {
+                    assert.equal(matches.length, 1);
+                    assert.deepEqual(matches, ["xylophone".length]);
+                    done();
+                }).catch(done);
+        });
     });
 
     describe("zapAllMatches", () => {
