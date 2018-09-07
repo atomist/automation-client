@@ -52,8 +52,8 @@ export function fileExists<T>(p: ProjectAsync,
  * @return {Promise<T[]>}
  */
 export function gatherFromFiles<T>(project: ProjectAsync,
-                                 globPatterns: GlobOptions,
-                                 gather: (f: File) => Promise<T> | undefined): Promise<T[]> {
+                                   globPatterns: GlobOptions,
+                                   gather: (f: File) => Promise<T> | undefined): Promise<T[]> {
     return new Promise((resolve, reject) => {
         const gathered: Array<Promise<T>> = [];
         project.streamFiles(...toStringArray(globPatterns))

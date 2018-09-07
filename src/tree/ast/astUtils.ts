@@ -13,8 +13,8 @@ import { logger } from "../../internal/util/logger";
 import { File } from "../../project/File";
 import { ProjectAsync } from "../../project/Project";
 import {
-    GlobOptions,
     gatherFromFiles,
+    GlobOptions,
 } from "../../project/util/projectUtils";
 import { toSourceLocation } from "../../project/util/sourceLocationUtils";
 import { LocatedTreeNode } from "../LocatedTreeNode";
@@ -61,11 +61,11 @@ export function findMatches(p: ProjectAsync,
  * @return {Promise<MatchResult[]>} matches
  */
 export function gatherFromMatches<T>(p: ProjectAsync,
-                                   parserOrRegistry: FileParser | FileParserRegistry,
-                                   globPatterns: GlobOptions,
-                                   pathExpression: string | PathExpression,
-                                   mapper: (m: MatchResult) => T,
-                                   functionRegistry?: object): Promise<T[]> {
+                                     parserOrRegistry: FileParser | FileParserRegistry,
+                                     globPatterns: GlobOptions,
+                                     pathExpression: string | PathExpression,
+                                     mapper: (m: MatchResult) => T,
+                                     functionRegistry?: object): Promise<T[]> {
     return findFileMatches(p, parserOrRegistry, globPatterns, pathExpression, functionRegistry)
         .then(fileHits => _.flatten(
             fileHits.map(f => f.matches.map(mapper).filter(x => !!x))));
