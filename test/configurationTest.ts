@@ -59,7 +59,6 @@ describe("configuration", () => {
         http: {
             enabled: true,
             host: "localhost",
-            port: 2866,
             auth: {
                 basic: {
                     enabled: false,

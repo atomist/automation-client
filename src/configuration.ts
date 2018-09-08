@@ -878,7 +878,6 @@ export const LocalDefaultConfiguration: Configuration = {
     http: {
         enabled: true,
         host: "localhost",
-        port: 2866,
         auth: {
             basic: {
                 enabled: false,
@@ -935,6 +934,7 @@ export const ProductionDefaultConfiguration: Partial<Configuration> = {
     environment: "production",
     policy: "durable",
     http: {
+        port: 2866,
         auth: {
             basic: {
                 enabled: true,

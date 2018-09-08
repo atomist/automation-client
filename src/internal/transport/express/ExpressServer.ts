@@ -5,6 +5,7 @@ import * as passport from "passport";
 import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
 import * as tokenHeader from "passport-http-header-token";
+import * as portfinder from "portfinder";
 import * as retry from "retry";
 import {
     Configuration,
@@ -145,19 +146,29 @@ export class ExpressServer {
             randomize: true,
         });
 
+        let portPromise;
+        if (!this.configuration.http.port) {
+            portPromise = portfinder.getPortPromise({ port: 2866, stopPort: 2888 });
+        } else {
+            portPromise = Promise.resolve(this.configuration.http.port);
+        }
+
         operation.attempt(() => {
-            exp.listen(this.configuration.http.port, () => {
-                logger.debug(
-                    `Atomist automation client api running at 'http://${
-                    this.configuration.http.host}:${this.configuration.http.port}'`);
-            }).on("error", err => {
-                logger.warn("Starting automation client api failed: %s", err.message);
-                if (operation.retry(err)) {
-                    return;
-                } else {
-                    logger.error("Failed to start automation client api");
-                }
-            });
+            portPromise
+                .then(port => {
+                    exp.listen(port, () => {
+                        logger.debug(
+                            `Atomist automation client api running at 'http://${
+                                this.configuration.http.host}:${port}'`);
+                    }).on("error", err => {
+                        logger.warn("Starting automation client api failed: %s", err.message);
+                        if (operation.retry(err)) {
+                            return;
+                        } else {
+                            logger.error("Failed to start automation client api");
+                        }
+                    });
+                });
         });
 
     }
@@ -214,8 +225,8 @@ export class ExpressServer {
             const adminOrg = this.configuration.http.auth.bearer.adminOrg;
 
             passport.use("bearer", new bearer.Strategy({
-                passReqToCallback: true,
-            } as bearer.IStrategyOptions,
+                    passReqToCallback: true,
+                } as bearer.IStrategyOptions,
                 (req, token, done) => {
                     const api = new GitHubApi();
                     api.authenticate({ type: "token", token });
@@ -277,7 +288,7 @@ export class ExpressServer {
     private adminRoute = (req, res, next) => {
         req.__admin = true;
         next();
-    }
+    };
 
     private authenticate = (req, res, next) => {
         if (this.configuration.http.auth) {
@@ -299,7 +310,7 @@ export class ExpressServer {
         } else {
             next();
         }
-    }
+    };
 }
 
 const ApiBase = "";

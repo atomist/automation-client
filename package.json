@@ -101,6 +101,7 @@
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",
     "passport-http-header-token": "^1.1.0",
+    "portfinder": "^1.0.17",
     "power-assert": "^1.4.4",
     "promise-retry": "^1.1.1",
     "proper-lockfile": "^2.0.1",
