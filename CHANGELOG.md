@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 -   Add depth for cloning the master branch. [#9ed45d8](https://github.com/atomist/automation-client-ts/commit/9ed45d8baa91572eec2424987f22368a6101f69b)
+-   Add startupSuccessful event. [#9768eaf](https://github.com/atomist/automation-client-ts/commit/9768eafeb185e9b4acb58bf9e0fafb2e23125c8e)
 
 ### Changed
 
