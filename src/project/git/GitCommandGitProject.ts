@@ -1,5 +1,6 @@
 import { exec } from "child-process-promise";
 import * as _ from "lodash";
+import promiseRetry = require("promise-retry");
 import {
     ActionResult,
     successOn,
@@ -36,7 +37,6 @@ import {
     GitStatus,
     runStatusIn,
 } from "./gitStatus";
-import promiseRetry = require("promise-retry");
 
 export const DefaultDirectoryManager: DirectoryManager = TmpDirectoryManager;
 

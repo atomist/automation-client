@@ -1,7 +1,6 @@
 import * as GitHubApi from "@octokit/rest";
 import * as bodyParser from "body-parser";
 import * as express from "express";
-import * as core from "express-serve-static-core";
 import * as passport from "passport";
 import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
@@ -38,7 +37,7 @@ import { prepareRegistration } from "../websocket/payloads";
  */
 export class ExpressServer {
 
-    private exp: core.Express;
+    private exp: express.Express;
 
     constructor(private automations: AutomationServer,
                 private configuration: Configuration,
@@ -278,7 +277,7 @@ export class ExpressServer {
     private adminRoute = (req, res, next) => {
         req.__admin = true;
         next();
-    };
+    }
 
     private authenticate = (req, res, next) => {
         if (this.configuration.http.auth) {
@@ -300,7 +299,7 @@ export class ExpressServer {
         } else {
             next();
         }
-    };
+    }
 }
 
 const ApiBase = "";
