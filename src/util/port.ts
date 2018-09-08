@@ -9,4 +9,3 @@ import * as portfinder from "portfinder";
 export function scanFreePort(start: number = 2866, end: number = 2888): Promise<number> {
     return portfinder.getPortPromise({ port: start, stopPort: end });
 }
-

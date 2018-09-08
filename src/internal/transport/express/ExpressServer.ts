@@ -16,6 +16,7 @@ import { noEventHandlersWereFound } from "../../../server/AbstractAutomationServ
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
 import { MessageClient } from "../../../spi/message/MessageClient";
+import { scanFreePort } from "../../../util/port";
 import {
     health,
     HealthStatus,
@@ -27,7 +28,6 @@ import {
     heapDump,
 } from "../../util/memory";
 import { metrics } from "../../util/metric";
-import { scanFreePort } from "../../../util/port";
 import { guid } from "../../util/string";
 import { RequestProcessor } from "../RequestProcessor";
 import { prepareRegistration } from "../websocket/payloads";
