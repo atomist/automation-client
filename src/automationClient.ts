@@ -208,7 +208,7 @@ export class AutomationClient implements RequestProcessor {
         return this.webSocketClient.start();
     }
 
-    private runHttp(handlerMaker: () => ExpressRequestProcessor): Promise<void> {
+    private runHttp(handlerMaker: () => ExpressRequestProcessor): Promise<any> {
         if (!this.configuration.http.enabled) {
             return;
         }
@@ -219,7 +219,7 @@ export class AutomationClient implements RequestProcessor {
             this.configuration,
             this.httpHandler);
 
-        return Promise.resolve();
+        return this.httpServer.run();
     }
 
     private printStartupMessage(): Promise<void> {
