@@ -1,13 +1,14 @@
+
+import { HandlerResult } from "../../HandlerResult";
+
 /**
  * EventListener to retrieve notifications on incoming cortex events and command handler invocations.
  */
-import { HandlerResult } from "../../HandlerResult";
-
 export interface RequestProcessor {
 
     /**
-     * A new commnad handler request haa been received.
-     * @param {CommandIncoming} event
+     * A new command handler request haa been received.
+     * @param {CommandIncoming} command
      * @param {(result: HandlerResult) => void} callback
      * @param {(error: any) => void} error
      */
@@ -15,7 +16,7 @@ export interface RequestProcessor {
 
     /**
      * A new cortex event has been received.
-     * @param {EventIncoming} command
+     * @param {EventIncoming} event
      * @param {(results: HandlerResult[]) => void} callback
      * @param {(error: any) => void} error
      */
