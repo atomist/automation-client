@@ -8,7 +8,7 @@ import {
     deleteFiles,
     doWithFiles,
     fileExists,
-    saveFromFiles,
+    gatherFromFiles,
 } from "../../../src/project/util/projectUtils";
 import { tempProject } from "../utils";
 
@@ -34,10 +34,10 @@ describe("projectUtils", () => {
             .then(done, done);
     });
 
-    it("saveFromFiles", done => {
+    it("gatherFromFiles", done => {
         const t = tempProject();
         t.addFileSync("Thing", "1");
-        saveFromFiles<string>(t, AllFiles, async f => {
+        gatherFromFiles<string>(t, AllFiles, async f => {
             return f.path;
         })
             .then(gathered => {

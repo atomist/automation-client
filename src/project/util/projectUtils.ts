@@ -39,21 +39,21 @@ export type GlobOptions = string | string[];
 export function fileExists<T>(p: ProjectAsync,
                               globPatterns: GlobOptions,
                               test: (f: File) => boolean): Promise<boolean> {
-    return saveFromFiles<boolean>(p, globPatterns, async f => test(f) === true)
+    return gatherFromFiles<boolean>(p, globPatterns, async f => test(f) === true)
         .then(results => results.length > 0);
 }
 
 /**
- * Save values from files
+ * Gather values from files
  * @param {ProjectAsync} project to act on
  * @param {string} globPatterns glob pattern for files to match
- * @param {(f: File) => Promise<T>} gather function returning a promise from each file.
+ * @param {(f: File) => Promise<T>} gather function returning a promise (of the value you're gathering) from each file.
  * Undefined returns will be filtered out
  * @return {Promise<T[]>}
  */
-export function saveFromFiles<T>(project: ProjectAsync,
-                                 globPatterns: GlobOptions,
-                                 gather: (f: File) => Promise<T> | undefined): Promise<T[]> {
+export function gatherFromFiles<T>(project: ProjectAsync,
+                                   globPatterns: GlobOptions,
+                                   gather: (f: File) => Promise<T> | undefined): Promise<T[]> {
     return new Promise((resolve, reject) => {
         const gathered: Array<Promise<T>> = [];
         project.streamFiles(...toStringArray(globPatterns))
@@ -71,10 +71,15 @@ export function saveFromFiles<T>(project: ProjectAsync,
 }
 
 /**
- * @deprecated use saveFromFiles
+ * @deprecated use gatherFromFiles
  * @type {<T>(project: ProjectAsync, globPatterns: GlobOptions, gather: (f: File) => (Promise<T> | undefined)) => Promise<T[]>}
  */
-export const saveFromFilesAsync = saveFromFiles;
+export const saveFromFilesAsync = gatherFromFiles;
+/**
+ * @deprecated use gatherFromFiles
+ * @type {<T>(project: ProjectAsync, globPatterns: GlobOptions, gather: (f: File) => (Promise<T> | undefined)) => Promise<T[]>}
+ */
+export const saveFromFiles = gatherFromFiles;
 
 /**
  * Perform the same operation on all the files.
