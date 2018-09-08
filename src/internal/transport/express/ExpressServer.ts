@@ -27,6 +27,7 @@ import {
     heapDump,
 } from "../../util/memory";
 import { metrics } from "../../util/metric";
+import { scanFreePort } from "../../../util/port";
 import { guid } from "../../util/string";
 import { RequestProcessor } from "../RequestProcessor";
 import { prepareRegistration } from "../websocket/payloads";
@@ -143,13 +144,14 @@ export class ExpressServer {
     public run(): Promise<boolean> {
         let portPromise;
         if (!this.configuration.http.port) {
-            portPromise = portfinder.getPortPromise({ port: 2866, stopPort: 2888 });
+            portPromise = scanFreePort();
         } else {
             portPromise = Promise.resolve(this.configuration.http.port);
         }
 
         return portPromise
             .then(port => {
+                this.configuration.http.port = port;
                 this.exp.listen(port, () => {
                     logger.debug(
                         `Atomist automation client api running at 'http://${
