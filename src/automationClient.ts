@@ -1,6 +1,6 @@
 import * as cluster from "cluster";
 import * as stringify from "json-stringify-safe";
-import * as p from "path";
+import * as path from "path";
 import { Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
@@ -20,7 +20,7 @@ import {
     EventIncoming,
     RequestProcessor,
 } from "./internal/transport/RequestProcessor";
-import { showStartupMessages } from "./internal/transport/showStartupMessages";
+import { StartupMessageAutomationEventListener } from "./internal/transport/showStartupMessages";
 import { DefaultWebSocketRequestProcessor } from "./internal/transport/websocket/DefaultWebSocketRequestProcessor";
 import { prepareRegistration } from "./internal/transport/websocket/payloads";
 import { WebSocketClient } from "./internal/transport/websocket/WebSocketClient";
@@ -47,6 +47,7 @@ export class AutomationClient implements RequestProcessor {
     private defaultListeners = [
         new MetricEnabledAutomationEventListener(),
         new EventStoringAutomationEventListener(),
+        new StartupMessageAutomationEventListener(),
     ];
 
     constructor(public configuration: Configuration) {
@@ -110,11 +111,11 @@ export class AutomationClient implements RequestProcessor {
                     this.runHttp(() => this.setupExpressRequestHandler()),
                 ])
                     .then(() => this.setupApplicationEvents())
-                    .then(() => this.printStartupMessage());
+                    .then(() => this.raiseStartupEvent());
             } else {
                 return this.runHttp(() => this.setupExpressRequestHandler())
                     .then(() => this.setupApplicationEvents())
-                    .then(() => this.printStartupMessage());
+                    .then(() => this.raiseStartupEvent());
             }
         } else if (cluster.isMaster) {
             logger.info(`Starting Atomist automation client master ${clientSig}`);
@@ -129,16 +130,22 @@ export class AutomationClient implements RequestProcessor {
                         this.runHttp(() => this.setupExpressRequestHandler()),
                     ])
                         .then(() => this.setupApplicationEvents())
-                        .then(() => this.printStartupMessage());
+                        .then(() => this.raiseStartupEvent());
                 });
         } else if (cluster.isWorker) {
             logger.info(`Starting Atomist automation client worker ${clientSig}`);
             return Promise.resolve(this.setupWebSocketClusterWorkerRequestHandler())
                 .then(workerProcessor => {
                     this.webSocketHandler = workerProcessor;
-                    return Promise.resolve();
+                    return this.raiseStartupEvent();
                 });
         }
+    }
+
+    private raiseStartupEvent() {
+        return [...this.defaultListeners, ...this.configuration.listeners].filter(l => l.startupSuccessful)
+            .map(l => () => l.startupSuccessful(this))
+            .reduce((p, f) => p.then(f), Promise.resolve());
     }
 
     private configureStatsd() {
@@ -151,7 +158,7 @@ export class AutomationClient implements RequestProcessor {
         setLogLevel(this.configuration.logging.level);
 
         if (this.configuration.logging.file.enabled === true) {
-            let filename = p.join(".", "log", `${this.configuration.name.replace(/^.*\//, "")}.log`);
+            let filename = path.join(".", "log", `${this.configuration.name.replace(/^.*\//, "")}.log`);
             if (this.configuration.logging.file.name) {
                 filename = this.configuration.logging.file.name;
             }
@@ -220,10 +227,6 @@ export class AutomationClient implements RequestProcessor {
             this.httpHandler);
 
         return this.httpServer.run();
-    }
-
-    private printStartupMessage(): Promise<void> {
-        return showStartupMessages(this.configuration, this.automations.automations);
     }
 }
 

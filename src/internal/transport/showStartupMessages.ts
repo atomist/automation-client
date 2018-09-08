@@ -1,14 +1,26 @@
 import chalk from "chalk";
+import * as cluster from "cluster";
 import * as _ from "lodash";
 import { promisify } from "util";
+import { AutomationClient } from "../../automationClient";
 import {
     BannerSection,
     Configuration,
 } from "../../configuration";
+import { AutomationEventListenerSupport } from "../../server/AutomationEventListener";
 import { Automations } from "../metadata/metadata";
 import { info } from "../util/info";
 import { logger } from "../util/logger";
 import { RegistrationConfirmation } from "./websocket/WebSocketRequestProcessor";
+
+export class StartupMessageAutomationEventListener extends AutomationEventListenerSupport {
+
+    public startupSuccessful(client: AutomationClient): Promise<void> {
+        if (cluster.isMaster || !client.configuration.cluster.enabled) {
+            return showStartupMessages(client.configuration, client.automations.automations);
+        }
+    }
+}
 
 /**
  * Build and log startup message, including any user banner
