@@ -106,7 +106,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                         private credentials: ProjectOperationCredentials, release: ReleaseFunction,
                         public provenance?: string) {
         super(id, baseDir, release);
-        this.branch = id.sha;
+        this.branch = id.branch || id.sha;
         logger.debug(`Created GitProject`);
     }
 
@@ -313,7 +313,7 @@ function clone(
                 case "existing-directory":
                     const repoDir = cloneDirectoryInfo.path;
                     return resetOrigin(repoDir, credentials, id)
-                        .then(() => checkout(repoDir, id.sha))
+                        .then(() => checkout(repoDir, id.sha)) // is this what we intend?
                         .then(() => clean(repoDir))
                         .then(() => {
                             return GitCommandGitProject.fromBaseDir(id,
