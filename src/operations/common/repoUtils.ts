@@ -35,6 +35,7 @@ export function doWithAllRepos<R, P>(ctx: HandlerContext,
                     repoLoader(id)
                         .catch(err => {
                             logger.warn("Unable to load repo %s:%s: %s", id.owner, id.repo, err);
+                            logger.debug(err.stack);
                             return undefined;
                         })
                         .then(p => {
