@@ -26,6 +26,12 @@ export interface CloneOptions {
      * Use with `depth` to get a minimal clone.
      */
     cloneBranch?: string;
+
+    /**
+     * If you really want the SHA, not the tip of the branch that we've checked out,
+     * then request a detached HEAD at that SHA.
+     */
+    detachHead?: boolean;
 }
 
 export const DefaultCloneOptions: CloneOptions = {

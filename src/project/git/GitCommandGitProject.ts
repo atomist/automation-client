@@ -348,9 +348,9 @@ async function cloneInto(
         // If we wanted a deep clone, just clone it
         `git clone ${url} ${repoDir}`;
     // Note: branch takes preference for checkout because we might be about to commit to it.
-    // If you want to be sure to land on your SHA, don't populate id.branch
-    // You can also call gitStatus() on the returned project to check whether the branch is still at the SHA you wanted.
-    const checkoutRef = id.branch || id.sha;
+    // If you want to be sure to land on your SHA, set opts.detachHead to true.
+    // Or don't, but then call gitStatus() on the returned project to check whether the branch is still at the SHA you wanted.
+    const checkoutRef = opts.detachHead ? id.sha : id.branch || id.sha;
 
     const cleanUrl = url.replace(/\/\/.*:x-oauth-basic/, "//TOKEN:x-oauth-basic");
     logger.debug(`Cloning repo '${cleanUrl}' in '${repoDir}'`);
