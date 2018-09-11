@@ -151,7 +151,7 @@ describe("CachedGitClone", () => {
                     assert(reusedBefore < reusedAfter, `${reusedBefore} < ${reusedAfter}`);
                 })
                 .then(done, done);
-        }).timeout(20000);
+        }).timeout(20000).skip();
 
         it("should be on the correct branch even if the branch name overlaps with a file", done => {
             const repoName = "this-repository-exists-to-test-cached-clones-5";
@@ -173,7 +173,7 @@ describe("CachedGitClone", () => {
                                     }));
                     }))
                 .then(done, done);
-        }).timeout(20000);
+        }).timeout(20000).skip();
 
         it("should start with the branch in sync with origin", done => {
             const repoName = "this-repository-exists-to-test-cached-clones-2";

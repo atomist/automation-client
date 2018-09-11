@@ -83,8 +83,8 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                                directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitProject> {
         const p = await clone(credentials, id, opts, directoryManager);
         if (!!id.path) {
+            // It's possible to request a clone but only work with part of it.
             const pathInsideRepo = id.path.startsWith("/") ? id.path : "/" + id.path;
-            // not sure this will work with cached
             const gp = GitCommandGitProject.fromBaseDir(id, p.baseDir + pathInsideRepo, credentials,
                 () => p.release(),
                 p.provenance + "\ncopied into one with extra path " + id.path);
@@ -304,6 +304,7 @@ async function clone(
 ): Promise<GitProject> {
 
     const cloneDirectoryInfo = await directoryManager.directoryFor(id.owner, id.repo, id.sha, opts);
+    logger.info("Directory info: %j", cloneDirectoryInfo);
     switch (cloneDirectoryInfo.type) {
         case "empty-directory":
             return cloneInto(credentials, cloneDirectoryInfo, opts, id);
@@ -312,7 +313,7 @@ async function clone(
             try {
                 await resetOrigin(repoDir, credentials, id); // sometimes the credentials are in the origin URL
                 // Why do we not fetch?
-                await checkout(repoDir, id.branch || id.sha); // is this what we intend?
+                await checkout(repoDir, id.branch || id.sha);
                 await clean(repoDir);
                 return GitCommandGitProject.fromBaseDir(id,
                     repoDir, credentials, cloneDirectoryInfo.release,
