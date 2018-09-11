@@ -63,9 +63,9 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @return {GitCommandGitProject}
      */
     public static fromBaseDir(id: RepoRef, baseDir: string,
-                              credentials: ProjectOperationCredentials,
-                              release: ReleaseFunction,
-                              provenance?: string): GitCommandGitProject {
+        credentials: ProjectOperationCredentials,
+        release: ReleaseFunction,
+        provenance?: string): GitCommandGitProject {
         return new GitCommandGitProject(id, baseDir, credentials, release, provenance);
     }
 
@@ -78,9 +78,9 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @return {Promise<GitCommandGitProject>}
      */
     public static cloned(credentials: ProjectOperationCredentials,
-                         id: RemoteRepoRef,
-                         opts: CloneOptions = DefaultCloneOptions,
-                         directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitProject> {
+        id: RemoteRepoRef,
+        opts: CloneOptions = DefaultCloneOptions,
+        directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitProject> {
         return clone(credentials, id, opts, directoryManager)
             .then(p => {
                 if (!!id.path) {
@@ -103,8 +103,8 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     public newRepo: boolean = false;
 
     private constructor(id: RepoRef, public baseDir: string,
-                        private credentials: ProjectOperationCredentials, release: ReleaseFunction,
-                        public provenance?: string) {
+        private credentials: ProjectOperationCredentials, release: ReleaseFunction,
+        public provenance?: string) {
         super(id, baseDir, release);
         this.branch = id.branch || id.sha;
         logger.debug(`Created GitProject`);
@@ -145,8 +145,8 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     public createAndSetRemote(gid: RemoteRepoRef,
-                              description: string = gid.repo,
-                              visibility: "private" | "public"): Promise<CommandResult<this>> {
+        description: string = gid.repo,
+        visibility: "private" | "public"): Promise<CommandResult<this>> {
         this.id = gid;
         return gid.createRemote(this.credentials, description, visibility)
             .then(res => {
@@ -297,7 +297,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
  * @param opts options for clone
  * @param directoryManager strategy for cloning
  */
-function clone(
+async function clone(
     credentials: ProjectOperationCredentials,
     id: RemoteRepoRef,
     opts: CloneOptions,
@@ -305,33 +305,30 @@ function clone(
     secondTry: boolean = false,
 ): Promise<GitProject> {
 
-    return directoryManager.directoryFor(id.owner, id.repo, id.sha, opts)
-        .then(cloneDirectoryInfo => {
-            switch (cloneDirectoryInfo.type) {
-                case "empty-directory":
-                    return cloneInto(credentials, cloneDirectoryInfo, opts, id);
-                case "existing-directory":
-                    const repoDir = cloneDirectoryInfo.path;
-                    return resetOrigin(repoDir, credentials, id)
-                        .then(() => checkout(repoDir, id.sha)) // is this what we intend?
-                        .then(() => clean(repoDir))
-                        .then(() => {
-                            return GitCommandGitProject.fromBaseDir(id,
-                                repoDir, credentials, cloneDirectoryInfo.release,
-                                cloneDirectoryInfo.provenance + "\nRe-using existing clone");
-                        }, error => {
-                            return cloneDirectoryInfo.invalidate().then(() => {
-                                if (secondTry) {
-                                    throw error;
-                                } else {
-                                    return clone(credentials, id, opts, directoryManager, true);
-                                }
-                            });
-                        });
-                default:
-                    return Promise.reject(new Error("What is this type: " + cloneDirectoryInfo.type));
+    const cloneDirectoryInfo = await directoryManager.directoryFor(id.owner, id.repo, id.sha, opts);
+    switch (cloneDirectoryInfo.type) {
+        case "empty-directory":
+            return cloneInto(credentials, cloneDirectoryInfo, opts, id);
+        case "existing-directory":
+            const repoDir = cloneDirectoryInfo.path;
+            try {
+                await resetOrigin(repoDir, credentials, id);
+                await checkout(repoDir, id.branch || id.sha); // is this what we intend?
+                await clean(repoDir);
+                return GitCommandGitProject.fromBaseDir(id,
+                    repoDir, credentials, cloneDirectoryInfo.release,
+                    cloneDirectoryInfo.provenance + "\nRe-using existing clone");
+            } catch (error) {
+                await cloneDirectoryInfo.invalidate();
+                if (secondTry) {
+                    throw error;
+                } else {
+                    return clone(credentials, id, opts, directoryManager, true);
+                }
             }
-        });
+        default:
+            throw new Error("What is this type: " + cloneDirectoryInfo.type);
+    }
 }
 
 function cloneInto(
@@ -346,13 +343,13 @@ function cloneInto(
     const command = (!opts.alwaysDeep && id.branch ?
         runIn(".", `git clone --depth ${opts.depth ? opts.depth : 1} ${url} ${repoDir} ${id.branch ? `--branch ${id.branch}` : ""}`) :
         runIn(".", `git clone ${url} ${repoDir} ${id.branch ? `--branch ${id.branch}` : ""}`))
-            .then(() => runIn(repoDir, `git checkout ${id.sha} --`)
-                // When the head moved on and we only cloned with depth; we might have to do a full clone to get to the commit we want
-                .catch(err => {
-                    logger.debug(`Sha ${id.sha} not in cloned history. Attempting full clone`);
-                    return runIn(repoDir, `git fetch --unshallow`)
-                        .then(() => runIn(repoDir, `git checkout ${id.sha} --`));
-                }));
+        .then(() => runIn(repoDir, `git checkout ${id.sha} --`)
+            // When the head moved on and we only cloned with depth; we might have to do a full clone to get to the commit we want
+            .catch(err => {
+                logger.debug(`Sha ${id.sha} not in cloned history. Attempting full clone`);
+                return runIn(repoDir, `git fetch --unshallow`)
+                    .then(() => runIn(repoDir, `git checkout ${id.sha} --`));
+            }));
 
     const cleanUrl = url.replace(/\/\/.*:x-oauth-basic/, "//TOKEN:x-oauth-basic");
     logger.debug(`Cloning repo '${cleanUrl}' in '${repoDir}'`);
