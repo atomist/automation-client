@@ -63,9 +63,9 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @return {GitCommandGitProject}
      */
     public static fromBaseDir(id: RepoRef, baseDir: string,
-        credentials: ProjectOperationCredentials,
-        release: ReleaseFunction,
-        provenance?: string): GitCommandGitProject {
+                              credentials: ProjectOperationCredentials,
+                              release: ReleaseFunction,
+                              provenance?: string): GitCommandGitProject {
         return new GitCommandGitProject(id, baseDir, credentials, release, provenance);
     }
 
@@ -78,9 +78,9 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @return {Promise<GitCommandGitProject>}
      */
     public static async cloned(credentials: ProjectOperationCredentials,
-        id: RemoteRepoRef,
-        opts: CloneOptions = DefaultCloneOptions,
-        directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitProject> {
+                               id: RemoteRepoRef,
+                               opts: CloneOptions = DefaultCloneOptions,
+                               directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitProject> {
         const p = await clone(credentials, id, opts, directoryManager);
         if (!!id.path) {
             // It's possible to request a clone but only work with part of it.
@@ -101,8 +101,8 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     public newRepo: boolean = false;
 
     private constructor(id: RepoRef, public baseDir: string,
-        private credentials: ProjectOperationCredentials, release: ReleaseFunction,
-        public provenance?: string) {
+                        private credentials: ProjectOperationCredentials, release: ReleaseFunction,
+                        public provenance?: string) {
         super(id, baseDir, release);
         this.branch = id.branch || id.sha;
         logger.debug(`Created GitProject`);
@@ -143,8 +143,8 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     public createAndSetRemote(gid: RemoteRepoRef,
-        description: string = gid.repo,
-        visibility: "private" | "public"): Promise<CommandResult<this>> {
+                              description: string = gid.repo,
+                              visibility: "private" | "public"): Promise<CommandResult<this>> {
         this.id = gid;
         return gid.createRemote(this.credentials, description, visibility)
             .then(res => {
@@ -340,7 +340,7 @@ async function cloneInto(
 
     const repoDir = targetDirectoryInfo.path;
     const url = id.cloneUrl(credentials);
-    const cloneBranch = opts.cloneBranch || id.branch;
+    const cloneBranch = id.branch;
     const cloneCommand = !opts.alwaysDeep ?
         // If we didn't ask for a deep clone, then default to cloning only the tip of the default branch.
         // the cloneOptions let us ask for more commits than that, or a different branch.
@@ -369,7 +369,7 @@ async function cloneInto(
             });
     });
     try {
-        await runIn(repoDir, `git checkout ${checkoutRef} --`)
+        await runIn(repoDir, `git checkout ${checkoutRef} --`);
     } catch (err) {
         // When the head moved on and we only cloned with depth; we might have to do a full clone to get to the commit we want
         logger.warn(`Ref ${checkoutRef} not in cloned history. Attempting full clone`);

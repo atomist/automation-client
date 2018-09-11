@@ -22,12 +22,6 @@ export interface CloneOptions {
     depth?: number;
 
     /**
-     * For a shallow clone, we can ask it to give us a branch other than the default.
-     * Use with `depth` to get a minimal clone.
-     */
-    cloneBranch?: string;
-
-    /**
      * If you really want the SHA, not the tip of the branch that we've checked out,
      * then request a detached HEAD at that SHA.
      */
