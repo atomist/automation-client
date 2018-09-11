@@ -16,21 +16,19 @@ export function isFullyClean(gs: GitStatus): boolean {
     return gs.isClean && gs.ignoredChanges.length === 0;
 }
 
-export function runStatusIn(baseDir: string): Promise<GitStatus> {
-
-    return determineBranch(baseDir)
-        .then(branch => collectUpstream(baseDir, branch)
-            .then(upstreamData => collectFullSha(baseDir)
-                .then(shaData => collectCleanliness(baseDir)
-                    .then(cleanlinessData => collectIgnoredChanges(baseDir)
-                        .then(ignoredChangeData =>
-                            Promise.resolve({
-                                branch,
-                                ...ignoredChangeData,
-                                ...cleanlinessData,
-                                ...shaData,
-                                ...upstreamData,
-                            }))))));
+export async function runStatusIn(baseDir: string): Promise<GitStatus> {
+    const branch = await determineBranch(baseDir);
+    const upstreamData = await collectUpstream(baseDir, branch);
+    const shaData = await collectFullSha(baseDir);
+    const cleanlinessData = await collectCleanliness(baseDir)
+    const ignoredChangeData = await collectIgnoredChanges(baseDir)
+    return {
+        branch,
+        ...ignoredChangeData,
+        ...cleanlinessData,
+        ...shaData,
+        ...upstreamData,
+    };
 }
 
 function determineBranch(baseDir: string): Promise<string> {
