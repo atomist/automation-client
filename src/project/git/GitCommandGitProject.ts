@@ -34,8 +34,6 @@ import {
     GitPushOptions,
 } from "./GitProject";
 import {
-    collectFullSha,
-    determineBranch,
     GitStatus,
     runStatusIn,
 } from "./gitStatus";
@@ -65,9 +63,9 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @return {GitCommandGitProject}
      */
     public static fromBaseDir(id: RepoRef, baseDir: string,
-                              credentials: ProjectOperationCredentials,
-                              release: ReleaseFunction,
-                              provenance?: string): GitCommandGitProject {
+        credentials: ProjectOperationCredentials,
+        release: ReleaseFunction,
+        provenance?: string): GitCommandGitProject {
         return new GitCommandGitProject(id, baseDir, credentials, release, provenance);
     }
 
@@ -80,9 +78,9 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @return {Promise<GitCommandGitProject>}
      */
     public static async cloned(credentials: ProjectOperationCredentials,
-                               id: RemoteRepoRef,
-                               opts: CloneOptions = DefaultCloneOptions,
-                               directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitProject> {
+        id: RemoteRepoRef,
+        opts: CloneOptions = DefaultCloneOptions,
+        directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitProject> {
         const p = await clone(credentials, id, opts, directoryManager);
         if (!!id.path) {
             const pathInsideRepo = id.path.startsWith("/") ? id.path : "/" + id.path;
@@ -103,8 +101,8 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     public newRepo: boolean = false;
 
     private constructor(id: RepoRef, public baseDir: string,
-                        private credentials: ProjectOperationCredentials, release: ReleaseFunction,
-                        public provenance?: string) {
+        private credentials: ProjectOperationCredentials, release: ReleaseFunction,
+        public provenance?: string) {
         super(id, baseDir, release);
         this.branch = id.branch || id.sha;
         logger.debug(`Created GitProject`);
@@ -145,8 +143,8 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     public createAndSetRemote(gid: RemoteRepoRef,
-                              description: string = gid.repo,
-                              visibility: "private" | "public"): Promise<CommandResult<this>> {
+        description: string = gid.repo,
+        visibility: "private" | "public"): Promise<CommandResult<this>> {
         this.id = gid;
         return gid.createRemote(this.credentials, description, visibility)
             .then(res => {
