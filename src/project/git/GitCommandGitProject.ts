@@ -371,7 +371,7 @@ async function cloneInto(
         await runIn(repoDir, `git checkout ${checkoutRef} --`)
     } catch (err) {
         // When the head moved on and we only cloned with depth; we might have to do a full clone to get to the commit we want
-        logger.debug(`Ref ${checkoutRef} not in cloned history. Attempting full clone`);
+        logger.warn(`Ref ${checkoutRef} not in cloned history. Attempting full clone`);
         await runIn(repoDir, `git fetch --unshallow`)
             .then(() => runIn(repoDir, `git checkout ${checkoutRef} --`));
     }
