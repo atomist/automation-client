@@ -351,14 +351,6 @@ async function cloneInto(
     // If you want to be sure to land on your SHA, don't populate id.branch
     // You can also call gitStatus() on the returned project to check whether the branch is still at the SHA you wanted.
     const checkoutRef = id.branch || id.sha;
-    const command = runIn(".", cloneCommand)
-        .then(() => runIn(repoDir, `git checkout ${checkoutRef} --`)
-            // When the head moved on and we only cloned with depth; we might have to do a full clone to get to the commit we want
-            .catch(err => {
-                logger.debug(`Ref ${checkoutRef} not in cloned history. Attempting full clone`);
-                return runIn(repoDir, `git fetch --unshallow`)
-                    .then(() => runIn(repoDir, `git checkout ${checkoutRef} --`));
-            }));
 
     const cleanUrl = url.replace(/\/\/.*:x-oauth-basic/, "//TOKEN:x-oauth-basic");
     logger.debug(`Cloning repo '${cleanUrl}' in '${repoDir}'`);
@@ -370,7 +362,14 @@ async function cloneInto(
         randomize: false,
     };
     return promiseRetry(retryOptions, (retry, count) => {
-        return command
+        return runIn(".", cloneCommand)
+            .then(() => runIn(repoDir, `git checkout ${checkoutRef} --`)
+                // When the head moved on and we only cloned with depth; we might have to do a full clone to get to the commit we want
+                .catch(err => {
+                    logger.debug(`Ref ${checkoutRef} not in cloned history. Attempting full clone`);
+                    return runIn(repoDir, `git fetch --unshallow`)
+                        .then(() => runIn(repoDir, `git checkout ${checkoutRef} --`));
+                }))
             .catch(err => {
                 logger.debug(`Clone of ${id.owner}/${id.repo} attempt ${count} failed`);
                 retry(err);
