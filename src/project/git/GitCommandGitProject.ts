@@ -34,10 +34,10 @@ import {
     GitPushOptions,
 } from "./GitProject";
 import {
+    collectFullSha,
+    determineBranch,
     GitStatus,
     runStatusIn,
-    determineBranch,
-    collectFullSha,
 } from "./gitStatus";
 
 export const DefaultDirectoryManager: DirectoryManager = TmpDirectoryManager;
@@ -65,9 +65,9 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @return {GitCommandGitProject}
      */
     public static fromBaseDir(id: RepoRef, baseDir: string,
-        credentials: ProjectOperationCredentials,
-        release: ReleaseFunction,
-        provenance?: string): GitCommandGitProject {
+                              credentials: ProjectOperationCredentials,
+                              release: ReleaseFunction,
+                              provenance?: string): GitCommandGitProject {
         return new GitCommandGitProject(id, baseDir, credentials, release, provenance);
     }
 
@@ -80,10 +80,10 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @return {Promise<GitCommandGitProject>}
      */
     public static async cloned(credentials: ProjectOperationCredentials,
-        id: RemoteRepoRef,
-        opts: CloneOptions = DefaultCloneOptions,
-        directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitProject> {
-        const p = await clone(credentials, id, opts, directoryManager)
+                               id: RemoteRepoRef,
+                               opts: CloneOptions = DefaultCloneOptions,
+                               directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitProject> {
+        const p = await clone(credentials, id, opts, directoryManager);
         if (!!id.path) {
             const pathInsideRepo = id.path.startsWith("/") ? id.path : "/" + id.path;
             // not sure this will work with cached
@@ -103,8 +103,8 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     public newRepo: boolean = false;
 
     private constructor(id: RepoRef, public baseDir: string,
-        private credentials: ProjectOperationCredentials, release: ReleaseFunction,
-        public provenance?: string) {
+                        private credentials: ProjectOperationCredentials, release: ReleaseFunction,
+                        public provenance?: string) {
         super(id, baseDir, release);
         this.branch = id.branch || id.sha;
         logger.debug(`Created GitProject`);
@@ -145,8 +145,8 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     public createAndSetRemote(gid: RemoteRepoRef,
-        description: string = gid.repo,
-        visibility: "private" | "public"): Promise<CommandResult<this>> {
+                              description: string = gid.repo,
+                              visibility: "private" | "public"): Promise<CommandResult<this>> {
         this.id = gid;
         return gid.createRemote(this.credentials, description, visibility)
             .then(res => {
@@ -208,7 +208,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @return {any}
      */
     public async checkout(ref: string): Promise<CommandResult<this>> {
-        const res = await this.runCommandInCurrentWorkingDirectory(`git checkout ${ref} --`)
+        const res = await this.runCommandInCurrentWorkingDirectory(`git checkout ${ref} --`);
         if (!isValidSHA1(ref)) {
             this.branch = ref;
         }
@@ -342,7 +342,7 @@ async function cloneInto(
     const repoDir = targetDirectoryInfo.path;
     const url = id.cloneUrl(credentials);
     const cloneCommand = !opts.alwaysDeep ?
-        // If we didn't ask for a deep clone, then default to cloning only the tip of the default branch. 
+        // If we didn't ask for a deep clone, then default to cloning only the tip of the default branch.
         // the cloneOptions let us ask for more commits than that, or a different branch.
         `git clone --depth ${opts.depth ? opts.depth : 1} ${url} ${repoDir} ${opts.cloneBranch ? `--branch ${opts.cloneBranch}` : ""}` :
         // If we wanted a deep clone, just clone it

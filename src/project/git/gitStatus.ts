@@ -20,8 +20,8 @@ export async function runStatusIn(baseDir: string): Promise<GitStatus> {
     const branch = await determineBranch(baseDir);
     const upstreamData = await collectUpstream(baseDir, branch);
     const shaData = await collectFullSha(baseDir);
-    const cleanlinessData = await collectCleanliness(baseDir)
-    const ignoredChangeData = await collectIgnoredChanges(baseDir)
+    const cleanlinessData = await collectCleanliness(baseDir);
+    const ignoredChangeData = await collectIgnoredChanges(baseDir);
     return {
         branch,
         ...ignoredChangeData,
