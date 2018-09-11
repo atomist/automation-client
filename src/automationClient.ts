@@ -143,7 +143,7 @@ export class AutomationClient implements RequestProcessor {
     }
 
     private raiseStartupEvent() {
-        return [...this.defaultListeners, ...this.configuration.listeners].filter(l => l.startupSuccessful)
+        return [...this.configuration.listeners, ...this.defaultListeners].filter(l => l.startupSuccessful)
             .map(l => () => l.startupSuccessful(this))
             .reduce((p, f) => p.then(f), Promise.resolve());
     }
