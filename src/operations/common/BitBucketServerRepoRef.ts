@@ -26,7 +26,7 @@ import { logger } from "../../util/logger";
 import {
     spawnAndWatch,
     WritableLog,
-} from "../../util/spawned";
+} from "../../util/spawn";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
@@ -84,7 +84,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
         });
     }
 
-    public setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>> {
+    public setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<this>> {
         return Promise.resolve(successOn(this));
     }
 

@@ -1,7 +1,7 @@
-import "mocha";
+import * as fs from "fs-extra";
+import * as path from "path";
 import * as assert from "power-assert";
 
-import { runCommand } from "../../../src/action/cli/commandLine";
 import { getCounter } from "../../../src/internal/util/metric";
 import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
@@ -17,6 +17,7 @@ import {
     DefaultCloneOptions,
 } from "../../../src/spi/clone/DirectoryManager";
 import { TmpDirectoryManager } from "../../../src/spi/clone/tmpDirectoryManager";
+import { safeExec } from "../../../src/util/exec";
 import {
     Creds,
     GitHubToken,
@@ -97,8 +98,7 @@ describe("CachedGitClone", () => {
                             .then(() => assert.fail("that shouldn't work with an invalid token"),
                                 error => {
                                     // I did expect that to fail
-                                    assert(0 <= error.message.indexOf("https://NOT-THE-SAME-YO:x-oauth-basic@github.com"),
-                                        error.message);
+                                    assert(0 <= error.message.indexOf("https://NOT-THE-SAME-YO:x-oauth-basic@github.com"));
                                 })
                             .then(() => clone2.release()));
             }).then(done, done);
@@ -180,8 +180,7 @@ describe("CachedGitClone", () => {
 
             function makeACommit(project: GitProject): Promise<GitProject> {
                 return project.addFile("file-that-does-not-yet-exist", "something")
-                    .then(p => p.commit("yassss"))
-                    .then(result => result.target);
+                    .then(p => p.commit("yassss"));
             }
 
             getAClone({ repoName })
@@ -216,7 +215,7 @@ describe("CachedGitClone", () => {
 
             function screwUp(repoRoot: string) {
                 // this will make git commands fail fer sher
-                return runCommand("rm -rf .git", { cwd: repoRoot });
+                return fs.remove(path.join(repoRoot, ".git"));
             }
 
             getAClone({ repoName })
@@ -251,7 +250,7 @@ describe("CachedGitClone", () => {
         it("clones to depth of 1 when transient", async () => {
             const clone1 = await cloneTransiently();
             const baseDir = clone1.baseDir;
-            const result = await runCommand("git rev-list HEAD", { cwd: baseDir });
+            const result = await safeExec("git", ["rev-list", "HEAD"], { cwd: baseDir });
             assert(result.stdout.trim().split("\n").length === 1, result.stdout);
             await clone1.release();
         }).timeout(20000);
@@ -259,10 +258,10 @@ describe("CachedGitClone", () => {
         it("clones fully when requested", async () => {
             const clone1 = await cloneTransiently({ alwaysDeep: true });
             const baseDir = clone1.baseDir;
-            const result = await runCommand("git rev-list HEAD", { cwd: baseDir });
+            const result = await safeExec("git", ["rev-list", "HEAD"], { cwd: baseDir });
             // we can see all the commits
             assert(result.stdout.trim().split("\n").length > 1);
-            const branchResult = await runCommand("git rev-list this-tag-exists", { cwd: baseDir });
+            const branchResult = await safeExec("git", ["rev-list", "this-tag-exists"], { cwd: baseDir });
             // now we have access to branches
             assert(branchResult.stdout.trim().split("\n").length >= 1);
             await clone1.release();

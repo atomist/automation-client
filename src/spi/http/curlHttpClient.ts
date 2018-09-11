@@ -6,7 +6,7 @@ import {
     spawnAndWatch,
     SuccessIsReturn0ErrorFinder,
     WritableLog,
-} from "../../util/spawned";
+} from "../../util/spawn";
 import {
     DefaultHttpClientOptions,
     HttpClient,
@@ -34,9 +34,9 @@ export class CurlHttpClient implements HttpClient {
         // Prepare the provided raw curl options
         const rawOptions = _.map(optionsToUse.options, (v, k) => {
             if (k.length === 1) {
-                return [ `-${k}`, v ];
+                return [`-${k}`, v];
             } else {
-                return [ `--${k}`, v ];
+                return [`--${k}`, v];
             }
         });
 
@@ -51,18 +51,18 @@ export class CurlHttpClient implements HttpClient {
             };
 
             return spawnAndWatch({
-                    command: "curl",
-                    args: [
-                        "-X", optionsToUse.method,
-                        url,
-                        "-s",
-                        "--write-out",
-                        "HTTPSTATUS:%{http_code}",
-                        ..._.flatten(headers.map(h => ([ "-H", h ]))),
-                        ..._.flatten(rawOptions),
-                        ...(options.body ? [ "-d", JSON.stringify(options.body) ] : []),
-                    ],
-                },
+                command: "curl",
+                args: [
+                    "-X", optionsToUse.method,
+                    url,
+                    "-s",
+                    "--write-out",
+                    "HTTPSTATUS:%{http_code}",
+                    ..._.flatten(headers.map(h => (["-H", h]))),
+                    ..._.flatten(rawOptions),
+                    ...(options.body ? ["-d", JSON.stringify(options.body)] : []),
+                ],
+            },
                 {},
                 passthroughLog,
                 {
@@ -71,7 +71,7 @@ export class CurlHttpClient implements HttpClient {
                 })
                 .then(result => {
                     const parts = log.split("HTTPSTATUS:");
-                    let body = parts[ 0 ];
+                    let body = parts[0];
 
                     try {
                         body = JSON.parse(body);
@@ -80,7 +80,7 @@ export class CurlHttpClient implements HttpClient {
                     }
 
                     return {
-                        status: +parts[ 1 ],
+                        status: +parts[1],
                         body,
                     } as any as HttpResponse<T>;
                 });
