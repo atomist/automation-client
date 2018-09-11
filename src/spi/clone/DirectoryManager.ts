@@ -20,6 +20,12 @@ export interface CloneOptions {
      * place. This only applies when alwaysDeep is set to false.
      */
     depth?: number;
+
+    /**
+     * If you really want the SHA, not the tip of the branch that we've checked out,
+     * then request a detached HEAD at that SHA.
+     */
+    detachHead?: boolean;
 }
 
 export const DefaultCloneOptions: CloneOptions = {
