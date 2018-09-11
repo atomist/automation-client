@@ -20,6 +20,12 @@ export interface CloneOptions {
      * place. This only applies when alwaysDeep is set to false.
      */
     depth?: number;
+
+    /**
+     * For a shallow clone, we can ask it to give us a branch other than the default.
+     * Use with `depth` to get a minimal clone.
+     */
+    cloneBranch?: string;
 }
 
 export const DefaultCloneOptions: CloneOptions = {

@@ -36,6 +36,8 @@ import {
 import {
     GitStatus,
     runStatusIn,
+    determineBranch,
+    collectFullSha,
 } from "./gitStatus";
 
 export const DefaultDirectoryManager: DirectoryManager = TmpDirectoryManager;
@@ -202,15 +204,15 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     /**
      * Check out a particular commit. We'll end in detached head state
-     * @param sha
+     * @param ref branch or SHA
      * @return {any}
      */
-    public checkout(sha: string): Promise<CommandResult<this>> {
-        return this.runCommandInCurrentWorkingDirectory(`git checkout ${sha} --`)
-            .then(res => {
-                this.branch = sha;
-                return res;
-            });
+    public async checkout(ref: string): Promise<CommandResult<this>> {
+        const res = await this.runCommandInCurrentWorkingDirectory(`git checkout ${ref} --`)
+        if (!isValidSHA1(ref)) {
+            this.branch = ref;
+        }
+        return res;
     }
 
     /**
@@ -330,7 +332,7 @@ async function clone(
     }
 }
 
-function cloneInto(
+async function cloneInto(
     credentials: ProjectOperationCredentials,
     targetDirectoryInfo: CloneDirectoryInfo,
     opts: CloneOptions,
@@ -339,15 +341,23 @@ function cloneInto(
 
     const repoDir = targetDirectoryInfo.path;
     const url = id.cloneUrl(credentials);
-    const command = (!opts.alwaysDeep && id.branch ?
-        runIn(".", `git clone --depth ${opts.depth ? opts.depth : 1} ${url} ${repoDir} ${id.branch ? `--branch ${id.branch}` : ""}`) :
-        runIn(".", `git clone ${url} ${repoDir} ${id.branch ? `--branch ${id.branch}` : ""}`))
-        .then(() => runIn(repoDir, `git checkout ${id.sha} --`)
+    const cloneCommand = !opts.alwaysDeep ?
+        // If we didn't ask for a deep clone, then default to cloning only the tip of the default branch. 
+        // the cloneOptions let us ask for more commits than that, or a different branch.
+        `git clone --depth ${opts.depth ? opts.depth : 1} ${url} ${repoDir} ${opts.cloneBranch ? `--branch ${opts.cloneBranch}` : ""}` :
+        // If we wanted a deep clone, just clone it
+        `git clone ${url} ${repoDir}`;
+    // Note: branch takes preference for checkout because we might be about to commit to it.
+    // If you want to be sure to land on your SHA, don't populate id.branch
+    // You can also call gitStatus() on the returned project to check whether the branch is still at the SHA you wanted.
+    const checkoutRef = id.branch || id.sha;
+    const command = runIn(".", cloneCommand)
+        .then(() => runIn(repoDir, `git checkout ${checkoutRef} --`)
             // When the head moved on and we only cloned with depth; we might have to do a full clone to get to the commit we want
             .catch(err => {
-                logger.debug(`Sha ${id.sha} not in cloned history. Attempting full clone`);
+                logger.debug(`Ref ${checkoutRef} not in cloned history. Attempting full clone`);
                 return runIn(repoDir, `git fetch --unshallow`)
-                    .then(() => runIn(repoDir, `git checkout ${id.sha} --`));
+                    .then(() => runIn(repoDir, `git checkout ${checkoutRef} --`));
             }));
 
     const cleanUrl = url.replace(/\/\/.*:x-oauth-basic/, "//TOKEN:x-oauth-basic");
@@ -398,4 +408,8 @@ function runIn(baseDir: string, command: string) {
 function pwd(baseDir) {
     return runCommand("pwd", { cwd: baseDir }).then(result =>
         console.log(result.stdout));
+}
+
+function isValidSHA1(s: string): boolean {
+    return s.match(/[a-fA-F0-9]{40}/) != null;
 }
