@@ -340,10 +340,11 @@ async function cloneInto(
 
     const repoDir = targetDirectoryInfo.path;
     const url = id.cloneUrl(credentials);
+    const cloneBranch = opts.cloneBranch || id.branch;
     const cloneCommand = !opts.alwaysDeep ?
         // If we didn't ask for a deep clone, then default to cloning only the tip of the default branch.
         // the cloneOptions let us ask for more commits than that, or a different branch.
-        `git clone --depth ${opts.depth ? opts.depth : 1} ${url} ${repoDir} ${opts.cloneBranch ? `--branch ${opts.cloneBranch}` : ""}` :
+        `git clone --depth ${opts.depth ? opts.depth : 1} ${url} ${repoDir} ${cloneBranch ? `--branch ${cloneBranch}` : ""}` :
         // If we wanted a deep clone, just clone it
         `git clone ${url} ${repoDir}`;
     // Note: branch takes preference for checkout because we might be about to commit to it.
