@@ -77,23 +77,21 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @param {DirectoryManager} directoryManager
      * @return {Promise<GitCommandGitProject>}
      */
-    public static cloned(credentials: ProjectOperationCredentials,
+    public static async cloned(credentials: ProjectOperationCredentials,
         id: RemoteRepoRef,
         opts: CloneOptions = DefaultCloneOptions,
         directoryManager: DirectoryManager = DefaultDirectoryManager): Promise<GitProject> {
-        return clone(credentials, id, opts, directoryManager)
-            .then(p => {
-                if (!!id.path) {
-                    const pathInsideRepo = id.path.startsWith("/") ? id.path : "/" + id.path;
-                    // not sure this will work with cached
-                    const gp = GitCommandGitProject.fromBaseDir(id, p.baseDir + pathInsideRepo, credentials,
-                        () => p.release(),
-                        p.provenance + "\ncopied into one with extra path " + id.path);
-                    return gp;
-                } else {
-                    return p;
-                }
-            });
+        const p = await clone(credentials, id, opts, directoryManager)
+        if (!!id.path) {
+            const pathInsideRepo = id.path.startsWith("/") ? id.path : "/" + id.path;
+            // not sure this will work with cached
+            const gp = GitCommandGitProject.fromBaseDir(id, p.baseDir + pathInsideRepo, credentials,
+                () => p.release(),
+                p.provenance + "\ncopied into one with extra path " + id.path);
+            return gp;
+        } else {
+            return p;
+        }
     }
 
     public branch: string;
@@ -312,7 +310,8 @@ async function clone(
         case "existing-directory":
             const repoDir = cloneDirectoryInfo.path;
             try {
-                await resetOrigin(repoDir, credentials, id);
+                await resetOrigin(repoDir, credentials, id); // sometimes the credentials are in the origin URL
+                // Why do we not fetch?
                 await checkout(repoDir, id.branch || id.sha); // is this what we intend?
                 await clean(repoDir);
                 return GitCommandGitProject.fromBaseDir(id,
