@@ -6,9 +6,9 @@ import * as serializeError from "serialize-error";
 import * as WebSocket from "ws";
 import * as zlib from "zlib";
 import { Configuration } from "../../../configuration";
+import { logger } from "../../../util/logger";
 import { Deferred } from "../../util/Deferred";
 import { configureProxy } from "../../util/http";
-import { logger } from "../../../util/logger";
 import { registerShutdownHook } from "../../util/shutdown";
 import {
     CommandIncoming,

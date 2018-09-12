@@ -23,13 +23,13 @@ import {
     SlackMessageClient,
 } from "../../spi/message/MessageClient";
 import { DefaultSlackMessageClient } from "../../spi/message/MessageClientSupport";
+import { logger } from "../../util/logger";
 import {
     dispose,
     registerDisposable,
 } from "../invoker/disposable";
 import { CommandInvocation } from "../invoker/Payload";
 import * as namespace from "../util/cls";
-import { logger } from "../../util/logger";
 import {
     guid,
     hideString,

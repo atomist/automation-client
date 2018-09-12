@@ -3,11 +3,11 @@ import * as gs from "glob-stream";
 import * as fpath from "path";
 import * as stream from "stream";
 
-import { logger } from "../../util/logger";
 import {
     RepoRef,
     SimpleRepoId,
 } from "../../operations/common/RepoId";
+import { logger } from "../../util/logger";
 import { File } from "../File";
 import { isInMemoryProject } from "../mem/InMemoryProject";
 import {

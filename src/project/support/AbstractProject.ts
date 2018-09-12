@@ -1,6 +1,6 @@
 import { AbstractScriptedFlushable } from "../../internal/common/AbstractScriptedFlushable";
-import { logger } from "../../util/logger";
 import { RepoRef } from "../../operations/common/RepoId";
+import { logger } from "../../util/logger";
 import {
     File,
     FileNonBlocking,

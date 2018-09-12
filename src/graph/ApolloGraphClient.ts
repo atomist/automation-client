@@ -10,12 +10,12 @@ import * as trace from "stack-trace";
 import * as internalGraphql from "../internal/graph/graphQL";
 import * as namespace from "../internal/util/cls";
 import { configureProxy } from "../internal/util/http";
-import { logger } from "../util/logger";
 import {
     GraphClient,
     MutationOptions,
     QueryOptions,
 } from "../spi/graph/GraphClient";
+import { logger } from "../util/logger";
 
 /**
  * Implementation of GraphClient using Apollo Client.

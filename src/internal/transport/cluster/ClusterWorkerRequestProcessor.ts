@@ -20,9 +20,9 @@ import {
     MessageOptions,
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
+import { logger } from "../../../util/logger";
 import { CommandInvocation } from "../../invoker/Payload";
 import { Deferred } from "../../util/Deferred";
-import { logger } from "../../../util/logger";
 import {
     gc,
     heapDump,

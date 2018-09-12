@@ -1,5 +1,5 @@
-import { logger } from "../../util/logger";
 import { Project } from "../../project/Project";
+import { logger } from "../../util/logger";
 import {
     AnyProjectEditor,
     EditResult,

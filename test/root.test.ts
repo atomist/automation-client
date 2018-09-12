@@ -4,5 +4,5 @@ import {
 } from "../src/util/logger";
 
 before(() => {
-    configureLogging(NoLogging)
+    configureLogging(NoLogging);
 });

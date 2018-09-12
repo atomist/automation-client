@@ -1,7 +1,7 @@
 import { HandlerContext } from "../../HandlerContext";
-import { logger } from "../../util/logger";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
+import { logger } from "../../util/logger";
 import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewerParameters";
 import {
     BranchCommit,

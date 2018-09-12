@@ -2,9 +2,9 @@ import * as appRoot from "app-root-path";
 import { Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
-import { logger } from "./util/logger";
 import { toStringArray } from "./internal/util/string";
 import { Maker } from "./util/constructionUtils";
+import { logger } from "./util/logger";
 
 class HandlerRegistry {
 

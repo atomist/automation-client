@@ -1,6 +1,6 @@
 import { HandlerContext } from "../../HandlerContext";
-import { logger } from "../../util/logger";
 import { Project } from "../../project/Project";
+import { logger } from "../../util/logger";
 import { defaultRepoLoader } from "./defaultRepoLoader";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import { AllRepos, RepoFilter } from "./repoFilter";

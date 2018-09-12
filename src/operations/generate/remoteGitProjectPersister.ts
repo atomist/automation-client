@@ -1,10 +1,10 @@
 import * as _ from "lodash";
 import { WrapOptions } from "retry";
 import { ActionResult } from "../../action/ActionResult";
-import { logger } from "../../util/logger";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
+import { logger } from "../../util/logger";
 import { doWithRetry } from "../../util/retry";
 import {
     GitHubRepoRef,

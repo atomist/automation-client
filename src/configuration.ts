@@ -29,7 +29,6 @@ import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { ExpressServerOptions } from "./internal/transport/express/ExpressServer";
 import { config } from "./internal/util/config";
-import { logger } from "./util/logger";
 import {
     guid,
     obfuscateJson,
@@ -40,6 +39,7 @@ import { SecretResolver } from "./spi/env/SecretResolver";
 import { DefaultHttpClientFactory } from "./spi/http/axiosHttpClient";
 import { HttpClientFactory } from "./spi/http/httpClient";
 import { Maker } from "./util/constructionUtils";
+import { logger } from "./util/logger";
 import { loadHostPackageJson } from "./util/packageJson";
 
 /**

@@ -24,15 +24,15 @@ import { DefaultWebSocketRequestProcessor } from "./internal/transport/websocket
 import { prepareRegistration } from "./internal/transport/websocket/payloads";
 import { WebSocketClient } from "./internal/transport/websocket/WebSocketClient";
 import { WebSocketRequestProcessor } from "./internal/transport/websocket/WebSocketRequestProcessor";
+import { obfuscateJson } from "./internal/util/string";
+import { AutomationServer } from "./server/AutomationServer";
+import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
+import { Maker } from "./util/constructionUtils";
 import {
     clientLoggingConfiguration,
     configureLogging,
     logger,
 } from "./util/logger";
-import { obfuscateJson } from "./internal/util/string";
-import { AutomationServer } from "./server/AutomationServer";
-import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
-import { Maker } from "./util/constructionUtils";
 import { StatsdAutomationEventListener } from "./util/statsd";
 
 export class AutomationClient implements RequestProcessor {

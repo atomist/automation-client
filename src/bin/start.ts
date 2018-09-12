@@ -3,11 +3,11 @@
 import "source-map-support/register";
 import { automationClient } from "../automationClient";
 import { loadConfiguration } from "../configuration";
+import { enableDefaultScanning } from "../scan";
 import {
     ClientLogging,
     configureLogging,
 } from "../util/logger";
-import { enableDefaultScanning } from "../scan";
 
 try {
     configureLogging(ClientLogging);

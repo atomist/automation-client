@@ -4,7 +4,6 @@ import axios, {
 } from "axios";
 
 import { decode } from "../internal/util/base64";
-import { logger } from "./logger";
 import {
     GitHubDotComBase,
     GitHubRepoRef,
@@ -12,6 +11,7 @@ import {
 } from "../operations/common/GitHubRepoRef";
 import { RepoRef } from "../operations/common/RepoId";
 import { SourceLocation } from "../operations/common/SourceLocation";
+import { logger } from "./logger";
 
 /**
  * Return a deep link to the file location
