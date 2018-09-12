@@ -107,19 +107,17 @@ export class ApolloGraphClient implements GraphClient {
             this.endpoint, stringify(variables), internalGraphql.inlineQuery(q));
         const query = gql(q);
 
-        const callback = namespace.init().bind<Promise<T>>(response => {
-            // The following statement is needed for debugging; we can always disable that later
-            logger.debug("Query returned data: %s", stringify(response.data));
-            return response.data;
-        });
-
         return this.client.query<T>({
-                query,
-                variables,
-                errorPolicy: "all",
-                ...queryOptions,
-            })
-            .then(result => callback(result));
+            query,
+            variables,
+            errorPolicy: "all",
+            ...queryOptions,
+        })
+            .then(result => {
+                // The following statement is needed for debugging; we can always disable that later
+                logger.debug("Query returned data: %s", stringify(result.data));
+                return result.data;
+            });
     }
 
     private executeMutation<T, Q>(m: string,
@@ -130,19 +128,17 @@ export class ApolloGraphClient implements GraphClient {
 
         const mutation = gql(m);
 
-        const callback = namespace.init().bind<Promise<T>>(response => {
-            // The following statement is needed for debugging; we can always disable that later
-            logger.debug("Mutation returned data: %s", stringify(response.data));
-            return response.data;
-        });
-
         return this.client.mutate<T>({
-                mutation,
-                variables,
-                errorPolicy: "all",
-                ...mutationOptions,
-            })
-            .then(response => callback(response));
+            mutation,
+            variables,
+            errorPolicy: "all",
+            ...mutationOptions,
+        })
+            .then(response => {
+                // The following statement is needed for debugging; we can always disable that later
+                logger.debug("Mutation returned data: %s", stringify(response.data));
+                return response.data;
+            });
     }
 
 }
