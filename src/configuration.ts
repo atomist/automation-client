@@ -836,7 +836,7 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
         const userCfg = loadUserConfiguration(defCfg.name, defCfg.version);
         const atmPathCfg = loadAtomistConfigPath();
         const atmCfg = loadAtomistConfig();
-        cfg = mergeConfigs({}, defCfg, userCfg, autoCfg, atmPathCfg, atmCfg);
+        cfg = mergeConfigs({}, defCfg, autoCfg, userCfg, atmPathCfg, atmCfg);
         resolveWorkspaceIds(cfg);
         resolvePort(cfg);
         resolveEnvironmentVariables(cfg);
