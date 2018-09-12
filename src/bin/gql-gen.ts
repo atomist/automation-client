@@ -21,7 +21,6 @@ import * as fs from "fs-extra";
 import * as glob from "glob";
 import * as path from "path";
 import * as util from "util";
-import { logger } from "../util/logger";
 
 /**
  * Figure out whether the lib directory is named lib or src.  lib is
@@ -79,7 +78,7 @@ async function main(): Promise<void> {
         if (graphqlFiles && graphqlFiles.length > 0) {
             gqlGenArgs.push(graphQlGlob);
         } else {
-            logger.info("No GraphQL files found in project, generating default types");
+            console.info("No GraphQL files found in project, generating default types");
         }
 
         const cp = spawn(gqlGenCmd, gqlGenArgs, opts);
@@ -87,25 +86,25 @@ async function main(): Promise<void> {
             if (code === 0) {
                 process.exit(code);
             } else if (code) {
-                logger.error(`Generating GraphQL failed with non-zero status: ${code}`);
+                console.error(`Generating GraphQL failed with non-zero status: ${code}`);
                 process.exit(code);
             } else {
-                logger.error(`Generating GraphQL exited due to signal: ${signal}`);
+                console.error(`Generating GraphQL exited due to signal: ${signal}`);
                 process.exit(128 + 2);
             }
         });
         cp.on("error", err => {
-            logger.error(`Generating GraphQL types errored: ${err.message}`);
+            console.error(`Generating GraphQL types errored: ${err.message}`);
             process.exit(2);
         });
     } catch (e) {
-        logger.error(`Generating GraphQL types failed: ${e.message}`);
+        console.error(`Generating GraphQL types failed: ${e.message}`);
         process.exit(1);
     }
 }
 
 main()
     .catch((err: Error) => {
-        logger.error(`Unhandled exception: ${err.message}`);
+        console.error(`Unhandled exception: ${err.message}`);
         process.exit(101);
     });

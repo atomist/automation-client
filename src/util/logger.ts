@@ -149,8 +149,6 @@ export const ClientLogging: LoggingConfiguration = {
     },
 };
 
-configureLogging(PlainLogging);
-
 /**
  * Configure the logging sub-system with the provided LoggingConfiguration
  * It is safe to call this method several times to re-configure the logger.
