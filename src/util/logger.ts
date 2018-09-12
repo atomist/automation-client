@@ -166,7 +166,7 @@ export function configureLogging(config: LoggingConfiguration) {
             level: config.console.level || "info",
             format: getFormat(config.console.format),
         });
-        winstonLogger.add(ct);
+
 
         if (config.console.redirect === true) {
             redirectConsoleLogging();
@@ -174,6 +174,7 @@ export function configureLogging(config: LoggingConfiguration) {
             unRedirectConsoleLogging();
         }
 
+        winstonLogger.add(ct);
         winstonLogger.silent = false;
     }
 
@@ -213,6 +214,7 @@ export function configureLogging(config: LoggingConfiguration) {
                 winston.format.uncolorize(),
             ),
         });
+        
         winstonLogger.add(ft);
         winstonLogger.silent = false;
     }
