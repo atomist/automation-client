@@ -5,10 +5,6 @@ import {
     ActionResult,
     successOn,
 } from "../../src/action/ActionResult";
-import {
-    logger,
-    LoggingConfig,
-} from "../../src/internal/util/logger";
 import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../../src/operations/common/ProjectOperationCredentials";
 import { RepoId } from "../../src/operations/common/RepoId";
@@ -20,9 +16,6 @@ import { LocalProject } from "../../src/project/local/LocalProject";
 import { NodeFsLocalProject } from "../../src/project/local/NodeFsLocalProject";
 import { InMemoryProject } from "../../src/project/mem/InMemoryProject";
 import { Project } from "../../src/project/Project";
-
-LoggingConfig.format = "cli";
-(logger as any).transports.console.level = process.env.LOG_LEVEL || "info";
 
 describe("generator benchmark", () => {
 

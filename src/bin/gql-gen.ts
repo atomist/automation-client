@@ -21,13 +21,7 @@ import * as fs from "fs-extra";
 import * as glob from "glob";
 import * as path from "path";
 import * as util from "util";
-
-import {
-    logger,
-    LoggingConfig,
-} from "../internal/util/logger";
-
-LoggingConfig.format = "cli";
+import { logger } from "../internal/util/logger";
 
 /**
  * Figure out whether the lib directory is named lib or src.  lib is

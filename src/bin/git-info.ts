@@ -18,15 +18,8 @@
 import * as fs from "fs-extra";
 import * as path from "path";
 
-import {
-    obtainGitInfo,
-} from "../internal/env/gitInfo";
-import {
-    logger,
-    LoggingConfig,
-} from "../internal/util/logger";
-
-LoggingConfig.format = "cli";
+import { obtainGitInfo } from "../internal/env/gitInfo";
+import { logger } from "../internal/util/logger";
 
 /**
  * Generate git-info.json for automation client.

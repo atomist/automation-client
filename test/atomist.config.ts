@@ -147,7 +147,7 @@ export const configuration: Configuration = {
             ],
         },
         file: {
-            enabled: false,
+            enabled: true,
             level: "debug",
         },
     },
