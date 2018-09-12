@@ -796,10 +796,10 @@ export function validateConfiguration(cfg: Configuration) {
  * 1.  The value of the ATOMIST_CONFIG environment variable, parsed as
  *     JSON and cast to AutomationServerOptions
  * 2.  The contents of the ATOMIST_CONFIG_PATH file as AutomationServerOptions
- * 3.  The automation's atomist.config.js exported configuration as
- *     Configuration
- * 4.  The contents of the user's client.config.json as UserConfig
+ * 3.  The contents of the user's client.config.json as UserConfig
  *     resolving user and per-module configuration into Configuration
+ * 4.  The automation's atomist.config.js exported configuration as
+ *     Configuration
  * 5.  ProductionDefaultConfiguration if ATOMIST_ENV or NODE_ENV is set
  *     to "production" or TestingDefaultConfiguration if ATOMIST_ENV or
  *     NODE_ENV is set to "staging" or "testing", with ATOMIST_ENV
@@ -832,8 +832,8 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
     let cfg: Configuration;
     try {
         const defCfg = defaultConfiguration();
-        const userCfg = loadUserConfiguration(defCfg.name, defCfg.version);
         const autoCfg = loadAutomationConfig(cfgPath);
+        const userCfg = loadUserConfiguration(defCfg.name, defCfg.version);
         const atmPathCfg = loadAtomistConfigPath();
         const atmCfg = loadAtomistConfig();
         cfg = mergeConfigs({}, defCfg, userCfg, autoCfg, atmPathCfg, atmCfg);
