@@ -1,5 +1,5 @@
 import * as exitHook from "async-exit-hook";
-import { logger } from "./logger";
+import { logger } from "../../util/logger";
 
 let shutdownHooks: Array<{priority: number, hook: () => Promise<number>}> = [];
 

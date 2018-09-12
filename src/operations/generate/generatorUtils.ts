@@ -2,7 +2,7 @@ import * as fs from "fs-extra";
 import { newRepo } from "../../../test/api/apiUtils";
 import { ActionResult } from "../../action/ActionResult";
 import { HandlerContext } from "../../HandlerContext";
-import { logger } from "../../internal/util/logger";
+import { logger } from "../../util/logger";
 import { GitProject } from "../../project/git/GitProject";
 import { LocalProject } from "../../project/local/LocalProject";
 import { NodeFsLocalProject } from "../../project/local/NodeFsLocalProject";

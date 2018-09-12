@@ -2,7 +2,7 @@ import * as appRoot from "app-root-path";
 import * as fs from "fs";
 import * as os from "os";
 import { broadcast } from "../transport/cluster/messages";
-import { logger } from "./logger";
+import { logger } from "../../util/logger";
 
 let DataDirectory = `${appRoot.path}/heap`;
 

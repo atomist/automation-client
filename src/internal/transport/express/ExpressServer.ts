@@ -22,7 +22,7 @@ import {
     HealthStatus,
 } from "../../util/health";
 import { info } from "../../util/info";
-import { logger } from "../../util/logger";
+import { logger } from "../../../util/logger";
 import {
     gc,
     heapDump,

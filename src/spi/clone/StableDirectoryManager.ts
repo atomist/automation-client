@@ -1,7 +1,7 @@
 import * as fs from "fs-extra";
 import * as path from "path";
 
-import { logger } from "../../internal/util/logger";
+import { logger } from "../../util/logger";
 import { registerShutdownHook } from "../../internal/util/shutdown";
 import {
     CloneDirectoryInfo,

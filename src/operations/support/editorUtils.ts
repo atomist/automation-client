@@ -1,5 +1,5 @@
 import { HandlerContext } from "../../HandlerContext";
-import { logger } from "../../internal/util/logger";
+import { logger } from "../../util/logger";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
 import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewerParameters";

@@ -29,7 +29,7 @@ import {
 } from "../invoker/disposable";
 import { CommandInvocation } from "../invoker/Payload";
 import * as namespace from "../util/cls";
-import { logger } from "../util/logger";
+import { logger } from "../../util/logger";
 import {
     guid,
     hideString,

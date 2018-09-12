@@ -6,7 +6,7 @@ import {
     isCommandIncoming,
     isEventIncoming,
 } from "../internal/transport/RequestProcessor";
-import { logger } from "../internal/util/logger";
+import { logger } from "../util/logger";
 import { GraphClient } from "../spi/graph/GraphClient";
 import { ApolloGraphClient } from "./ApolloGraphClient";
 

@@ -19,7 +19,7 @@ import * as _ from "lodash";
 
 import promiseRetry = require("promise-retry");
 import { ActionResult } from "../../src/action/ActionResult";
-import { logger } from "../../src/internal/util/logger";
+import { logger } from "../../src/util/logger";
 import { guid } from "../../src/internal/util/string";
 import { GitHubDotComBase } from "../../src/operations/common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../../src/operations/common/ProjectOperationCredentials";

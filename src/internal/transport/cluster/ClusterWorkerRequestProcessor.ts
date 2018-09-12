@@ -22,7 +22,7 @@ import {
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { CommandInvocation } from "../../invoker/Payload";
 import { Deferred } from "../../util/Deferred";
-import { logger } from "../../util/logger";
+import { logger } from "../../../util/logger";
 import {
     gc,
     heapDump,

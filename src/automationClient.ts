@@ -28,7 +28,7 @@ import {
     clientLoggingConfiguration,
     configureLogging,
     logger,
-} from "./internal/util/logger";
+} from "./util/logger";
 import { obfuscateJson } from "./internal/util/string";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";

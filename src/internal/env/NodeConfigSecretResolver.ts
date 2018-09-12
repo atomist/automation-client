@@ -1,6 +1,6 @@
 import { SecretResolver } from "../../spi/env/SecretResolver";
 import { config } from "../util/config";
-import { logger } from "../util/logger";
+import { logger } from "../../util/logger";
 import { hideString } from "../util/string";
 
 const AtomistPrefix = "atomist://";

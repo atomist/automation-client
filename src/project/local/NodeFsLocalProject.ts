@@ -3,7 +3,7 @@ import * as gs from "glob-stream";
 import * as fpath from "path";
 import * as stream from "stream";
 
-import { logger } from "../../internal/util/logger";
+import { logger } from "../../util/logger";
 import {
     RepoRef,
     SimpleRepoId,

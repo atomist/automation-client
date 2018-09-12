@@ -9,7 +9,7 @@ import {
     DefaultSlackMessageClient,
     MessageClientSupport,
 } from "../../spi/message/MessageClientSupport";
-import { logger } from "../util/logger";
+import { logger } from "../../util/logger";
 
 /**
  * Clearly display messages with channels and recipients (if DMs) on the console.

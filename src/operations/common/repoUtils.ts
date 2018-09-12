@@ -1,5 +1,5 @@
 import { HandlerContext } from "../../HandlerContext";
-import { logger } from "../../internal/util/logger";
+import { logger } from "../../util/logger";
 import { Project } from "../../project/Project";
 import { defaultRepoLoader } from "./defaultRepoLoader";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";

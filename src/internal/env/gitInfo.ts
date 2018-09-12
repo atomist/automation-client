@@ -1,6 +1,6 @@
 import * as fs from "fs-extra";
 import * as path from "path";
-import { logger } from "../util/logger";
+import { logger } from "../../util/logger";
 
 /**
  * Return Git remote origin URL, branch, and sha for provided

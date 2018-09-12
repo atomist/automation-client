@@ -23,7 +23,7 @@ import * as spawn from "cross-spawn";
 import * as path from "path";
 import { sprintf } from "sprintf-js";
 import * as strip_ansi from "strip-ansi";
-import { logger } from "../internal/util/logger";
+import { logger } from "./logger";
 
 export interface WritableLog {
 

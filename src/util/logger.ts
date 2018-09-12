@@ -6,8 +6,8 @@ import * as os from "os";
 import * as p from "path";
 import * as serializeError from "serialize-error";
 import * as winston from "winston";
-import { Configuration } from "../../configuration";
-import * as context from "./cls";
+import { Configuration } from "../configuration";
+import * as context from "../internal/util/cls";
 
 const winstonLogger = winston.createLogger({
     level: "debug",
@@ -93,9 +93,21 @@ export interface LoggingConfiguration {
 }
 
 /**
+ * Logging configuration suppress all logger logging
+ */
+export const NoLogging: LoggingConfiguration = {
+    console: {
+        enabled: false,
+    },
+    file: {
+        enabled: false,
+    },
+};
+
+/**
  * Logging configuration to simply pass through log message to the console
  */
-export const NoLoggingConfiguration: LoggingConfiguration = {
+export const PlainLogging: LoggingConfiguration = {
     console: {
         enabled: true,
         level: "info",
@@ -110,7 +122,7 @@ export const NoLoggingConfiguration: LoggingConfiguration = {
 /**
  * CLI-style logging configuration
  */
-export const MinimalLoggingConfiguration: LoggingConfiguration = {
+export const MinimalLogging: LoggingConfiguration = {
     console: {
         enabled: true,
         level: "info",
@@ -125,7 +137,7 @@ export const MinimalLoggingConfiguration: LoggingConfiguration = {
 /**
  * Default logging configuration for running automation clients
  */
-export const DefaultClientLoggingConfiguration: LoggingConfiguration = {
+export const ClientLogging: LoggingConfiguration = {
     console: {
         enabled: true,
         level: "info",
@@ -136,6 +148,8 @@ export const DefaultClientLoggingConfiguration: LoggingConfiguration = {
         enabled: false,
     },
 };
+
+configureLogging(PlainLogging);
 
 /**
  * Configure the logging sub-system with the provided LoggingConfiguration
@@ -210,27 +224,28 @@ export function configureLogging(config: LoggingConfiguration) {
  */
 export function clientLoggingConfiguration(configuration: Configuration): LoggingConfiguration {
     const lc: LoggingConfiguration = {
-        ...DefaultClientLoggingConfiguration,
+        ...ClientLogging,
     };
     if (configuration.logging) {
         if (configuration.logging.level) {
-            lc.console.enabled = true,
-                lc.console.level = configuration.logging.level;
-            lc.console.format = LoggingFormat.Full;
+            lc.console = {
+                enabled: true,
+                level: configuration.logging.level,
+                format: LoggingFormat.Full,
+            };
         }
-        if (configuration.logging.file) {
-            if (configuration.logging.file.enabled === true) {
-                let filename = p.join(".", "log", `${configuration.name.replace(/^.*\//, "")}.log`);
-                if (configuration.logging.file.name) {
-                    filename = this.configuration.logging.file.name;
-                }
-                lc.file = {
-                    enabled: true,
-                    level: configuration.logging.file.level || configuration.logging.level,
-                    filename,
-                    format: LoggingFormat.Full,
-                };
+        if (_.get(configuration, "logging.file.enabled") === true) {
+            let filename = p.join(".", "log", `${configuration.name.replace(/^.*\//, "")}.log`);
+            if (configuration.logging.file.name) {
+                filename = this.configuration.logging.file.name;
             }
+
+            lc.file = {
+                enabled: true,
+                level: configuration.logging.file.level || configuration.logging.level,
+                filename,
+                format: LoggingFormat.Full,
+            };
         }
     }
     return lc;

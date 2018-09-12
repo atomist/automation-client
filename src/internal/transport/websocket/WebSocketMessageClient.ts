@@ -15,7 +15,7 @@ import {
     SlackDestination,
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
-import { logger } from "../../util/logger";
+import { logger } from "../../../util/logger";
 import {
     guid,
     toStringArray,

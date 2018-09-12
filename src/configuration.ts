@@ -29,7 +29,7 @@ import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { ExpressServerOptions } from "./internal/transport/express/ExpressServer";
 import { config } from "./internal/util/config";
-import { logger } from "./internal/util/logger";
+import { logger } from "./util/logger";
 import {
     guid,
     obfuscateJson,

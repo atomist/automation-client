@@ -3,7 +3,7 @@ import {
     ActionResult,
     successOn,
 } from "../../action/ActionResult";
-import { logger } from "../../internal/util/logger";
+import { logger } from "../../util/logger";
 import { Configurable } from "../../project/git/Configurable";
 import { createRepo } from "../../util/gitHub";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";

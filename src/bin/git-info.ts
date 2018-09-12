@@ -18,17 +18,12 @@
 import * as fs from "fs-extra";
 import * as path from "path";
 import { obtainGitInfo } from "../internal/env/gitInfo";
-import {
-    configureLogging,
-    logger,
-    NoLoggingConfiguration,
-} from "../internal/util/logger";
+import { logger } from "../util/logger";
 
 /**
  * Generate git-info.json for automation client.
  */
 async function main(): Promise<never> {
-    configureLogging(NoLoggingConfiguration);
     try {
         const cwd = process.cwd();
         const gitInfoName = "git-info.json";

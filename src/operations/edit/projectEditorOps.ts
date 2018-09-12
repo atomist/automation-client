@@ -1,4 +1,4 @@
-import { logger } from "../../internal/util/logger";
+import { logger } from "../../util/logger";
 import { Project } from "../../project/Project";
 import {
     AnyProjectEditor,

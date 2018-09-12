@@ -4,13 +4,13 @@ import "source-map-support/register";
 import { automationClient } from "../automationClient";
 import { loadConfiguration } from "../configuration";
 import {
+    ClientLogging,
     configureLogging,
-    DefaultClientLoggingConfiguration,
-} from "../internal/util/logger";
+} from "../util/logger";
 import { enableDefaultScanning } from "../scan";
 
 try {
-    configureLogging(DefaultClientLoggingConfiguration);
+    configureLogging(ClientLogging);
     loadConfiguration()
         .then(configuration => {
             enableDefaultScanning(configuration);

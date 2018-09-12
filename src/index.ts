@@ -89,7 +89,7 @@ export {
     CommandInvocation,
 } from "./internal/invoker/Payload";
 
-export * from "./internal/util/logger";
+export * from "./util/logger";
 
 export {
     BitBucketRepoRef,

@@ -28,7 +28,7 @@ import {
     populateParameters,
     populateValues,
 } from "../internal/parameterPopulation";
-import { logger } from "../internal/util/logger";
+import { logger } from "../util/logger";
 import { toStringArray } from "../internal/util/string";
 import {
     CommandHandlerMetadata,

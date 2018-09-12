@@ -21,11 +21,7 @@ import * as fs from "fs-extra";
 import * as glob from "glob";
 import * as path from "path";
 import * as util from "util";
-import {
-    configureLogging,
-    logger,
-    NoLoggingConfiguration,
-} from "../internal/util/logger";
+import { logger } from "../util/logger";
 
 /**
  * Figure out whether the lib directory is named lib or src.  lib is
@@ -51,7 +47,6 @@ function libDir(cwd: string): string {
  * Generate TypeScript typings for GraphQL schema entities.
  */
 async function main(): Promise<void> {
-    configureLogging(NoLoggingConfiguration);
     try {
         const cwd = process.cwd();
         const lib = libDir(cwd);

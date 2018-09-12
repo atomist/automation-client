@@ -16,7 +16,7 @@ import { HandlerResult } from "../HandlerResult";
 import * as internalGraphql from "../internal/graph/graphQL";
 import { CommandInvocation } from "../internal/invoker/Payload";
 import { RequestProcessor } from "../internal/transport/RequestProcessor";
-import { logger } from "../internal/util/logger";
+import { logger } from "./logger";
 import { registerShutdownHook } from "../internal/util/shutdown";
 import { AutomationEventListenerSupport } from "../server/AutomationEventListener";
 import {

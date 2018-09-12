@@ -8,7 +8,7 @@ import * as zlib from "zlib";
 import { Configuration } from "../../../configuration";
 import { Deferred } from "../../util/Deferred";
 import { configureProxy } from "../../util/http";
-import { logger } from "../../util/logger";
+import { logger } from "../../../util/logger";
 import { registerShutdownHook } from "../../util/shutdown";
 import {
     CommandIncoming,

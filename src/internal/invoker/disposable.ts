@@ -1,5 +1,5 @@
 import { HandlerContext } from "../../HandlerContext";
-import { logger } from "../util/logger";
+import { logger } from "../../util/logger";
 
 export function registerDisposable(ctx: HandlerContext): (callback: () => Promise<void>, description?: string) => void {
     return (callback: () => Promise<void>, description: string) => {

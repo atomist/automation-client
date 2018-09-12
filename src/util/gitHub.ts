@@ -4,7 +4,7 @@ import axios, {
 } from "axios";
 
 import { decode } from "../internal/util/base64";
-import { logger } from "../internal/util/logger";
+import { logger } from "./logger";
 import {
     GitHubDotComBase,
     GitHubRepoRef,

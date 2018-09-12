@@ -1,7 +1,7 @@
 import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { PatternMatch } from "@atomist/microgrammar/PatternMatch";
 import { ScriptedFlushable } from "../../internal/common/Flushable";
-import { logger } from "../../internal/util/logger";
+import { logger } from "../../util/logger";
 import { File } from "../File";
 import { ProjectAsync } from "../Project";
 import { doWithFiles, gatherFromFiles, GlobOptions } from "./projectUtils";

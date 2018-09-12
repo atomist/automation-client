@@ -9,7 +9,7 @@ import {
     CommandResult,
     runCommand,
 } from "../../action/cli/commandLine";
-import { logger } from "../../internal/util/logger";
+import { logger } from "../../util/logger";
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
 import {
     isRemoteRepoRef,

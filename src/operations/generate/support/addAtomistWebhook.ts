@@ -5,7 +5,7 @@ import {
     failureOn,
     successOn,
 } from "../../../action/ActionResult";
-import { logger } from "../../../internal/util/logger";
+import { logger } from "../../../util/logger";
 import { GitProject } from "../../../project/git/GitProject";
 import {
     addRepoWebhook,

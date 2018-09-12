@@ -20,7 +20,7 @@ import {
     HealthStatus,
     registerHealthIndicator,
 } from "../../util/health";
-import { logger } from "../../util/logger";
+import { logger } from "../../../util/logger";
 import { registerShutdownHook } from "../../util/shutdown";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
