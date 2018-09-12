@@ -1,13 +1,4 @@
-import * as winston from "winston";
-
-import {
-    logger,
-    LoggingConfig,
-} from "../src/internal/util/logger";
 import { GitHubRepoRef } from "../src/operations/common/GitHubRepoRef";
-
-LoggingConfig.format = "cli";
-(logger as winston.LoggerInstance).transports.console.level = process.env.LOG_LEVEL || "info";
 
 export const GitHubToken: string = "NOT_A_LEGIT_TOKEN";
 

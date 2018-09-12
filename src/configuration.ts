@@ -766,7 +766,7 @@ export function validateConfiguration(cfg: Configuration) {
         errors.push("you must set a 'version' property in your configuration");
     }
     if (!cfg.apiKey) {
-        console.info("INFO: To obtain an 'apiKey' visit https://app.atomist.com/apikeys and run 'atomist config' " +
+        logger.info("To obtain an 'apiKey' visit https://app.atomist.com/apikeys and run 'atomist config' " +
             "to configure the apiKey in your local configuration");
         errors.push("you must set an 'apiKey' property in your configuration");
     }

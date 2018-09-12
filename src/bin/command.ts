@@ -8,6 +8,11 @@
 process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
 
 import * as stringify from "json-stringify-safe";
+import {
+    configureLogging,
+    MinimalLoggingConfiguration,
+    NoLoggingConfiguration,
+} from "../internal/util/logger";
 
 import { automationClient } from "../automationClient";
 import {
@@ -17,12 +22,9 @@ import {
 import { HandlerContext } from "../HandlerContext";
 import { CommandInvocation } from "../internal/invoker/Payload";
 import { consoleMessageClient } from "../internal/message/ConsoleMessageClient";
-import { LoggingConfig } from "../internal/util/logger";
 import { guid } from "../internal/util/string";
 import { enableDefaultScanning } from "../scan";
 import { AutomationServer } from "../server/AutomationServer";
-
-LoggingConfig.format = "cli";
 
 main();
 
@@ -31,6 +33,7 @@ main();
  * command handler.  This method will not return.
  */
 async function main() {
+    configureLogging(NoLoggingConfiguration);
     if (!process.argv[2]) {
         console.error(`[ERROR] Missing command, you must supply the CommandInvocation on the command line`);
         process.exit(3);
