@@ -69,7 +69,6 @@
     "chalk": "^2.3.2",
     "child-process-promise": "^2.2.1",
     "cluster": "^0.7.7",
-    "continuation-local-storage": "^3.2.1",
     "cors": "^2.8.4",
     "cross-spawn": "^6.0.5",
     "express": "^4.16.2",

@@ -53,7 +53,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                           // tslint:disable-next-line:no-empty
                           callback: (result: Promise<HandlerResult>) => void = () => { }) {
         // setup context
-        const ses = namespace.init();
+        const ses = namespace.create();
         const cls = this.setupNamespace(command, this.automations);
         ses.run(() => {
             namespace.set(cls);
@@ -96,7 +96,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         // tslint:disable-next-line:no-empty
                         callback: (results: Promise<HandlerResult[]>) => void = () => { }) {
         // setup context
-        const ses = namespace.init();
+        const ses = namespace.create();
         const cls = this.setupNamespace(event, this.automations);
         ses.run(() => {
             namespace.set(cls);
