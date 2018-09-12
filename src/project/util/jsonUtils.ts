@@ -1,4 +1,4 @@
-import { logger } from "../../internal/util/logger";
+import { logger } from "../../util/logger";
 import { ProjectAsync } from "../Project";
 import { doWithFiles } from "./projectUtils";
 

@@ -8,9 +8,9 @@ import {
     Configuration,
 } from "../../configuration";
 import { AutomationEventListenerSupport } from "../../server/AutomationEventListener";
+import { logger } from "../../util/logger";
 import { Automations } from "../metadata/metadata";
 import { info } from "../util/info";
-import { logger } from "../util/logger";
 import { RegistrationConfirmation } from "./websocket/WebSocketRequestProcessor";
 
 export class StartupMessageAutomationEventListener extends AutomationEventListenerSupport {

@@ -1,7 +1,7 @@
 import * as os from "os";
 import * as path from "path";
-import { logger } from "../../internal/util/logger";
 import { increment } from "../../internal/util/metric";
+import { logger } from "../../util/logger";
 import {
     CloneDirectoryInfo,
     CloneOptions,

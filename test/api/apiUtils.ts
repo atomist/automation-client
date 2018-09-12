@@ -16,25 +16,16 @@
 
 import axios from "axios";
 import * as _ from "lodash";
-import promiseRetry = require("promise-retry");
 
+import promiseRetry = require("promise-retry");
 import { ActionResult } from "../../src/action/ActionResult";
-import {
-    logger,
-    LoggingConfig,
-} from "../../src/internal/util/logger";
 import { guid } from "../../src/internal/util/string";
-import {
-    GitHubDotComBase,
-    GitHubRepoRef,
-} from "../../src/operations/common/GitHubRepoRef";
+import { GitHubDotComBase } from "../../src/operations/common/GitHubRepoRef";
 import { ProjectOperationCredentials } from "../../src/operations/common/ProjectOperationCredentials";
 import { RemoteRepoRef } from "../../src/operations/common/RepoId";
 import { LocalProject } from "../../src/project/local/LocalProject";
+import { logger } from "../../src/util/logger";
 import { TestRepositoryVisibility } from "../credentials";
-
-LoggingConfig.format = "cli";
-(logger as any).transports.console.level = process.env.LOG_LEVEL || "info";
 
 function barf(): string {
     throw new Error("<please set GITHUB_TOKEN env variable>");

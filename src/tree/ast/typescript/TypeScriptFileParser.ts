@@ -12,8 +12,8 @@ import {
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import * as _ from "lodash";
 import * as ts from "typescript";
-import { logger } from "../../../internal/util/logger";
 import { File } from "../../../project/File";
+import { logger } from "../../../util/logger";
 import { FileParser } from "../FileParser";
 
 /**

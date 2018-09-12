@@ -1,7 +1,7 @@
 import promiseRetry = require("promise-retry");
 import { WrapOptions } from "retry";
 
-import { logger } from "../internal/util/logger";
+import { logger } from "./logger";
 
 /**
  * Default retry options for doWithRetry.

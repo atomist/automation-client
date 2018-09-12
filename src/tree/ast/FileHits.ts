@@ -5,12 +5,12 @@ import {
 } from "@atomist/tree-path/path/pathExpression";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { ScriptedFlushable } from "../../internal/common/Flushable";
-import { logger } from "../../internal/util/logger";
 import { File } from "../../project/File";
 import {
     Project,
     ProjectAsync,
 } from "../../project/Project";
+import { logger } from "../../util/logger";
 import { LocatedTreeNode } from "../LocatedTreeNode";
 
 /**

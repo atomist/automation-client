@@ -13,6 +13,7 @@ import { AutomationEventListener } from "../../../server/AutomationEventListener
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
 import { MessageClient } from "../../../spi/message/MessageClient";
+import { logger } from "../../../util/logger";
 import { CommandInvocation } from "../../invoker/Payload";
 import * as namespace from "../../util/cls";
 import { Deferred } from "../../util/Deferred";
@@ -20,7 +21,6 @@ import {
     HealthStatus,
     registerHealthIndicator,
 } from "../../util/health";
-import { logger } from "../../util/logger";
 import { registerShutdownHook } from "../../util/shutdown";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {

@@ -5,12 +5,12 @@ import {
     failureOn,
     successOn,
 } from "../../../action/ActionResult";
-import { logger } from "../../../internal/util/logger";
 import { GitProject } from "../../../project/git/GitProject";
 import {
     addRepoWebhook,
     GitHubRepoWebhookPayload,
 } from "../../../util/gitHub";
+import { logger } from "../../../util/logger";
 import { isGitHubRepoRef } from "../../common/GitHubRepoRef";
 import { ProjectAction } from "../../common/projectAction";
 import { isTokenCredentials } from "../../common/ProjectOperationCredentials";

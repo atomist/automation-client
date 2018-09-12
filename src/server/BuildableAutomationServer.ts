@@ -28,7 +28,6 @@ import {
     populateParameters,
     populateValues,
 } from "../internal/parameterPopulation";
-import { logger } from "../internal/util/logger";
 import { toStringArray } from "../internal/util/string";
 import {
     CommandHandlerMetadata,
@@ -50,6 +49,7 @@ import {
     Maker,
     toFactory,
 } from "../util/constructionUtils";
+import { logger } from "../util/logger";
 import { AbstractAutomationServer } from "./AbstractAutomationServer";
 
 interface CommandHandlerRegistration {

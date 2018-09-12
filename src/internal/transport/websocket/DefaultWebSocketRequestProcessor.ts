@@ -10,11 +10,11 @@ import { AutomationEventListener } from "../../../server/AutomationEventListener
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
 import { MessageClient } from "../../../spi/message/MessageClient";
+import { logger } from "../../../util/logger";
 import {
     HealthStatus,
     registerHealthIndicator,
 } from "../../util/health";
-import { logger } from "../../util/logger";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
     CommandIncoming,

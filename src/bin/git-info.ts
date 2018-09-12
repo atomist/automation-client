@@ -17,16 +17,7 @@
 
 import * as fs from "fs-extra";
 import * as path from "path";
-
-import {
-    obtainGitInfo,
-} from "../internal/env/gitInfo";
-import {
-    logger,
-    LoggingConfig,
-} from "../internal/util/logger";
-
-LoggingConfig.format = "cli";
+import { obtainGitInfo } from "../internal/env/gitInfo";
 
 /**
  * Generate git-info.json for automation client.
@@ -38,10 +29,10 @@ async function main(): Promise<never> {
         const gitInfoPath = path.join(cwd, gitInfoName);
         const gitInfo = await obtainGitInfo(cwd);
         await fs.writeJson(gitInfoPath, gitInfo, { spaces: 2, encoding: "utf8" });
-        logger.info(`Successfully wrote git information to '${gitInfoPath}'`);
+        console.info(`Successfully wrote git information to '${gitInfoPath}'`);
         process.exit(0);
     } catch (e) {
-        logger.error(`Failed to generate Git information: ${e.message}`);
+        console.error(`Failed to generate Git information: ${e.message}`);
         process.exit(1);
     }
     throw new Error("Should never get here, process.exit() called above");
@@ -49,6 +40,6 @@ async function main(): Promise<never> {
 
 main()
     .catch((err: Error) => {
-        logger.error(`Unhandled exception: ${err.message}`);
+        console.error(`Unhandled exception: ${err.message}`);
         process.exit(101);
     });

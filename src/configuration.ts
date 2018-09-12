@@ -29,7 +29,6 @@ import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { ExpressServerOptions } from "./internal/transport/express/ExpressServer";
 import { config } from "./internal/util/config";
-import { logger } from "./internal/util/logger";
 import {
     guid,
     obfuscateJson,
@@ -40,6 +39,7 @@ import { SecretResolver } from "./spi/env/SecretResolver";
 import { DefaultHttpClientFactory } from "./spi/http/axiosHttpClient";
 import { HttpClientFactory } from "./spi/http/httpClient";
 import { Maker } from "./util/constructionUtils";
+import { logger } from "./util/logger";
 import { loadHostPackageJson } from "./util/packageJson";
 
 /**
@@ -766,7 +766,7 @@ export function validateConfiguration(cfg: Configuration) {
         errors.push("you must set a 'version' property in your configuration");
     }
     if (!cfg.apiKey) {
-        console.info("INFO: To obtain an 'apiKey' visit https://app.atomist.com/apikeys and run 'atomist config' " +
+        logger.info("To obtain an 'apiKey' visit https://app.atomist.com/apikeys and run 'atomist config' " +
             "to configure the apiKey in your local configuration");
         errors.push("you must set an 'apiKey' property in your configuration");
     }

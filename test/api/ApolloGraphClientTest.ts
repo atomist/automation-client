@@ -1,7 +1,6 @@
 import "mocha";
 import * as assert from "power-assert";
 import { ApolloGraphClient } from "../../src/graph/ApolloGraphClient";
-import { logger } from "../../src/internal/util/logger";
 import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../src/project/git/GitProject";
@@ -9,6 +8,7 @@ import {
     ReposQuery,
     ReposQueryVariables,
 } from "../../src/schema/schema";
+import { logger } from "../../src/util/logger";
 import {
     GitHubToken,
     SlackTeamId,

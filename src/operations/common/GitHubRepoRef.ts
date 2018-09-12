@@ -3,9 +3,9 @@ import {
     ActionResult,
     successOn,
 } from "../../action/ActionResult";
-import { logger } from "../../internal/util/logger";
 import { Configurable } from "../../project/git/Configurable";
 import { createRepo } from "../../util/gitHub";
+import { logger } from "../../util/logger";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { GitShaRegExp } from "./params/gitHubPatterns";
 import {

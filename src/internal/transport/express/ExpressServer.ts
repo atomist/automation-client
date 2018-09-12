@@ -16,13 +16,13 @@ import { noEventHandlersWereFound } from "../../../server/AbstractAutomationServ
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
 import { MessageClient } from "../../../spi/message/MessageClient";
+import { logger } from "../../../util/logger";
 import { scanFreePort } from "../../../util/port";
 import {
     health,
     HealthStatus,
 } from "../../util/health";
 import { info } from "../../util/info";
-import { logger } from "../../util/logger";
 import {
     gc,
     heapDump,

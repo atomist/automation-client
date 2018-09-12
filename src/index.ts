@@ -50,6 +50,7 @@ export {
 export { automationClientInstance } from "./globals";
 
 import * as GraphQL from "./graph/graphQL";
+
 export { GraphQL };
 
 export { HandleCommand } from "./HandleCommand";
@@ -88,10 +89,7 @@ export {
     CommandInvocation,
 } from "./internal/invoker/Payload";
 
-export {
-    logger,
-    LoggingConfig,
-} from "./internal/util/logger";
+export * from "./util/logger";
 
 export {
     BitBucketRepoRef,

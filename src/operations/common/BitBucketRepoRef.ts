@@ -5,8 +5,8 @@ import {
 } from "../../action/ActionResult";
 
 import { encode } from "../../internal/util/base64";
-import { logger } from "../../internal/util/logger";
 import { Configurable } from "../../project/git/Configurable";
+import { logger } from "../../util/logger";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";

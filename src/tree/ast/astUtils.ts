@@ -8,7 +8,7 @@ import {
 import { toPathExpression } from "@atomist/tree-path/path/utils";
 import { TreeNode } from "@atomist/tree-path/TreeNode";
 import * as _ from "lodash";
-import { logger } from "../../internal/util/logger";
+import { logger } from "../../util/logger";
 
 import { File } from "../../project/File";
 import { ProjectAsync } from "../../project/Project";

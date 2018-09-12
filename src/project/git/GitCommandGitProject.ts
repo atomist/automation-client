@@ -9,7 +9,6 @@ import {
     CommandResult,
     runCommand,
 } from "../../action/cli/commandLine";
-import { logger } from "../../internal/util/logger";
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
 import {
     isRemoteRepoRef,
@@ -23,6 +22,7 @@ import {
     DirectoryManager,
 } from "../../spi/clone/DirectoryManager";
 import { TmpDirectoryManager } from "../../spi/clone/tmpDirectoryManager";
+import { logger } from "../../util/logger";
 import {
     isLocalProject,
     ReleaseFunction,

@@ -21,8 +21,8 @@ import {
     successOn,
 } from "../../action/ActionResult";
 import { encode } from "../../internal/util/base64";
-import { logger } from "../../internal/util/logger";
 import { Configurable } from "../../project/git/Configurable";
+import { logger } from "../../util/logger";
 import {
     spawnAndWatch,
     WritableLog,

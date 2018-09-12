@@ -1,6 +1,5 @@
 import * as cluster from "cluster";
 import * as stringify from "json-stringify-safe";
-import * as path from "path";
 import { Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
@@ -25,15 +24,15 @@ import { DefaultWebSocketRequestProcessor } from "./internal/transport/websocket
 import { prepareRegistration } from "./internal/transport/websocket/payloads";
 import { WebSocketClient } from "./internal/transport/websocket/WebSocketClient";
 import { WebSocketRequestProcessor } from "./internal/transport/websocket/WebSocketRequestProcessor";
-import {
-    addFileTransport,
-    logger,
-    setLogLevel,
-} from "./internal/util/logger";
 import { obfuscateJson } from "./internal/util/string";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
 import { Maker } from "./util/constructionUtils";
+import {
+    clientLoggingConfiguration,
+    configureLogging,
+    logger,
+} from "./util/logger";
 import { StatsdAutomationEventListener } from "./util/statsd";
 
 export class AutomationClient implements RequestProcessor {
@@ -95,7 +94,7 @@ export class AutomationClient implements RequestProcessor {
     }
 
     public run(): Promise<void> {
-        this.configureLogging();
+        configureLogging(clientLoggingConfiguration(this.configuration));
         this.configureStatsd();
 
         const clientSig = `${this.configuration.name}:${this.configuration.version}`;
@@ -151,18 +150,6 @@ export class AutomationClient implements RequestProcessor {
     private configureStatsd() {
         if (this.configuration.statsd.enabled === true) {
             this.defaultListeners.push(new StatsdAutomationEventListener(this.configuration));
-        }
-    }
-
-    private configureLogging() {
-        setLogLevel(this.configuration.logging.level);
-
-        if (this.configuration.logging.file.enabled === true) {
-            let filename = path.join(".", "log", `${this.configuration.name.replace(/^.*\//, "")}.log`);
-            if (this.configuration.logging.file.name) {
-                filename = this.configuration.logging.file.name;
-            }
-            addFileTransport(filename, this.configuration.logging.file.level || this.configuration.logging.level);
         }
     }
 
