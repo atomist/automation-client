@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Don't default sha to master when cloning repos. [#4410c0b](https://github.com/atomist/automation-client-ts/commit/4410c0b45544536766d061ded92bc2e530caa677)
 -   Keep the branch from the RepoRef. [#366](https://github.com/atomist/automation-client-ts/issues/366)
 -   **BREAKING** `~/.atomist/client-config.json` should take precedence over `atomist-config.ts`. [#371](https://github.com/atomist/automation-client-ts/issues/371)
+-   **BREAKING** Update to Winston 3 and make logging configuration explicit. [#370](https://github.com/atomist/automation-client-ts/issues/370)
 
 ### Fixed
 
