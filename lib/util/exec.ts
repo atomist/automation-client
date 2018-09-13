@@ -67,18 +67,18 @@ export async function safeExec(cmd: string, args: string[] = [], opts: SpawnOpti
     const cmdString = (opts.cwd ? opts.cwd : process.cwd) + " ==> " + cmd +
         (args.length > 0 ? " '" + args.join("' '") + "'" : "");
     logger.debug(`Running: ${cmdString}`);
-    opts.stdio = ["inherit", "pipe", "pipe"];
+    opts.stdio = ["pipe", "pipe", "pipe"];
     const childProcess = spawn(cmd, args, opts);
     return new Promise<ExecResult>((resolve, reject) => {
         let stdout = "";
         let stderr = "";
         childProcess.stdout.on("data", data => {
-            stdout += data;
+            stdout += data.toString();
         });
         childProcess.stderr.on("data", data => {
-            stderr += data;
+            stderr += data.toString();
         });
-        childProcess.on("exit", (code, signal) => {
+        childProcess.on("close", (code, signal) => {
             logger.debug(`Child process exited with code ${code} and signal ${signal}: ${cmdString}`);
             if (code) {
                 const msg = `Child process ${process.pid} exited with non-zero status ${code}: ${cmdString}\n${stderr}`;
@@ -90,11 +90,7 @@ export async function safeExec(cmd: string, args: string[] = [], opts: SpawnOpti
                 reject(new ExecError(msg, cmdString, code, signal, stdout, stderr));
                 return;
             }
-            const commandResult: ExecResult = {
-                stdout,
-                stderr,
-            };
-            resolve(commandResult);
+            resolve({ stdout, stderr });
         });
         childProcess.on("error", err => {
             logger.error(`Failed to run command: ${cmdString}: ${err.message}`);
