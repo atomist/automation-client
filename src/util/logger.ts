@@ -6,6 +6,7 @@ import * as os from "os";
 import * as p from "path";
 import * as serializeError from "serialize-error";
 import * as winston from "winston";
+import * as Transport from "winston-transport";
 import { Configuration } from "../configuration";
 import * as context from "../internal/util/cls";
 
@@ -90,6 +91,7 @@ export interface LoggingConfiguration {
          */
         format?: LoggingFormat,
     };
+    custom?: Transport[];
 }
 
 /**
@@ -215,6 +217,12 @@ export function configureLogging(config: LoggingConfiguration) {
         winstonLogger.add(ft);
         winstonLogger.silent = false;
     }
+
+    // Set up custom transports
+    if (config.custom && config.custom.length > 0) {
+        config.custom.forEach(t => winstonLogger.add(t));
+        winstonLogger.silent = false;
+    }
 }
 
 /**
@@ -246,6 +254,7 @@ export function clientLoggingConfiguration(configuration: Configuration): Loggin
                 format: LoggingFormat.Full,
             };
         }
+        lc.custom = _.get(configuration, "logging.custom.transports");
     }
     return lc;
 }
