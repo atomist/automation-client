@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Make sure Apollo propagates the GraphQL errors. [#448f89a](https://github.com/atomist/automation-client-ts/commit/448f89aa8bf9c8bcf226f29882dad26267fe665e)
 -   No such file or directory `~/.atomist/log`. [#361](https://github.com/atomist/automation-client-ts/issues/361)
 -   Running multiple local SDMs causes port collisions. [#364](https://github.com/atomist/automation-client-ts/issues/364)
+-   Resolve exec promise when process stdio is closed. [#70145f2](https://github.com/atomist/automation-client-ts/commit/70145f2b2d7a5d0b2fa689f5d561f88416781ec8)
 
 ## [1.0.0-M.3](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.2...1.0.0-M.3) - 2018-09-04
 
