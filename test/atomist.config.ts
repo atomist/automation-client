@@ -153,3 +153,5 @@ export const configuration: Configuration = {
     },
     // metadataProcessor: new SdmTokenRewritingMetadataProcessor(),
 };
+
+
