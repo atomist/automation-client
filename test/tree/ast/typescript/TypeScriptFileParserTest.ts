@@ -1,4 +1,4 @@
-import { CFamilyLangHelper } from "@atomist/microgrammar/matchers/lang/cfamily/CFamilyLangHelper";
+import { CFamilyLangHelper } from "@atomist/microgrammar/lib/matchers/lang/cfamily/CFamilyLangHelper";
 import {
     evaluateScalar,
     evaluateScalarValue,

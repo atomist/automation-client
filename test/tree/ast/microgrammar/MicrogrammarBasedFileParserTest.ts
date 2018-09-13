@@ -1,5 +1,7 @@
-import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
-import { Integer } from "@atomist/microgrammar/Primitives";
+import {
+    Integer,
+    Microgrammar,
+} from "@atomist/microgrammar";
 import {
     TreeNode,
     TreeVisitor,

@@ -1,7 +1,7 @@
 import {
     Attachment,
     SlackMessage,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import axios from "axios";
 import {
     CommandHandler,

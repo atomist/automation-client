@@ -1,6 +1,8 @@
-import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
-import { Integer } from "@atomist/microgrammar/Primitives";
 import "mocha";
+import {
+    Integer,
+    Microgrammar,
+} from "@atomist/microgrammar";
 import * as assert from "power-assert";
 import { AllFiles } from "../../../../src/project/fileGlobs";
 import { InMemoryProject } from "../../../../src/project/mem/InMemoryProject";

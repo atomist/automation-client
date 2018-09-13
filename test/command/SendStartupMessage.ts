@@ -1,4 +1,4 @@
-import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
+import { SlackMessage } from "@atomist/slack-messages";
 import {
     CommandHandler,
     Parameter,

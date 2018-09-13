@@ -1,5 +1,5 @@
-import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
-import { PatternMatch } from "@atomist/microgrammar/PatternMatch";
+import { Microgrammar } from "@atomist/microgrammar";
+import { PatternMatch } from "@atomist/microgrammar/lib/PatternMatch";
 import { ScriptedFlushable } from "../../internal/common/Flushable";
 import { logger } from "../../util/logger";
 import { File } from "../File";

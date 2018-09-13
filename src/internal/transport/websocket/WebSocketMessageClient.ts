@@ -1,7 +1,7 @@
 import {
     render,
     SlackMessage,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as WebSocket from "ws";
 import {
