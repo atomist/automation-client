@@ -17,7 +17,7 @@ import {
 } from "../util/string";
 
 // tslint:disable-next-line:no-var-requires
-const schema = require("../../graph/schema.cortex.json");
+const schema = require("../../graph/schema.json");
 
 const OperationParameterExpression = /(?:subscription|query)[\s]*([\S]*?)\s*(\([\S\s]*?\))\s*[\S\s]*?{/i;
 const OperationNameExpression = /(subscription|query)[\s]*([^({\s]*)/i;

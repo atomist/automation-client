@@ -42,8 +42,8 @@ async function main(): Promise<void> {
 
         // check if the project has a custom schema
         const customSchemaLocation = path.join(lib, "graphql", "schema.json");
-        const defaultSchemaLocation = path.join(cwd, "node_modules", "@atomist", "automation-client",
-            "graph", "schema.cortex.json");
+        const defaultSchemaLocation = path.join(cwd, "node_modules", "@atomist", "automation-client", "lib",
+            "graph", "schema.json");
         const schema = fs.existsSync(customSchemaLocation) ? customSchemaLocation : defaultSchemaLocation;
 
         const gqlGenCmd = path.join(cwd, "node_modules", ".bin", "gql-gen") +
