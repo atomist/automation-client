@@ -2,7 +2,6 @@ import "mocha";
 
 import * as assert from "power-assert";
 import { ActionResult } from "../../../src/action/ActionResult";
-import { runCommand } from "../../../src/action/cli/commandLine";
 import {
     GitHubDotComBase,
     GitHubRepoRef,
@@ -10,6 +9,7 @@ import {
 import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
 import { GitProject } from "../../../src/project/git/GitProject";
 import { Project } from "../../../src/project/Project";
+import { safeExec } from "../../../src/util/exec";
 import { GitHubToken } from "../../credentials";
 import { tempProject } from "../utils";
 
@@ -97,7 +97,7 @@ describe("GitProject", () => {
 
 ding dong ding
 `))
-            .then(() => runCommand("git log -1 --pretty=format:'%B'", { cwd: gp.baseDir }))
+            .then(() => safeExec("git", ["log", "-1", "--pretty=format:%B"], { cwd: gp.baseDir }))
             .then(commandResult => {
                 assert.equal(commandResult.stdout, `Added a Thing
 
@@ -114,13 +114,12 @@ ding dong ding
         gp.init()
             .then(() => gp.isClean())
             .then(clean => {
-                assert(!clean.success);
-                assert(!!clean.target.branch);
-                assert(!!clean.target.id);
-                assert(clean.target.id.sha === "HEAD");
-                done();
+                assert(!clean);
+                assert(!!gp.branch);
+                assert(!!gp.id);
+                assert(gp.id.sha === "HEAD");
             })
-            .catch(done);
+            .then(() => done(), done);
     });
 
     it("uses then function", done => {
@@ -129,14 +128,9 @@ ding dong ding
         const gp: GitProject = GitCommandGitProject.fromProject(p, Creds);
         gp.init()
             .then(() => gp.isClean())
-            .then(assertNotClean as any)
+            .then(clean => assert(!clean))
             .then(() => done(), done);
     });
-
-    function assertNotClean(r: ActionResult<GitCommandGitProject>) {
-        assert(r.target);
-        assert(!r.success);
-    }
 
     it("add a file, check doesn't have uncommitted", done => {
         const p = tempProject();
@@ -166,8 +160,8 @@ ding dong ding
         const gp = await GitCommandGitProject.cloned(Creds, new GitHubRepoRef("pallets", "flask",
             "0cbe698958f81efe202e71ac07446b87ad694789", GitHubDotComBase, "examples/tutorial"));
         assert(!!gp.findFileSync("flaskr/__init__.py"), "Should be able to find file under subdirectory");
-        const r = await gp.isClean();
-        assert(r.success, "We should be able to get git status for a subdirectory");
+        const clean = await gp.isClean();
+        assert(clean, "We should be able to get git status for a subdirectory");
         gp.release();
     }).timeout(10000);
 

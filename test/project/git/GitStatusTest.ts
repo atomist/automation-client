@@ -52,8 +52,7 @@ describe("GitStatus", () => {
 
     async function makeACommit(project: GitProject): Promise<GitProject> {
         const p = await project.addFile("file-that-does-not-yet-exist", "something");
-        const result = await p.commit("yassss");
-        return result.target;
+        return p.commit("yassss");
     }
 
     it("should tell me the local sha", async () => {

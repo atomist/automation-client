@@ -1,6 +1,9 @@
 import * as _ from "lodash";
 import { WrapOptions } from "retry";
-import { ActionResult } from "../../action/ActionResult";
+import {
+    ActionResult,
+    successOn,
+} from "../../action/ActionResult";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
@@ -52,10 +55,11 @@ export const RemoteGitProjectPersister: ProjectPersister<GitProject> =
                 logger.debug(`Committing to local repo at '${gp.baseDir}'`);
                 return gp.commit("Initial commit from Atomist");
             })
-            .then(() => push(gp));
+            .then(() => retryPush(gp))
+            .then(tp => successOn(tp));
     };
 
-export function push(gp: GitProject, opts: WrapOptions = {}): Promise<ActionResult<GitProject>> {
+function retryPush(gp: GitProject, opts: WrapOptions = {}): Promise<GitProject> {
     const retryOptions: WrapOptions = {
         retries: 5,
         factor: 3,

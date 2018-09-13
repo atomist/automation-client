@@ -1,14 +1,24 @@
-import { exec } from "child-process-promise";
+/*
+ * Copyright © 2018 Atomist, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import * as _ from "lodash";
+import * as process from "process";
 import promiseRetry = require("promise-retry");
-import {
-    ActionResult,
-    successOn,
-} from "../../action/ActionResult";
-import {
-    CommandResult,
-    runCommand,
-} from "../../action/cli/commandLine";
+
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
 import {
     isRemoteRepoRef,
@@ -22,6 +32,10 @@ import {
     DirectoryManager,
 } from "../../spi/clone/DirectoryManager";
 import { TmpDirectoryManager } from "../../spi/clone/tmpDirectoryManager";
+import {
+    execIn,
+    ExecResult,
+} from "../../util/exec";
 import { logger } from "../../util/logger";
 import {
     isLocalProject,
@@ -108,20 +122,16 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
         logger.debug(`Created GitProject`);
     }
 
-    public init(): Promise<CommandResult<this>> {
+    public async init(): Promise<this> {
         this.newRepo = true;
         this.branch = "master";
-        return this.runCommandInCurrentWorkingDirectory("git init");
+        return this.gitInProjectBaseDir(["init"])
+            .then(() => this);
     }
 
-    public isClean(): Promise<CommandResult<this>> {
-        return this.runCommandInCurrentWorkingDirectory("git status --porcelain")
-            .then(commandResult => {
-                return {
-                    ...commandResult,
-                    success: commandResult.stdout !== undefined && commandResult.stdout === "",
-                };
-            });
+    public isClean(): Promise<boolean> {
+        return this.gitInProjectBaseDir(["status", "--porcelain"])
+            .then(result => result.stdout === "");
     }
 
     public gitStatus(): Promise<GitStatus> {
@@ -132,19 +142,21 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * Remote is of form https://github.com/USERNAME/REPOSITORY.git
      * @param remote
      */
-    public setRemote(remote: string): Promise<CommandResult<this>> {
+    public setRemote(remote: string): Promise<this> {
         this.remote = remote;
-        return this.runCommandInCurrentWorkingDirectory(`git remote add origin ${remote}`);
+        return this.gitInProjectBaseDir(["remote", "add", "origin", remote])
+            .then(() => this);
     }
 
-    public setUserConfig(user: string, email: string): Promise<CommandResult<this>> {
-        return this.runCommandInCurrentWorkingDirectory(`git config user.name "${user}"`)
-            .then(() => this.runCommandInCurrentWorkingDirectory(`git config user.email "${email}"`));
+    public setUserConfig(user: string, email: string): Promise<this> {
+        return this.gitInProjectBaseDir(["config", "user.name", user])
+            .then(() => this.gitInProjectBaseDir(["config", "user.email", email]))
+            .then(() => this);
     }
 
     public createAndSetRemote(gid: RemoteRepoRef,
                               description: string = gid.repo,
-                              visibility: "private" | "public"): Promise<CommandResult<this>> {
+                              visibility: "private" | "public"): Promise<this> {
         this.id = gid;
         return gid.createRemote(this.credentials, description, visibility)
             .then(res => {
@@ -157,11 +169,12 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             });
     }
 
-    public configureFromRemote(): Promise<ActionResult<this>> {
+    public configureFromRemote(): Promise<this> {
         if (isRemoteRepoRef(this.id)) {
-            return this.id.setUserConfig(this.credentials, this);
+            return this.id.setUserConfig(this.credentials, this)
+                .then(() => this);
         }
-        return Promise.resolve(successOn(this));
+        return Promise.resolve(this);
     }
 
     /**
@@ -169,7 +182,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @param title
      * @param body
      */
-    public raisePullRequest(title: string, body: string = name, targetBranch: string = "master"): Promise<ActionResult<this>> {
+    public raisePullRequest(title: string, body: string = name, targetBranch: string = "master"): Promise<this> {
         if (!this.branch) {
             throw new Error("Cannot create a PR: no branch has been created");
         }
@@ -177,27 +190,19 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             throw new Error("No remote in " + JSON.stringify(this.id));
         }
 
-        return this.id.raisePullRequest(
-            this.credentials,
-            title,
-            body,
-            this.branch,
-            targetBranch)
-            .then(() => successOn(this));
+        return this.id.raisePullRequest(this.credentials, title, body, this.branch, targetBranch)
+            .then(() => this);
     }
 
     /**
-     * `git add .` and `git commit`
-     * @param {string} message
-     * @returns {Promise<CommandResult<this>>}
+     * `git add .` and `git commit -m MESSAGE`
+     * @param {string} message Commit message
+     * @returns {Promise<this>}
      */
-    public commit(message: string): Promise<CommandResult<this>> {
-        return this.runCommandInCurrentWorkingDirectory(`git add .`)
-            .then(() => {
-                const escapedMessage = message.replace(/"/g, `\\"`);
-                const command = `git commit -a -m "${escapedMessage}"`;
-                return this.runCommandInCurrentWorkingDirectory(command);
-            });
+    public commit(message: string): Promise<this> {
+        return this.gitInProjectBaseDir(["add", "."])
+            .then(() => this.gitInProjectBaseDir(["commit", "-m", message]))
+            .then(() => this);
     }
 
     /**
@@ -205,34 +210,35 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * @param ref branch or SHA
      * @return {any}
      */
-    public async checkout(ref: string): Promise<CommandResult<this>> {
-        const res = await this.runCommandInCurrentWorkingDirectory(`git checkout ${ref} --`);
+    public async checkout(ref: string): Promise<this> {
+        await this.gitInProjectBaseDir(["checkout", ref, "--"]);
         if (!isValidSHA1(ref)) {
             this.branch = ref;
         }
-        return res;
+        return this;
     }
 
     /**
      * Revert all changes since last commit
      * @return {any}
      */
-    public async revert(): Promise<CommandResult<this>> {
-        return clean(this.baseDir);
+    public async revert(): Promise<this> {
+        return clean(this.baseDir)
+            .then(() => this);
     }
 
-    public push(options?: GitPushOptions): Promise<CommandResult<this>> {
-        let gitPushCmd: string = "git push";
+    public async push(options?: GitPushOptions): Promise<this> {
+        const gitPushArgs = ["push"];
         _.forOwn(options, (v, k) => {
             const opt = k.replace(/_/g, "-");
             if (typeof v === "boolean") {
                 if (v === false) {
-                    gitPushCmd += ` --no-${opt}`;
+                    gitPushArgs.push(`--no-${opt}`);
                 } else {
-                    gitPushCmd += ` --${opt}`;
+                    gitPushArgs.push(`--${opt}`);
                 }
             } else if (typeof v === "string") {
-                gitPushCmd += ` --${opt}=${v}`;
+                gitPushArgs.push(`--${opt}=${v}`);
             } else {
                 return Promise.reject(new Error(`Unknown option key type for ${k}: ${typeof v}`));
             }
@@ -240,50 +246,41 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
         if (!!this.branch && !!this.remote) {
             // We need to set the remote
-            gitPushCmd += ` ${this.remote} ${this.branch}`;
+            gitPushArgs.push(this.remote, this.branch);
         } else {
-            gitPushCmd += ` --set-upstream origin ${this.branch}`;
+            gitPushArgs.push("--set-upstream", "origin", this.branch);
         }
 
-        return this.runCommandInCurrentWorkingDirectory(gitPushCmd)
+        return this.gitInProjectBaseDir(gitPushArgs)
+            .then(() => this)
             .catch(err => {
-                err.message = `Unable to push '${gitPushCmd}': ${err.message}`;
+                err.message = `Unable to push 'git "${gitPushArgs.join('" "')}"': ${err.message}`;
                 logger.error(err.message);
                 return Promise.reject(err);
             });
     }
 
-    public createBranch(name: string): Promise<CommandResult<this>> {
-        return this.runCommandInCurrentWorkingDirectory(`git branch ${name}`)
-            .then(() => this.runCommandInCurrentWorkingDirectory(`git checkout ${name} --`))
-            .then(res => {
+    /**
+     * Create branch from current HEAD.
+     * @param name Name of branch to create.
+     * @return project object
+     */
+    public async createBranch(name: string): Promise<this> {
+        return this.gitInProjectBaseDir(["branch", name])
+            .then(() => this.gitInProjectBaseDir(["checkout", name, "--"]))
+            .then(() => {
                 this.branch = name;
-                return res;
+                return this;
             });
     }
 
-    public hasBranch(name: string): Promise<boolean> {
-        return this.runCommandInCurrentWorkingDirectory(`git branch --list ${name}`)
-            .then(commandResult => {
-                if (commandResult.success && commandResult.stdout.includes(name)) {
-                    return Promise.resolve(true);
-                } else if (commandResult.success) {
-                    return Promise.resolve(false);
-                } else {
-                    return Promise.reject(new Error(
-                        `command <git branch --list ${name}> failed: ${commandResult.stderr}`));
-                }
-            });
+    public async hasBranch(name: string): Promise<boolean> {
+        return this.gitInProjectBaseDir(["branch", "--list", name])
+            .then(result => result.stdout.includes(name));
     }
 
-    private runCommandInCurrentWorkingDirectory(cmd: string): Promise<CommandResult<this>> {
-        return runCommand(cmd, { cwd: this.baseDir })
-            .then(result => {
-                return {
-                    target: this,
-                    ...result,
-                };
-            });
+    private async gitInProjectBaseDir(args: string[]): Promise<ExecResult> {
+        return execIn(this.baseDir, "git", args);
     }
 
 }
@@ -341,12 +338,17 @@ async function cloneInto(
     const repoDir = targetDirectoryInfo.path;
     const url = id.cloneUrl(credentials);
     const cloneBranch = id.branch;
-    const cloneCommand = !opts.alwaysDeep ?
+    const cloneArgs = ["clone", url, repoDir];
+    // If we wanted a deep clone, just clone it
+    if (!opts.alwaysDeep) {
         // If we didn't ask for a deep clone, then default to cloning only the tip of the default branch.
-        // the cloneOptions let us ask for more commits than that, or a different branch.
-        `git clone --depth ${opts.depth ? opts.depth : 1} ${url} ${repoDir} ${cloneBranch ? `--branch ${cloneBranch}` : ""}` :
-        // If we wanted a deep clone, just clone it
-        `git clone ${url} ${repoDir}`;
+        // the cloneOptions let us ask for more commits than that
+        cloneArgs.push("--depth", ((opts.depth && opts.depth > 0) ? opts.depth : 1).toString(10));
+        if (cloneBranch) {
+            // if not cloning deeply, be sure we clone the right branch
+            cloneArgs.push("--branch", cloneBranch);
+        }
+    }
     // Note: branch takes preference for checkout because we might be about to commit to it.
     // If you want to be sure to land on your SHA, set opts.detachHead to true.
     // Or don't, but then call gitStatus() on the returned project to check whether the branch is still at the SHA you wanted.
@@ -362,19 +364,19 @@ async function cloneInto(
         randomize: false,
     };
     await promiseRetry(retryOptions, (retry, count) => {
-        return runIn(".", cloneCommand)
+        return execIn(".", "git", cloneArgs)
             .catch(err => {
                 logger.warn(`Clone of ${id.owner}/${id.repo} attempt ${count} failed: ` + err.message);
                 retry(err);
             });
     });
     try {
-        await runIn(repoDir, `git checkout ${checkoutRef} --`);
+        await execIn(repoDir, "git", ["checkout", checkoutRef, "--"]);
     } catch (err) {
         // When the head moved on and we only cloned with depth; we might have to do a full clone to get to the commit we want
         logger.warn(`Ref ${checkoutRef} not in cloned history. Attempting full clone`);
-        await runIn(repoDir, `git fetch --unshallow`)
-            .then(() => runIn(repoDir, `git checkout ${checkoutRef} --`));
+        await execIn(repoDir, "git", ["fetch", "--unshallow"])
+            .then(() => execIn(repoDir, "git", ["checkout", checkoutRef, "--"]));
     }
     logger.debug(`Clone succeeded with URL '${cleanUrl}'`);
     return GitCommandGitProject.fromBaseDir(id, repoDir, credentials,
@@ -382,30 +384,26 @@ async function cloneInto(
         targetDirectoryInfo.provenance + "\nfreshly cloned");
 }
 
-function resetOrigin(repoDir: string, credentials: ProjectOperationCredentials, id: RemoteRepoRef) {
-    return runIn(repoDir, `git remote set origin ${id.cloneUrl(credentials)}`);
+async function resetOrigin(
+    repoDir: string,
+    credentials: ProjectOperationCredentials,
+    id: RemoteRepoRef,
+): Promise<ExecResult> {
+
+    return execIn(repoDir, "git", ["remote", "set", "origin", id.cloneUrl(credentials)]);
 }
 
-function checkout(repoDir: string, branch: string) {
-    return pwd(repoDir)
-        .then(() => runIn(repoDir, `git fetch origin ${branch}`))
-        .then(() => runIn(repoDir, `git checkout ${branch} --`))
-        .then(() => runIn(repoDir, `git reset --hard origin/${branch}`));
+async function checkout(repoDir: string, branch: string): Promise<ExecResult> {
+    logger.debug(`cwd:${process.cwd}`);
+    return execIn(repoDir, "git", ["fetch", "origin", branch])
+        .then(() => execIn(repoDir, "git", ["checkout", branch, "--"]))
+        .then(() => execIn(repoDir, "git", ["reset", "--hard", `origin/${branch}`]));
 }
 
-function clean(repoDir: string) {
-    return pwd(repoDir)
-        .then(() => runIn(repoDir, "git clean -dfx")) // also removes ignored files
-        .then(() => runIn(repoDir, "git checkout -- ."));
-}
-
-function runIn(baseDir: string, command: string) {
-    return runCommand(command, { cwd: baseDir });
-}
-
-function pwd(baseDir) {
-    return runCommand("pwd", { cwd: baseDir }).then(result =>
-        console.log(result.stdout));
+async function clean(repoDir: string): Promise<ExecResult> {
+    logger.debug(`cwd:${process.cwd}`);
+    return execIn(repoDir, "git", ["clean", "-dfx"]) // also removes ignored files
+        .then(() => execIn(repoDir, "git", ["checkout", "--", "."]));
 }
 
 function isValidSHA1(s: string): boolean {

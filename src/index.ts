@@ -114,3 +114,7 @@ export {
 } from "./spi/graph/GraphClient";
 
 export * from "./spi/message/MessageClient";
+
+export * from "./util/exec";
+
+export * from "./util/spawn";

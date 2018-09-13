@@ -1,7 +1,7 @@
 import "mocha";
 import * as path from "path";
 import { logger } from "../../src";
-import { spawnAndWatch } from "../../src/util/spawned";
+import { spawnAndWatch } from "../../src/util/spawn";
 
 describe("spawned", () => {
 
@@ -9,17 +9,17 @@ describe("spawned", () => {
         spawnAndWatch({
             command: "bash",
             args: [path.join(path.resolve(__dirname), "echo.sh")],
+        },
+            {
             },
-        {
-        },
-        {
-            write: what => logger.debug(what),
-            log: "",
-        },
-        {
-            timeout: 1000,
-        })
-        .then(() => done());
+            {
+                write: what => logger.debug(what),
+                log: "",
+            },
+            {
+                timeout: 1000,
+            })
+            .then(() => done());
     });
 
 });
