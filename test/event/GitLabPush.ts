@@ -2,7 +2,7 @@ import {
     bold,
     SlackMessage,
     url,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import { EventHandler } from "../../src/decorators";
 import {
     EventFired,

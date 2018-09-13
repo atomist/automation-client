@@ -1,4 +1,4 @@
-import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
+import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import * as _ from "lodash";
 import {

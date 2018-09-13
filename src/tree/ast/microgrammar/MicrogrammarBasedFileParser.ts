@@ -1,8 +1,8 @@
-import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
+import { Microgrammar } from "@atomist/microgrammar";
 import {
     isTreePatternMatch,
     PatternMatch,
-} from "@atomist/microgrammar/PatternMatch";
+} from "@atomist/microgrammar/lib/PatternMatch";
 import {
     defineDynamicProperties,
     fillInEmptyNonTerminalValues,

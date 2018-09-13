@@ -1,7 +1,7 @@
 import {
     Action,
     SlackMessage,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import { flatten } from "flat";
 import * as _ from "lodash";
 import { AnyOptions } from "../../configuration";
