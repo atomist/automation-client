@@ -5,7 +5,7 @@ import { File } from "../../project/File";
  * Central interface for integration of trees and path expressions into the Atomist Project API.
  * Implemented by objects that can parse a file into an AST using a single grammar
  */
-export interface FileParser {
+export interface FileParser<TN extends TreeNode = TreeNode> {
 
     /**
      * Name of the top level production: name of the root TreeNode
@@ -15,13 +15,19 @@ export interface FileParser {
     /**
      * Parse a file, returning an AST
      * @param {File} f
-     * @return {TreeNode} root tree node
+     * @return {TN} root tree node
      */
-    toAst(f: File): Promise<TreeNode>;
+    toAst(f: File): Promise<TN>;
 
     /**
      * Can this path expression possibly be valid using this parser?
-     * If not, throw an Error
+     * For example, if the implementation is backed by the grammar for a programming
+     * language, the set of symbols is known in advance, as is the legality of their
+     * combination.
+     * If it is invalid, throw an Error.
+     * This is useful to differentiate between nonsensical path expressions and
+     * path expressions that didn't match anything.
+     * If this function is not implemented, no path expressions will be rejected
      * @param {PathExpression} pex
      */
     validate?(pex: PathExpression): void;
