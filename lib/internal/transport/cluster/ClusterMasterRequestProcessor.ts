@@ -120,7 +120,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                     return;
                 }
 
-                const ses = namespace.init();
+                const ses = namespace.create();
                 ses.run(() => {
                     namespace.set(msg.context);
 
