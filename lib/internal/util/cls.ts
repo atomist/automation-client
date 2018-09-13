@@ -2,18 +2,31 @@ import * as asyncHooks from "async_hooks";
 
 const namespaces = {};
 
+/**
+ * Create a new namespace
+ */
 export function create() {
     return namespace;
 }
 
+/**
+ * Set AutomationContext into the namespace of the current execution
+ * @param context
+ */
 export function set(context: AutomationContext) {
     namespace.set("context", context);
 }
 
+/**
+ * Get AutomationContext from the namespace of the current execution
+ */
 export function get(): AutomationContext {
     return namespace.get("context");
 }
 
+/**
+ * Context of the current command or event handler execution
+ */
 export interface AutomationContext {
 
     correlationId: string;
@@ -27,25 +40,28 @@ export interface AutomationContext {
 
 }
 
+/**
+ * Internal mapping from async execution ids to AutomationContext instances
+ */
 class Namespace {
 
-    constructor(private readonly context = {}) {
+    constructor(public readonly context = {}) {
     }
 
-    public run(fn) {
+    public run(fn: () => void): void {
         const id = asyncHooks.executionAsyncId();
         this.context[id] = {};
         fn();
     }
 
-    public set(key, val) {
+    public set(key: string, val: any): void {
         const id = asyncHooks.executionAsyncId();
         if (this.context[id]) {
             this.context[id][key] = val;
         }
     }
 
-    public get(key) {
+    public get(key: string): any {
         const id = asyncHooks.executionAsyncId();
         if (this.context[id]) {
             return this.context[id][key];
@@ -55,7 +71,11 @@ class Namespace {
     }
 }
 
-function createHooks(nsp) {
+/**
+ * Registers the internal async hooks on the namespace
+ * @param nsp
+ */
+function createHooks(nsp: Namespace) {
     function init(asyncId, type, triggerId, resource) {
         if (nsp.context[triggerId]) {
             nsp.context[asyncId] = nsp.context[triggerId];
@@ -71,7 +91,11 @@ function createHooks(nsp) {
     asyncHook.enable();
 }
 
-function createNamespace(name) {
+/**
+ * Create a new Namespace instance of the given name
+ * @param name
+ */
+function createNamespace(name): Namespace {
     if (namespaces[name]) {
         throw new Error(`Namespace '${name}' already exists`);
     }
@@ -84,4 +108,7 @@ function createNamespace(name) {
     return nsp;
 }
 
+/**
+ * Create the default namespace used by command and event handler executions
+ */
 const namespace = createNamespace("automation-client");
