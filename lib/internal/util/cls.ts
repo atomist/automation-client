@@ -1,6 +1,6 @@
 import * as asyncHooks from "async_hooks";
 
-const namespaces = {};
+const namespaces: { [key: string]: Namespace } = {};
 
 /**
  * Create a new namespace
@@ -13,7 +13,7 @@ export function create() {
  * Set AutomationContext into the namespace of the current execution
  * @param context
  */
-export function set(context: AutomationContext) {
+export function set(context: AutomationContext): void {
     namespace.set("context", context);
 }
 
@@ -75,14 +75,14 @@ class Namespace {
  * Registers the internal async hooks on the namespace
  * @param nsp
  */
-function createHooks(nsp: Namespace) {
+function createHooks(nsp: Namespace): void {
     function init(asyncId, type, triggerId, resource) {
         if (nsp.context[triggerId]) {
             nsp.context[asyncId] = nsp.context[triggerId];
         }
     }
 
-    function destroy(asyncId) {
+    function destroy(asyncId): void {
         delete nsp.context[asyncId];
     }
 
