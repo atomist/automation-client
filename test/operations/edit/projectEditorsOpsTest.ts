@@ -4,13 +4,13 @@ import {
     ProjectEditor,
     SimpleProjectEditor,
     successfulEdit,
-} from "../../../src/operations/edit/projectEditor";
+} from "../../../lib/operations/edit/projectEditor";
 import {
     chainEditors,
     NoOpEditor,
-} from "../../../src/operations/edit/projectEditorOps";
-import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { Project } from "../../../src/project/Project";
+} from "../../../lib/operations/edit/projectEditorOps";
+import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
+import { Project } from "../../../lib/project/Project";
 import { tempProject } from "../../project/utils";
 
 describe("editor chaining", () => {

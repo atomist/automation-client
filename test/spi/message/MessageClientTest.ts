@@ -3,7 +3,7 @@ import * as assert from "power-assert";
 import {
     commandName,
     mergeParameters,
-} from "../../../src/spi/message/MessageClient";
+} from "../../../lib/spi/message/MessageClient";
 import { HelloWorld } from "../../command/HelloWorld";
 import { PlainHelloWorld } from "../../command/PlainHelloWorld";
 

@@ -1,13 +1,13 @@
 import "mocha";
 
 import * as assert from "power-assert";
-import { SimpleRepoId } from "../../../src/operations/common/RepoId";
+import { SimpleRepoId } from "../../../lib/operations/common/RepoId";
 import {
     DefaultTags,
     Tagger,
     unifiedTagger,
-} from "../../../src/operations/tagger/Tagger";
-import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
+} from "../../../lib/operations/tagger/Tagger";
+import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 
 describe("tag unification", () => {
 

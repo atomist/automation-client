@@ -6,13 +6,13 @@ import {
     clean,
     WebSocketCommandMessageClient,
     WebSocketEventMessageClient,
-} from "../../../../src/internal/transport/websocket/WebSocketMessageClient";
-import { guid } from "../../../../src/internal/util/string";
+} from "../../../../lib/internal/transport/websocket/WebSocketMessageClient";
+import { guid } from "../../../../lib/internal/util/string";
 import {
     buttonForCommand,
     SlackDestination,
     SlackFileMessage,
-} from "../../../../src/spi/message/MessageClient";
+} from "../../../../lib/spi/message/MessageClient";
 
 describe("WebSocketMessageClient", () => {
 

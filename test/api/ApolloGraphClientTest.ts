@@ -1,14 +1,14 @@
 import "mocha";
 import * as assert from "power-assert";
-import { ApolloGraphClient } from "../../src/graph/ApolloGraphClient";
-import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
-import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
-import { GitProject } from "../../src/project/git/GitProject";
+import { ApolloGraphClient } from "../../lib/graph/ApolloGraphClient";
+import { GitHubRepoRef } from "../../lib/operations/common/GitHubRepoRef";
+import { GitCommandGitProject } from "../../lib/project/git/GitCommandGitProject";
+import { GitProject } from "../../lib/project/git/GitProject";
 import {
     ReposQuery,
     ReposQueryVariables,
-} from "../../src/schema/schema";
-import { logger } from "../../src/util/logger";
+} from "../../lib/schema/schema";
+import { logger } from "../../lib/util/logger";
 import {
     GitHubToken,
     SlackTeamId,

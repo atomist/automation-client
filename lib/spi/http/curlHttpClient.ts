@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import * as os from "os";
-import { logger } from "../..";
+import { logger } from "../../util/logger";
 import { doWithRetry } from "../../util/retry";
 import {
     spawnAndWatch,

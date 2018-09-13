@@ -1,16 +1,16 @@
 import "mocha";
 import * as assert from "power-assert";
-import { fromListRepoFinder } from "../../../src/operations/common/fromProjectList";
-import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
-import { RepoFilter } from "../../../src/operations/common/repoFilter";
+import { fromListRepoFinder } from "../../../lib/operations/common/fromProjectList";
+import { GitHubRepoRef } from "../../../lib/operations/common/GitHubRepoRef";
+import { RepoFilter } from "../../../lib/operations/common/repoFilter";
 import {
     RepoId,
     RepoRef,
-} from "../../../src/operations/common/RepoId";
-import { RepoLoader } from "../../../src/operations/common/repoLoader";
-import { doWithAllRepos } from "../../../src/operations/common/repoUtils";
-import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { Project } from "../../../src/project/Project";
+} from "../../../lib/operations/common/RepoId";
+import { RepoLoader } from "../../../lib/operations/common/repoLoader";
+import { doWithAllRepos } from "../../../lib/operations/common/repoUtils";
+import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
+import { Project } from "../../../lib/project/Project";
 
 describe("doWithAllRepos", () => {
 

@@ -1,12 +1,12 @@
 import * as assert from "power-assert";
 
-import { PullRequest } from "../../../src/operations/edit/editModes";
-import { toEditor } from "../../../src/operations/edit/projectEditor";
+import { PullRequest } from "../../../lib/operations/edit/editModes";
+import { toEditor } from "../../../lib/operations/edit/projectEditor";
 import {
     editProjectUsingBranch,
     editProjectUsingPullRequest,
-} from "../../../src/operations/support/editorUtils";
-import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
+} from "../../../lib/operations/support/editorUtils";
+import { GitCommandGitProject } from "../../../lib/project/git/GitCommandGitProject";
 import {
     Creds,
     RepoThatExists,

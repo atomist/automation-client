@@ -1,11 +1,11 @@
 import "mocha";
 import * as assert from "power-assert";
-import { HandlerContext } from "../../../src/HandlerContext";
+import { HandlerContext } from "../../../lib/HandlerContext";
 import {
     dispose,
     registerDisposable,
-} from "../../../src/internal/invoker/disposable";
-import { guid } from "../../../src/internal/util/string";
+} from "../../../lib/internal/invoker/disposable";
+import { guid } from "../../../lib/internal/util/string";
 
 describe("disposing resources", () => {
 

@@ -1,7 +1,7 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import { loadConfiguration } from "../src/configuration";
+import { loadConfiguration } from "../lib/configuration";
 
 describe("scan", () => {
 

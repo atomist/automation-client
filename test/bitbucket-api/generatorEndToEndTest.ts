@@ -1,10 +1,10 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import { BitBucketRepoRef } from "../../src/operations/common/BitBucketRepoRef";
-import { generate } from "../../src/operations/generate/generatorUtils";
-import { RemoteGitProjectPersister } from "../../src/operations/generate/remoteGitProjectPersister";
-import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
+import { BitBucketRepoRef } from "../../lib/operations/common/BitBucketRepoRef";
+import { generate } from "../../lib/operations/generate/generatorUtils";
+import { RemoteGitProjectPersister } from "../../lib/operations/generate/remoteGitProjectPersister";
+import { GitCommandGitProject } from "../../lib/project/git/GitCommandGitProject";
 import {
     deleteOrIgnore,
     tempRepoName,

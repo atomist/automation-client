@@ -4,7 +4,7 @@ import * as assert from "power-assert";
 import {
     GitBranchRegExp,
     GitHubNameRegExp,
-} from "../../../../src/operations/common/params/gitHubPatterns";
+} from "../../../../lib/operations/common/params/gitHubPatterns";
 
 describe("gitHubPatterns", () => {
 

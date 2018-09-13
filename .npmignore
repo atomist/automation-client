@@ -1,10 +1,11 @@
 .idea/
+.git*
 .atomist/
 .npmrc*
 config/
 graphql/
-src/
 test/
+doc/
 tmp/
 build/
 release/
@@ -20,3 +21,5 @@ yarn.lock
 schema.json
 scratch.txt
 graphql.config.json
+*.ts
+!*.d.ts

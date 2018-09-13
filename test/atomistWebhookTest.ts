@@ -12,7 +12,7 @@ import * as assert from "power-assert";
 import {
     AtomistWebhookType,
     postAtomistWebhook,
-} from "../src/atomistWebhook";
+} from "../lib/atomistWebhook";
 
 describe("atomistWebhook", () => {
 

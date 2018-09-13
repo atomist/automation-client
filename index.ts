@@ -21,7 +21,7 @@ export {
     AtomistWebhookType,
     postAtomistWebhook,
     webhookBaseUrl,
-} from "./atomistWebhook";
+} from "./lib/atomistWebhook";
 
 export {
     Configuration,
@@ -31,7 +31,7 @@ export {
     UserConfig,
     userConfigPath,
     writeUserConfig,
-} from "./configuration";
+} from "./lib/configuration";
 
 export {
     CommandHandler,
@@ -45,27 +45,27 @@ export {
     Secrets,
     Value,
     Tags,
-} from "./decorators";
+} from "./lib/decorators";
 
-export { automationClientInstance } from "./globals";
+export { automationClientInstance } from "./lib/globals";
 
-import * as GraphQL from "./graph/graphQL";
+import * as GraphQL from "./lib/graph/graphQL";
 
 export { GraphQL };
 
-export { HandleCommand } from "./HandleCommand";
+export { HandleCommand } from "./lib/HandleCommand";
 
 export {
     EventFired,
     HandleEvent,
-} from "./HandleEvent";
+} from "./lib/HandleEvent";
 
 export {
     AutomationContextAware,
     ConfigurationAware,
     HandlerContext,
     HandlerLifecycle,
-} from "./HandlerContext";
+} from "./lib/HandlerContext";
 
 export {
     failure,
@@ -78,43 +78,43 @@ export {
     success,
     Success,
     SuccessPromise,
-} from "./HandlerResult";
+} from "./lib/HandlerResult";
 
 export {
     obtainGitInfo,
-} from "./internal/env/gitInfo";
+} from "./lib/internal/env/gitInfo";
 
 export {
     Arg,
     CommandInvocation,
-} from "./internal/invoker/Payload";
+} from "./lib/internal/invoker/Payload";
 
-export * from "./util/logger";
+export * from "./lib/util/logger";
 
 export {
     BitBucketRepoRef,
-} from "./operations/common/BitBucketRepoRef";
+} from "./lib/operations/common/BitBucketRepoRef";
 export {
     BitBucketServerRepoRef,
-} from "./operations/common/BitBucketServerRepoRef";
+} from "./lib/operations/common/BitBucketServerRepoRef";
 export {
     GitHubRepoRef,
-} from "./operations/common/GitHubRepoRef";
+} from "./lib/operations/common/GitHubRepoRef";
 export {
     RemoteRepoRef,
     RepoRef,
-} from "./operations/common/RepoId";
+} from "./lib/operations/common/RepoId";
 
-export { AutomationEventListener } from "./server/AutomationEventListener";
+export { AutomationEventListener } from "./lib/server/AutomationEventListener";
 
 export {
     GraphClient,
     MutationOptions,
     QueryOptions,
-} from "./spi/graph/GraphClient";
+} from "./lib/spi/graph/GraphClient";
 
-export * from "./spi/message/MessageClient";
+export * from "./lib/spi/message/MessageClient";
 
-export * from "./util/exec";
+export * from "./lib/util/exec";
 
-export * from "./util/spawn";
+export * from "./lib/util/spawn";

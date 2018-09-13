@@ -1,8 +1,8 @@
 import "mocha";
 
 import * as assert from "power-assert";
-import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
-import { toSourceLocation } from "../../../src/project/util/sourceLocationUtils";
+import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
+import { toSourceLocation } from "../../../lib/project/util/sourceLocationUtils";
 
 describe("sourceLocationUtils", () => {
 

@@ -6,9 +6,7 @@
     "moduleResolution": "Node",
     "jsx": "React",
     "declaration": true,
-    "declarationMap": true,
     "sourceMap": true,
-    "outDir": "build",
     "rootDir": ".",
     "lib": [
       "DOM",
@@ -25,8 +23,13 @@
     "emitDecoratorMetadata": true
   },
   "exclude": [
+    "assets",
     "build",
-    "node_modules"
+    "doc",
+    "legal",
+    "log",
+    "node_modules",
+    ".#*"
   ],
   "compileOnSave": true,
   "buildOnSave": false,

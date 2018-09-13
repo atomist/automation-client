@@ -4,18 +4,18 @@ import * as assert from "power-assert";
 import {
     ActionResult,
     successOn,
-} from "../../src/action/ActionResult";
-import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
-import { ProjectOperationCredentials } from "../../src/operations/common/ProjectOperationCredentials";
-import { RepoId } from "../../src/operations/common/RepoId";
+} from "../../lib/action/ActionResult";
+import { GitHubRepoRef } from "../../lib/operations/common/GitHubRepoRef";
+import { ProjectOperationCredentials } from "../../lib/operations/common/ProjectOperationCredentials";
+import { RepoId } from "../../lib/operations/common/RepoId";
 import {
     generate,
     ProjectPersister,
-} from "../../src/operations/generate/generatorUtils";
-import { LocalProject } from "../../src/project/local/LocalProject";
-import { NodeFsLocalProject } from "../../src/project/local/NodeFsLocalProject";
-import { InMemoryProject } from "../../src/project/mem/InMemoryProject";
-import { Project } from "../../src/project/Project";
+} from "../../lib/operations/generate/generatorUtils";
+import { LocalProject } from "../../lib/project/local/LocalProject";
+import { NodeFsLocalProject } from "../../lib/project/local/NodeFsLocalProject";
+import { InMemoryProject } from "../../lib/project/mem/InMemoryProject";
+import { Project } from "../../lib/project/Project";
 
 describe("generator benchmark", () => {
 

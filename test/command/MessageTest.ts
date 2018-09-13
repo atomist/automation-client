@@ -5,16 +5,16 @@ import {
 import {
     CommandHandler,
     Parameter,
-} from "../../src/decorators";
-import { HandleCommand } from "../../src/HandleCommand";
-import { HandlerContext } from "../../src/HandlerContext";
+} from "../../lib/decorators";
+import { HandleCommand } from "../../lib/HandleCommand";
+import { HandlerContext } from "../../lib/HandlerContext";
 import {
     failure,
     HandlerResult,
     Success,
-} from "../../src/HandlerResult";
-import { guid } from "../../src/internal/util/string";
-import { buttonForCommand } from "../../src/spi/message/MessageClient";
+} from "../../lib/HandlerResult";
+import { guid } from "../../lib/internal/util/string";
+import { buttonForCommand } from "../../lib/spi/message/MessageClient";
 
 @CommandHandler("Handler to test different types of messages", "message_test")
 export class MessageTest implements HandleCommand {

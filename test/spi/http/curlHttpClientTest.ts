@@ -7,8 +7,8 @@
 import * as http from "http";
 import "mocha";
 import * as assert from "power-assert";
-import { CurlHttpClientFactory } from "../../../src/spi/http/curlHttpClient";
-import { HttpMethod } from "../../../src/spi/http/httpClient";
+import { CurlHttpClientFactory } from "../../../lib/spi/http/curlHttpClient";
+import { HttpMethod } from "../../../lib/spi/http/httpClient";
 
 describe("curlHttpClient", () => {
 

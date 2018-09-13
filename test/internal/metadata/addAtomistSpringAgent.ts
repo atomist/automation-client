@@ -4,10 +4,10 @@ import {
     Parameters,
     Secret,
     Value,
-} from "../../../src/decorators";
-import { HandleCommand } from "../../../src/HandleCommand";
-import { commandHandlerFrom } from "../../../src/onCommand";
-import { succeed } from "../../../src/operations/support/contextUtils";
+} from "../../../lib/decorators";
+import { HandleCommand } from "../../../lib/HandleCommand";
+import { commandHandlerFrom } from "../../../lib/onCommand";
+import { succeed } from "../../../lib/operations/support/contextUtils";
 
 @Parameters()
 export class AddAtomistSpringAgentParams {

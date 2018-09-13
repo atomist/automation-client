@@ -10,8 +10,8 @@ import * as http from "http";
 import "mocha";
 import * as os from "os";
 import * as assert from "power-assert";
-import { AxiosHttpClientFactory } from "../../../src/spi/http/axiosHttpClient";
-import { HttpMethod } from "../../../src/spi/http/httpClient";
+import { AxiosHttpClientFactory } from "../../../lib/spi/http/axiosHttpClient";
+import { HttpMethod } from "../../../lib/spi/http/httpClient";
 
 describe("axiosHttpClient", () => {
 

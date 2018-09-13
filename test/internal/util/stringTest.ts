@@ -1,7 +1,7 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import { obfuscateJson } from "../../../src/internal/util/string";
+import { obfuscateJson } from "../../../lib/internal/util/string";
 
 describe("string", () => {
 

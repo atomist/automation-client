@@ -3,13 +3,13 @@ import * as path from "path";
 import * as assert from "power-assert";
 import {
     GitHubRepoRef,
-} from "../../src/operations/common/GitHubRepoRef";
-import { generate } from "../../src/operations/generate/generatorUtils";
-import { RemoteGitProjectPersister } from "../../src/operations/generate/remoteGitProjectPersister";
-import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
-import { GitProject } from "../../src/project/git/GitProject";
-import { Project } from "../../src/project/Project";
-import { hasFile } from "../../src/util/gitHub";
+} from "../../lib/operations/common/GitHubRepoRef";
+import { generate } from "../../lib/operations/generate/generatorUtils";
+import { RemoteGitProjectPersister } from "../../lib/operations/generate/remoteGitProjectPersister";
+import { GitCommandGitProject } from "../../lib/project/git/GitCommandGitProject";
+import { GitProject } from "../../lib/project/git/GitProject";
+import { Project } from "../../lib/project/Project";
+import { hasFile } from "../../lib/util/gitHub";
 import {
     Creds,
     deleteOrIgnore,

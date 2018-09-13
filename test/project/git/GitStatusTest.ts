@@ -2,11 +2,11 @@ import * as stringify from "json-stringify-safe";
 import "mocha";
 import * as assert from "power-assert";
 
-import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
-import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
-import { GitProject } from "../../../src/project/git/GitProject";
-import { isFullyClean } from "../../../src/project/git/gitStatus";
-import { TmpDirectoryManager } from "../../../src/spi/clone/tmpDirectoryManager";
+import { GitHubRepoRef } from "../../../lib/operations/common/GitHubRepoRef";
+import { GitCommandGitProject } from "../../../lib/project/git/GitCommandGitProject";
+import { GitProject } from "../../../lib/project/git/GitProject";
+import { isFullyClean } from "../../../lib/project/git/gitStatus";
+import { TmpDirectoryManager } from "../../../lib/spi/clone/tmpDirectoryManager";
 import { GitHubToken } from "../../credentials";
 
 const TargetOwner = "atomist-travisorg";

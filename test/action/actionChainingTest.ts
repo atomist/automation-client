@@ -6,10 +6,10 @@ import {
     actionChain,
     actionChainWithCombiner,
     NoAction,
-} from "../../src/action/actionOps";
-import { ActionResult } from "../../src/action/ActionResult";
-import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
-import { InMemoryProject } from "../../src/project/mem/InMemoryProject";
+} from "../../lib/action/actionOps";
+import { ActionResult } from "../../lib/action/ActionResult";
+import { GitHubRepoRef } from "../../lib/operations/common/GitHubRepoRef";
+import { InMemoryProject } from "../../lib/project/mem/InMemoryProject";
 
 class Person {
     constructor(public name: string) {

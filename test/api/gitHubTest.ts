@@ -1,12 +1,12 @@
 import * as assert from "power-assert";
 
-import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
+import { GitHubRepoRef } from "../../lib/operations/common/GitHubRepoRef";
 import {
     createCommitComment,
     deepLink,
     fileContent,
     hasFile,
-} from "../../src/util/gitHub";
+} from "../../lib/util/gitHub";
 import {
     GitHubToken,
 } from "./apiUtils";

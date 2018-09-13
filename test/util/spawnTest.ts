@@ -1,7 +1,7 @@
 import "mocha";
 import * as path from "path";
-import { logger } from "../../src";
-import { spawnAndWatch } from "../../src/util/spawn";
+import { logger } from "../../index";
+import { spawnAndWatch } from "../../lib/util/spawn";
 
 describe("spawned", () => {
 

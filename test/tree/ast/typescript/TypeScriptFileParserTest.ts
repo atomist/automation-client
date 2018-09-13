@@ -9,16 +9,16 @@ import {
 } from "@atomist/tree-path";
 import "mocha";
 import * as assert from "power-assert";
-import { InMemoryFile } from "../../../../src/project/mem/InMemoryFile";
-import { InMemoryProject } from "../../../../src/project/mem/InMemoryProject";
-import { Project } from "../../../../src/project/Project";
-import { findMatches } from "../../../../src/tree/ast/astUtils";
-import { MatchResult } from "../../../../src/tree/ast/FileHits";
-import { FileParser } from "../../../../src/tree/ast/FileParser";
+import { InMemoryFile } from "../../../../lib/project/mem/InMemoryFile";
+import { InMemoryProject } from "../../../../lib/project/mem/InMemoryProject";
+import { Project } from "../../../../lib/project/Project";
+import { findMatches } from "../../../../lib/tree/ast/astUtils";
+import { MatchResult } from "../../../../lib/tree/ast/FileHits";
+import { FileParser } from "../../../../lib/tree/ast/FileParser";
 import {
     TypeScriptES6FileParser,
     TypeScriptFileParser,
-} from "../../../../src/tree/ast/typescript/TypeScriptFileParser";
+} from "../../../../lib/tree/ast/typescript/TypeScriptFileParser";
 
 describe("TypeScriptFileParser", () => {
 

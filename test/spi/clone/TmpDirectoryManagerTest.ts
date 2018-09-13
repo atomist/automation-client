@@ -1,8 +1,8 @@
 import * as fs from "fs-extra";
 import "mocha";
 import * as assert from "power-assert";
-import { TmpDirectoryManager } from "../../../src/spi/clone/tmpDirectoryManager";
-import { safeExec } from "../../../src/util/exec";
+import { TmpDirectoryManager } from "../../../lib/spi/clone/tmpDirectoryManager";
+import { safeExec } from "../../../lib/util/exec";
 
 describe("the TmpDirectoryManager", () => {
 

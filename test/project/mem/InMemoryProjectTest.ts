@@ -1,10 +1,10 @@
 import * as path from "path";
 import * as assert from "power-assert";
 
-import { File } from "../../../src/project/File";
-import { AllFiles } from "../../../src/project/fileGlobs";
-import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { toPromise } from "../../../src/project/util/projectUtils";
+import { File } from "../../../lib/project/File";
+import { AllFiles } from "../../../lib/project/fileGlobs";
+import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
+import { toPromise } from "../../../lib/project/util/projectUtils";
 
 describe("InMemoryProject", () => {
 

@@ -2,7 +2,7 @@ import "mocha";
 
 import * as assert from "power-assert";
 
-import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
+import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
 
 describe("AbstractFile", () => {
 

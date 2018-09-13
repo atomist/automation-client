@@ -4,15 +4,15 @@ import * as assert from "power-assert";
 import {
     fromListRepoFinder,
     fromListRepoLoader,
-} from "../../../src/operations/common/fromProjectList";
-import { BaseEditorOrReviewerParameters } from "../../../src/operations/common/params/BaseEditorOrReviewerParameters";
-import { SimpleRepoId } from "../../../src/operations/common/RepoId";
-import { reviewerHandler } from "../../../src/operations/review/reviewerToCommand";
+} from "../../../lib/operations/common/fromProjectList";
+import { BaseEditorOrReviewerParameters } from "../../../lib/operations/common/params/BaseEditorOrReviewerParameters";
+import { SimpleRepoId } from "../../../lib/operations/common/RepoId";
+import { reviewerHandler } from "../../../lib/operations/review/reviewerToCommand";
 import {
     DefaultReviewComment,
     ReviewResult,
-} from "../../../src/operations/review/ReviewResult";
-import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
+} from "../../../lib/operations/review/ReviewResult";
+import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 
 describe("reviewerHandler", () => {
 

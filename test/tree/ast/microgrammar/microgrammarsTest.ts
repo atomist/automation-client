@@ -4,14 +4,14 @@ import {
 } from "@atomist/microgrammar";
 import "mocha";
 import * as assert from "power-assert";
-import { AllFiles } from "../../../../src/project/fileGlobs";
-import { InMemoryProject } from "../../../../src/project/mem/InMemoryProject";
+import { AllFiles } from "../../../../lib/project/fileGlobs";
+import { InMemoryProject } from "../../../../lib/project/mem/InMemoryProject";
 import {
     findFileMatches,
     findMatches,
-} from "../../../../src/tree/ast/astUtils";
-import { DefaultFileParserRegistry } from "../../../../src/tree/ast/FileParserRegistry";
-import { MicrogrammarBasedFileParser } from "../../../../src/tree/ast/microgrammar/MicrogrammarBasedFileParser";
+} from "../../../../lib/tree/ast/astUtils";
+import { DefaultFileParserRegistry } from "../../../../lib/tree/ast/FileParserRegistry";
+import { MicrogrammarBasedFileParser } from "../../../../lib/tree/ast/microgrammar/MicrogrammarBasedFileParser";
 
 interface Person {
     name: string;
