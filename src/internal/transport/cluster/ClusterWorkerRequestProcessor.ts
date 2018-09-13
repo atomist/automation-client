@@ -1,4 +1,4 @@
-import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
+import { SlackMessage } from "@atomist/slack-messages";
 import * as stringify from "json-stringify-safe";
 import { Configuration } from "../../../configuration";
 import { ApolloGraphClientFactory } from "../../../graph/ApolloGraphClientFactory";

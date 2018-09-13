@@ -1,4 +1,4 @@
-import { render } from "@atomist/slack-messages/SlackMessages";
+import { render } from "@atomist/slack-messages";
 import {
     Destination,
     isSlackMessage,
