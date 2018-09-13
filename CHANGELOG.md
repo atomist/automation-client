@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Upgrade tree-path library. [#375](https://github.com/atomist/automation-client-ts/issues/375)
 -   **BREAKING** Make running git commands safer. [#374](https://github.com/atomist/automation-client-ts/issues/374)
 -   Change location of schema.json. [#c6ee2b4](https://github.com/atomist/automation-client-ts/commit/c6ee2b4843a193002319796f5b1815d3cfb83454)
+-   Replace continuation-local-storage with async hooks for better tracking across async/await calls. [#377](https://github.com/atomist/automation-client-ts/issues/377)
 
 ### Fixed
 
