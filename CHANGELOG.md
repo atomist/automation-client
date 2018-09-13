@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Keep the branch from the RepoRef. [#366](https://github.com/atomist/automation-client-ts/issues/366)
 -   **BREAKING** `~/.atomist/client-config.json` should take precedence over `atomist-config.ts`. [#371](https://github.com/atomist/automation-client-ts/issues/371)
 -   **BREAKING** Update to Winston 3 and make logging configuration explicit. [#370](https://github.com/atomist/automation-client-ts/issues/370)
+-   Upgrade tree-path library. [#375](https://github.com/atomist/automation-client-ts/issues/375)
 
 ### Fixed
 
