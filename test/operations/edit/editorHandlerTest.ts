@@ -1,18 +1,18 @@
 import "mocha";
 
 import * as assert from "power-assert";
-import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
-import { CommandHandlerMetadata } from "../../../src/metadata/automationMetadata";
+import { metadataFromInstance } from "../../../lib/internal/metadata/metadataReading";
+import { CommandHandlerMetadata } from "../../../lib/metadata/automationMetadata";
 import {
     fromListRepoFinder,
     fromListRepoLoader,
-} from "../../../src/operations/common/fromProjectList";
-import { AlwaysAskRepoParameters } from "../../../src/operations/common/params/AlwaysAskRepoParameters";
-import { BaseEditorOrReviewerParameters } from "../../../src/operations/common/params/BaseEditorOrReviewerParameters";
-import { SimpleRepoId } from "../../../src/operations/common/RepoId";
-import { editorHandler } from "../../../src/operations/edit/editorToCommand";
-import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
+} from "../../../lib/operations/common/fromProjectList";
+import { AlwaysAskRepoParameters } from "../../../lib/operations/common/params/AlwaysAskRepoParameters";
+import { BaseEditorOrReviewerParameters } from "../../../lib/operations/common/params/BaseEditorOrReviewerParameters";
+import { SimpleRepoId } from "../../../lib/operations/common/RepoId";
+import { editorHandler } from "../../../lib/operations/edit/editorToCommand";
+import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
+import { BuildableAutomationServer } from "../../../lib/server/BuildableAutomationServer";
 import { VerifyEditMode } from "./VerifyEditMode";
 
 describe("editorHandler", () => {

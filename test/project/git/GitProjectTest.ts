@@ -1,15 +1,15 @@
 import "mocha";
 
 import * as assert from "power-assert";
-import { ActionResult } from "../../../src/action/ActionResult";
+import { ActionResult } from "../../../lib/action/ActionResult";
 import {
     GitHubDotComBase,
     GitHubRepoRef,
-} from "../../../src/operations/common/GitHubRepoRef";
-import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
-import { GitProject } from "../../../src/project/git/GitProject";
-import { Project } from "../../../src/project/Project";
-import { safeExec } from "../../../src/util/exec";
+} from "../../../lib/operations/common/GitHubRepoRef";
+import { GitCommandGitProject } from "../../../lib/project/git/GitCommandGitProject";
+import { GitProject } from "../../../lib/project/git/GitProject";
+import { Project } from "../../../lib/project/Project";
+import { safeExec } from "../../../lib/util/exec";
 import { GitHubToken } from "../../credentials";
 import { tempProject } from "../utils";
 

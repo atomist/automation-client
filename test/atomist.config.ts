@@ -1,14 +1,14 @@
-import { Configuration } from "../src/configuration";
+import { Configuration } from "../lib/configuration";
 import {
     isCommandHandlerMetadata,
     isEventHandlerMetadata,
-} from "../src/internal/metadata/metadata";
+} from "../lib/internal/metadata/metadata";
 import {
     AutomationMetadata,
     CommandHandlerMetadata,
     EventHandlerMetadata,
-} from "../src/metadata/automationMetadata";
-import { AutomationMetadataProcessor } from "../src/spi/env/MetadataProcessor";
+} from "../lib/metadata/automationMetadata";
+import { AutomationMetadataProcessor } from "../lib/spi/env/MetadataProcessor";
 import { FileMessageTest } from "./command/FileMessageTest";
 import { HelloWorld } from "./command/HelloWorld";
 import { MessageTest } from "./command/MessageTest";

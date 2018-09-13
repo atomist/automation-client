@@ -1,7 +1,7 @@
 import "mocha";
 import * as assert from "power-assert";
-import * as GraphQL from "../../src/graph/graphQL";
-import * as internalGraphql from "../../src/internal/graph/graphQL";
+import * as GraphQL from "../../lib/graph/graphQL";
+import * as internalGraphql from "../../lib/internal/graph/graphQL";
 
 describe("GraphQL", () => {
 

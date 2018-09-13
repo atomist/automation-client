@@ -8,12 +8,12 @@ import {
     Parameter,
     Secret,
     Tags,
-} from "../../../src/decorators";
-import { HandleCommand } from "../../../src/HandleCommand";
-import { HandlerContext } from "../../../src/HandlerContext";
-import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
-import { CommandHandlerMetadata } from "../../../src/metadata/automationMetadata";
-import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
+} from "../../../lib/decorators";
+import { HandleCommand } from "../../../lib/HandleCommand";
+import { HandlerContext } from "../../../lib/HandlerContext";
+import { metadataFromInstance } from "../../../lib/internal/metadata/metadataReading";
+import { CommandHandlerMetadata } from "../../../lib/metadata/automationMetadata";
+import { GitHubRepoRef } from "../../../lib/operations/common/GitHubRepoRef";
 
 describe("class with external parameters metadata reading", () => {
 

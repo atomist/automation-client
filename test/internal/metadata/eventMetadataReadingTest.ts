@@ -6,12 +6,12 @@ import {
     Parameters,
     Success,
     Value,
-} from "../../../src";
-import { subscription } from "../../../src/graph/graphQL";
-import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
-import { populateValues } from "../../../src/internal/parameterPopulation";
-import { EventHandlerMetadata } from "../../../src/metadata/automationMetadata";
-import { eventHandlerFrom } from "../../../src/onEvent";
+} from "../../../index";
+import { subscription } from "../../../lib/graph/graphQL";
+import { metadataFromInstance } from "../../../lib/internal/metadata/metadataReading";
+import { populateValues } from "../../../lib/internal/parameterPopulation";
+import { EventHandlerMetadata } from "../../../lib/metadata/automationMetadata";
+import { eventHandlerFrom } from "../../../lib/onEvent";
 import { HelloIssue } from "../../event/HelloIssue";
 
 describe("class style event metadata reading", () => {

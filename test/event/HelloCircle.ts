@@ -1,15 +1,15 @@
-import { EventHandler } from "../../src/decorators";
+import { EventHandler } from "../../lib/decorators";
 import {
     EventFired,
     HandleEvent,
-} from "../../src/HandleEvent";
-import { HandlerContext } from "../../src/HandlerContext";
+} from "../../lib/HandleEvent";
+import { HandlerContext } from "../../lib/HandlerContext";
 import {
     failure,
     HandlerResult,
     Success,
-} from "../../src/HandlerResult";
-import { addressSlackChannels } from "../../src/spi/message/MessageClient";
+} from "../../lib/HandlerResult";
+import { addressSlackChannels } from "../../lib/spi/message/MessageClient";
 
 @EventHandler("Notify on Circle CI events", `subscription HelloCircle
 {

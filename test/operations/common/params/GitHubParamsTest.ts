@@ -1,9 +1,9 @@
 import "mocha";
 
 import * as assert from "power-assert";
-import { GitHubRepoRef } from "../../../../src/operations/common/GitHubRepoRef";
-import { GitHubTargetsParams } from "../../../../src/operations/common/params/GitHubTargetsParams";
-import { MappedRepoParameters } from "../../../../src/operations/common/params/MappedRepoParameters";
+import { GitHubRepoRef } from "../../../../lib/operations/common/GitHubRepoRef";
+import { GitHubTargetsParams } from "../../../../lib/operations/common/params/GitHubTargetsParams";
+import { MappedRepoParameters } from "../../../../lib/operations/common/params/MappedRepoParameters";
 
 describe("GitHubTargetsParams", () => {
 

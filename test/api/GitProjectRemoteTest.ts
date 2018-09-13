@@ -4,9 +4,9 @@ import * as assert from "power-assert";
 import {
     GitHubDotComBase,
     GitHubRepoRef,
-} from "../../src/operations/common/GitHubRepoRef";
-import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
-import { GitProject } from "../../src/project/git/GitProject";
+} from "../../lib/operations/common/GitHubRepoRef";
+import { GitCommandGitProject } from "../../lib/project/git/GitCommandGitProject";
+import { GitProject } from "../../lib/project/git/GitProject";
 import { TestRepositoryVisibility } from "../credentials";
 import { tempProject } from "../project/utils";
 import {

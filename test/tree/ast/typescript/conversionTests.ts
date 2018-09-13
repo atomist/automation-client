@@ -5,13 +5,13 @@ import {
 } from "@atomist/tree-path";
 import "mocha";
 import * as assert from "power-assert";
-import { InMemoryFile } from "../../../../src/project/mem/InMemoryFile";
-import { InMemoryProject } from "../../../../src/project/mem/InMemoryProject";
+import { InMemoryFile } from "../../../../lib/project/mem/InMemoryFile";
+import { InMemoryProject } from "../../../../lib/project/mem/InMemoryProject";
 import {
     findMatches,
     zapAllMatches,
-} from "../../../../src/tree/ast/astUtils";
-import { TypeScriptES6FileParser } from "../../../../src/tree/ast/typescript/TypeScriptFileParser";
+} from "../../../../lib/tree/ast/astUtils";
+import { TypeScriptES6FileParser } from "../../../../lib/tree/ast/typescript/TypeScriptFileParser";
 
 const allTypeMatches = [
     "//VariableDeclaration//ColonToken/following-sibling::*",

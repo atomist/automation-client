@@ -9,19 +9,19 @@ import {
     Parameters,
     Secret,
     Secrets,
-} from "../../../src/decorators";
+} from "../../../lib/decorators";
 import {
     HandleCommand,
     SelfDescribingHandleCommand,
-} from "../../../src/HandleCommand";
-import { HandleEvent } from "../../../src/HandleEvent";
-import { consoleMessageClient } from "../../../src/internal/message/ConsoleMessageClient";
-import { succeed } from "../../../src/operations/support/contextUtils";
-import { AutomationServer } from "../../../src/server/AutomationServer";
-import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
-import { SmartParameters } from "../../../src/SmartParameters";
-import { AutomationMetadataProcessor } from "../../../src/spi/env/MetadataProcessor";
-import { SecretResolver } from "../../../src/spi/env/SecretResolver";
+} from "../../../lib/HandleCommand";
+import { HandleEvent } from "../../../lib/HandleEvent";
+import { consoleMessageClient } from "../../../lib/internal/message/ConsoleMessageClient";
+import { succeed } from "../../../lib/operations/support/contextUtils";
+import { AutomationServer } from "../../../lib/server/AutomationServer";
+import { BuildableAutomationServer } from "../../../lib/server/BuildableAutomationServer";
+import { SmartParameters } from "../../../lib/SmartParameters";
+import { AutomationMetadataProcessor } from "../../../lib/spi/env/MetadataProcessor";
+import { SecretResolver } from "../../../lib/spi/env/SecretResolver";
 import { HelloWorld } from "../../command/HelloWorld";
 import {
     AddAtomistSpringAgent,

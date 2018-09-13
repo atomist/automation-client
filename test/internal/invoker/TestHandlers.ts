@@ -8,14 +8,14 @@ import {
     Secret,
     Secrets,
     Tags,
-} from "../../../src/decorators";
-import { HandleCommand } from "../../../src/HandleCommand";
+} from "../../../lib/decorators";
+import { HandleCommand } from "../../../lib/HandleCommand";
 import {
     EventFired,
     HandleEvent,
-} from "../../../src/HandleEvent";
-import { HandlerContext } from "../../../src/HandlerContext";
-import { HandlerResult } from "../../../src/HandlerResult";
+} from "../../../lib/HandleEvent";
+import { HandlerContext } from "../../../lib/HandlerContext";
+import { HandlerResult } from "../../../lib/HandlerResult";
 
 @CommandHandler("add the Atomist Spring Boot agent to a Spring Boot project")
 @Tags("atomist", "spring")

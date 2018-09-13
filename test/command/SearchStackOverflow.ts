@@ -7,10 +7,10 @@ import {
     CommandHandler,
     Parameter,
     Tags,
-} from "../../src/decorators";
-import { HandleCommand } from "../../src/HandleCommand";
-import { HandlerContext } from "../../src/HandlerContext";
-import { HandlerResult } from "../../src/HandlerResult";
+} from "../../lib/decorators";
+import { HandleCommand } from "../../lib/HandleCommand";
+import { HandlerContext } from "../../lib/HandlerContext";
+import { HandlerResult } from "../../lib/HandlerResult";
 
 const apiSearchUrl =
     `http://api.stackexchange.com/2.2/search/advanced?pagesize=3&order=desc&sort=relevance&site=stackoverflow&q=`;

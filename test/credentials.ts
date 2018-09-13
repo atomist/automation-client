@@ -1,4 +1,4 @@
-import { GitHubRepoRef } from "../src/operations/common/GitHubRepoRef";
+import { GitHubRepoRef } from "../lib/operations/common/GitHubRepoRef";
 
 export const GitHubToken: string = "NOT_A_LEGIT_TOKEN";
 

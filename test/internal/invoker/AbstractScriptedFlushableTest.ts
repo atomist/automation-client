@@ -1,7 +1,7 @@
 import "mocha";
 
 import * as assert from "power-assert";
-import { AbstractScriptedFlushable } from "../../../src/internal/common/AbstractScriptedFlushable";
+import { AbstractScriptedFlushable } from "../../../lib/internal/common/AbstractScriptedFlushable";
 
 class TestFlushable extends AbstractScriptedFlushable<TestFlushable> {
 

@@ -2,7 +2,7 @@ import * as fs from "fs-extra";
 import * as os from "os";
 import * as path from "path";
 import * as tmp from "tmp-promise";
-import { logger } from "../..";
+import { logger } from "../../util/logger";
 
 import {
     CloneDirectoryInfo,

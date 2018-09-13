@@ -2,14 +2,14 @@ import "mocha";
 
 import * as assert from "power-assert";
 
-import { fromListRepoLoader } from "../../../src/operations/common/fromProjectList";
-import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
-import { BaseEditorOrReviewerParameters } from "../../../src/operations/common/params/BaseEditorOrReviewerParameters";
-import { MappedRepoParameters } from "../../../src/operations/common/params/MappedRepoParameters";
-import { editOne } from "../../../src/operations/edit/editAll";
-import { CustomExecutionEditMode } from "../../../src/operations/edit/editModes";
-import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { Project } from "../../../src/project/Project";
+import { fromListRepoLoader } from "../../../lib/operations/common/fromProjectList";
+import { GitHubRepoRef } from "../../../lib/operations/common/GitHubRepoRef";
+import { BaseEditorOrReviewerParameters } from "../../../lib/operations/common/params/BaseEditorOrReviewerParameters";
+import { MappedRepoParameters } from "../../../lib/operations/common/params/MappedRepoParameters";
+import { editOne } from "../../../lib/operations/edit/editAll";
+import { CustomExecutionEditMode } from "../../../lib/operations/edit/editModes";
+import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
+import { Project } from "../../../lib/project/Project";
 
 describe("editOne", () => {
 

@@ -1,15 +1,15 @@
 
 import * as assert from "power-assert";
 
-import { defer } from "../../../src/internal/common/Flushable";
-import { AllFiles } from "../../../src/project/fileGlobs";
-import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
+import { defer } from "../../../lib/internal/common/Flushable";
+import { AllFiles } from "../../../lib/project/fileGlobs";
+import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import {
     deleteFiles,
     doWithFiles,
     fileExists,
     gatherFromFiles,
-} from "../../../src/project/util/projectUtils";
+} from "../../../lib/project/util/projectUtils";
 import { tempProject } from "../utils";
 
 describe("projectUtils", () => {

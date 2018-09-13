@@ -1,8 +1,8 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
-import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
+import { GitCommandGitProject } from "../../../lib/project/git/GitCommandGitProject";
+import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 
 describe("GitCommandGitProject", () => {
 

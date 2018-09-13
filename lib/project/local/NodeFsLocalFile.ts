@@ -3,7 +3,7 @@ import * as fs from "fs-extra";
 import * as isBinaryFile from "isbinaryfile";
 
 import { promisify } from "util";
-import { logger } from "../..";
+import { logger } from "../../util/logger";
 import { AbstractFile } from "../support/AbstractFile";
 import { LocalFile } from "./LocalFile";
 

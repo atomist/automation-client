@@ -4,7 +4,7 @@ import lockfile = require("proper-lockfile");
 import {
     LockAcquired,
     pleaseLock,
-} from "../../../src/spi/clone/CachingDirectoryManager";
+} from "../../../lib/spi/clone/CachingDirectoryManager";
 
 describe("exploratory tests for proper-locking", () => {
     it("should be able to release a lock", done => {

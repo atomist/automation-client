@@ -1,7 +1,7 @@
 import "mocha";
 
 import * as assert from "power-assert";
-import { Configuration } from "../../../src";
+import { Configuration } from "../../../index";
 import {
     CommandHandler,
     ConfigurableCommandHandler,
@@ -11,29 +11,29 @@ import {
     Secret,
     Tags,
     Value,
-} from "../../../src/decorators";
-import { HandleCommand } from "../../../src/HandleCommand";
+} from "../../../lib/decorators";
+import { HandleCommand } from "../../../lib/HandleCommand";
 import {
     EventFired,
     HandleEvent,
-} from "../../../src/HandleEvent";
-import { HandlerContext } from "../../../src/HandlerContext";
-import { HandlerResult } from "../../../src/HandlerResult";
-import { metadataFromInstance } from "../../../src/internal/metadata/metadataReading";
+} from "../../../lib/HandleEvent";
+import { HandlerContext } from "../../../lib/HandlerContext";
+import { HandlerResult } from "../../../lib/HandlerResult";
+import { metadataFromInstance } from "../../../lib/internal/metadata/metadataReading";
 
 import {
     populateParameters,
     populateValues,
-} from "../../../src/internal/parameterPopulation";
+} from "../../../lib/internal/parameterPopulation";
 import {
     CommandHandlerMetadata,
     EventHandlerMetadata,
     FreeChoices,
-} from "../../../src/metadata/automationMetadata";
+} from "../../../lib/metadata/automationMetadata";
 import {
     oneOf,
     someOf,
-} from "../../../src/metadata/parameterUtils";
+} from "../../../lib/metadata/parameterUtils";
 import { AddAtomistSpringAgent } from "../invoker/TestHandlers";
 
 describe("class style metadata reading", () => {

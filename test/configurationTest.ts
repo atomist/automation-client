@@ -27,8 +27,8 @@ import {
     resolveWorkspaceIds,
     TestingDefaultConfiguration,
     UserConfig,
-} from "../src/configuration";
-import { DefaultHttpClientFactory } from "../src/spi/http/axiosHttpClient";
+} from "../lib/configuration";
+import { DefaultHttpClientFactory } from "../lib/spi/http/axiosHttpClient";
 
 describe("configuration", () => {
 

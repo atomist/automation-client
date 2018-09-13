@@ -9,8 +9,8 @@ import {
 } from "@atomist/tree-path";
 import "mocha";
 import * as assert from "power-assert";
-import { InMemoryFile } from "../../../../src/project/mem/InMemoryFile";
-import { MicrogrammarBasedFileParser } from "../../../../src/tree/ast/microgrammar/MicrogrammarBasedFileParser";
+import { InMemoryFile } from "../../../../lib/project/mem/InMemoryFile";
+import { MicrogrammarBasedFileParser } from "../../../../lib/tree/ast/microgrammar/MicrogrammarBasedFileParser";
 
 interface Person {
     name: string;

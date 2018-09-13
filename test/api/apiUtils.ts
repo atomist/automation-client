@@ -18,13 +18,13 @@ import axios from "axios";
 import * as _ from "lodash";
 
 import promiseRetry = require("promise-retry");
-import { ActionResult } from "../../src/action/ActionResult";
-import { guid } from "../../src/internal/util/string";
-import { GitHubDotComBase } from "../../src/operations/common/GitHubRepoRef";
-import { ProjectOperationCredentials } from "../../src/operations/common/ProjectOperationCredentials";
-import { RemoteRepoRef } from "../../src/operations/common/RepoId";
-import { LocalProject } from "../../src/project/local/LocalProject";
-import { logger } from "../../src/util/logger";
+import { ActionResult } from "../../lib/action/ActionResult";
+import { guid } from "../../lib/internal/util/string";
+import { GitHubDotComBase } from "../../lib/operations/common/GitHubRepoRef";
+import { ProjectOperationCredentials } from "../../lib/operations/common/ProjectOperationCredentials";
+import { RemoteRepoRef } from "../../lib/operations/common/RepoId";
+import { LocalProject } from "../../lib/project/local/LocalProject";
+import { logger } from "../../lib/util/logger";
 import { TestRepositoryVisibility } from "../credentials";
 
 function barf(): string {

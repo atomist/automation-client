@@ -1,7 +1,7 @@
 import "mocha";
-import { HandlerContext } from "../../../src/HandlerContext";
-import { CommandInvocation } from "../../../src/internal/invoker/Payload";
-import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
+import { HandlerContext } from "../../../lib/HandlerContext";
+import { CommandInvocation } from "../../../lib/internal/invoker/Payload";
+import { BuildableAutomationServer } from "../../../lib/server/BuildableAutomationServer";
 import { addAtomistSpringAgent } from "../metadata/addAtomistSpringAgent";
 
 describe("function style command handler invocation", () => {

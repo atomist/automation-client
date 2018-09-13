@@ -1,8 +1,8 @@
-import { Secrets } from "../../src/decorators";
-import { HandleCommand } from "../../src/HandleCommand";
-import { HandlerContext } from "../../src/HandlerContext";
-import { HandlerResult } from "../../src/HandlerResult";
-import { CommandHandlerMetadata } from "../../src/metadata/automationMetadata";
+import { Secrets } from "../../lib/decorators";
+import { HandleCommand } from "../../lib/HandleCommand";
+import { HandlerContext } from "../../lib/HandlerContext";
+import { HandlerResult } from "../../lib/HandlerResult";
+import { CommandHandlerMetadata } from "../../lib/metadata/automationMetadata";
 
 export class PlainHelloWorld implements HandleCommand, CommandHandlerMetadata {
     //                                                     ^ -- implementing that interface is totally optional and only

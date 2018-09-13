@@ -3,22 +3,22 @@ import {
     MappedParameter,
     MappedParameters,
     Parameter,
-} from "../../src/decorators";
-import { HandleCommand } from "../../src/HandleCommand";
+} from "../../lib/decorators";
+import { HandleCommand } from "../../lib/HandleCommand";
 import {
     ConfigurationAware,
     HandlerContext,
-} from "../../src/HandlerContext";
+} from "../../lib/HandlerContext";
 import {
     failure,
     HandlerResult,
     Success,
-} from "../../src/HandlerResult";
+} from "../../lib/HandlerResult";
 import {
     addressEvent,
     addressSlackChannels,
     addressSlackUsers,
-} from "../../src/spi/message/MessageClient";
+} from "../../lib/spi/message/MessageClient";
 import { SecretBaseHandler } from "./SecretBaseHandler";
 
 @ConfigurableCommandHandler("Send a hello back to the client", { intent: "hello cd", autoSubmit: true })

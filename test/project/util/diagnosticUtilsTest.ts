@@ -1,9 +1,9 @@
 import "mocha";
 
 import * as assert from "power-assert";
-import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { diagnosticDump } from "../../../src/project/util/diagnosticUtils";
-import { gatherFromFiles } from "../../../src/project/util/projectUtils";
+import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
+import { diagnosticDump } from "../../../lib/project/util/diagnosticUtils";
+import { gatherFromFiles } from "../../../lib/project/util/projectUtils";
 
 describe("diagnosticUtils", () => {
 

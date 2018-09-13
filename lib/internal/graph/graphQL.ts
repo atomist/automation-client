@@ -10,7 +10,7 @@ import {
 import gql from "graphql-tag";
 import { validate } from "graphql/validation";
 import * as p from "path";
-import { logger } from "../..";
+import { logger } from "../../util/logger";
 import {
     findLine,
     generateHash,

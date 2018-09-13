@@ -1,10 +1,10 @@
-import { HandlerContext } from "../../../src/HandlerContext";
-import { CustomExecutionEditMode } from "../../../src/operations/edit/editModes";
+import { HandlerContext } from "../../../lib/HandlerContext";
+import { CustomExecutionEditMode } from "../../../lib/operations/edit/editModes";
 import {
     EditResult,
     ProjectEditor,
-} from "../../../src/operations/edit/projectEditor";
-import { Project } from "../../../src/project/Project";
+} from "../../../lib/operations/edit/projectEditor";
+import { Project } from "../../../lib/project/Project";
 
 /**
  * EditMode implementation that allows verification of the

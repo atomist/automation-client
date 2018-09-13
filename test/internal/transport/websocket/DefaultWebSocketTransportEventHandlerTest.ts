@@ -1,14 +1,14 @@
 import "mocha";
 import * as assert from "power-assert";
 import * as WebSocket from "ws";
-import { EventFired } from "../../../../src/HandleEvent";
-import { HandlerContext } from "../../../../src/HandlerContext";
-import { HandlerResult } from "../../../../src/HandlerResult";
-import { CommandInvocation } from "../../../../src/internal/invoker/Payload";
-import { Automations } from "../../../../src/internal/metadata/metadata";
-import { DefaultWebSocketRequestProcessor } from "../../../../src/internal/transport/websocket/DefaultWebSocketRequestProcessor";
-import { CommandHandlerMetadata } from "../../../../src/metadata/automationMetadata";
-import { AutomationServer } from "../../../../src/server/AutomationServer";
+import { EventFired } from "../../../../lib/HandleEvent";
+import { HandlerContext } from "../../../../lib/HandlerContext";
+import { HandlerResult } from "../../../../lib/HandlerResult";
+import { CommandInvocation } from "../../../../lib/internal/invoker/Payload";
+import { Automations } from "../../../../lib/internal/metadata/metadata";
+import { DefaultWebSocketRequestProcessor } from "../../../../lib/internal/transport/websocket/DefaultWebSocketRequestProcessor";
+import { CommandHandlerMetadata } from "../../../../lib/metadata/automationMetadata";
+import { AutomationServer } from "../../../../lib/server/AutomationServer";
 
 describe("DefaultWebSocketRequestProcessor", () => {
 

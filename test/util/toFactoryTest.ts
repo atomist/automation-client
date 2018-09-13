@@ -1,7 +1,7 @@
 import "mocha";
 
 import * as assert from "power-assert";
-import { toFactory } from "../../src/util/constructionUtils";
+import { toFactory } from "../../lib/util/constructionUtils";
 import { AddAtomistSpringAgent } from "../internal/invoker/TestHandlers";
 
 describe("toFactory", () => {

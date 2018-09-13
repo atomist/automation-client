@@ -1,7 +1,7 @@
-import { BasicAuthCredentials } from "../../src/operations/common/BasicAuthCredentials";
-import { BitBucketRepoRef } from "../../src/operations/common/BitBucketRepoRef";
-import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
-import { GitProject } from "../../src/project/git/GitProject";
+import { BasicAuthCredentials } from "../../lib/operations/common/BasicAuthCredentials";
+import { BitBucketRepoRef } from "../../lib/operations/common/BitBucketRepoRef";
+import { GitCommandGitProject } from "../../lib/project/git/GitCommandGitProject";
+import { GitProject } from "../../lib/project/git/GitProject";
 import { TestRepositoryVisibility } from "../credentials";
 import { tempProject } from "../project/utils";
 

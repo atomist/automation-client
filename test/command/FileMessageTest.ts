@@ -1,12 +1,12 @@
-import { CommandHandler } from "../../src/decorators";
-import { HandleCommand } from "../../src/HandleCommand";
-import { HandlerContext } from "../../src/HandlerContext";
+import { CommandHandler } from "../../lib/decorators";
+import { HandleCommand } from "../../lib/HandleCommand";
+import { HandlerContext } from "../../lib/HandlerContext";
 import {
     failure,
     HandlerResult,
     success,
-} from "../../src/HandlerResult";
-import { SlackFileMessage } from "../../src/spi/message/MessageClient";
+} from "../../lib/HandlerResult";
+import { SlackFileMessage } from "../../lib/spi/message/MessageClient";
 
 @CommandHandler("Handler to test different types of messages", "file_message_test")
 export class FileMessageTest implements HandleCommand {

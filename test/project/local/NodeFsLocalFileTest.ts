@@ -4,7 +4,7 @@ import * as fs from "fs";
 import "mocha";
 
 import * as assert from "power-assert";
-import { NodeFsLocalFile } from "../../../src/project/local/NodeFsLocalFile";
+import { NodeFsLocalFile } from "../../../lib/project/local/NodeFsLocalFile";
 import { tempProject } from "../utils";
 
 describe("NodeFsLocalFile", () => {

@@ -1,19 +1,19 @@
 import * as assert from "power-assert";
 
-import { GitHubRepoRef } from "../../src/operations/common/GitHubRepoRef";
-import { PullRequest } from "../../src/operations/edit/editModes";
+import { GitHubRepoRef } from "../../lib/operations/common/GitHubRepoRef";
+import { PullRequest } from "../../lib/operations/edit/editModes";
 import {
     ProjectEditor,
     successfulEdit,
     toEditor,
-} from "../../src/operations/edit/projectEditor";
+} from "../../lib/operations/edit/projectEditor";
 import {
     editProjectUsingBranch,
     editProjectUsingPullRequest,
-} from "../../src/operations/support/editorUtils";
-import { GitCommandGitProject } from "../../src/project/git/GitCommandGitProject";
-import { GitProject } from "../../src/project/git/GitProject";
-import { Project } from "../../src/project/Project";
+} from "../../lib/operations/support/editorUtils";
+import { GitCommandGitProject } from "../../lib/project/git/GitCommandGitProject";
+import { GitProject } from "../../lib/project/git/GitProject";
+import { Project } from "../../lib/project/Project";
 import {
     cleanAfterTest,
     Creds,

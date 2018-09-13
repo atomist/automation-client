@@ -1,7 +1,7 @@
 import "mocha";
 import * as assert from "power-assert";
-import { Automations } from "../../../../src/internal/metadata/metadata";
-import { prepareRegistration } from "../../../../src/internal/transport/websocket/payloads";
+import { Automations } from "../../../../lib/internal/metadata/metadata";
+import { prepareRegistration } from "../../../../lib/internal/transport/websocket/payloads";
 
 describe("payloads", () => {
 

@@ -2,22 +2,22 @@ import * as fs from "fs-extra";
 import * as path from "path";
 import * as assert from "power-assert";
 
-import { getCounter } from "../../../src/internal/util/metric";
-import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
-import { GitCommandGitProject } from "../../../src/project/git/GitCommandGitProject";
-import { GitProject } from "../../../src/project/git/GitProject";
-import { isFullyClean } from "../../../src/project/git/gitStatus";
+import { getCounter } from "../../../lib/internal/util/metric";
+import { GitHubRepoRef } from "../../../lib/operations/common/GitHubRepoRef";
+import { GitCommandGitProject } from "../../../lib/project/git/GitCommandGitProject";
+import { GitProject } from "../../../lib/project/git/GitProject";
+import { isFullyClean } from "../../../lib/project/git/gitStatus";
 import {
     CachingDirectoryManager,
     FallbackKey,
     ReuseKey,
-} from "../../../src/spi/clone/CachingDirectoryManager";
+} from "../../../lib/spi/clone/CachingDirectoryManager";
 import {
     CloneOptions,
     DefaultCloneOptions,
-} from "../../../src/spi/clone/DirectoryManager";
-import { TmpDirectoryManager } from "../../../src/spi/clone/tmpDirectoryManager";
-import { safeExec } from "../../../src/util/exec";
+} from "../../../lib/spi/clone/DirectoryManager";
+import { TmpDirectoryManager } from "../../../lib/spi/clone/tmpDirectoryManager";
+import { safeExec } from "../../../lib/util/exec";
 import {
     Creds,
     GitHubToken,

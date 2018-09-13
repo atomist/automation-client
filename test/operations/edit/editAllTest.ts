@@ -4,20 +4,20 @@ import * as assert from "power-assert";
 import {
     fromListRepoFinder,
     fromListRepoLoader,
-} from "../../../src/operations/common/fromProjectList";
-import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
-import { AlwaysAskRepoParameters } from "../../../src/operations/common/params/AlwaysAskRepoParameters";
-import { BaseEditorOrReviewerParameters } from "../../../src/operations/common/params/BaseEditorOrReviewerParameters";
-import { editAll } from "../../../src/operations/edit/editAll";
-import { CustomExecutionEditMode } from "../../../src/operations/edit/editModes";
+} from "../../../lib/operations/common/fromProjectList";
+import { GitHubRepoRef } from "../../../lib/operations/common/GitHubRepoRef";
+import { AlwaysAskRepoParameters } from "../../../lib/operations/common/params/AlwaysAskRepoParameters";
+import { BaseEditorOrReviewerParameters } from "../../../lib/operations/common/params/BaseEditorOrReviewerParameters";
+import { editAll } from "../../../lib/operations/edit/editAll";
+import { CustomExecutionEditMode } from "../../../lib/operations/edit/editModes";
 import {
     failedEdit,
     ProjectEditor,
     SimpleProjectEditor,
     successfulEdit,
-} from "../../../src/operations/edit/projectEditor";
-import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { Project } from "../../../src/project/Project";
+} from "../../../lib/operations/edit/projectEditor";
+import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
+import { Project } from "../../../lib/project/Project";
 
 describe("editAll", () => {
 

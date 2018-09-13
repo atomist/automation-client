@@ -7,11 +7,11 @@ import * as assert from "power-assert";
 import {
     defer,
     ScriptedFlushable,
-} from "../../../src/internal/common/Flushable";
-import { AllFiles } from "../../../src/project/fileGlobs";
-import { InMemoryFile } from "../../../src/project/mem/InMemoryFile";
-import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { Project } from "../../../src/project/Project";
+} from "../../../lib/internal/common/Flushable";
+import { AllFiles } from "../../../lib/project/fileGlobs";
+import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
+import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
+import { Project } from "../../../lib/project/Project";
 import {
     DefaultOpts,
     doWithFileMatches,
@@ -19,7 +19,7 @@ import {
     findFileMatches,
     findMatches,
     Match,
-} from "../../../src/project/util/parseUtils";
+} from "../../../lib/project/util/parseUtils";
 import { tempProject } from "../utils";
 
 describe("parseUtils", () => {

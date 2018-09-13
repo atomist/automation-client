@@ -1,3 +1,3 @@
-import { Configuration } from "../src/configuration";
+import { Configuration } from "../lib/configuration";
 
 export const configuration: Configuration = {};

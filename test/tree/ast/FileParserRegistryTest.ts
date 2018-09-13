@@ -1,8 +1,8 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import { FileParser } from "../../../src/tree/ast/FileParser";
-import { DefaultFileParserRegistry } from "../../../src/tree/ast/FileParserRegistry";
+import { FileParser } from "../../../lib/tree/ast/FileParser";
+import { DefaultFileParserRegistry } from "../../../lib/tree/ast/FileParserRegistry";
 
 describe("FileParserRegistry", () => {
 

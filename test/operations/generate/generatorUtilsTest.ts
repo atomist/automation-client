@@ -4,19 +4,19 @@ import * as assert from "power-assert";
 import {
     ActionResult,
     successOn,
-} from "../../../src/action/ActionResult";
-import { ProjectOperationCredentials } from "../../../src/operations/common/ProjectOperationCredentials";
+} from "../../../lib/action/ActionResult";
+import { ProjectOperationCredentials } from "../../../lib/operations/common/ProjectOperationCredentials";
 import {
     RepoId,
     SimpleRepoId,
-} from "../../../src/operations/common/RepoId";
-import { BaseSeedDrivenGeneratorParameters } from "../../../src/operations/generate/BaseSeedDrivenGeneratorParameters";
+} from "../../../lib/operations/common/RepoId";
+import { BaseSeedDrivenGeneratorParameters } from "../../../lib/operations/generate/BaseSeedDrivenGeneratorParameters";
 import {
     generate,
     ProjectPersister,
-} from "../../../src/operations/generate/generatorUtils";
-import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { Project } from "../../../src/project/Project";
+} from "../../../lib/operations/generate/generatorUtils";
+import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
+import { Project } from "../../../lib/project/Project";
 
 export const mockProjectPersister: ProjectPersister<Project, ActionResult<Project>> =
     (p: Project, c: ProjectOperationCredentials, t: RepoId) => {

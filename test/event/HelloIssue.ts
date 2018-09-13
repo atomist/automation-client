@@ -4,18 +4,18 @@ import {
     Secret,
     Secrets,
     Value,
-} from "../../src/decorators";
+} from "../../lib/decorators";
 import {
     EventFired,
     HandleEvent,
-} from "../../src/HandleEvent";
-import { HandlerContext } from "../../src/HandlerContext";
-import { HandlerResult } from "../../src/HandlerResult";
-import { EventHandlerMetadata } from "../../src/metadata/automationMetadata";
+} from "../../lib/HandleEvent";
+import { HandlerContext } from "../../lib/HandlerContext";
+import { HandlerResult } from "../../lib/HandlerResult";
+import { EventHandlerMetadata } from "../../lib/metadata/automationMetadata";
 import {
     addressSlackChannels,
     addressSlackChannelsFromContext,
-} from "../../src/spi/message/MessageClient";
+} from "../../lib/spi/message/MessageClient";
 
 @EventHandler("Notify channel on new issue", `subscription BlaBla
 {

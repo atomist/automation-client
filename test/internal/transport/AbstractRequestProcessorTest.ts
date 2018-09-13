@@ -1,32 +1,32 @@
 import "mocha";
 
 import * as assert from "power-assert";
-import { AutomationServerOptions } from "../../../src/configuration";
-import { HandleCommand } from "../../../src/HandleCommand";
+import { AutomationServerOptions } from "../../../lib/configuration";
+import { HandleCommand } from "../../../lib/HandleCommand";
 import {
     EventFired,
     HandleEvent,
-} from "../../../src/HandleEvent";
+} from "../../../lib/HandleEvent";
 import {
     AutomationContextAware,
     HandlerContext,
-} from "../../../src/HandlerContext";
-import { HandlerResult } from "../../../src/HandlerResult";
+} from "../../../lib/HandlerContext";
+import { HandlerResult } from "../../../lib/HandlerResult";
 import {
     dispose,
     registerDisposable,
-} from "../../../src/internal/invoker/disposable";
-import { CommandInvocation } from "../../../src/internal/invoker/Payload";
-import { AbstractRequestProcessor } from "../../../src/internal/transport/AbstractRequestProcessor";
+} from "../../../lib/internal/invoker/disposable";
+import { CommandInvocation } from "../../../lib/internal/invoker/Payload";
+import { AbstractRequestProcessor } from "../../../lib/internal/transport/AbstractRequestProcessor";
 import {
     CommandIncoming,
     EventIncoming,
-} from "../../../src/internal/transport/RequestProcessor";
-import { AutomationContext } from "../../../src/internal/util/cls";
-import { BuildableAutomationServer } from "../../../src/server/BuildableAutomationServer";
-import { GraphClient } from "../../../src/spi/graph/GraphClient";
-import { MessageClient } from "../../../src/spi/message/MessageClient";
-import { Factory } from "../../../src/util/constructionUtils";
+} from "../../../lib/internal/transport/RequestProcessor";
+import { AutomationContext } from "../../../lib/internal/util/cls";
+import { BuildableAutomationServer } from "../../../lib/server/BuildableAutomationServer";
+import { GraphClient } from "../../../lib/spi/graph/GraphClient";
+import { MessageClient } from "../../../lib/spi/message/MessageClient";
+import { Factory } from "../../../lib/util/constructionUtils";
 
 class ConcreteRequestProcessor extends AbstractRequestProcessor {
 

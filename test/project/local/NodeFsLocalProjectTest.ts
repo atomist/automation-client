@@ -4,19 +4,19 @@ import * as fs from "fs-extra";
 import * as path from "path";
 import * as assert from "power-assert";
 import * as tmp from "tmp-promise";
-import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
+import { GitHubRepoRef } from "../../../lib/operations/common/GitHubRepoRef";
 
-import { File } from "../../../src/project/File";
+import { File } from "../../../lib/project/File";
 import {
     AllFiles,
     ExcludeNodeModules,
-} from "../../../src/project/fileGlobs";
+} from "../../../lib/project/fileGlobs";
 
-import { LocalProject } from "../../../src/project/local/LocalProject";
-import { NodeFsLocalProject } from "../../../src/project/local/NodeFsLocalProject";
-import { InMemoryProject } from "../../../src/project/mem/InMemoryProject";
-import { Project } from "../../../src/project/Project";
-import { toPromise } from "../../../src/project/util/projectUtils";
+import { LocalProject } from "../../../lib/project/local/LocalProject";
+import { NodeFsLocalProject } from "../../../lib/project/local/NodeFsLocalProject";
+import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
+import { Project } from "../../../lib/project/Project";
+import { toPromise } from "../../../lib/project/util/projectUtils";
 import { tempProject } from "../utils";
 
 describe("NodeFsLocalProject", () => {

@@ -2,7 +2,7 @@ import "mocha";
 
 import * as assert from "power-assert";
 
-import { GitHubRepoRef } from "../../../src/operations/common/GitHubRepoRef";
+import { GitHubRepoRef } from "../../../lib/operations/common/GitHubRepoRef";
 
 describe("GitHubRepoRef tests", () => {
 

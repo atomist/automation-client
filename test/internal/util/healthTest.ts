@@ -6,7 +6,7 @@ import {
     HealthStatus,
     Indicators,
     registerHealthIndicator,
-} from "../../../src/internal/util/health";
+} from "../../../lib/internal/util/health";
 
 describe("health", () => {
 

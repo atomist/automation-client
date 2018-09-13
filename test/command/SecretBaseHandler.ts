@@ -3,7 +3,7 @@ import {
     MappedParameters,
     Secret,
     Secrets,
-} from "../../src/decorators";
+} from "../../lib/decorators";
 
 export abstract class SecretBaseHandler {
 
