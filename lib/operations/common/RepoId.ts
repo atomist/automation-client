@@ -1,10 +1,11 @@
-/**
- * Identifies a git repo
- */
+
 import { ActionResult } from "../../action/ActionResult";
 import { Configurable } from "../../project/git/Configurable";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 
+/**
+ * Identifies a git repo
+ */
 export interface RepoId {
 
     owner: string;
