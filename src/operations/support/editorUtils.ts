@@ -142,7 +142,7 @@ ${ci.autoMerge.mode} ${ci.autoMerge.method ? ci.autoMerge.method : ""}`.trim();
             return gp.commit(cm);
         })
         .then(() => gp.push())
-        .then(r => successfulEdit(r.target, true));
+        .then(tp => successfulEdit(tp, true));
 }
 
 /**

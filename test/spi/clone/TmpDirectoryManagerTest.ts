@@ -1,8 +1,8 @@
 import * as fs from "fs-extra";
 import "mocha";
 import * as assert from "power-assert";
-import { runCommand } from "../../../src/action/cli/commandLine";
 import { TmpDirectoryManager } from "../../../src/spi/clone/tmpDirectoryManager";
+import { safeExec } from "../../../src/util/exec";
 
 describe("the TmpDirectoryManager", () => {
 
@@ -14,7 +14,7 @@ describe("the TmpDirectoryManager", () => {
                 const suppliedDirectory = cdi.path;
                 return fs.stat(suppliedDirectory) // if this succeeds, it exists
                     .then(() =>
-                        runCommand("git init", { cwd: suppliedDirectory })) // make it a little difficult
+                        safeExec("git", ["init"], { cwd: suppliedDirectory })) // make it a little difficult
                     .then(() => cdi.release())
                     .then(() => fs.stat(suppliedDirectory))
                     .then(() => {
