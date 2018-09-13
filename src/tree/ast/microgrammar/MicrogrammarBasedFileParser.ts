@@ -6,9 +6,9 @@ import {
 import {
     defineDynamicProperties,
     fillInEmptyNonTerminalValues,
-} from "@atomist/tree-path/manipulation/enrichment";
+    TreeNode,
+} from "@atomist/tree-path";
 
-import { TreeNode } from "@atomist/tree-path/TreeNode";
 import { File } from "../../../project/File";
 import { FileParser } from "../FileParser";
 

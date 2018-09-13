@@ -1,4 +1,4 @@
-import { TreeNode } from "@atomist/tree-path/TreeNode";
+import { TreeNode } from "@atomist/tree-path";
 import { SourceLocation } from "../operations/common/SourceLocation";
 
 /**

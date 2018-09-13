@@ -1,8 +1,8 @@
-import { PathExpression } from "@atomist/tree-path/path/pathExpression";
-import { TreeNode } from "@atomist/tree-path/TreeNode";
+import { PathExpression, TreeNode } from "@atomist/tree-path";
 import { File } from "../../project/File";
 
 /**
+ * Central interface for integration of trees and path expressions into the Atomist Project API.
  * Implemented by objects that can parse a file into an AST using a single grammar
  */
 export interface FileParser {

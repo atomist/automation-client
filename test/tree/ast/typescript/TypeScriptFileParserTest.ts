@@ -3,12 +3,10 @@ import {
     evaluateScalar,
     evaluateScalarValue,
     evaluateScalarValues,
-} from "@atomist/tree-path/path/expressionEngine";
-import { TreeNode } from "@atomist/tree-path/TreeNode";
-import {
+    TreeNode,
     TreeVisitor,
     visit,
-} from "@atomist/tree-path/visitor";
+} from "@atomist/tree-path";
 import "mocha";
 import * as assert from "power-assert";
 import { InMemoryFile } from "../../../../src/project/mem/InMemoryFile";

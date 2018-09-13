@@ -1,15 +1,13 @@
 import {
     AllNodeTest,
     isNamedNodeTest,
-} from "@atomist/tree-path/path/nodeTests";
-import {
     isUnionPathExpression,
     LocationStep,
     PathExpression,
     stringify,
-} from "@atomist/tree-path/path/pathExpression";
+    TreeNode,
+} from "@atomist/tree-path";
 
-import { TreeNode } from "@atomist/tree-path/TreeNode";
 import * as _ from "lodash";
 import * as ts from "typescript";
 import { File } from "../../../project/File";
@@ -81,7 +79,6 @@ function scriptKindFor(f: File): ts.ScriptKind {
     }
 }
 
-// TODO coming from newer path expression support
 function locationSteps(pex: PathExpression): LocationStep[] {
     return isUnionPathExpression(pex) ?
         _.flatten(pex.unions.map(p => locationSteps(p))) :
