@@ -1,13 +1,13 @@
 import "mocha";
 
 import * as assert from "power-assert";
+import { Configuration } from "../../../lib/configuration";
 import {
-    Configuration,
     Parameters,
-    Success,
     Value,
-} from "../../../index";
+} from "../../../lib/decorators";
 import { subscription } from "../../../lib/graph/graphQL";
+import { Success } from "../../../lib/HandlerResult";
 import { metadataFromInstance } from "../../../lib/internal/metadata/metadataReading";
 import { populateValues } from "../../../lib/internal/parameterPopulation";
 import { EventHandlerMetadata } from "../../../lib/metadata/automationMetadata";
