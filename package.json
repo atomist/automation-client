@@ -173,10 +173,10 @@
     "watch": "supervisor --watch build --quiet --exec npm -- run start"
   },
   "bin": {
-    "atm-command": "./bin/command.js",
-    "atm-git-info": "./bin/git-info.js",
-    "atm-gql-gen": "./bin/gql-gen.js",
-    "atm-start": "./bin/start.js"
+    "atm-command": "./lib/bin/command.js",
+    "atm-git-info": "./lib/bin/git-info.js",
+    "atm-gql-gen": "./lib/bin/gql-gen.js",
+    "atm-start": "./lib/bin/start.js"
   },
   "engines": {
     "node": ">=8.0.0",
