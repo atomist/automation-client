@@ -23,7 +23,7 @@
   "dependencies": {
     "@atomist/microgrammar": "^0.8.1",
     "@atomist/slack-messages": "^0.12.1",
-    "@atomist/tree-path": "https://r.atomist.com/1089073149",
+    "@atomist/tree-path": "https://r.atomist.com/2838135010",
     "@octokit/rest": "^14.0.9",
     "@typed/curry": "^1.0.1",
     "@types/app-root-path": "^1.2.4",

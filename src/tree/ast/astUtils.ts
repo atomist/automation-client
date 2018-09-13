@@ -1,6 +1,6 @@
 import {
     defineDynamicProperties,
-    evaluateExpression,
+    evaluateExpression, FunctionRegistry,
     isSuccessResult,
     PathExpression,
     stringify,
@@ -32,7 +32,7 @@ export function findMatches(p: ProjectAsync,
                             parserOrRegistry: FileParser | FileParserRegistry,
                             globPatterns: GlobOptions,
                             pathExpression: string | PathExpression,
-                            functionRegistry?: object): Promise<MatchResult[]> {
+                            functionRegistry?: FunctionRegistry): Promise<MatchResult[]> {
     return findFileMatches(p, parserOrRegistry, globPatterns, pathExpression, functionRegistry)
         .then(fileHits => _.flatten(fileHits.map(f => f.matches)));
 }
@@ -55,7 +55,7 @@ export function gatherFromMatches<T>(p: ProjectAsync,
                                      globPatterns: GlobOptions,
                                      pathExpression: string | PathExpression,
                                      mapper: (m: MatchResult) => T,
-                                     functionRegistry?: object): Promise<T[]> {
+                                     functionRegistry?: FunctionRegistry): Promise<T[]> {
     return findFileMatches(p, parserOrRegistry, globPatterns, pathExpression, functionRegistry)
         .then(fileHits => _.flatten(
             fileHits.map(f => f.matches.map(mapper).filter(x => !!x))));
@@ -75,7 +75,7 @@ export async function findFileMatches(p: ProjectAsync,
                                       parserOrRegistry: FileParser | FileParserRegistry,
                                       globPatterns: GlobOptions,
                                       pathExpression: string | PathExpression,
-                                      functionRegistry?: object): Promise<FileHit[]> {
+                                      functionRegistry?: FunctionRegistry): Promise<FileHit[]> {
     const parsed: PathExpression = toPathExpression(pathExpression);
     const parser = findParser(parsed, parserOrRegistry);
     if (!parser) {
@@ -88,7 +88,7 @@ export async function findFileMatches(p: ProjectAsync,
 
 async function parseFile(parser: FileParser,
                          pex: PathExpression,
-                         functionRegistry: object,
+                         functionRegistry: FunctionRegistry,
                          p: ProjectAsync,
                          file: File): Promise<FileHit> {
     return parser.toAst(file)
@@ -153,7 +153,7 @@ export function findValues(p: ProjectAsync,
                            parserOrRegistry: FileParser | FileParserRegistry,
                            globPatterns: GlobOptions,
                            pathExpression: string | PathExpression,
-                           functionRegistry?: object): Promise<string[]> {
+                           functionRegistry?: FunctionRegistry): Promise<string[]> {
     return findFileMatches(p, parserOrRegistry, globPatterns, pathExpression, functionRegistry)
         .then(fileHits => _.flatten(fileHits.map(f => f.matches))
             .map(m => m.$value));
