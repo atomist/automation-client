@@ -1,10 +1,10 @@
 import { Microgrammar } from "@atomist/microgrammar/Microgrammar";
 import { Integer } from "@atomist/microgrammar/Primitives";
-import { TreeNode } from "@atomist/tree-path/TreeNode";
 import {
+    TreeNode,
     TreeVisitor,
     visit,
-} from "@atomist/tree-path/visitor";
+} from "@atomist/tree-path";
 import "mocha";
 import * as assert from "power-assert";
 import { InMemoryFile } from "../../../../src/project/mem/InMemoryFile";

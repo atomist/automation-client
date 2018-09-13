@@ -1,10 +1,10 @@
-import { SelfAxisSpecifier } from "@atomist/tree-path/path/axisSpecifiers";
-import { isNamedNodeTest } from "@atomist/tree-path/path/nodeTests";
 import {
+    isNamedNodeTest,
     isUnionPathExpression,
     PathExpression,
-} from "@atomist/tree-path/path/pathExpression";
-import { toPathExpression } from "@atomist/tree-path/path/utils";
+    SelfAxisSpecifier,
+    toPathExpression,
+} from "@atomist/tree-path";
 import { Dictionary } from "lodash";
 import { FileParser } from "./FileParser";
 
