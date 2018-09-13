@@ -465,7 +465,7 @@ describe("configuration", () => {
 
     describe("loadConfiguration", () => {
 
-        const emptyConfig = path.join(appRoot.path, "build", "test", "empty.config.js");
+        const emptyConfig = path.join(appRoot.path, "test", "empty.config.js");
 
         it("should throw an exception for no workspaceIds or groups", async () => {
             const save = process.env.HOME;

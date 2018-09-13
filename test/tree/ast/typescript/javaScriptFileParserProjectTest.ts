@@ -20,7 +20,7 @@ describe("TypeScriptFileParser real project parsing: JavaScript", () => {
 
     it("should parse sources from project and use a path expression to find values", done => {
         findMatches(thisProject, TypeScriptES6FileParser,
-            "build/src/tree/ast/typescript/*.js",
+            "lib/tree/ast/typescript/*.js",
             "//ClassDeclaration/Identifier")
             .then(matchResults => {
                 assert(matchResults.map(m => m.$value).includes(TypeScriptFileParser.name));
@@ -30,7 +30,7 @@ describe("TypeScriptFileParser real project parsing: JavaScript", () => {
 
     it("should parse sources from project and use a path expression to find values using convenience method", done => {
         findValues(thisProject, TypeScriptES6FileParser,
-            "build/src/tree/ast/typescript/*.js",
+            "lib/tree/ast/typescript/*.js",
             "//ClassDeclaration/Identifier")
             .then(values => {
                 assert(values.includes(TypeScriptFileParser.name));
@@ -40,7 +40,7 @@ describe("TypeScriptFileParser real project parsing: JavaScript", () => {
 
     it("should parse sources from project and find functions", done => {
         findValues(thisProject, TypeScriptES6FileParser,
-            "build/src/tree/ast/**/*.js",
+            "lib/tree/ast/**/*.js",
             "//FunctionDeclaration/Identifier")
             .then(values => {
                 assert(values.length > 2);

@@ -1,13 +1,18 @@
 #!/usr/bin/env node
+/*
+ * Copyright © 2018 Atomist, Inc.
+ *
+ * See LICENSE file.
+ */
 
 import "source-map-support/register";
-import { automationClient } from "../automationClient";
-import { loadConfiguration } from "../configuration";
-import { enableDefaultScanning } from "../scan";
+import { automationClient } from "../lib/automationClient";
+import { loadConfiguration } from "../lib/configuration";
+import { enableDefaultScanning } from "../lib/scan";
 import {
     ClientLogging,
     configureLogging,
-} from "../util/logger";
+} from "../lib/util/logger";
 
 try {
     configureLogging(ClientLogging);

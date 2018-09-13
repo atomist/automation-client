@@ -8,17 +8,17 @@
 process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
 
 import * as stringify from "json-stringify-safe";
-import { automationClient } from "../automationClient";
+import { automationClient } from "../lib/automationClient";
 import {
     Configuration,
     loadConfiguration,
-} from "../configuration";
-import { HandlerContext } from "../HandlerContext";
-import { CommandInvocation } from "../internal/invoker/Payload";
-import { consoleMessageClient } from "../internal/message/ConsoleMessageClient";
-import { guid } from "../internal/util/string";
-import { enableDefaultScanning } from "../scan";
-import { AutomationServer } from "../server/AutomationServer";
+} from "../lib/configuration";
+import { HandlerContext } from "../lib/HandlerContext";
+import { CommandInvocation } from "../lib/internal/invoker/Payload";
+import { consoleMessageClient } from "../lib/internal/message/ConsoleMessageClient";
+import { guid } from "../lib/internal/util/string";
+import { enableDefaultScanning } from "../lib/scan";
+import { AutomationServer } from "../lib/server/AutomationServer";
 
 main();
 

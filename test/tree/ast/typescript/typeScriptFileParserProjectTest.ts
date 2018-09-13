@@ -20,7 +20,7 @@ describe("TypeScriptFileParser real project parsing: TypeScript", () => {
 
     it("should parse sources from project and use a path expression to find values", done => {
         findMatches(thisProject, TypeScriptES6FileParser,
-            "src/tree/ast/typescript/*.ts",
+            "lib/tree/ast/typescript/*Parser.ts",
             "//ClassDeclaration/Identifier")
             .then(matchResults => {
                 assert.deepEqual(matchResults.map(m => m.$value),
@@ -31,7 +31,7 @@ describe("TypeScriptFileParser real project parsing: TypeScript", () => {
 
     it("should parse sources from project and use a path expression to find values using convenience method", done => {
         findValues(thisProject, TypeScriptES6FileParser,
-            "src/tree/ast/typescript/*.ts",
+            "lib/tree/ast/typescript/*Parser.ts",
             "//ClassDeclaration/Identifier")
             .then(values => {
                 assert.deepEqual(values,
@@ -42,7 +42,7 @@ describe("TypeScriptFileParser real project parsing: TypeScript", () => {
 
     it("should parse sources from project and find functions", done => {
         findValues(thisProject, TypeScriptES6FileParser,
-            "src/tree/ast/**/*.ts",
+            "lib/tree/ast/**/*.ts",
             "//FunctionDeclaration/Identifier")
             .then(values => {
                 assert(values.length > 2);
@@ -52,7 +52,7 @@ describe("TypeScriptFileParser real project parsing: TypeScript", () => {
 
     it("should parse sources from project and find exported functions", done => {
         findMatches(thisProject, TypeScriptES6FileParser,
-            "src/tree/ast/**/*.ts",
+            "lib/tree/ast/**/*.ts",
             "//FunctionDeclaration[//ExportKeyword]//Identifier")
             .then(values => {
                 assert(values.length > 2);
@@ -62,7 +62,7 @@ describe("TypeScriptFileParser real project parsing: TypeScript", () => {
 
     it("should find all exported functions in project", done => {
         findValues(thisProject, TypeScriptES6FileParser,
-            "src/project/*.ts",
+            "lib/project/*.ts",
             "//FunctionDeclaration[//ExportKeyword]//Identifier")
             .then(values => {
                 assert(values.length > 5);
