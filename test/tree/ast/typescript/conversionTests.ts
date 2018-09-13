@@ -1,6 +1,8 @@
 import { CFamilyLangHelper } from "@atomist/microgrammar/lib/matchers/lang/cfamily/CFamilyLangHelper";
-
-import { parsePathExpression, UnionPathExpression } from "@atomist/tree-path";
+import {
+    parsePathExpression,
+    UnionPathExpression,
+} from "@atomist/tree-path";
 import "mocha";
 import * as assert from "power-assert";
 import { InMemoryFile } from "../../../../lib/project/mem/InMemoryFile";
