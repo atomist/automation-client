@@ -10,7 +10,7 @@ This page details all runtime OSS dependencies of `@atomist/automation-client`.
 |---------|-------|
 |[AFLv2.1](#aflv21)|1|
 |[Apache-2.0](#apache-20)|11|
-|[BSD-2-Clause](#bsd-2-clause)|7|
+|[BSD-2-Clause](#bsd-2-clause)|3|
 |[BSD-3-Clause](#bsd-3-clause)|17|
 |[BSD](#bsd)|4|
 |[GPL-3.0](#gpl-30)|2|
@@ -56,12 +56,8 @@ BSD 2-Clause "Simplified" License - [http://www.opensource.org/licenses/BSD-2-Cl
 
 | Name | Version | Publisher | Repository |
 |------|---------|-----------|------------|
-|`async-listener`|`0.6.9`|Forrest L Norvell|[https://github.com/othiym23/async-listener](https://github.com/othiym23/async-listener)|
-|`continuation-local-storage`|`3.2.1`|Forrest L Norvell|[https://github.com/othiym23/node-continuation-local-storage](https://github.com/othiym23/node-continuation-local-storage)|
-|`emitter-listener`|`1.1.1`|Forrest L Norvell|[https://github.com/othiym23/emitter-listener](https://github.com/othiym23/emitter-listener)|
 |`esprima`|`2.7.3`|Ariya Hidayat|[https://github.com/jquery/esprima](https://github.com/jquery/esprima)|
 |`estraverse`|`4.2.0`||[https://github.com/estools/estraverse](https://github.com/estools/estraverse)|
-|`shimmer`|`1.2.0`|Forrest L Norvell|[https://github.com/othiym23/shimmer](https://github.com/othiym23/shimmer)|
 |`uglify-js`|`2.8.29`|Mihai Bazon|[https://github.com/mishoo/UglifyJS2](https://github.com/mishoo/UglifyJS2)|
 
 #### BSD-3-Clause
