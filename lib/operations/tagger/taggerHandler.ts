@@ -19,8 +19,8 @@ import { RepoLoader } from "../common/repoLoader";
 import { doWithAllRepos } from "../common/repoUtils";
 import {
     Tagger,
-    TagRouter,
     TaggerTags,
+    TagRouter,
 } from "./Tagger";
 
 export interface TaggerCommandDetails<PARAMS extends EditorOrReviewerParameters> extends CommandDetails<PARAMS> {
