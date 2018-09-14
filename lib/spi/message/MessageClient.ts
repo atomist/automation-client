@@ -293,7 +293,7 @@ export interface CommandReference {
     /**
      *  List of parameters to be passed to the command.
      */
-    parameters?: {};
+    parameters?: { [key: string]: any };
 
     /**
      * Name of the parameter that should be used to pass the values
