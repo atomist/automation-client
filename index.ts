@@ -393,3 +393,7 @@ export {
     GraphQL,
 };
 import * as GraphQL from "./lib/graph/graphQL";
+export {
+    nsp,
+}
+import * as nsp from "./lib/internal/util/cls";
