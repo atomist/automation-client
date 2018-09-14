@@ -20,7 +20,7 @@ import { doWithAllRepos } from "../common/repoUtils";
 import {
     Tagger,
     TagRouter,
-    Tags,
+    TaggerTags,
 } from "./Tagger";
 
 export interface TaggerCommandDetails<PARAMS extends EditorOrReviewerParameters> extends CommandDetails<PARAMS> {
@@ -39,7 +39,7 @@ function defaultDetails(name: string): TaggerCommandDetails<EditorOrReviewerPara
 }
 
 export const MessageClientTagRouter: TagRouter = (tags, params, ctx) =>
-    ctx.messageClient.respond("Tags: " + tags.tags.join());
+    ctx.messageClient.respond("TaggerTags: " + tags.tags.join());
 
 /**
  * Create a handle function that tags one or many repos, following AllReposByDefaultParameters
@@ -78,7 +78,7 @@ function tagOneOrMany<PARAMS extends EditorOrReviewerParameters>(tagger: Tagger<
             repoFinder,
             andFilter(parameters.targets.test, details.repoFilter),
             !!details.repoLoader ? details.repoLoader(parameters) : undefined)
-            .then((tags: Tags[]) => {
+            .then((tags: TaggerTags[]) => {
                 return Promise.all(tags
                     .filter(pr => tags.length > 0)
                     .map(t => details.tagRouter(t, parameters, ctx)));
@@ -94,7 +94,7 @@ function tagAll<P extends EditorOrReviewerParameters>(ctx: HandlerContext,
                                                       repoFilter: RepoFilter = AllRepos,
                                                       repoLoader: RepoLoader =
         defaultRepoLoader(
-            credentials)): Promise<Tags[]> {
+            credentials)): Promise<TaggerTags[]> {
     return doWithAllRepos(ctx, credentials,
         p => tagger(p, ctx, parameters), parameters,
         repoFinder, repoFilter, repoLoader);

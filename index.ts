@@ -44,6 +44,19 @@ export {
     writeUserConfig,
 } from "./lib/configuration";
 export {
+    Secret,
+    Secrets,
+    MappedParameter,
+    MappedParameters,
+    Parameter,
+    CommandHandler,
+    ConfigurableCommandHandler,
+    EventHandler,
+    Parameters,
+    Tags,
+    Value,
+} from "./lib/decorators";
+export {
     automationClientInstance,
     eventStore,
 } from "./lib/globals";
@@ -77,11 +90,6 @@ export {
 export {
     obtainGitInfo,
 } from "./lib/internal/env/gitInfo";
-export {
-    Arg,
-    CommandInvocation,
-    Secret,
-} from "./lib/internal/invoker/Payload";
 export {
     BaseParameter,
     declareMappedParameter,
@@ -118,12 +126,6 @@ export {
     guid,
     toStringArray,
 } from "./lib/internal/util/string";
-export {
-    CommandHandlerMetadata,
-    EventHandlerMetadata,
-    MappedParameterDeclaration,
-    Parameter,
-} from "./lib/metadata/automationMetadata";
 export {
     commandHandlerFrom,
     OnCommand,
@@ -259,10 +261,10 @@ export {
     Severity,
 } from "./lib/operations/review/ReviewResult";
 export {
-    DefaultTags,
+    DefaultTaggerTags,
     Tagger,
     TagRouter,
-    Tags,
+    TaggerTags,
 } from "./lib/operations/tagger/Tagger";
 export {
     File,
@@ -385,10 +387,6 @@ export {
 } from "./lib/util/retry";
 export * from "./lib/util/spawn";
 export {
-    Decorator,
-};
-export {
     GraphQL,
 };
-import * as Decorator from "./lib/decorators";
 import * as GraphQL from "./lib/graph/graphQL";

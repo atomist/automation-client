@@ -3,7 +3,7 @@ import "mocha";
 import * as assert from "power-assert";
 import { SimpleRepoId } from "../../../lib/operations/common/RepoId";
 import {
-    DefaultTags,
+    DefaultTaggerTags,
     Tagger,
     unifiedTagger,
 } from "../../../lib/operations/tagger/Tagger";
@@ -13,7 +13,7 @@ describe("tag unification", () => {
 
     it("should unify one", done => {
         const rr = new SimpleRepoId("a", "b");
-        const springTagger: Tagger = () => Promise.resolve(new DefaultTags(rr, ["spring"]));
+        const springTagger: Tagger = () => Promise.resolve(new DefaultTaggerTags(rr, ["spring"]));
         const unified: Tagger = unifiedTagger(springTagger);
         unified(InMemoryProject.from(null), null, null)
             .then(tags => {
@@ -25,8 +25,8 @@ describe("tag unification", () => {
 
     it("should unify two", done => {
         const rr = new SimpleRepoId("a", "b");
-        const springTagger: Tagger = () => Promise.resolve(new DefaultTags(rr, ["spring"]));
-        const kotlinTagger: Tagger = () => Promise.resolve(new DefaultTags(rr, ["kotlin"]));
+        const springTagger: Tagger = () => Promise.resolve(new DefaultTaggerTags(rr, ["spring"]));
+        const kotlinTagger: Tagger = () => Promise.resolve(new DefaultTaggerTags(rr, ["kotlin"]));
 
         const unified: Tagger = unifiedTagger(springTagger, kotlinTagger);
         unified(InMemoryProject.from(null), null, null)

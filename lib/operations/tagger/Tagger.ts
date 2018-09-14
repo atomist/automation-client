@@ -5,24 +5,24 @@ import { Project } from "../../project/Project";
 import { EditorOrReviewerParameters } from "../common/params/BaseEditorOrReviewerParameters";
 import { RepoRef } from "../common/RepoId";
 
-export interface Tags {
+export interface TaggerTags {
 
     repoId: RepoRef;
 
     tags: string[];
 }
 
-export class DefaultTags implements Tags {
+export class DefaultTaggerTags implements TaggerTags {
 
     constructor(public repoId: RepoRef, public tags: string[]) {
     }
 }
 
 export type Tagger<P extends EditorOrReviewerParameters = EditorOrReviewerParameters> =
-    (p: Project, context: HandlerContext, params?: P) => Promise<Tags>;
+    (p: Project, context: HandlerContext, params?: P) => Promise<TaggerTags>;
 
 export type TagRouter<PARAMS extends EditorOrReviewerParameters = EditorOrReviewerParameters> =
-    (tags: Tags, params: PARAMS, ctx: HandlerContext) => Promise<ActionResult<Tags>>;
+    (tags: TaggerTags, params: PARAMS, ctx: HandlerContext) => Promise<ActionResult<TaggerTags>>;
 
 /**
  * Combine these taggers
@@ -39,7 +39,7 @@ export function unifiedTagger(t0: Tagger, ...taggers: Tagger[]): Tagger {
     };
 }
 
-function unify(tags: Tags[]): Tags {
+function unify(tags: TaggerTags[]): TaggerTags {
     const uniqueTags = _.uniq(_.flatMap(tags, t => t.tags));
-    return new DefaultTags(tags[0].repoId, uniqueTags);
+    return new DefaultTaggerTags(tags[0].repoId, uniqueTags);
 }
