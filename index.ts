@@ -361,6 +361,11 @@ export {
 export {
     findFileMatches,
     findMatches,
+    doWithAllMatches,
+    findParser,
+    findValues,
+    gatherFromMatches,
+    zapAllMatches,
 } from "./lib/tree/ast/astUtils";
 export {
     MatchResult,
