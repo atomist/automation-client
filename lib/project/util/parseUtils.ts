@@ -4,7 +4,11 @@ import { ScriptedFlushable } from "../../internal/common/Flushable";
 import { logger } from "../../util/logger";
 import { File } from "../File";
 import { ProjectAsync } from "../Project";
-import { doWithFiles, gatherFromFiles, GlobOptions } from "./projectUtils";
+import {
+    doWithFiles,
+    gatherFromFiles,
+    GlobOptions,
+} from "./projectUtils";
 
 export type Match<M> = M & PatternMatch;
 

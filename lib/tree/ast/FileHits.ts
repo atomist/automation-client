@@ -1,4 +1,9 @@
-import { evaluateExpression, isSuccessResult, PathExpression, TreeNode } from "@atomist/tree-path";
+import {
+    evaluateExpression,
+    isSuccessResult,
+    PathExpression,
+    TreeNode,
+} from "@atomist/tree-path";
 import { ScriptedFlushable } from "../../internal/common/Flushable";
 import { File } from "../../project/File";
 import {

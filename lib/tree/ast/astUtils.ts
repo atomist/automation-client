@@ -1,6 +1,7 @@
 import {
     defineDynamicProperties,
-    evaluateExpression, FunctionRegistry,
+    evaluateExpression,
+    FunctionRegistry,
     isSuccessResult,
     PathExpression,
     stringify,
@@ -12,11 +13,21 @@ import { logger } from "../../util/logger";
 
 import { File } from "../../project/File";
 import { ProjectAsync } from "../../project/Project";
-import { gatherFromFiles, GlobOptions } from "../../project/util/projectUtils";
+import {
+    gatherFromFiles,
+    GlobOptions,
+} from "../../project/util/projectUtils";
 import { toSourceLocation } from "../../project/util/sourceLocationUtils";
 import { LocatedTreeNode } from "../LocatedTreeNode";
-import { FileHit, MatchResult, NodeReplacementOptions } from "./FileHits";
-import { FileParser, isFileParser } from "./FileParser";
+import {
+    FileHit,
+    MatchResult,
+    NodeReplacementOptions,
+} from "./FileHits";
+import {
+    FileParser,
+    isFileParser,
+} from "./FileParser";
 import { FileParserRegistry } from "./FileParserRegistry";
 
 /**

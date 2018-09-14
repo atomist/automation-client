@@ -3,7 +3,8 @@ import * as assert from "power-assert";
 import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import {
-    findMatches, gatherFromMatches,
+    findMatches,
+    gatherFromMatches,
     zapAllMatches,
 } from "../../../lib/tree/ast/astUtils";
 import { ZapTrailingWhitespace } from "../../../lib/tree/ast/FileHits";
@@ -139,7 +140,10 @@ describe("findMatches in action", () => {
     it("can flush this and it works", done => {
         const Before = `import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
-import { GitHubRepoRef, isGitHubRepoRef } from "./GitHubRepoRef";
+import {
+    GitHubRepoRef,
+    isGitHubRepoRef,
+} from "./GitHubRepoRef";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import { RepoLoader } from "./repoLoader";
 
@@ -161,7 +165,10 @@ export function gitHubRepoLoader(credentials: ProjectOperationCredentials): Repo
 
         const After = `import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
-import { GitHubRepoRef, isGitHubRepoRef } from "./GitHubRepoRef";
+import {
+    GitHubRepoRef,
+    isGitHubRepoRef,
+} from "./GitHubRepoRef";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import { RepoLoader } from "./repoLoader";
 
