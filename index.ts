@@ -130,6 +130,10 @@ export {
     toStringArray,
 } from "./lib/internal/util/string";
 export {
+    EventHandlerMetadata,
+    CommandHandlerMetadata,
+} from "./lib/metadata/automationMetadata";
+export {
     commandHandlerFrom,
     OnCommand,
 } from "./lib/onCommand";
@@ -393,7 +397,8 @@ export {
     GraphQL,
 };
 import * as GraphQL from "./lib/graph/graphQL";
+import * as nsp from "./lib/internal/util/cls";
+
 export {
     nsp,
 };
-import * as nsp from "./lib/internal/util/cls";
