@@ -97,6 +97,9 @@ export {
     declareSecret,
 } from "./lib/internal/metadata/decoratorSupport";
 export {
+    CommandInvocation,
+} from "./lib/internal/invoker/Payload";
+export {
     isCommandHandlerMetadata,
 } from "./lib/internal/metadata/metadata";
 export {
