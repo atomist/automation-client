@@ -397,13 +397,12 @@ export {
 export {
     doWithRetry,
 } from "./lib/util/retry";
-export * from "./lib/util/spawn";
-export {
-    GraphQL,
-};
-import * as GraphQL from "./lib/graph/graphQL";
-import * as nsp from "./lib/internal/util/cls";
 
-export {
-    nsp,
-};
+export * from "./lib/spi/http/axiosHttpClient";
+export * from "./lib/spi/http/curlHttpClient";
+export * from "./lib/spi/http/httpClient";
+export * from "./lib/util/spawn";
+import * as GraphQL from "./lib/graph/graphQL";
+export { GraphQL };
+import * as nsp from "./lib/internal/util/cls";
+export { nsp };
