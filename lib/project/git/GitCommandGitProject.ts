@@ -334,7 +334,8 @@ async function cloneInto(
     opts: CloneOptions,
     id: RemoteRepoRef,
 ) {
-
+    logger.debug(
+        `Cloning repo with owner '${id.owner}', name '${id.repo}', branch '${id.branch}', sha '${id.sha}' and options '${JSON.stringify(opts)}'`);
     const repoDir = targetDirectoryInfo.path;
     const url = id.cloneUrl(credentials);
     const cloneBranch = id.branch;
