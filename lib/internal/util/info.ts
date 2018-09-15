@@ -26,7 +26,7 @@ export function info(automations: Automations): AutomationInfo {
     }
 
     try {
-        const pj = require("../../package.json");
+        const pj = require("../../../package.json");
         i.client = {
             name: pj.name,
             version: pj.version,
