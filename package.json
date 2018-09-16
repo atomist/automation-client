@@ -23,9 +23,9 @@
   "main": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "@atomist/microgrammar": "1.0.0-master.20180829162516",
+    "@atomist/microgrammar": "1.0.0-M.4",
     "@atomist/slack-messages": "1.0.1-master.20180830190736",
-    "@atomist/tree-path": "1.0.0-master.20180913033718",
+    "@atomist/tree-path": "1.0.0-M.4",
     "@octokit/rest": "^14.0.9",
     "@typed/curry": "^1.0.1",
     "@types/app-root-path": "^1.2.4",
