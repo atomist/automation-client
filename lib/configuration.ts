@@ -22,6 +22,7 @@ import * as fs from "fs-extra";
 import * as glob from "glob";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
+import * as os from "os";
 import * as p from "path";
 import * as semver from "semver";
 import { automationClientInstance } from "./globals";
@@ -381,8 +382,7 @@ function loadDefaultConfiguration(): Configuration {
  * Return Atomist user configuration directory.
  */
 function userConfigDir(): string {
-    const home = process.env[process.platform === "win32" ? "USERPROFILE" : "HOME"];
-    return p.join(home, ".atomist");
+    return p.join(os.homedir(), ".atomist");
 }
 
 /**
@@ -877,7 +877,7 @@ export const LocalDefaultConfiguration: Configuration = {
     },
     http: {
         enabled: true,
-        host: "localhost",
+        host: "127.0.0.1",
         auth: {
             basic: {
                 enabled: false,
