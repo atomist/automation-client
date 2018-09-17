@@ -58,7 +58,7 @@ describe("configuration", () => {
         },
         http: {
             enabled: true,
-            host: "localhost",
+            host: "127.0.0.1",
             auth: {
                 basic: {
                     enabled: false,
