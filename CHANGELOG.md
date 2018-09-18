@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.4...HEAD)
 
+### Fixed
+
+-   Git commands fail when arguments have spaces. [#367](https://github.com/atomist/automation-client-ts/issues/367)
+
 ## [1.0.0-M.4](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.3...1.0.0-M.4) - 2018-09-16
 
 ### Added
