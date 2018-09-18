@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.4...HEAD)
 
-### Fixed
+### Added
 
--   Git commands fail when arguments have spaces. [#367](https://github.com/atomist/automation-client-ts/issues/367)
+-   Export cross-spawn as spawn. [#382](https://github.com/atomist/automation-client-ts/pull/382)
+
+### Changed
+
+-   Use os.homedir() and 127.0.0.1. [#381](https://github.com/atomist/automation-client-ts/pull/381)
 
 ## [1.0.0-M.4](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.3...1.0.0-M.4) - 2018-09-16
 
