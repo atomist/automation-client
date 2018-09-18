@@ -25,6 +25,8 @@ import { sprintf } from "sprintf-js";
 import * as strip_ansi from "strip-ansi";
 import { logger } from "./logger";
 
+export { spawn };
+
 export interface WritableLog {
 
     /**
