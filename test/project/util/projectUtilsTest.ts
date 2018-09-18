@@ -5,6 +5,7 @@ import { defer } from "../../../lib/internal/common/Flushable";
 import { AllFiles } from "../../../lib/project/fileGlobs";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import {
+    countFiles,
     deleteFiles,
     doWithFiles,
     fileExists,
@@ -24,6 +25,16 @@ describe("projectUtils", () => {
             .then(done, done);
     });
 
+    it("exists: not found with promise", done => {
+        const t = tempProject();
+        t.addFileSync("Thing", "1");
+        fileExists(t, AllFiles, async f => f.name === "nonsense")
+            .then(yes => {
+                assert(!yes);
+            })
+            .then(done, done);
+    });
+
     it("exists: found", done => {
         const t = tempProject();
         t.addFileSync("Thing", "1");
@@ -32,6 +43,40 @@ describe("projectUtils", () => {
                 assert(yes);
             })
             .then(done, done);
+    });
+
+    it("exists: found with promise", done => {
+        const t = tempProject();
+        t.addFileSync("Thing", "1");
+        fileExists(t, AllFiles, async f => f.name === "Thing")
+            .then(yes => {
+                assert(yes);
+            })
+            .then(done, done);
+    });
+
+    it("exists: found with default", done => {
+        const t = tempProject();
+        t.addFileSync("Thing", "1");
+        fileExists(t, AllFiles)
+            .then(yes => {
+                assert(yes);
+            })
+            .then(done, done);
+    });
+
+    it("count: 0", async () => {
+        const t = tempProject();
+        t.addFileSync("Thing", "1");
+        const count = await countFiles(t, AllFiles, f => f.name === "nonsense");
+        assert.strictEqual(count, 0);
+    });
+
+    it("count: 1", async () => {
+        const t = tempProject();
+        t.addFileSync("Thing", "1");
+        const count = await countFiles(t, AllFiles, async f => f.name === "Thing");
+        assert.strictEqual(count, 1);
     });
 
     it("gatherFromFiles", done => {

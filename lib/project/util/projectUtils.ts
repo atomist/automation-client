@@ -30,17 +30,35 @@ export type GlobOptions = string | string[];
 
 /**
  * Does at least one file matching the given predicate exist in this project?
+ * If no predicate is supplied, does at least one file match the glob pattern?
  * No guarantees about ordering
  * @param p
  * @param globPatterns positive and negative globs to match
- * @param test
+ * @param test return a boolean or promise. Defaults to true
  * @return {Promise<boolean>}
  */
-export function fileExists<T>(p: ProjectAsync,
-                              globPatterns: GlobOptions,
-                              test: (f: File) => boolean): Promise<boolean> {
-    return gatherFromFiles<boolean>(p, globPatterns, async f => test(f) === true)
-        .then(results => results.length > 0);
+export async function fileExists<T>(p: ProjectAsync,
+                                    globPatterns: GlobOptions,
+                                    test: (f: File) => (boolean | Promise<boolean>) = () => true): Promise<boolean> {
+    return await countFiles(p, globPatterns, test) > 0;
+}
+
+/**
+ * Count files matching the given predicate in this project
+ * If no predicate is supplied, does at least one file match the glob pattern?
+ * No guarantees about ordering
+ * @param p
+ * @param globPatterns positive and negative globs to match
+ * @param test return a boolean or promise. Defaults to true
+ * @return {Promise<boolean>}
+ */
+export async function countFiles<T>(p: ProjectAsync,
+                                    globPatterns: GlobOptions,
+                                    test: (f: File) => (boolean | Promise<boolean>) = () => true): Promise<number> {
+    const results = await gatherFromFiles<boolean>(p,
+        globPatterns,
+        async f => await test(f) === true);
+    return results.length;
 }
 
 /**
