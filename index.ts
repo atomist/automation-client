@@ -353,6 +353,9 @@ export {
     QueryNoCacheOptions,
     QueryOptions,
 } from "./lib/spi/graph/GraphClient";
+export * from "./lib/spi/http/axiosHttpClient";
+export * from "./lib/spi/http/curlHttpClient";
+export * from "./lib/spi/http/httpClient";
 export * from "./lib/spi/message/MessageClient";
 export {
     DefaultSlackMessageClient,
@@ -397,10 +400,6 @@ export {
 export {
     doWithRetry,
 } from "./lib/util/retry";
-
-export * from "./lib/spi/http/axiosHttpClient";
-export * from "./lib/spi/http/curlHttpClient";
-export * from "./lib/spi/http/httpClient";
 export * from "./lib/util/spawn";
 import * as GraphQL from "./lib/graph/graphQL";
 export { GraphQL };
