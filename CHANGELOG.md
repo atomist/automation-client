@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Use os.homedir() and 127.0.0.1. [#381](https://github.com/atomist/automation-client-ts/pull/381)
+-   **BREAKING** Update to more-standard node project format. [#328](https://github.com/atomist/automation-client-ts/issues/328)
 
 ## [1.0.0-M.4](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.3...1.0.0-M.4) - 2018-09-16
 
