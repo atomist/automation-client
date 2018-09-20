@@ -14,7 +14,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Use os.homedir() and 127.0.0.1. [#381](https://github.com/atomist/automation-client-ts/pull/381)
--   **BREAKING** Update to more-standard node project format. [#328](https://github.com/atomist/automation-client-ts/issues/328)
 
 ## [1.0.0-M.4](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.3...1.0.0-M.4) - 2018-09-16
 
@@ -36,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   **BREAKING** Make running git commands safer. [#374](https://github.com/atomist/automation-client-ts/issues/374)
 -   Change location of schema.json. [#c6ee2b4](https://github.com/atomist/automation-client-ts/commit/c6ee2b4843a193002319796f5b1815d3cfb83454)
 -   Replace continuation-local-storage with async hooks for better tracking across async/await calls. [#377](https://github.com/atomist/automation-client-ts/issues/377)
+-   **BREAKING** Update to more-standard node project format. [#328](https://github.com/atomist/automation-client-ts/issues/328)
 
 ### Fixed
 
