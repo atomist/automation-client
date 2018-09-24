@@ -20,13 +20,17 @@ import {
     SpawnOptions,
 } from "child_process";
 import * as spawn from "cross-spawn";
+import * as os from "os";
 import * as path from "path";
-import { sprintf } from "sprintf-js";
 import * as strip_ansi from "strip-ansi";
+import * as treeKill from "tree-kill";
 import { logger } from "./logger";
 
 export { spawn };
 
+/**
+ * Interface for a writable log that provides a function to write to the log.
+ */
 export interface WritableLog {
 
     /**
@@ -35,6 +39,7 @@ export interface WritableLog {
      */
     log?: string;
 
+    /** Function that write to the log. */
     write(what: string): void;
 }
 
@@ -55,25 +60,57 @@ export type ErrorFinder = (code: number, signal: string, log: WritableLog) => bo
  */
 export const SuccessIsReturn0ErrorFinder: ErrorFinder = code => code !== 0;
 
+/**
+ * Result returned by spawnAndWatch after running a child process.
+ */
 export interface ChildProcessResult {
+    /** Will be true if the ErrorFinder returns true. */
     error: boolean;
+    /** Exit code of process.  It may be null or undefined if the process was killed. */
     code: number;
+    /** Optional message returned by process. */
     message?: string;
+    /** The Node.js child_process.ChildProcess created by spawnAndwatch. */
     childProcess: ChildProcess;
 }
 
+/**
+ * spawnAndWatch specific options.
+ */
 export interface SpawnWatchOptions {
+    /**
+     * If your command can return zero on failure or non-zero on
+     * success, you can override the default behavior of determining
+     * success or failure using this option.  For example, if your
+     * command returns zero for certain types of errors, you can scan
+     * the log content from the command to determine if an error
+     * occurs.
+     */
     errorFinder: ErrorFinder;
+    /**
+     * Set to true if ANSI escape codes should be stripped from the
+     * output before sending it to the log.
+     */
     stripAnsi: boolean;
+    /**
+     * Amount of time in milliseconds to wait for process to exit.  If
+     * it does not exit in the allotted time, it is kill
+     */
     timeout: number;
+    /**
+     * Set to true if you want the command line sent to the
+     * Writablelog provided to spawnAndWatch.
+     */
     logCommand: boolean;
 }
 
 /**
- * Spawn a process and watch
- * @param {SpawnCommand} spawnCommand
- * @param options options
- * @param {ProgressLog} log
+ * Spawn a process, log its output, and wait for it to exit,
+ * asynchronously.  It is spawned using cross-spawn.
+ *
+ * @param {SpawnCommand} spawnCommand command to run
+ * @param options standard spawn options
+ * @param log log to write output to
  * @param {Partial<SpawnWatchOptions>} spOpts
  * @return {Promise<ChildProcessResult>}
  */
@@ -96,20 +133,20 @@ export async function spawnAndWatch(spawnCommand: SpawnCommand,
  * Handle the result of a spawned process, streaming back
  * output to log
  * @param childProcess
- * @param {ProgressLog} log to write stdout and stderr to
+ * @param log to write stdout and stderr to
  * @param opts: Options for error parsing, ANSI code stripping etc.
  * @return {Promise<ChildProcessResult>}
  */
-function watchSpawned(childProcess: ChildProcess,
-                      log: WritableLog,
-                      opts: Partial<SpawnWatchOptions> = {}): Promise<ChildProcessResult> {
-    let timer;
+async function watchSpawned(childProcess: ChildProcess,
+                            log: WritableLog,
+                            opts: Partial<SpawnWatchOptions> = {}): Promise<ChildProcessResult> {
+    let timer: NodeJS.Timer;
     let running = true;
     if (opts.timeout) {
         timer = setTimeout(() => {
             if (running) {
                 logger.warn("Spawn timeout expired. Killing command with pid '%s'", childProcess.pid);
-                childProcess.kill();
+                crossKill(childProcess);
             }
         }, opts.timeout);
     }
@@ -168,13 +205,16 @@ export interface SpawnCommand {
  * @return {string}
  */
 export function stringifySpawnCommand(sc: SpawnCommand): string {
-    return sprintf("%s %s", sc.command, !!sc.args ? sc.args.join(" ") : "");
+    return `${sc.command}${(!!sc.args) ? "'" + sc.args.join("' '") + "'" : ""}`;
 }
 
 /**
- * Convenient function to create a spawn command from a sentence such as "npm run compile"
- * Does not respect quoted arguments
- * @param {string} sentence
+ * Convenience function to create a spawn command from a sentence such
+ * as "npm run compile" Does not respect quoted arguments.  Use
+ * spawnAndWatch passing it the command and argument array if your
+ * command arguments have spaces, etc.
+ *
+ * @param {string} sentence command and argument string
  * @param options
  * @return {SpawnCommand}
  */
@@ -188,14 +228,89 @@ export function asSpawnCommand(sentence: string, options: SpawnOptions = {}): Sp
 }
 
 /**
- * Kill the child process and wait for it to shut down. This can take a while as child processes
- * may have shut down hooks.
+ * Kill the child process and wait for it to shut down. This can take
+ * a while as child processes may have shut down hooks.  On win32,
+ * tree-kill is used and the Promise is rejected if the process(es) do(es)
+ * not exit within `wait` milliseconds.  On other platforms, first the
+ * child process is sent the default signal, SIGTERM.  After `wait`
+ * milliseconds, it is sent SIGKILL.  After another `wait`
+ * milliseconds, an error is thrown.
+ *
  * @param {module:child_process.ChildProcess} childProcess
+ * @param wait the number of milliseconds to wait before sending SIGKILL and
+ *             then erroring, default is 30000 ms
  * @return {Promise<any>}
  */
-export function poisonAndWait(childProcess: ChildProcess): Promise<any> {
-    childProcess.kill();
-    return new Promise((resolve, reject) => childProcess.on("close", () => {
+export async function poisonAndWait(childProcess: ChildProcess, wait: number = 30000): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        const pid = childProcess.pid;
+        const termTimer = setTimeout(() => {
+            if (os.platform() === "win32") {
+                reject(new Error(`Failed to tree-kill child process ${pid} in ${wait} ms`));
+            } else {
+                logger.debug(`Child process ${pid} did not exit in ${wait} ms, sending SIGKILL`);
+                childProcess.kill("SIGKILL");
+            }
+        }, wait);
+        const killTimer = (os.platform() === "win32") ? undefined : setTimeout(() => {
+            reject(new Error(`Failed to kill child process ${pid}`));
+        }, 2 * wait);
+        childProcess.on("close", clearAndResolve(pid, resolve, termTimer, killTimer));
+        childProcess.on("exit", (code, signal) => {
+            logger.debug(`Child process ${pid} exited with code '${code}' and signal '${signal}'`);
+        });
+        childProcess.on("error", clearAndReject(pid, reject, termTimer, killTimer));
+        crossKill(childProcess);
+    });
+}
+
+/**
+ * Cross-platform kill.  On win32, tree-kill is used and signal is
+ * ignored since win32 does not support different signals.  On other
+ * platforms, ChildProcess.kill(signal) is used.
+ *
+ * @param cp child process to kill
+ * @param signal optional signal, Node.js default is used if not provided
+ */
+export function crossKill(cp: ChildProcess, signal?: string): void {
+    if (os.platform() === "win32") {
+        logger.debug(`Calling tree-kill on child process ${cp.pid}`);
+        treeKill(cp.pid);
+    } else {
+        const sig = (signal) ? `signal ${signal}` : "default signal";
+        logger.debug(`Sending ${sig} to child process ${cp.pid}`);
+        cp.kill(signal);
+    }
+}
+
+/**
+ * Clear provided timers and resolve a promise.
+ */
+function clearAndResolve(pid: number, resolve: () => void, ...timers: NodeJS.Timer[]): (code: number, signal: string) => void {
+    return (code: number, signal: string) => {
+        logger.debug(`Child process ${pid} closed with code '${code}' and signal '${signal}'`);
+        clearTimers(timers);
         resolve();
-    }));
+    };
+}
+
+/**
+ * Clear provided timers and reject a promise.
+ */
+function clearAndReject(pid: number, reject: (e: Error) => void, ...timers: NodeJS.Timer[]): (reason: Error) => void {
+    return (reason: Error) => {
+        logger.error(`Child process ${pid} errored: ${reason.message}`);
+        clearTimers(timers);
+        reject(reason);
+    };
+}
+
+/**
+ * Clear provided timers.  It checks to make sure the timers are
+ * defined before clearing them.
+ *
+ * @param timers the timers to clear.
+ */
+function clearTimers(timers: NodeJS.Timer[]): void {
+    timers.filter(t => !!t).map(t => clearTimeout(t));
 }
