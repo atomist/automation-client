@@ -61,6 +61,8 @@ export {
     eventStore,
 } from "./lib/globals";
 export { ApolloGraphClient } from "./lib/graph/ApolloGraphClient";
+import * as GraphQL from "./lib/graph/graphQL";
+export { GraphQL };
 export {
     HandleCommand,
     SelfDescribingHandleCommand,
@@ -119,6 +121,8 @@ export {
 export {
     AutomationContext,
 } from "./lib/internal/util/cls";
+import * as nsp from "./lib/internal/util/cls";
+export { nsp };
 export {
     info,
 } from "./lib/internal/util/info";
@@ -401,7 +405,3 @@ export {
     doWithRetry,
 } from "./lib/util/retry";
 export * from "./lib/util/spawn";
-import * as GraphQL from "./lib/graph/graphQL";
-export { GraphQL };
-import * as nsp from "./lib/internal/util/cls";
-export { nsp };

@@ -38,7 +38,7 @@ describe("exec", () => {
             ]);
             assert(results.length === 4);
             results.forEach(r => {
-                assert(r.stdout.startsWith("On branch "));
+                assert(/^(?:On branch|HEAD detached)/.test(r.stdout));
                 assert(r.stdout === results[0].stdout);
                 assert(r.stderr === results[0].stderr);
             });
