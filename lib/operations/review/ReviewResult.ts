@@ -12,9 +12,18 @@ export interface ReviewComment {
     readonly severity: Severity;
 
     /**
-     * Name of the category to which this comment applies: E.g. "Usage of Foobar API"
+     * Name of the category to which this comment applies: E.g. "API usage".
+     * Should be human readable. Review comments are typically filtered by
+     * category when reported.
      */
     readonly category: string;
+
+    /**
+     * Name of the more specific category to which this comment applies if available,
+     * E.g. "Usage of Foobar API". Review comments are typically sorted by
+     * subcategory when reported.
+     */
+    readonly subcategory?: string;
 
     /**
      * Details of the problem
