@@ -205,7 +205,7 @@ export interface SpawnCommand {
  * @return {string}
  */
 export function stringifySpawnCommand(sc: SpawnCommand): string {
-    return `${sc.command}${(!!sc.args) ? "'" + sc.args.join("' '") + "'" : ""}`;
+    return `${sc.command}${(!!sc.args) ? " '" + sc.args.join("' '") + "'" : ""}`;
 }
 
 /**
