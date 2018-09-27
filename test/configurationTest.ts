@@ -39,6 +39,7 @@ describe("configuration", () => {
             }
         }
         delete process.env.NODE_ENV;
+        process.stdout.write(JSON.stringify(process.env));
     });
 
     // tslint:disable-next-line:no-var-requires
