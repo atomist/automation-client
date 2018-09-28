@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.5...HEAD)
 
+### Changed
+
+-   Upgrade axios to 0.19.0-beta.1. [#386](https://github.com/atomist/automation-client-ts/issues/386)
+
 ## [1.0.0-M.5](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.4...1.0.0-M.5) - 2018-09-26
 
 ### Added
