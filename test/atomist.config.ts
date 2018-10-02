@@ -9,9 +9,9 @@ import {
     EventHandlerMetadata,
 } from "../lib/metadata/automationMetadata";
 import { AutomationMetadataProcessor } from "../lib/spi/env/MetadataProcessor";
-import { FileMessageTest } from "./command/FileMessageTest";
+import { FileMessageTest } from "./command/FileMessage.test";
 import { HelloWorld } from "./command/HelloWorld";
-import { MessageTest } from "./command/MessageTest";
+import { MessageTest } from "./command/Message.test";
 
 // const host = "https://automation.atomist.com";
 const host = "https://automation-staging.atomist.services";
