@@ -12,7 +12,7 @@ import {
 import {
     BitBucketCredentials,
     BitBucketUser,
-} from "./BitBucketGitTest";
+} from "./BitBucketGit.test";
 
 describe("BitBucket generator end to end", () => {
 
