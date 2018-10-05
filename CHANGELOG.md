@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.5a...HEAD)
 
+### Added
+
+-   Add more exports to index. [#389](https://github.com/atomist/automation-client/issues/389)
+
 ### Fixed
 
 -   Error when creating pull request under GitCommandGitProject. [#387](https://github.com/atomist/automation-client/issues/387)
