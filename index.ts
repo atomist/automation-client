@@ -27,6 +27,7 @@ export {
     webhookBaseUrl,
 } from "./lib/atomistWebhook";
 export {
+    AutomationClient,
     automationClient,
 } from "./lib/automationClient";
 export {
@@ -44,21 +45,22 @@ export {
     writeUserConfig,
 } from "./lib/configuration";
 export {
-    Secret,
-    Secrets,
-    MappedParameter,
-    MappedParameters,
-    Parameter,
     CommandHandler,
     ConfigurableCommandHandler,
     EventHandler,
+    MappedParameter,
+    MappedParameters,
+    Parameter,
     Parameters,
+    Secret,
+    Secrets,
     Tags,
     Value,
 } from "./lib/decorators";
 export {
     automationClientInstance,
     eventStore,
+    setEventStore,
 } from "./lib/globals";
 export { ApolloGraphClient } from "./lib/graph/ApolloGraphClient";
 import * as GraphQL from "./lib/graph/graphQL";
@@ -99,7 +101,9 @@ export {
     declareSecret,
 } from "./lib/internal/metadata/decoratorSupport";
 export {
+    Arg,
     CommandInvocation,
+    Secret as PayloadSecret,
 } from "./lib/internal/invoker/Payload";
 export {
     isCommandHandlerMetadata,
@@ -136,6 +140,8 @@ export {
 export {
     EventHandlerMetadata,
     CommandHandlerMetadata,
+    MappedParameterDeclaration,
+    Parameter as MetadataParameter,
 } from "./lib/metadata/automationMetadata";
 export {
     commandHandlerFrom,
@@ -174,6 +180,7 @@ export {
 export {
     GitBranchRegExp,
     GitHubNameRegExp,
+    GitShaRegExp,
 } from "./lib/operations/common/params/gitHubPatterns";
 export {
     GitHubTargetsParams,
@@ -276,12 +283,14 @@ export {
     Tagger,
     TagRouter,
     TaggerTags,
+    unifiedTagger,
 } from "./lib/operations/tagger/Tagger";
 export {
     File,
 } from "./lib/project/File";
 export {
     AllFiles,
+    DefaultExcludes,
 } from "./lib/project/fileGlobs";
 export {
     Fingerprint,
@@ -326,11 +335,15 @@ export {
     doWithJson,
 } from "./lib/project/util/jsonUtils";
 export {
+    doWithAtMostOneMatch,
     doWithMatches,
 } from "./lib/project/util/parseUtils";
+import * as parseUtils from "./lib/project/util/parseUtils";
+export { parseUtils };
 export {
     doWithFiles,
     fileExists,
+    gatherFromFiles,
     saveFromFiles,
     saveFromFilesAsync,
     toPromise,
@@ -338,6 +351,8 @@ export {
 export {
     isGitHubTeamMember,
 } from "./lib/secured";
+import * as secured from "./lib/secured";
+export { secured };
 export {
     AutomationEventListener,
     AutomationEventListenerSupport,
@@ -376,6 +391,7 @@ export {
 } from "./lib/tree/ast/astUtils";
 export {
     MatchResult,
+    ZapTrailingWhitespace,
 } from "./lib/tree/ast/FileHits";
 export {
     FileParser,
