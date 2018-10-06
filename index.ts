@@ -366,12 +366,7 @@ export {
 export {
     CloneOptions,
 } from "./lib/spi/clone/DirectoryManager";
-export {
-    GraphClient,
-    MutationOptions,
-    QueryNoCacheOptions,
-    QueryOptions,
-} from "./lib/spi/graph/GraphClient";
+export * from "./lib/spi/graph/GraphClient";
 export * from "./lib/spi/http/axiosHttpClient";
 export * from "./lib/spi/http/curlHttpClient";
 export * from "./lib/spi/http/httpClient";
