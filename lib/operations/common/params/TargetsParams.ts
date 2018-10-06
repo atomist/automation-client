@@ -5,8 +5,8 @@ import {
     RepoRef,
 } from "../RepoId";
 import { Credentialed } from "./Credentialed";
-import { GitHubNameRegExp } from "./gitHubPatterns";
 import { RemoteLocator } from "./RemoteLocator";
+import { GitHubNameRegExp } from "./validationPatterns";
 
 /**
  * Base parameters for working with repo(s).

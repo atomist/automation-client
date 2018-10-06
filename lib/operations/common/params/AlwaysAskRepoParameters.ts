@@ -2,11 +2,11 @@ import {
     Parameter,
     Parameters,
 } from "../../../decorators";
+import { GitHubTargetsParams } from "./GitHubTargetsParams";
 import {
     GitBranchRegExp,
     GitHubNameRegExp,
-} from "./gitHubPatterns";
-import { GitHubTargetsParams } from "./GitHubTargetsParams";
+} from "./validationPatterns";
 
 /**
  * Basic editor params. Always ask for a repo.

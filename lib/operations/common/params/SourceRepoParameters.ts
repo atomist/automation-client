@@ -3,11 +3,11 @@ import {
     RemoteRepoRef,
     RepoRef,
 } from "../RepoId";
+import { RemoteLocator } from "./RemoteLocator";
 import {
     GitBranchRegExp,
     GitHubNameRegExp,
-} from "./gitHubPatterns";
-import { RemoteLocator } from "./RemoteLocator";
+} from "./validationPatterns";
 
 /**
  * Parameters common to anything that works with a single source repo,
