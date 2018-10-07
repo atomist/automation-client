@@ -4,8 +4,8 @@ import {
     Parameter,
     Parameters,
 } from "../../../decorators";
-import { GitBranchRegExp } from "./gitHubPatterns";
 import { GitHubTargetsParams } from "./GitHubTargetsParams";
+import { GitBranchRegExp } from "./validationPatterns";
 
 /**
  * Get target from channel mapping

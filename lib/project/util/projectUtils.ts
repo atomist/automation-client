@@ -89,17 +89,6 @@ export function gatherFromFiles<T>(project: ProjectAsync,
 }
 
 /**
- * @deprecated use gatherFromFiles
- * @type {<T>(project: ProjectAsync, globPatterns: GlobOptions, gather: (f: File) => (Promise<T> | undefined)) => Promise<T[]>}
- */
-export const saveFromFilesAsync = gatherFromFiles;
-/**
- * @deprecated use gatherFromFiles
- * @type {<T>(project: ProjectAsync, globPatterns: GlobOptions, gather: (f: File) => (Promise<T> | undefined)) => Promise<T[]>}
- */
-export const saveFromFiles = gatherFromFiles;
-
-/**
  * Perform the same operation on all the files.
  * @param project project to act on
  * @param globPatterns glob patterns to match

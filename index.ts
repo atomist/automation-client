@@ -178,11 +178,6 @@ export {
     FallbackParams,
 } from "./lib/operations/common/params/FallbackParams";
 export {
-    GitBranchRegExp,
-    GitHubNameRegExp,
-    GitShaRegExp,
-} from "./lib/operations/common/params/gitHubPatterns";
-export {
     GitHubTargetsParams,
 } from "./lib/operations/common/params/GitHubTargetsParams";
 export {
@@ -191,6 +186,8 @@ export {
 export {
     TargetsParams,
 } from "./lib/operations/common/params/TargetsParams";
+import * as validationPatterns from "./lib/operations/common/params/validationPatterns";
+export { validationPatterns };
 export {
     ProjectAction,
 } from "./lib/operations/common/projectAction";
@@ -225,12 +222,8 @@ export {
 export {
     editAll,
 } from "./lib/operations/edit/editAll";
-export {
-    BranchCommit,
-    EditMode,
-    isPullRequest,
-    PullRequest,
-} from "./lib/operations/edit/editModes";
+import * as editModes from "./lib/operations/edit/editModes";
+export { editModes };
 export {
     AnyProjectEditor,
     EditResult,
@@ -276,6 +269,7 @@ export {
     DefaultReviewComment,
     ProjectReview,
     ReviewComment,
+    ReviewResult,
     Severity,
 } from "./lib/operations/review/ReviewResult";
 export {
@@ -340,14 +334,8 @@ export {
 } from "./lib/project/util/parseUtils";
 import * as parseUtils from "./lib/project/util/parseUtils";
 export { parseUtils };
-export {
-    doWithFiles,
-    fileExists,
-    gatherFromFiles,
-    saveFromFiles,
-    saveFromFilesAsync,
-    toPromise,
-} from "./lib/project/util/projectUtils";
+import * as projectUtils from "./lib/project/util/projectUtils";
+export { projectUtils };
 export {
     isGitHubTeamMember,
 } from "./lib/secured";
@@ -375,15 +363,8 @@ export {
     DefaultSlackMessageClient,
     MessageClientSupport,
 } from "./lib/spi/message/MessageClientSupport";
-export {
-    findFileMatches,
-    findMatches,
-    doWithAllMatches,
-    findParser,
-    findValues,
-    gatherFromMatches,
-    zapAllMatches,
-} from "./lib/tree/ast/astUtils";
+import * as astUtils from "./lib/tree/ast/astUtils";
+export { astUtils };
 export {
     MatchResult,
     ZapTrailingWhitespace,

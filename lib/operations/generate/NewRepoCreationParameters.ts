@@ -3,7 +3,7 @@ import {
     MappedParameters,
     Parameter,
 } from "../../decorators";
-import { GitHubNameRegExp } from "../common/params/gitHubPatterns";
+import { GitHubNameRegExp } from "../common/params/validationPatterns";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { RemoteRepoRef } from "../common/RepoId";
 import { RepoCreationParameters } from "./RepoCreationParameters";

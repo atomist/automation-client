@@ -1,10 +1,9 @@
-import "mocha";
 import * as assert from "power-assert";
 
 import {
     GitBranchRegExp,
     GitHubNameRegExp,
-} from "../../../../lib/operations/common/params/gitHubPatterns";
+} from "../../../../lib/operations/common/params/validationPatterns";
 
 describe("gitHubPatterns", () => {
 
