@@ -222,6 +222,9 @@ export {
 export {
     editAll,
 } from "./lib/operations/edit/editAll";
+export {
+    EditMode,
+} from "./lib/operations/edit/editModes";
 import * as editModes from "./lib/operations/edit/editModes";
 export { editModes };
 export {
