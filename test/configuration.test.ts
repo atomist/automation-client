@@ -16,6 +16,7 @@ import {
     loadAtomistConfigPath,
     loadAutomationConfig,
     loadConfiguration,
+    loadIndexConfig,
     loadUserConfiguration,
     LocalDefaultConfiguration,
     mergeConfigs,
@@ -270,9 +271,8 @@ describe("configuration", () => {
 
         it("should load from index.js", () => {
             const root = appRoot.path;
-            const indexJs = path.join(root, "index.js");
-            const indexJsOld = path.join(root, "index.js.old")
-            fs.renameSync(indexJs, indexJsOld);
+            const indexJs = path.join(root, "test", "index.js");
+            const indexUtilJs = path.join(root, "test", "util", "index.js");
 
             const atomistConfigJs = `exports.configuration = {
     apiKey: "nightclubjitters",
@@ -284,17 +284,35 @@ describe("configuration", () => {
     }
 };
 `;
+            const atomistConfigUtilJs = `exports.configuration = {
+    workspaceIds: ["FOO"],
+    http: {
+        enabled: true,
+    }
+};
+`;
             fs.writeFileSync(indexJs, atomistConfigJs);
-            const cfg = loadAutomationConfig("index.js");
-            assert.deepStrictEqual(cfg, eval(atomistConfigJs));
+            fs.writeFileSync(indexUtilJs, atomistConfigUtilJs);
+            const cfg = loadIndexConfig();
+            assert.deepStrictEqual(cfg, JSON.parse(`{
+  "apiKey": "nightclubjitters",
+  "http": {
+    "enabled": true,
+    "host": "atm-cfg-js",
+    "port": 1818
+  },
+  "workspaceIds": [
+    "FOO"
+  ]
+}`));
             fs.removeSync(indexJs);
-            fs.moveSync(indexJsOld, indexJs);
+            fs.removeSync(indexUtilJs);
         });
 
         it("should throw error for missing config", () => {
             const p = "/this/file/should/not/exist/so/please/do/not/make/it";
             const re = new RegExp(`Failed to load ${p}.configuration: Cannot find module '${p}'`);
-            assert.throws(() => loadAutomationConfig("atomist.config.js", p), re);
+            assert.throws(() => loadAutomationConfig(p), re);
         });
 
         it("should load provided path", () => {
@@ -319,7 +337,7 @@ describe("configuration", () => {
 `;
             const atomistConfigJsFile = tmp.fileSync();
             fs.writeFileSync(atomistConfigJsFile.name, atomistConfigJs);
-            const c = loadAutomationConfig("atomist.config.js", atomistConfigJsFile.name);
+            const c = loadAutomationConfig(atomistConfigJsFile.name);
             assert.deepStrictEqual(c, e);
         });
 
