@@ -459,6 +459,22 @@ export function mergeConfigs(obj: Configuration, ...sources: Configuration[]): C
 }
 
 /**
+ * Overwrite values in the former configuration with values in the
+ * latter.  The start object is modified.  Arrays are concatenated.
+ *
+ * @param obj starting configuration
+ * @param override configuration values to add/override those in start
+ * @return resulting merged configuration
+ */
+export function deepMergeConfigs(obj: Configuration, ...sources: Configuration[]): Configuration {
+    return _.mergeWith(obj, ...sources, (objValue, srcValue) => {
+        if (_.isArray(objValue) && srcValue) {
+            return objValue.concat(srcValue);
+        }
+    });
+}
+
+/**
  * Merge a user's global and proper per-module configuration, if it
  * exists.  Values from the per-module configuration take precedence
  * over the user-wide values.  Per-module configuration is gotten from
@@ -583,7 +599,7 @@ export function loadIndexConfig(): Configuration {
                 return {};
             }
         });
-        return mergeConfigs({}, cfgs);
+        return deepMergeConfigs({}, ...cfgs);
     }
     return {};
 }

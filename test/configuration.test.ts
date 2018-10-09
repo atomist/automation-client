@@ -302,6 +302,7 @@ describe("configuration", () => {
     "port": 1818
   },
   "workspaceIds": [
+    "TIM",
     "FOO"
   ]
 }`));
