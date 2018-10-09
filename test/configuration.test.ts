@@ -268,10 +268,33 @@ describe("configuration", () => {
 
     describe("loadAutomationConfig", () => {
 
+        it("should load from index.js", () => {
+            const root = appRoot.path;
+            const indexJs = path.join(root, "index.js");
+            const indexJsOld = path.join(root, "index.js.old")
+            fs.renameSync(indexJs, indexJsOld);
+
+            const atomistConfigJs = `exports.configuration = {
+    apiKey: "nightclubjitters",
+    workspaceIds: ["TIM"],
+    http: {
+        enabled: false,
+        port: 1818,
+        host: "atm-cfg-js"
+    }
+};
+`;
+            fs.writeFileSync(indexJs, atomistConfigJs);
+            const cfg = loadAutomationConfig("index.js");
+            assert.deepStrictEqual(cfg, eval(atomistConfigJs));
+            fs.removeSync(indexJs);
+            fs.moveSync(indexJsOld, indexJs);
+        });
+
         it("should throw error for missing config", () => {
             const p = "/this/file/should/not/exist/so/please/do/not/make/it";
             const re = new RegExp(`Failed to load ${p}.configuration: Cannot find module '${p}'`);
-            assert.throws(() => loadAutomationConfig(p), re);
+            assert.throws(() => loadAutomationConfig("atomist.config.js", p), re);
         });
 
         it("should load provided path", () => {
@@ -296,7 +319,7 @@ describe("configuration", () => {
 `;
             const atomistConfigJsFile = tmp.fileSync();
             fs.writeFileSync(atomistConfigJsFile.name, atomistConfigJs);
-            const c = loadAutomationConfig(atomistConfigJsFile.name);
+            const c = loadAutomationConfig("atomist.config.js", atomistConfigJsFile.name);
             assert.deepStrictEqual(c, e);
         });
 
@@ -759,9 +782,7 @@ describe("configuration", () => {
 
         it("should resolve simple config value from default", () => {
             (global as any).__runningAutomationClient = {
-                configuration: {
-
-                },
+                configuration: {},
             };
             const v = configurationValue<string>("test.foo", "bla");
             assert.equal(v, "bla");
@@ -769,9 +790,7 @@ describe("configuration", () => {
 
         it("should resolve simple config value from null", () => {
             (global as any).__runningAutomationClient = {
-                configuration: {
-
-                },
+                configuration: {},
             };
             const v = configurationValue<string>("test.foo", null);
             assert.equal(v, null);

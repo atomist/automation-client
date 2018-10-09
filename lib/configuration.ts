@@ -538,10 +538,9 @@ export function loadUserConfiguration(name?: string, version?: string): Automati
  * @param cfgPath location of automation configuration
  * @return automation configuration
  */
-export function loadAutomationConfig(cfgPath?: string): Configuration {
-    let cfg: Configuration = {};
+export function loadAutomationConfig(cfgFile: string = "atomist.config.js",
+                                     cfgPath?: string): Configuration | undefined {
     if (!cfgPath) {
-        const cfgFile = "atomist.config.js";
         const files = glob.sync(`${appRoot.path}/**/${cfgFile}`, { ignore: ["**/{.git,node_modules}/**"] });
         if (files.length === 1) {
             cfgPath = files[0];
@@ -551,14 +550,15 @@ export function loadAutomationConfig(cfgPath?: string): Configuration {
     }
     if (cfgPath) {
         try {
-            cfg = require(cfgPath).configuration;
+            const cfg = require(cfgPath).configuration;
             cfgLog("automation config");
+            return cfg;
         } catch (e) {
             e.message = `Failed to load ${cfgPath}.configuration: ${e.message}`;
             throw e;
         }
     }
-    return cfg;
+    return undefined;
 }
 
 /**
@@ -832,7 +832,7 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
     let cfg: Configuration;
     try {
         const defCfg = defaultConfiguration();
-        const autoCfg = loadAutomationConfig(cfgPath);
+        const autoCfg = (loadAutomationConfig("atomist.config.js", cfgPath) || loadAutomationConfig("index.js", cfgPath)) || {};
         const userCfg = loadUserConfiguration(defCfg.name, defCfg.version);
         const atmPathCfg = loadAtomistConfigPath();
         const atmCfg = loadAtomistConfig();
