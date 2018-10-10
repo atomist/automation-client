@@ -41,9 +41,6 @@ export {
 import * as GraphQL from "./lib/graph/graphQL";
 export { GraphQL };
 export {
-    HandleCommand,
-} from "./lib/HandleCommand";
-export {
     EventFired,
 } from "./lib/HandleEvent";
 export {
