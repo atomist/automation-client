@@ -315,7 +315,7 @@ ${meta.stack}`;
             }
         } else if (!(Array.isArray(meta) && meta.length === 0)) {
             formatted = `${formatted}${formatted.endsWith(":") ? " " : ": "}${JSON.stringify(serializeError(info.meta))}`;
-        } 
+        }
     }
 
     return formatted;
