@@ -19,7 +19,7 @@ export {
     webhookBaseUrl,
 } from "./lib/atomistWebhook";
 export {
-    AutomationClient
+    AutomationClient,
 } from "./lib/automationClient";
 export {
     AnyOptions,
