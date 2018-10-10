@@ -289,8 +289,12 @@ const clientFormat = info => {
 
     const level = c.colorize(info.level, _.padEnd(info.level, 5));
 
-    const formatted = info.timestamp + (ctx ? " [" + ctx + "]" : "")
+    let formatted = info.timestamp + (ctx ? " [" + ctx + "]" : "")
         + " [" + level + "] " + (info.message ? info.message : "");
+
+    if (info.meta) {
+       formatted = `${formatted}${formatted.endsWith(":") ? " " : ": "}${JSON.stringify(serializeError(info.meta))}`;
+    }
 
     return formatted;
 };
