@@ -104,6 +104,15 @@ export {
     SimpleRepoId,
 } from "./lib/operations/common/RepoId";
 export {
+    RepoFilter,
+} from "./lib/operations/common/repoFilter";
+export {
+    RepoFinder,
+} from "./lib/operations/common/repoFinder";
+export {
+    RepoLoader,
+} from "./lib/operations/common/repoLoader";
+export {
     SourceLocation,
 } from "./lib/operations/common/SourceLocation";
 export {
@@ -114,6 +123,9 @@ export { editModes };
 export {
     SimpleProjectEditor,
 } from "./lib/operations/edit/projectEditor";
+export {
+    ProjectPersister,
+} from "./lib/operations/generate/generatorUtils"
 export {
     RepoCreationParameters,
 } from "./lib/operations/generate/RepoCreationParameters";
@@ -137,9 +149,7 @@ export {
 export {
     File as ProjectFile,
 } from "./lib/project/File";
-export {
-    DefaultExcludes,
-} from "./lib/project/fileGlobs";
+export * from "./lib/project/fileGlobs";
 export {
     Fingerprint as FingerprintData,
 } from "./lib/project/fingerprint/Fingerprint";
@@ -223,3 +233,6 @@ export {
     doWithRetry,
 } from "./lib/util/retry";
 export * from "./lib/util/spawn";
+export {
+    Maker,
+} from "./lib/util/constructionUtils";
