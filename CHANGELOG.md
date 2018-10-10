@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   **BREAKING** Scope wildcard exports having common names. [#390](https://github.com/atomist/automation-client/issues/390)
 
+### Removed
+
+-   **BREAKING** Clean up exports in index. [#391](https://github.com/atomist/automation-client/issues/391)
+
 ### Fixed
 
 -   Error when creating pull request under GitCommandGitProject. [#387](https://github.com/atomist/automation-client/issues/387)
