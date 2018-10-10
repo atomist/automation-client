@@ -20,7 +20,7 @@ export {
 } from "./lib/atomistWebhook";
 export {
     AutomationClient
-} from "./lib/automationClient",
+} from "./lib/automationClient";
 export {
     AnyOptions,
     BannerSection,
