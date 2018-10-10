@@ -125,7 +125,7 @@ export {
 } from "./lib/operations/edit/projectEditor";
 export {
     ProjectPersister,
-} from "./lib/operations/generate/generatorUtils"
+} from "./lib/operations/generate/generatorUtils";
 export {
     RepoCreationParameters,
 } from "./lib/operations/generate/RepoCreationParameters";
