@@ -136,6 +136,7 @@ export {
     addAtomistWebhook,
 } from "./lib/operations/generate/support/addAtomistWebhook";
 export {
+    DefaultReviewComment,
     ProjectReview,
     ReviewComment,
     ReviewResult,
