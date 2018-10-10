@@ -19,6 +19,9 @@ export {
     webhookBaseUrl,
 } from "./lib/atomistWebhook";
 export {
+    AutomationClient
+} from "./lib/automationClient",
+export {
     AnyOptions,
     BannerSection,
     Configuration,
