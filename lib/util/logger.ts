@@ -293,7 +293,29 @@ const clientFormat = info => {
         + " [" + level + "] " + (info.message ? info.message : "");
 
     if (info.meta) {
-       formatted = `${formatted}${formatted.endsWith(":") ? " " : ": "}${JSON.stringify(serializeError(info.meta))}`;
+        const meta = info.meta;
+        if (meta instanceof Error) {
+            const err = meta as Error;
+            if (err.stack && err.stack.includes(err.message)) {
+                formatted = `${formatted}${formatted.endsWith(":") ? " " : ": "}
+${err.stack}`;
+            } else if (err.stack) {
+                formatted = `${formatted}${formatted.endsWith(":") ? " " : ": "}${err.message}
+${err.stack}`;
+            } else {
+                formatted = `${formatted}${formatted.endsWith(":") ? " " : ": "}${err.message}`;
+            }
+        } else if (meta.stack) {
+            if (meta.stack && meta.stack.includes(meta.message)) {
+                formatted = `${formatted}${formatted.endsWith(":") ? " " : ": "}
+${meta.stack}`;
+            } else {
+                formatted = `${formatted}${formatted.endsWith(":") ? " " : ": "}${meta.message ? meta.message : ""}
+${meta.stack}`;
+            }
+        } else {
+            formatted = `${formatted}${formatted.endsWith(":") ? " " : ": "}${JSON.stringify(serializeError(info.meta))}`;
+        }
     }
 
     return formatted;
