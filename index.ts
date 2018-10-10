@@ -64,8 +64,17 @@ export {
     SuccessPromise,
 } from "./lib/HandlerResult";
 export {
+    CommandInvocation,
+} from "./lib/internal/invoker/Payload";
+export {
     BaseParameter,
 } from "./lib/internal/metadata/decoratorSupport";
+export {
+    CommandIncoming,
+    EventIncoming,
+    RequestProcessor,
+} from "./lib/internal/transport/RequestProcessor";
+
 export {
     registerShutdownHook,
 } from "./lib/internal/util/shutdown";
