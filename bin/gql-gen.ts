@@ -62,7 +62,7 @@ async function main(): Promise<void> {
             stdio: "inherit",
         };
 
-        const graphQlGlob = `${lib}/**/*.graphql`;
+        const graphQlGlob = `${lib}/graphql/!(ingester)/*.graphql`;
 
         const graphqlFiles = await util.promisify(glob)(graphQlGlob);
         if (graphqlFiles && graphqlFiles.length > 0) {
