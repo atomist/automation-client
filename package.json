@@ -8,17 +8,17 @@
     "url": "https://atomist.com/"
   },
   "license": "SEE LICENSE IN LICENSE",
-  "homepage": "https://github.com/atomist/automation-client-ts#readme",
+  "homepage": "https://github.com/atomist/automation-client#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/atomist/automation-client-ts.git"
+    "url": "git+https://github.com/atomist/automation-client.git"
   },
   "keywords": [
     "atomist",
     "automation"
   ],
   "bugs": {
-    "url": "https://github.com/atomist/automation-client-ts/issues"
+    "url": "https://github.com/atomist/automation-client/issues"
   },
   "main": "./index.js",
   "types": "./index.d.ts",
