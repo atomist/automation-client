@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.0.0-RC.1...HEAD)
 
+### Changed
+
+-   Exclude ingesters from gql-gen. [#395](https://github.com/atomist/automation-client/issues/395)
+
 ## [1.0.0-RC.1](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.5a...1.0.0-RC.1) - 2018-10-15
 
 ### Added
