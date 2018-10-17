@@ -207,7 +207,7 @@ export interface AutomationServerOptions extends AutomationOptions {
     /** Logging configuration */
     logging?: {
         /** Log level, default is "info" */
-        level?: "debug" | "info" | "warn" | "error";
+        level?: "silly" | "debug" | "verbose" | "info" | "warn" | "error";
         /**
          * Custom log configuration, useful if your logging solution
          * requires host, port, token, etc. configuration.
