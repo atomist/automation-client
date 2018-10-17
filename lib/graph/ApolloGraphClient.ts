@@ -103,8 +103,14 @@ export class ApolloGraphClient implements GraphClient {
     private executeQuery<T, Q>(q: string,
                                variables?: Q,
                                queryOptions?: any): Promise<T> {
-        logger.debug(`Querying '%s' with variables '%s' and query: %s`,
-            this.endpoint, stringify(variables), internalGraphql.inlineQuery(q));
+        const log = !queryOptions ||
+            (queryOptions && queryOptions.log === undefined) ||
+            (queryOptions && queryOptions.log === true);
+
+        if (log) {
+            logger.debug(`Querying '%s' with variables '%s' and query: %s`,
+                this.endpoint, stringify(variables), internalGraphql.inlineQuery(q));
+        }
         const query = gql(q);
 
         return this.client.query<T>({
@@ -114,8 +120,10 @@ export class ApolloGraphClient implements GraphClient {
             ...queryOptions,
         })
             .then(result => {
-                // The following statement is needed for debugging; we can always disable that later
-                logger.debug("Query returned data: %s", stringify(result.data));
+                if (log) {
+                    // The following statement is needed for debugging; we can always disable that later
+                    logger.debug("Query returned data: %s", stringify(result.data));
+                }
                 return result.data;
             });
     }
@@ -123,8 +131,14 @@ export class ApolloGraphClient implements GraphClient {
     private executeMutation<T, Q>(m: string,
                                   variables?: Q,
                                   mutationOptions?: any): Promise<any> {
-        logger.debug(`Mutating '%s' with variables '%s' and mutation: %s`,
-            this.endpoint, stringify(variables), internalGraphql.inlineQuery(m));
+        const log = !mutationOptions ||
+            (mutationOptions && mutationOptions.log === undefined) ||
+            (mutationOptions && mutationOptions.log === true);
+
+        if (log) {
+            logger.debug(`Mutating '%s' with variables '%s' and mutation: %s`,
+                this.endpoint, stringify(variables), internalGraphql.inlineQuery(m));
+        }
 
         const mutation = gql(m);
 
@@ -135,8 +149,10 @@ export class ApolloGraphClient implements GraphClient {
             ...mutationOptions,
         })
             .then(response => {
-                // The following statement is needed for debugging; we can always disable that later
-                logger.debug("Mutation returned data: %s", stringify(response.data));
+                if (log) {
+                    // The following statement is needed for debugging; we can always disable that later
+                    logger.debug("Mutation returned data: %s", stringify(response.data));
+                }
                 return response.data;
             });
     }

@@ -26,6 +26,9 @@ describe("ApolloGraphClient", () => {
             agc.query<ReposQuery, ReposQueryVariables>({
                 name: "Repos",
                 variables: { teamId: SlackTeamId, offset: 0 },
+                options: {
+                    log: false,
+                },
             })
                 .then(result => {
                     logger.debug("query took " + (Date.now() - start));
@@ -54,6 +57,9 @@ describe("ApolloGraphClient", () => {
                 const result = await agc.query<ReposQuery, ReposQueryVariables>({
                     name: "Repos",
                     variables: { teamId: SlackTeamId, offset: 0 },
+                    options: {
+                        log: false,
+                    },
                 });
                 const org = result.ChatTeam[0].orgs[0];
                 assert(org.repo.length > 0);
