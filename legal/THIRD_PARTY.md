@@ -1,4 +1,4 @@
-# @atomist/automation-client
+# `@atomist/automation-client`
 
 This page details all runtime OSS dependencies of `@atomist/automation-client`.
 
