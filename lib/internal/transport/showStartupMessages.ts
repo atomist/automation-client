@@ -13,6 +13,16 @@ import { Automations } from "../metadata/metadata";
 import { info } from "../util/info";
 import { RegistrationConfirmation } from "./websocket/WebSocketRequestProcessor";
 
+export class StartupTimeMessageUatomationEventListener extends AutomationEventListenerSupport {
+
+    public async startupSuccessful(client: AutomationClient): Promise<void> {
+        if (cluster.isMaster || !client.configuration.cluster.enabled) {
+            const uptime = process.uptime();
+            logger.debug(`Atomist automation client startup completed in ${uptime}s`);
+        }
+    }
+}
+
 export class StartupMessageAutomationEventListener extends AutomationEventListenerSupport {
 
     public startupSuccessful(client: AutomationClient): Promise<void> {

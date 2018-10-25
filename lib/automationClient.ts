@@ -19,7 +19,10 @@ import {
     EventIncoming,
     RequestProcessor,
 } from "./internal/transport/RequestProcessor";
-import { StartupMessageAutomationEventListener } from "./internal/transport/showStartupMessages";
+import {
+    StartupMessageAutomationEventListener,
+    StartupTimeMessageUatomationEventListener,
+} from "./internal/transport/showStartupMessages";
 import { DefaultWebSocketRequestProcessor } from "./internal/transport/websocket/DefaultWebSocketRequestProcessor";
 import { prepareRegistration } from "./internal/transport/websocket/payloads";
 import { WebSocketClient } from "./internal/transport/websocket/WebSocketClient";
@@ -47,6 +50,7 @@ export class AutomationClient implements RequestProcessor {
         new MetricEnabledAutomationEventListener(),
         new EventStoringAutomationEventListener(),
         new StartupMessageAutomationEventListener(),
+        new StartupTimeMessageUatomationEventListener(),
     ];
 
     constructor(public configuration: Configuration) {
