@@ -1,7 +1,6 @@
 import WebSocket = require("ws");
 import { Configuration } from "../../../configuration";
 import { automationClientInstance } from "../../../globals";
-import { ApolloGraphClient } from "../../../graph/ApolloGraphClient";
 import { ApolloGraphClientFactory } from "../../../graph/ApolloGraphClientFactory";
 import {
     AutomationContextAware,
@@ -15,7 +14,6 @@ import {
     MessageClient,
     MessageOptions,
 } from "../../../spi/message/MessageClient";
-import * as namespace from "../../util/cls";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
     CommandIncoming,
@@ -27,7 +25,6 @@ import {
     WebSocketCommandMessageClient,
     WebSocketEventMessageClient,
 } from "../websocket/WebSocketMessageClient";
-import { ExpressServerOptions } from "./ExpressServer";
 
 /**
  * RequestProcessor implementation used by the Express infrastructure to process
