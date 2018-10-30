@@ -841,7 +841,7 @@ export function validateConfiguration(cfg: Configuration) {
  * 2.  The contents of the ATOMIST_CONFIG_PATH file as AutomationServerOptions
  * 3.  The contents of the user's client.config.json as UserConfig
  *     resolving user and per-module configuration into Configuration
- * 4.  The automation's atomist.config.js exported configuration as
+ * 4.  The automation's index.js (or atomist.config.js) exported configuration as
  *     Configuration
  * 5.  ProductionDefaultConfiguration if ATOMIST_ENV or NODE_ENV is set
  *     to "production" or TestingDefaultConfiguration if ATOMIST_ENV or
@@ -860,7 +860,7 @@ export function validateConfiguration(cfg: Configuration) {
  * values will get resolved against the environment. The resolution
  * happens at the very end when all configs have been merged.
  *
- * The configuration exported from the atomist.config.js is modified
+ * The configuration exported from the index.js (or atomist.config.js) is modified
  * to contain the final configuration values and returned from this
  * function.
  *
