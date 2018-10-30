@@ -76,7 +76,7 @@
     "find-up": "^3.0.0",
     "flat": "^4.1.0",
     "fs-extra": "^7.0.0",
-    "git-url-parse": "^10.0.1",
+    "git-url-parse": "^11.0.1",
     "glob": "^7.1.3",
     "glob-promise": "^3.3.0",
     "glob-stream": "^6.1.0",
