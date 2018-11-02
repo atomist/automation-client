@@ -261,7 +261,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
 
     private submitEventLoopDelay() {
         if (this.heavy && this.heavy.load) {
-            this.statsd.gauge(
+            this.statsd.timing(
                 "event_loop.delay",
                 this.heavy.load.eventLoopDelay,
                 1,
