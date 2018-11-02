@@ -1,5 +1,6 @@
 import Timer = NodeJS.Timer;
 import * as cluster from "cluster";
+import * as Heavy from "heavy";
 import {
     ClientOptions,
     StatsD,
@@ -13,7 +14,6 @@ import {
     HandlerContext,
 } from "../HandlerContext";
 import { HandlerResult } from "../HandlerResult";
-import * as internalGraphql from "../internal/graph/graphQL";
 import { CommandInvocation } from "../internal/invoker/Payload";
 import { RequestProcessor } from "../internal/transport/RequestProcessor";
 import { registerShutdownHook } from "../internal/util/shutdown";
@@ -34,6 +34,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
     private statsd: StatsD;
     private timer: Timer;
     private registrationName: string;
+    private heavy: Heavy;
 
     constructor(private configuration: Configuration) {
         super();
@@ -218,7 +219,13 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         this.statsd = new StatsD(options);
         this.timer = setInterval(() => {
             this.submitHeapStats();
-        }, 5000);
+            this.submitEventLoopDelay();
+        }, 2500);
+
+        this.heavy = new Heavy({
+            sampleInterval: 1000,
+        });
+        this.heavy.start();
 
         // Register orderly shutdown
         registerShutdownHook(() => {
@@ -228,6 +235,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
             });
             return Promise.resolve(0);
         });
+        (this.configuration.statsd as any).__instance = this.statsd;
     }
 
     private teamDetail(ctx: HandlerContext): string[] {
@@ -249,5 +257,16 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         this.statsd.gauge("heap.rss", heap.rss, 1, [], this.callback);
         this.statsd.gauge("heap.total", heap.heapTotal, 1, [], this.callback);
         this.statsd.gauge("heap.used", heap.heapUsed, 1, [], this.callback);
+    }
+
+    private submitEventLoopDelay() {
+        if (this.heavy && this.heavy.load) {
+            this.statsd.gauge(
+                "event_loop.delay",
+                this.heavy.eventLoopDelay,
+                1,
+                [],
+                this.callback);
+        }
     }
 }

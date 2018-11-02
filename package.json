@@ -83,6 +83,7 @@
     "graphql": "^0.13.2",
     "graphql-code-generator": "^0.8.13",
     "graphql-tag": "^2.8.0",
+    "heavy": "^6.1.1",
     "helmet": "^3.14.0",
     "hot-shots": "^5.9.1",
     "https-proxy-agent": "^2.1.1",
