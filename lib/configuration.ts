@@ -744,16 +744,19 @@ export function resolveEnvironmentVariables(cfg: Configuration) {
  * @param {Configuration} config
  */
 export function resolvePlaceholders(cfg: Configuration) {
-    resolvePlaceholdersRecursively(cfg);
+    resolvePlaceholdersRecursively(cfg, []);
 }
 
-function resolvePlaceholdersRecursively(obj: any) {
-    for (const property in obj) {
-        if (obj.hasOwnProperty(property)) {
-            if (typeof obj[property] === "object") {
-                resolvePlaceholdersRecursively(obj[property]);
-            } else if (typeof obj[property] === "string") {
-                obj[property] = resolvePlaceholder(obj[property]);
+function resolvePlaceholdersRecursively(obj: any, visited: any[]) {
+    if (!visited.includes(obj)) {
+        visited.push(obj);
+        for (const property in obj) {
+            if (obj.hasOwnProperty(property)) {
+                if (typeof obj[property] === "object") {
+                    resolvePlaceholdersRecursively(obj[property], visited);
+                } else if (typeof obj[property] === "string") {
+                    obj[property] = resolvePlaceholder(obj[property]);
+                }
             }
         }
     }
@@ -897,6 +900,7 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
             completeCfg.postProcessors = [];
 
             try {
+                resolvePlaceholders(completeCfg);
                 validateConfiguration(completeCfg);
             } catch (e) {
                 return Promise.reject(e);
