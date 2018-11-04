@@ -244,7 +244,7 @@ export function clientLoggingConfiguration(configuration: Configuration): Loggin
         if (_.get(configuration, "logging.file.enabled") === true) {
             let filename = p.join(".", "log", `${configuration.name.replace(/^.*\//, "")}.log`);
             if (configuration.logging.file.name) {
-                filename = this.configuration.logging.file.name;
+                filename = configuration.logging.file.name;
             }
 
             lc.file = {
