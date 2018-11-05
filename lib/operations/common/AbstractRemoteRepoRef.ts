@@ -16,8 +16,9 @@
  */
 
 import { ActionResult } from "../../action/ActionResult";
-import { isBasicAuthCredentials } from "../../operations/common/BasicAuthCredentials";
 import { Configurable } from "../../project/git/Configurable";
+import { isBasicAuthCredentials } from "./BasicAuthCredentials";
+import { isGitlabPrivateTokenCredentials } from "./GitlabPrivateTokenCredentials";
 import {
     isTokenCredentials,
     ProjectOperationCredentials,
@@ -86,6 +87,9 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
         if (isBasicAuthCredentials(creds)) {
             return `${this.scheme}${encodeURIComponent(creds.username)}:${encodeURIComponent(creds.password)}@` +
                 `${this.remoteBase}/${this.pathComponent}.git`;
+        }
+        if (isGitlabPrivateTokenCredentials(creds)) {
+            return `${this.scheme}${this.remoteBase}/${this.pathComponent}.git?private_token=${creds.token}`;
         }
         if (!isTokenCredentials(creds)) {
             throw new Error("Only token or basic auth supported");

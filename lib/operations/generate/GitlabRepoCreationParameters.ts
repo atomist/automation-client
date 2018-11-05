@@ -2,6 +2,7 @@ import {
     MappedParameter,
     MappedParameters,
 } from "../../decorators";
+import { GitlabPrivateTokenCredentials } from "../common/GitlabPrivateTokenCredentials";
 import { GitlabRepoRef } from "../common/GitlabRepoRef";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { RemoteRepoRef } from "../common/RepoId";
@@ -20,7 +21,7 @@ export class GitlabRepoCreationParameters extends NewRepoCreationParameters {
     }
 
     get credentials(): ProjectOperationCredentials {
-        return { token: this.token };
+        return { token: this.token } as GitlabPrivateTokenCredentials;
     }
 
     /**

@@ -7,9 +7,9 @@ import { DefaultHttpClientFactory } from "../../spi/http/axiosHttpClient";
 import { HttpMethod } from "../../spi/http/httpClient";
 import { logger } from "../../util/logger";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
+import { GitlabPrivateTokenCredentials } from "./GitlabPrivateTokenCredentials";
 import {
     ProjectOperationCredentials,
-    TokenCredentials,
 } from "./ProjectOperationCredentials";
 import { ProviderType } from "./RepoId";
 
@@ -43,7 +43,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
                 is_private: visibility === "private",
             },
             headers: {
-                "Private-Token": (creds as TokenCredentials).token,
+                "Private-Token": (creds as GitlabPrivateTokenCredentials).token,
             },
 
         }).then(axiosResponse => {
@@ -66,7 +66,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
         return httpClient.exchange(url, {
             method: HttpMethod.Delete,
             headers: {
-                "Private-Token": (creds as TokenCredentials).token,
+                "Private-Token": (creds as GitlabPrivateTokenCredentials).token,
             },
         }).then(axiosResponse => {
             return {
@@ -99,7 +99,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
                 target_branch: base,
             },
             headers: {
-                "Private-Token": (credentials as TokenCredentials).token,
+                "Private-Token": (credentials as GitlabPrivateTokenCredentials).token,
             },
         }).then(axiosResponse => {
             return {
