@@ -39,11 +39,11 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
         return httpClient.exchange(url, {
             method: HttpMethod.Post,
             body: {
-                scm: "git",
+                name: `${this.repo}`,
                 is_private: visibility === "private",
             },
             headers: {
-                private_token: (creds as TokenCredentials).token,
+                "Private-Token": (creds as TokenCredentials).token,
             },
 
         }).then(axiosResponse => {
@@ -66,7 +66,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
         return httpClient.exchange(url, {
             method: HttpMethod.Delete,
             headers: {
-                private_token: (creds as TokenCredentials).token,
+                "Private-Token": (creds as TokenCredentials).token,
             },
         }).then(axiosResponse => {
             return {
@@ -99,7 +99,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
                 target_branch: base,
             },
             headers: {
-                private_token: (credentials as TokenCredentials).token,
+                "Private-Token": (credentials as TokenCredentials).token,
             },
         }).then(axiosResponse => {
             return {
