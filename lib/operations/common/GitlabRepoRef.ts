@@ -40,7 +40,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
             method: HttpMethod.Post,
             body: {
                 name: `${this.repo}`,
-                visibility: visibility === "private",
+                visibility,
             },
             headers: {
                 "Private-Token": (creds as GitlabPrivateTokenCredentials).privateToken,
