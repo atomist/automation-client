@@ -71,7 +71,7 @@ export interface RemoteRepoRef extends RepoRef {
      */
     readonly remoteBase: string;
 
-    readonly providerType: ProviderType;
+    readonly providerType: ProviderType | string;
 
     /**
      * Return the clone URL for this to pass to git clone

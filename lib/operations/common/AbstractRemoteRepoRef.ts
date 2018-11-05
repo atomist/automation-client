@@ -58,7 +58,7 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
      * @param {string} sha
      * @param {string} path
      */
-    protected constructor(public readonly providerType: ProviderType,
+    protected constructor(public readonly providerType: ProviderType | string,
                           rawRemote: string,
                           rawApiBase: string,
                           public readonly owner: string,
