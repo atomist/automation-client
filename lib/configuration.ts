@@ -751,7 +751,7 @@ function resolvePlaceholdersRecursively(obj: any, visited: any[]) {
     if (!visited.includes(obj)) {
         visited.push(obj);
         for (const property in obj) {
-            if (obj.hasOwnProperty(property)) {
+            if (_.has(obj, property)) {
                 if (typeof obj[property] === "object") {
                     resolvePlaceholdersRecursively(obj[property], visited);
                 } else if (typeof obj[property] === "string") {
