@@ -55,6 +55,8 @@ export enum ProviderType {
     github_com,
     ghe,
     bitbucket,
+    gitlab_com,
+    gitlab_enterprise,
 }
 
 /**
