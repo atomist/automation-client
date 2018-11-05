@@ -43,7 +43,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
                 is_private: visibility === "private",
             },
             headers: {
-                "Private-Token": (creds as GitlabPrivateTokenCredentials).token,
+                "Private-Token": (creds as GitlabPrivateTokenCredentials).privateToken,
             },
 
         }).then(axiosResponse => {
@@ -66,7 +66,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
         return httpClient.exchange(url, {
             method: HttpMethod.Delete,
             headers: {
-                "Private-Token": (creds as GitlabPrivateTokenCredentials).token,
+                "Private-Token": (creds as GitlabPrivateTokenCredentials).privateToken,
             },
         }).then(axiosResponse => {
             return {
@@ -99,7 +99,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
                 target_branch: base,
             },
             headers: {
-                "Private-Token": (credentials as GitlabPrivateTokenCredentials).token,
+                "Private-Token": (credentials as GitlabPrivateTokenCredentials).privateToken,
             },
         }).then(axiosResponse => {
             return {

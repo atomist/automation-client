@@ -21,7 +21,7 @@ export class GitlabRepoCreationParameters extends NewRepoCreationParameters {
     }
 
     get credentials(): ProjectOperationCredentials {
-        return { token: this.token } as GitlabPrivateTokenCredentials;
+        return { privateToken: this.token } as GitlabPrivateTokenCredentials;
     }
 
     /**

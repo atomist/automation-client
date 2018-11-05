@@ -89,7 +89,8 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
                 `${this.remoteBase}/${this.pathComponent}.git`;
         }
         if (isGitlabPrivateTokenCredentials(creds)) {
-            return `${this.scheme}${this.remoteBase}/${this.pathComponent}.git?private_token=${creds.token}`;
+            return `${this.scheme}gitlab-ci-token:${creds.privateToken}@` +
+                `${this.remoteBase}/${this.pathComponent}.git`;
         }
         if (!isTokenCredentials(creds)) {
             throw new Error("Only token or basic auth supported");
