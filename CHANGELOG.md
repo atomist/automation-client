@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.0.0-RC.2...HEAD)
 
+### Added
+
+-   Fingerprint api docs added. [#396](https://github.com/atomist/automation-client/issues/396)
+
 ## [1.0.0-RC.2](https://github.com/atomist/automation-client-ts/compare/1.0.0-RC.1...1.0.0-RC.2) - 2018-10-30
 
 ### Changed
