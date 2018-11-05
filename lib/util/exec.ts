@@ -64,7 +64,7 @@ export class ExecError extends Error {
  * @return {Promise<ExecResult>} exec-like callback arguments having stdout and stderr properties
  */
 export async function safeExec(cmd: string, args: string[] = [], opts: SpawnOptions = {}): Promise<ExecResult> {
-    const cmdString = (opts.cwd ? opts.cwd : process.cwd) + " ==> " + cmd +
+    const cmdString = (opts.cwd ? opts.cwd : process.cwd()) + " ==> " + cmd +
         (args.length > 0 ? " '" + args.join("' '") + "'" : "");
     logger.debug(`Running: ${cmdString}`);
     opts.stdio = ["pipe", "pipe", "pipe"];

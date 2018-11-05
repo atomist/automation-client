@@ -395,14 +395,12 @@ async function resetOrigin(
 }
 
 async function checkout(repoDir: string, branch: string): Promise<ExecResult> {
-    logger.debug(`cwd:${process.cwd}`);
     return execIn(repoDir, "git", ["fetch", "origin", branch])
         .then(() => execIn(repoDir, "git", ["checkout", branch, "--"]))
         .then(() => execIn(repoDir, "git", ["reset", "--hard", `origin/${branch}`]));
 }
 
 async function clean(repoDir: string): Promise<ExecResult> {
-    logger.debug(`cwd:${process.cwd}`);
     return execIn(repoDir, "git", ["clean", "-dfx"]) // also removes ignored files
         .then(() => execIn(repoDir, "git", ["checkout", "--", "."]));
 }
