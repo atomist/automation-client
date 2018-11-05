@@ -246,3 +246,5 @@ export * from "./lib/util/spawn";
 export {
     Maker,
 } from "./lib/util/constructionUtils";
+export * from "./lib/operations/common/gitlabRepoLoader";
+export * from "./lib/operations/common/GitlabRepoRef";
