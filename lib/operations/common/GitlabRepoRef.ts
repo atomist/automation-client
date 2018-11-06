@@ -8,23 +8,41 @@ import { HttpMethod } from "../../spi/http/httpClient";
 import { logger } from "../../util/logger";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { GitlabPrivateTokenCredentials } from "./GitlabPrivateTokenCredentials";
+import { GitShaRegExp } from "./params/validationPatterns";
 import {
     ProjectOperationCredentials,
 } from "./ProjectOperationCredentials";
 import { ProviderType } from "./RepoId";
 
-export const GitlabDotComBase = "https://gitlab.com/api/v4";
-export const GitlabRemoteUrl = "https://gitlab.com/";
+export const GitlabDotComApiBase = "https://gitlab.com/api/v4";
+export const GitlabDotComRemoteUrl = "https://gitlab.com/";
 
 export class GitlabRepoRef extends AbstractRemoteRepoRef {
+
+    public static from(params: {
+        owner: string,
+        repo: string,
+        sha?: string,
+        rawApiBase?: string,
+        path?: string,
+        gitlabRemoteUrl?: string,
+        branch?: string,
+    }): GitlabRepoRef {
+        if (params.sha && !params.sha.match(GitShaRegExp.pattern)) {
+            throw new Error("You provided an invalid SHA: " + params.sha);
+        }
+        const result = new GitlabRepoRef(params.owner, params.repo, params.sha, params.rawApiBase, params.gitlabRemoteUrl, params.path);
+        result.branch = params.branch;
+        return result;
+    }
 
     constructor(owner: string,
                 repo: string,
                 sha: string = "master",
-                public apiBase = GitlabDotComBase,
-                gitlabRemoteUrl: string = GitlabRemoteUrl,
+                public apiBase = GitlabDotComApiBase,
+                gitlabRemoteUrl: string = GitlabDotComRemoteUrl,
                 path?: string) {
-        super(apiBase === GitlabDotComBase ? ProviderType.gitlab_com : ProviderType.gitlab_enterprise,
+        super(apiBase === GitlabDotComApiBase ? ProviderType.gitlab_com : ProviderType.gitlab_enterprise,
             gitlabRemoteUrl,
             apiBase,
             owner,

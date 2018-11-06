@@ -3,7 +3,11 @@ import {
     MappedParameters,
 } from "../../decorators";
 import { GitlabPrivateTokenCredentials } from "../common/GitlabPrivateTokenCredentials";
-import { GitlabRepoRef } from "../common/GitlabRepoRef";
+import {
+    GitlabDotComApiBase,
+    GitlabDotComRemoteUrl,
+    GitlabRepoRef,
+} from "../common/GitlabRepoRef";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
 import { RemoteRepoRef } from "../common/RepoId";
 import { NewRepoCreationParameters } from "./NewRepoCreationParameters";
@@ -16,9 +20,11 @@ export class GitlabRepoCreationParameters extends NewRepoCreationParameters {
     @MappedParameter(MappedParameters.GitHubWebHookUrl)
     public webhookUrl: string;
 
-    constructor(public token: string) {
-        super();
-    }
+    public token: string;
+
+    public apiUrl: string = GitlabDotComApiBase;
+
+    public baseRemoteUrl: string = GitlabDotComRemoteUrl;
 
     get credentials(): ProjectOperationCredentials {
         return { privateToken: this.token } as GitlabPrivateTokenCredentials;
@@ -26,14 +32,13 @@ export class GitlabRepoCreationParameters extends NewRepoCreationParameters {
 
     /**
      * Return a single RepoRef or undefined if we're not identifying a single repo
-     * This implementation returns a GitHub.com repo but it can be overriden
+     * This implementation returns a Gitlab.com repo but it can be overriden
      * to return any kind of repo
      * @return {RepoRef}
      */
     get repoRef(): RemoteRepoRef {
         return (!!this.owner && !!this.repo) ?
-            new GitlabRepoRef(this.owner, this.repo, "master") :
+            new GitlabRepoRef(this.owner, this.repo, "master", this.apiUrl, this.baseRemoteUrl) :
             undefined;
     }
-
 }
