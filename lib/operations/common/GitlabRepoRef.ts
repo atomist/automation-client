@@ -108,7 +108,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
     public raisePullRequest(credentials: ProjectOperationCredentials,
                             title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
         const httpClient = DefaultHttpClientFactory.create();
-        const url = `${this.scheme}${this.apiBase}/projects/${this.owner}%2f${this.repo}/merge_requests`;
+        const url = `${this.apiBase}/projects/${this.owner}%2f${this.repo}/merge_requests`;
         logger.debug(`Making request to '${url}' to raise PR`);
         return httpClient.exchange(url, {
             body: {
