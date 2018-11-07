@@ -9,10 +9,10 @@ import { logger } from "../../util/logger";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { GitlabPrivateTokenCredentials } from "./GitlabPrivateTokenCredentials";
 import { GitShaRegExp } from "./params/validationPatterns";
-import {
-    ProjectOperationCredentials,
-} from "./ProjectOperationCredentials";
+import { ProjectOperationCredentials, } from "./ProjectOperationCredentials";
 import { ProviderType } from "./RepoId";
+import * as path from "path";
+import * as url from "url";
 
 export const GitlabDotComApiBase = "https://gitlab.com/api/v4";
 export const GitlabDotComRemoteUrl = "https://gitlab.com/";
@@ -55,9 +55,9 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
     }
 
     public async createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
-        const url = `${this.apiBase}/projects`;
+        const gitlabUrl = url.resolve(this.apiBase, `/projects`);
         const httpClient = DefaultHttpClientFactory.create();
-        return httpClient.exchange(url, {
+        return httpClient.exchange(gitlabUrl, {
             method: HttpMethod.Post,
             body: {
                 name: `${this.repo}`,
@@ -83,9 +83,10 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
 
     public deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>> {
         const httpClient = DefaultHttpClientFactory.create();
-        const url = `${this.apiBase}/project/${this.owner}%2f${this.repo}`;
+        path.join()
+        const gitlabUrl = url.resolve(this.apiBase, `/project/${this.owner}%2f${this.repo}`);
         logger.debug(`Making request to '${url}' to delete repo`);
-        return httpClient.exchange(url, {
+        return httpClient.exchange(gitlabUrl, {
             method: HttpMethod.Delete,
             headers: {
                 "Private-Token": (creds as GitlabPrivateTokenCredentials).privateToken,
@@ -111,9 +112,10 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
     public raisePullRequest(credentials: ProjectOperationCredentials,
                             title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
         const httpClient = DefaultHttpClientFactory.create();
-        const url = `${this.apiBase}/projects/${this.owner}%2f${this.repo}/merge_requests`;
+        const gitlabUrl = url.resolve(this.apiBase, `/projects/${this.owner}%2f${this.repo}/merge_requests`);
         logger.debug(`Making request to '${url}' to raise PR`);
-        return httpClient.exchange(url, {
+        return httpClient.exchange(gitlabUrl, {
+            method: HttpMethod.Post,
             body: {
                 id: `${this.owner}%2f${this.repo}`,
                 title,
