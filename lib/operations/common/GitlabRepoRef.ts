@@ -17,6 +17,9 @@ import { ProviderType } from "./RepoId";
 export const GitlabDotComApiBase = "https://gitlab.com/api/v4";
 export const GitlabDotComRemoteUrl = "https://gitlab.com/";
 
+/**
+ * Repository reference implementation for Gitlab
+ */
 export class GitlabRepoRef extends AbstractRemoteRepoRef {
 
     public static from(params: {
@@ -36,12 +39,12 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
         return result;
     }
 
-    constructor(owner: string,
-                repo: string,
-                sha: string = "master",
-                public apiBase = GitlabDotComApiBase,
-                gitlabRemoteUrl: string = GitlabDotComRemoteUrl,
-                path?: string) {
+    private constructor(owner: string,
+                        repo: string,
+                        sha: string,
+                        public apiBase = GitlabDotComApiBase,
+                        gitlabRemoteUrl: string = GitlabDotComRemoteUrl,
+                        path?: string) {
         super(apiBase === GitlabDotComApiBase ? ProviderType.gitlab_com : ProviderType.gitlab_enterprise,
             gitlabRemoteUrl,
             apiBase,

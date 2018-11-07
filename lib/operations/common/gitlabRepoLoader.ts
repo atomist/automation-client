@@ -13,7 +13,7 @@ import { isRemoteRepoRef } from "./RepoId";
 import { RepoLoader } from "./repoLoader";
 
 /**
- * Materialize from github
+ * Materialize from gitlab
  * @param credentials provider token
  * @param directoryManager strategy for handling local storage
  * @return function to materialize repos

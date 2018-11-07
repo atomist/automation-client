@@ -4,8 +4,6 @@ import {
 } from "../../decorators";
 import { GitlabPrivateTokenCredentials } from "../common/GitlabPrivateTokenCredentials";
 import {
-    GitlabDotComApiBase,
-    GitlabDotComRemoteUrl,
     GitlabRepoRef,
 } from "../common/GitlabRepoRef";
 import { ProjectOperationCredentials } from "../common/ProjectOperationCredentials";
@@ -13,7 +11,7 @@ import { RemoteRepoRef } from "../common/RepoId";
 import { NewRepoCreationParameters } from "./NewRepoCreationParameters";
 
 /**
- * Parameters common to all generators that create new repositories
+ * Parameters common to all generators that create new repositories on Gitlab
  */
 export class GitlabRepoCreationParameters extends NewRepoCreationParameters {
 
@@ -22,9 +20,11 @@ export class GitlabRepoCreationParameters extends NewRepoCreationParameters {
 
     public token: string;
 
-    public apiUrl: string = GitlabDotComApiBase;
+    @MappedParameter(MappedParameters.GitHubApiUrl)
+    public apiUrl: string;
 
-    public baseRemoteUrl: string = GitlabDotComRemoteUrl;
+    @MappedParameter(MappedParameters.GitHubUrl)
+    public baseRemoteUrl: string;
 
     get credentials(): ProjectOperationCredentials {
         return { privateToken: this.token } as GitlabPrivateTokenCredentials;
@@ -38,7 +38,12 @@ export class GitlabRepoCreationParameters extends NewRepoCreationParameters {
      */
     get repoRef(): RemoteRepoRef {
         return (!!this.owner && !!this.repo) ?
-            new GitlabRepoRef(this.owner, this.repo, "master", this.apiUrl, this.baseRemoteUrl) :
-            undefined;
+            GitlabRepoRef.from({
+                owner: this.owner,
+                repo: this.repo,
+                branch: "master",
+                rawApiBase: this.apiUrl,
+                gitlabRemoteUrl: this. baseRemoteUrl,
+            }) : undefined;
     }
 }

@@ -1,5 +1,8 @@
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 
+/**
+ * Credentials that uses Gitlab private tokens
+ */
 export interface GitlabPrivateTokenCredentials extends ProjectOperationCredentials {
     privateToken: string;
 }
