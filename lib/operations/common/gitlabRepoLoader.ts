@@ -22,7 +22,12 @@ export function gitlabRepoLoader(credentials: ProjectOperationCredentials,
                                  directoryManager: DirectoryManager = DefaultDirectoryManager): RepoLoader<GitProject> {
     return repoId => {
         // Default it if it isn't already a GitHub repo ref
-        const gid = isRemoteRepoRef(repoId) ? repoId : new GitlabRepoRef(repoId.owner, repoId.repo, repoId.sha);
+        const gid = isRemoteRepoRef(repoId) ? repoId : GitlabRepoRef.from({
+            owner: repoId.owner,
+            repo: repoId.repo,
+            sha: repoId.sha,
+            branch: repoId.branch,
+        });
         return GitCommandGitProject.cloned(credentials, gid, DefaultCloneOptions, directoryManager);
     };
 }
