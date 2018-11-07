@@ -1,3 +1,4 @@
+import * as url from "url";
 import {
     ActionResult,
     successOn,
@@ -9,10 +10,8 @@ import { logger } from "../../util/logger";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { GitlabPrivateTokenCredentials } from "./GitlabPrivateTokenCredentials";
 import { GitShaRegExp } from "./params/validationPatterns";
-import { ProjectOperationCredentials, } from "./ProjectOperationCredentials";
+import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import { ProviderType } from "./RepoId";
-import * as path from "path";
-import * as url from "url";
 
 export const GitlabDotComApiBase = "https://gitlab.com/api/v4";
 export const GitlabDotComRemoteUrl = "https://gitlab.com/";
@@ -83,7 +82,6 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
 
     public deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>> {
         const httpClient = DefaultHttpClientFactory.create();
-        path.join()
         const gitlabUrl = url.resolve(this.apiBase, `/project/${this.owner}%2f${this.repo}`);
         logger.debug(`Making request to '${url}' to delete repo`);
         return httpClient.exchange(gitlabUrl, {
