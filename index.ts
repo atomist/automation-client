@@ -136,6 +136,9 @@ export {
     ProjectPersister,
 } from "./lib/operations/generate/generatorUtils";
 export {
+    GitlabRepoCreationParameters,
+} from "./lib/operations/generate/GitlabRepoCreationParameters";
+export {
     RepoCreationParameters,
 } from "./lib/operations/generate/RepoCreationParameters";
 export {
