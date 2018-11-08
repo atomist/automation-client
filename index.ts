@@ -250,5 +250,6 @@ export {
     Maker,
 } from "./lib/util/constructionUtils";
 export * from "./lib/operations/common/gitlabRepoLoader";
+export * from "./lib/operations/common/GitlabPrivateTokenCredentials";
 export * from "./lib/operations/common/GitlabRepoRef";
 export * from "./lib/operations/generate/GitlabRepoCreationParameters";
