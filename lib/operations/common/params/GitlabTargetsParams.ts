@@ -5,11 +5,11 @@ import {
     Parameters,
 } from "../../../decorators";
 import { ValidationResult } from "../../../SmartParameters";
+import { GitlabPrivateTokenCredentials } from "../GitlabPrivateTokenCredentials";
 import { GitlabRepoRef } from "../GitlabRepoRef";
 import { ProjectOperationCredentials } from "../ProjectOperationCredentials";
 import { TargetsParams } from "./TargetsParams";
 import { GitBranchRegExp } from "./validationPatterns";
-import { GitlabPrivateTokenCredentials } from "../GitlabPrivateTokenCredentials";
 
 @Parameters()
 export class GitlabTargetsParams extends TargetsParams {
