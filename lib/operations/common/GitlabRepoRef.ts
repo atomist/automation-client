@@ -54,7 +54,8 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
     }
 
     public async createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
-        const gitlabUrl = url.resolve(this.apiBase, `/projects`);
+
+        const gitlabUrl = this.concatUrl(this.apiBase, `projects`);
         const httpClient = DefaultHttpClientFactory.create();
         return httpClient.exchange(gitlabUrl, {
             method: HttpMethod.Post,
@@ -82,7 +83,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
 
     public deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>> {
         const httpClient = DefaultHttpClientFactory.create();
-        const gitlabUrl = url.resolve(this.apiBase, `/project/${this.owner}%2f${this.repo}`);
+        const gitlabUrl = this.concatUrl(this.apiBase, `project/${this.owner}%2f${this.repo}`);
         logger.debug(`Making request to '${url}' to delete repo`);
         return httpClient.exchange(gitlabUrl, {
             method: HttpMethod.Delete,
@@ -110,7 +111,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
     public raisePullRequest(credentials: ProjectOperationCredentials,
                             title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
         const httpClient = DefaultHttpClientFactory.create();
-        const gitlabUrl = url.resolve(this.apiBase, `/projects/${this.owner}%2f${this.repo}/merge_requests`);
+        const gitlabUrl = this.concatUrl(this.apiBase, `projects/${this.owner}%2f${this.repo}/merge_requests`);
         logger.debug(`Making request to '${url}' to raise PR`);
         return httpClient.exchange(gitlabUrl, {
             method: HttpMethod.Post,
@@ -136,5 +137,21 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
                 logger.error(`Error attempting to raise PR. ${url} ${err}`);
                 return Promise.reject(err);
             });
+    }
+
+    private concatUrl(base: string, segment: string): string {
+        if (base.endsWith("/")) {
+            if (segment.startsWith("/")) {
+                return base + segment.substr(1);
+            } else {
+                return base + segment;
+            }
+        } else {
+            if (segment.startsWith("/")) {
+                return base + segment;
+            } else {
+                return base + "/" + segment;
+            }
+        }
     }
 }
