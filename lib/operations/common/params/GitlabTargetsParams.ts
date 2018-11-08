@@ -9,6 +9,7 @@ import { GitlabRepoRef } from "../GitlabRepoRef";
 import { ProjectOperationCredentials } from "../ProjectOperationCredentials";
 import { TargetsParams } from "./TargetsParams";
 import { GitBranchRegExp } from "./validationPatterns";
+import { GitlabPrivateTokenCredentials } from "../GitlabPrivateTokenCredentials";
 
 @Parameters()
 export class GitlabTargetsParams extends TargetsParams {
@@ -36,7 +37,8 @@ export class GitlabTargetsParams extends TargetsParams {
     public repos: string = ".*";
 
     get credentials(): ProjectOperationCredentials {
-        return this.token;
+        const creds: GitlabPrivateTokenCredentials = {privateToken: this.token};
+        return creds;
     }
 
     get description(): string {
