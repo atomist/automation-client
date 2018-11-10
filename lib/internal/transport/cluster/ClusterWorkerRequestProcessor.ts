@@ -57,7 +57,8 @@ export class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
     ) {
 
         super(_automations, _configuration, [..._listeners, new ClusterWorkerAutomationEventListener()]);
-        workerSend({ type: "online", context: null });
+        workerSend({ type: "online", context: null })
+            .then(() => { /** intentionally left empty */});
         registerShutdownHook(() => {
 
             if (this._configuration.ws &&
@@ -95,6 +96,11 @@ export class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
         if (!this.registration) {
             this.setRegistration(data.registration as RegistrationConfirmation);
         }
+    }
+
+    public sendShutdown(code: number, ctx: HandlerContext & AutomationContextAware) {
+        workerSend({ type: "shutdown", data: code, context: ctx.context })
+            .then(() => { /** intentionally left empty */ });
     }
 
     protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {

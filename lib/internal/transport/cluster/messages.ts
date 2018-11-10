@@ -16,7 +16,7 @@ export interface MasterManagementMessage {
 }
 
 export interface WorkerMessage {
-    type: "online" | "status" | "message" | "command_success" | "command_failure" | "event_success" | "event_failure";
+    type: "online" | "status" | "message" | "command_success" | "command_failure" | "event_success" | "event_failure" | "shutdown";
     event?: EventFired<any> | CommandInvocation;
     context: AutomationContext;
     data?: any;
