@@ -200,7 +200,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                             .catch(clearNamespace);
                     } else if (msg.type === "shutdown") {
                         logger.info(`Shutdown requested from worker`);
-                        process.exit(msg.data)
+                        process.exit(msg.data);
                     }
                 });
             });
