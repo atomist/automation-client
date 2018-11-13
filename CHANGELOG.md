@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.0.1...HEAD)
 
+### Added
+
+-   Add review comment sorter. [#402](https://github.com/atomist/automation-client/issues/402)
+
 ### Changed
 
 -   Update to latest graphql-code-generator. [#401](https://github.com/atomist/automation-client/issues/401)
