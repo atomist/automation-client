@@ -53,7 +53,7 @@ async function main(): Promise<void> {
             "--schema", schema,
             "--template", "graphql-codegen-typescript-template",
             "--out", gqlGenOutput,
-            "--silent"
+            "--silent",
         ];
 
         const opts: child_process.SpawnOptions = {
