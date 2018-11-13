@@ -116,12 +116,14 @@
     "strip-ansi": "^5.0.0",
     "tmp-promise": "^1.0.4",
     "tree-kill": "^1.2.1",
-    "typescript": "^3.1.6",
     "utf8": "^3.0.0",
     "uuid": "^3.2.0",
     "winston": "^3.1.0",
     "winston-transport": "^4.2.0",
     "ws": "^6.1.0"
+  },
+  "peerDependencies": {
+    "typescript": "^3.1.6"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.5",
@@ -135,7 +137,8 @@
     "supervisor": "^0.12.0",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
-    "typedoc": "^0.13.0"
+    "typedoc": "^0.13.0",
+    "typescript": "^3.1.6"
   },
   "directories": {
     "test": "test"
