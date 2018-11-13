@@ -50,10 +50,10 @@ async function main(): Promise<void> {
             ((process.platform === "win32") ? ".cmd" : "");
         const gqlGenOutput = path.join(lib, "typings", "types.ts");
         const gqlGenArgs = [
-            "--file", schema,
-            "--template", "typescript",
-            "--no-schema",
+            "--schema", schema,
+            "--template", "graphql-codegen-typescript-template",
             "--out", gqlGenOutput,
+            "--silent"
         ];
 
         const opts: child_process.SpawnOptions = {
