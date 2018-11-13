@@ -148,6 +148,7 @@ export {
     DefaultReviewComment,
     ProjectReview,
     ReviewComment,
+    reviewCommentSorter,
     ReviewResult,
     Severity,
 } from "./lib/operations/review/ReviewResult";

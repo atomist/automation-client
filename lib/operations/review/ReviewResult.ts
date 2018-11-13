@@ -94,3 +94,46 @@ export function clean(repoId: RepoRef): ProjectReview {
         comments: [],
     };
 }
+
+/**
+ * Function suitable for use by Array.prototype.sort() to sort review
+ * comments by severity, category, subcategory, and sourceLocation
+ * path and offset.  Items with the same severity, category, and
+ * subcategory without a location are sorted before those having a
+ * location.
+ *
+ * @param a First element to compare.
+ * @param b Second element to compare.
+ * @return -1 if a sorts first, 1 if b sorts first, and 0 if they are equivalent.
+ */
+export function reviewCommentSorter(a: ReviewComment, b: ReviewComment): number {
+    if (a.severity !== b.severity) {
+        const severities = ["error", "warn", "info"];
+        for (const severity of severities) {
+            if (a.severity === severity) {
+                return -1;
+            } else if (b.severity === severity) {
+                return 1;
+            }
+        }
+    }
+    if (a.category !== b.category) {
+        return a.category.localeCompare(b.category);
+    }
+    if (a.subcategory !== b.subcategory) {
+        return a.subcategory.localeCompare(b.subcategory);
+    }
+
+    if (!a.sourceLocation && b.sourceLocation) {
+        return -1;
+    } else if (a.sourceLocation && !b.sourceLocation) {
+        return 1;
+    } else if (a.sourceLocation && b.sourceLocation) {
+        if (a.sourceLocation.path !== b.sourceLocation.path) {
+            return a.sourceLocation.path.localeCompare(b.sourceLocation.path);
+        } else {
+            return a.sourceLocation.offset - b.sourceLocation.offset;
+        }
+    }
+    return 0;
+}
