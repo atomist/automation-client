@@ -51,9 +51,10 @@ async function main(): Promise<void> {
         const gqlGenOutput = path.join(lib, "typings", "types.ts");
         const gqlGenArgs = [
             "--schema", schema,
+            "--skip-schema",
+            "--silent",
             "--template", "graphql-codegen-typescript-template",
             "--out", gqlGenOutput,
-            "--silent",
         ];
 
         const opts: child_process.SpawnOptions = {
