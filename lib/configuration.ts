@@ -885,8 +885,6 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
         cfg = mergeConfigs({}, defCfg, autoCfg, userCfg, atmPathCfg, atmCfg);
         resolveWorkspaceIds(cfg);
         resolvePort(cfg);
-        resolveEnvironmentVariables(cfg);
-        resolvePlaceholders(cfg);
     } catch (e) {
         logger.error(`Failed to load configuration: ${e.message}`);
         if (e.stack) {
@@ -900,6 +898,7 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
             completeCfg.postProcessors = [];
 
             try {
+                resolveEnvironmentVariables(completeCfg);
                 resolvePlaceholders(completeCfg);
                 validateConfiguration(completeCfg);
             } catch (e) {
