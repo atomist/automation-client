@@ -741,21 +741,20 @@ export function resolveEnvironmentVariables(cfg: Configuration) {
  * Resolve placeholders against the process.env.
  * Placeholders should be of form ${ENV_VAR}. Placeholders support default values
  * in case they aren't defined: ${ENV_VAR:default value}
- * @param {Configuration} config
  */
-export function resolvePlaceholders(cfg: Configuration) {
-    resolvePlaceholdersRecursively(cfg, []);
+export async function resolvePlaceholders(cfg: Configuration, replacer: (value: string) => Promise<string> = resolvePlaceholder) {
+    await resolvePlaceholdersRecursively(cfg, [], replacer);
 }
 
-function resolvePlaceholdersRecursively(obj: any, visited: any[]) {
+async function resolvePlaceholdersRecursively(obj: any, visited: any[], replacer: (value: string) => Promise<string>): Promise<void> {
     if (!visited.includes(obj)) {
         visited.push(obj);
         for (const property in obj) {
             if (_.has(obj, property)) {
                 if (typeof obj[property] === "object") {
-                    resolvePlaceholdersRecursively(obj[property], visited);
+                    await resolvePlaceholdersRecursively(obj[property], visited, replacer);
                 } else if (typeof obj[property] === "string") {
-                    obj[property] = resolvePlaceholder(obj[property]);
+                    obj[property] = await replacer(obj[property]);
                 }
             }
         }
@@ -764,7 +763,7 @@ function resolvePlaceholdersRecursively(obj: any, visited: any[]) {
 
 const PlaceholderExpression = /\$\{([.a-zA-Z_-]+)([.:0-9a-zA-Z-_ \" ]+)*\}/g;
 
-function resolvePlaceholder(value: string): string {
+async function resolvePlaceholder(value: string): Promise<string> {
     if (PlaceholderExpression.test(value)) {
         PlaceholderExpression.lastIndex = 0;
         let result;
@@ -897,14 +896,16 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
         .then(completeCfg => {
             completeCfg.postProcessors = [];
 
-            try {
-                resolveEnvironmentVariables(completeCfg);
-                resolvePlaceholders(completeCfg);
-                validateConfiguration(completeCfg);
-            } catch (e) {
-                return Promise.reject(e);
-            }
-            return Promise.resolve(completeCfg);
+            resolveEnvironmentVariables(completeCfg);
+            return completeCfg;
+        })
+        .then(completeCfg => {
+            return resolvePlaceholders(completeCfg)
+                .then(() => completeCfg);
+        })
+        .then(completeCfg => {
+            validateConfiguration(completeCfg);
+            return completeCfg;
         });
 }
 
