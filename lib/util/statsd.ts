@@ -289,7 +289,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
 
                 if (stats.diff.usedHeapSize < 0) {
                     this.statsd.gauge(
-                        "gc.head.reclaimed",
+                        "gc.heap.reclaimed",
                         stats.diff.usedHeapSize * -1,
                         1,
                         tags,
