@@ -8,7 +8,7 @@ let DataDirectory = `${appRoot.path}/heap`;
 
 /**
  * Initialise memory monitoring. This is will set the data directory for heap dumps and
- * print the head usage to the connsole every 60 seconds.
+ * print the head usage to the console every 60 seconds.
  * @param {string} dataDirectory
  */
 export function initMemoryMonitoring(dataDirectory: string = `${appRoot.path}/heap`, log: boolean = true) {

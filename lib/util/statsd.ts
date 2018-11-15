@@ -29,6 +29,16 @@ import {
 } from "../spi/message/MessageClient";
 import { logger } from "./logger";
 
+const GcTypes = {
+    0: "unknown",
+    1: "scavenge",
+    2: "mark_sweep_compact",
+    3: "scavenge_and_mark_sweep_compact",
+    4: "incremental_marking",
+    8: "weak_phantom",
+    15: "all",
+};
+
 export class StatsdAutomationEventListener extends AutomationEventListenerSupport {
 
     private statsd: StatsD;
@@ -40,6 +50,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         super();
         this.registrationName = `${this.configuration.name}/${this.configuration.version}`;
         this.initStatsd();
+        this.initGc();
     }
 
     public registrationSuccessful(handler: RequestProcessor) {
@@ -118,7 +129,6 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         const tags = [
             `atomist_operation:${payload.name}`,
             `atomist_operation_type:command`,
-            ...this.teamDetail(ctx),
         ];
         this.increment("counter.operation.failure", tags);
         this.timing("timer.operation", ctx, tags);
@@ -139,7 +149,6 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         const tags = [
             `atomist_operation:${payload.extensions.operationName}`,
             `atomist_operation_type:event`,
-            ...this.teamDetail(ctx),
         ];
         this.increment("counter.operation.failure", tags);
         this.timing("timer.operation", ctx, tags);
@@ -167,7 +176,6 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         });
         this.increment("counter.message", [
             `atomist_message_type:${type}`,
-            ...this.teamDetail(ctx),
         ]);
         return Promise.resolve();
     }
@@ -238,20 +246,6 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         (this.configuration.statsd as any).__instance = this.statsd;
     }
 
-    private teamDetail(ctx: HandlerContext): string[] {
-        if (ctx && (ctx as any as AutomationContextAware).context) {
-            const context = (ctx as any as AutomationContextAware).context;
-            const safeTeamName = context.workspaceName ?
-                context.workspaceName.trim().replace(/ /g, "_").replace(/\W/g, "") : undefined;
-            return [
-                `atomist_team_id:${context.workspaceId}`,
-                `atomist_team_name:${safeTeamName}`,
-            ];
-        } else {
-            return [];
-        }
-    }
-
     private submitHeapStats() {
         const heap = process.memoryUsage();
         this.statsd.gauge("heap.rss", heap.rss, 1, [], this.callback);
@@ -267,6 +261,43 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                 1,
                 [],
                 this.callback);
+        }
+    }
+
+    private initGc() {
+        try {
+            const gc = require("gc-stats");
+            gc().on('stats', stats => {
+                const gcType = GcTypes[stats.gctype];
+
+                const tags = [
+                    `atomist_gc_type:${gcType}`,
+                ];
+
+                this.statsd.increment(
+                    "gc",
+                    1,
+                    1,
+                    tags,
+                    this.callback);
+                this.statsd.timing(
+                    "gc.duration",
+                    stats.pause / 1e9 * 1000,
+                    1,
+                    tags,
+                    this.callback);
+
+                if (stats.diff.usedHeapSize < 0) {
+                    this.statsd.gauge(
+                        "gc.head.reclaimed",
+                        stats.diff.usedHeapSize * -1,
+                        1,
+                        tags,
+                        this.callback);
+                }
+            });
+        } catch (err) {
+            // Ignore missing gc-stats package
         }
     }
 }
