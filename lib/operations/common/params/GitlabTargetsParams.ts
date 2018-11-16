@@ -36,17 +36,16 @@ export class GitlabTargetsParams extends TargetsParams {
     @Parameter({ description: "regex", required: false })
     public repos: string = ".*";
 
+    @Parameter({ description: "Repository visibility. 'public' or 'private", required: false })
+    public visibility: "public" | "private";
+
     get credentials(): ProjectOperationCredentials {
-        const creds: GitlabPrivateTokenCredentials = {privateToken: this.token};
+        const creds: GitlabPrivateTokenCredentials = { privateToken: this.token };
         return creds;
     }
 
     get description(): string {
         return "Gitlab";
-    }
-
-    get visibility(): "public" | "private" {
-        return "public";
     }
 
     constructor(public token: string) {

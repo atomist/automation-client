@@ -66,12 +66,13 @@ export enum ProviderType {
  */
 export interface RemoteRepoRef extends RepoRef {
 
+    readonly kind: string;
     /**
      * Remote base
      */
     readonly remoteBase: string;
 
-    readonly providerType: ProviderType | string;
+    readonly providerType: ProviderType;
 
     /**
      * Return the clone URL for this to pass to git clone

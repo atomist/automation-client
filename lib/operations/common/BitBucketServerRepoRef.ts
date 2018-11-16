@@ -39,6 +39,8 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
 
     public readonly ownerType: "projects" | "users";
 
+    public readonly kind = "bitbucketserver";
+
     private httpStrategy = process.env.ATOMIST_CURL_FOR_BITBUCKET ? CurlHttpStrategy : AxiosHttpStrategy;
 
     /**

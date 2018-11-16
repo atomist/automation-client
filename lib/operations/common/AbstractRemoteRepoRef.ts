@@ -42,6 +42,8 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
 
     public readonly apiBase: string;
 
+    public readonly abstract kind: string;
+
     /**
      * Remote url not including scheme or trailing /
      */
@@ -59,7 +61,7 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
      * @param {string} sha
      * @param {string} path
      */
-    protected constructor(public readonly providerType: ProviderType | string,
+    protected constructor(public readonly providerType: ProviderType,
                           rawRemote: string,
                           rawApiBase: string,
                           public readonly owner: string,

@@ -21,7 +21,7 @@ import { RepoLoader } from "./repoLoader";
 export function gitlabRepoLoader(credentials: ProjectOperationCredentials,
                                  directoryManager: DirectoryManager = DefaultDirectoryManager): RepoLoader<GitProject> {
     return repoId => {
-        // Default it if it isn't already a GitHub repo ref
+        // Default it if it isn't already a Gitlab repo ref
         const gid = isRemoteRepoRef(repoId) ? repoId : GitlabRepoRef.from({
             owner: repoId.owner,
             repo: repoId.repo,
