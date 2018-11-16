@@ -29,7 +29,7 @@ export function doWithRetry<R>(what: () => Promise<R>,
         ...DefaultRetryOptions,
         ...opts,
     };
-    logger.debug(`${description} with retry options '%j'`, retryOptions);
+    logger.log("silly",`${description} with retry options '%j'`, retryOptions);
     return promiseRetry(retryOptions, retry => {
         return what()
             .catch(err => {
