@@ -2,7 +2,7 @@ import * as fs from "fs-extra";
 import "mocha";
 import * as assert from "power-assert";
 import { TmpDirectoryManager } from "../../../lib/spi/clone/tmpDirectoryManager";
-import { safeExec } from "../../../lib/util/exec";
+import { execPromise } from "../../../lib/util/child_process";
 
 describe("the TmpDirectoryManager", () => {
 
@@ -14,7 +14,7 @@ describe("the TmpDirectoryManager", () => {
                 const suppliedDirectory = cdi.path;
                 return fs.stat(suppliedDirectory) // if this succeeds, it exists
                     .then(() =>
-                        safeExec("git", ["init"], { cwd: suppliedDirectory })) // make it a little difficult
+                        execPromise("git", ["init"], { cwd: suppliedDirectory })) // make it a little difficult
                     .then(() => cdi.release())
                     .then(() => fs.stat(suppliedDirectory))
                     .then(() => {

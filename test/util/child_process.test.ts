@@ -15,28 +15,46 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as assert from "power-assert";
-
 import * as appRoot from "app-root-path";
-
+import * as os from "os";
+import * as assert from "power-assert";
 import {
-    execIn,
-} from "../../lib/util/exec";
+    execPromise,
+    spawnPromise,
+} from "../../lib/util/child_process";
 
-/* tslint:disable:deprecation */
+describe("child_promise", () => {
 
-describe("exec", () => {
+    describe("spawnPromise", () => {
 
-    describe("execIn", () => {
+        it("should kill long running job", async () => {
+            const script = "let t = setTimeout(function() { process.exit(11) }, 5000)";
+            const result = await spawnPromise("node", ["-e", script], { timeout: 500 });
+            assert(result.status === null);
+            assert(result.error === null);
+            assert(result.signal === "SIGTERM");
+        });
+
+        it("should log output", async () => {
+            const script = "console.log('foo'); console.error('bar');";
+            let output: string = "";
+            const log = { write: d => output += d };
+            const result = await spawnPromise("node", ["-e", script], { log });
+            assert(output === "foo\nbar\n");
+        });
+
+    });
+
+    describe("execPromise", () => {
 
         it("should run multiple at a time", async () => {
             const cmd = "git";
             const args = ["status", "--verbose", "-u"];
             const results = await Promise.all([
-                execIn(appRoot.path, cmd, args),
-                execIn(appRoot.path, cmd, args),
-                execIn(appRoot.path, cmd, args),
-                execIn(appRoot.path, cmd, args),
+                execPromise(cmd, args, { cwd: appRoot.path }),
+                execPromise(cmd, args, { cwd: appRoot.path }),
+                execPromise(cmd, args, { cwd: appRoot.path }),
+                execPromise(cmd, args, { cwd: appRoot.path }),
             ]);
             assert(results.length === 4);
             results.forEach(r => {
