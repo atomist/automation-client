@@ -23,6 +23,8 @@ import {
     execIn,
 } from "../../lib/util/exec";
 
+/* tslint:disable:deprecation */
+
 describe("exec", () => {
 
     describe("execIn", () => {

@@ -233,6 +233,10 @@ export {
 export {
     TypeScriptES6FileParser,
 } from "./lib/tree/ast/typescript/TypeScriptFileParser";
+export {
+    crossKill,
+    WritableLog,
+} from "./lib/util/child_process";
 export * from "./lib/util/exec";
 export {
     deepLink,

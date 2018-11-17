@@ -267,7 +267,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
     private initGc() {
         try {
             const gc = require("gc-stats");
-            gc().on('stats', stats => {
+            gc().on("stats", stats => {
                 const gcType = GcTypes[stats.gctype];
 
                 const tags = [

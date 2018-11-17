@@ -1,12 +1,8 @@
 import * as _ from "lodash";
 import * as os from "os";
+import { execPromise } from "../../util/child_process";
 import { logger } from "../../util/logger";
 import { doWithRetry } from "../../util/retry";
-import {
-    spawnAndWatch,
-    SuccessIsReturn0ErrorFinder,
-    WritableLog,
-} from "../../util/spawn";
 import {
     DefaultHttpClientOptions,
     HttpClient,
@@ -20,8 +16,7 @@ import {
  */
 export class CurlHttpClient implements HttpClient {
 
-    public exchange<T>(url: string,
-                       options: HttpClientOptions = {}): Promise<HttpResponse<T>> {
+    public exchange<T>(url: string, options: HttpClientOptions = {}): Promise<HttpResponse<T>> {
 
         const optionsToUse: HttpClientOptions = {
             ...DefaultHttpClientOptions,
@@ -40,19 +35,10 @@ export class CurlHttpClient implements HttpClient {
             }
         });
 
-        const request = () => {
+        const request = async () => {
 
-            let log = "";
-            const passthroughLog: WritableLog = {
-                write(str: string) {
-                    logger.debug(str);
-                    log += str;
-                },
-            };
-
-            return spawnAndWatch({
-                command: "curl",
-                args: [
+            try {
+                const result = await execPromise("curl", [
                     "-X", optionsToUse.method,
                     url,
                     "-s",
@@ -61,29 +47,22 @@ export class CurlHttpClient implements HttpClient {
                     ..._.flatten(headers.map(h => (["-H", h]))),
                     ..._.flatten(rawOptions),
                     ...(options.body ? ["-d", JSON.stringify(options.body)] : []),
-                ],
-            },
-                {},
-                passthroughLog,
-                {
-                    logCommand: false,
-                    errorFinder: SuccessIsReturn0ErrorFinder,
-                })
-                .then(result => {
-                    const parts = log.split("HTTPSTATUS:");
-                    let body = parts[0];
-
-                    try {
-                        body = JSON.parse(body);
-                    } catch (err) {
-                        // ignore
-                    }
-
-                    return {
-                        status: +parts[1],
-                        body,
-                    } as any as HttpResponse<T>;
-                });
+                ]);
+                const parts = result.stdout.split("HTTPSTATUS:");
+                let body: any;
+                try {
+                    body = JSON.parse(parts[0]);
+                } catch (e) {
+                    logger.warn(`Failed to parse response from curl: ${e.message}`);
+                }
+                return {
+                    status: +parts[1],
+                    body: (body) ? body : parts[0],
+                } as any as HttpResponse<T>;
+            } catch (e) {
+                logger.error(`Failed to curl: ${e.message}`);
+                throw e;
+            }
         };
 
         return doWithRetry<HttpResponse<T>>(request, `Requesting '${url}'`, optionsToUse.retry);

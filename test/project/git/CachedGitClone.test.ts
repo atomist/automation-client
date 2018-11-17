@@ -17,7 +17,7 @@ import {
     DefaultCloneOptions,
 } from "../../../lib/spi/clone/DirectoryManager";
 import { TmpDirectoryManager } from "../../../lib/spi/clone/tmpDirectoryManager";
-import { safeExec } from "../../../lib/util/exec";
+import { execPromise } from "../../../lib/util/child_process";
 import {
     Creds,
     GitHubToken,
@@ -250,7 +250,7 @@ describe("CachedGitClone", () => {
         it("clones to depth of 1 when transient", async () => {
             const clone1 = await cloneTransiently();
             const baseDir = clone1.baseDir;
-            const result = await safeExec("git", ["rev-list", "HEAD"], { cwd: baseDir });
+            const result = await execPromise("git", ["rev-list", "HEAD"], { cwd: baseDir });
             assert(result.stdout.trim().split("\n").length === 1, result.stdout);
             await clone1.release();
         }).timeout(20000);
@@ -258,10 +258,10 @@ describe("CachedGitClone", () => {
         it("clones fully when requested", async () => {
             const clone1 = await cloneTransiently({ alwaysDeep: true });
             const baseDir = clone1.baseDir;
-            const result = await safeExec("git", ["rev-list", "HEAD"], { cwd: baseDir });
+            const result = await execPromise("git", ["rev-list", "HEAD"], { cwd: baseDir });
             // we can see all the commits
             assert(result.stdout.trim().split("\n").length > 1);
-            const branchResult = await safeExec("git", ["rev-list", "this-tag-exists"], { cwd: baseDir });
+            const branchResult = await execPromise("git", ["rev-list", "this-tag-exists"], { cwd: baseDir });
             // now we have access to branches
             assert(branchResult.stdout.trim().split("\n").length >= 1);
             await clone1.release();
