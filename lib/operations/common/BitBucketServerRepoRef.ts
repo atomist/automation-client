@@ -22,11 +22,8 @@ import {
 } from "../../action/ActionResult";
 import { encode } from "../../internal/util/base64";
 import { Configurable } from "../../project/git/Configurable";
+import { execPromise } from "../../util/child_process";
 import { logger } from "../../util/logger";
-import {
-    spawnAndWatch,
-    WritableLog,
-} from "../../util/spawn";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
@@ -170,28 +167,27 @@ const AxiosHttpStrategy: HttpStrategy = {
 };
 
 const CurlHttpStrategy: HttpStrategy = {
-    doPost<T>(target: T, creds: ProjectOperationCredentials, url: string, data: any): Promise<HttpPostResult<T>> {
-        const passthroughLog: WritableLog = {
-            write(str: string) {
-                logger.info(str);
-            },
-        };
-        return spawnAndWatch({
-            command: "curl", args: [
+    async doPost<T>(target: T, creds: ProjectOperationCredentials, url: string, data: any): Promise<HttpPostResult<T>> {
+        try {
+            const result = await execPromise("curl", [
                 "-u", usernameColonPassword(creds),
                 "-X", "POST",
                 "-H", "Content-Type: application/json",
                 "-d", JSON.stringify(data),
                 url,
-            ],
-        }, {}, passthroughLog)
-            .then(fullResponse => {
-                return {
-                    target,
-                    success: true,
-                    fullResponse,
-                };
-            });
+            ]);
+            return {
+                target,
+                success: true,
+                fullResponse: result,
+            };
+        } catch (e) {
+            return {
+                target,
+                success: false,
+                fullResponse: e,
+            };
+        }
     },
 
     doDelete<T>(target: T, creds: ProjectOperationCredentials, url: string): Promise<HttpPostResult<T>> {
