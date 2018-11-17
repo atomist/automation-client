@@ -4,7 +4,6 @@ import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import "mocha";
 import * as path from "path";
-import { fail } from "power-assert";
 import * as assert from "power-assert";
 import * as tmp from "tmp-promise";
 
@@ -710,7 +709,7 @@ describe("configuration", () => {
             assert.equal(c.custom.foo, "foo");
         });
 
-        it("should resolve simple placeholder and apply default value", async() => {
+        it("should resolve simple placeholder and apply default value", async () => {
             const c = defaultConfiguration();
             c.custom = {
                 foo: "${BAR:super foo}",
@@ -748,17 +747,17 @@ describe("configuration", () => {
             assert.equal(c.custom.foo, "Careful Man, there's a beverage here!");
         });
 
-        it("should fail if placeholder can't be resolved",async () => {
+        it("should fail if placeholder can't be resolved", async () => {
             const c = defaultConfiguration();
             c.custom = {
                 foo: "Careful ${DUDE }, there's a ${DRINK:beverage} here!",
             };
             delete process.env.DUDE;
             try {
-                await resolvePlaceholders(c)
-                fail();
+                await resolvePlaceholders(c);
+                assert.fail();
             } catch (err) {
-
+                // ignore
             }
         });
 

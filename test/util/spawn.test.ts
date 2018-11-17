@@ -15,13 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import * as spawn from "cross-spawn";
 import * as os from "os";
 import * as assert from "power-assert";
 import {
     poisonAndWait,
-    spawn,
     spawnAndWatch,
 } from "../../lib/util/spawn";
+
+/* tslint:disable:deprecation */
 
 describe("spawn", () => {
 
