@@ -22,26 +22,14 @@ import {
 import * as spawn from "cross-spawn";
 import * as os from "os";
 import * as path from "path";
-import * as strip_ansi from "strip-ansi";
-import * as treeKill from "tree-kill";
+import strip_ansi = require("strip-ansi");
+import {
+    crossKill,
+    WritableLog,
+} from "./child_process";
 import { logger } from "./logger";
 
-export { spawn };
-
-/**
- * Interface for a writable log that provides a function to write to the log.
- */
-export interface WritableLog {
-
-    /**
-     * Some implementations expose their log as a string.
-     * Others may not, as it could be too long etc.
-     */
-    log?: string;
-
-    /** Function that write to the log. */
-    write(what: string): void;
-}
+/* tslint:disable:deprecation */
 
 /**
  * Type that can react to the exit of a spawned child process, after
@@ -49,6 +37,7 @@ export interface WritableLog {
  * This is necessary only for commands that can return
  * a non-zero exit code on success.
  * @return whether this result should be considered an error.
+ * @deprecated use @atomist/sdm version
  */
 export type ErrorFinder = (code: number, signal: string, log: WritableLog) => boolean;
 
@@ -56,12 +45,13 @@ export type ErrorFinder = (code: number, signal: string, log: WritableLog) => bo
  * Default ErrorFinder that regards return code 0 as success
  * @param {number} code
  * @return {boolean}
- * @constructor
+ * @deprecated use @atomist/sdm version
  */
 export const SuccessIsReturn0ErrorFinder: ErrorFinder = code => code !== 0;
 
 /**
  * Result returned by spawnAndWatch after running a child process.
+ * @deprecated use @atomist/sdm version
  */
 export interface ChildProcessResult {
     /** Will be true if the ErrorFinder returns true. */
@@ -76,6 +66,7 @@ export interface ChildProcessResult {
 
 /**
  * spawnAndWatch specific options.
+ * @deprecated use @atomist/sdm version
  */
 export interface SpawnWatchOptions {
     /**
@@ -113,6 +104,7 @@ export interface SpawnWatchOptions {
  * @param log log to write output to
  * @param {Partial<SpawnWatchOptions>} spOpts
  * @return {Promise<ChildProcessResult>}
+ * @deprecated use @atomist/sdm version
  */
 export async function spawnAndWatch(spawnCommand: SpawnCommand,
                                     options: SpawnOptions,
@@ -136,6 +128,7 @@ export async function spawnAndWatch(spawnCommand: SpawnCommand,
  * @param log to write stdout and stderr to
  * @param opts: Options for error parsing, ANSI code stripping etc.
  * @return {Promise<ChildProcessResult>}
+ * @deprecated use @atomist/sdm version
  */
 async function watchSpawned(childProcess: ChildProcess,
                             log: WritableLog,
@@ -191,6 +184,7 @@ async function watchSpawned(childProcess: ChildProcess,
 
 /**
  * The first two arguments to Node spawn
+ * @deprecated use @atomist/sdm version
  */
 export interface SpawnCommand {
 
@@ -203,6 +197,7 @@ export interface SpawnCommand {
  * toString for a SpawnCommand. Used for logging.
  * @param {SpawnCommand} sc
  * @return {string}
+ * @deprecated use @atomist/sdm version
  */
 export function stringifySpawnCommand(sc: SpawnCommand): string {
     return `${sc.command}${(!!sc.args) ? " '" + sc.args.join("' '") + "'" : ""}`;
@@ -217,6 +212,7 @@ export function stringifySpawnCommand(sc: SpawnCommand): string {
  * @param {string} sentence command and argument string
  * @param options
  * @return {SpawnCommand}
+ * @deprecated use @atomist/sdm version
  */
 export function asSpawnCommand(sentence: string, options: SpawnOptions = {}): SpawnCommand {
     const split = sentence.split(" ");
@@ -240,6 +236,7 @@ export function asSpawnCommand(sentence: string, options: SpawnOptions = {}): Sp
  * @param wait the number of milliseconds to wait before sending SIGKILL and
  *             then erroring, default is 30000 ms
  * @return {Promise<any>}
+ * @deprecated use @atomist/sdm version
  */
 export async function poisonAndWait(childProcess: ChildProcess, wait: number = 30000): Promise<void> {
     return new Promise<void>((resolve, reject) => {
@@ -265,26 +262,8 @@ export async function poisonAndWait(childProcess: ChildProcess, wait: number = 3
 }
 
 /**
- * Cross-platform kill.  On win32, tree-kill is used and signal is
- * ignored since win32 does not support different signals.  On other
- * platforms, ChildProcess.kill(signal) is used.
- *
- * @param cp child process to kill
- * @param signal optional signal, Node.js default is used if not provided
- */
-export function crossKill(cp: ChildProcess, signal?: string): void {
-    if (os.platform() === "win32") {
-        logger.debug(`Calling tree-kill on child process ${cp.pid}`);
-        treeKill(cp.pid);
-    } else {
-        const sig = (signal) ? `signal ${signal}` : "default signal";
-        logger.debug(`Sending ${sig} to child process ${cp.pid}`);
-        cp.kill(signal);
-    }
-}
-
-/**
  * Clear provided timers and resolve a promise.
+ * @deprecated use @atomist/sdm version
  */
 function clearAndResolve(pid: number, resolve: () => void, ...timers: NodeJS.Timer[]): (code: number, signal: string) => void {
     return (code: number, signal: string) => {
@@ -296,6 +275,7 @@ function clearAndResolve(pid: number, resolve: () => void, ...timers: NodeJS.Tim
 
 /**
  * Clear provided timers and reject a promise.
+ * @deprecated use @atomist/sdm version
  */
 function clearAndReject(pid: number, reject: (e: Error) => void, ...timers: NodeJS.Timer[]): (reason: Error) => void {
     return (reason: Error) => {
@@ -310,6 +290,7 @@ function clearAndReject(pid: number, reject: (e: Error) => void, ...timers: Node
  * defined before clearing them.
  *
  * @param timers the timers to clear.
+ * @deprecated use @atomist/sdm version
  */
 function clearTimers(timers: NodeJS.Timer[]): void {
     timers.filter(t => !!t).map(t => clearTimeout(t));

@@ -1,5 +1,3 @@
-import "mocha";
-
 import * as assert from "power-assert";
 import { ActionResult } from "../../../lib/action/ActionResult";
 import {
@@ -9,7 +7,7 @@ import {
 import { GitCommandGitProject } from "../../../lib/project/git/GitCommandGitProject";
 import { GitProject } from "../../../lib/project/git/GitProject";
 import { Project } from "../../../lib/project/Project";
-import { safeExec } from "../../../lib/util/exec";
+import { execPromise } from "../../../lib/util/child_process";
 import { GitHubToken } from "../../credentials";
 import { tempProject } from "../utils";
 
@@ -97,7 +95,7 @@ describe("GitProject", () => {
 
 ding dong ding
 `))
-            .then(() => safeExec("git", ["log", "-1", "--pretty=format:%B"], { cwd: gp.baseDir }))
+            .then(() => execPromise("git", ["log", "-1", "--pretty=format:%B"], { cwd: gp.baseDir }))
             .then(commandResult => {
                 assert.equal(commandResult.stdout, `Added a Thing
 

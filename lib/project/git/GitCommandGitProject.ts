@@ -33,9 +33,9 @@ import {
 } from "../../spi/clone/DirectoryManager";
 import { TmpDirectoryManager } from "../../spi/clone/tmpDirectoryManager";
 import {
-    execIn,
-    ExecResult,
-} from "../../util/exec";
+    execPromise,
+    ExecPromiseResult,
+} from "../../util/child_process";
 import { logger } from "../../util/logger";
 import {
     isLocalProject,
@@ -279,8 +279,8 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             .then(result => result.stdout.includes(name));
     }
 
-    private async gitInProjectBaseDir(args: string[]): Promise<ExecResult> {
-        return execIn(this.baseDir, "git", args);
+    private async gitInProjectBaseDir(args: string[]): Promise<ExecPromiseResult> {
+        return execPromise("git", args, { cwd: this.baseDir });
     }
 
 }
@@ -365,19 +365,19 @@ async function cloneInto(
         randomize: false,
     };
     await promiseRetry(retryOptions, (retry, count) => {
-        return execIn(".", "git", cloneArgs)
+        return execPromise("git", cloneArgs)
             .catch(err => {
                 logger.warn(`Clone of ${id.owner}/${id.repo} attempt ${count} failed: ` + err.message);
                 retry(err);
             });
     });
     try {
-        await execIn(repoDir, "git", ["checkout", checkoutRef, "--"]);
+        await execPromise("git", ["checkout", checkoutRef, "--"], { cwd: repoDir });
     } catch (err) {
         // When the head moved on and we only cloned with depth; we might have to do a full clone to get to the commit we want
         logger.warn(`Ref ${checkoutRef} not in cloned history. Attempting full clone`);
-        await execIn(repoDir, "git", ["fetch", "--unshallow"])
-            .then(() => execIn(repoDir, "git", ["checkout", checkoutRef, "--"]));
+        await execPromise("git", ["fetch", "--unshallow"], { cwd: repoDir })
+            .then(() => execPromise("git", ["checkout", checkoutRef, "--"], { cwd: repoDir }));
     }
     logger.debug(`Clone succeeded with URL '${cleanUrl}'`);
     return GitCommandGitProject.fromBaseDir(id, repoDir, credentials,
@@ -389,20 +389,20 @@ async function resetOrigin(
     repoDir: string,
     credentials: ProjectOperationCredentials,
     id: RemoteRepoRef,
-): Promise<ExecResult> {
+): Promise<ExecPromiseResult> {
 
-    return execIn(repoDir, "git", ["remote", "set", "origin", id.cloneUrl(credentials)]);
+    return execPromise("git", ["remote", "set", "origin", id.cloneUrl(credentials)], { cwd: repoDir });
 }
 
-async function checkout(repoDir: string, branch: string): Promise<ExecResult> {
-    return execIn(repoDir, "git", ["fetch", "origin", branch])
-        .then(() => execIn(repoDir, "git", ["checkout", branch, "--"]))
-        .then(() => execIn(repoDir, "git", ["reset", "--hard", `origin/${branch}`]));
+async function checkout(repoDir: string, branch: string): Promise<ExecPromiseResult> {
+    return execPromise("git", ["fetch", "origin", branch], { cwd: repoDir })
+        .then(() => execPromise("git", ["checkout", branch, "--"], { cwd: repoDir }))
+        .then(() => execPromise("git", ["reset", "--hard", `origin/${branch}`], { cwd: repoDir }));
 }
 
-async function clean(repoDir: string): Promise<ExecResult> {
-    return execIn(repoDir, "git", ["clean", "-dfx"]) // also removes ignored files
-        .then(() => execIn(repoDir, "git", ["checkout", "--", "."]));
+async function clean(repoDir: string): Promise<ExecPromiseResult> {
+    return execPromise("git", ["clean", "-dfx"], { cwd: repoDir }) // also removes ignored files
+        .then(() => execPromise("git", ["checkout", "--", "."], { cwd: repoDir }));
 }
 
 function isValidSHA1(s: string): boolean {
