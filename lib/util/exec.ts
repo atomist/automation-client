@@ -23,8 +23,11 @@ import * as process from "process";
 
 import { logger } from "./logger";
 
+/* tslint:disable:deprecation */
+
 /**
  * Standard output and standard error.
+ * @deprecated use ExecPromiseResult
  */
 export interface ExecResult {
     stdout: string;
@@ -34,6 +37,7 @@ export interface ExecResult {
 /**
  * Error thrown when a command cannot be executed, the command is
  * killed, or returns a non-zero exit status.
+ * @deprecated use ExecPromiseError
  */
 export class ExecError extends Error {
     constructor(
@@ -62,6 +66,7 @@ export class ExecError extends Error {
  * @param {string[]} args command arguments
  * @param {"child_process".SpawnOptions} opts standard spawn options
  * @return {Promise<ExecResult>} exec-like callback arguments having stdout and stderr properties
+ * @deprecated use execPromise
  */
 export async function safeExec(cmd: string, args: string[] = [], opts: SpawnOptions = {}): Promise<ExecResult> {
     const cmdString = (opts.cwd ? opts.cwd : process.cwd()) + " ==> " + cmd +
@@ -106,6 +111,7 @@ export async function safeExec(cmd: string, args: string[] = [], opts: SpawnOpti
  * @param cmd command to run
  * @param args command arguments
  * @return Promise of { stdout, stderr }
+ * @deprecated use execPromise
  */
 export async function execIn(baseDir: string, cmd: string, args: string[]): Promise<ExecResult> {
     return safeExec(cmd, args, { cwd: baseDir });
