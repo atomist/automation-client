@@ -168,7 +168,7 @@ export async function spawnPromise(cmd: string, args: string[] = [], opts: Spawn
             }
             childProcess.stderr.on("data", logData);
             childProcess.stdout.on("data", logData);
-            stderr = stdout = "See log";
+            stderr = stdout = "See log\n";
         } else {
             childProcess.stderr.on("data", (data: string) => stderr += data);
             childProcess.stdout.on("data", (data: string) => stdout += data);

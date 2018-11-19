@@ -27,12 +27,54 @@ describe("child_promise", () => {
 
     describe("spawnPromise", () => {
 
+        it("should run a command successfully", async () => {
+            const script = "process.exit(0);";
+            const result = await spawnPromise("node", ["-e", script]);
+            assert(result.status === 0);
+            assert(result.error === null);
+            assert(result.signal === null);
+            assert(result.stdout === "");
+            assert(result.stderr === "");
+        });
+
+        it("should know a command exits with non-zero status", async () => {
+            const script = "process.exit(13);";
+            const result = await spawnPromise("node", ["-e", script]);
+            assert(result.status === 13);
+            assert(result.error === null);
+            assert(result.signal === null);
+            assert(result.stdout === "");
+            assert(result.stderr === "");
+        });
+
+        it("should differentiate stdout and stderr", async () => {
+            const script = "console.log('foo'); console.error('bar');";
+            const result = await spawnPromise("node", ["-e", script]);
+            assert(result.status === 0);
+            assert(result.error === null);
+            assert(result.signal === null);
+            assert(result.stdout === "foo\n");
+            assert(result.stderr === "bar\n");
+        });
+
+        it("should return an error if invalid command", async () => {
+            const result = await spawnPromise("sdlfkjasdflkjasdweijvasfskdjf");
+            assert(result.status === null);
+            assert(result.signal === null);
+            assert(result.stdout === "");
+            assert(result.stderr === "");
+            assert(result.error);
+            assert(result.error.message.startsWith("Failed to run command: "));
+        });
+
         it("should kill long running job", async () => {
             const script = "let t = setTimeout(function() { process.exit(11) }, 5000)";
             const result = await spawnPromise("node", ["-e", script], { timeout: 500 });
             assert(result.status === null);
             assert(result.error === null);
             assert(result.signal === "SIGTERM");
+            assert(result.stdout === "");
+            assert(result.stderr === "");
         });
 
         it("should log output", async () => {
@@ -41,6 +83,11 @@ describe("child_promise", () => {
             const log = { write: d => output += d };
             const result = await spawnPromise("node", ["-e", script], { log });
             assert(output === "foo\nbar\n");
+            assert(result.status === 0);
+            assert(result.error === null);
+            assert(result.signal === null);
+            assert(result.stdout === "See log\n");
+            assert(result.stderr === "See log\n");
         });
 
         it("should log command", async () => {
@@ -59,6 +106,49 @@ describe("child_promise", () => {
     });
 
     describe("execPromise", () => {
+
+        it("should capture stdout", async () => {
+            const script = "console.log('foo'); console.log('bar');";
+            const result = await execPromise("node", ["-e", script]);
+            assert(result.stdout === "foo\nbar\n");
+            assert(result.stderr === "");
+        });
+
+        it("should capture stderr", async () => {
+            const script = "console.error('foo'); console.error('bar');";
+            const result = await execPromise("node", ["-e", script]);
+            assert(result.stdout === "");
+            assert(result.stderr === "foo\nbar\n");
+        });
+
+        it("should differentiate stdout and stderr", async () => {
+            const script = "console.log('foo'); console.error('bar');";
+            const result = await execPromise("node", ["-e", script]);
+            assert(result.stdout === "foo\n");
+            assert(result.stderr === "bar\n");
+        });
+
+        it("should throw an error if process returns non-zero", async () => {
+            const script = "process.exit(17);";
+            try {
+                await execPromise("node", ["-e", script]);
+                assert.fail("should have thrown an exception");
+            } catch (e) {
+                assert(/^Child process \d+ exited with non-zero status 17: /.test(e.message));
+                assert(e.status === 17);
+            }
+        });
+
+        it("should throw an error if process is killed by a signal", async () => {
+            const script = "let t = setTimeout(function() { process.exit(0) }, 5000); process.kill(process.pid, 'SIGKILL');";
+            try {
+                await execPromise("node", ["-e", script]);
+                assert.fail("should have thrown an exception");
+            } catch (e) {
+                assert(/^Child process \d+ received signal SIGKILL: /.test(e.message));
+                assert(e.signal === "SIGKILL");
+            }
+        });
 
         it("should run multiple at a time", async () => {
             const cmd = "node";
