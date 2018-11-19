@@ -72,7 +72,7 @@ describe("editorHandler", () => {
             args: [{ name: "slackTeam", value: "T1691" }, { name: "owner", value: "foo" }],
             secrets: [{ uri: "github://user_token?scopes=repo,user:email,read:user", value: "antechinus" }],
         }, { workspaceId: "T666", correlationId: "555", messageClient: null });
-    }).timeout(6000);
+    }).timeout(10000);
 
     it("should use custom repo loader and verify result", async () => {
         class MyParameters extends BaseEditorOrReviewerParameters {
