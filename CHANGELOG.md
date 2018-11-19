@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Update to latest graphql-code-generator. [#401](https://github.com/atomist/automation-client/issues/401)
 
+### Deprecated
+
+-   Provide low-level child_process promise functions. [#406](https://github.com/atomist/automation-client/issues/406)
+
 ## [1.0.1](https://github.com/atomist/automation-client-ts/compare/1.0.0-RC.2...1.0.1) - 2018-11-09
 
 ### Added
