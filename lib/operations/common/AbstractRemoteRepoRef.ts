@@ -16,8 +16,9 @@
  */
 
 import { ActionResult } from "../../action/ActionResult";
-import { isBasicAuthCredentials } from "../../operations/common/BasicAuthCredentials";
 import { Configurable } from "../../project/git/Configurable";
+import { isBasicAuthCredentials } from "./BasicAuthCredentials";
+import { isGitlabPrivateTokenCredentials } from "./GitlabPrivateTokenCredentials";
 import {
     isTokenCredentials,
     ProjectOperationCredentials,
@@ -40,6 +41,8 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
     public readonly scheme: "http://" | "https://";
 
     public readonly apiBase: string;
+
+    public readonly abstract kind: string;
 
     /**
      * Remote url not including scheme or trailing /
@@ -85,6 +88,10 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
         }
         if (isBasicAuthCredentials(creds)) {
             return `${this.scheme}${encodeURIComponent(creds.username)}:${encodeURIComponent(creds.password)}@` +
+                `${this.remoteBase}/${this.pathComponent}.git`;
+        }
+        if (isGitlabPrivateTokenCredentials(creds)) {
+            return `${this.scheme}gitlab-ci-token:${creds.privateToken}@` +
                 `${this.remoteBase}/${this.pathComponent}.git`;
         }
         if (!isTokenCredentials(creds)) {

@@ -16,6 +16,8 @@ export const BitBucketDotComBase = "https://bitbucket.org/api/2.0";
 
 export class BitBucketRepoRef extends AbstractRemoteRepoRef {
 
+    public readonly kind = "bitbucket";
+
     constructor(owner: string,
                 repo: string,
                 sha: string = "master",

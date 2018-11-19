@@ -55,6 +55,8 @@ export enum ProviderType {
     github_com,
     ghe,
     bitbucket,
+    gitlab_com,
+    gitlab_enterprise,
 }
 
 /**
@@ -64,6 +66,7 @@ export enum ProviderType {
  */
 export interface RemoteRepoRef extends RepoRef {
 
+    readonly kind: string;
     /**
      * Remote base
      */
