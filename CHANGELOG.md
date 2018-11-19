@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Add review comment sorter. [#402](https://github.com/atomist/automation-client/issues/402)
 -   Add gc stats onto statsd. [7639432](https://github.com/atomist/automation-client/commit/7639432a321e8add351f24539b8a5c0b6434d9d7)
+-   Add initial Gitlab support. [#399](https://github.com/atomist/automation-client/issues/399)
 
 ### Changed
 
