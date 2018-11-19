@@ -22,8 +22,8 @@ export interface FileCore {
 }
 
 /**
- * @deprecated
  * Convenient way to defer File operations with fluent API
+ * @deprecated just remove it
  */
 export interface FileScripting extends ScriptedFlushable<File> {
 
@@ -51,6 +51,7 @@ export interface FileAsync extends FileCore {
 
 }
 
+/* tslint:disable-next-line:deprecation */
 export interface FileNonBlocking extends FileScripting, FileAsync {
 
 }
@@ -76,6 +77,7 @@ export interface FileSync extends FileCore {
  * Abstraction for a File. Similar to Project abstraction,
  * broken into three distinct styles of usage.
  */
+/* tslint:disable-next-line:deprecation */
 export interface File extends FileScripting, FileSync, FileAsync {
 
     /**

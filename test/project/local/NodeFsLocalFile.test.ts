@@ -59,8 +59,7 @@ describe("NodeFsLocalFile", () => {
             .then(() => {
                 assert(f.getContentSync() === "The slow brown");
                 done();
-            },
-        );
+            });
     });
 
     it("should test nonbinary file", done => {
@@ -83,7 +82,7 @@ describe("NodeFsLocalFile", () => {
             + "3gAAAABJRU5ErkJggg==";
         // Strip off the data: url prefix to get just the base64-encoded bytes
         const data = img.replace(/^data:image\/\w+;base64,/, "");
-        const buf = new Buffer(data, "base64");
+        const buf = Buffer.from(data, "base64");
         fs.writeFileSync(p.baseDir + "/img", buf);
         const f = p.findFileSync("img");
         f.isBinary().then(bin => {
