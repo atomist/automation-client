@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Add review comment sorter. [#402](https://github.com/atomist/automation-client/issues/402)
 -   Add gc stats onto statsd. [7639432](https://github.com/atomist/automation-client/commit/7639432a321e8add351f24539b8a5c0b6434d9d7)
 -   Add initial Gitlab support. [#399](https://github.com/atomist/automation-client/issues/399)
+-   Add low-level child_process promise functions. [#406](https://github.com/atomist/automation-client/issues/406)
+
 
 ### Changed
 
@@ -19,7 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Deprecated
 
--   Provide low-level child_process promise functions. [#406](https://github.com/atomist/automation-client/issues/406)
+-   Mark existing spawn and exec functions and interfaces as deprecated. [#406](https://github.com/atomist/automation-client/issues/406)
 
 ## [1.0.1](https://github.com/atomist/automation-client-ts/compare/1.0.0-RC.2...1.0.1) - 2018-11-09
 

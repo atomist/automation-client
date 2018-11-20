@@ -16,14 +16,91 @@
  */
 
 import * as appRoot from "app-root-path";
-import * as os from "os";
 import * as assert from "power-assert";
 import {
     execPromise,
+    killProcess,
+    spawn,
     spawnPromise,
 } from "../../lib/util/child_process";
 
 describe("child_promise", () => {
+
+    describe("killProcess", () => {
+
+        it("should kill a process with the default signal", done => {
+            const script = "let t = setTimeout(function() { process.exit(5) }, 5000)";
+            const cp = spawn("node", ["-e", script]);
+            let exited = false;
+            cp.on("exit", (c, s) => {
+                exited = true;
+            });
+            cp.on("close", (c, s) => {
+                assert(exited);
+                assert(c === null);
+                assert(s === "SIGTERM");
+                done();
+            });
+            cp.on("error", e => {
+                done(new Error(`child process ${cp.pid} errored: ${e.message}`));
+            });
+            killProcess(cp.pid);
+        });
+
+        it("should kill a process with provided signal", done => {
+            const script = "let t = setTimeout(function() { process.exit(6) }, 6000)";
+            const cp = spawn("node", ["-e", script]);
+            let exited = false;
+            cp.on("exit", (c, s) => {
+                exited = true;
+            });
+            const signal = "SIGINT";
+            cp.on("close", (c, s) => {
+                assert(exited);
+                assert(c === null);
+                assert(s === signal);
+                done();
+            });
+            cp.on("error", e => {
+                done(new Error(`child process ${cp.pid} errored: ${e.message}`));
+            });
+            killProcess(cp.pid, signal);
+        });
+
+        it("should not kill if signal handled", async () => {
+            function sleep(ms: number): Promise<void> {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+            // delay to allow the spawned node process to start and set up signal handler
+            const delay = 100;
+            const script = "process.on('SIGTERM', function() { return; }); let t = setTimeout(function() { process.exit(7) }, 7000)";
+            let running = true;
+            let code: number;
+            let signal: string;
+            const cp = spawn("node", ["-e", script]);
+            cp.on("exit", (c, s) => {
+                running = false;
+            });
+            cp.on("close", (c, s) => {
+                running = false;
+                code = c;
+                signal = s;
+            });
+            cp.on("error", e => {
+                assert.fail(`child process ${cp.pid} errored: ${e.message}`);
+            });
+            await sleep(delay);
+            killProcess(cp.pid, "SIGTERM");
+            await sleep(2 * delay);
+            assert(running, "child process should not have been killed by SIGTERM");
+            killProcess(cp.pid, "SIGINT");
+            await sleep(2 * delay);
+            assert(!running, "child process should have been killed by SIGINT");
+            assert(code === null);
+            assert(signal === "SIGINT");
+        });
+
+    });
 
     describe("spawnPromise", () => {
 

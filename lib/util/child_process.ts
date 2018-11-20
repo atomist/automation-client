@@ -52,7 +52,7 @@ export function childProcessString(cmd: string, args: string[] = [], opts: Spawn
 export function killProcess(pid: number, signal?: string | number): void {
     const sig = (signal) ? `signal ${signal}` : "default signal";
     logger.debug(`Calling tree-kill on child process ${pid} with ${sig}`);
-    treeKill(pid);
+    treeKill(pid, signal);
 }
 
 /**
