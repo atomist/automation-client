@@ -38,7 +38,7 @@ export function heapDump(): string {
         heapdump.writeSnapshot(`${DataDirectory}/${name}`, (err, filename) => {
             logger.warn("Heap dump written to '%s'", filename);
         });
-        broadcast({ type: "heapdump" });
+        broadcast({ type: "atomist:heapdump" });
         return name;
     } catch (err) {
         logger.error("Failed to initialise memory monitoring. Required 'heapdump' module is missing or can't be" +
@@ -76,7 +76,7 @@ export function gc() {
         logger.warn("Triggering GC");
         global.gc();
         logger.debug("Memory statistics: %j", memoryUsage());
-        broadcast({ type: "gc" });
+        broadcast({ type: "atomist:gc" });
     }
 }
 

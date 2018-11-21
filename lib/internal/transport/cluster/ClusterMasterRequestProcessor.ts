@@ -85,7 +85,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         this.registration = registration;
 
         broadcast({
-            type: "registration",
+            type: "atomist:registration",
             registration: this.registration,
             context: null,
         });
@@ -115,20 +115,25 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                 const msg = message as WorkerMessage;
 
                 // Wait for online message to come in
-                if (msg.type === "online") {
+                if (msg.type === "atomist:online") {
                     deferred.resolve();
                     return;
                 }
 
                 const ses = namespace.create();
                 ses.run(() => {
+                    // Only process our messages
+                    if (msg.type || !msg.type.startsWith("atomist:")) {
+                        return
+                    }
+
                     namespace.set(msg.context);
 
                     logger.debug("Received '%s' message from worker '%s': %j", msg.type, worker.id, msg.context);
 
                     const invocationId = namespace.get().invocationId;
                     const ctx = hydrateContext(msg);
-                    if (msg.type === "message") {
+                    if (msg.type === "atomist:message") {
 
                         let messageClient: MessageClient;
                         if (commands.has(invocationId)) {
@@ -148,9 +153,9 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                             messageClient.respond(msg.data.message, msg.data.options)
                                 .then(clearNamespace, clearNamespace);
                         }
-                    } else if (msg.type === "status") {
+                    } else if (msg.type === "atomist:status") {
                         sendMessage(msg.data, ws());
-                    } else if (msg.type === "command_success") {
+                    } else if (msg.type === "atomist:command_success") {
                         listeners.map(l => () => l.commandSuccessful(msg.event as CommandInvocation,
                             ctx, msg.data as HandlerResult))
                             .reduce((p, f) => p.then(f), Promise.resolve())
@@ -162,7 +167,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                                 clearNamespace();
                             })
                             .catch(clearNamespace);
-                    } else if (msg.type === "command_failure") {
+                    } else if (msg.type === "atomist:command_failure") {
                         listeners.map(l => () => l.commandFailed(msg.event as CommandInvocation,
                             ctx, msg.data as HandlerResult))
                             .reduce((p, f) => p.then(f), Promise.resolve())
@@ -174,7 +179,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                                 clearNamespace();
                             })
                             .catch(clearNamespace);
-                    } else if (msg.type === "event_success") {
+                    } else if (msg.type === "atomist:event_success") {
                         listeners.map(l => () => l.eventSuccessful(msg.event as EventFired<any>,
                             ctx, msg.data as HandlerResult[]))
                             .reduce((p, f) => p.then(f), Promise.resolve())
@@ -186,7 +191,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                                 clearNamespace();
                             })
                             .catch(clearNamespace);
-                    } else if (msg.type === "event_failure") {
+                    } else if (msg.type === "atomist:event_failure") {
                         listeners.map(l => () => l.eventFailed(msg.event as EventFired<any>,
                             ctx, msg.data as HandlerResult[]))
                             .reduce((p, f) => p.then(f), Promise.resolve())
@@ -198,7 +203,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                                 clearNamespace();
                             })
                             .catch(clearNamespace);
-                    } else if (msg.type === "shutdown") {
+                    } else if (msg.type === "atomist:shutdown") {
                         logger.info(`Shutdown requested from worker`);
                         process.exit(msg.data);
                     }
@@ -240,7 +245,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                             command: CommandIncoming,
                             callback: (result: Promise<HandlerResult>) => void) {
         const message: MasterMessage = {
-            type: "command",
+            type: "atomist:command",
             registration: this.registration,
             context: ctx.context,
             data: command,
@@ -259,7 +264,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                           event: EventIncoming,
                           callback: (results: Promise<HandlerResult[]>) => void) {
         const message: MasterMessage = {
-            type: "event",
+            type: "atomist:event",
             registration: this.registration,
             context: ctx.context,
             data: event,

@@ -5,18 +5,19 @@ import { AutomationContext } from "../../util/cls";
 import { RegistrationConfirmation } from "../websocket/WebSocketRequestProcessor";
 
 export interface MasterMessage {
-    type: "registration" | "event" | "command";
+    type: "atomist:registration" | "atomist:event" | "atomist:command";
     registration: RegistrationConfirmation;
     context: AutomationContext;
     data?: any;
 }
 
 export interface MasterManagementMessage {
-    type: "gc" | "heapdump";
+    type: "atomist:gc" | "atomist:heapdump";
 }
 
 export interface WorkerMessage {
-    type: "online" | "status" | "message" | "command_success" | "command_failure" | "event_success" | "event_failure" | "shutdown";
+    type: "atomist:online" | "atomist:status" | "atomist:message" | "atomist:command_success"
+        | "atomist:command_failure" | "atomist:event_success" | "atomist:event_failure" | "atomist:shutdown";
     event?: EventFired<any> | CommandInvocation;
     context: AutomationContext;
     data?: any;

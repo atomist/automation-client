@@ -57,7 +57,7 @@ export class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
     ) {
 
         super(_automations, _configuration, [..._listeners, new ClusterWorkerAutomationEventListener()]);
-        workerSend({ type: "online", context: null })
+        workerSend({ type: "atomist:online", context: null })
             .then(() => { /** intentionally left empty */});
         registerShutdownHook(() => {
 
@@ -99,13 +99,13 @@ export class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
     }
 
     public sendShutdown(code: number, ctx: HandlerContext & AutomationContextAware) {
-        workerSend({ type: "shutdown", data: code, context: ctx.context })
+        workerSend({ type: "atomist:shutdown", data: code, context: ctx.context })
             .then(() => { /** intentionally left empty */ });
     }
 
     protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {
         return workerSend({
-            type: "status",
+            type: "atomist:status",
             context: ctx.context,
             data: payload,
         });
@@ -141,7 +141,7 @@ class ClusterWorkerMessageClient extends MessageClientSupport {
                      destinations: Destination | Destination[],
                      options?: MessageOptions): Promise<any> {
         return workerSend({
-            type: "message",
+            type: "atomist:message",
             context: this.ctx.context,
             data: {
                 message: msg,
@@ -156,7 +156,7 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
 
     public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<any> {
         return workerSend({
-            type: "command_success",
+            type: "atomist:command_success",
             event: payload,
             context: (ctx as any).context,
             data: result,
@@ -165,7 +165,7 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
 
     public commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): Promise<any> {
         return workerSend({
-            type: "command_failure",
+            type: "atomist:command_failure",
             event: payload,
             context: (ctx as any).context,
             data: err,
@@ -174,7 +174,7 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
 
     public eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): Promise<any> {
         return workerSend({
-            type: "event_success",
+            type: "atomist:event_success",
             event: payload,
             context: (ctx as any).context,
             data: result,
@@ -183,7 +183,7 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
 
     public eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): Promise<any> {
         return workerSend({
-            type: "event_failure",
+            type: "atomist:event_failure",
             event: payload,
             context: (ctx as any).context,
             data: err,
@@ -203,17 +203,17 @@ export function startWorker(automations: AutomationServer,
                             listeners: AutomationEventListener[] = []): ClusterWorkerRequestProcessor {
     const worker = new ClusterWorkerRequestProcessor(automations, configuration, listeners);
     process.on("message", msg => {
-        if (msg.type === "registration") {
+        if (msg.type === "atomist:registration") {
             worker.setRegistration(msg.registration as RegistrationConfirmation);
-        } else if (msg.type === "command") {
+        } else if (msg.type === "atomist:command") {
             worker.setRegistrationIfRequired(msg);
             worker.processCommand(decorateContext(msg) as CommandIncoming);
-        } else if (msg.type === "event") {
+        } else if (msg.type === "atomist:event") {
             worker.setRegistrationIfRequired(msg);
             worker.processEvent(decorateContext(msg) as EventIncoming);
-        } else if (msg.type === "gc") {
+        } else if (msg.type === "atomist:gc") {
             gc();
-        } else if (msg.type === "heapdump") {
+        } else if (msg.type === "atomist:heapdump") {
             heapDump();
         }
     });

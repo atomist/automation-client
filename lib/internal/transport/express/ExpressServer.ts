@@ -5,7 +5,6 @@ import * as passport from "passport";
 import * as http from "passport-http";
 import * as bearer from "passport-http-bearer";
 import * as tokenHeader from "passport-http-header-token";
-import * as portfinder from "portfinder";
 import {
     Configuration,
     ExpressCustomizer,
