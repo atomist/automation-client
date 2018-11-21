@@ -124,7 +124,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                 ses.run(() => {
                     // Only process our messages
                     if (msg.type || !msg.type.startsWith("atomist:")) {
-                        return
+                        return;
                     }
 
                     namespace.set(msg.context);
