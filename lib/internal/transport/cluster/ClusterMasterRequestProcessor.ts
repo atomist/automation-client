@@ -123,7 +123,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                 const ses = namespace.create();
                 ses.run(() => {
                     // Only process our messages
-                    if (msg.type || !msg.type.startsWith("atomist:")) {
+                    if (!msg.type || (msg.type && !msg.type.startsWith("atomist:"))) {
                         return;
                     }
 
