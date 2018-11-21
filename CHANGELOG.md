@@ -14,7 +14,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Add initial Gitlab support. [#399](https://github.com/atomist/automation-client/issues/399)
 -   Add low-level child_process promise functions. [#406](https://github.com/atomist/automation-client/issues/406)
 
-
 ### Changed
 
 -   Update to latest graphql-code-generator. [#401](https://github.com/atomist/automation-client/issues/401)
@@ -22,6 +21,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Deprecated
 
 -   Mark existing spawn and exec functions and interfaces as deprecated. [#406](https://github.com/atomist/automation-client/issues/406)
+
+### Fixed
+
+-   Namespace our in process messages. [d0cf724](https://github.com/atomist/automation-client/commit/d0cf724245cd60dddb15de115a2f809481815297)
 
 ## [1.0.1](https://github.com/atomist/automation-client-ts/compare/1.0.0-RC.2...1.0.1) - 2018-11-09
 
