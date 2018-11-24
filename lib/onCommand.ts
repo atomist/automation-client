@@ -50,8 +50,9 @@ export function commandHandlerFrom<P>(h: OnCommand<P>,
                                       name: string = h.name || `Command${generateHash(h.toString())}`,
                                       description: string = name,
                                       intent: string | string[] = [],
-                                      tags: string | string[] = []): HandleCommand<P> & CommandHandlerMetadata {
-    const handler = new FunctionWrappingCommandHandler(name, description, h, factory, tags, intent);
+                                      tags: string | string[] = [],
+                                      autoSubmit: boolean = false): HandleCommand<P> & CommandHandlerMetadata {
+    const handler = new FunctionWrappingCommandHandler(name, description, h, factory, tags, intent, autoSubmit);
     registerCommand(handler);
     return handler;
 }
@@ -67,6 +68,7 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
     public values?: ValueDeclaration[];
     public intent?: string[];
     public tags?: Tag[];
+    public auto_submit: boolean;
 
     constructor(public name: string,
                 public description: string,
@@ -75,7 +77,8 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
                 // tslint:disable-next-line:variable-name
                 private _tags: string | string[] = [],
                 // tslint:disable-next-line:variable-name
-                private _intent: string | string[] = []) {
+                private _intent: string | string[] = [],
+                private autoSubmit: boolean = false) {
         const newParamInstance = this.freshParametersInstance();
         const md = metadataFromInstance(newParamInstance) as CommandHandlerMetadata;
         this.parameters = md.parameters;
@@ -84,6 +87,7 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
         this.secrets = md.secrets;
         this.intent = toStringArray(_intent);
         this.tags = toStringArray(_tags).map(t => ({ name: t, description: t }));
+        this.auto_submit = autoSubmit;
     }
 
     public freshParametersInstance(): P {

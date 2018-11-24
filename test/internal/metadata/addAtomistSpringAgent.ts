@@ -42,4 +42,5 @@ export const addAtomistSpringAgent: HandleCommand =
         "AddAtomistSpringAgent",
         "add the Atomist Agent to a Spring Boot project",
         "add agent",
-        ["atomist", "spring", "agent"]);
+        ["atomist", "spring", "agent"],
+        true);

@@ -26,5 +26,6 @@ describe("function style metadata reading", () => {
         assert(md.values[0].path === "custom.http.port");
         assert.deepEqual(md.intent, ["add agent"]);
         assert.deepEqual(md.tags.map(t => t.name), ["atomist", "spring", "agent"]);
+        assert(md.auto_submit);
     });
 });
