@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Add gc stats onto statsd. [7639432](https://github.com/atomist/automation-client/commit/7639432a321e8add351f24539b8a5c0b6434d9d7)
 -   Add initial Gitlab support. [#399](https://github.com/atomist/automation-client/issues/399)
 -   Add low-level child_process promise functions. [#406](https://github.com/atomist/automation-client/issues/406)
+-   Add autoSubmit to CommandDetails. [ee0e474](https://github.com/atomist/automation-client/commit/ee0e474a0fede4142fb1c62509ebacccf716b289)
 
 ### Changed
 
