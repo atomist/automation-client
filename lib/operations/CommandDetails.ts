@@ -9,6 +9,7 @@ export interface CommandDetails<PARAMS = any> {
     description: string;
     intent?: string | string[];
     tags?: string | string[];
+    autoSubmit?: boolean;
 
     repoFinder?: RepoFinder;
 
