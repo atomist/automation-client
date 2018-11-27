@@ -241,7 +241,8 @@ function register(registrationCallback: () => any,
                     retry(error);
                 } else if (error.response && (error.response.status === 400
                     || error.response.status === 401
-                    || error.response.status === 403)) {
+                    || error.response.status === 403
+                    || error.response.status === 500)) {
                     logger.error(`Registration failed with code '%s': '%s'`,
                         error.response.status, JSON.stringify(error.response.data));
                     process.exit(1);
