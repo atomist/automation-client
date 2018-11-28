@@ -1,5 +1,6 @@
 import * as HttpsProxyAgent from "https-proxy-agent";
 import * as stringify from "json-stringify-safe";
+import promiseRetry = require("promise-retry");
 import * as serializeError from "serialize-error";
 import * as WebSocket from "ws";
 import * as zlib from "zlib";
@@ -19,7 +20,6 @@ import {
     RegistrationConfirmation,
     WebSocketRequestProcessor,
 } from "./WebSocketRequestProcessor";
-import promiseRetry = require("promise-retry");
 import Timer = NodeJS.Timer;
 
 export class WebSocketClient {
@@ -91,15 +91,8 @@ function connect(registrationCallback: () => any,
 
     return new Promise<WebSocket>(resolve => {
 
-        if (process.env.HTTPS_PROXY || process.env.https_proxy) {
-            const proxy = process.env.HTTPS_PROXY || process.env.https_proxy;
-            logger.debug(`Opening WebSocket connection using proxy '${proxy}'`);
-            const agent = new HttpsProxyAgent(proxy);
-            ws = new WebSocket(registration.url, { agent });
-        } else {
-            logger.info(`Opening WebSocket connection`);
-            ws = new WebSocket(registration.url);
-        }
+        logger.info(`Opening WebSocket connection`);
+        ws = configuration.ws.client.factory.create(registration);
 
         let timer: Timer;
 

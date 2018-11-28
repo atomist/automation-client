@@ -39,6 +39,10 @@ import { AutomationMetadataProcessor } from "./spi/env/MetadataProcessor";
 import { SecretResolver } from "./spi/env/SecretResolver";
 import { DefaultHttpClientFactory } from "./spi/http/axiosHttpClient";
 import { HttpClientFactory } from "./spi/http/httpClient";
+import {
+    DefaultWebSocketFactory,
+    WebSocketFactory,
+} from "./spi/http/wsClient";
 import { Maker } from "./util/constructionUtils";
 import { logger } from "./util/logger";
 import { loadHostPackageJson } from "./util/packageJson";
@@ -148,6 +152,9 @@ export interface AutomationOptions extends AnyOptions {
     /** websocket configuration */
     ws?: {
         enabled?: boolean;
+        client?: {
+            factory?: WebSocketFactory,
+        },
         termination?: {
             /**
              * if true, give in-flight transactions `gracePeriod`
@@ -940,6 +947,9 @@ export const LocalDefaultConfiguration: Configuration = {
     },
     ws: {
         enabled: true,
+        client: {
+            factory: DefaultWebSocketFactory,
+        },
         termination: {
             graceful: false,
             gracePeriod: 10000,
