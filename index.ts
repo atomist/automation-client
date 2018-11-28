@@ -42,6 +42,13 @@ export {
     automationClientInstance,
 } from "./lib/globals";
 import * as GraphQL from "./lib/graph/graphQL";
+import * as validationPatterns from "./lib/operations/common/params/validationPatterns";
+import * as editModes from "./lib/operations/edit/editModes";
+import * as parseUtils from "./lib/project/util/parseUtils";
+import * as projectUtils from "./lib/project/util/projectUtils";
+import * as secured from "./lib/secured";
+import * as astUtils from "./lib/tree/ast/astUtils";
+
 export { GraphQL };
 export {
     EventFired,
@@ -100,7 +107,6 @@ export {
 export {
     RemoteLocator,
 } from "./lib/operations/common/params/RemoteLocator";
-import * as validationPatterns from "./lib/operations/common/params/validationPatterns";
 export { validationPatterns };
 export {
     ProjectOperationCredentials,
@@ -127,7 +133,6 @@ export {
 export {
     EditMode,
 } from "./lib/operations/edit/editModes";
-import * as editModes from "./lib/operations/edit/editModes";
 export { editModes };
 export {
     SimpleProjectEditor,
@@ -197,11 +202,8 @@ export {
 export {
     doWithJson,
 } from "./lib/project/util/jsonUtils";
-import * as parseUtils from "./lib/project/util/parseUtils";
 export { parseUtils };
-import * as projectUtils from "./lib/project/util/projectUtils";
 export { projectUtils };
-import * as secured from "./lib/secured";
 export { secured };
 export {
     AutomationEventListener,
@@ -221,7 +223,6 @@ export * from "./lib/spi/http/axiosHttpClient";
 export * from "./lib/spi/http/curlHttpClient";
 export * from "./lib/spi/http/httpClient";
 export * from "./lib/spi/message/MessageClient";
-import * as astUtils from "./lib/tree/ast/astUtils";
 export { astUtils };
 export {
     MatchResult,
@@ -248,6 +249,7 @@ export {
 export * from "./lib/util/logger";
 export {
     doWithRetry,
+    RetryOptions,
 } from "./lib/util/retry";
 export * from "./lib/util/spawn";
 export {
