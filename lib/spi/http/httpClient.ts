@@ -1,4 +1,3 @@
-import { WrapOptions } from "retry";
 import {
     DefaultRetryOptions,
     RetryOptions,
