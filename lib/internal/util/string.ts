@@ -71,6 +71,10 @@ export function obfuscateJson(key: string, value: any) {
         return undefined;
     } else if (key === "postProcessors") {
         return undefined;
+    } else if (key === "goal" || key === "goals") {
+        return undefined;
+    } else if (key.startsWith("_")) {
+        return undefined;
     }
     return value;
 }
