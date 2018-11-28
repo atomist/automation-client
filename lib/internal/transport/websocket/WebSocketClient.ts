@@ -1,14 +1,12 @@
-import axios, { AxiosRequestConfig } from "axios";
 import * as HttpsProxyAgent from "https-proxy-agent";
 import * as stringify from "json-stringify-safe";
-import promiseRetry = require("promise-retry");
 import * as serializeError from "serialize-error";
 import * as WebSocket from "ws";
 import * as zlib from "zlib";
 import { Configuration } from "../../../configuration";
+import { HttpMethod } from "../../../spi/http/httpClient";
 import { logger } from "../../../util/logger";
 import { Deferred } from "../../util/Deferred";
-import { configureProxy } from "../../util/http";
 import { registerShutdownHook } from "../../util/shutdown";
 import {
     CommandIncoming,
@@ -21,6 +19,7 @@ import {
     RegistrationConfirmation,
     WebSocketRequestProcessor,
 } from "./WebSocketRequestProcessor";
+import promiseRetry = require("promise-retry");
 import Timer = NodeJS.Timer;
 
 export class WebSocketClient {
@@ -29,7 +28,8 @@ export class WebSocketClient {
         private registrationCallback: () => any,
         private configuration: Configuration,
         private requestProcessor: WebSocketRequestProcessor,
-    ) { }
+    ) {
+    }
 
     public start(): Promise<void> {
 
@@ -218,15 +218,21 @@ function register(registrationCallback: () => any,
             logger.warn("Retrying registration due to previous error");
         }
 
-        const authorization = `Bearer ${configuration.apiKey}`;
-        const config: AxiosRequestConfig = {
-            headers: { Authorization: authorization },
-            timeout: configuration.ws.timeout || 10000,
-        };
+        const client = configuration.http.client.factory.create(configuration.endpoints.api);
 
-        return axios.post(configuration.endpoints.api, registrationPayload, configureProxy(config))
+        const authorization = `Bearer ${configuration.apiKey}`;
+
+        return client.exchange<RegistrationConfirmation>(configuration.endpoints.api, {
+                body: registrationPayload,
+                method: HttpMethod.Post,
+                headers: { Authorization: authorization },
+                options: {
+                    timeout: configuration.ws.timeout || 10000,
+                },
+                retry: { retries: 0, log: false },
+            })
             .then(result => {
-                const registration = result.data as RegistrationConfirmation;
+                const registration = result.body;
 
                 registration.name = registrationPayload.name;
                 registration.version = registrationPayload.version;

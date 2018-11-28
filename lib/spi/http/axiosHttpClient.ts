@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { configureProxy } from "../../internal/util/http";
 import { doWithRetry } from "../../util/retry";
 import {
@@ -23,13 +23,13 @@ export class AxiosHttpClient implements HttpClient {
         };
 
         const request = () => {
-            return axios.request(configureProxy({
+            return axios.request(this.configureOptions(configureProxy({
                     url,
                     headers: optionsToUse.headers,
                     method: optionsToUse.method.toString().toUpperCase(),
                     data: optionsToUse.body,
                     ...optionsToUse.options,
-                }))
+                })))
                 .then(result => {
                     return {
                         status: result.status,
@@ -40,6 +40,10 @@ export class AxiosHttpClient implements HttpClient {
         };
 
         return doWithRetry<HttpResponse<T>>(request, `Requesting '${url}'`, optionsToUse.retry);
+    }
+
+    protected configureOptions(options: AxiosRequestConfig): AxiosRequestConfig {
+        return options;
     }
 }
 

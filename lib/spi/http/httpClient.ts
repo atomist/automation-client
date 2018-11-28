@@ -1,6 +1,8 @@
 import { WrapOptions } from "retry";
-import { DefaultRetryOptions } from "../../util/retry";
-import { AxiosHttpClientFactory } from "./axiosHttpClient";
+import {
+    DefaultRetryOptions,
+    RetryOptions,
+} from "../../util/retry";
 
 /**
  * Available HTTP request methods to use with HttpClient.
@@ -28,7 +30,7 @@ export interface HttpClientOptions {
     body?: any;
 
     /** Optional retry options */
-    retry?: WrapOptions;
+    retry?: RetryOptions;
 
     /** Raw options to be passed to the underlying implementation; Please use with care */
     options?: any;
