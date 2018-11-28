@@ -30,6 +30,7 @@ import {
     UserConfig,
 } from "../lib/configuration";
 import { DefaultHttpClientFactory } from "../lib/spi/http/axiosHttpClient";
+import { DefaultWebSocketFactory } from "../lib/spi/http/wsClient";
 
 describe("configuration", () => {
 
@@ -82,6 +83,9 @@ describe("configuration", () => {
             },
             compress: false,
             timeout: 10000,
+            client: {
+                factory: DefaultWebSocketFactory,
+            },
         },
         cluster: {
             enabled: false,
