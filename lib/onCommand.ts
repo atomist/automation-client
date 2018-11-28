@@ -68,6 +68,7 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
     public values?: ValueDeclaration[];
     public intent?: string[];
     public tags?: Tag[];
+    // tslint:disable-next-line:variable-name
     public auto_submit: boolean;
 
     constructor(public name: string,
