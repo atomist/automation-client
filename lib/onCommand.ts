@@ -68,15 +68,16 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
     public values?: ValueDeclaration[];
     public intent?: string[];
     public tags?: Tag[];
+    // tslint:disable-next-line:variable-name
     public auto_submit: boolean;
 
     constructor(public name: string,
                 public description: string,
                 private h: OnCommand<P>,
                 private parametersFactory: Maker<P>,
-                // tslint:disable-next-line:variable-name
+        // tslint:disable-next-line:variable-name
                 private _tags: string | string[] = [],
-                // tslint:disable-next-line:variable-name
+        // tslint:disable-next-line:variable-name
                 private _intent: string | string[] = [],
                 private autoSubmit: boolean = false) {
         const newParamInstance = this.freshParametersInstance();

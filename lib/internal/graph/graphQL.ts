@@ -218,17 +218,6 @@ export function replaceOperationName(q: string, name: string): string {
     return q.replace(OperationNameExpression, `$1 ${name}`);
 }
 
-/**
- * Validate a query against our GraphQL schema
- * @param {string} query
- * @returns {GraphQLError[]}
- */
-export function validateQuery(q: string): GraphQLError[] {
-    const graphql = parse(q);
-    const clientSchema = buildClientSchema(schema.data as IntrospectionQuery);
-    return [...validate(clientSchema, graphql)];
-}
-
 export function prettyPrintErrors(errors: GraphQLError[], q?: string): string {
     return errors.map(e => {
         let msg = `${e.message} ${e.locations.map(l => `[${l.line},${l.column}]`).join(", ")}`;
