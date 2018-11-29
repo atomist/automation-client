@@ -75,9 +75,9 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
                 public description: string,
                 private h: OnCommand<P>,
                 private parametersFactory: Maker<P>,
-        // tslint:disable-next-line:variable-name
+                // tslint:disable-next-line:variable-name
                 private _tags: string | string[] = [],
-        // tslint:disable-next-line:variable-name
+                // tslint:disable-next-line:variable-name
                 private _intent: string | string[] = [],
                 private autoSubmit: boolean = false) {
         const newParamInstance = this.freshParametersInstance();
