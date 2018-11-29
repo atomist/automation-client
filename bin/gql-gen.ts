@@ -52,7 +52,6 @@ async function main(): Promise<void> {
         const gqlGenArgs = [
             "--schema", schema,
             "--skip-schema",
-            "--silent",
             "--template", "graphql-codegen-typescript-template",
             "--out", gqlGenOutput,
         ];
