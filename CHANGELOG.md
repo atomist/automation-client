@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Update to latest graphql-code-generator. [#401](https://github.com/atomist/automation-client/issues/401)
+-   Extract creation of HTTP and WS clients for registration to proper factories. [#409](https://github.com/atomist/automation-client/issues/409)
 
 ### Deprecated
 
