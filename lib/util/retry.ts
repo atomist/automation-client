@@ -34,7 +34,9 @@ export function doWithRetry<R>(what: () => Promise<R>,
         ...DefaultRetryOptions as WrapOptions,
         ...opts,
     };
-    logger.log("silly", `${description} with retry options '%j'`, retryOptions);
+    if (opts.log) {
+        logger.log("silly", `${description} with retry options '%j'`, retryOptions);
+    }
     return promiseRetry(retryOptions, retry => {
         return what()
             .catch(err => {

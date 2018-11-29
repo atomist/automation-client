@@ -220,7 +220,7 @@ function register(registrationCallback: () => any,
                 method: HttpMethod.Post,
                 headers: { Authorization: authorization },
                 options: {
-                    timeout: configuration.ws.timeout || 10000,
+                    timeout: configuration.ws.timeout,
                 },
                 retry: { retries: 0, log: false },
             })
