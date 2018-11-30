@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Add initial Gitlab support. [#399](https://github.com/atomist/automation-client/issues/399)
 -   Add low-level child_process promise functions. [#406](https://github.com/atomist/automation-client/issues/406)
 -   Add autoSubmit to CommandDetails. [ee0e474](https://github.com/atomist/automation-client/commit/ee0e474a0fede4142fb1c62509ebacccf716b289)
+-   Add auth endpoints to configuration. [1680df8](https://github.com/atomist/automation-client/commit/1680df8c434ffff350b3cb4a62a9c985e9dbf282)
 
 ### Changed
 
