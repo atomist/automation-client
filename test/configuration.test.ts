@@ -58,6 +58,7 @@ describe("configuration", () => {
         endpoints: {
             api: "https://automation.atomist.com/registration",
             graphql: "https://automation.atomist.com/graphql/team",
+            auth: "https://api.atomist.com/v2/auth",
         },
         http: {
             enabled: true,

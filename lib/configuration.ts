@@ -173,6 +173,7 @@ export interface AutomationOptions extends AnyOptions {
     endpoints?: {
         graphql?: string;
         api?: string;
+        auth?: string;
     };
     /**
      * Post-processors can be used to modify the configuration after
@@ -928,6 +929,7 @@ export const LocalDefaultConfiguration: Configuration = {
     endpoints: {
         api: "https://automation.atomist.com/registration",
         graphql: "https://automation.atomist.com/graphql/team",
+        auth: "https://api.atomist.com/v2/auth",
     },
     http: {
         enabled: true,
