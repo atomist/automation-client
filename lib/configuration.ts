@@ -384,6 +384,15 @@ function loadDefaultConfiguration(): Configuration {
         cfg.environment = nodeEnv;
     }
 
+    // For internal testing use to switch to staging apis
+    if (process.env.ATOMIST_ENDPOINTS === "staging") {
+        cfg.endpoints = {
+            graphql: "https://automation-staging.atomist.services/graphql/team",
+            api: "https://automation-staging.atomist.services/registration",
+            auth: "https://api-staging.atomist.services/v2/auth",
+        };
+    }
+
     return mergeConfigs(cfg, envSpecificCfg);
 }
 
