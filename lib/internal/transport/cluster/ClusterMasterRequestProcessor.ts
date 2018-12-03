@@ -2,7 +2,6 @@ import * as cluster from "cluster";
 import * as stringify from "json-stringify-safe";
 import * as WebSocket from "ws";
 import { Configuration } from "../../../configuration";
-import * as global from "../../../globals";
 import { EventFired } from "../../../HandleEvent";
 import {
     AutomationContextAware,
@@ -29,7 +28,6 @@ import {
     isCommandIncoming,
     isEventIncoming,
 } from "../RequestProcessor";
-import { showStartupMessages } from "../showStartupMessages";
 import {
     sendMessage,
     WebSocketCommandMessageClient,
