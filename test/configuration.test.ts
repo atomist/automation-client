@@ -29,7 +29,8 @@ import {
     TestingDefaultConfiguration,
     UserConfig,
 } from "../lib/configuration";
-import { DefaultHttpClientFactory } from "../lib/spi/http/axiosHttpClient";
+import { DefaultGraphClientFactory } from "../lib/spi/graph/GraphClientFactory";
+import { DefaultHttpClientFactory } from "../lib/spi/http/httpClient";
 import { DefaultWebSocketFactory } from "../lib/spi/http/wsClient";
 
 describe("configuration", () => {
@@ -86,6 +87,11 @@ describe("configuration", () => {
             timeout: 10000,
             client: {
                 factory: DefaultWebSocketFactory,
+            },
+        },
+        graphql: {
+            client: {
+                factory: DefaultGraphClientFactory,
             },
         },
         cluster: {
