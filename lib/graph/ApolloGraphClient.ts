@@ -31,15 +31,18 @@ export class ApolloGraphClient implements GraphClient {
      * Create a new GraphClient
      * @param endpoint GraphQL endpoint
      * @param headers any special headers to use
+     * @param fetch configured GlobalFetch instance to use for this GraphClient
      */
-    constructor(public endpoint: string, headers: any = {}) {
+    constructor(public endpoint: string,
+                headers: any = {},
+                fetch: GlobalFetch["fetch"] = buildAxiosFetch(axios.create(configureProxy({})))) {
         const cache = new InMemoryCache({
             addTypename: false,
         });
 
         const httpLink = createHttpLink({
             uri: endpoint,
-            fetch: buildAxiosFetch(axios.create(configureProxy({}))),
+            fetch,
         });
 
         const middlewareLink = new ApolloLink((operation, forward) => {
