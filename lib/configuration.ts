@@ -37,8 +37,14 @@ import {
 import { AutomationEventListener } from "./server/AutomationEventListener";
 import { AutomationMetadataProcessor } from "./spi/env/MetadataProcessor";
 import { SecretResolver } from "./spi/env/SecretResolver";
-import { DefaultHttpClientFactory } from "./spi/http/axiosHttpClient";
-import { HttpClientFactory } from "./spi/http/httpClient";
+import {
+    DefaultGraphClientFactory,
+    GraphClientFactory,
+} from "./spi/graph/GraphClientFactory";
+import {
+    DefaultHttpClientFactory,
+    HttpClientFactory,
+} from "./spi/http/httpClient";
 import {
     DefaultWebSocketFactory,
     WebSocketFactory,
@@ -168,6 +174,11 @@ export interface AutomationOptions extends AnyOptions {
         compress?: boolean;
         /** timeout in milliseconds */
         timeout?: number;
+    };
+    graphql?: {
+        client?: {
+            factory: GraphClientFactory,
+        },
     };
     /** Atomist API endpoints */
     endpoints?: {
@@ -967,6 +978,11 @@ export const LocalDefaultConfiguration: Configuration = {
         },
         compress: false,
         timeout: 10000,
+    },
+    graphql: {
+        client: {
+            factory: DefaultGraphClientFactory,
+        },
     },
     applicationEvents: {
         enabled: false,

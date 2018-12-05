@@ -17,7 +17,9 @@ import {
 import {
     addressEvent,
     addressSlackChannels,
+    addressSlackChannelsFromContext,
     addressSlackUsers,
+    addressSlackUsersFromContext,
 } from "../../lib/spi/message/MessageClient";
 import { SecretBaseHandler } from "./SecretBaseHandler";
 
@@ -42,6 +44,8 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
                 name: this.name,
             },
         };
+
+        await ctx.messageClient.send({ text: "test"}, await addressSlackUsersFromContext(ctx, "cd"));
 
         await ctx.messageClient.send({ text: "test" }, addressSlackChannels(ctx.workspaceId, "handlers"));
         await ctx.messageClient.send({ text: "test" }, addressSlackUsers(ctx.workspaceId, "cd"), { id: null });

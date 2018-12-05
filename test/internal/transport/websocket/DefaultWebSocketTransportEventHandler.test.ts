@@ -9,6 +9,7 @@ import { Automations } from "../../../../lib/internal/metadata/metadata";
 import { DefaultWebSocketRequestProcessor } from "../../../../lib/internal/transport/websocket/DefaultWebSocketRequestProcessor";
 import { CommandHandlerMetadata } from "../../../../lib/metadata/automationMetadata";
 import { AutomationServer } from "../../../../lib/server/AutomationServer";
+import { DefaultGraphClientFactory } from "../../../../lib/spi/graph/GraphClientFactory";
 
 describe("DefaultWebSocketRequestProcessor", () => {
 
@@ -47,14 +48,21 @@ describe("DefaultWebSocketRequestProcessor", () => {
                 return Promise.resolve([{ code: 0 }]);
             }
         }
+
         class MockWebSocket {
             public send(data: any, cb?: (err: Error) => void) {
                 assert(JSON.parse(data).status.code === 0);
             }
         }
+
         const automations = new MockAutomationServer();
         const listener = new DefaultWebSocketRequestProcessor(automations,
-            { token: "xxx", endpoints: {api: "http://foo.com", graphql: "http://bar.com" }, ws: {}});
+            {
+                token: "xxx",
+                endpoints: { api: "http://foo.com", graphql: "http://bar.com" },
+                ws: {},
+                graphql: { client: { factory: DefaultGraphClientFactory } },
+            });
         listener.onRegistration({ url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
         listener.onConnect((new MockWebSocket() as any) as WebSocket);
         listener.processEvent({
@@ -118,14 +126,21 @@ function verifyCommandHandler(code: number, callback: (result) => void) {
             throw new Error("Method not implemented.");
         }
     }
+
     class MockWebSocket {
         public send(data: any, cb?: (err: Error) => void) {
             assert(JSON.parse(data).status.code === code);
         }
     }
+
     const automations = new MockAutomationServer();
     const listener = new DefaultWebSocketRequestProcessor(automations,
-        { token: "xxx", endpoints: {api: "http://foo.com", graphql: "http://bar.com" }, ws: {}});
+        {
+            token: "xxx",
+            endpoints: { api: "http://foo.com", graphql: "http://bar.com" },
+            ws: {},
+            graphql: { client: { factory: DefaultGraphClientFactory } },
+        });
     listener.onRegistration({ url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
     listener.onConnect((new MockWebSocket() as any) as WebSocket);
     listener.processCommand({

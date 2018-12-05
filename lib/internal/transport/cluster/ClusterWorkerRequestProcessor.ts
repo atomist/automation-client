@@ -1,7 +1,6 @@
 import { SlackMessage } from "@atomist/slack-messages";
 import * as stringify from "json-stringify-safe";
 import { Configuration } from "../../../configuration";
-import { ApolloGraphClientFactory } from "../../../graph/ApolloGraphClientFactory";
 import { EventFired } from "../../../HandleEvent";
 import {
     AutomationContextAware,
@@ -14,6 +13,7 @@ import {
 } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
+import { GraphClientFactory } from "../../../spi/graph/GraphClientFactory";
 import {
     Destination,
     MessageClient,
@@ -33,7 +33,10 @@ import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
     CommandIncoming,
     EventIncoming,
+    isCommandIncoming,
+    isEventIncoming,
     RequestProcessor,
+    workspaceId,
 } from "../RequestProcessor";
 import { RegistrationConfirmation } from "../websocket/WebSocketRequestProcessor";
 import {
@@ -46,7 +49,7 @@ import {
  */
 export class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
 
-    private graphClients: ApolloGraphClientFactory;
+    private graphClients: GraphClientFactory;
     private registration?: RegistrationConfirmation;
 
     /* tslint:disable:variable-name */
@@ -58,7 +61,8 @@ export class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
 
         super(_automations, _configuration, [..._listeners, new ClusterWorkerAutomationEventListener()]);
         workerSend({ type: "atomist:online", context: null })
-            .then(() => { /** intentionally left empty */});
+            .then(() => { /** intentionally left empty */
+            });
         registerShutdownHook(() => {
 
             if (this._configuration.ws &&
@@ -83,13 +87,13 @@ export class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
             }
         });
     }
+
     /* tslint:enable:variable-name */
 
     public setRegistration(registration: RegistrationConfirmation) {
         logger.debug("Receiving registration '%s'", stringify(registration));
         this.registration = registration;
-        this.graphClients =
-            new ApolloGraphClientFactory(this._configuration, () => `Bearer ${registration.jwt}`);
+        this.graphClients = this._configuration.graphql.client.factory;
     }
 
     public setRegistrationIfRequired(data: any) {
@@ -100,7 +104,8 @@ export class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
 
     public sendShutdown(code: number, ctx: HandlerContext & AutomationContextAware) {
         workerSend({ type: "atomist:shutdown", data: code, context: ctx.context })
-            .then(() => { /** intentionally left empty */ });
+            .then(() => { /** intentionally left empty */
+            });
     }
 
     protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {
@@ -113,7 +118,10 @@ export class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
 
     protected createGraphClient(event: CommandIncoming | EventIncoming,
                                 context: AutomationContextAware): GraphClient {
-        return this.graphClients.createGraphClient(event);
+        return this.graphClients.create(
+            workspaceId(event),
+            this._configuration,
+            this.registration.jwt);
     }
 
     protected createMessageClient(event: EventIncoming | CommandIncoming,

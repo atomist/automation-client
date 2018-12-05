@@ -31,6 +31,15 @@ export function isEventIncoming(event: any): event is EventIncoming {
     return !!event.data;
 }
 
+export function workspaceId(event: CommandIncoming | EventIncoming): string | undefined {
+    if (isCommandIncoming(event)) {
+        return event.team.id;
+    } else if (isEventIncoming(event)) {
+        return event.extensions.team_id;
+    }
+    return undefined;
+}
+
 export interface EventIncoming {
 
     data: any;

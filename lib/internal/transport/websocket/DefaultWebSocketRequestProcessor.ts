@@ -1,7 +1,6 @@
 import * as stringify from "json-stringify-safe";
 import * as WebSocket from "ws";
 import { Configuration } from "../../../configuration";
-import { ApolloGraphClientFactory } from "../../../graph/ApolloGraphClientFactory";
 import {
     AutomationContextAware,
     HandlerContext,
@@ -9,6 +8,7 @@ import {
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
+import { GraphClientFactory } from "../../../spi/graph/GraphClientFactory";
 import { MessageClient } from "../../../spi/message/MessageClient";
 import { logger } from "../../../util/logger";
 import {
@@ -21,6 +21,7 @@ import {
     EventIncoming,
     isCommandIncoming,
     isEventIncoming,
+    workspaceId,
 } from "../RequestProcessor";
 import {
     sendMessage,
@@ -35,7 +36,7 @@ import {
 export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
     implements WebSocketRequestProcessor {
 
-    private graphClients: ApolloGraphClientFactory;
+    private graphClients: GraphClientFactory;
     private registration?: RegistrationConfirmation;
     private webSocket?: WebSocket;
 
@@ -57,8 +58,7 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
         logger.info("Registration successful: %s", stringify(registration));
         (this.configuration.ws as any).session = registration;
         this.registration = registration;
-        this.graphClients =
-            new ApolloGraphClientFactory(this.configuration, () => `Bearer ${registration.jwt}`);
+        this.graphClients = this.configuration.graphql.client.factory;
     }
 
     public onConnect(ws: WebSocket) {
@@ -79,7 +79,10 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
     }
 
     protected createGraphClient(event: CommandIncoming | EventIncoming): GraphClient {
-        return this.graphClients.createGraphClient(event);
+        return this.graphClients.create(
+            workspaceId(event),
+            this.configuration,
+            this.registration.jwt);
     }
 
     protected createMessageClient(event: CommandIncoming | EventIncoming): MessageClient {
