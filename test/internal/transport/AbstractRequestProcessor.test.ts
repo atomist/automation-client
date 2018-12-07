@@ -50,7 +50,7 @@ class ConcreteRequestProcessor extends AbstractRequestProcessor {
     }
 
     protected createGraphClient(event: EventIncoming | CommandIncoming, context: AutomationContextAware): GraphClient {
-        throw new Error("Method not implemented: createGraphClient.");
+        throw new Error("Method not implemented: create.");
     }
 
     protected createMessageClient(event: EventIncoming | CommandIncoming, context: AutomationContextAware): MessageClient {

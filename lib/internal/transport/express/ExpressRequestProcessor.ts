@@ -9,6 +9,7 @@ import {
 import { AutomationEventListener } from "../../../server/AutomationEventListener";
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
+import { GraphClientFactory } from "../../../spi/graph/GraphClientFactory";
 import {
     Destination,
     MessageClient,
@@ -20,6 +21,7 @@ import {
     EventIncoming,
     isCommandIncoming,
     isEventIncoming,
+    workspaceId,
 } from "../RequestProcessor";
 import {
     WebSocketCommandMessageClient,
@@ -32,13 +34,13 @@ import {
  */
 export class ExpressRequestProcessor extends AbstractRequestProcessor {
 
-    private graphClientFactory: ApolloGraphClientFactory;
+    private graphClientFactory: GraphClientFactory;
 
     constructor(protected automations: AutomationServer,
                 protected configuration: Configuration,
                 protected listeners: AutomationEventListener[] = []) {
         super(automations, listeners);
-        this.graphClientFactory = new ApolloGraphClientFactory(this.configuration, () => `Bearer ${this.configuration.apiKey}`);
+        this.graphClientFactory = this.configuration.graphql.client.factory;
     }
 
     protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {
@@ -49,7 +51,10 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
                                 context: AutomationContextAware): GraphClient {
         return !!this.configuration.http.graphClientFactory ?
             this.configuration.http.graphClientFactory(context) :
-            this.graphClientFactory.createGraphClient(event);
+            this.graphClientFactory.create(
+                workspaceId(event),
+                this.configuration,
+                this.configuration.apiKey);
     }
 
     protected createMessageClient(event: EventIncoming | CommandIncoming,

@@ -2,6 +2,7 @@ import {
     DefaultRetryOptions,
     RetryOptions,
 } from "../../util/retry";
+import { AxiosHttpClientFactory } from "./axiosHttpClient";
 
 /**
  * Available HTTP request methods to use with HttpClient.
@@ -87,3 +88,11 @@ export const DefaultHttpClientOptions: HttpClientOptions = {
     headers: {},
     retry: DefaultRetryOptions,
 };
+
+/**
+ * Default HttpClientFactory which gets registered in the automation-client if not a
+ * different HttpClientFactory implementation is configured.
+ * @see Configuration.http.client.factory
+ * @type {HttpClientFactory}
+ */
+export const DefaultHttpClientFactory = new AxiosHttpClientFactory();
