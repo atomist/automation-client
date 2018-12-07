@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Update to latest graphql-code-generator. [#401](https://github.com/atomist/automation-client/issues/401)
 -   Extract creation of HTTP and WS clients for registration to proper factories. [#409](https://github.com/atomist/automation-client/issues/409)
 -   Introduce Commit editMode and allow PR to specify base. [#414](https://github.com/atomist/automation-client/issues/414)
+-   Chunk editAll operations. [#416](https://github.com/atomist/automation-client/issues/416)
 
 ### Deprecated
 
