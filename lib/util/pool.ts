@@ -6,6 +6,8 @@ function concurrentDefault(): number {
 
 /**
  * Execute all provided promises with a max concurrency
+ * Results will be in the same order as the provided promises; if a promise
+ * rejects, the result will contain the error instead
  * @param promises all promises to execute
  * @param concurrent the max number of concurrent promise executions
  */
@@ -26,9 +28,13 @@ export async function executeAll<T>(promises: Array<Promise<T>>, concurrent: num
 
     const results: T[] = [];
     pool.addEventListener("fulfilled", (event: any) => {
-        results.push(event.data.result);
+        results[promises.indexOf(event.data.promise)] = event.data.result;
     });
-    await pool.start();
+    pool.addEventListener("rejected", (event: any) => {
+        results[promises.indexOf(event.data.promise)] = event.data.error;
+    });
+
+    await pool.start(); // start only returns a promise; not an [] of results
 
     return results;
 }
