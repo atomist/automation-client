@@ -251,6 +251,9 @@ export {
     doWithRetry,
     RetryOptions,
 } from "./lib/util/retry";
+export {
+    executeAll,
+} from "./lib/util/pool";
 export * from "./lib/util/spawn";
 export {
     Maker,
