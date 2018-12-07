@@ -1,7 +1,7 @@
-import * as _ from "lodash";
 import { HandlerContext } from "../../HandlerContext";
 import { Project } from "../../project/Project";
 import { logger } from "../../util/logger";
+import { executeAll } from "../../util/pool";
 import { defaultRepoLoader } from "./defaultRepoLoader";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import {
@@ -11,11 +11,6 @@ import {
 import { RepoFinder } from "./repoFinder";
 import { RepoRef } from "./RepoId";
 import { RepoLoader } from "./repoLoader";
-
-/**
- * Specify how many repos should be edited concurrently at max
- */
-export let EditAllChunkSize = 5;
 
 /**
  * Perform an action against all the given repos.
@@ -37,25 +32,21 @@ export async function doWithAllRepos<R, P>(ctx: HandlerContext,
                                            repoFilter: RepoFilter = AllRepos,
                                            repoLoader: RepoLoader =
         defaultRepoLoader(credentials)): Promise<R[]> {
-    const allIds = await relevantRepos(ctx, repoFinder, repoFilter);
-    const idChunks = _.chunk(allIds , EditAllChunkSize);
-    const results: R[] = [];
-    for (const ids of idChunks) {
-        results.push(...(await Promise.all(ids.map(id =>
-            repoLoader(id)
-                .catch(err => {
-                    logger.warn("Unable to load repo %s/%s: %s", id.owner, id.repo, err);
-                    logger.debug(err.stack);
-                    return undefined;
-                })
-                .then(p => {
-                    if (p) {
-                        return action(p, parameters);
-                    }
-                })))
-            .then(proms => proms.filter(prom => prom))));
-    }
-    return results;
+    const ids = await relevantRepos(ctx, repoFinder, repoFilter);
+    const promises = ids.map(id =>
+        repoLoader(id)
+            .catch(err => {
+                logger.warn("Unable to load repo %s/%s: %s", id.owner, id.repo, err);
+                logger.debug(err.stack);
+                return undefined;
+            })
+            .then(p => {
+                if (p) {
+                    return action(p, parameters);
+                }
+            }));
+
+    return (await executeAll<R>(promises)).filter(result => result);
 }
 
 export function relevantRepos(ctx: HandlerContext,
