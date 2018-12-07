@@ -55,15 +55,19 @@ export enum AutoMergeMode {
 }
 
 /**
+ * Describe the auto merge behavior
+ */
+export interface AutoMerge {
+    mode: AutoMergeMode | string;
+    method?: AutoMergeMethod;
+}
+
+/**
  * Represents a commit to a project on a branch
  */
 export interface BranchCommit extends EditMode {
     branch: string;
-
-    autoMerge?: {
-        mode: AutoMergeMode | string,
-        method?: AutoMergeMethod,
-    };
+    autoMerge?: AutoMerge;
 }
 
 /**
@@ -82,14 +86,28 @@ export function isBranchCommit(em: EditMode): em is BranchCommit {
 }
 
 /**
+ * Captures basic information to create a commit
+ */
+export class Commit implements BranchCommit {
+
+    constructor(public branch: string,
+                public message: string,
+                public autoMerge?: AutoMerge) {}
+}
+
+/**
  * Captures extra steps that must go into raising a PR
  */
-export class PullRequest implements BranchCommit {
+export class PullRequest extends Commit {
 
     constructor(public branch: string,
                 public title: string,
                 public body: string = title,
-                public message: string = title) {
+                public message: string = title,
+                // Make default to master for backwards-compatible reasons
+                public targetBranch: string = "master",
+                public autoMerge?: AutoMerge) {
+        super(branch, message, autoMerge);
     }
 }
 

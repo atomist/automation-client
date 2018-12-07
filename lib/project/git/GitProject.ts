@@ -90,8 +90,9 @@ export interface GitProject extends LocalProject, Configurable {
      * Raise a PR after a push to this branch
      * @param title
      * @param body
+     * @param targetBranch
      */
-    raisePullRequest(title: string, body: string): Promise<this>;
+    raisePullRequest(title: string, body: string, targetBranch?: string): Promise<this>;
 
     /**
      * Commit to local git
