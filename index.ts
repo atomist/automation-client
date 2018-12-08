@@ -260,10 +260,16 @@ export * from "./lib/operations/common/GitlabPrivateTokenCredentials";
 export * from "./lib/operations/common/GitlabRepoRef";
 export * from "./lib/operations/generate/GitlabRepoCreationParameters";
 export {
+    ApolloGraphClient,
+} from "./lib/graph/ApolloGraphClient";
+export {
+    ApolloGraphClientFactory,
+} from "./lib/graph/ApolloGraphClientFactory";
+export {
     GraphClientFactory,
     DefaultGraphClientFactory,
 } from "./lib/spi/graph/GraphClientFactory";
-export {
+export {                                       
     AxiosHttpClient,
     AxiosHttpClientFactory,
 } from "./lib/spi/http/axiosHttpClient";
