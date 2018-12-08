@@ -272,7 +272,7 @@ export {
     GraphClientFactory,
     DefaultGraphClientFactory,
 } from "./lib/spi/graph/GraphClientFactory";
-export {                                       
+export {
     AxiosHttpClient,
     AxiosHttpClientFactory,
 } from "./lib/spi/http/axiosHttpClient";
