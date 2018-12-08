@@ -73,6 +73,7 @@
     "cluster": "^0.7.7",
     "cors": "^2.8.5",
     "cross-spawn": "^6.0.5",
+    "es6-promise-pool": "^2.5.0",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
     "find-up": "^3.0.0",
