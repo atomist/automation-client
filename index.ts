@@ -259,3 +259,29 @@ export * from "./lib/operations/common/gitlabRepoLoader";
 export * from "./lib/operations/common/GitlabPrivateTokenCredentials";
 export * from "./lib/operations/common/GitlabRepoRef";
 export * from "./lib/operations/generate/GitlabRepoCreationParameters";
+export {
+    GraphClientFactory,
+    DefaultGraphClientFactory,
+} from "./lib/spi/graph/GraphClientFactory";
+export {
+    AxiosHttpClient,
+    AxiosHttpClientFactory,
+} from "./lib/spi/http/axiosHttpClient";
+export {
+    CurlHttpClient,
+    CurlHttpClientFactory,
+} from "./lib/spi/http/curlHttpClient";
+export {
+    HttpClientFactory,
+    DefaultHttpClientFactory,
+    DefaultHttpClientOptions,
+    HttpClient,
+    HttpClientOptions,
+    HttpMethod,
+    HttpResponse,
+} from "./lib/spi/http/httpClient";
+export {
+    WSWebSocketFactory,
+    WebSocketFactory,
+    DefaultWebSocketFactory,
+} from "./lib/spi/http/wsClient";
