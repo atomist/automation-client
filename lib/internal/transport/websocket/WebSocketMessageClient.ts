@@ -65,13 +65,14 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                             channel: {
                                 name: c,
                             },
+                            thread_ts: options.thread,
                         },
                     });
                 });
 
                 toStringArray(sd.users).forEach(c => {
                     responseDestinations.push({
-                        user_agent: "slack",
+                        user_agent: SlackDestination.SLACK_USER_AGENT,
                         slack: {
                             team: {
                                 id: sd.team,
@@ -79,6 +80,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                             user: {
                                 name: c,
                             },
+                            thread_ts: options.thread,
                         },
                     });
                 });

@@ -257,6 +257,11 @@ export interface MessageOptions extends AnyOptions {
      * if a previous message with the same id exists.
      */
     post?: "update_only" | "always";
+
+    /**
+     * Optional thread identifier to send this message to.
+     */
+    thread?: string;
 }
 
 /** Valid MessageClient types. */
