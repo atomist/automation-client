@@ -2,19 +2,18 @@ import * as appRoot from "app-root-path";
 import * as findUp from "find-up";
 import * as fs from "fs";
 import {
-    buildClientSchema,
     GraphQLError,
-    IntrospectionQuery,
     parse,
 } from "graphql";
-import gql from "graphql-tag";
-import { validate } from "graphql/validation";
+import gql, { disableFragmentWarnings } from "graphql-tag";
 import * as p from "path";
 import { logger } from "../../util/logger";
 import {
     findLine,
     generateHash,
 } from "../util/string";
+
+disableFragmentWarnings();
 
 // tslint:disable-next-line:no-var-requires
 const schema = require("../../graph/schema.json");
