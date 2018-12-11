@@ -142,7 +142,7 @@ export const MinimalLogging: LoggingConfiguration = {
 export const ClientLogging: LoggingConfiguration = {
     console: {
         enabled: true,
-        level: "info",
+        level: process.env.ATOMIST_CONFIG_LOGGING_LEVEL ? process.env.ATOMIST_CONFIG_LOGGING_LEVEL : "info",
         format: LoggingFormat.Full,
         redirect: true,
     },

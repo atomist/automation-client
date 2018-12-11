@@ -389,8 +389,10 @@ function loadDefaultConfiguration(): Configuration {
     const nodeEnv = process.env.ATOMIST_ENV || process.env.NODE_ENV;
     if (nodeEnv === "production") {
         envSpecificCfg = ProductionDefaultConfiguration;
+        cfgLog("production default");
     } else if (nodeEnv === "staging" || nodeEnv === "testing") {
         envSpecificCfg = TestingDefaultConfiguration;
+        cfgLog("testing default");
     } else if (nodeEnv) {
         cfg.environment = nodeEnv;
     }
@@ -466,7 +468,7 @@ export function getUserConfig(): UserConfig {
  */
 function cfgLog(source: string) {
     if (cluster.isMaster) {
-        logger.debug(`Loading ${source} configuration`);
+        logger.debug(`Loading configuration '${source}'`);
     }
 }
 
@@ -528,7 +530,7 @@ export function deepMergeConfigs(obj: Configuration, ...sources: Configuration[]
 export function resolveModuleConfig(userConfig: UserConfig, name?: string, version?: string): AutomationServerOptions {
     const cfg: AutomationServerOptions = {};
     if (userConfig) {
-        cfgLog("user");
+        cfgLog(userConfigPath());
         const uc = _.cloneDeep(userConfig);
         let mc: Partial<ModuleOptions> = {};
         if (userConfig.modules) {
@@ -596,7 +598,7 @@ export function loadAutomationConfig(cfgPath?: string): Configuration | undefine
     if (cfgPath) {
         try {
             const cfg = require(cfgPath).configuration;
-            cfgLog("automation config");
+            cfgLog(cfgPath);
             return cfg;
         } catch (e) {
             e.message = `Failed to load ${cfgPath}.configuration: ${e.message}`;
@@ -620,7 +622,7 @@ export function loadIndexConfig(): Configuration {
         const cfgs = files.map(f => {
             try {
                 const cfg = require(f).configuration || {};
-                cfgLog("index config");
+                cfgLog(f);
                 return cfg;
             } catch (e) {
                 logger.debug(`Failed to load ${f}.configuration: ${e.message}`);
