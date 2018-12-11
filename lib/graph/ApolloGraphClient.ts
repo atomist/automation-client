@@ -4,7 +4,7 @@ import { ApolloLink } from "apollo-link";
 import { createHttpLink } from "apollo-link-http";
 import axios from "axios";
 import { buildAxiosFetch } from "axios-fetch";
-import gql from "graphql-tag";
+import gql, { disableFragmentWarnings } from "graphql-tag";
 import * as stringify from "json-stringify-safe";
 import * as trace from "stack-trace";
 import * as internalGraphql from "../internal/graph/graphQL";
@@ -16,6 +16,8 @@ import {
     QueryOptions,
 } from "../spi/graph/GraphClient";
 import { logger } from "../util/logger";
+
+disableFragmentWarnings();
 
 /**
  * Implementation of GraphClient using Apollo Client.
