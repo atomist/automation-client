@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Add thread_ts to MessageOptions to address threads. [49b9be7](https://github.com/atomist/automation-client/commit/49b9be713fa6395d16892787958c4f1cf6a444d4)
 -   Disable graphql-tag fragment warning. [#419](https://github.com/atomist/automation-client/issues/419)
+-   Allow to print out configuration sources during startup. [a255171](https://github.com/atomist/automation-client/commit/a255171da3b88a2bd4422672422f5ad228183bbb)
 
 ## [1.1.0](https://github.com/atomist/automation-client-ts/compare/1.0.1...1.1.0) - 2018-12-08
 
