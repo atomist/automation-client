@@ -239,6 +239,7 @@ export {
 } from "./lib/tree/ast/typescript/TypeScriptFileParser";
 export {
     WritableLog,
+    execPromise,
 } from "./lib/util/child_process";
 export * from "./lib/util/exec";
 export {
