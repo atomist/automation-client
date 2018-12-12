@@ -14,6 +14,7 @@ export enum HttpMethod {
     Delete = "DELETE",
     Options = "OPTIONS",
     Patch = "PATCH",
+    Head = "HEAD",
 }
 
 /**
