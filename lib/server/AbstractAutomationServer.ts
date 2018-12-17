@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import { EventFired } from "../HandleEvent";
 import { HandlerContext } from "../HandlerContext";
 import { HandlerResult } from "../HandlerResult";
@@ -48,7 +49,7 @@ export abstract class AbstractAutomationServer implements AutomationServer {
         handler.parameters.forEach(p => {
             const payloadValue: Arg = payload.args ?
                 payload.args.find(a => a.name === p.name) : undefined;
-            if (!payloadValue || !payloadValue.value) {
+            if (!payloadValue || _.isNil(payloadValue.value)) {
                 if (p.required && p.default_value === undefined) {
                     throw new Error(`Parameter '${p.name}' required but missing in invocation to '${handler.name}'`);
                 }
