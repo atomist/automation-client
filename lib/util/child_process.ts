@@ -16,16 +16,15 @@
  */
 
 import {
-    ChildProcess,
     SpawnOptions,
     SpawnSyncOptions,
     SpawnSyncReturns,
 } from "child_process";
 import * as spawn from "cross-spawn";
 import * as process from "process";
-import stripAnsi = require("strip-ansi");
 import * as treeKill from "tree-kill";
 import { logger } from "./logger";
+import stripAnsi = require("strip-ansi");
 
 export { spawn };
 
@@ -71,6 +70,7 @@ export interface WritableLog {
      * the data before writing to log.
      */
     stripAnsi?: boolean;
+
     /** Function that appends to the log. */
     write(what: string): void;
 }
@@ -133,39 +133,44 @@ export interface SpawnPromiseReturns extends SpawnSyncReturns<string> {
  */
 export async function spawnPromise(cmd: string, args: string[] = [], opts: SpawnPromiseOptions = {}): Promise<SpawnPromiseReturns> {
     return new Promise<SpawnPromiseReturns>((resolve, reject) => {
-        const cmdString = childProcessString(cmd, args, opts);
+        const optsToUse: SpawnPromiseOptions = {
+            logCommand: true,
+            ...opts,
+        };
+        const cmdString = childProcessString(cmd, args, optsToUse);
         let logEncoding = "utf8";
-        if (!opts.encoding) {
-            if (opts.log) {
-                opts.encoding = "buffer";
+        if (!optsToUse.encoding) {
+            if (optsToUse.log) {
+                optsToUse.encoding = "buffer";
             } else {
-                opts.encoding = "utf8";
+                optsToUse.encoding = "utf8";
             }
-        } else if (opts.log && opts.encoding !== "buffer") {
-            logEncoding = opts.encoding;
-            opts.encoding = "buffer";
+        } else if (optsToUse.log && optsToUse.encoding !== "buffer") {
+            logEncoding = optsToUse.encoding;
+            optsToUse.encoding = "buffer";
         }
         logger.debug(`Running: ${cmdString}`);
-        const childProcess = spawn(cmd, args, opts);
+        const childProcess = spawn(cmd, args, optsToUse);
         logger.debug(`Spawned PID ${childProcess.pid}: ${cmdString}`);
-        if (opts.log && opts.logCommand) {
-            opts.log.write(`/--\n${cmdString} (PID ${childProcess.pid})\n\\--\n`);
+        if (optsToUse.log && optsToUse.logCommand) {
+            optsToUse.log.write(`/--\n${cmdString} (PID ${childProcess.pid})\n\\--\n`);
         }
         let timer: NodeJS.Timer;
-        if (opts.timeout) {
+        if (optsToUse.timeout) {
             timer = setTimeout(() => {
                 logger.warn(`Child process timeout expired, killing command: ${cmdString}`);
-                killProcess(childProcess.pid, opts.killSignal);
-            }, opts.timeout);
+                killProcess(childProcess.pid, optsToUse.killSignal);
+            }, optsToUse.timeout);
         }
         let stderr: string = "";
         let stdout: string = "";
-        if (opts.log) {
+        if (optsToUse.log) {
             function logData(data: Buffer): void {
                 const dataString = data.toString(logEncoding);
-                const formatted = (opts.log.stripAnsi) ? stripAnsi(dataString) : dataString;
-                opts.log.write(formatted);
+                const formatted = (optsToUse.log.stripAnsi) ? stripAnsi(dataString) : dataString;
+                optsToUse.log.write(formatted);
             }
+
             childProcess.stderr.on("data", logData);
             childProcess.stdout.on("data", logData);
             stderr = stdout = "See log\n";
