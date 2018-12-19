@@ -158,7 +158,7 @@ describe("child_promise", () => {
             const script = "console.log('foo'); console.error('bar');";
             let output: string = "";
             const log = { write: d => output += d };
-            const result = await spawnPromise("node", ["-e", script], { log });
+            const result = await spawnPromise("node", ["-e", script], { log, logCommand: false });
             assert(output === "foo\nbar\n");
             assert(result.status === 0);
             assert(result.error === null);
