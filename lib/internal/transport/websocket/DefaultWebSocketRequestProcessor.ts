@@ -75,7 +75,7 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
 
     protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {
         return Promise.resolve(
-            this.webSocketLifecycle.send(payload)
+            this.webSocketLifecycle.send(payload),
         );
     }
 

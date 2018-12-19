@@ -10,7 +10,7 @@ export class WebSocketLifecycle {
     private messages: TinyQueue;
     private ws: WebSocket;
     private timer: NodeJS.Timer;
-    
+
     constructor() {
         this.messages = new TinyQueue();
     }
