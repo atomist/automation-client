@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Allow to print out configuration sources during startup. [a255171](https://github.com/atomist/automation-client/commit/a255171da3b88a2bd4422672422f5ad228183bbb)
 -   Add HEAD method to HttpClient. [32fbc96](https://github.com/atomist/automation-client/commit/32fbc9654178c8f3425e95ccc07228d8e1f2227b)
 
+### Changed
+
+-   Tighten typing on menuForCommand and buttonForCommand. [de3b582](https://github.com/atomist/automation-client/commit/de3b5821e69aee02952487aec63759d4ec7faffd)
+
 ### Fixed
 
 -   Bug: Boolean parameter types are not supported. [#423](https://github.com/atomist/automation-client/issues/423)
