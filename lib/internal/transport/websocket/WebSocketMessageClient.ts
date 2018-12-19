@@ -27,10 +27,11 @@ import {
     isEventIncoming,
     Source,
 } from "../RequestProcessor";
+import { WebSocketLifecycle } from "./WebSocketLifecycle";
 
 export abstract class AbstractWebSocketMessageClient extends MessageClientSupport {
 
-    constructor(private ws: WebSocket,
+    constructor(private ws: WebSocketLifecycle,
                 private request: CommandIncoming | EventIncoming,
                 private correlationId: string,
                 private team: { id: string, name?: string },
@@ -144,7 +145,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             response.body = JSON.stringify(msg);
             response.id = (options.id ? options.id : guid());
         }
-        sendMessage(response, this.ws);
+        this.ws.send(response);
         return Promise.resolve(response);
     }
 
@@ -163,7 +164,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
 
 export class WebSocketCommandMessageClient extends AbstractWebSocketMessageClient {
 
-    constructor(request: CommandIncoming, ws: WebSocket) {
+    constructor(request: CommandIncoming, ws: WebSocketLifecycle) {
         super(ws, request, request.correlation_id, request.team, request.source);
     }
 
@@ -176,7 +177,7 @@ export class WebSocketCommandMessageClient extends AbstractWebSocketMessageClien
 
 export class WebSocketEventMessageClient extends AbstractWebSocketMessageClient {
 
-    constructor(request: EventIncoming, ws: WebSocket) {
+    constructor(request: EventIncoming, ws: WebSocketLifecycle) {
         super(ws, request, request.extensions.correlation_id,
             { id: request.extensions.team_id, name: request.extensions.team_name }, null);
     }
@@ -246,12 +247,12 @@ function mapParameters(data: {}): Parameter[] {
     return parameters;
 }
 
-export function sendMessage(message: any, ws: WebSocket, log: boolean = true) {
+export function sendMessage(message: any, ws: WebSocket, log: boolean = true): void {
     const payload = JSON.stringify(message);
     if (log) {
         logger.debug(`Sending message '${payload}'`);
     }
-    return ws.send(payload);
+    ws.send(payload);
 }
 
 export function clean(addresses: string[] | string): string[] {

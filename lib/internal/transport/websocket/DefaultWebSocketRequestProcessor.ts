@@ -23,6 +23,7 @@ import {
     isEventIncoming,
     workspaceId,
 } from "../RequestProcessor";
+import { WebSocketLifecycle } from "./WebSocketLifecycle";
 import {
     sendMessage,
     WebSocketCommandMessageClient,
@@ -38,7 +39,7 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
 
     private graphClients: GraphClientFactory;
     private registration?: RegistrationConfirmation;
-    private webSocket?: WebSocket;
+    private webSocketLifecycle: WebSocketLifecycle = new WebSocketLifecycle();
 
     constructor(protected automations: AutomationServer,
                 protected configuration: Configuration,
@@ -46,7 +47,7 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
         super(automations, listeners);
 
         registerHealthIndicator(() => {
-            if (this.webSocket && this.registration) {
+            if (this.webSocketLifecycle.connected() && this.registration) {
                 return { status: HealthStatus.Up, detail: "WebSocket connection established" };
             } else {
                 return { status: HealthStatus.Down, detail: "WebSocket disconnected" };
@@ -63,18 +64,18 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
 
     public onConnect(ws: WebSocket) {
         logger.info("WebSocket connection established. Listening for incoming messages");
-        this.webSocket = ws;
+        this.webSocketLifecycle.set(ws);
         this.listeners.forEach(l => l.registrationSuccessful(this));
     }
 
     public onDisconnect() {
-        this.webSocket = null;
+        this.webSocketLifecycle.reset();
         this.registration = null;
     }
 
     protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {
         return Promise.resolve(
-            sendMessage(payload, this.webSocket),
+            this.webSocketLifecycle.send(payload)
         );
     }
 
@@ -87,9 +88,9 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
 
     protected createMessageClient(event: CommandIncoming | EventIncoming): MessageClient {
         if (isCommandIncoming(event)) {
-            return new WebSocketCommandMessageClient(event, this.webSocket);
+            return new WebSocketCommandMessageClient(event, this.webSocketLifecycle);
         } else if (isEventIncoming(event)) {
-            return new WebSocketEventMessageClient(event, this.webSocket);
+            return new WebSocketEventMessageClient(event, this.webSocketLifecycle);
         }
     }
 }

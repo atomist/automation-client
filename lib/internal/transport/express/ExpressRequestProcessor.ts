@@ -23,6 +23,7 @@ import {
     isEventIncoming,
     workspaceId,
 } from "../RequestProcessor";
+import { WebSocketLifecycle } from "../websocket/WebSocketLifecycle";
 import {
     WebSocketCommandMessageClient,
     WebSocketEventMessageClient,
@@ -72,7 +73,7 @@ class ExpressMessageClient implements MessageClient {
     constructor(private event: EventIncoming | CommandIncoming) {
         if (automationClientInstance().webSocketHandler
             && (automationClientInstance().webSocketHandler as any).webSocket) {
-            const ws = (automationClientInstance().webSocketHandler as any).webSocket as WebSocket;
+            const ws = (automationClientInstance().webSocketHandler as any).webSocketLifecycle as WebSocketLifecycle;
             if (isCommandIncoming(this.event)) {
                 this.delegate = new WebSocketCommandMessageClient(this.event, ws);
             } else if (isEventIncoming(this.event)) {

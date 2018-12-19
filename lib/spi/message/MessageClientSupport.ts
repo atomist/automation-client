@@ -89,7 +89,7 @@ export function lookupChatTeam(graphClient: GraphClient): Promise<string> {
                 options: QueryNoCacheOptions,
             })
             .then(result => {
-                if (result.ChatTeam.length > 1) {
+                if (result.ChatTeam && result.ChatTeam.length > 1) {
                     return Promise.reject("More then 1 ChatTeam found. Please use fully qualified " +
                         "message addressing available on MessageClient");
                 } else {

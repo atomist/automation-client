@@ -28,6 +28,7 @@ import {
     isCommandIncoming,
     isEventIncoming,
 } from "../RequestProcessor";
+import { WebSocketLifecycle } from "../websocket/WebSocketLifecycle";
 import {
     sendMessage,
     WebSocketCommandMessageClient,
@@ -52,7 +53,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
     implements WebSocketRequestProcessor {
 
     private registration?: RegistrationConfirmation;
-    private webSocket?: WebSocket;
+    private webSocketLifecycle: WebSocketLifecycle = new WebSocketLifecycle();
     private commands: Map<string, Dispatched<HandlerResult>> = new Map();
     private events: Map<string, Dispatched<HandlerResult[]>> = new Map();
     private shutdownInitiated: boolean = false;
@@ -64,7 +65,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         super(automations, configuration, listeners);
 
         registerHealthIndicator(() => {
-            if (this.webSocket && this.registration) {
+            if (this.webSocketLifecycle.connected() && this.registration) {
                 return { status: HealthStatus.Up, detail: "WebSocket connection established" };
             } else {
                 return { status: HealthStatus.Down, detail: "WebSocket disconnected" };
@@ -72,8 +73,8 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         });
 
         registerShutdownHook(() => {
-           this.shutdownInitiated = true;
-           return Promise.resolve(0);
+            this.shutdownInitiated = true;
+            return Promise.resolve(0);
         }, Number.MIN_VALUE);
     }
 
@@ -91,17 +92,17 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
     public onConnect(ws: WebSocket) {
         logger.info("WebSocket connection established. Listening for incoming messages");
-        this.webSocket = ws;
+        this.webSocketLifecycle.set(ws);
         this.listeners.forEach(l => l.registrationSuccessful(this));
     }
 
     public onDisconnect() {
-        this.webSocket = null;
+        this.webSocketLifecycle.reset();
         this.registration = null;
     }
 
     public run(): Promise<any> {
-        const ws = () => this.webSocket;
+        const ws = () => this.webSocketLifecycle;
         const listeners = this.listeners;
         const commands = this.commands;
         const events = this.events;
@@ -152,7 +153,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                                 .then(clearNamespace, clearNamespace);
                         }
                     } else if (msg.type === "atomist:status") {
-                        sendMessage(msg.data, ws());
+                        ws().send(msg.data);
                     } else if (msg.type === "atomist:command_success") {
                         listeners.map(l => () => l.commandSuccessful(msg.event as CommandInvocation,
                             ctx, msg.data as HandlerResult))
@@ -279,7 +280,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
     protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {
         return Promise.resolve(
-            sendMessage(payload, this.webSocket),
+            this.webSocketLifecycle.send(payload)
         );
     }
 
@@ -289,9 +290,9 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
     protected createMessageClient(event: CommandIncoming | EventIncoming): MessageClient {
         if (isCommandIncoming(event)) {
-            return new WebSocketCommandMessageClient(event, this.webSocket);
+            return new WebSocketCommandMessageClient(event, this.webSocketLifecycle);
         } else if (isEventIncoming(event)) {
-            return new WebSocketEventMessageClient(event, this.webSocket);
+            return new WebSocketEventMessageClient(event, this.webSocketLifecycle);
         }
     }
 
@@ -300,7 +301,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         for (const id in cluster.workers) {
             if (cluster.workers.hasOwnProperty(id)) {
                 const worker = cluster.workers[id];
-                if (worker.isConnected()) {
+                if (worker.isConnected) {
                     workers.push(worker);
                 }
             }
@@ -311,7 +312,8 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
 class Dispatched<T> {
 
-    constructor(public result: Deferred<T>, public context: HandlerContext) { }
+    constructor(public result: Deferred<T>, public context: HandlerContext) {
+    }
 }
 
 function hydrateContext(msg: WorkerMessage): HandlerContext {

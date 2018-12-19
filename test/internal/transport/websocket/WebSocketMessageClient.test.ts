@@ -1,7 +1,7 @@
 import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
-import WebSocket = require("ws");
+import { WebSocketLifecycle } from "../../../../lib/internal/transport/websocket/WebSocketLifecycle";
 import {
     clean,
     WebSocketCommandMessageClient,
@@ -44,9 +44,7 @@ describe("WebSocketMessageClient", () => {
                 data: {},
                 extensions: { team_id: "Txxxxxxx", correlation_id: corrId, operationName: "Foor" },
                 secrets: [],
-            }, { send: () => { //
-                // Intentionally left empty
-            } } as any as WebSocket );
+            }, new WebSocketLifecycle() );
 
         const msg: SlackMessage = {
             attachments: [{
@@ -91,9 +89,7 @@ describe("WebSocketMessageClient", () => {
                 data: {},
                 extensions: { team_id: "Txxxxxxx", correlation_id: corrId, operationName: "Foor" },
                 secrets: [],
-            }, { send: () => { //
-                // Intentionally left empty
-            } } as any as WebSocket );
+            }, new WebSocketLifecycle() );
 
         const msg: SlackMessage = {
             attachments: [{
@@ -156,9 +152,7 @@ describe("WebSocketMessageClient", () => {
                 parameters: [],
                 mapped_parameters: [],
                 secrets: [],
-            }, { send: () => { //
-                // Intentionally left empty
-            } } as any as WebSocket );
+            }, new WebSocketLifecycle() );
 
         const msg: SlackMessage = {
             attachments: [{
@@ -219,9 +213,7 @@ describe("WebSocketMessageClient", () => {
                 parameters: [],
                 mapped_parameters: [],
                 secrets: [],
-            }, { send: () => { //
-                // Intentionally left empty
-            } } as any as WebSocket );
+            }, new WebSocketLifecycle() );
 
         const msg: SlackFileMessage = {
             content: "some basic text",
