@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Disable graphql-tag fragment warning. [#419](https://github.com/atomist/automation-client/issues/419)
 -   Allow to print out configuration sources during startup. [a255171](https://github.com/atomist/automation-client/commit/a255171da3b88a2bd4422672422f5ad228183bbb)
 -   Add HEAD method to HttpClient. [32fbc96](https://github.com/atomist/automation-client/commit/32fbc9654178c8f3425e95ccc07228d8e1f2227b)
+-   Graceful queue messages when the WS disconnects. [#426](https://github.com/atomist/automation-client/issues/426)
 
 ### Changed
 
