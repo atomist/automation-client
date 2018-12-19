@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Tighten typing on menuForCommand and buttonForCommand. [de3b582](https://github.com/atomist/automation-client/commit/de3b5821e69aee02952487aec63759d4ec7faffd)
+-   Update registration timeout to 30s. [65d9ba9](https://github.com/atomist/automation-client/commit/65d9ba9fe353c6c4609c35a1cb455bb9f31e26dc)
 
 ### Fixed
 
