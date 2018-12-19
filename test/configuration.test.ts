@@ -84,7 +84,7 @@ describe("configuration", () => {
                 gracePeriod: 10000,
             },
             compress: false,
-            timeout: 10000,
+            timeout: 30000,
             client: {
                 factory: DefaultWebSocketFactory,
             },
