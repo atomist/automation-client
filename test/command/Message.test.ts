@@ -35,11 +35,11 @@ export class MessageTest implements HandleCommand {
                 fallback: "Actions",
                 actions: [
                     buttonForCommand(
-                        {text: "ttl 10s"}, "MessageTest", {type: "ttl", msgId: this.msgId }),
+                        {text: "ttl 10s"}, this, {type: "ttl", msgId: this.msgId }),
                     buttonForCommand(
-                        {text: "always"}, "MessageTest", {type: "always", msgId: this.msgId }),
+                        {text: "always"}, this, {type: "always", msgId: this.msgId }),
                     buttonForCommand(
-                        {text: "update"}, "MessageTest", {type: "update_only", msgId: this.msgId }),
+                        {text: "update"}, this, {type: "update_only", msgId: this.msgId }),
                 ],
             }],
         };

@@ -5,6 +5,7 @@ import {
 import { flatten } from "flat";
 import * as _ from "lodash";
 import { AnyOptions } from "../../configuration";
+import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { metadataFromInstance } from "../../internal/metadata/metadataReading";
 import { lookupChatTeam } from "./MessageClientSupport";
@@ -311,18 +312,18 @@ export interface CommandReference {
  * Create a slack button that invokes a command handler.
  */
 export function buttonForCommand(buttonSpec: ButtonSpecification,
-                                 command: any,
+                                 command: string | HandleCommand,
                                  parameters: {
         [name: string]: string | number | boolean,
     } = {}): Action {
     const cmd = commandName(command);
-    parameters = mergeParameters(command, parameters);
+    const params = mergeParameters(command, parameters);
     const id = cmd.toLocaleLowerCase();
     const action = chatButtonFrom(buttonSpec, { id }) as CommandReferencingAction;
     action.command = {
         id,
         name: cmd,
-        parameters,
+        parameters: params,
     };
     return action;
 }
@@ -331,19 +332,19 @@ export function buttonForCommand(buttonSpec: ButtonSpecification,
  * Create a Slack menu that invokes a command handler.
  */
 export function menuForCommand(selectSpec: MenuSpecification,
-                               command: any,
+                               command: string | HandleCommand,
                                parameterName: string,
                                parameters: {
         [name: string]: string | number | boolean,
     } = {}): Action {
     const cmd = commandName(command);
-    parameters = mergeParameters(command, parameters);
+    const params = mergeParameters(command, parameters);
     const id = cmd.toLocaleLowerCase();
     const action = chatMenuFrom(selectSpec, { id, parameterName }) as CommandReferencingAction;
     action.command = {
         id,
         name: cmd,
-        parameters,
+        parameters: params,
         parameterName,
     };
     return action;
