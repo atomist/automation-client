@@ -104,8 +104,7 @@ export class PullRequest extends Commit {
                 public title: string,
                 public body: string = title,
                 public message: string = title,
-                // Make default to master for backwards-compatible reasons
-                public targetBranch: string = "master",
+                public targetBranch?: string,
                 public autoMerge?: AutoMerge) {
         super(branch, message, autoMerge);
     }

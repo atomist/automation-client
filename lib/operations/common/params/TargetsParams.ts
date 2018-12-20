@@ -23,6 +23,8 @@ export abstract class TargetsParams implements Credentialed, RemoteLocator {
 
     public abstract sha;
 
+    public abstract branch;
+
     public abstract credentials: ProjectOperationCredentials;
 
     get usesRegex() {
