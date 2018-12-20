@@ -13,28 +13,14 @@ import * as _ from "lodash";
 import { logger } from "../../util/logger";
 
 import { Predicate } from "@atomist/tree-path/lib/path/pathExpression";
-import {
-    AttributeEqualityPredicate,
-    NestedPathExpressionPredicate,
-} from "@atomist/tree-path/lib/path/predicates";
+import { AttributeEqualityPredicate, NestedPathExpressionPredicate, } from "@atomist/tree-path/lib/path/predicates";
 import { File } from "../../project/File";
-import { ProjectAsync } from "../../project/Project";
-import {
-    gatherFromFiles,
-    GlobOptions,
-    iterateFiles,
-} from "../../project/util/projectUtils";
+import { Project, ProjectAsync } from "../../project/Project";
+import { fileIterator, gatherFromFiles, GlobOptions, } from "../../project/util/projectUtils";
 import { toSourceLocation } from "../../project/util/sourceLocationUtils";
 import { LocatedTreeNode } from "../LocatedTreeNode";
-import {
-    FileHit,
-    MatchResult,
-    NodeReplacementOptions,
-} from "./FileHits";
-import {
-    FileParser,
-    isFileParser,
-} from "./FileParser";
+import { FileHit, MatchResult, NodeReplacementOptions, } from "./FileHits";
+import { FileParser, isFileParser, } from "./FileParser";
 import { FileParserRegistry } from "./FileParserRegistry";
 
 /**
@@ -63,12 +49,12 @@ export function findMatches(p: ProjectAsync,
  * @param pathExpression path expression string or parsed
  * @param functionRegistry registry to look for path expression functions in
  */
-export async function* iterateMatches(p: ProjectAsync,
-                                      parserOrRegistry: FileParser | FileParserRegistry,
-                                      globPatterns: GlobOptions,
-                                      pathExpression: string | PathExpression,
-                                      functionRegistry?: FunctionRegistry): AsyncIterable<MatchResult> {
-    const fileHits = iterateFileMatches(p, parserOrRegistry, globPatterns, pathExpression, functionRegistry);
+export async function* matchIterator(p: Project,
+                                     parserOrRegistry: FileParser | FileParserRegistry,
+                                     globPatterns: GlobOptions,
+                                     pathExpression: string | PathExpression,
+                                     functionRegistry?: FunctionRegistry): AsyncIterable<MatchResult> {
+    const fileHits = fileHitIterator(p, parserOrRegistry, globPatterns, pathExpression, functionRegistry);
     for await (const fileHit of fileHits) {
         for (const match of fileHit.matches) {
             yield match;
@@ -134,19 +120,19 @@ export async function findFileMatches(p: ProjectAsync,
  * @param pathExpression path expression string or parsed
  * @param functionRegistry registry to look for path expression functions in
  */
-export async function* iterateFileMatches(p: ProjectAsync,
-                                          parserOrRegistry: FileParser | FileParserRegistry,
-                                          globPatterns: GlobOptions,
-                                          pathExpression: string | PathExpression,
-                                          functionRegistry?: FunctionRegistry): AsyncIterable<FileHit> {
+export async function* fileHitIterator(p: Project,
+                                       parserOrRegistry: FileParser | FileParserRegistry,
+                                       globPatterns: GlobOptions,
+                                       pathExpression: string | PathExpression,
+                                       functionRegistry?: FunctionRegistry): AsyncIterable<FileHit> {
     const parsed: PathExpression = toPathExpression(pathExpression);
     const parser = findParser(parsed, parserOrRegistry);
     if (!parser) {
         throw new Error(`Cannot find parser for path expression [${pathExpression}]: Using ${parserOrRegistry}`);
     }
     const valuesToCheckFor = literalValues(parsed);
-    const fileHits = await iterateFiles(p, globPatterns, file => parseFile(parser, parsed, functionRegistry, p, file, valuesToCheckFor));
-    for await (const fileHit of fileHits) {
+    for await (const file of await fileIterator(p, globPatterns)) {
+        const fileHit = parseFile(parser, parsed, functionRegistry, p, file, valuesToCheckFor);
         if (!!fileHit) {
             yield fileHit;
         }

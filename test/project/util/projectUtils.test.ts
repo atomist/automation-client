@@ -9,7 +9,7 @@ import {
     doWithFiles,
     fileExists,
     gatherFromFiles,
-    iterateFiles,
+    fileIterator,
 } from "../../../lib/project/util/projectUtils";
 import { tempProject } from "../utils";
 
@@ -92,18 +92,27 @@ describe("projectUtils", () => {
             .then(done, done);
     });
 
-    it("gatherFromFiles generator", async () => {
+    it("fileIterator: take all", async () => {
         const t = tempProject();
         t.addFileSync("Thing", "1");
-        const it = iterateFiles<string>(t, AllFiles, async f => {
-            return f.path;
-        });
+        const it = fileIterator(t, AllFiles, async () => true);
         const gathered = [];
         for await (const what of it) {
             gathered.push(what);
         }
         assert.strictEqual(gathered.length,  1);
-        assert.strictEqual(gathered[0], "Thing");
+        assert.strictEqual(gathered[0].path, "Thing");
+    });
+
+    it("fileIterator: take none", async () => {
+        const t = tempProject();
+        t.addFileSync("Thing", "1");
+        const it = fileIterator(t, AllFiles, async () => false);
+        const gathered = [];
+        for await (const what of it) {
+            gathered.push(what);
+        }
+        assert.strictEqual(gathered.length,  0);
     });
 
     it("withFiles: run", done => {

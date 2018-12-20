@@ -6,7 +6,7 @@ import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import {
     findMatches,
     gatherFromMatches,
-    iterateMatches,
+    matchIterator,
     literalValues,
     zapAllMatches,
 } from "../../../lib/tree/ast/astUtils";
@@ -40,7 +40,7 @@ describe("astUtils", () => {
             const f = new InMemoryFile("src/test.ts",
                 "const x: number = 10; const y = 13; const xylophone = 3;");
             const p = InMemoryProject.of(f);
-            const matches = iterateMatches(p,
+            const matches = matchIterator(p,
                 TypeScriptES6FileParser,
                 "src/**/*.ts",
                 "//VariableDeclaration[?check]/Identifier",
