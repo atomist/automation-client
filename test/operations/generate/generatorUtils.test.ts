@@ -16,9 +16,9 @@ import {
     generate,
     ProjectPersister,
 } from "../../../lib/operations/generate/generatorUtils";
+import { GitHubRepoCreationParameters } from "../../../lib/operations/generate/GitHubRepoCreationParameters";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import { Project } from "../../../lib/project/Project";
-import { GitHubRepoCreationParameters } from "../../../lib/operations/generate/GitHubRepoCreationParameters";
 
 export const mockProjectPersister: ProjectPersister<Project, ActionResult<Project>> =
     (p: Project, c: ProjectOperationCredentials, t: RepoId) => {
