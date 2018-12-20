@@ -1,8 +1,15 @@
-import { defer, ScriptedFlushable } from "../../internal/common/Flushable";
+import {
+    defer,
+    ScriptedFlushable,
+} from "../../internal/common/Flushable";
 import { isPromise } from "../../internal/util/async";
 import { toStringArray } from "../../internal/util/string";
 import { File } from "../File";
-import { FileStream, Project, ProjectAsync } from "../Project";
+import {
+    FileStream,
+    Project,
+    ProjectAsync,
+} from "../Project";
 
 /**
  * Promise of an array of files. Usually sourced from Project.streamFiles

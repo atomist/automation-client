@@ -10,7 +10,10 @@ import {
     matchIterator,
     zapAllMatches,
 } from "../../../lib/tree/ast/astUtils";
-import { MatchResult, ZapTrailingWhitespace } from "../../../lib/tree/ast/FileHits";
+import {
+    MatchResult,
+    ZapTrailingWhitespace,
+} from "../../../lib/tree/ast/FileHits";
 import { TypeScriptES6FileParser } from "../../../lib/tree/ast/typescript/TypeScriptFileParser";
 
 describe("astUtils", () => {
