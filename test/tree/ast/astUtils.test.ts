@@ -5,7 +5,7 @@ import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import {
     findMatches,
-    gatherFromMatches,
+    gatherFromMatches, iterateMatches,
     literalValues,
     zapAllMatches,
 } from "../../../lib/tree/ast/astUtils";
@@ -33,6 +33,31 @@ describe("astUtils", () => {
                     assert.deepEqual(matches.map(m => m.$value), ["x", "xylophone"]);
                     done();
                 }).catch(done);
+        });
+
+        it("runs custom check with generator style", async () => {
+            const f = new InMemoryFile("src/test.ts",
+                "const x: number = 10; const y = 13; const xylophone = 3;");
+            const p = InMemoryProject.of(f);
+            const matches = iterateMatches(p,
+                TypeScriptES6FileParser,
+                "src/**/*.ts",
+                "//VariableDeclaration[?check]/Identifier",
+                { check: n => n.$value.includes("x") });
+            let i = 0;
+            for await (const match of matches) {
+                if (i === 0) {
+                    assert(!!match.sourceLocation);
+                    assert.equal(match.sourceLocation.offset, match.$offset);
+                    assert(match.sourceLocation.lineFrom1 > 0);
+                    assert.strictEqual(match.$value, "x");
+                }
+                if (i === 1) {
+                    assert.strictEqual(match.$value, "xylophone");
+                }
+                ++i;
+            }
+            assert.strictEqual(i, 2);
         });
 
     });

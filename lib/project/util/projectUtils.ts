@@ -1,14 +1,8 @@
-import {
-    defer,
-    ScriptedFlushable,
-} from "../../internal/common/Flushable";
+import { defer, ScriptedFlushable, } from "../../internal/common/Flushable";
 import { isPromise } from "../../internal/util/async";
 import { toStringArray } from "../../internal/util/string";
 import { File } from "../File";
-import {
-    FileStream,
-    ProjectAsync,
-} from "../Project";
+import { FileStream, ProjectAsync, } from "../Project";
 
 /**
  * Promise of an array of files. Usually sourced from Project.streamFiles
@@ -86,6 +80,29 @@ export function gatherFromFiles<T>(project: ProjectAsync,
                 resolve(Promise.all(gathered).then(ts => ts.filter(t => !!t)));
             });
     });
+}
+
+/**
+ * Async generator to iterate over files.
+ * @param {ProjectAsync} project to act on
+ * @param {string} globPatterns glob pattern for files to match
+ * @param {(f: File) => Promise<T>} gather function returning a promise (of the value you're gathering) from each file.
+ * Undefined returns will be filtered out
+ * @return {Promise<T[]>}
+ */
+export async function* iterateFiles<T>(project: ProjectAsync,
+                                       globPatterns: GlobOptions,
+                                       gather: (f: File) => Promise<T> | undefined): AsyncIterable<T> {
+    const files = await toPromise(project.streamFiles(...toStringArray(globPatterns)));
+    for (const file of files) {
+        const prom = gather(file);
+        if (!!prom) {
+            const r = await prom;
+            if (!!r) {
+                yield r;
+            }
+        }
+    }
 }
 
 /**

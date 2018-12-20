@@ -21,7 +21,7 @@ import { File } from "../../project/File";
 import { ProjectAsync } from "../../project/Project";
 import {
     gatherFromFiles,
-    GlobOptions,
+    GlobOptions, iterateFiles,
 } from "../../project/util/projectUtils";
 import { toSourceLocation } from "../../project/util/sourceLocationUtils";
 import { LocatedTreeNode } from "../LocatedTreeNode";
@@ -52,6 +52,27 @@ export function findMatches(p: ProjectAsync,
                             functionRegistry?: FunctionRegistry): Promise<MatchResult[]> {
     return findFileMatches(p, parserOrRegistry, globPatterns, pathExpression, functionRegistry)
         .then(fileHits => _.flatten(fileHits.map(f => f.matches)));
+}
+
+/**
+ * Generator style iteration over matches in a project
+ * @param p project
+ * @param parserOrRegistry parser or parsers to use to parse files
+ * @param globPatterns file glob patterns
+ * @param pathExpression path expression string or parsed
+ * @param functionRegistry registry to look for path expression functions in
+ */
+export async function* iterateMatches(p: ProjectAsync,
+                                      parserOrRegistry: FileParser | FileParserRegistry,
+                                      globPatterns: GlobOptions,
+                                      pathExpression: string | PathExpression,
+                                      functionRegistry?: FunctionRegistry): AsyncIterable<MatchResult> {
+    const fileHits = iterateFileMatches(p, parserOrRegistry, globPatterns, pathExpression, functionRegistry);
+    for await (const fileHit of fileHits) {
+        for (const match of fileHit.matches) {
+            yield match;
+        }
+    }
 }
 
 /**
@@ -102,6 +123,33 @@ export async function findFileMatches(p: ProjectAsync,
     const files = await gatherFromFiles(p, globPatterns, file => parseFile(parser, parsed, functionRegistry, p, file, valuesToCheckFor));
     const all = await Promise.all(files);
     return all.filter(x => !!x);
+}
+
+/**
+ * Generator style iteration over file matches
+ * @param p project
+ * @param parserOrRegistry parser or parsers to use to parse files
+ * @param globPatterns file glob patterns
+ * @param pathExpression path expression string or parsed
+ * @param functionRegistry registry to look for path expression functions in
+ */
+export async function* iterateFileMatches(p: ProjectAsync,
+                                          parserOrRegistry: FileParser | FileParserRegistry,
+                                          globPatterns: GlobOptions,
+                                          pathExpression: string | PathExpression,
+                                          functionRegistry?: FunctionRegistry): AsyncIterable<FileHit> {
+    const parsed: PathExpression = toPathExpression(pathExpression);
+    const parser = findParser(parsed, parserOrRegistry);
+    if (!parser) {
+        throw new Error(`Cannot find parser for path expression [${pathExpression}]: Using ${parserOrRegistry}`);
+    }
+    const valuesToCheckFor = literalValues(parsed);
+    const fileHits = await iterateFiles(p, globPatterns, file => parseFile(parser, parsed, functionRegistry, p, file, valuesToCheckFor));
+    for await (const fileHit of fileHits) {
+        if (!!fileHit) {
+            yield fileHit;
+        }
+    }
 }
 
 async function parseFile(parser: FileParser,

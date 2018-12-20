@@ -1,4 +1,3 @@
-
 import * as assert from "power-assert";
 
 import { defer } from "../../../lib/internal/common/Flushable";
@@ -9,7 +8,7 @@ import {
     deleteFiles,
     doWithFiles,
     fileExists,
-    gatherFromFiles,
+    gatherFromFiles, iterateFiles,
 } from "../../../lib/project/util/projectUtils";
 import { tempProject } from "../utils";
 
@@ -90,6 +89,20 @@ describe("projectUtils", () => {
                 assert(gathered[0] === "Thing");
             })
             .then(done, done);
+    });
+
+    it("gatherFromFiles generator", async () => {
+        const t = tempProject();
+        t.addFileSync("Thing", "1");
+        const it = iterateFiles<string>(t, AllFiles, async f => {
+            return f.path;
+        });
+        const gathered = [];
+        for await (const what of it) {
+            gathered.push(what);
+        }
+        assert.strictEqual(gathered.length,  1);
+        assert.strictEqual(gathered[0], "Thing");
     });
 
     it("withFiles: run", done => {
