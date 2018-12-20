@@ -1,3 +1,4 @@
+import { toPathExpression } from "@atomist/tree-path";
 import "mocha";
 import * as assert from "power-assert";
 import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
@@ -9,7 +10,6 @@ import {
 } from "../../../lib/tree/ast/astUtils";
 import { ZapTrailingWhitespace } from "../../../lib/tree/ast/FileHits";
 import { TypeScriptES6FileParser } from "../../../lib/tree/ast/typescript/TypeScriptFileParser";
-import { toPathExpression } from "@atomist/tree-path";
 
 describe("astUtils", () => {
 

@@ -12,16 +12,16 @@ import {
 import * as _ from "lodash";
 import { logger } from "../../util/logger";
 
-import { File } from "../../project/File";
-import { ProjectAsync } from "../../project/Project";
-import { gatherFromFiles, GlobOptions, } from "../../project/util/projectUtils";
-import { toSourceLocation } from "../../project/util/sourceLocationUtils";
-import { LocatedTreeNode } from "../LocatedTreeNode";
-import { FileHit, MatchResult, NodeReplacementOptions, } from "./FileHits";
-import { FileParser, isFileParser, } from "./FileParser";
-import { FileParserRegistry } from "./FileParserRegistry";
 import { Predicate } from "@atomist/tree-path/lib/path/pathExpression";
 import { AttributeEqualityPredicate, NestedPathExpressionPredicate } from "@atomist/tree-path/lib/path/predicates";
+import { File } from "../../project/File";
+import { ProjectAsync } from "../../project/Project";
+import { gatherFromFiles, GlobOptions } from "../../project/util/projectUtils";
+import { toSourceLocation } from "../../project/util/sourceLocationUtils";
+import { LocatedTreeNode } from "../LocatedTreeNode";
+import { FileHit, MatchResult, NodeReplacementOptions } from "./FileHits";
+import { FileParser, isFileParser } from "./FileParser";
+import { FileParserRegistry } from "./FileParserRegistry";
 
 /**
  * Integrate path expressions with project operations to find all matches
