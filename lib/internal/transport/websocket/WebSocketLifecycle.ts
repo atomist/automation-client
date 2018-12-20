@@ -70,9 +70,7 @@ export class WebSocketLifecycle {
             while (this.messages.length) {
                 queuedMessages.push(this.messages.pop());
             }
-            for (const queuedMessage of queuedMessages) {
-                await this.send(queuedMessage);
-            }
+            queuedMessages.forEach(this.send);
         }, 1000);
         this.timer.unref();
     }
