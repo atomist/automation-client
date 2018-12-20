@@ -8,7 +8,8 @@ import {
     deleteFiles,
     doWithFiles,
     fileExists,
-    gatherFromFiles, iterateFiles,
+    gatherFromFiles,
+    iterateFiles,
 } from "../../../lib/project/util/projectUtils";
 import { tempProject } from "../utils";
 

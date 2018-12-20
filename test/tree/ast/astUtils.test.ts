@@ -5,7 +5,8 @@ import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import {
     findMatches,
-    gatherFromMatches, iterateMatches,
+    gatherFromMatches,
+    iterateMatches,
     literalValues,
     zapAllMatches,
 } from "../../../lib/tree/ast/astUtils";

@@ -21,7 +21,8 @@ import { File } from "../../project/File";
 import { ProjectAsync } from "../../project/Project";
 import {
     gatherFromFiles,
-    GlobOptions, iterateFiles,
+    GlobOptions,
+    iterateFiles,
 } from "../../project/util/projectUtils";
 import { toSourceLocation } from "../../project/util/sourceLocationUtils";
 import { LocatedTreeNode } from "../LocatedTreeNode";
