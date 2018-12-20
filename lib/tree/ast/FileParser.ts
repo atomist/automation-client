@@ -23,6 +23,16 @@ export interface FileParser<TN extends TreeNode = TreeNode> {
     toAst(f: File): Promise<TN>;
 
     /**
+     * If this method is supplied, it can help with optimization.
+     * If we can look at the path expression and determine a match is impossible
+     * in this file, we may be able to skip an expensive parsing operation.
+     * @param {File} f
+     * @param {PathExpression} pex
+     * @return {Promise<boolean>}
+     */
+    couldBeMatchesInThisFile?(pex: PathExpression, f: File): Promise<boolean>;
+
+    /**
      * Can this path expression possibly be valid using this parser?
      * For example, if the implementation is backed by the grammar for a programming
      * language, the set of symbols is known in advance, as is the legality of their

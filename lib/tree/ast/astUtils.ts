@@ -102,6 +102,10 @@ async function parseFile(parser: FileParser,
                          functionRegistry: FunctionRegistry,
                          p: ProjectAsync,
                          file: File): Promise<FileHit> {
+    if (!!parser.couldBeMatchesInThisFile && !await parser.couldBeMatchesInThisFile(pex, file)) {
+        // Skip parsing as we know there can never be matches
+        return undefined;
+    }
     return parser.toAst(file)
         .then(topLevelProduction => {
             logger.debug("Successfully parsed file '%s' to AST with root node named '%s'. Will execute '%s'",
