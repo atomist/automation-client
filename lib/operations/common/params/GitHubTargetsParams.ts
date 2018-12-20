@@ -45,4 +45,3 @@ export abstract class GitHubTargetsParams extends TargetsParams {
     private githubToken: string;
 
 }
-
