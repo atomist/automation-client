@@ -1,5 +1,3 @@
-import * as fs from "fs-extra";
-import { newRepo } from "../../../test/api/apiUtils";
 import { ActionResult } from "../../action/ActionResult";
 import { HandlerContext } from "../../HandlerContext";
 import { GitProject } from "../../project/git/GitProject";
@@ -64,7 +62,11 @@ export function generate<P extends Project = Project, PARAMS = object>(
                         .then(independentCopy => release(seed).then(() => independentCopy)))
                 // Let's be sure we didn't inherit any old git stuff
                 .then(independentCopy => independentCopy.deleteDirectory(".git"))
-                .then(independentCopy => toEditor<PARAMS>(editor)(independentCopy, ctx, params))
+                .then(independentCopy => {
+                    // Overwrite the seed id before running the editor so that it sees the new repo details
+                    independentCopy.id = targetId;
+                    return toEditor<PARAMS>(editor)(independentCopy, ctx, params);
+                })
                 .then(r => r.target)
                 .then(populated => {
                     logger.debug("Persisting repo at [%s]: owner/repo=%s/%s",

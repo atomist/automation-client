@@ -5,6 +5,7 @@ import {
     ActionResult,
     successOn,
 } from "../../../lib/action/ActionResult";
+import { GitHubSourceRepoParameters } from "../../../lib/operations/common/params/GitHubSourceRepoParameters";
 import { ProjectOperationCredentials } from "../../../lib/operations/common/ProjectOperationCredentials";
 import {
     RepoId,
@@ -15,6 +16,7 @@ import {
     generate,
     ProjectPersister,
 } from "../../../lib/operations/generate/generatorUtils";
+import { GitHubRepoCreationParameters } from "../../../lib/operations/generate/GitHubRepoCreationParameters";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import { Project } from "../../../lib/project/Project";
 
@@ -51,6 +53,23 @@ describe("generatorUtils", () => {
             null, null,
             (p, ctx, parms) => {
                 assert(parms === params);
+                return Promise.resolve(p);
+            },
+            mockProjectPersister,
+            new SimpleRepoId("foo", "bar"),
+            params,
+        )
+            .then(() => done(), done);
+    });
+
+    it("sees correct target repo id", done => {
+        const params = new BaseSeedDrivenGeneratorParameters();
+        generate(InMemoryProject.of(),
+            null, null,
+            (p, ctx, parms) => {
+                assert(parms === params);
+                assert.strictEqual(p.id.owner, "foo");
+                assert.strictEqual(p.id.repo, "bar");
                 return Promise.resolve(p);
             },
             mockProjectPersister,
