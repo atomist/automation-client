@@ -1,3 +1,4 @@
+import { toPathExpression } from "@atomist/tree-path";
 import "mocha";
 import * as assert from "power-assert";
 import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
@@ -5,9 +6,14 @@ import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import {
     findMatches,
     gatherFromMatches,
+    literalValues,
+    matchIterator,
     zapAllMatches,
 } from "../../../lib/tree/ast/astUtils";
-import { ZapTrailingWhitespace } from "../../../lib/tree/ast/FileHits";
+import {
+    MatchResult,
+    ZapTrailingWhitespace,
+} from "../../../lib/tree/ast/FileHits";
 import { TypeScriptES6FileParser } from "../../../lib/tree/ast/typescript/TypeScriptFileParser";
 
 describe("astUtils", () => {
@@ -33,6 +39,33 @@ describe("astUtils", () => {
                 }).catch(done);
         });
 
+        it("runs custom check with generator style", async () => {
+            const f = new InMemoryFile("src/test.ts",
+                "const x: number = 10; const y = 13; const xylophone = 3;");
+            const p = InMemoryProject.of(f);
+            const matches = matchIterator(p,
+                {
+                    parseWith: TypeScriptES6FileParser,
+                    globPatterns: "src/**/*.ts",
+                    pathExpression: "//VariableDeclaration[?check]/Identifier",
+                    functionRegistry: { check: n => n.$value.includes("x") },
+                });
+            let i = 0;
+            for await (const match of matches) {
+                if (i === 0) {
+                    assert(!!match.sourceLocation);
+                    assert.equal(match.sourceLocation.offset, match.$offset);
+                    assert(match.sourceLocation.lineFrom1 > 0);
+                    assert.strictEqual(match.$value, "x");
+                }
+                if (i === 1) {
+                    assert.strictEqual(match.$value, "xylophone");
+                }
+                ++i;
+            }
+            assert.strictEqual(i, 2);
+        });
+
     });
 
     describe("gatherFromMatches", () => {
@@ -52,6 +85,50 @@ describe("astUtils", () => {
                     assert.deepEqual(matches, ["x".length, "xylophone".length]);
                     done();
                 }).catch(done);
+        });
+
+        it("matchIterator: save simple", async () => {
+            const f = new InMemoryFile("src/test.ts",
+                "const x: number = 10; const y = 13; const xylophone = 3;");
+            const p = InMemoryProject.of(f);
+            const it = matchIterator(p,
+                {
+                    parseWith: TypeScriptES6FileParser,
+                    globPatterns: "src/**/*.ts",
+                    pathExpression: "//VariableDeclaration[?check]/Identifier",
+                    functionRegistry: { check: n => n.$value.includes("x") },
+                });
+            const matches: string[] = [];
+            for await (const match of it) {
+                matches.push(match.$value);
+            }
+            assert.equal(matches.length, 2);
+            assert.deepEqual(matches, ["x", "xylophone"]);
+        });
+
+        it("matchIterator: save simple and jump out", async () => {
+            const f = new InMemoryFile("src/test.ts",
+                "const x: number = 10; const y = 13; const xylophone = 3;");
+            const p = InMemoryProject.of(f);
+            let filterInvocations = 0;
+            const it = matchIterator(p,
+                {
+                    parseWith: TypeScriptES6FileParser,
+                    globPatterns: "src/**/*.ts",
+                    pathExpression: "//VariableDeclaration[?check]/Identifier",
+                    functionRegistry: { check: n => n.$value.includes("x") },
+                    fileFilter: async () => { ++filterInvocations; return true; },
+                });
+            const matches: string[] = [];
+            for await (const match of it) {
+                matches.push(match.$value);
+                if (matches.length > 0) {
+                    break;
+                }
+            }
+            assert.equal(filterInvocations, 1);
+            assert.equal(matches.length, 1);
+            assert.deepEqual(matches, ["x"]);
         });
 
         it("should suppress undefined", done => {
@@ -130,6 +207,36 @@ describe("astUtils", () => {
                     assert.equal(f2.getContentSync(), "const x = 10;");
                     done();
                 }).catch(done);
+        });
+
+    });
+
+    describe("literalValues", () => {
+
+        it("should return none", () => {
+            const pex = toPathExpression("//foo");
+            assert.strictEqual(literalValues(pex).length, 0);
+        });
+
+        it("should return true with nesting", () => {
+            const pex = toPathExpression(`//normalClassDeclaration
+                                [//annotation[@value='@SpringBootApplication']]
+                                /identifier`);
+            assert.deepEqual(literalValues(pex), ["@SpringBootApplication"]);
+        });
+
+        it("should return true with nesting and multiple predicates", () => {
+            const pex = toPathExpression(`//normalClassDeclaration
+                                [//annotation[@value='@SpringBootApplication']]
+                                /identifier[@value='foo']`);
+            assert.deepEqual(literalValues(pex), ["@SpringBootApplication", "foo"]);
+        });
+
+        it("should not opine on a union path expression", () => {
+            const pex = toPathExpression(`//normalClassDeclaration
+                                [//annotation[@value='@SpringBootApplication']]
+                                /identifier[@value='foo'] | //foo`);
+            assert.deepEqual(literalValues(pex), []);
         });
 
     });

@@ -7,6 +7,7 @@ import { toStringArray } from "../../internal/util/string";
 import { File } from "../File";
 import {
     FileStream,
+    Project,
     ProjectAsync,
 } from "../Project";
 
@@ -86,6 +87,25 @@ export function gatherFromFiles<T>(project: ProjectAsync,
                 resolve(Promise.all(gathered).then(ts => ts.filter(t => !!t)));
             });
     });
+}
+
+/**
+ * Async generator to iterate over files.
+ * @param {Project} project to act on
+ * @param {string} globPatterns glob pattern for files to match
+ * @param filter function to determine whether this file should be included.
+ * Include all files if this function isn't supplied.
+ * @return {Promise<T[]>}
+ */
+export async function* fileIterator(project: Project,
+                                    globPatterns: GlobOptions,
+                                    filter: (f: File) => Promise<boolean> = async () => true): AsyncIterable<File> {
+    const files = await toPromise(project.streamFiles(...toStringArray(globPatterns)));
+    for (const file of files) {
+        if (await filter(file)) {
+            yield file;
+        }
+    }
 }
 
 /**
