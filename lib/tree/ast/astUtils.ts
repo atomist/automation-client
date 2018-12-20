@@ -98,7 +98,8 @@ export async function findFileMatches(p: ProjectAsync,
     if (!parser) {
         throw new Error(`Cannot find parser for path expression [${pathExpression}]: Using ${parserOrRegistry}`);
     }
-    const files = await gatherFromFiles(p, globPatterns, file => parseFile(parser, parsed, functionRegistry, p, file));
+    const valuesToCheckFor = literalValues(parsed);
+    const files = await gatherFromFiles(p, globPatterns, file => parseFile(parser, parsed, functionRegistry, p, file, valuesToCheckFor));
     const all = await Promise.all(files);
     return all.filter(x => !!x);
 }
@@ -107,9 +108,9 @@ async function parseFile(parser: FileParser,
                          pex: PathExpression,
                          functionRegistry: FunctionRegistry,
                          p: ProjectAsync,
-                         file: File): Promise<FileHit> {
+                         file: File,
+                         valuesToCheckFor: string[]): Promise<FileHit> {
     // First, apply optimizations
-    const valuesToCheckFor = literalValues(pex);
     if (valuesToCheckFor.length > 0) {
         const content = await file.getContent();
         if (valuesToCheckFor.some(literal => !content.includes(literal))) {
