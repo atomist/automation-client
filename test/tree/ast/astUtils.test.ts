@@ -4,11 +4,12 @@ import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import {
     findMatches,
-    gatherFromMatches,
+    gatherFromMatches, literalValues,
     zapAllMatches,
 } from "../../../lib/tree/ast/astUtils";
 import { ZapTrailingWhitespace } from "../../../lib/tree/ast/FileHits";
 import { TypeScriptES6FileParser } from "../../../lib/tree/ast/typescript/TypeScriptFileParser";
+import { toPathExpression } from "@atomist/tree-path";
 
 describe("astUtils", () => {
 
@@ -130,6 +131,36 @@ describe("astUtils", () => {
                     assert.equal(f2.getContentSync(), "const x = 10;");
                     done();
                 }).catch(done);
+        });
+
+    });
+
+    describe("literalValues", () => {
+
+        it("should return none", () => {
+            const pex = toPathExpression("//foo");
+            assert.strictEqual(literalValues(pex).length, 0);
+        });
+
+        it("should return true with nesting", () => {
+            const pex = toPathExpression(`//normalClassDeclaration
+                                [//annotation[@value='@SpringBootApplication']]
+                                /identifier`);
+            assert.deepEqual(literalValues(pex), ["@SpringBootApplication"]);
+        });
+
+        it("should return true with nesting and multiple predicates", () => {
+            const pex = toPathExpression(`//normalClassDeclaration
+                                [//annotation[@value='@SpringBootApplication']]
+                                /identifier[@value='foo']`);
+            assert.deepEqual(literalValues(pex), ["@SpringBootApplication", "foo"]);
+        });
+
+        it("should not opine on a union path expression", () => {
+            const pex = toPathExpression(`//normalClassDeclaration
+                                [//annotation[@value='@SpringBootApplication']]
+                                /identifier[@value='foo'] | //foo`);
+            assert.deepEqual(literalValues(pex), []);
         });
 
     });
