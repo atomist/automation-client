@@ -10,7 +10,7 @@ import {
     literalValues,
     zapAllMatches,
 } from "../../../lib/tree/ast/astUtils";
-import { ZapTrailingWhitespace } from "../../../lib/tree/ast/FileHits";
+import { MatchResult, ZapTrailingWhitespace } from "../../../lib/tree/ast/FileHits";
 import { TypeScriptES6FileParser } from "../../../lib/tree/ast/typescript/TypeScriptFileParser";
 
 describe("astUtils", () => {
@@ -41,10 +41,12 @@ describe("astUtils", () => {
                 "const x: number = 10; const y = 13; const xylophone = 3;");
             const p = InMemoryProject.of(f);
             const matches = matchIterator(p,
-                TypeScriptES6FileParser,
-                "src/**/*.ts",
-                "//VariableDeclaration[?check]/Identifier",
-                { check: n => n.$value.includes("x") });
+                {
+                    parseWith: TypeScriptES6FileParser,
+                    globPatterns: "src/**/*.ts",
+                    pathExpression: "//VariableDeclaration[?check]/Identifier",
+                    functionRegistry: { check: n => n.$value.includes("x") }
+                });
             let i = 0;
             for await (const match of matches) {
                 if (i === 0) {
@@ -80,6 +82,50 @@ describe("astUtils", () => {
                     assert.deepEqual(matches, ["x".length, "xylophone".length]);
                     done();
                 }).catch(done);
+        });
+
+        it("matchIterator: save simple", async () => {
+            const f = new InMemoryFile("src/test.ts",
+                "const x: number = 10; const y = 13; const xylophone = 3;");
+            const p = InMemoryProject.of(f);
+            const it = matchIterator(p,
+                {
+                    parseWith: TypeScriptES6FileParser,
+                    globPatterns: "src/**/*.ts",
+                    pathExpression: "//VariableDeclaration[?check]/Identifier",
+                    functionRegistry: { check: n => n.$value.includes("x") },
+                });
+            const matches: string[] = [];
+            for await (const match of it) {
+                matches.push(match.$value);
+            }
+            assert.equal(matches.length, 2);
+            assert.deepEqual(matches, ["x", "xylophone"]);
+        });
+
+        it("matchIterator: save simple and jump out", async () => {
+            const f = new InMemoryFile("src/test.ts",
+                "const x: number = 10; const y = 13; const xylophone = 3;");
+            const p = InMemoryProject.of(f);
+            let filterInvocations = 0;
+            const it = matchIterator(p,
+                {
+                    parseWith: TypeScriptES6FileParser,
+                    globPatterns: "src/**/*.ts",
+                    pathExpression: "//VariableDeclaration[?check]/Identifier",
+                    functionRegistry: { check: n => n.$value.includes("x") },
+                    fileFilter: async () => { ++filterInvocations; return true; },
+                });
+            const matches: string[] = [];
+            for await (const match of it) {
+                matches.push(match.$value);
+                if (matches.length > 0) {
+                    break;
+                }
+            }
+            assert.equal(filterInvocations, 1);
+            assert.equal(matches.length, 1);
+            assert.deepEqual(matches, ["x"]);
         });
 
         it("should suppress undefined", done => {
