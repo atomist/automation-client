@@ -6,6 +6,7 @@ import { GitHubTargetsParams } from "./GitHubTargetsParams";
 import {
     GitBranchRegExp,
     GitHubNameRegExp,
+    GitShaRegExp,
 } from "./validationPatterns";
 
 /**
@@ -21,7 +22,10 @@ export class AlwaysAskRepoParameters extends GitHubTargetsParams {
     @Parameter({ description: "Name of repo to edit or regex", pattern: /.+/, required: true })
     public repo: string;
 
-    @Parameter({ description: "Branch or ref. Defaults to 'master'", ...GitBranchRegExp, required: false })
+    @Parameter({ description: "Ref", ...GitShaRegExp, required: false })
     public sha: string;
+
+    @Parameter({ description: "Branch Defaults to 'master'", ...GitBranchRegExp, required: false })
+    public branch: string = "master";
 
 }

@@ -5,7 +5,10 @@ import {
     Parameters,
 } from "../../../decorators";
 import { GitHubTargetsParams } from "./GitHubTargetsParams";
-import { GitBranchRegExp } from "./validationPatterns";
+import {
+    GitBranchRegExp,
+    GitShaRegExp,
+} from "./validationPatterns";
 
 /**
  * Get target from channel mapping
@@ -19,7 +22,10 @@ export class MappedRepoParameters extends GitHubTargetsParams {
     @MappedParameter(MappedParameters.GitHubRepository)
     public repo: string;
 
-    @Parameter({ description: "Branch or ref. Defaults to 'master'", ...GitBranchRegExp, required: false })
+    @Parameter({ description: "Ref", ...GitShaRegExp, required: false })
     public sha: string;
+
+    @Parameter({ description: "Branch Defaults to 'master'", ...GitBranchRegExp, required: false })
+    public branch: string = "master";
 
 }
