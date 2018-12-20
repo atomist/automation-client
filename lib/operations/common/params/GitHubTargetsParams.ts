@@ -32,20 +32,16 @@ export abstract class GitHubTargetsParams extends TargetsParams {
         if (!this.owner || !this.repo || this.usesRegex) {
             return undefined;
         }
-        // sha is actually a ref (either sha or pointer)
-        const branch = isValidSHA1(this.sha) ? undefined : this.sha;
-        const sha = isValidSHA1(this.sha) ? this.sha : undefined;
-        return GitHubRepoRef.from({ owner: this.owner, repo: this.repo, sha, branch, rawApiBase: this.apiUrl });
+        return GitHubRepoRef.from({
+            owner: this.owner,
+            repo: this.repo,
+            sha: this.sha,
+            branch: this.branch,
+            rawApiBase: this.apiUrl,
+        });
     }
 
     @Secret(Secrets.userToken(["repo", "user:email", "read:user"]))
     private githubToken: string;
 
-}
-
-function isValidSHA1(s: string): boolean {
-    if (!s) {
-        return false;
-    }
-    return s.match(/[a-fA-F0-9]{40}/) != null;
 }

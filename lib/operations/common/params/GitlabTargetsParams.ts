@@ -9,7 +9,10 @@ import { GitlabPrivateTokenCredentials } from "../GitlabPrivateTokenCredentials"
 import { GitlabRepoRef } from "../GitlabRepoRef";
 import { ProjectOperationCredentials } from "../ProjectOperationCredentials";
 import { TargetsParams } from "./TargetsParams";
-import { GitBranchRegExp } from "./validationPatterns";
+import {
+    GitBranchRegExp,
+    GitShaRegExp,
+} from "./validationPatterns";
 
 @Parameters()
 export class GitlabTargetsParams extends TargetsParams {
@@ -26,12 +29,11 @@ export class GitlabTargetsParams extends TargetsParams {
     @MappedParameter(MappedParameters.GitHubUrl, false)
     public url: string;
 
-    @Parameter({
-        description: "Branch or ref. Defaults to 'master'",
-        ...GitBranchRegExp,
-        required: false,
-    })
-    public sha: string = "master";
+    @Parameter({ description: "Ref", ...GitShaRegExp, required: false })
+    public sha: string;
+
+    @Parameter({ description: "Branch Defaults to 'master'", ...GitBranchRegExp, required: false })
+    public branch: string = "master";
 
     @Parameter({ description: "regex", required: false })
     public repos: string = ".*";
@@ -62,6 +64,7 @@ export class GitlabTargetsParams extends TargetsParams {
                 owner: this.owner,
                 repo: this.repo,
                 sha: this.sha,
+                branch: this.branch,
                 rawApiBase: this.apiUrl,
                 gitlabRemoteUrl: this.url,
             }) :
