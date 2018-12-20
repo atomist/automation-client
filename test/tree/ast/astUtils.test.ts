@@ -6,8 +6,8 @@ import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import {
     findMatches,
     gatherFromMatches,
-    matchIterator,
     literalValues,
+    matchIterator,
     zapAllMatches,
 } from "../../../lib/tree/ast/astUtils";
 import { MatchResult, ZapTrailingWhitespace } from "../../../lib/tree/ast/FileHits";
@@ -45,7 +45,7 @@ describe("astUtils", () => {
                     parseWith: TypeScriptES6FileParser,
                     globPatterns: "src/**/*.ts",
                     pathExpression: "//VariableDeclaration[?check]/Identifier",
-                    functionRegistry: { check: n => n.$value.includes("x") }
+                    functionRegistry: { check: n => n.$value.includes("x") },
                 });
             let i = 0;
             for await (const match of matches) {
