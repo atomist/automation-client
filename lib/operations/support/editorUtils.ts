@@ -151,9 +151,10 @@ ${ci.autoMerge.mode} ${ci.autoMerge.method ? ci.autoMerge.method : ""}`.trim();
  * @param {PullRequest} pr
  */
 export function raisePr(gp: GitProject, pr: PullRequest): Promise<EditResult> {
+    const targetBranch = pr.targetBranch || gp.branch;
     return createAndPushBranch(gp, pr)
         .then(x => {
-            return gp.raisePullRequest(pr.title, pr.body, pr.targetBranch)
+            return gp.raisePullRequest(pr.title, pr.body, targetBranch)
                 .then(r => successfulEdit(gp, true));
         });
 }
