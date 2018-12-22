@@ -214,6 +214,8 @@ export {
     SmartParameters,
     ValidationError,
     ValidationResult,
+    ParameterType,
+    ParameterIndexType,
 } from "./lib/SmartParameters";
 export {
     CloneOptions,

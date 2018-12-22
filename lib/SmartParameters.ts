@@ -27,7 +27,11 @@ export function isSmartParameters(a: any): a is SmartParameters {
     return !!mightBeSmart && !!mightBeSmart.bindAndValidate;
 }
 
-@Parameters()
-export class NoParameters {
+export type ParameterIndexType = string;
+export type ParameterType = {
+    [key in ParameterIndexType]?: number | boolean | string | ParameterType;
+};
 
+@Parameters()
+export class NoParameters implements ParameterType {
 }
