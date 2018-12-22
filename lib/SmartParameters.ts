@@ -30,7 +30,7 @@ export function isSmartParameters(a: any): a is SmartParameters {
 export type ParameterIndexType = string;
 export type ParameterType = {
     [key in ParameterIndexType]?: number | boolean | string | ParameterType;
-}
+};
 
 @Parameters()
 export class NoParameters implements ParameterType {
