@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Bug: Boolean parameter types are not supported. [#423](https://github.com/atomist/automation-client/issues/423)
 -   Introduce `targets.branch` and fix `project.id` to point to correct project. [#434](https://github.com/atomist/automation-client/issues/434)
 -   Fix defaulting of targetBranch when raising PR. [6c80f10](https://github.com/atomist/automation-client/commit/6c80f10c5656b8b9d1c838808d65d20020297e54)
+-   Logging Setting can cause SDM startup hangs. [#435](https://github.com/atomist/automation-client/issues/435)
 
 ## [1.1.0](https://github.com/atomist/automation-client-ts/compare/1.0.1...1.1.0) - 2018-12-08
 
