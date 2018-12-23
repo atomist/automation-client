@@ -157,71 +157,78 @@ export const ClientLogging: LoggingConfiguration = {
  * @param config
  */
 export function configureLogging(config: LoggingConfiguration) {
-    winstonLogger.silent = true;
-    winstonLogger.clear();
+    try {
+        winstonLogger.silent = true;
+        winstonLogger.clear();
 
-    // Set up console logging
-    if (config.console.enabled === true) {
-        const ct = new winston.transports.Console({
-            level: config.console.level || "info",
-            format: getFormat(config.console.format),
-        });
+        // Set up console logging
+        if (config.console.enabled === true) {
+            const ct = new winston.transports.Console({
+                level: validateLevel(config.console.level || "info"),
+                format: getFormat(config.console.format),
+            });
 
-        if (config.console.redirect === true) {
-            redirectConsoleLogging();
-        } else {
-            unRedirectConsoleLogging();
-        }
-
-        winstonLogger.add(ct);
-        winstonLogger.silent = false;
-    }
-
-    // Set up file logging
-    if (config.file.enabled) {
-
-        let filename = config.file.filename;
-
-        if (!filename) {
-            const appDir = __dirname.split(p.join("node_modules", "@atomist", "automation-client"))[0];
-            let pj: { name: string; };
-            try {
-                pj = require(p.join(appDir, "package.json"));
-            } catch (e) {
-                pj = { name: "atm-client" };
+            if (config.console.redirect === true) {
+                redirectConsoleLogging();
+            } else {
+                unRedirectConsoleLogging();
             }
-            filename = p.join(
-                os.homedir(),
-                ".atomist",
-                "log",
-                `${pj.name.replace(/^.*\//, "")}-local.log`);
+
+            winstonLogger.add(ct);
+            winstonLogger.silent = false;
         }
 
-        const path = p.resolve(filename);
-        fs.mkdirsSync(p.dirname(path));
+        // Set up file logging
+        if (config.file.enabled) {
 
-        const ft = new winston.transports.File({
-            filename: p.basename(path),
-            dirname: p.dirname(path),
-            level: config.file.level || config.console.level,
-            maxsize: 10 * 1024 * 1024,
-            maxFiles: 10,
-            tailable: true,
-            // zippedArchive: true, // see https://github.com/winstonjs/winston/issues/1128
-            format: winston.format.combine(
-                getFormat(config.file.format),
-                winston.format.uncolorize(),
-            ),
-        });
+            let filename = config.file.filename;
 
-        winstonLogger.add(ft);
-        winstonLogger.silent = false;
-    }
+            if (!filename) {
+                const appDir = __dirname.split(p.join("node_modules", "@atomist", "automation-client"))[0];
+                let pj: { name: string; };
+                try {
+                    pj = require(p.join(appDir, "package.json"));
+                } catch (e) {
+                    pj = { name: "atm-client" };
+                }
+                filename = p.join(
+                    os.homedir(),
+                    ".atomist",
+                    "log",
+                    `${pj.name.replace(/^.*\//, "")}-local.log`);
+            }
 
-    // Set up custom transports
-    if (config.custom && config.custom.length > 0) {
-        config.custom.forEach(t => winstonLogger.add(t));
-        winstonLogger.silent = false;
+            const path = p.resolve(filename);
+            fs.mkdirsSync(p.dirname(path));
+
+            const ft = new winston.transports.File({
+                filename: p.basename(path),
+                dirname: p.dirname(path),
+                level: validateLevel(config.file.level || config.console.level),
+                maxsize: 10 * 1024 * 1024,
+                maxFiles: 10,
+                tailable: true,
+                // zippedArchive: true, // see https://github.com/winstonjs/winston/issues/1128
+                format: winston.format.combine(
+                    getFormat(config.file.format),
+                    winston.format.uncolorize(),
+                ),
+            });
+
+            winstonLogger.add(ft);
+            winstonLogger.silent = false;
+        }
+
+        // Set up custom transports
+        if (config.custom && config.custom.length > 0) {
+            config.custom.forEach(t => winstonLogger.add(t));
+            winstonLogger.silent = false;
+        }
+    } catch (e) {
+        // If we catch an error during logging initialization, we have to play it
+        // safe and write straight to stderr as logging might be silentest.
+        process.stderr.write(`Error occurred during logging initialization: ${e.stack}`);
+        throw e;
     }
 }
 
@@ -257,6 +264,14 @@ export function clientLoggingConfiguration(configuration: Configuration): Loggin
         lc.custom = _.get(configuration, "logging.custom.transports");
     }
     return lc;
+}
+
+function validateLevel(level: string): string {
+    const levels = ["silly", "debug", "verbose", "info", "warn", "error"];
+    if (!levels.includes(level)) {
+        throw new Error(`Log level '${level}' is invalid. Only levels '${levels.join(", ")}' are allowed`);
+    }
+    return level;
 }
 
 const clientFormat = info => {
