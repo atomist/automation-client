@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Disable graphql-tag fragment warning. [#419](https://github.com/atomist/automation-client/issues/419)
 -   Allow to print out configuration sources during startup. [a255171](https://github.com/atomist/automation-client/commit/a255171da3b88a2bd4422672422f5ad228183bbb)
 -   Add HEAD method to HttpClient. [32fbc96](https://github.com/atomist/automation-client/commit/32fbc9654178c8f3425e95ccc07228d8e1f2227b)
--   Graceful queue messages when the WS disconnects. [#426](https://github.com/atomist/automation-client/issues/426)
+-   Gracefully queue messages when the WS disconnects. [#426](https://github.com/atomist/automation-client/issues/426)
 -   Introduce `targets.branch` and fix `project.id` to point to correct project. [#434](https://github.com/atomist/automation-client/issues/434)
 -   Stronger typing for parameters. [#437](https://github.com/atomist/automation-client/issues/437)
 
@@ -24,10 +24,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
--   Bug: Boolean parameter types are not supported. [#423](https://github.com/atomist/automation-client/issues/423)
+-   Boolean parameter types are not supported. [#423](https://github.com/atomist/automation-client/issues/423)
 -   Introduce `targets.branch` and fix `project.id` to point to correct project. [#434](https://github.com/atomist/automation-client/issues/434)
 -   Fix defaulting of targetBranch when raising PR. [6c80f10](https://github.com/atomist/automation-client/commit/6c80f10c5656b8b9d1c838808d65d20020297e54)
--   Logging Setting can cause SDM startup hangs. [#435](https://github.com/atomist/automation-client/issues/435)
+-   Logging setting can cause startup hangs. [#435](https://github.com/atomist/automation-client/issues/435)
 
 ## [1.1.0](https://github.com/atomist/automation-client-ts/compare/1.0.1...1.1.0) - 2018-12-08
 
