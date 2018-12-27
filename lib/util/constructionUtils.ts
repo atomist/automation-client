@@ -7,10 +7,7 @@ export type Factory<T> = () => T;
 /**
  * Interface for objects with a no-arg constructor
  */
-export interface Constructor<T> {
-
-    new(): T;
-}
+export type Constructor<T> = new() => T;
 
 /**
  * A no-arg constructor or a no-arg function that can create
