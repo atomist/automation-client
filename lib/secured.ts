@@ -34,7 +34,7 @@ export function slackUser(maker: Maker<HandleCommand>, ...users: string[]): () =
             if (users.indexOf((command as any).__atomist_slack_user_name) < 0) {
                 return UnAuthorizedResult;
             } else {
-                return handleMethod.bind(command)(ctx);
+                return handleMethod.bind(command, ctx)(ctx);
             }
         };
         return command;
@@ -65,7 +65,7 @@ export function githubOrg(maker: Maker<HandleCommand>, org: string): () => Handl
             return isGitHubOrgMember(org, login, token)
                 .then(isOrgMember => {
                     if (isOrgMember === true) {
-                        return handleMethod.bind(command)(ctx);
+                        return handleMethod.bind(command, ctx)(ctx);
                     } else {
                         return sendUnauthorized(ctx);
                     }
@@ -152,7 +152,7 @@ export function githubTeam(maker: Maker<HandleCommand>, gTeam: string): () => Ha
                         return isGitHubTeamMember(owner, login, gTeam, token, apiUrl)
                             .then(isTeamMember => {
                                 if (isTeamMember === true) {
-                                    return handleMethod.bind(command)(ctx);
+                                    return handleMethod.bind(command, ctx)(ctx);
                                 } else {
                                     return sendUnauthorized(ctx);
                                 }
@@ -162,7 +162,7 @@ export function githubTeam(maker: Maker<HandleCommand>, gTeam: string): () => Ha
                             });
 
                     } else {
-                        return handleMethod.bind(command)(ctx);
+                        return handleMethod.bind(command, ctx)(ctx);
                     }
                 });
         };

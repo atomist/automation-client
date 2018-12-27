@@ -220,7 +220,7 @@ export class ExpressServer {
                 (req, token, done) => {
                     const api = new GitHubApi();
                     api.authenticate({ type: "token", token });
-                    api.users.get({})
+                    api.users.getAuthenticated({})
                         .then(user => {
                             if (adminOrg && req.__admin === true) {
                                 return api.orgs.checkMembership({
