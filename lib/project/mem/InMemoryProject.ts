@@ -41,7 +41,7 @@ export class InMemoryProject extends AbstractProject {
         return InMemoryProject.from({
             owner: "dummyOwner",
             repo: "dummyRepo",
-            url: "https://fakeGitHub.com/dummyOwner/dummyRepo"
+            url: "https://fakeGitHub.com/dummyOwner/dummyRepo",
         }, ...files);
     }
 
