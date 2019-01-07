@@ -21,6 +21,9 @@ export class GitHubFallbackReposParameters extends GitHubTargetsParams implement
     @MappedParameter(MappedParameters.GitHubRepository, false)
     public repo: string;
 
+    @MappedParameter(MappedParameters.GitHubRepositoryProvider, false)
+    public providerId: string;
+
     @Parameter({ description: "Ref", ...GitShaRegExp, required: false })
     public sha: string;
 

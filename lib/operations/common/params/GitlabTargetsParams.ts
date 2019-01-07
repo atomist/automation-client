@@ -26,6 +26,9 @@ export class GitlabTargetsParams extends TargetsParams {
     @MappedParameter(MappedParameters.GitHubRepository, false)
     public repo: string;
 
+    @MappedParameter(MappedParameters.GitHubRepositoryProvider, false)
+    public providerId: string;
+
     @MappedParameter(MappedParameters.GitHubUrl, false)
     public url: string;
 
