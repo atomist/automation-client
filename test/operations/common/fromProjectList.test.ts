@@ -13,6 +13,7 @@ describe("fromProjectList.ts", () => {
 
         it("should object when given undefined repo id", () => {
             const noIdProject = InMemoryProject.of();
+            noIdProject.id = undefined;
             assert.throws(() => fromListRepoFinder([noIdProject]));
         });
 
@@ -22,6 +23,7 @@ describe("fromProjectList.ts", () => {
 
         it("should object when given undefined repo id", () => {
             const noIdProject = InMemoryProject.of();
+            noIdProject.id = undefined;
             assert.throws(() => fromListRepoLoader([noIdProject]));
         });
 
