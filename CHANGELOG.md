@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.2.0...HEAD)
 
+### Added
+
+-   Provide a dummy id to InMemoryProject. [#438](https://github.com/atomist/automation-client/issues/438)
+
 ## [1.2.0](https://github.com/atomist/automation-client-ts/compare/1.1.0...1.2.0) - 2018-12-27
 
 ### Added
