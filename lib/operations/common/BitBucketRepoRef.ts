@@ -20,7 +20,7 @@ export class BitBucketRepoRef extends AbstractRemoteRepoRef {
 
     constructor(owner: string,
                 repo: string,
-                sha: string = "master",
+                sha?: string,
                 public apiBase = BitBucketDotComBase,
                 path?: string) {
         super(ProviderType.bitbucket_cloud, "https://bitbucket.org", apiBase, owner, repo, sha, path);
