@@ -38,7 +38,11 @@ export class InMemoryProject extends AbstractProject {
      * Create a new InMemoryProject without an id
      */
     public static of(...files: Array<{ path: string, content: string } | File>): InMemoryProject {
-        return InMemoryProject.from(undefined, ...files);
+        return InMemoryProject.from({
+            owner: "dummyOwner",
+            repo: "dummyRepo",
+            url: "https://fakeGitHub.com/dummyOwner/dummyRepo",
+        }, ...files);
     }
 
     /**
