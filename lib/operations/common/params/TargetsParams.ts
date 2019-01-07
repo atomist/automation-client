@@ -21,8 +21,6 @@ export abstract class TargetsParams implements Credentialed, RemoteLocator {
      */
     public abstract repo;
 
-    public abstract providerId;
-
     public abstract sha;
 
     public abstract branch;
