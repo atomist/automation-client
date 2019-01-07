@@ -115,7 +115,7 @@ ding dong ding
                 assert(!clean);
                 assert(!!gp.branch);
                 assert(!!gp.id);
-                assert(gp.id.sha === "HEAD");
+                assert(!gp.id.sha);
             })
             .then(() => done(), done);
     });

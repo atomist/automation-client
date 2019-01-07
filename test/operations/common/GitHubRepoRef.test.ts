@@ -37,7 +37,7 @@ describe("GitHubRepoRef tests", () => {
 
     it("doesn't set sha when sha is not provided", () => {
         const gh = GitHubRepoRef.from({ owner: "owner", repo: "repo", branch: "fester" });
-        assert.equal(gh.sha, "HEAD");
+        assert(!gh.sha);
     });
 
     it("does not let you provide a sha that is not a sha, when you could put that in branch", () => {

@@ -16,9 +16,6 @@
  */
 
 import * as _ from "lodash";
-import * as process from "process";
-import promiseRetry = require("promise-retry");
-
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
 import {
     isRemoteRepoRef,
@@ -51,6 +48,7 @@ import {
     GitStatus,
     runStatusIn,
 } from "./gitStatus";
+import promiseRetry = require("promise-retry");
 
 export const DefaultDirectoryManager: DirectoryManager = TmpDirectoryManager;
 
@@ -114,7 +112,8 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     public newRepo: boolean = false;
 
-    private constructor(id: RepoRef, public baseDir: string,
+    private constructor(id: RepoRef,
+                        public baseDir: string,
                         private credentials: ProjectOperationCredentials, release: ReleaseFunction,
                         public provenance?: string) {
         super(id, baseDir, release);
@@ -300,7 +299,7 @@ async function clone(
     secondTry: boolean = false,
 ): Promise<GitProject> {
 
-    const cloneDirectoryInfo = await directoryManager.directoryFor(id.owner, id.repo, id.sha, opts);
+    const cloneDirectoryInfo = await directoryManager.directoryFor(id.owner, id.repo, id.branch, opts);
     logger.info("Directory info: %j", cloneDirectoryInfo);
     switch (cloneDirectoryInfo.type) {
         case "empty-directory":
@@ -336,6 +335,7 @@ async function cloneInto(
 ) {
     logger.debug(
         `Cloning repo with owner '${id.owner}', name '${id.repo}', branch '${id.branch}', sha '${id.sha}' and options '${JSON.stringify(opts)}'`);
+    const sha = id.sha || "HEAD";
     const repoDir = targetDirectoryInfo.path;
     const url = id.cloneUrl(credentials);
     const cloneBranch = id.branch;
@@ -353,7 +353,7 @@ async function cloneInto(
     // Note: branch takes preference for checkout because we might be about to commit to it.
     // If you want to be sure to land on your SHA, set opts.detachHead to true.
     // Or don't, but then call gitStatus() on the returned project to check whether the branch is still at the SHA you wanted.
-    const checkoutRef = opts.detachHead ? id.sha : id.branch || id.sha;
+    const checkoutRef = opts.detachHead ? sha : id.branch || sha;
 
     const cleanUrl = url.replace(/\/\/.*:x-oauth-basic/, "//TOKEN:x-oauth-basic");
     logger.debug(`Cloning repo '${cleanUrl}' in '${repoDir}'`);
@@ -394,7 +394,7 @@ async function resetOrigin(
     return execPromise("git", ["remote", "set", "origin", id.cloneUrl(credentials)], { cwd: repoDir });
 }
 
-async function checkout(repoDir: string, branch: string): Promise<ExecPromiseResult> {
+async function checkout(repoDir: string, branch: string = "HEAD"): Promise<ExecPromiseResult> {
     return execPromise("git", ["fetch", "origin", branch], { cwd: repoDir })
         .then(() => execPromise("git", ["checkout", branch, "--"], { cwd: repoDir }))
         .then(() => execPromise("git", ["reset", "--hard", `origin/${branch}`], { cwd: repoDir }));

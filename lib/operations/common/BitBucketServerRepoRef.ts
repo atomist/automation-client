@@ -53,7 +53,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
                 owner: string,
                 repo: string,
                 private readonly isProject: boolean = true,
-                sha: string = "master",
+                sha?: string,
                 path?: string) {
         super(ProviderType.bitbucket, remoteBase, noTrailingSlash(remoteBase) + "/rest/api/1.0/", owner, repo, sha, path);
         this.ownerType = isProject ? "projects" : "users";
