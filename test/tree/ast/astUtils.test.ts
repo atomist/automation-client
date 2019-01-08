@@ -4,6 +4,7 @@ import * as assert from "power-assert";
 import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import {
+    doWithAllMatches,
     findMatches,
     gatherFromMatches,
     literalValues,
@@ -11,7 +12,6 @@ import {
     zapAllMatches,
 } from "../../../lib/tree/ast/astUtils";
 import {
-    MatchResult,
     ZapTrailingWhitespace,
 } from "../../../lib/tree/ast/FileHits";
 import { TypeScriptES6FileParser } from "../../../lib/tree/ast/typescript/TypeScriptFileParser";
@@ -155,7 +155,10 @@ describe("astUtils", () => {
                     globPatterns: "src/**/*.ts",
                     pathExpression: "//VariableDeclaration[?check]/Identifier",
                     functionRegistry: { check: n => n.$value.includes("x") },
-                    fileFilter: async () => { ++filterInvocations; return true; },
+                    fileFilter: async () => {
+                        ++filterInvocations;
+                        return true;
+                    },
                 });
             const matches: string[] = [];
             for await (const match of it) {
@@ -167,6 +170,34 @@ describe("astUtils", () => {
             assert.equal(filterInvocations, 1);
             assert.equal(matches.length, 1);
             assert.deepEqual(matches, ["x"]);
+        });
+
+        it.skip("matchIterator: modify simple and jump out", async () => {
+            const f = new InMemoryFile("src/test.ts",
+                "const x: number = 10; const y = 13; const xylophone = 3;");
+            const p = InMemoryProject.of(f);
+            let filterInvocations = 0;
+            const it = matchIterator(p,
+                {
+                    parseWith: TypeScriptES6FileParser,
+                    globPatterns: "src/**/*.ts",
+                    pathExpression: "//VariableDeclaration[?check]/Identifier",
+                    functionRegistry: { check: n => n.$value.includes("x") },
+                    fileFilter: async () => {
+                        ++filterInvocations;
+                        return true;
+                    },
+                });
+            let count = 0;
+            for await (const match of it) {
+                match.replace("haha", {});
+                // match.$value = "haha";
+                if (++count > 0) {
+                    break;
+                }
+            }
+            assert.equal(filterInvocations, 1);
+            assert.strictEqual(p.findFileSync(f.path).getContentSync(), f.content.replace("x", "haha"));
         });
 
         it("should suppress undefined", done => {
@@ -184,6 +215,33 @@ describe("astUtils", () => {
                     assert.deepEqual(matches, ["xylophone".length]);
                     done();
                 }).catch(done);
+        });
+    });
+
+    describe("doWithMatches", () => {
+
+        it("should replace simple", async () => {
+            const f = new InMemoryFile("src/test.ts", "const x: number = 10;");
+            const p = InMemoryProject.of(f);
+            await doWithAllMatches(p, TypeScriptES6FileParser,
+                "src/**/*.ts",
+                `//VariableDeclaration//ColonToken/following-sibling::* |
+                                    //VariableDeclaration//ColonToken`,
+                m => m.replace("", {}));
+            const f2 = p.findFileSync(f.path);
+            assert.equal(f2.getContentSync(), "const x  = 10;");
+        });
+
+        it("should set value simple", async () => {
+            const f = new InMemoryFile("src/test.ts", "const x: number = 10;");
+            const p = InMemoryProject.of(f);
+            await doWithAllMatches(p, TypeScriptES6FileParser,
+                "src/**/*.ts",
+                `//VariableDeclaration//ColonToken/following-sibling::* |
+                                    //VariableDeclaration//ColonToken`,
+                m => m.$value = "");
+            const f2 = p.findFileSync(f.path);
+            assert.equal(f2.getContentSync(), "const x  = 10;");
         });
     });
 

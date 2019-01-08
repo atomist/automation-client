@@ -142,6 +142,10 @@ function makeUpdatable(matches: MatchResult[], updates: Update[]) {
             requireOffset(m);
             updates.push({ initialValue: "", currentValue: content, offset: m.$offset });
         };
+        m.replace = (s: string, opts: NodeReplacementOptions) => {
+            requireOffset(m);
+            updates.push({ ...opts, initialValue, currentValue: s, offset: m.$offset });
+        };
         m.zap = (opts: NodeReplacementOptions) => {
             requireOffset(m);
             updates.push({ ...opts, initialValue, currentValue: "", offset: m.$offset });
