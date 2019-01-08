@@ -48,6 +48,7 @@ import * as parseUtils from "./lib/project/util/parseUtils";
 import * as projectUtils from "./lib/project/util/projectUtils";
 import * as secured from "./lib/secured";
 import * as astUtils from "./lib/tree/ast/astUtils";
+import * as matchTesters from "./lib/tree/ast/matchTesters";
 
 export { GraphQL };
 export {
@@ -226,6 +227,8 @@ export * from "./lib/spi/http/curlHttpClient";
 export * from "./lib/spi/http/httpClient";
 export * from "./lib/spi/message/MessageClient";
 export { astUtils };
+export { matchTesters };
+
 export {
     MatchResult,
     ZapTrailingWhitespace,

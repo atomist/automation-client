@@ -40,6 +40,10 @@ import {
 } from "./FileParser";
 import { FileParserRegistry } from "./FileParserRegistry";
 
+/**
+ * Create a MatchTester to use against this file, caching
+ * any parsed or otherwise computed resources.
+ */
 export type MatchTesterMaker = (f: File) => Promise<MatchTester>;
 
 /**
@@ -81,7 +85,7 @@ export interface PathExpressionQueryOptions {
 }
 
 /**
- * Tests matches within this file
+ * Tests matches within this file, using their tree node basis.
  */
 export type MatchTester = (n: LocatedTreeNode) => boolean;
 
