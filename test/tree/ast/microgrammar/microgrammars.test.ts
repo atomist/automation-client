@@ -1,17 +1,12 @@
-import {
-    Integer,
-    Microgrammar,
-} from "@atomist/microgrammar";
+import { Integer, Microgrammar, } from "@atomist/microgrammar";
 import "mocha";
 import * as assert from "power-assert";
 import { AllFiles } from "../../../../lib/project/fileGlobs";
 import { InMemoryProject } from "../../../../lib/project/mem/InMemoryProject";
-import {
-    findFileMatches,
-    findMatches,
-} from "../../../../lib/tree/ast/astUtils";
+import { findFileMatches, findMatches, } from "../../../../lib/tree/ast/astUtils";
 import { DefaultFileParserRegistry } from "../../../../lib/tree/ast/FileParserRegistry";
 import { MicrogrammarBasedFileParser } from "../../../../lib/tree/ast/microgrammar/MicrogrammarBasedFileParser";
+import { TreeNode } from "@atomist/tree-path";
 
 interface Person {
     name: string;
@@ -75,6 +70,41 @@ describe("microgrammar integration and path expression", () => {
                 assert(matches[0].fileNode.$children[0].$name === "people");
             }).then(() => done(), done);
     });
+
+    it("enable within check using path expression", done => {
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
+            age: Integer,
+        });
+        const file = Microgrammar.fromDefinitions<{ first: Person, second: Person}>({
+            first: mg,
+            second: mg,
+        });
+        const fpr = new DefaultFileParserRegistry().addParser(
+            new MicrogrammarBasedFileParser("people", "pair", file));
+        const p = InMemoryProject.of(
+            { path: "Thing", content: "Tom:16 Mary:25" });
+        findFileMatches(p, fpr, AllFiles, "/people/pair//name[?notWithinSecond]", {
+            notWithinSecond: n => !within(n, "second"),
+        })
+            .then(matches => {
+                assert.strictEqual(matches.length, 1);
+                assert(matches[0].file.path === "Thing");
+                assert.strictEqual(matches[0].matches.length, 1);
+                assert(matches[0].matches[0].$value === "Tom");
+                assert(matches[0].fileNode.$children.length === 1);
+                assert(matches[0].fileNode.$children[0].$name === "people");
+            }).then(() => done(), done);
+    });
+
+    function within(n: TreeNode, nodeName: string): boolean {
+        if (!n.$parent) {
+            return false;
+        }
+        if (n.$parent.$name === nodeName) {
+            return true;
+        }
+        return within(n.$parent, nodeName);
+    }
 
     it("should get into AST and update single terminal", done => {
         const mg = Microgrammar.fromString<Person>("${name}:${age}", {
