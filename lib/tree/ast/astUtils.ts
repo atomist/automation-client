@@ -40,6 +40,8 @@ import {
 } from "./FileParser";
 import { FileParserRegistry } from "./FileParserRegistry";
 
+export type MatchTesterMaker = (f: File) => Promise<MatchTester>;
+
 /**
  * Options for performing a path expression query against a project
  */
@@ -68,7 +70,20 @@ export interface PathExpressionQueryOptions {
      * by preventing unnecessary parsing.
      */
     fileFilter?: (f: File) => Promise<boolean>;
+
+    /**
+     * Optionally return a tester for matches in this file, testing the node backing the match.
+     * This can be useful for contextual testing: E.g. testing if one match is within another.
+     * @param {File} f
+     * @return {Promise<MatchTester>}
+     */
+    testWith?: MatchTesterMaker;
 }
+
+/**
+ * Tests matches within this file
+ */
+export type MatchTester = (n: LocatedTreeNode) => boolean;
 
 /**
  * Integrate path expressions with project operations to find all matches
@@ -154,7 +169,8 @@ export async function findFileMatches(p: ProjectAsync,
         throw new Error(`Cannot find parser for path expression [${pathExpression}]: Using ${parserOrRegistry}`);
     }
     const valuesToCheckFor = literalValues(parsed);
-    const files = await gatherFromFiles(p, globPatterns, file => parseFile(parser, parsed, functionRegistry, p, file, valuesToCheckFor));
+    const files = await gatherFromFiles(p, globPatterns, file => parseFile(parser, parsed,
+        functionRegistry, p, file, valuesToCheckFor, undefined));
     const all = await Promise.all(files);
     return all.filter(x => !!x);
 }
@@ -173,7 +189,7 @@ export async function* fileHitIterator(p: Project,
     }
     const valuesToCheckFor = literalValues(parsed);
     for await (const file of await fileIterator(p, opts.globPatterns, opts.fileFilter)) {
-        const fileHit = await parseFile(parser, parsed, opts.functionRegistry, p, file, valuesToCheckFor);
+        const fileHit = await parseFile(parser, parsed, opts.functionRegistry, p, file, valuesToCheckFor, opts.testWith);
         if (!!fileHit) {
             yield fileHit;
         }
@@ -185,7 +201,8 @@ async function parseFile(parser: FileParser,
                          functionRegistry: FunctionRegistry,
                          p: ProjectAsync,
                          file: File,
-                         valuesToCheckFor: string[]): Promise<FileHit> {
+                         valuesToCheckFor: string[],
+                         matchTester: MatchTesterMaker): Promise<FileHit> {
     // First, apply optimizations
     if (valuesToCheckFor.length > 0) {
         const content = await file.getContent();
@@ -214,13 +231,19 @@ async function parseFile(parser: FileParser,
             if (isSuccessResult(r)) {
                 logger.debug("%d matches in file '%s'", r.length, file.path);
                 return fillInSourceLocations(file, r)
-                    .then(locatedNodes => new FileHit(p, file, fileNode, locatedNodes));
+                    .then(locatedNodes => {
+                        if (matchTester) {
+                            return matchTester(file)
+                                .then(test => new FileHit(p, file, fileNode,
+                                    locatedNodes.filter(test)));
+                        }
+                        return new FileHit(p, file, fileNode, locatedNodes);
+                    });
             } else {
                 logger.debug("No matches in file '%s'", file.path);
                 return undefined;
             }
-        })
-        .catch(err => {
+        }).catch(err => {
             logger.info("Failed to parse file '%s': %s", file.path, err);
             return undefined;
         });
