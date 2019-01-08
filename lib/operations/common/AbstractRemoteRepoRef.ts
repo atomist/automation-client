@@ -66,7 +66,7 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
                           rawApiBase: string,
                           public readonly owner: string,
                           public readonly repo: string,
-                          public readonly sha: string = "master",
+                          public readonly sha: string,
                           public readonly path?: string) {
         const [remoteScheme, remoteBase] = splitSchemeFromUrl(rawRemote);
         const [apiScheme, apiBase] = splitSchemeFromUrl(rawApiBase);

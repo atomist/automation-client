@@ -275,7 +275,11 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
             public resolve(key: string): string {
                 const value = this.sec.find(a => a.uri === key);
                 if (value) {
-                    return String(value.value);
+                    if (!!value.value) {
+                        return String(value.value);
+                    } else {
+                        return undefined;
+                    }
                 }
                 throw new Error(`Cannot resolve secret '${key}'`);
             }

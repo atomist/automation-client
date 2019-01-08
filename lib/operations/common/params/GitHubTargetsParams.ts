@@ -5,7 +5,6 @@ import {
     Secret,
     Secrets,
 } from "../../../decorators";
-
 import { GitHubRepoRef } from "../GitHubRepoRef";
 import { ProjectOperationCredentials } from "../ProjectOperationCredentials";
 import { TargetsParams } from "./TargetsParams";
@@ -21,7 +20,11 @@ export abstract class GitHubTargetsParams extends TargetsParams {
     public apiUrl: string;
 
     get credentials(): ProjectOperationCredentials {
-        return { token: this.githubToken };
+        if (!!this.githubToken) {
+            return { token: this.githubToken };
+        } else {
+            return undefined;
+        }
     }
 
     /**

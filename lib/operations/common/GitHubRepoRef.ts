@@ -56,7 +56,7 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
 
     constructor(owner: string,
                 repo: string,
-                sha: string = "HEAD",
+                sha?: string,
                 rawApiBase = GitHubDotComBase,
                 path?: string) {
         super(
