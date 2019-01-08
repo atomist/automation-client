@@ -172,7 +172,7 @@ describe("astUtils", () => {
             assert.deepEqual(matches, ["x"]);
         });
 
-        it.skip("matchIterator: modify simple and jump out", async () => {
+        it("matchIterator: modify simple and jump out", async () => {
             const f = new InMemoryFile("src/test.ts",
                 "const x: number = 10; const y = 13; const xylophone = 3;");
             const p = InMemoryProject.of(f);

@@ -290,21 +290,22 @@ export function zapAllMatches<P extends ProjectAsync = ProjectAsync>(p: P,
  * @param action what to do with matches
  * @return {Promise<TreeNode[]>} hit record for each matching file
  */
-export function doWithAllMatches<P extends ProjectAsync = ProjectAsync>(p: P,
-                                                                        parserOrRegistry: FileParser | FileParserRegistry,
-                                                                        globPatterns: GlobOptions,
-                                                                        pathExpression: string | PathExpression,
-                                                                        action: (m: MatchResult) => void): Promise<P> {
-    return findFileMatches(p, parserOrRegistry, globPatterns, pathExpression)
-        .then(fileHits => {
-            fileHits.forEach(fh => {
-                const sorted = fh.matches.sort((m1, m2) => m1.$offset - m2.$offset);
-                sorted.forEach(m => {
-                    action(m);
-                });
-            });
-            return (p as any).flush();
-        });
+export async function doWithAllMatches<P extends ProjectAsync = ProjectAsync>(p: P,
+                                                                              parserOrRegistry: FileParser | FileParserRegistry,
+                                                                              globPatterns: GlobOptions,
+                                                                              pathExpression: string | PathExpression,
+                                                                              action: (m: MatchResult) => void): Promise<P> {
+    const fileHits = await findFileMatches(p, parserOrRegistry, globPatterns, pathExpression);
+    fileHits.forEach(fh => applyActionToMatches(fh, action));
+    return (p as any).flush();
+}
+
+function applyActionToMatches(fh: FileHit, action: (m: MatchResult) => void) {
+    // Sort file hits in reverse order so that offsets aren't upset by applications
+    const sorted = fh.matches.sort((m1, m2) => m1.$offset - m2.$offset);
+    sorted.forEach(m => {
+        action(m);
+    });
 }
 
 export function findParser(pathExpression: PathExpression, fp: FileParser | FileParserRegistry): FileParser {
