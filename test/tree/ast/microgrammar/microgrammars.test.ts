@@ -1,12 +1,12 @@
-import { Integer, Microgrammar, } from "@atomist/microgrammar";
+import { Integer, Microgrammar } from "@atomist/microgrammar";
+import { TreeNode } from "@atomist/tree-path";
 import "mocha";
 import * as assert from "power-assert";
 import { AllFiles } from "../../../../lib/project/fileGlobs";
 import { InMemoryProject } from "../../../../lib/project/mem/InMemoryProject";
-import { findFileMatches, findMatches, } from "../../../../lib/tree/ast/astUtils";
+import { findFileMatches, findMatches } from "../../../../lib/tree/ast/astUtils";
 import { DefaultFileParserRegistry } from "../../../../lib/tree/ast/FileParserRegistry";
 import { MicrogrammarBasedFileParser } from "../../../../lib/tree/ast/microgrammar/MicrogrammarBasedFileParser";
-import { TreeNode } from "@atomist/tree-path";
 
 interface Person {
     name: string;
