@@ -11,10 +11,10 @@ import {
     findFileMatches,
     findMatches, matchIterator,
 } from "../../../../lib/tree/ast/astUtils";
-import { DefaultFileParserRegistry } from "../../../../lib/tree/ast/FileParserRegistry";
-import { MicrogrammarBasedFileParser } from "../../../../lib/tree/ast/microgrammar/MicrogrammarBasedFileParser";
 import { MatchResult } from "../../../../lib/tree/ast/FileHits";
+import { DefaultFileParserRegistry } from "../../../../lib/tree/ast/FileParserRegistry";
 import { notWithin } from "../../../../lib/tree/ast/matchTesters";
+import { MicrogrammarBasedFileParser } from "../../../../lib/tree/ast/microgrammar/MicrogrammarBasedFileParser";
 
 interface Person {
     name: string;

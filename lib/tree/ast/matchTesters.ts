@@ -1,6 +1,6 @@
 import { Microgrammar } from "@atomist/microgrammar";
-import { MatchTesterMaker } from "./astUtils";
 import { PatternMatch } from "@atomist/microgrammar/lib/PatternMatch";
+import { MatchTesterMaker } from "./astUtils";
 
 /**
  * Exclude matches that are within a match of the given microgrammar
