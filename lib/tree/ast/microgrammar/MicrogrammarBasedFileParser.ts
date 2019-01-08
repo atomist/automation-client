@@ -22,19 +22,17 @@ export class MicrogrammarBasedFileParser implements FileParser {
                 public grammar: Microgrammar<any>) {
     }
 
-    public toAst(f: File): Promise<TreeNode> {
-        return f.getContent()
-            .then(content => {
-                const matches = this.grammar.findMatches(content);
-                const root = {
-                    $name: this.rootName,
-                    $children: matches.map(m =>
-                        new MicrogrammarBackedTreeNode(this.matchName, m, undefined)),
-                };
-                defineDynamicProperties(root);
-                fillInEmptyNonTerminalValues(root, content);
-                return root;
-            });
+    public async toAst(f: File): Promise<TreeNode> {
+        const content = await f.getContent();
+        const matches = this.grammar.findMatches(content);
+        const root = {
+            $name: this.rootName,
+            $children: matches.map(m =>
+                new MicrogrammarBackedTreeNode(this.matchName, m, undefined)),
+        };
+        defineDynamicProperties(root);
+        fillInEmptyNonTerminalValues(root, content);
+        return root;
     }
 }
 
