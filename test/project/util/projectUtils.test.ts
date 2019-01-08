@@ -104,7 +104,18 @@ describe("projectUtils", () => {
         assert.strictEqual(gathered[0].path, "Thing");
     });
 
-    it("fileIterator: take none", async () => {
+    it("fileIterator: take none due to glob", async () => {
+        const t = tempProject();
+        t.addFileSync("Thing", "1");
+        const it = fileIterator(t, "notThere", async () => true);
+        const gathered = [];
+        for await (const what of it) {
+            gathered.push(what);
+        }
+        assert.strictEqual(gathered.length,  0);
+    });
+
+    it("fileIterator: take none due to filter", async () => {
         const t = tempProject();
         t.addFileSync("Thing", "1");
         const it = fileIterator(t, AllFiles, async () => false);

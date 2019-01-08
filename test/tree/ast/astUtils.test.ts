@@ -87,6 +87,44 @@ describe("astUtils", () => {
                 }).catch(done);
         });
 
+        it("matchIterator: no matches due to glob mismatch", async () => {
+            const f = new InMemoryFile("src/test.ts",
+                "const x: number = 10; const y = 13; const xylophone = 3;");
+            const p = InMemoryProject.of(f);
+            const it = matchIterator(p,
+                {
+                    parseWith: TypeScriptES6FileParser,
+                    globPatterns: "src/**/*.js",    // Deliberately wrong
+                    pathExpression: "//VariableDeclaration[?check]/Identifier",
+                    functionRegistry: { check: n => n.$value.includes("x") },
+                });
+            const matches: string[] = [];
+            for await (const match of it) {
+                // Don't throw an error
+                matches.push(match.$value);
+            }
+            assert.equal(matches.length, 0);
+        });
+
+        it("matchIterator: no matches due to path expression mismatch", async () => {
+            const f = new InMemoryFile("src/test.ts",
+                "const x: number = 10; const y = 13; const xylophone = 3;");
+            const p = InMemoryProject.of(f);
+            const it = matchIterator(p,
+                {
+                    parseWith: TypeScriptES6FileParser,
+                    globPatterns: "src/**/*.ts",    // Deliberately wrong
+                    pathExpression: "/VariableDeclaration[?check]/Identifier", // deliberately wrong
+                    functionRegistry: { check: n => n.$value.includes("x") },
+                });
+            const matches: string[] = [];
+            for await (const match of it) {
+                // Don't throw an error
+                matches.push(match.$value);
+            }
+            assert.equal(matches.length, 0);
+        });
+
         it("matchIterator: save simple", async () => {
             const f = new InMemoryFile("src/test.ts",
                 "const x: number = 10; const y = 13; const xylophone = 3;");

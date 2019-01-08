@@ -167,7 +167,7 @@ export async function* fileHitIterator(p: Project,
     }
     const valuesToCheckFor = literalValues(parsed);
     for await (const file of await fileIterator(p, opts.globPatterns, opts.fileFilter)) {
-        const fileHit = parseFile(parser, parsed, opts.functionRegistry, p, file, valuesToCheckFor);
+        const fileHit = await parseFile(parser, parsed, opts.functionRegistry, p, file, valuesToCheckFor);
         if (!!fileHit) {
             yield fileHit;
         }
