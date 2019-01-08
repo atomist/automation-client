@@ -172,32 +172,66 @@ describe("astUtils", () => {
             assert.deepEqual(matches, ["x"]);
         });
 
-        it("matchIterator: modify simple and jump out", async () => {
+        it("matchIterator: modify simple", async () => {
             const f = new InMemoryFile("src/test.ts",
                 "const x: number = 10; const y = 13; const xylophone = 3;");
             const p = InMemoryProject.of(f);
-            let filterInvocations = 0;
             const it = matchIterator(p,
                 {
                     parseWith: TypeScriptES6FileParser,
                     globPatterns: "src/**/*.ts",
-                    pathExpression: "//VariableDeclaration[?check]/Identifier",
-                    functionRegistry: { check: n => n.$value.includes("x") },
-                    fileFilter: async () => {
-                        ++filterInvocations;
-                        return true;
-                    },
+                    pathExpression: "//VariableDeclaration/Identifier",
                 });
             let count = 0;
             for await (const match of it) {
-                match.replace("haha", {});
-                // match.$value = "haha";
+                if (match.$value === "x") {
+                    ++count;
+                    match.replace("haha", {});
+                }
+            }
+            assert.equal(count, 1);
+            assert.strictEqual(p.findFileSync(f.path).getContentSync(), f.content.replace("x:", "haha:"));
+        });
+
+        it("matchIterator: modify multiple", async () => {
+            const f = new InMemoryFile("src/test.ts",
+                "const x: number = 10; const y = 13; const xylophone = 3;");
+            const p = InMemoryProject.of(f);
+            const it = matchIterator(p,
+                {
+                    parseWith: TypeScriptES6FileParser,
+                    globPatterns: "src/**/*.ts",
+                    pathExpression: "//VariableDeclaration/Identifier",
+                });
+            for await (const match of it) {
+                if (match.$value === "x") {
+                    match.replace("haha", {});
+                } else if (match.$value === "y") {
+                    match.replace("hehe", {});
+                }
+            }
+            assert.strictEqual(p.findFileSync(f.path).getContentSync(),
+                f.content.replace("x:", "haha:").replace("y ", "hehe "));
+        });
+
+        it("matchIterator: modify simple and jump out", async () => {
+            const f = new InMemoryFile("src/test.ts",
+                "const x: number = 10; const y = 13; const xylophone = 3;");
+            const p = InMemoryProject.of(f);
+            const it = matchIterator(p,
+                {
+                    parseWith: TypeScriptES6FileParser,
+                    globPatterns: "src/**/*.ts",
+                    pathExpression: "//VariableDeclaration/Identifier",
+                });
+            let count = 0;
+            for await (const match of it) {
+                match.$value = "haha";
                 if (++count > 0) {
                     break;
                 }
             }
-            assert.equal(filterInvocations, 1);
-            assert.strictEqual(p.findFileSync(f.path).getContentSync(), f.content.replace("x", "haha"));
+            assert.strictEqual(p.findFileSync(f.path).getContentSync(), f.content.replace("x:", "haha:"));
         });
 
         it("should suppress undefined", done => {

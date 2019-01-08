@@ -89,7 +89,8 @@ export function findMatches(p: ProjectAsync,
 }
 
 /**
- * Generator style iteration over matches in a project
+ * Generator style iteration over matches in a project.
+ * Modifications made to matches will be made on the project.
  * @param p project
  * @param opts options for query
  */
@@ -97,8 +98,13 @@ export async function* matchIterator(p: Project,
                                      opts: PathExpressionQueryOptions): AsyncIterable<MatchResult> {
     const fileHits = fileHitIterator(p, opts);
     for await (const fileHit of fileHits) {
-        for (const match of fileHit.matches) {
-            yield match;
+        try {
+            for (const match of fileHit.matches) {
+                yield match;
+            }
+        } finally {
+            // Even if the user jumps out of the generator, ensure that we make the changes to the present file
+            (p as any).flush();
         }
     }
 }
@@ -303,9 +309,7 @@ export async function doWithAllMatches<P extends ProjectAsync = ProjectAsync>(p:
 function applyActionToMatches(fh: FileHit, action: (m: MatchResult) => void) {
     // Sort file hits in reverse order so that offsets aren't upset by applications
     const sorted = fh.matches.sort((m1, m2) => m1.$offset - m2.$offset);
-    sorted.forEach(m => {
-        action(m);
-    });
+    sorted.forEach(action);
 }
 
 export function findParser(pathExpression: PathExpression, fp: FileParser | FileParserRegistry): FileParser {
