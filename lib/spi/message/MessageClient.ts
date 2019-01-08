@@ -8,6 +8,7 @@ import { AnyOptions } from "../../configuration";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { metadataFromInstance } from "../../internal/metadata/metadataReading";
+import { ParameterType } from "../../SmartParameters";
 import { lookupChatTeam } from "./MessageClientSupport";
 
 /**
@@ -313,9 +314,7 @@ export interface CommandReference {
  */
 export function buttonForCommand(buttonSpec: ButtonSpecification,
                                  command: string | HandleCommand,
-                                 parameters: {
-        [name: string]: string | number | boolean,
-    } = {}): Action {
+                                 parameters: ParameterType = {}): Action {
     const cmd = commandName(command);
     const params = mergeParameters(command, parameters);
     const id = cmd.toLocaleLowerCase();
@@ -334,9 +333,7 @@ export function buttonForCommand(buttonSpec: ButtonSpecification,
 export function menuForCommand(selectSpec: MenuSpecification,
                                command: string | HandleCommand,
                                parameterName: string,
-                               parameters: {
-        [name: string]: string | number | boolean,
-    } = {}): Action {
+                               parameters: ParameterType = {}): Action {
     const cmd = commandName(command);
     const params = mergeParameters(command, parameters);
     const id = cmd.toLocaleLowerCase();
@@ -391,7 +388,7 @@ export function mergeParameters(command: any, parameters: any): any {
         const newParameters = _.merge(command, parameters);
         return flatten(newParameters);
     }
-    return parameters;
+    return flatten(parameters);
 }
 
 function chatButtonFrom(action: ButtonSpecification, command: any): Action {
