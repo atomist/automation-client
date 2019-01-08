@@ -9,7 +9,8 @@ import { AllFiles } from "../../../../lib/project/fileGlobs";
 import { InMemoryProject } from "../../../../lib/project/mem/InMemoryProject";
 import {
     findFileMatches,
-    findMatches, matchIterator,
+    findMatches,
+    matchIterator,
 } from "../../../../lib/tree/ast/astUtils";
 import { MatchResult } from "../../../../lib/tree/ast/FileHits";
 import { DefaultFileParserRegistry } from "../../../../lib/tree/ast/FileParserRegistry";
