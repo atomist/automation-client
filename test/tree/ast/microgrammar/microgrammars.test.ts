@@ -10,8 +10,11 @@ import { InMemoryProject } from "../../../../lib/project/mem/InMemoryProject";
 import {
     findFileMatches,
     findMatches,
+    matchIterator,
 } from "../../../../lib/tree/ast/astUtils";
+import { MatchResult } from "../../../../lib/tree/ast/FileHits";
 import { DefaultFileParserRegistry } from "../../../../lib/tree/ast/FileParserRegistry";
+import { notWithin } from "../../../../lib/tree/ast/matchTesters";
 import { MicrogrammarBasedFileParser } from "../../../../lib/tree/ast/microgrammar/MicrogrammarBasedFileParser";
 
 interface Person {
@@ -81,7 +84,7 @@ describe("microgrammar integration and path expression", () => {
         const mg = Microgrammar.fromString<Person>("${name}:${age}", {
             age: Integer,
         });
-        const file = Microgrammar.fromDefinitions<{ first: Person, second: Person}>({
+        const file = Microgrammar.fromDefinitions<{ first: Person, second: Person }>({
             first: mg,
             second: mg,
         });
@@ -241,6 +244,117 @@ describe("microgrammar integration and path expression", () => {
                 assert(matches[0].$value === "Tom");
                 assert(matches[1].$value === "Mary");
             }).then(() => done(), done);
+    });
+
+    it("should veto with MatchTester", async () => {
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
+            age: Integer,
+        });
+        const file = Microgrammar.fromDefinitions<{ first: Person, second: Person }>({
+            first: mg,
+            second: mg,
+        });
+        const parseWith = new MicrogrammarBasedFileParser("people", "pair", file);
+        const p = InMemoryProject.of(
+            { path: "Thing1", content: "Tom:16 Mary:25" },
+            { path: "Thing2", content: "George:16 Kathy:25" },
+        );
+        const it = matchIterator(p, {
+            parseWith,
+            globPatterns: AllFiles,
+            pathExpression: "//pair//second/name",
+            testWith: async () => () => false,
+        });
+        const matches: MatchResult[] = [];
+        for await (const match of it) {
+            matches.push(match);
+        }
+        assert.strictEqual(matches.length, 0);
+    });
+
+    it("should veto every second with MatchTester", async () => {
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
+            age: Integer,
+        });
+        const file = Microgrammar.fromDefinitions<{ first: Person, second: Person }>({
+            first: mg,
+            second: mg,
+        });
+        const parseWith = new MicrogrammarBasedFileParser("people", "pair", file);
+        const p = InMemoryProject.of(
+            { path: "Thing1", content: "Tom:16 Mary:25" },
+            { path: "Thing2", content: "George:16 Kathy:25" },
+        );
+        let count = 0;
+        const it = matchIterator(p, {
+            parseWith,
+            globPatterns: AllFiles,
+            pathExpression: "//pair//name",
+            testWith: async () => () => count++ % 2 === 0,
+        });
+        const matches: MatchResult[] = [];
+        for await (const match of it) {
+            matches.push(match);
+        }
+        assert.strictEqual(matches.length, 2);
+    });
+
+    it("should exclude with notWithin MatchTester", async () => {
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
+            age: Integer,
+        });
+        const file = Microgrammar.fromDefinitions<{ first: Person, second: Person }>({
+            first: mg,
+            second: mg,
+        });
+        const parseWith = new MicrogrammarBasedFileParser("people", "pair", file);
+        const p = InMemoryProject.of(
+            { path: "Thing1", content: "Tom:16 Mary:25" },
+            { path: "Thing2", content: "George:16 Kathy:25" },
+        );
+        const it = matchIterator(p, {
+            parseWith,
+            globPatterns: AllFiles,
+            pathExpression: "//pair//name",
+            testWith: notWithin(Microgrammar.fromDefinitions({
+                badName: /[A-Za-z]+:25/,
+            })),
+        });
+        const matches: MatchResult[] = [];
+        for await (const match of it) {
+            matches.push(match);
+        }
+        assert.strictEqual(matches.length, 2);
+        assert.strictEqual(matches[0].$value, "Tom");
+        assert.strictEqual(matches[1].$value, "George");
+    });
+
+    it("should not exclude with irrelevant notWithin MatchTester", async () => {
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
+            age: Integer,
+        });
+        const file = Microgrammar.fromDefinitions<{ first: Person, second: Person }>({
+            first: mg,
+            second: mg,
+        });
+        const parseWith = new MicrogrammarBasedFileParser("people", "pair", file);
+        const p = InMemoryProject.of(
+            { path: "Thing1", content: "Tom:16 Mary:25" },
+            { path: "Thing2", content: "George:16 Kathy:25" },
+        );
+        const it = matchIterator(p, {
+            parseWith,
+            globPatterns: AllFiles,
+            pathExpression: "//pair//name",
+            testWith: notWithin(Microgrammar.fromDefinitions({
+                badName: /[0-9][A-Za-z]+:25/, // Does not match
+            })),
+        });
+        const matches: MatchResult[] = [];
+        for await (const match of it) {
+            matches.push(match);
+        }
+        assert.strictEqual(matches.length, 4);
     });
 
     it("handles multiple updates to same property");
