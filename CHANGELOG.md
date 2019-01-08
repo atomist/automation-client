@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Allow matchIterator to be used to change matches. [#442](https://github.com/atomist/automation-client/issues/442)
+-   Various fixes to better support targeting in command handlers. [#441](https://github.com/atomist/automation-client/issues/441)
 
 ## [1.2.0](https://github.com/atomist/automation-client-ts/compare/1.1.0...1.2.0) - 2018-12-27
 
