@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 -   Provide a dummy id to InMemoryProject. [#438](https://github.com/atomist/automation-client/issues/438)
+-   Allow boolean and number parameters types in command requests. [#446](https://github.com/atomist/automation-client/issues/446)
 
 ### Changed
 
