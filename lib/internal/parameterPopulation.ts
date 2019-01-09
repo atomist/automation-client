@@ -63,6 +63,9 @@ function computeValue(parameter: { name: string, type?: ParameterType }, value: 
         case "number":
             if (typeof value === "string") {
                 value = parseInt(value, 10);
+            } else if (typeof value === "number") {
+                // It's already a number. Keep the value the same.
+                break;
             } else {
                 throw new Error(`Parameter '${parameter.name}' has array value, but is numeric`);
             }
