@@ -625,8 +625,8 @@ export function loadIndexConfig(): Configuration {
                 cfgLog(f);
                 return cfg;
             } catch (e) {
-                logger.debug(`Failed to load ${f}.configuration: ${e.message}`);
-                return {};
+                e.message = `Failed to load ${f}.configuration: ${e.message}`;
+                throw e;
             }
         });
         return deepMergeConfigs({}, ...cfgs);
