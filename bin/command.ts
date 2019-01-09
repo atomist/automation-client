@@ -87,7 +87,7 @@ async function invokeOnConsole(automationServer: AutomationServer, ci: CommandIn
         secrets: ci.args ? ci.args.filter(a => handler.secrets.some(p => p.name === a.name))
             .map(a => {
                 const s = handler.secrets.find(p => p.name === a.name);
-                return { uri: s.uri, value: a.value };
+                return { uri: s.uri, value: String(a.value) };
             }) : undefined,
     };
 
