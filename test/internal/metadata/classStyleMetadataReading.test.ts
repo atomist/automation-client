@@ -83,7 +83,7 @@ describe("class style metadata reading", () => {
     it("should convert to explicit type: boolean", () => {
         const h = new HasDefaultedBooleanParam();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
-        populateParameters(h, md, [{ name: "booleanParam", value: "true" }]);
+        populateParameters(h, md, [{ name: "booleanParam", value: true }]);
         assert(h.booleanParam === true);
         populateParameters(h, md, [{ name: "booleanParam", value: "false" }]);
         assert(h.booleanParam === false);
@@ -92,7 +92,7 @@ describe("class style metadata reading", () => {
     it("should convert to explicit type: number", () => {
         const h = new HasNumberParam();
         const md = metadataFromInstance(h) as CommandHandlerMetadata;
-        populateParameters(h, md, [{ name: "numberParam", value: "1" }]);
+        populateParameters(h, md, [{ name: "numberParam", value: 1 }]);
         assert(h.numberParam === 1);
         populateParameters(h, md, [{ name: "numberParam", value: "100" }]);
         assert(h.numberParam === 100);

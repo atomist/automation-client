@@ -46,6 +46,7 @@ export function populateValues(instanceToPopulate: any, am: AutomationMetadata, 
 }
 
 function computeValue(parameter: { name: string, type?: ParameterType }, value: any) {
+    let newValue = value;
     // Convert type if necessary
     switch (parameter.type) {
         case "string":
@@ -57,14 +58,16 @@ function computeValue(parameter: { name: string, type?: ParameterType }, value: 
             break;
         case "boolean":
             if (typeof value !== "boolean") {
-                value = value === "true" || value === "yes" || value === "1";
+                newValue = value === "true" || value === "yes" || value === "1";
             }
             break;
         case "number":
             if (typeof value === "string") {
-                value = parseInt(value, 10);
+                newValue = parseInt(value, 10);
+            } else if (typeof value === "number") {
+                break;
             } else {
-                throw new Error(`Parameter '${parameter.name}' has array value, but is numeric`);
+                throw new Error(`Parameter '${parameter.name}' has invalid value, but is numeric`);
             }
             break;
         default:
@@ -72,7 +75,7 @@ function computeValue(parameter: { name: string, type?: ParameterType }, value: 
             const chooser = parameter.type as Chooser;
             if (chooser.pickOne) {
                 if (typeof value !== "string") {
-                    throw new Error(`Parameter '${parameter.name}' has array value, but should be string`);
+                    throw new Error(`Parameter '${parameter.name}' has invalid value, but should be string`);
                 }
             } else {
                 if (typeof value.value === "string") {
@@ -81,5 +84,5 @@ function computeValue(parameter: { name: string, type?: ParameterType }, value: 
             }
             break;
     }
-    return value;
+    return newValue;
 }

@@ -44,7 +44,7 @@ export interface Invocation {
 export interface Arg {
 
     name: string;
-    value: string | string[];
+    value: string | string[] | boolean | number;
 }
 
 /**
