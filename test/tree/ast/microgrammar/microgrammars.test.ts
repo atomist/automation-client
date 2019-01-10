@@ -52,8 +52,6 @@ describe("microgrammar integration and path expression", () => {
             .then(matches => {
                 assert.strictEqual(matches.length, 2);
                 assert.strictEqual(matches[0].name, "Tom");
-                // This bug is shown in another test
-                // assert.strictEqual(matches[0].age, 16);
                 assert.strictEqual(matches[0].$value, "Tom:16");
             }).then(() => done(), done);
     });
