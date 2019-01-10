@@ -40,6 +40,24 @@ describe("microgrammar integration and path expression", () => {
             }).then(() => done(), done);
     });
 
+    it("should get into AST with strong typing", done => {
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
+            age: Integer,
+        });
+        const fpr = new DefaultFileParserRegistry().addParser(
+            new MicrogrammarBasedFileParser("people", "person", mg));
+        const p = InMemoryProject.of(
+            { path: "Thing", content: "Tom:16 Mary:25" });
+        findMatches<Person>(p, fpr, AllFiles, "/people/person")
+            .then(matches => {
+                assert.strictEqual(matches.length, 2);
+                assert.strictEqual(matches[0].name, "Tom");
+                // TODO fix this
+                // assert.strictEqual(matches[0].age, 16);
+                assert.strictEqual(matches[0].$value, "Tom:16");
+            }).then(() => done(), done);
+    });
+
     it("exposes source locations", done => {
         const mg = Microgrammar.fromString<Person>("${name}:${age}", {
             age: Integer,
@@ -355,6 +373,31 @@ describe("microgrammar integration and path expression", () => {
             matches.push(match);
         }
         assert.strictEqual(matches.length, 4);
+    });
+
+    it("should allow typing", async () => {
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
+            age: Integer,
+        });
+        const file = Microgrammar.fromDefinitions<{ first: Person, second: Person }>({
+            first: mg,
+            second: mg,
+        });
+        const parseWith = new MicrogrammarBasedFileParser("people", "pair", file);
+        const p = InMemoryProject.of(
+            { path: "Thing1", content: "Tom:16 Mary:25" },
+            { path: "Thing2", content: "George:16 Kathy:25" },
+        );
+        const it = matchIterator<Person>(p, {
+            parseWith,
+            globPatterns: AllFiles,
+            pathExpression: "//pair/first",
+        });
+        const people: Person[] = [];
+        for await (const match of it) {
+            people.push(match);
+        }
+        assert.strictEqual(people.length, 2);
     });
 
     it("handles multiple updates to same property");

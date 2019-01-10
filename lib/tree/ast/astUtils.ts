@@ -97,14 +97,15 @@ export type MatchTester = (n: LocatedTreeNode) => boolean;
  * @param pathExpression path expression string or parsed
  * @param functionRegistry registry to look for path expression functions in
  * @return {Promise<MatchResult[]>} matches
+ * @type T match type to mix in
  */
-export function findMatches(p: ProjectAsync,
-                            parserOrRegistry: FileParser | FileParserRegistry,
-                            globPatterns: GlobOptions,
-                            pathExpression: string | PathExpression,
-                            functionRegistry?: FunctionRegistry): Promise<MatchResult[]> {
+export function findMatches<T>(p: ProjectAsync,
+                               parserOrRegistry: FileParser | FileParserRegistry,
+                               globPatterns: GlobOptions,
+                               pathExpression: string | PathExpression,
+                               functionRegistry?: FunctionRegistry): Promise<Array<MatchResult & T>> {
     return findFileMatches(p, parserOrRegistry, globPatterns, pathExpression, functionRegistry)
-        .then(fileHits => _.flatten(fileHits.map(f => f.matches)));
+        .then(fileHits => _.flatten(fileHits.map(f => f.matches as any)));
 }
 
 /**
@@ -112,14 +113,15 @@ export function findMatches(p: ProjectAsync,
  * Modifications made to matches will be made on the project.
  * @param p project
  * @param opts options for query
+ * @type T match type to mix in
  */
-export async function* matchIterator(p: Project,
-                                     opts: PathExpressionQueryOptions): AsyncIterable<MatchResult> {
+export async function* matchIterator<T>(p: Project,
+                                        opts: PathExpressionQueryOptions): AsyncIterable<MatchResult & T> {
     const fileHits = fileHitIterator(p, opts);
     for await (const fileHit of fileHits) {
         try {
             for (const match of fileHit.matches) {
-                yield match;
+                yield match as any;
             }
         } finally {
             // Even if the user jumps out of the generator, ensure that we make the changes to the present file
