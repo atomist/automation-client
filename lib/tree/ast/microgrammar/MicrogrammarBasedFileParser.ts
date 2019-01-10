@@ -49,6 +49,12 @@ class MicrogrammarBackedTreeNode implements TreeNode {
 
     constructor(public $name: string, m: PatternMatch, public $parent: TreeNode) {
         this.$offset = m.$offset;
+        // Copy properties from the match
+        Object.getOwnPropertyNames(m)
+            .filter(prop => !prop.startsWith("$"))
+            .map(prop => {
+                this[prop] = m[prop];
+            });
         if (isTreePatternMatch(m)) {
             const subs = m.submatches();
             this.$children = Object.getOwnPropertyNames(subs)
