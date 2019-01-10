@@ -52,8 +52,30 @@ describe("microgrammar integration and path expression", () => {
             .then(matches => {
                 assert.strictEqual(matches.length, 2);
                 assert.strictEqual(matches[0].name, "Tom");
-                // TODO fix this
+                // This bug is shown in another test
                 // assert.strictEqual(matches[0].age, 16);
+                assert.strictEqual(matches[0].$value, "Tom:16");
+            }).then(() => done(), done);
+    });
+
+    it("should get into AST with strong typing and conversion", done => {
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
+            age: Integer,
+        });
+
+        // This type is correct here
+        const m = mg.firstMatch("Tom:16");
+        assert.strictEqual(m.age, 16);
+
+        const fpr = new DefaultFileParserRegistry().addParser(
+            new MicrogrammarBasedFileParser("people", "person", mg));
+        const p = InMemoryProject.of(
+            { path: "Thing", content: "Tom:16 Mary:25" });
+        findMatches<Person>(p, fpr, AllFiles, "/people/person")
+            .then(matches => {
+                assert.strictEqual(matches.length, 2);
+                assert.strictEqual(matches[0].name, "Tom");
+                assert.strictEqual(matches[0].age, 16);
                 assert.strictEqual(matches[0].$value, "Tom:16");
             }).then(() => done(), done);
     });
