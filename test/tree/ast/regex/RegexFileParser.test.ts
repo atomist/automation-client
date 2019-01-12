@@ -1,11 +1,11 @@
-import { TreeNode, } from "@atomist/tree-path";
+import { TreeNode } from "@atomist/tree-path";
 import "mocha";
 import * as assert from "power-assert";
-import { InMemoryFile } from "../../../../lib/project/mem/InMemoryFile";
-import { RegexFileParser } from "../../../../lib/tree/ast/regex/RegexFileParser";
-import { findMatches } from "../../../../lib/tree/ast/astUtils";
-import { InMemoryProject } from "../../../../lib/project/mem/InMemoryProject";
 import { AllFiles } from "../../../../lib/project/fileGlobs";
+import { InMemoryFile } from "../../../../lib/project/mem/InMemoryFile";
+import { InMemoryProject } from "../../../../lib/project/mem/InMemoryProject";
+import { findMatches } from "../../../../lib/tree/ast/astUtils";
+import { RegexFileParser } from "../../../../lib/tree/ast/regex/RegexFileParser";
 
 interface Person {
     name: string;
