@@ -1,4 +1,8 @@
-import { defineDynamicProperties, fillInEmptyNonTerminalValues, TreeNode } from "@atomist/tree-path";
+import {
+    defineDynamicProperties,
+    fillInEmptyNonTerminalValues,
+    TreeNode,
+} from "@atomist/tree-path";
 
 import { File } from "../../../project/File";
 import { FileParser } from "../FileParser";
