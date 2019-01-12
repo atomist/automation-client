@@ -3,11 +3,30 @@ import { defineDynamicProperties, fillInEmptyNonTerminalValues, TreeNode } from 
 import { File } from "../../../project/File";
 import { FileParser } from "../FileParser";
 
+/**
+ * Parameters to RegexFileParser
+ */
 export interface RegexOptions {
+
+    /**
+     * Name of the root element within a document
+     */
     readonly rootName: string;
+
+    /**
+     * Path element name for each match
+     */
     readonly matchName: string;
+
+    /**
+     * Regex. May contain capture groups: If so name them with captureGroupNames.
+     */
     readonly regex: RegExp;
-    readonly captureGroupNames: string[];
+
+    /**
+     * Names of the capture groups, if any. This is used to populate the tree structure.
+     */
+    readonly captureGroupNames?: string[];
 }
 
 /**
@@ -62,14 +81,16 @@ class RegexTreeNode implements TreeNode {
         this.$name = reo.matchName;
         this.$offset = m.index;
         this.$value = m[0];
-        this.$children = reo.captureGroupNames.map(($name, i) => {
-            const tn: any = {
-                $name,
-                $value: m[i + 1],
-            };
-            tn.$offset = m.index + m[0].indexOf(tn.$value);
-            return tn;
-        });
+        this.$children = !!reo.captureGroupNames ?
+            reo.captureGroupNames.map(($name, i) => {
+                const tn: any = {
+                    $name,
+                    $value: m[i + 1],
+                };
+                tn.$offset = m.index + m[0].indexOf(tn.$value);
+                return tn;
+            }) :
+            undefined;
     }
 
 }

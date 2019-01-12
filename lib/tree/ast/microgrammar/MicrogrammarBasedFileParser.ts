@@ -17,6 +17,12 @@ import { FileParser } from "../FileParser";
  */
 export class MicrogrammarBasedFileParser implements FileParser {
 
+    /**
+     * Create a new MicrogrammarBasedFileParser, around a single microgrammar
+     * @param {string} rootName name of the root element
+     * @param {string} matchName name of each match
+     * @param {Microgrammar<any>} grammar
+     */
     constructor(public readonly rootName: string,
                 public readonly matchName: string,
                 public readonly grammar: Microgrammar<any>) {

@@ -34,6 +34,22 @@ describe("RegexFileParser", () => {
         assert.strictEqual(tom.age, "16");
     });
 
+    it("should parse a file without capture groups", async () => {
+        const personParserNoCapture = new RegexFileParser({
+            rootName: "people",
+            matchName: "person",
+            regex: /[A-z][a-z]+:[\d]+/,
+        });
+        const f = new InMemoryFile("Thing", "Tom:16 Mary:25");
+        const root = await personParserNoCapture.toAst(f);
+        assert(root.$name === "people");
+        assert(root.$children.length === 2);
+        const tom = root.$children[0] as TreeNode;
+        assert(tom.$name === "person");
+        assert.strictEqual(tom.$value, "Tom:16");
+        assert.strictEqual(tom.$children, undefined);
+    });
+
     it("exposes source locations", async () => {
         const content = "Tom:16 Mary:25";
         const p = InMemoryProject.of(
