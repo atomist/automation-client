@@ -2,6 +2,8 @@ import * as _ from "lodash";
 import { HandleCommand } from "../../HandleCommand";
 import * as GraphQL from "../../internal/graph/graphQL";
 import {
+    Choice,
+    Chooser,
     CommandHandlerMetadata,
     EventHandlerMetadata,
     MappedParameterDeclaration,
@@ -106,7 +108,36 @@ function parametersFromInstance(r: any, prefix: string = ""): Parameter[] {
         .map(nestedFieldInfo => parametersFromInstance(nestedFieldInfo[1], prefix + nestedFieldInfo[0] + ".")),
     );
 
-    const allParameters = directParams.concat(nestedParameters);
+    const allParameters = directParams.concat(nestedParameters).map(p => {
+        if (!!p.type && p.type !== "boolean" && p.type !== "number" && p.type !== "string" && p.type !== "freeChoices") {
+            const chooser = p.type as Chooser;
+
+            let kind: "single" | "multiple" = "single";
+            if (chooser.pickOne !== undefined && chooser.pickOne !== null) {
+                kind = chooser.pickOne ? "single" : "multiple";
+            } else if (chooser.kind !== undefined && chooser.kind !== null) {
+                kind = chooser.kind;
+            }
+
+            let options: Choice[] = [];
+            if (chooser.choices !== undefined && chooser.choices !== null) {
+                options = chooser.choices;
+            } else if (chooser.options !== undefined && chooser.options !== null) {
+                options = chooser.options;
+            }
+
+            const newChooser: Chooser = {
+                kind,
+                options,
+            };
+            return {
+                ...p,
+                type: newChooser,
+            };
+        } else {
+            return p;
+        }
+    });
     return allParameters.sort((p1, p2) => {
         const o1 = p1.order || Number.MAX_SAFE_INTEGER;
         const o2 = p2.order || Number.MAX_SAFE_INTEGER;
@@ -143,7 +174,7 @@ function directParameters(r: any, prefix: string) {
     }) : [];
 }
 
-function secretsMetadataFromInstance(r: any, prefix: string = "", visited: any[]= []): SecretDeclaration[] {
+function secretsMetadataFromInstance(r: any, prefix: string = "", visited: any[] = []): SecretDeclaration[] {
     visited.push(r);
     const directSecrets = !!r && r.__secrets ? r.__secrets.map(s => ({ name: prefix + s.name, uri: s.uri })) : [];
     const nestedParameters = _.flatten(Object.keys(r)
@@ -174,7 +205,7 @@ function mappedParameterMetadataFromInstance(r: any, prefix: string = "", visite
     return directMappedParams.concat(nestedParameters);
 }
 
-function valueMetadataFromInstance(r: any, prefix: string = "",  visited: any[] = []): ValueDeclaration[] {
+function valueMetadataFromInstance(r: any, prefix: string = "", visited: any[] = []): ValueDeclaration[] {
     visited.push(r);
     const directValues = !!r && r.__values ? r.__values.map(mp =>
         ({

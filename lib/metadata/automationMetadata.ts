@@ -10,12 +10,25 @@ export interface Choice {
 export interface Chooser {
 
     /**
-     * Whether the user must pick exactly one choice. In this case,
+     * @deprecated use kind
+     */
+    pickOne?: boolean;
+
+    /**
+     * Whether the user must select exactly one option. In this case,
      * binds to string. Otherwise binds to string[]
      */
-    pickOne: boolean;
+    kind?: "single" | "multiple";
 
-    choices: Choice[];
+    /**
+     * @deprecated use options
+     */
+    choices?: Choice[];
+
+    /**
+     * Possible options to select from
+     */
+    options?: Choice[];
 }
 
 /**
