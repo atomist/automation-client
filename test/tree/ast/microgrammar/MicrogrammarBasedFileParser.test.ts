@@ -1,6 +1,7 @@
 import {
     Integer,
     Microgrammar,
+    takeUntil,
 } from "@atomist/microgrammar";
 import {
     TreeNode,
@@ -19,7 +20,7 @@ interface Person {
 
 
 const nameAndAgeTerms = {
-    name: /.*/,
+    name: takeUntil(":"),
     age: Integer,
 };
 
@@ -87,10 +88,10 @@ describe("MicrogrammarBasedFileParser", () => {
     it("should parse a file and allow array navigation via property with a nested grammar", done => {
         const f = new InMemoryFile("Family", "Linda:[2007, mushrooms] Evelyn:[2005, sugar]");
         const mg = Microgrammar.fromString<Kid>("${name}:${fact}", {
-            name: /.*/,
+            name: takeUntil(":"),
             fact: Microgrammar.fromString<KidFact>("[${birthYear},${food}]", {
-                food: /.*/,
                 birthYear: Integer,
+                food: takeUntil("]"),
             }),
         });
         new MicrogrammarBasedFileParser("family", "kid", mg)

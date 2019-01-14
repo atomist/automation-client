@@ -1,6 +1,7 @@
 import {
     Integer,
     Microgrammar,
+    takeUntil,
 } from "@atomist/microgrammar";
 import { TreeNode } from "@atomist/tree-path";
 import "mocha";
@@ -23,7 +24,7 @@ interface Person {
 }
 
 const nameAndAgeTerms = {
-    name: /.*/,
+    name: takeUntil(":"),
     age: Integer,
 };
 
