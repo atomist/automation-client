@@ -92,7 +92,8 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
                 response,
             };
         }).catch(err => {
-                logger.error(`Error attempting to create remote project: ${err}. The response was ${JSON.stringify(err.response)}`);
+                logger.error(`Error attempting to create remote project, status code ${err.response.status}. ` +
+                    `The response was ${JSON.stringify(err.response.data)}`);
                 return Promise.reject(err);
             });
     }
@@ -148,7 +149,8 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
                 response,
             };
         }).catch(err => {
-                logger.error(`Error attempting to raise PR.: ${err}. The response was ${JSON.stringify(err.response)}`);
+                logger.error(`Error attempting to raise PR, status code ${err.response.status}. ` +
+                    `The response was ${JSON.stringify(err.response.data)}`);
                 return Promise.reject(err);
             });
     }
