@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import * as url from "url";
 import {
     ActionResult,
@@ -74,11 +75,13 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
     public async createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
         const gitlabUrl = GitlabRepoRef.concatUrl(this.apiBase, `projects`);
         const httpClient = automationClientInstance().configuration.http.client.factory.create(gitlabUrl);
+        const namespace = this.getNamespaceForOwner(this.owner, creds);
         return httpClient.exchange(gitlabUrl, {
             method: HttpMethod.Post,
             body: {
                 name: `${this.repo}`,
                 visibility,
+                namespace_id: namespace,
             },
             headers: {
                 "Private-Token": (creds as GitlabPrivateTokenCredentials).privateToken,
@@ -153,5 +156,25 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
                     `The response was ${JSON.stringify(err.response.data)}`);
                 return Promise.reject(err);
             });
+    }
+
+    private getNamespaceForOwner(owner: string, creds: ProjectOperationCredentials): Promise<number> {
+        const gitlabUrl = GitlabRepoRef.concatUrl(this.apiBase, `namespaces?search=${encodeURI(owner)}`);
+        const httpClient = automationClientInstance().configuration.http.client.factory.create(gitlabUrl);
+        return httpClient.exchange(gitlabUrl, {
+            method: HttpMethod.Get,
+            headers: {
+                "Private-Token": (creds as GitlabPrivateTokenCredentials).privateToken,
+                "Content-Type": "application/json",
+            },
+        }).then(response => {
+            const namespaces = response.body as any[];
+            const ownerNamespace: any = _.head(namespaces.find(namespace => namespace.name === owner));
+            if (!!ownerNamespace) {
+                return ownerNamespace.id;
+            } else {
+                return Promise.reject("Cannot find Gitlab namespace with name " + owner);
+            }
+        });
     }
 }
