@@ -251,10 +251,10 @@ export interface AutomationServerOptions extends AutomationOptions {
          * defaults to ./log/automation-client.log in current working directory
          */
         file?: {
-            enabled?: boolean,
-            name?: string,
-            level?: string,
-        },
+            enabled?: boolean;
+            name?: string;
+            level?: "silly" | "debug" | "verbose" | "info" | "warn" | "error";
+        };
     };
     /** statsd config */
     statsd?: {
