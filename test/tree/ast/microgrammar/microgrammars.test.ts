@@ -1,6 +1,7 @@
 import {
     Integer,
     Microgrammar,
+    takeUntil,
 } from "@atomist/microgrammar";
 import { TreeNode } from "@atomist/tree-path";
 import "mocha";
@@ -22,12 +23,15 @@ interface Person {
     age: number;
 }
 
+const nameAndAgeTerms = {
+    name: takeUntil(":"),
+    age: Integer,
+};
+
 describe("microgrammar integration and path expression", () => {
 
     it("should get into AST", done => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         const fpr = new DefaultFileParserRegistry().addParser(
             new MicrogrammarBasedFileParser("people", "person", mg));
         const p = InMemoryProject.of(
@@ -41,9 +45,7 @@ describe("microgrammar integration and path expression", () => {
     });
 
     it("should get into AST with strong typing", done => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         const fpr = new DefaultFileParserRegistry().addParser(
             new MicrogrammarBasedFileParser("people", "person", mg));
         const p = InMemoryProject.of(
@@ -57,9 +59,7 @@ describe("microgrammar integration and path expression", () => {
     });
 
     it("should get into AST with strong typing and conversion", done => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
 
         // This type is correct here
         const m = mg.firstMatch("Tom:16");
@@ -79,9 +79,7 @@ describe("microgrammar integration and path expression", () => {
     });
 
     it("exposes source locations", done => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         const fpr = new DefaultFileParserRegistry().addParser(
             new MicrogrammarBasedFileParser("people", "person", mg));
         const p = InMemoryProject.of(
@@ -100,9 +98,7 @@ describe("microgrammar integration and path expression", () => {
     });
 
     it("retains AST in file matches", done => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         const fpr = new DefaultFileParserRegistry().addParser(
             new MicrogrammarBasedFileParser("people", "person", mg));
         const p = InMemoryProject.of(
@@ -119,9 +115,7 @@ describe("microgrammar integration and path expression", () => {
     });
 
     it("enable within check using path expression", done => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         const file = Microgrammar.fromDefinitions<{ first: Person, second: Person }>({
             first: mg,
             second: mg,
@@ -154,9 +148,7 @@ describe("microgrammar integration and path expression", () => {
     }
 
     it("should get into AST and update single terminal", done => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         const fpr = new DefaultFileParserRegistry().addParser(
             new MicrogrammarBasedFileParser("people", "person", mg));
         const p = InMemoryProject.of(
@@ -174,9 +166,7 @@ describe("microgrammar integration and path expression", () => {
     });
 
     it("should get into AST and update two terminals", done => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         const fpr = new DefaultFileParserRegistry().addParser(
             new MicrogrammarBasedFileParser("people", "person", mg));
         const p = InMemoryProject.of(
@@ -195,9 +185,7 @@ describe("microgrammar integration and path expression", () => {
     });
 
     it("should get into AST and update single non-terminal", done => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         const fpr = new DefaultFileParserRegistry().addParser(
             new MicrogrammarBasedFileParser("people", "person", mg));
         const firstPerson = "Tom:16";
@@ -219,9 +207,7 @@ describe("microgrammar integration and path expression", () => {
     });
 
     it("should get into AST and add content after non-terminal", done => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         const fpr = new DefaultFileParserRegistry().addParser(
             new MicrogrammarBasedFileParser("people", "person", mg));
         const firstPerson = "Tom:16";
@@ -243,9 +229,7 @@ describe("microgrammar integration and path expression", () => {
     });
 
     it("should get into AST and add content before non-terminal", done => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         const fpr = new DefaultFileParserRegistry().addParser(
             new MicrogrammarBasedFileParser("people", "person", mg));
         const firstPerson = "Tom:16";
@@ -267,9 +251,7 @@ describe("microgrammar integration and path expression", () => {
     });
 
     it("should allow predicate on file", done => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         const fpr = new DefaultFileParserRegistry().addParser(
             new MicrogrammarBasedFileParser("people", "person", mg));
         const p = InMemoryProject.of(
@@ -285,9 +267,7 @@ describe("microgrammar integration and path expression", () => {
     });
 
     it("should veto with MatchTester", async () => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         const file = Microgrammar.fromDefinitions<{ first: Person, second: Person }>({
             first: mg,
             second: mg,
@@ -311,9 +291,7 @@ describe("microgrammar integration and path expression", () => {
     });
 
     it("should veto every second with MatchTester", async () => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         const file = Microgrammar.fromDefinitions<{ first: Person, second: Person }>({
             first: mg,
             second: mg,
@@ -338,9 +316,7 @@ describe("microgrammar integration and path expression", () => {
     });
 
     it("should exclude with notWithin MatchTester", async () => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         const file = Microgrammar.fromDefinitions<{ first: Person, second: Person }>({
             first: mg,
             second: mg,
@@ -368,9 +344,7 @@ describe("microgrammar integration and path expression", () => {
     });
 
     it("should not exclude with irrelevant notWithin MatchTester", async () => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         const file = Microgrammar.fromDefinitions<{ first: Person, second: Person }>({
             first: mg,
             second: mg,
@@ -396,9 +370,7 @@ describe("microgrammar integration and path expression", () => {
     });
 
     it("should allow typing", async () => {
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         const file = Microgrammar.fromDefinitions<{ first: Person, second: Person }>({
             first: mg,
             second: mg,

@@ -1,6 +1,7 @@
 import {
     Integer,
     Microgrammar,
+    takeUntil,
 } from "@atomist/microgrammar";
 import {
     TreeNode,
@@ -17,13 +18,17 @@ interface Person {
     age: number;
 }
 
+
+const nameAndAgeTerms = {
+    name: takeUntil(":"),
+    age: Integer,
+};
+
 describe("MicrogrammarBasedFileParser", () => {
 
     it("should parse a file", done => {
         const f = new InMemoryFile("Thing", "Tom:16 Mary:25");
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         new MicrogrammarBasedFileParser("people", "person", mg)
             .toAst(f)
             .then(root => {
@@ -38,9 +43,7 @@ describe("MicrogrammarBasedFileParser", () => {
 
     it("should parse a file and allow scalar navigation via property", done => {
         const f = new InMemoryFile("Thing", "Tom:16 Mary:25");
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         new MicrogrammarBasedFileParser("people", "person", mg)
             .toAst(f)
             .then(root => {
@@ -56,9 +59,7 @@ describe("MicrogrammarBasedFileParser", () => {
 
     it("should parse a file and allow array navigation via property", done => {
         const f = new InMemoryFile("Thing", "Tom:16 Mary:25");
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         new MicrogrammarBasedFileParser("people", "person", mg)
             .toAst(f)
             .then(root => {
@@ -87,8 +88,10 @@ describe("MicrogrammarBasedFileParser", () => {
     it("should parse a file and allow array navigation via property with a nested grammar", done => {
         const f = new InMemoryFile("Family", "Linda:[2007, mushrooms] Evelyn:[2005, sugar]");
         const mg = Microgrammar.fromString<Kid>("${name}:${fact}", {
+            name: takeUntil(":"),
             fact: Microgrammar.fromString<KidFact>("[${birthYear},${food}]", {
                 birthYear: Integer,
+                food: takeUntil("]"),
             }),
         });
         new MicrogrammarBasedFileParser("family", "kid", mg)
@@ -108,9 +111,7 @@ describe("MicrogrammarBasedFileParser", () => {
 
     it("should parse a file and keep positions", done => {
         const f = new InMemoryFile("Thing", "Tom:16 Mary:25");
-        const mg = Microgrammar.fromString<Person>("${name}:${age}", {
-            age: Integer,
-        });
+        const mg = Microgrammar.fromString<Person>("${name}:${age}", nameAndAgeTerms);
         new MicrogrammarBasedFileParser("people", "person", mg)
             .toAst(f)
             .then(root => {
