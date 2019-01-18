@@ -125,7 +125,7 @@ export async function* matchIterator<T>(p: Project,
             }
         } finally {
             // Even if the user jumps out of the generator, ensure that we make the changes to the present file
-            (p as any).flush();
+            await (p as any).flush();
         }
     }
 }
