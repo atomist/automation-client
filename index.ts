@@ -243,6 +243,12 @@ export {
     TypeScriptES6FileParser,
 } from "./lib/tree/ast/typescript/TypeScriptFileParser";
 export {
+    MicrogrammarBasedFileParser,
+} from "./lib/tree/ast/microgrammar/MicrogrammarBasedFileParser";
+export {
+    RegexFileParser,
+} from "./lib/tree/ast/regex/RegexFileParser";
+export {
     WritableLog,
 } from "./lib/util/child_process";
 export * from "./lib/util/exec";

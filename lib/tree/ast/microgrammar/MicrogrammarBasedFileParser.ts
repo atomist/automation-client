@@ -17,9 +17,15 @@ import { FileParser } from "../FileParser";
  */
 export class MicrogrammarBasedFileParser implements FileParser {
 
-    constructor(public rootName: string,
-                public matchName: string,
-                public grammar: Microgrammar<any>) {
+    /**
+     * Create a new MicrogrammarBasedFileParser, around a single microgrammar
+     * @param {string} rootName name of the root element
+     * @param {string} matchName name of each match
+     * @param {Microgrammar<any>} grammar
+     */
+    constructor(public readonly rootName: string,
+                public readonly matchName: string,
+                public readonly grammar: Microgrammar<any>) {
     }
 
     public async toAst(f: File): Promise<TreeNode> {
