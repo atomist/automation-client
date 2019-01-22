@@ -68,7 +68,7 @@ describe("generator end to end", () => {
             assert.fail("Should not have succeeded");
         } catch (e) {
             await fs.remove(clonedSeed.baseDir);
-            assert(e.message.includes("exists")); // this is only because we put "Probably exists" in the string
+            assert(e.message.includes("Unable to create new repo")); // this is only because we put "Probably exists" in the string
         }
     }).timeout(20000);
 
