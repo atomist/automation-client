@@ -72,7 +72,7 @@ class ExpressMessageClient implements MessageClient {
 
     constructor(private event: EventIncoming | CommandIncoming) {
         if (automationClientInstance().webSocketHandler
-            && (automationClientInstance().webSocketHandler as any).webSocket) {
+            && (automationClientInstance().webSocketHandler as any).webSocketLifecycle) {
             const ws = (automationClientInstance().webSocketHandler as any).webSocketLifecycle as WebSocketLifecycle;
             if (isCommandIncoming(this.event)) {
                 this.delegate = new WebSocketCommandMessageClient(this.event, ws);
