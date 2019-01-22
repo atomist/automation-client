@@ -48,7 +48,7 @@ export const RemoteGitProjectPersister: ProjectPersister<GitProject> =
                     description, visibility)
                     .catch(err => {
                         return Promise.reject(new Error(`Unable to create new repo '${targetId.owner}/${targetId.repo}': ` +
-                            `Probably exists: ${err}`));
+                            `Error: ${err}`));
                     });
             })
             .then(() => {
