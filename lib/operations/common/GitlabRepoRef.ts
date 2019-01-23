@@ -75,30 +75,33 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
     public async createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
         const gitlabUrl = GitlabRepoRef.concatUrl(this.apiBase, `projects`);
         const httpClient = automationClientInstance().configuration.http.client.factory.create(gitlabUrl);
-        const namespace = this.getNamespaceForOwner(this.owner, creds);
-        return httpClient.exchange(gitlabUrl, {
-            method: HttpMethod.Post,
-            body: {
-                name: `${this.repo}`,
-                visibility,
-                namespace_id: namespace,
-            },
-            headers: {
-                "Private-Token": (creds as GitlabPrivateTokenCredentials).privateToken,
-                "Content-Type": "application/json",
-            },
+        return this.getNamespaceForOwner(this.owner, creds).then(namespace => {
+            return httpClient.exchange(gitlabUrl, {
+                method: HttpMethod.Post,
+                body: {
+                    name: `${this.repo}`,
+                    visibility,
+                    namespace_id: namespace,
+                },
+                headers: {
+                    "Private-Token": (creds as GitlabPrivateTokenCredentials).privateToken,
+                    "Content-Type": "application/json",
+                },
 
-        }).then(response => {
-            return {
-                target: this,
-                success: true,
-                response,
-            };
-        }).catch(err => {
+            }).then(response => {
+                return {
+                    target: this,
+                    success: true,
+                    response,
+                };
+            }).catch(err => {
                 logger.error(`Error attempting to create remote project, status code ${err.response.status}. ` +
                     `The response was ${JSON.stringify(err.response.data)}`);
                 return Promise.reject(err);
             });
+        }).catch(err => {
+            return Promise.reject(err);
+        });
     }
 
     public deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>> {
