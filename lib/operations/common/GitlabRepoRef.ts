@@ -169,7 +169,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
             },
         }).then(response => {
             const namespaces = response.body as any[];
-            const ownerNamespace: any = _.head(namespaces.find(namespace => namespace.name === owner));
+            const ownerNamespace: any = namespaces.find(namespace => namespace.name === owner);
             if (!!ownerNamespace) {
                 return ownerNamespace.id;
             } else {
