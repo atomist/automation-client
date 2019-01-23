@@ -2,10 +2,41 @@ import * as TinyQueue from "tinyqueue";
 import * as WebSocket from "ws";
 import { sendMessage } from "./WebSocketMessageClient";
 
+export interface WebSocketLifecycle {
+    /**
+     * Set the WebSocket to manage
+     * @param ws
+     */
+    set(ws: WebSocket): void;
+
+    /**
+     * Is the WebSocket is connected and healthy
+     */
+    connected(): boolean;
+
+    /**
+     * Get the raw WebSocket that is managed here
+     */
+    get(): WebSocket;
+
+    /**
+     * Reset the WebSocket
+     */
+    reset(): void;
+
+    /**
+     * Send a message over the managed WebSocket
+     * If the WebSocket isn't connected, messages are queued for later
+     * when a WebSocket is connected again.
+     * @param msg
+     */
+    send(msg: any): void;
+}
+
 /**
  * Lifecycle owning a WebSocket connection wrt message sending
  */
-export class WebSocketLifecycle {
+export class QueuingWebSocketLifecycle implements WebSocketLifecycle {
 
     private messages: TinyQueue;
     private ws: WebSocket;
@@ -19,28 +50,28 @@ export class WebSocketLifecycle {
      * Set the WebSocket to manage
      * @param ws
      */
-    public set(ws: WebSocket): void {
+    set(ws: WebSocket): void {
         this.ws = ws;
     }
 
     /**
      * Is the WebSocket is connected and healthy
      */
-    public connected(): boolean {
+    connected(): boolean {
         return !!this.ws && this.ws.readyState === WebSocket.OPEN;
     }
 
     /**
      * Get the raw WebSocket that is managed here
      */
-    public get(): WebSocket {
+    get(): WebSocket {
         return this.ws;
     }
 
     /**
      * Reset the WebSocket
      */
-    public reset(): void {
+    reset(): void {
         this.ws = null;
     }
 
@@ -50,7 +81,7 @@ export class WebSocketLifecycle {
      * when a WebSocket is connected again.
      * @param msg
      */
-    public send(msg: any): void {
+    send(msg: any): void {
         if (this.connected()) {
             sendMessage(msg, this.ws, true);
         } else {

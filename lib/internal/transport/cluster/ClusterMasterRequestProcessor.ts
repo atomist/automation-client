@@ -53,7 +53,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
     implements WebSocketRequestProcessor {
 
     private registration?: RegistrationConfirmation;
-    private webSocketLifecycle: WebSocketLifecycle = new WebSocketLifecycle();
+    private webSocketLifecycle: WebSocketLifecycle;
     private commands: Map<string, Dispatched<HandlerResult>> = new Map();
     private events: Map<string, Dispatched<HandlerResult[]>> = new Map();
     private shutdownInitiated: boolean = false;
@@ -63,6 +63,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                 protected listeners: AutomationEventListener[] = [],
                 protected numWorkers: number = require("os").cpus().length) {
         super(automations, configuration, listeners);
+        this.webSocketLifecycle = (configuration.ws as any).lifecycle as WebSocketLifecycle;
 
         registerHealthIndicator(() => {
             if (this.webSocketLifecycle.connected() && this.registration) {

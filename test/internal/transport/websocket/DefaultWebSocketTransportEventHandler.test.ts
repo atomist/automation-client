@@ -7,6 +7,7 @@ import { HandlerResult } from "../../../../lib/HandlerResult";
 import { CommandInvocation } from "../../../../lib/internal/invoker/Payload";
 import { Automations } from "../../../../lib/internal/metadata/metadata";
 import { DefaultWebSocketRequestProcessor } from "../../../../lib/internal/transport/websocket/DefaultWebSocketRequestProcessor";
+import { QueuingWebSocketLifecycle } from "../../../../lib/internal/transport/websocket/WebSocketLifecycle";
 import { CommandHandlerMetadata } from "../../../../lib/metadata/automationMetadata";
 import { AutomationServer } from "../../../../lib/server/AutomationServer";
 import { DefaultGraphClientFactory } from "../../../../lib/spi/graph/GraphClientFactory";
@@ -60,7 +61,9 @@ describe("DefaultWebSocketRequestProcessor", () => {
             {
                 token: "xxx",
                 endpoints: { api: "http://foo.com", graphql: "http://bar.com" },
-                ws: {},
+                ws: {
+                    lifecycle: new QueuingWebSocketLifecycle(),
+                } as any,
                 graphql: { client: { factory: DefaultGraphClientFactory } },
             });
         listener.onRegistration({ url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
@@ -138,7 +141,9 @@ function verifyCommandHandler(code: number, callback: (result) => void) {
         {
             token: "xxx",
             endpoints: { api: "http://foo.com", graphql: "http://bar.com" },
-            ws: {},
+            ws: {
+                lifecycle: new QueuingWebSocketLifecycle(),
+            } as any,
             graphql: { client: { factory: DefaultGraphClientFactory } },
         });
     listener.onRegistration({ url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });

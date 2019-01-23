@@ -29,6 +29,7 @@ import {
     TestingDefaultConfiguration,
     UserConfig,
 } from "../lib/configuration";
+import { QueuingWebSocketLifecycle } from "../lib/internal/transport/websocket/WebSocketLifecycle";
 import { DefaultGraphClientFactory } from "../lib/spi/graph/GraphClientFactory";
 import { DefaultHttpClientFactory } from "../lib/spi/http/httpClient";
 import { DefaultWebSocketFactory } from "../lib/spi/http/wsClient";
@@ -88,7 +89,8 @@ describe("configuration", () => {
             client: {
                 factory: DefaultWebSocketFactory,
             },
-        },
+            lifecycle: new QueuingWebSocketLifecycle(),
+        } as any,
         graphql: {
             client: {
                 factory: DefaultGraphClientFactory,

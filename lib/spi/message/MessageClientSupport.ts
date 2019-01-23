@@ -60,7 +60,7 @@ export class DefaultSlackMessageClient implements MessageClient, SlackMessageCli
     public addressUsers(msg: string | SlackMessage,
                         users: string | string[],
                         options?: MessageOptions): Promise<any> {
-        if (!users || Array.isArray(users) && users.length === 0) {
+        if (!users || (Array.isArray(users) && users.length === 0)) {
             throw new Error("Please pass at least one user");
         }
         return lookupChatTeam(this.graphClient)
@@ -71,7 +71,7 @@ export class DefaultSlackMessageClient implements MessageClient, SlackMessageCli
     public addressChannels(msg: string | SlackMessage,
                            channels: string | string[],
                            options?: MessageOptions): Promise<any> {
-        if (!channels || Array.isArray(channels) && channels.length === 0) {
+        if (!channels || (Array.isArray(channels) && channels.length === 0)) {
             throw new Error("Please pass at least one channel");
         }
         return lookupChatTeam(this.graphClient)

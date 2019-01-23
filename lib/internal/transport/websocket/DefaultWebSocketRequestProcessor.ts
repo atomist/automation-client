@@ -39,12 +39,13 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
 
     private graphClients: GraphClientFactory;
     private registration?: RegistrationConfirmation;
-    private webSocketLifecycle: WebSocketLifecycle = new WebSocketLifecycle();
+    private webSocketLifecycle: WebSocketLifecycle;
 
     constructor(protected automations: AutomationServer,
                 protected configuration: Configuration,
                 protected listeners: AutomationEventListener[] = []) {
         super(automations, listeners);
+        this.webSocketLifecycle = (configuration.ws as any).lifecycle as WebSocketLifecycle;
 
         registerHealthIndicator(() => {
             if (this.webSocketLifecycle.connected() && this.registration) {

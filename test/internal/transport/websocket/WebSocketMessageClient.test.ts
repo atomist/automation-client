@@ -1,7 +1,7 @@
 import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
-import { WebSocketLifecycle } from "../../../../lib/internal/transport/websocket/WebSocketLifecycle";
+import { QueuingWebSocketLifecycle } from "../../../../lib/internal/transport/websocket/WebSocketLifecycle";
 import {
     clean,
     WebSocketCommandMessageClient,
@@ -44,7 +44,7 @@ describe("WebSocketMessageClient", () => {
                 data: {},
                 extensions: { team_id: "Txxxxxxx", correlation_id: corrId, operationName: "Foor" },
                 secrets: [],
-            }, new WebSocketLifecycle() );
+            }, new QueuingWebSocketLifecycle() );
 
         const msg: SlackMessage = {
             attachments: [{
@@ -89,7 +89,7 @@ describe("WebSocketMessageClient", () => {
                 data: {},
                 extensions: { team_id: "Txxxxxxx", correlation_id: corrId, operationName: "Foor" },
                 secrets: [],
-            }, new WebSocketLifecycle() );
+            }, new QueuingWebSocketLifecycle() );
 
         const msg: SlackMessage = {
             attachments: [{
@@ -152,7 +152,7 @@ describe("WebSocketMessageClient", () => {
                 parameters: [],
                 mapped_parameters: [],
                 secrets: [],
-            }, new WebSocketLifecycle() );
+            }, new QueuingWebSocketLifecycle() );
 
         const msg: SlackMessage = {
             attachments: [{
@@ -213,7 +213,7 @@ describe("WebSocketMessageClient", () => {
                 parameters: [],
                 mapped_parameters: [],
                 secrets: [],
-            }, new WebSocketLifecycle() );
+            }, new QueuingWebSocketLifecycle() );
 
         const msg: SlackFileMessage = {
             content: "some basic text",

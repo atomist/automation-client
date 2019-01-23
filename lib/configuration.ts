@@ -29,6 +29,10 @@ import { automationClientInstance } from "./globals";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { ExpressServerOptions } from "./internal/transport/express/ExpressServer";
+import {
+    QueuingWebSocketLifecycle,
+    WebSocketLifecycle,
+} from "./internal/transport/websocket/WebSocketLifecycle";
 import { config } from "./internal/util/config";
 import {
     guid,
@@ -980,7 +984,8 @@ export const LocalDefaultConfiguration: Configuration = {
         },
         compress: false,
         timeout: 30000,
-    },
+        lifecycle: new QueuingWebSocketLifecycle(),
+    } as any,
     graphql: {
         client: {
             factory: DefaultGraphClientFactory,
