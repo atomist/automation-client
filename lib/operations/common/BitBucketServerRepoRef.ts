@@ -1,28 +1,14 @@
-/*
- * Copyright © 2018 Atomist, Inc.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
-import axios from "axios";
 import {
     ActionResult,
     successOn,
 } from "../../action/ActionResult";
-import { encode } from "../../internal/util/base64";
+import { configurationValue } from "../../configuration";
 import { Configurable } from "../../project/git/Configurable";
-import { execPromise } from "../../util/child_process";
+import {
+    DefaultHttpClientFactory,
+    HttpClientFactory,
+    HttpMethod,
+} from "../../spi/http/httpClient";
 import { logger } from "../../util/logger";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
@@ -37,8 +23,6 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
     public readonly ownerType: "projects" | "users";
 
     public readonly kind = "bitbucketserver";
-
-    private httpStrategy = process.env.ATOMIST_CURL_FOR_BITBUCKET ? CurlHttpStrategy : AxiosHttpStrategy;
 
     /**
      * Construct a new BitBucketServerRepoRef
@@ -67,31 +51,69 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
             scmId: "git",
             forkable: "true",
         };
+
         logger.info("Making request to BitBucket '%s' to create repo, data=%j", url, data);
-        return this.httpStrategy.doPost(this, creds, url, data).catch(error => {
-            logger.error("Error attempting to create repository %j: %s", this, error);
-            return Promise.reject(error);
-        });
+        return configurationValue<HttpClientFactory>("http.client.factory", DefaultHttpClientFactory).create(url).exchange(url, {
+            method: HttpMethod.Post,
+            body: data,
+            headers: {
+                "Content-Type": "application/json",
+                ...usernameColonPassword(creds),
+            },
+        })
+            .then(response => ({
+                success: true,
+                target: this,
+                response,
+            }))
+            .catch(error => {
+                logger.error("Error attempting to create repository %j: %s", this, error);
+                return {
+                    success: false,
+                    target: this,
+                    error,
+                };
+            });
     }
 
     public deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>> {
         const url = `${this.scheme}${this.apiBase}/${this.apiPathComponent}`;
         logger.debug(`Making request to '${url}' to delete repo`);
-        return this.httpStrategy.doDelete(this, creds, url).catch(err => {
-            logger.error(`Error attempting to delete repository: ${err}`);
-            return Promise.reject(err);
-        });
+
+        return configurationValue<HttpClientFactory>("http.client.factory", DefaultHttpClientFactory).create(url).exchange(url, {
+            method: HttpMethod.Delete,
+            headers: {
+                ...usernameColonPassword(creds),
+            },
+        })
+            .then(response => ({
+                success: true,
+                target: this,
+                response: response,
+            }))
+            .catch(error => {
+                logger.error(`Error attempting to delete repository: ${error}`);
+                return {
+                    success: false,
+                    target: this,
+                    error,
+                };
+            });
     }
 
     public setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<this>> {
         return Promise.resolve(successOn(this));
     }
 
-    public raisePullRequest(credentials: ProjectOperationCredentials,
-                            title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
+    public raisePullRequest(creds: ProjectOperationCredentials,
+                            title: string,
+                            body: string,
+                            head: string,
+                            base: string): Promise<ActionResult<this>> {
         const url = `${this.scheme}${this.apiBase}/${this.apiPathComponent}/pull-requests`;
         logger.debug(`Making request to '${url}' to raise PR`);
-        return this.httpStrategy.doPost(this, credentials, url, {
+
+        const data = {
             title,
             description: body,
             fromRef: {
@@ -100,10 +122,29 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
             toRef: {
                 id: base,
             },
-        }).catch(err => {
-            logger.error(`Error attempting to raise PR. url: ${url}  ${err}`);
-            return Promise.reject(err);
-        });
+        };
+
+        return configurationValue<HttpClientFactory>("http.client.factory", DefaultHttpClientFactory).create(url).exchange(url, {
+            method: HttpMethod.Post,
+            body: data,
+            headers: {
+                "Content-Type": "application/json",
+                ...usernameColonPassword(creds),
+            },
+        })
+            .then(response => ({
+                success: true,
+                target: this,
+                response,
+            }))
+            .catch(error => {
+                logger.error(`Error attempting to raise PR`);
+                return {
+                    success: false,
+                    target: this,
+                    error,
+                };
+            });
     }
 
     get url() {
@@ -132,85 +173,14 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
 
 }
 
-interface HttpPostResult<T> {
-    target: T;
-    success: boolean;
-    fullResponse: any;
-}
-
-interface HttpStrategy {
-    doPost<T>(target: T, creds: ProjectOperationCredentials, url: string, data: any): Promise<HttpPostResult<T>>;
-
-    doDelete<T>(target: T, creds: ProjectOperationCredentials, url: string): Promise<HttpPostResult<T>>;
-}
-
-const AxiosHttpStrategy: HttpStrategy = {
-    doPost<T>(target: T, creds: ProjectOperationCredentials, url: string, data: any): Promise<HttpPostResult<T>> {
-        return axios.post(url, data, headers(creds))
-            .then(fullResponse => {
-                return {
-                    target,
-                    success: true,
-                    fullResponse,
-                };
-            });
-    },
-
-    doDelete<T>(target: T, creds: ProjectOperationCredentials, url: string): Promise<HttpPostResult<T>> {
-        return axios.delete(url, headers(creds))
-            .then(fullResponse => {
-                return {
-                    target,
-                    success: true,
-                    fullResponse,
-                };
-            });
-    },
-};
-
-const CurlHttpStrategy: HttpStrategy = {
-    async doPost<T>(target: T, creds: ProjectOperationCredentials, url: string, data: any): Promise<HttpPostResult<T>> {
-        try {
-            const result = await execPromise("curl", [
-                "-u", usernameColonPassword(creds),
-                "-X", "POST",
-                "-H", "Content-Type: application/json",
-                "-d", JSON.stringify(data),
-                url,
-            ]);
-            return {
-                target,
-                success: true,
-                fullResponse: result,
-            };
-        } catch (e) {
-            return {
-                target,
-                success: false,
-                fullResponse: e,
-            };
-        }
-    },
-
-    doDelete<T>(target: T, creds: ProjectOperationCredentials, url: string): Promise<HttpPostResult<T>> {
-        throw new Error("Not implemented");
-    },
-};
-
-function usernameColonPassword(creds: ProjectOperationCredentials): string {
-    if (!isBasicAuthCredentials(creds)) {
-        throw new Error("Only Basic auth supported: Had " + JSON.stringify(creds));
+function usernameColonPassword(creds: ProjectOperationCredentials): { Authorization: string } | {} {
+    if (isBasicAuthCredentials(creds)) {
+        return {
+            Authorization: `Basic ${Buffer.from(creds.username + ":" + creds.password).toString("base64")}`,
+        };
+    } else {
+        return {};
     }
-    return `${creds.username}:${creds.password}`;
-}
-
-function headers(creds: ProjectOperationCredentials) {
-    const encoded = encode(usernameColonPassword(creds));
-    return {
-        headers: {
-            Authorization: `Basic ${encoded}`,
-        },
-    };
 }
 
 function noTrailingSlash(s: string): string {
