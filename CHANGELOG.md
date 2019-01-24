@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Various fixes to better support targeting in command handlers. [#441](https://github.com/atomist/automation-client/issues/441)
 -   Add support for latest Chooser API contract. [17549fd](https://github.com/atomist/automation-client/commit/17549fdb9ba12b707898e8cfb49e1f1ba61c5d37)
 -   Update failure logging for failed repo creations. [#461](https://github.com/atomist/automation-client/issues/461)
+-   Fall through to no creds for cloneUrl. [b31ba59](https://github.com/atomist/automation-client/commit/b31ba59eca489d9bfea5528046ed52800f6a7bc5)
 
 ### Deprecated
 
