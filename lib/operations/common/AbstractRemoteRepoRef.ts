@@ -83,21 +83,18 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
     }
 
     public cloneUrl(creds: ProjectOperationCredentials) {
-        if (!creds) {
-            throw new Error("Credentials are undefined");
-        }
-        if (isBasicAuthCredentials(creds)) {
+        if (!!creds && isBasicAuthCredentials(creds)) {
             return `${this.scheme}${encodeURIComponent(creds.username)}:${encodeURIComponent(creds.password)}@` +
                 `${this.remoteBase}/${this.pathComponent}.git`;
         }
-        if (isGitlabPrivateTokenCredentials(creds)) {
+        if (!!creds && isGitlabPrivateTokenCredentials(creds)) {
             return `${this.scheme}gitlab-ci-token:${creds.privateToken}@` +
                 `${this.remoteBase}/${this.pathComponent}.git`;
         }
-        if (!isTokenCredentials(creds)) {
-            throw new Error("Only token or basic auth supported");
+        if (!!creds && isTokenCredentials(creds)) {
+            return `${this.scheme}${creds.token}:x-oauth-basic@${this.remoteBase}/${this.pathComponent}.git`;
         }
-        return `${this.scheme}${creds.token}:x-oauth-basic@${this.remoteBase}/${this.pathComponent}.git`;
+        return `${this.scheme}${this.remoteBase}/${this.pathComponent}.git`;
     }
 
     get pathComponent(): string {

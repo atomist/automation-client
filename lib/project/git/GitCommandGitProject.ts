@@ -355,6 +355,7 @@ async function cloneInto(
     // Or don't, but then call gitStatus() on the returned project to check whether the branch is still at the SHA you wanted.
     const checkoutRef = opts.detachHead ? sha : id.branch || sha;
 
+    // TODO CD user:password should be replaced too
     const cleanUrl = url.replace(/\/\/.*:x-oauth-basic/, "//TOKEN:x-oauth-basic");
     logger.debug(`Cloning repo '${cleanUrl}' in '${repoDir}'`);
     const retryOptions = {
