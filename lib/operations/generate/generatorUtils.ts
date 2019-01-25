@@ -86,7 +86,7 @@ export function generate<P extends Project = Project, PARAMS = object>(
                         persistenceResult;
                 })
                 .catch(err => {
-                    logger.debug("Failed to generate %s/%s in %s, cleaning up: %s", targetId.owner, targetId.repo,
+                    logger.debug("Failed to generate %s/%s in %s, cleaning up: %s\n", targetId.owner, targetId.repo,
                         newRepoDirectoryInfo.path, err.message);
                     return newRepoDirectoryInfo.release()
                         .then(() => Promise.reject(err), e => Promise.reject(err));
