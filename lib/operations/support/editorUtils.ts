@@ -154,7 +154,13 @@ export function raisePr(gp: GitProject, pr: PullRequest): Promise<EditResult> {
     const targetBranch = pr.targetBranch || gp.branch;
     return createAndPushBranch(gp, pr)
         .then(x => {
-            return gp.raisePullRequest(pr.title, pr.body, targetBranch)
+            let body = pr.body;
+            if (pr.autoMerge) {
+                body = `${body}
+
+${pr.autoMerge.mode} ${pr.autoMerge.method ? pr.autoMerge.method : ""}`.trim();
+            }
+            return gp.raisePullRequest(pr.title, body, targetBranch)
                 .then(r => successfulEdit(gp, true));
         });
 }
