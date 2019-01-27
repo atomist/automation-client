@@ -1,18 +1,32 @@
 
-export interface Choice {
+export interface Option {
     value: string;
     description?: string;
 }
 
+export type Choice = Option;
+
 /**
  * Represents a choice of exactly one or some strings from a fixed list of choices
+ * @deprecated use Options
  */
 export interface Chooser {
 
     /**
-     * @deprecated use kind
+     * @deprecated use Options.kind
      */
     pickOne?: boolean;
+
+    /**
+     * @deprecated use Options.options
+     */
+    choices?: Choice[];
+}
+
+/**
+ * Represents a selection of exactly one or some strings from a fixed list of options
+ */
+export interface Options {
 
     /**
      * Whether the user must select exactly one option. In this case,
@@ -21,14 +35,9 @@ export interface Chooser {
     kind?: "single" | "multiple";
 
     /**
-     * @deprecated use options
-     */
-    choices?: Choice[];
-
-    /**
      * Possible options to select from
      */
-    options?: Choice[];
+    options?: Option[];
 }
 
 /**
@@ -38,7 +47,7 @@ export interface Chooser {
  */
 export const FreeChoices = "freeChoices";
 
-export type ParameterType = "string" | "number" | "boolean" | Chooser | "freeChoices";
+export type ParameterType = "string" | "number" | "boolean" | Chooser | Options | "freeChoices";
 
 /**
  * Parameter to a command handler.

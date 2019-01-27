@@ -7,6 +7,7 @@ import {
     CommandHandlerMetadata,
     EventHandlerMetadata,
     MappedParameterDeclaration,
+    Options,
     Parameter,
     SecretDeclaration,
     ValueDeclaration,
@@ -110,7 +111,7 @@ function parametersFromInstance(r: any, prefix: string = ""): Parameter[] {
 
     const allParameters = directParams.concat(nestedParameters).map(p => {
         if (!!p.type && p.type !== "boolean" && p.type !== "number" && p.type !== "string" && p.type !== "freeChoices") {
-            const chooser = p.type as Chooser;
+            const chooser = p.type as any;
 
             let kind: "single" | "multiple" = "single";
             if (chooser.pickOne !== undefined && chooser.pickOne !== null) {
@@ -126,7 +127,7 @@ function parametersFromInstance(r: any, prefix: string = ""): Parameter[] {
                 options = chooser.options;
             }
 
-            const newChooser: Chooser = {
+            const newChooser: Options = {
                 kind,
                 options,
             };
