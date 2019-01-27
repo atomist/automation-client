@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Deprecated
 
 -   Add support for latest Chooser API contract. [17549fd](https://github.com/atomist/automation-client/commit/17549fdb9ba12b707898e8cfb49e1f1ba61c5d37)
+-   Deprecated Chooser type. [60739fc](https://github.com/atomist/automation-client/commit/60739fccd95f0cb8515cf1aea9214daa015de491)
 
 ### Fixed
 
