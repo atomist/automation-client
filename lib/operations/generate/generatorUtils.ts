@@ -67,7 +67,16 @@ export function generate<P extends Project = Project, PARAMS = object>(
                     independentCopy.id = targetId;
                     return toEditor<PARAMS>(editor)(independentCopy, ctx, params);
                 })
-                .then(r => r.target)
+                .then(r => {
+                        if (r.success) {
+                            return r.target;
+                        } else if (!!r.error) {
+                            throw r.error;
+                        } else {
+                            return Promise.reject("Failed to edit project") as any;
+                        }
+                    },
+                )
                 .then(populated => {
                     logger.debug("Persisting repo at [%s]: owner/repo=%s/%s",
                         (populated as LocalProject).baseDir, targetId.owner, targetId.repo);
