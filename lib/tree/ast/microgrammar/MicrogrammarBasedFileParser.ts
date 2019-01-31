@@ -1,4 +1,7 @@
-import { Microgrammar, Grammar } from "@atomist/microgrammar";
+import {
+    Grammar,
+    Microgrammar,
+} from "@atomist/microgrammar";
 import {
     isTreePatternMatch,
     PatternMatch,

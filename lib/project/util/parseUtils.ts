@@ -1,4 +1,7 @@
-import { Grammar, Microgrammar } from "@atomist/microgrammar";
+import {
+    Grammar,
+    Microgrammar,
+} from "@atomist/microgrammar";
 import { PatternMatch } from "@atomist/microgrammar/lib/PatternMatch";
 import { ScriptedFlushable } from "../../internal/common/Flushable";
 import { logger } from "../../util/logger";
