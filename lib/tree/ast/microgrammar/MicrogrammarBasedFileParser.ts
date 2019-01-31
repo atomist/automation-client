@@ -1,4 +1,7 @@
-import { Microgrammar } from "@atomist/microgrammar";
+import {
+    Grammar,
+    Microgrammar,
+} from "@atomist/microgrammar";
 import {
     isTreePatternMatch,
     PatternMatch,
@@ -21,11 +24,11 @@ export class MicrogrammarBasedFileParser implements FileParser {
      * Create a new MicrogrammarBasedFileParser, around a single microgrammar
      * @param {string} rootName name of the root element
      * @param {string} matchName name of each match
-     * @param {Microgrammar<any>} grammar
+     * @param {Grammar<any>} grammar
      */
     constructor(public readonly rootName: string,
-                public readonly matchName: string,
-                public readonly grammar: Microgrammar<any>) {
+        public readonly matchName: string,
+        public readonly grammar: Grammar<any>) {
     }
 
     public async toAst(f: File): Promise<TreeNode> {
