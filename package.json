@@ -23,7 +23,7 @@
   "main": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "@atomist/microgrammar": "^1.0.3",
+    "@atomist/microgrammar": "^1.0.4",
     "@atomist/slack-messages": "1.1.0",
     "@atomist/tree-path": "1.0.2",
     "@octokit/rest": "^16.3.0",
