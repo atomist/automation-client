@@ -22,9 +22,9 @@ import {
  */
 export type ProjectPersister<P extends Project = Project, R extends ActionResult<P> = ActionResult<P>> =
     (p: Project,
-     credentials: ProjectOperationCredentials,
-     targetId: RepoId,
-     params?: object) => Promise<R>;
+        credentials: ProjectOperationCredentials,
+        targetId: RepoId,
+        params?: object) => Promise<R>;
 
 /**
  * Generate a new project given the starting point project.
@@ -68,14 +68,14 @@ export function generate<P extends Project = Project, PARAMS = object>(
                     return toEditor<PARAMS>(editor)(independentCopy, ctx, params);
                 })
                 .then(r => {
-                        if (r.success) {
-                            return r.target;
-                        } else if (!!r.error) {
-                            throw r.error;
-                        } else {
-                            return Promise.reject("Failed to edit project") as any;
-                        }
-                    },
+                    if (r.success) {
+                        return r.target;
+                    } else if (!!r.error) {
+                        throw r.error;
+                    } else {
+                        return Promise.reject(new Error("Failed to edit project")) as any;
+                    }
+                },
                 )
                 .then(populated => {
                     logger.debug("Persisting repo at [%s]: owner/repo=%s/%s",
