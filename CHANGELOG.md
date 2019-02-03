@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Add support for latest Chooser API contract. [17549fd](https://github.com/atomist/automation-client/commit/17549fdb9ba12b707898e8cfb49e1f1ba61c5d37)
 -   Deprecated Chooser type. [60739fc](https://github.com/atomist/automation-client/commit/60739fccd95f0cb8515cf1aea9214daa015de491)
 
+### Removed
+
+-   Remove addAtomistWebhook from see generator params. [4ebe315](https://github.com/atomist/automation-client/commit/4ebe315eda8555dcaad43e910a8ac903c90677f3)
+
 ### Fixed
 
 -   Errors in machine function can get swallowed and ignored . [#449](https://github.com/atomist/automation-client/issues/449)
