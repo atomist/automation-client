@@ -151,9 +151,6 @@ export {
     SeedDrivenGeneratorParameters,
 } from "./lib/operations/generate/SeedDrivenGeneratorParameters";
 export {
-    addAtomistWebhook,
-} from "./lib/operations/generate/support/addAtomistWebhook";
-export {
     DefaultReviewComment,
     ProjectReview,
     ReviewComment,

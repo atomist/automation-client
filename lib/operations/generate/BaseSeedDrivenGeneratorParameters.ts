@@ -1,7 +1,4 @@
-import {
-    Parameter,
-    Parameters,
-} from "../../decorators";
+import { Parameters } from "../../decorators";
 import { GitHubSourceRepoParameters } from "../common/params/GitHubSourceRepoParameters";
 import { SourceRepoParameters } from "../common/params/SourceRepoParameters";
 import { GitHubRepoCreationParameters } from "./GitHubRepoCreationParameters";
@@ -14,17 +11,6 @@ import { SeedDrivenGeneratorParameters } from "./SeedDrivenGeneratorParameters";
  */
 @Parameters()
 export class BaseSeedDrivenGeneratorParameters implements SeedDrivenGeneratorParameters {
-
-    @Parameter({
-        pattern: /^(?:true|false)$/,
-        type: "boolean",
-        displayName: "Add Atomist webhook",
-        description: "whether to add the Atomist webhook to the repository to allow updates",
-        validInput: "'true' or 'false'",
-        required: false,
-        displayable: true,
-    })
-    public addAtomistWebhook: boolean = false;
 
     /**
      * Subclasses can override this for non GitHub target strategies.

@@ -23,8 +23,6 @@ import { RepoCreationParameters } from "./RepoCreationParameters";
  */
 export interface SeedDrivenGeneratorParameters {
 
-    addAtomistWebhook: boolean;
-
     source: RemoteLocator;
 
     target: RepoCreationParameters;
