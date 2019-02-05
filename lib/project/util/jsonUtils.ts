@@ -2,7 +2,7 @@ import { logger } from "../../util/logger";
 import { ProjectAsync } from "../Project";
 import { doWithFiles } from "./projectUtils";
 
-export type JsonManipulation = (jsonObj: any) => void;
+export type JsonManipulation<M = any> = (jsonObj: M) => void;
 
 /**
  * Manipulate the contents of the given JSON file within the project,
@@ -17,16 +17,11 @@ export type JsonManipulation = (jsonObj: any) => void;
 export function doWithJson<M, P extends ProjectAsync = ProjectAsync>(
     p: P,
     jsonPath: string,
-    manipulation: JsonManipulation,
+    manipulation: JsonManipulation<M>,
 ): Promise<P> {
-
-    return doWithFiles(p, jsonPath, file => {
-        return file.getContent()
-            .then(content => {
-                const newContent = manipulate(content, manipulation, jsonPath);
-                return file.setContent(newContent)
-                    .then(() => p);
-            });
+    return doWithFiles(p, jsonPath, async file => {
+        const content = await file.getContent();
+        await file.setContent(manipulate(content, manipulation, jsonPath));
     });
 }
 
@@ -39,7 +34,7 @@ const spacePossibilities = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, " ", "  ", "\t"];
  * @param {(jsonObj: any) => Object} manipulation
  * @return {string}
  */
-export function manipulate(jsonIn: string, manipulation: JsonManipulation, context: string = ""): string {
+export function manipulate<M = any>(jsonIn: string, manipulation: JsonManipulation<M>, context: string = ""): string {
     if (!jsonIn) {
         return jsonIn;
     }
