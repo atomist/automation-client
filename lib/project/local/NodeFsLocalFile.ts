@@ -1,8 +1,5 @@
 import * as fs from "fs-extra";
-
-import * as isBinaryFile from "isbinaryfile";
-
-import { promisify } from "util";
+import { isBinaryFile } from "isbinaryfile";
 import { logger } from "../../util/logger";
 import { AbstractFile } from "../support/AbstractFile";
 import { LocalFile } from "./LocalFile";
@@ -61,7 +58,7 @@ export class NodeFsLocalFile extends AbstractFile implements LocalFile {
     }
 
     public isBinary(): Promise<boolean> {
-        return promisify(isBinaryFile)(this.realPath);
+        return isBinaryFile(this.realPath);
     }
 }
 
