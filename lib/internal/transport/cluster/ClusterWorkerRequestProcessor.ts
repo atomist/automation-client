@@ -121,7 +121,7 @@ export class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
         return this.graphClients.create(
             workspaceId(event),
             this._configuration,
-            this.registration.jwt);
+            this.registration.claims);
     }
 
     protected createMessageClient(event: EventIncoming | CommandIncoming,

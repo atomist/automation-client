@@ -131,7 +131,7 @@ function forthRow(configuration: Configuration,
                   automations: Automations): string {
     let c: string = "";
     if ((configuration.ws as any).session) {
-        c += `  ${chalk.grey("JWT")} ${(configuration.ws as any).session.jwt}`;
+        c += `  ${chalk.grey("Claims")} ${(configuration.ws as any).session.claims}`;
     }
     return c;
 }

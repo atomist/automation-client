@@ -66,7 +66,7 @@ describe("DefaultWebSocketRequestProcessor", () => {
                 } as any,
                 graphql: { client: { factory: DefaultGraphClientFactory } },
             });
-        listener.onRegistration({ url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
+        listener.onRegistration({ url: "http://bla.com", claims: "123456789", name: "goo", version: "1.0.0" });
         listener.onConnect((new MockWebSocket() as any) as WebSocket);
         listener.processEvent({
             data: {
@@ -146,7 +146,7 @@ function verifyCommandHandler(code: number, callback: (result) => void) {
             } as any,
             graphql: { client: { factory: DefaultGraphClientFactory } },
         });
-    listener.onRegistration({ url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
+    listener.onRegistration({ url: "http://bla.com", claims: "123456789", name: "goo", version: "1.0.0" });
     listener.onConnect((new MockWebSocket() as any) as WebSocket);
     listener.processCommand({
         secrets: [],

@@ -460,6 +460,8 @@ export function defaultErrorResult(context: AutomationContextAware): HandlerResu
 export function replacer(key: string, value: any) {
     if (key === "secrets" && value) {
         return value.map(v => ({ uri: v.uri, value: hideString(v.value) }));
+    } else if (key === "secret") {
+        return hideString(value);
     } else {
         return value;
     }
