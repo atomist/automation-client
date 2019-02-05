@@ -13,7 +13,7 @@ export interface WebSocketRequestProcessor extends RequestProcessor {
 export interface RegistrationConfirmation {
 
     url: string;
-    claims: string;
+    jwt: string;
     name: string;
     version: string;
 }
