@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Update failure logging for failed repo creations. [#461](https://github.com/atomist/automation-client/issues/461)
 -   Fall through to no creds for cloneUrl. [b31ba59](https://github.com/atomist/automation-client/commit/b31ba59eca489d9bfea5528046ed52800f6a7bc5)
 -   Remove axios usage and use HttpClientFactory. [#464](https://github.com/atomist/automation-client/issues/464)
+-   Update dependencies. [d68fef3](https://github.com/atomist/automation-client/commit/d68fef3d64974677d7ac4b7f1d957b24c65f6a26)
 
 ### Deprecated
 
