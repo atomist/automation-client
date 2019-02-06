@@ -4,6 +4,7 @@ import {
     ActionResult,
     successOn,
 } from "../../action/ActionResult";
+import * as nsp from "../../internal/util/cls";
 import { GitCommandGitProject } from "../../project/git/GitCommandGitProject";
 import { GitProject } from "../../project/git/GitProject";
 import { Project } from "../../project/Project";
@@ -53,7 +54,12 @@ export const RemoteGitProjectPersister: ProjectPersister<GitProject> =
             })
             .then(() => {
                 logger.debug(`Committing to local repo at '${gp.baseDir}'`);
-                return gp.commit("Initial commit from Atomist");
+                let msg = "Initial commit from Atomist\n\n[atomist:generated]";
+                const ctx = nsp.get();
+                if (!!ctx) {
+                    msg = `${msg} [atomist:generator=${ctx.operation.toLowerCase()}]`
+                }
+                return gp.commit(msg);
             })
             .then(() => retryPush(gp))
             .then(tp => successOn(tp));
