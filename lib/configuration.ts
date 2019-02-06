@@ -29,10 +29,7 @@ import { automationClientInstance } from "./globals";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { ExpressServerOptions } from "./internal/transport/express/ExpressServer";
-import {
-    QueuingWebSocketLifecycle,
-    WebSocketLifecycle,
-} from "./internal/transport/websocket/WebSocketLifecycle";
+import { QueuingWebSocketLifecycle } from "./internal/transport/websocket/WebSocketLifecycle";
 import { config } from "./internal/util/config";
 import {
     guid,
@@ -171,7 +168,7 @@ export interface AutomationOptions extends AnyOptions {
              * milliseconds to complete when shutting down
              */
             graceful?: boolean;
-            /** grace period in millisends */
+            /** grace period in milliseconds */
             gracePeriod?: number;
         };
         /** compress messages over websocket */
