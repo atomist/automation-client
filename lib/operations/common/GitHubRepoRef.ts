@@ -35,6 +35,7 @@ import {
 } from "./RepoId";
 
 export const GitHubDotComBase = "https://api.github.com";
+const FullGitHubDotComBase = "https://api.github.com/";
 
 /**
  * GitHub repo ref
@@ -60,7 +61,7 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
                 rawApiBase = GitHubDotComBase,
                 path?: string) {
         super(
-            rawApiBase === GitHubDotComBase ? ProviderType.github_com : ProviderType.ghe,
+            rawApiBase === GitHubDotComBase || rawApiBase === FullGitHubDotComBase ? ProviderType.github_com : ProviderType.ghe,
             apiBaseToRemoteBase(rawApiBase), rawApiBase, owner, repo, sha, path);
     }
 

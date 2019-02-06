@@ -49,8 +49,6 @@ export abstract class NewRepoCreationParameters implements RepoCreationParameter
     })
     public visibility: "public" | "private" = "public";
 
-    public webhookUrl: string;
-
     public abstract credentials: ProjectOperationCredentials;
 
     /**

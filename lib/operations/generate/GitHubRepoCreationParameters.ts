@@ -17,9 +17,6 @@ export class GitHubRepoCreationParameters extends NewRepoCreationParameters {
     @Secret(Secrets.userToken(["repo", "user:email", "read:user"]))
     public githubToken;
 
-    @MappedParameter(MappedParameters.GitHubWebHookUrl)
-    public webhookUrl: string;
-
     @MappedParameter(MappedParameters.GitHubApiUrl, false)
     public apiUrl: string;
 

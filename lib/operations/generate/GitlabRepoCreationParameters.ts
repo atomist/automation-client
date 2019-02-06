@@ -15,9 +15,6 @@ import { NewRepoCreationParameters } from "./NewRepoCreationParameters";
  */
 export class GitlabRepoCreationParameters extends NewRepoCreationParameters {
 
-    @MappedParameter(MappedParameters.GitHubWebHookUrl)
-    public webhookUrl: string;
-
     public token: string;
 
     @MappedParameter(MappedParameters.GitHubApiUrl)

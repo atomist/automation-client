@@ -10,6 +10,4 @@ export interface RepoCreationParameters extends Credentialed, RemoteLocator {
 
     visibility: "public" | "private";
 
-    webhookUrl: string;
-
 }
