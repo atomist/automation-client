@@ -75,7 +75,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
     public async createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
         const gitlabUrl = GitlabRepoRef.concatUrl(this.apiBase, `projects`);
         const httpClient = automationClientInstance().configuration.http.client.factory.create(gitlabUrl);
-        const namespace = this.getNamespaceForOwner(this.owner, creds);
+        const namespace = await this.getNamespaceForOwner(this.owner, creds);
         return httpClient.exchange(gitlabUrl, {
             method: HttpMethod.Post,
             body: {
@@ -169,7 +169,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
             },
         }).then(response => {
             const namespaces = response.body as any[];
-            const ownerNamespace: any = _.head(namespaces.find(namespace => namespace.name === owner));
+            const ownerNamespace = namespaces.filter(n => n.name === owner)[0];
             if (!!ownerNamespace) {
                 return ownerNamespace.id;
             } else {
