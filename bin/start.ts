@@ -6,6 +6,10 @@
  */
 
 import "source-map-support/register";
+const log = require('why-is-node-running')
+setTimeout(function () {
+    log() // logs out active handles that are keeping node running
+}, 1000)
 import { automationClient } from "../lib/automationClient";
 import { loadConfiguration } from "../lib/configuration";
 import { enableDefaultScanning } from "../lib/scan";
