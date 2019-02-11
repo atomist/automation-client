@@ -51,7 +51,8 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
     public processCommand(command: CommandIncoming,
                           // tslint:disable-next-line:no-empty
-                          callback: (result: Promise<HandlerResult>) => void = () => { }) {
+                          callback: (result: Promise<HandlerResult>) => void = () => {
+                          }) {
         // setup context
         const ses = namespace.create();
         const cls = this.setupNamespace(command, this.automations);
@@ -93,8 +94,9 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
     }
 
     public processEvent(event: EventIncoming,
-        // tslint:disable-next-line:no-empty
-                        callback: (results: Promise<HandlerResult[]>) => void = () => { }) {
+                        // tslint:disable-next-line:no-empty
+                        callback: (results: Promise<HandlerResult[]>) => void = () => {
+                        }) {
         // setup context
         const ses = namespace.create();
         const cls = this.setupNamespace(event, this.automations);
@@ -154,7 +156,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             status: {
                 code,
                 reason: `${success ? "Successfully" : "Unsuccessfully"} invoked command` +
-                ` ${request.command} of ${this.automations.automations.name}@${this.automations.automations.version}`,
+                    ` ${request.command} of ${this.automations.automations.name}@${this.automations.automations.version}`,
             },
         };
         return this.sendStatusMessage(response, ctx);
@@ -175,7 +177,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
             status: {
                 code: success ? 0 : 1,
                 reason: `${success ? "Successfully" : "Unsuccessfully"} invoked event subscription` +
-                ` ${request.extensions.operationName} of ${this.automations.automations.name}@${this.automations.automations.version}`,
+                    ` ${request.extensions.operationName} of ${this.automations.automations.name}@${this.automations.automations.version}`,
             },
         };
         return this.sendStatusMessage(response, ctx);
@@ -397,45 +399,53 @@ class AutomationEventListenerEnabledMessageClient implements MessageClient {
                 private listeners: AutomationEventListener[] = []) {
     }
 
-    public respond(msg: any,
-                   options?: MessageOptions): Promise<any> {
+    public async respond(msg: any,
+                         options?: MessageOptions): Promise<any> {
+        const newMsg = await this.listeners.map(
+            l => m => l.messageSending(m, [], options, this.ctx))
+            .reduce((p, f) => p.then(f), Promise.resolve(msg));
+
         eventStore().recordMessage(
             options && options.id ? options.id : guid(),
             this.ctx.correlationId,
-            msg);
-        return this.delegate.respond(msg, options)
-            .then(() => {
-                return Promise.all(
-                    this.listeners.map(
-                        l => l.messageSent(
-                            msg,
-                            [],
-                            options,
-                            this.ctx),
-                    ),
-                );
-            });
+            newMsg);
+
+        await this.delegate.respond(newMsg, options);
+
+        return Promise.all(
+            this.listeners.map(
+                l => l.messageSent(
+                    newMsg,
+                    [],
+                    options,
+                    this.ctx),
+            ),
+        );
     }
 
-    public send(msg: any,
-                destinations: Destination | Destination[],
-                options?: MessageOptions): Promise<any> {
+    public async send(msg: any,
+                      destinations: Destination | Destination[],
+                      options?: MessageOptions): Promise<any> {
+        const newMsg = await this.listeners.map(
+            l => m => l.messageSending(m, destinations, options, this.ctx))
+            .reduce((p, f) => p.then(f), Promise.resolve(msg));
+
         eventStore().recordMessage(
             options && options.id ? options.id : guid(),
             this.ctx.correlationId,
-            msg);
-        return this.delegate.send(msg, destinations, options)
-            .then(() => {
-                return Promise.all(
-                    this.listeners.map(
-                        l => l.messageSent(
-                            msg,
-                            destinations,
-                            options,
-                            this.ctx),
-                    ),
-                );
-            });
+            newMsg);
+
+        await this.delegate.send(newMsg, destinations, options);
+
+        return Promise.all(
+            this.listeners.map(
+                l => l.messageSent(
+                    newMsg,
+                    destinations,
+                    options,
+                    this.ctx),
+            ),
+        );
     }
 }
 

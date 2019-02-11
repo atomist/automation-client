@@ -98,6 +98,18 @@ export interface AutomationEventListener {
     eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): Promise<void>;
 
     /**
+     * Message will be sent via the MessageClient. Return a potentially modified message to be sent.
+     * @param message
+     * @param destinations
+     * @param options
+     * @param ctx
+     */
+    messageSending(message: any,
+                   destinations: Destination | Destination[],
+                   options: MessageOptions,
+                   ctx: HandlerContext): Promise<any>;
+
+    /**
      * Message was sent via the MessageClient
      * @param message
      * @param destinations
@@ -155,6 +167,13 @@ export class AutomationEventListenerSupport implements AutomationEventListener {
 
     public eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): Promise<void> {
         return Promise.resolve();
+    }
+
+    public messageSending(message: any,
+                          destinations: Destination | Destination[],
+                          options: MessageOptions,
+                          ctx: HandlerContext): Promise<any> {
+        return Promise.resolve(message);
     }
 
     public messageSent(message: any,
