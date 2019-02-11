@@ -355,6 +355,13 @@ export function defaultConfiguration(): Configuration {
  * Exposes the configuration for lookup of configuration values.
  * This is useful for components to obtain values eg. from configuration.custom
  * like user provided secrets etc.
+ *
+ * This is only available after the SDM has loaded configuration. You can use this function
+ * to pull configuration values out of global space, but not until after the SDM in initialized.
+ *
+ * So, use it in a command listener, but not in initialization of a top-level constant.
+ * You can also use it in a postProcessor, such as configureSdm.
+ *
  * @param {string} path the property path evaluated against the configuration instance
  * @returns {T}
  */
