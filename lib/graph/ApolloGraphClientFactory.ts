@@ -18,8 +18,7 @@ export class ApolloGraphClientFactory implements GraphClientFactory {
     private graphClients: NodeCache;
 
     public create(workspaceId: string,
-                  configuration: Configuration,
-                  token: string): GraphClient {
+                  configuration: Configuration): GraphClient {
         this.init();
         let graphClient = this.graphClients.get(workspaceId) as GraphClient;
         if (graphClient) {
@@ -28,7 +27,7 @@ export class ApolloGraphClientFactory implements GraphClientFactory {
         } else {
             logger.debug("Creating new graph client for team '%s'", workspaceId);
             graphClient = new ApolloGraphClient(`${configuration.endpoints.graphql}/${workspaceId}`,
-                { Authorization: `Bearer ${token}` }, this.configure(configuration));
+                { Authorization: `Bearer ${configuration.apiKey}` }, this.configure(configuration));
             this.graphClients.set(workspaceId, graphClient);
             return graphClient;
         }

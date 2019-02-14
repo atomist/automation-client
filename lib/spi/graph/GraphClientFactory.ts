@@ -11,11 +11,9 @@ export interface GraphClientFactory {
      * Create a GraphClient for the provided workspaceId
      * @param workspaceId
      * @param configuration
-     * @param authCallback
      */
     create(workspaceId: string,
-           configuration: Configuration,
-           token: string): GraphClient;
+           configuration: Configuration): GraphClient;
 
 }
 

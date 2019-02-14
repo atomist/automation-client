@@ -54,8 +54,7 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
             this.configuration.http.graphClientFactory(context) :
             this.graphClientFactory.create(
                 workspaceId(event),
-                this.configuration,
-                this.configuration.apiKey);
+                this.configuration);
     }
 
     protected createMessageClient(event: EventIncoming | CommandIncoming,

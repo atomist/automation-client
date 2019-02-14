@@ -83,8 +83,7 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
     protected createGraphClient(event: CommandIncoming | EventIncoming): GraphClient {
         return this.graphClients.create(
             workspaceId(event),
-            this.configuration,
-            this.registration.jwt);
+            this.configuration);
     }
 
     protected createMessageClient(event: CommandIncoming | EventIncoming): MessageClient {
