@@ -5,10 +5,10 @@
  * See LICENSE file.
  */
 
-import * as child_process from "child_process";
-import * as spawn from "cross-spawn";
 import * as fs from "fs-extra";
 import * as glob from "glob";
+import { generate } from "graphql-code-generator";
+import { Types } from "graphql-codegen-core";
 import * as path from "path";
 import * as util from "util";
 
@@ -33,6 +33,29 @@ function libDir(cwd: string): string {
 }
 
 /**
+ * Patch the handlebar template that renders the generated types out.
+ * This patch puts back the original behaviour of creating only optional properties on generated types.
+ *
+ * @param cwd
+ */
+async function patchGraphQLCodeGenerator(cwd: string): Promise<void> {
+    try {
+        // patch up codegen template to create optional properties
+        const codegenTemplate = path.join(cwd, "node_modules", "graphql-codegen-typescript-client", "dist", "index.js");
+        if (await fs.pathExists(codegenTemplate)) {
+            let contents = (await fs.readFile(codegenTemplate)).toString();
+            contents = contents.replace(
+                /{{ name }}: {{ convertedFieldType/,
+                "{{ name }}?: {{ convertedFieldType");
+            await fs.writeFile(codegenTemplate, contents);
+        }
+    } catch (e) {
+        console.error(`Failed to patch graphql-code-generator: ${e.message}`);
+        process.exit(103);
+    }
+};
+
+/**
  * Generate TypeScript typings for GraphQL schema entities.
  */
 async function main(): Promise<void> {
@@ -40,53 +63,46 @@ async function main(): Promise<void> {
         const cwd = process.cwd();
         const lib = libDir(cwd);
 
+        await patchGraphQLCodeGenerator(cwd);
+
         // check if the project has a custom schema
         const customSchemaLocation = path.join(lib, "graphql", "schema.json");
         const defaultSchemaLocation = path.join(cwd, "node_modules", "@atomist", "automation-client", "lib",
             "graph", "schema.json");
         const schema = fs.existsSync(customSchemaLocation) ? customSchemaLocation : defaultSchemaLocation;
 
-        const gqlGenCmd = path.join(cwd, "node_modules", ".bin", "gql-gen") +
-            ((process.platform === "win32") ? ".cmd" : "");
         const gqlGenOutput = path.join(lib, "typings", "types.ts");
-        const gqlGenArgs = [
-            "--schema", schema,
-            "--skip-schema",
-            "--template", "graphql-codegen-typescript-template",
-            "--out", gqlGenOutput,
-        ];
-
-        const opts: child_process.SpawnOptions = {
-            cwd,
-            env: process.env,
-            stdio: "inherit",
-        };
+        await fs.ensureDir(path.dirname(gqlGenOutput));
 
         const graphQlGlob = `${lib}/graphql/!(ingester)/*.graphql`;
 
+        const config: Types.Config = {
+            overwrite: true,
+            schema: [schema],
+            generates: {
+                [gqlGenOutput]: {
+                    plugins: [
+                        "typescript-common",
+                        "typescript-client",
+                    ],
+                    config: {
+                        namingConvention: {
+                            enumValues: "keep",
+                        },
+                    },
+                },
+            },
+        };
+
         const graphqlFiles = await util.promisify(glob)(graphQlGlob);
+
         if (graphqlFiles && graphqlFiles.length > 0) {
-            gqlGenArgs.push(graphQlGlob);
+            config.documents = [graphQlGlob];
+            await generate(config);
         } else {
-            console.info("No GraphQL files found in project, generating default types");
+            console.info("No GraphQL files found in project. Skipping type generation...");
         }
 
-        const cp = spawn(gqlGenCmd, gqlGenArgs, opts);
-        cp.on("exit", (code, signal) => {
-            if (code === 0) {
-                process.exit(code);
-            } else if (code) {
-                console.error(`Generating GraphQL failed with non-zero status: ${code}`);
-                process.exit(code);
-            } else {
-                console.error(`Generating GraphQL exited due to signal: ${signal}`);
-                process.exit(128 + 2);
-            }
-        });
-        cp.on("error", err => {
-            console.error(`Generating GraphQL types errored: ${err.message}`);
-            process.exit(2);
-        });
     } catch (e) {
         console.error(`Generating GraphQL types failed: ${e.message}`);
         process.exit(1);
