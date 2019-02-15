@@ -1,6 +1,5 @@
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
-import * as serializeError from "serialize-error";
 import { Configuration } from "../../configuration";
 import { eventStore } from "../../globals";
 import { EventFired } from "../../HandleEvent";
@@ -361,7 +360,12 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         if (callback) {
                             callback(Promise.resolve(result));
                         }
-                        logger.error(`Failed invocation of command '%s': %s`, command.command, serializeError(err));
+                        if (err instanceof Error) {
+                            logger.error(`Failed invocation of command '%s': %s`, command.command, err.message);
+                            logger.error(err.stack);
+                        } else {
+                            logger.error(`Failed invocation of command '%s'`, command.command);
+                        }
                         this.clearNamespace();
                     })
                     .catch(error => logger.warn("Unable to send status for command: " + stringify(command)));
@@ -383,8 +387,14 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         if (callback) {
                             callback(Promise.resolve(result));
                         }
-                        logger.error(`Failed invocation of event subscription '%s': %s`,
-                            event.extensions.operationName, serializeError(err));
+                        if (err instanceof Error) {
+                            logger.error(`Failed invocation of event subscription '%s': %s`,
+                                event.extensions.operationName, err.message);
+                            logger.error(err.stack);
+                        } else {
+                            logger.error(`Failed invocation of event subscription '%s'`,
+                                event.extensions.operationName);
+                        }
                         this.clearNamespace();
                     })
                     .catch(error => logger.warn("Unable to send status for event subscription: " + stringify(event)));
