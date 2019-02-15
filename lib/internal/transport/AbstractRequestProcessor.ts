@@ -361,7 +361,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         if (callback) {
                             callback(Promise.resolve(result));
                         }
-                        logger.error(`Failed invocation of command '%s'`, command.command, serializeError(err));
+                        logger.error(`Failed invocation of command '%s': %s`, command.command, serializeError(err));
                         this.clearNamespace();
                     })
                     .catch(error => logger.warn("Unable to send status for command: " + stringify(command)));
@@ -383,7 +383,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         if (callback) {
                             callback(Promise.resolve(result));
                         }
-                        logger.error(`Failed invocation of event subscription '%s'`,
+                        logger.error(`Failed invocation of event subscription '%s': %s`,
                             event.extensions.operationName, serializeError(err));
                         this.clearNamespace();
                     })
