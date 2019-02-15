@@ -58,7 +58,13 @@ async function main(): Promise<void> {
                 [gqlGenOutput]: {
                     plugins: [
                         "typescript-common",
+                        "typescript-client",
                     ],
+                    config: {
+                        namingConvention: {
+                            enumValues: "keep",
+                        },
+                    },
                 },
             },
         };
