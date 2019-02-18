@@ -23,7 +23,7 @@ export function dispose(ctx: HandlerContext): () => Promise<void> {
                                 logger.warn("Failed to release resource %s: %s", f2.what, error);
                             }))
                     , what: f1.what + " and " + f2.what,
-                }; x
+                };
             }
 
             const disposeEverything = (ctx as any).__disposables
