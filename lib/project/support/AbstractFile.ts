@@ -22,7 +22,7 @@ export abstract class AbstractFile extends AbstractScriptedFlushable<File> imple
 
     public abstract setContentSync(content: string): this;
 
-    public abstract getContent(): Promise<string>;
+    public abstract getContent(encoding?: string): Promise<string>;
 
     public abstract getContentBuffer(): Promise<Buffer>;
 

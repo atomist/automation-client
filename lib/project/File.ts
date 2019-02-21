@@ -35,7 +35,7 @@ export interface FileAsync extends FileCore {
 
     rename(name: string): Promise<this>;
 
-    getContent(): Promise<string>;
+    getContent(encoding?: string): Promise<string>;
 
     getContentBuffer(): Promise<Buffer>;
 
@@ -69,7 +69,7 @@ export interface FileSync extends FileCore {
      *
      * @property {string} content
      */
-    getContentSync(): string;
+    getContentSync(encoding?: string): string;
 
     setContentSync(content: string): this;
 

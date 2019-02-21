@@ -16,7 +16,7 @@ export class InMemoryFile extends AbstractFile {
         this.initialContent = content;
     }
 
-    public getContentSync(): string {
+    public getContentSync(encoding?: string): string {
         return this.content;
     }
 
@@ -29,8 +29,8 @@ export class InMemoryFile extends AbstractFile {
         return Promise.resolve(this.setContentSync(content));
     }
 
-    public getContent(): Promise<string> {
-        return Promise.resolve(this.getContentSync());
+    public getContent(encoding?: string): Promise<string> {
+        return Promise.resolve(this.getContentSync(encoding));
     }
 
     public getContentBuffer(): Promise<Buffer> {
