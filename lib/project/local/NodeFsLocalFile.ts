@@ -1,5 +1,6 @@
 import * as fs from "fs-extra";
 import { isBinaryFile } from "isbinaryfile";
+import * as nodePath from "path";
 import { logger } from "../../util/logger";
 import { AbstractFile } from "../support/AbstractFile";
 import { LocalFile } from "./LocalFile";
@@ -11,7 +12,7 @@ export class NodeFsLocalFile extends AbstractFile implements LocalFile {
 
     constructor(public readonly baseDir: string, public path: string) {
         super();
-        if (path.startsWith("/")) {
+        if (path.startsWith(nodePath.sep)) {
             this.path = path.substr(1);
         }
     }
@@ -20,13 +21,17 @@ export class NodeFsLocalFile extends AbstractFile implements LocalFile {
         return realPath(this.baseDir, this.path);
     }
 
-    public getContentSync(): string {
-        return fs.readFileSync(this.realPath).toString();
+    public getContentSync(encoding: string = "utf8"): string {
+        return fs.readFileSync(this.realPath).toString(encoding);
     }
 
-    public getContent(): Promise<string> {
-        return fs.readFile(this.realPath)
-            .then(buf => buf.toString());
+    public getContent(encoding: string = "utf8"): Promise<string> {
+        return this.getContentBuffer()
+            .then(buf => buf.toString(encoding));
+    }
+
+    public getContentBuffer(): Promise<Buffer> {
+        return fs.readFile(this.realPath);
     }
 
     public setContent(content: string): Promise<this> {
