@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Allow boolean and number parameters types in command requests. [#446](https://github.com/atomist/automation-client/issues/446)
 -   Set WebSocketLifecycle on configuration. [6c009bf](https://github.com/atomist/automation-client/commit/6c009bf30f89b3685c208636337d6810338f917e)
 -   Provide a way to globally modify chat messages. [#470](https://github.com/atomist/automation-client/issues/470)
+-   Add getContentBuffer method to File. [#476](https://github.com/atomist/automation-client/issues/476)
 
 ### Changed
 
