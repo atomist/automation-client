@@ -33,6 +33,10 @@ export class InMemoryFile extends AbstractFile {
         return Promise.resolve(this.getContentSync());
     }
 
+    public getContentBuffer(): Promise<Buffer> {
+        return Promise.resolve(Buffer.from(this.getContentSync(), "utf8"));
+    }
+
     public setPath(path: string): Promise<this> {
         this.path = path;
         return Promise.resolve(this);

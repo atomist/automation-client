@@ -37,6 +37,8 @@ export interface FileAsync extends FileCore {
 
     getContent(): Promise<string>;
 
+    getContentBuffer(): Promise<Buffer>;
+
     replace(re: RegExp, replacement: string): Promise<this>;
 
     replaceAll(oldLiteral: string, newLiteral: string): Promise<this>;

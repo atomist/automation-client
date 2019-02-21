@@ -26,8 +26,12 @@ export class NodeFsLocalFile extends AbstractFile implements LocalFile {
     }
 
     public getContent(): Promise<string> {
-        return fs.readFile(this.realPath)
+        return this.getContentBuffer()
             .then(buf => buf.toString());
+    }
+
+    public getContentBuffer(): Promise<Buffer> {
+        return fs.readFile(this.realPath);
     }
 
     public setContent(content: string): Promise<this> {

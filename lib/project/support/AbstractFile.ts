@@ -24,6 +24,8 @@ export abstract class AbstractFile extends AbstractScriptedFlushable<File> imple
 
     public abstract getContent(): Promise<string>;
 
+    public abstract getContentBuffer(): Promise<Buffer>;
+
     public abstract setContent(content: string): Promise<this>;
 
     public rename(name: string): Promise<this> {
@@ -36,14 +38,14 @@ export abstract class AbstractFile extends AbstractScriptedFlushable<File> imple
         return this.getContent()
             .then(content =>
                 this.setContent(content.replace(re, replacement)),
-        );
+            );
     }
 
     public replaceAll(oldLiteral: string, newLiteral: string): Promise<this> {
         return this.getContent()
             .then(content =>
                 this.setContent(content.split(oldLiteral).join(newLiteral)),
-        );
+            );
     }
 
     public abstract isExecutable(): Promise<boolean>;
