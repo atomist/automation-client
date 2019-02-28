@@ -247,6 +247,7 @@ export {
 } from "./lib/tree/ast/regex/RegexFileParser";
 export {
     WritableLog,
+    execPromise,
 } from "./lib/util/child_process";
 export * from "./lib/util/exec";
 export {
