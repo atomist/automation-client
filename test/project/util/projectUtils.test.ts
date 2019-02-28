@@ -100,7 +100,7 @@ describe("projectUtils", () => {
         for await (const what of it) {
             gathered.push(what);
         }
-        assert.strictEqual(gathered.length,  1);
+        assert.strictEqual(gathered.length, 1);
         assert.strictEqual(gathered[0].path, "Thing");
     });
 
@@ -112,7 +112,7 @@ describe("projectUtils", () => {
         for await (const what of it) {
             gathered.push(what);
         }
-        assert.strictEqual(gathered.length,  0);
+        assert.strictEqual(gathered.length, 0);
     });
 
     it("fileIterator: take none due to filter", async () => {
@@ -123,7 +123,7 @@ describe("projectUtils", () => {
         for await (const what of it) {
             gathered.push(what);
         }
-        assert.strictEqual(gathered.length,  0);
+        assert.strictEqual(gathered.length, 0);
     });
 
     it("withFiles: run", done => {
@@ -249,6 +249,20 @@ describe("projectUtils", () => {
                 assert(p.findFileSync("config/Cat").getContentSync() === "alpha");
             })
             .then(done, done);
+    });
+
+    it("returns a rejected promise if any of the inner promises are rejected", async () => {
+        const poo = new Error("This is terrible. But it won't be unhandled");
+        const p = tempProject();
+        p.addFileSync("Thing", "A");
+        try {
+            const result = await doWithFiles(p, "**/*", async f => {
+                throw poo;
+            });
+            assert.fail("Unhandled Promise Rejection!!" + JSON.stringify(result));
+        } catch (e) {
+            assert.strictEqual(e.message, poo.message);
+        }
     });
 
     it.skip("replaces regex across project", done => {
