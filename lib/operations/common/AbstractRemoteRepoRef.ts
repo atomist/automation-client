@@ -74,12 +74,12 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
      * @param {string} path
      */
     protected constructor(public readonly providerType: ProviderType,
-        rawRemote: string,
-        rawApiBase: string,
-        public readonly owner: string,
-        public readonly repo: string,
-        public readonly sha: string,
-        public readonly path?: string) {
+                          rawRemote: string,
+                          rawApiBase: string,
+                          public readonly owner: string,
+                          public readonly repo: string,
+                          public readonly sha: string,
+                          public readonly path?: string) {
         const [remoteScheme, remoteBase] = splitSchemeFromUrl(rawRemote);
         const [apiScheme, apiBase] = splitSchemeFromUrl(rawApiBase);
         if (apiScheme !== remoteScheme) { // that's confusing, don't handle it
@@ -118,7 +118,7 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
     public abstract setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>>;
 
     public abstract raisePullRequest(creds: ProjectOperationCredentials,
-        title: string, body: string, head: string, base: string): Promise<ActionResult<this>>;
+                                     title: string, body: string, head: string, base: string): Promise<ActionResult<this>>;
 
     public abstract deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>>;
 }

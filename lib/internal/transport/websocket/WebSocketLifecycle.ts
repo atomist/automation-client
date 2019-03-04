@@ -50,28 +50,28 @@ export class QueuingWebSocketLifecycle implements WebSocketLifecycle {
      * Set the WebSocket to manage
      * @param ws
      */
-    set(ws: WebSocket): void {
+    public set(ws: WebSocket): void {
         this.ws = ws;
     }
 
     /**
      * Is the WebSocket is connected and healthy
      */
-    connected(): boolean {
+    public connected(): boolean {
         return !!this.ws && this.ws.readyState === WebSocket.OPEN;
     }
 
     /**
      * Get the raw WebSocket that is managed here
      */
-    get(): WebSocket {
+    public get(): WebSocket {
         return this.ws;
     }
 
     /**
      * Reset the WebSocket
      */
-    reset(): void {
+    public reset(): void {
         this.ws = null;
     }
 
@@ -81,7 +81,7 @@ export class QueuingWebSocketLifecycle implements WebSocketLifecycle {
      * when a WebSocket is connected again.
      * @param msg
      */
-    send(msg: any): void {
+    public send(msg: any): void {
         if (this.connected()) {
             sendMessage(msg, this.ws, true);
         } else {
