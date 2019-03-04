@@ -39,6 +39,8 @@ const gitlabCiTokenPattern = ".*";
 const afterTheToken = "@";
 addLogRedaction(new RegExp(gitlabCiTokenMarker + gitlabCiTokenPattern + afterTheToken), "[REDACTED_GITLAB_CI_TOKEN]");
 
+addLogRedaction(/https?:\/\/[^:]+:[^@]+@/, "[REDACTED_URL_PASSWORD]");
+
 /**
  * Superclass for RemoteRepoRef implementations.
  * Handles parsing remote base

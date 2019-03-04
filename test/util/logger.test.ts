@@ -41,6 +41,14 @@ describe("redaction", () => {
         // now let's try the other creds that get into cloneUrls
 
         //  `${this.scheme}${encodeURIComponent(creds.username)}:${encodeURIComponent(creds.password)}@`
+        {
+            const result = redact({
+                message: "https://urlencoded%2Fusername:something%2Fpasswordy4785748@some.handy.website.com/things",
+            } as TransformableInfo);
+
+            assert(!result.message.includes("passwordy"), "This should have been redacted");
+            assert(result.message.includes("[REDACTED_URL_PASSWORD]"), "Be clear about why this is changed");
+        }
 
         // `${this.scheme}gitlab-ci-token:${creds.privateToken}@`
         {
