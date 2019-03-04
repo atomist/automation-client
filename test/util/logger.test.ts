@@ -43,7 +43,6 @@ describe("redaction", () => {
     describe("hides github tokens after the file that might result in them being printed is loaded",
         () => {
             before(() => {
-                console.log("I am running this now");
                 require("../../lib/operations/common/AbstractRemoteRepoRef.ts");
             });
 
@@ -54,7 +53,7 @@ describe("redaction", () => {
                 } as TransformableInfo);
 
                 assert(!result.message.includes("12093847103847561098457012abfcdefab456ef"), "This should have been redacted");
-                assert(result.message.includes("https://[REDACTED_GITHUB_TOKEN]:[REDACTED_URL_PASSWORD]@blah"),
+                assert(result.message.includes("https://[REDACTED_GITHUB_TOKEN]:x-oauth-basic@blah"),
                     "Should be obvious about why it is changed");
             });
 
