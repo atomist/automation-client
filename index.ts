@@ -255,11 +255,18 @@ export {
     raiseIssue,
 } from "./lib/util/gitHub";
 export {
-    LoggingFormat, LoggingConfiguration, NoLogging,
-    PlainLogging, MinimalLogging,
-    ClientLogging, configureLogging,
-    clientLoggingConfiguration, Logger, LogMethod,
-    LeveledLogMethod, LogCallback,
+    LoggingFormat,
+    LoggingConfiguration,
+    NoLogging,
+    PlainLogging,
+    MinimalLogging,
+    ClientLogging,
+    configureLogging,
+    clientLoggingConfiguration,
+    Logger,
+    LogMethod,
+    LeveledLogMethod,
+    LogCallback,
     logger,
 } from "./lib/util/logger";
 export {
