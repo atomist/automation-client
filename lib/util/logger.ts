@@ -362,16 +362,42 @@ function redirectConsoleLogging() {
     };
 }
 
+const redactions: Array<{ redacted: RegExp, replacement: string }> = [];
+
+/**
+ * Prepare the logging to exclude something.
+ * If you know you're about to, say, spawn a process that will get printed
+ * to the log and will reveal something secret, then prepare the logger to
+ * exclude that secret thing.
+ *
+ * Pass a regular expression that will match the secret thing and very little else.
+ */
+export function addLogRedaction(redacted: RegExp, suggestedReplacement?: string) {
+    const replacement = suggestedReplacement || "[REDACTED]";
+    redactions.push({ redacted, replacement });
+}
+
+// exported only for testing
+export function redact(logInfo: logform.TransformableInfo): logform.TransformableInfo {
+    let output = logInfo.message;
+    redactions.forEach(r => {
+        output = output.replace(r.redacted, r.replacement);
+    });
+    return { ...logInfo, message: output };
+}
+
 function getFormat(format: LoggingFormat): logform.Format {
     switch (format) {
         case LoggingFormat.Full:
             return winston.format.combine(
+                winston.format(redact)(),
                 winston.format.timestamp(),
                 winston.format.splat(),
                 winston.format.printf(clientFormat),
             );
         case LoggingFormat.Simple:
             return winston.format.combine(
+                winston.format(redact)(),
                 winston.format.colorize(),
                 winston.format.splat(),
                 winston.format.simple(),
@@ -379,6 +405,7 @@ function getFormat(format: LoggingFormat): logform.Format {
         case LoggingFormat.None:
         default:
             return winston.format.combine(
+                winston.format(redact)(),
                 winston.format.splat(),
                 winston.format.printf(info => info.message),
             );
