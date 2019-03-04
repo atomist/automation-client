@@ -30,17 +30,10 @@ import {
 } from "./RepoId";
 
 const stuffAfterTheSensitiveToken = ":x-oauth-basic@";
-
-
 const gitHubTokenPattern = "[0-9a-f]{40}";
 addLogRedaction(new RegExp(gitHubTokenPattern + group(stuffAfterTheSensitiveToken)), "[REDACTED_GITHUB_TOKEN]$1");
 
-const gitlabCiTokenMarker = "gitlab-ci-token:";
-const gitlabCiTokenPattern = ".*";
-const afterTheToken = "@";
-addLogRedaction(new RegExp(group(gitlabCiTokenMarker) + gitlabCiTokenPattern + group(afterTheToken)),
-    "$1[REDACTED_GITLAB_CI_TOKEN]$2");
-
+// ordering matters: keep this after the Github token one, which happens to look at the password, and this replacement would make it not match
 addLogRedaction(/(https?:\/\/[^:]+:)[^@]+(@)/, "$1[REDACTED_URL_PASSWORD]$2");
 
 function group(str: string) {
@@ -107,7 +100,7 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
                 `${this.remoteBase}/${this.pathComponent}.git`;
         }
         if (!!creds && isGitlabPrivateTokenCredentials(creds)) {
-            return `${this.scheme}${gitlabCiTokenMarker}${creds.privateToken}${afterTheToken}` +
+            return `${this.scheme}gitlab-ci-token:${creds.privateToken}@` +
                 `${this.remoteBase}/${this.pathComponent}.git`;
         }
         if (!!creds && isTokenCredentials(creds)) {
