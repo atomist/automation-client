@@ -31,10 +31,11 @@ import {
 
 const stuffAfterTheSensitiveToken = ":x-oauth-basic@";
 const gitHubTokenPattern = "[0-9a-f]{40}";
-addLogRedaction(new RegExp(gitHubTokenPattern + group(stuffAfterTheSensitiveToken)), "[REDACTED_GITHUB_TOKEN]$1");
+addLogRedaction(new RegExp(gitHubTokenPattern + group(stuffAfterTheSensitiveToken), "g"), "[REDACTED_GITHUB_TOKEN]$1");
 
 // ordering matters: keep this after the Github token one, which happens to look at the password, and this replacement would make it not match
-addLogRedaction(/(https?:\/\/[^:]+:)[^@]+(@)/, "$1[REDACTED_URL_PASSWORD]$2");
+addLogRedaction(/(https?:\/\/[^:\/\?#\[\]@]+:)[^:\/\?#\[\]@]+(@)/g,
+    "$1[REDACTED_URL_PASSWORD]$2");
 
 function group(str: string) {
     return "(" + str + ")";
