@@ -25,4 +25,33 @@ describe("redaction", () => {
 
         assert.strictEqual(result.message, originalMessage);
     });
+
+    it("hides github tokens after the file that might result in them being printed is loaded", () => {
+        require("../../lib/operations/common/AbstractRemoteRepoRef.ts");
+
+        {
+            const result = redact({
+                message: "https://12093847103847561098457012abfcdefab456ef:x-oauth-basic@blah blah blah blah",
+            } as TransformableInfo);
+
+            assert(!result.message.includes("12093847103847561098457012abfcdefab456ef"), "This should have been redacted");
+            assert(result.message.includes("[REDACTED_GITHUB_TOKEN]"), "Should be obvious about why it is changed");
+        }
+
+        // now let's try the other creds that get into cloneUrls
+
+        //  `${this.scheme}${encodeURIComponent(creds.username)}:${encodeURIComponent(creds.password)}@`
+
+        // `${this.scheme}gitlab-ci-token:${creds.privateToken}@`
+        {
+            const result = redact({
+                message: "https://gitlab-ci-token:something-tokeny@blah blah blah blah",
+            } as TransformableInfo);
+
+            assert(!result.message.includes("something-tokeny"), "This should have been redacted");
+            assert(result.message.includes("[REDACTED_GITLAB_CI_TOKEN]"), "Be clear about why this is changed");
+        }
+
+    });
+
 });

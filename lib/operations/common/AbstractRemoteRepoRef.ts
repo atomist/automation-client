@@ -17,6 +17,7 @@
 
 import { ActionResult } from "../../action/ActionResult";
 import { Configurable } from "../../project/git/Configurable";
+import { addLogRedaction } from "../../util/logger";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
 import { isGitlabPrivateTokenCredentials } from "./GitlabPrivateTokenCredentials";
 import {
@@ -27,6 +28,16 @@ import {
     ProviderType,
     RemoteRepoRef,
 } from "./RepoId";
+
+const stuffAfterTheSensitiveToken = ":x-oauth-basic@";
+
+const gitHubTokenPattern = "[0-9a-f]{40}";
+addLogRedaction(new RegExp(gitHubTokenPattern + stuffAfterTheSensitiveToken), "[REDACTED_GITHUB_TOKEN]");
+
+const gitlabCiTokenMarker = "gitlab-ci-token:";
+const gitlabCiTokenPattern = ".*";
+const afterTheToken = "@";
+addLogRedaction(new RegExp(gitlabCiTokenMarker + gitlabCiTokenPattern + afterTheToken), "[REDACTED_GITLAB_CI_TOKEN]");
 
 /**
  * Superclass for RemoteRepoRef implementations.
@@ -88,11 +99,11 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
                 `${this.remoteBase}/${this.pathComponent}.git`;
         }
         if (!!creds && isGitlabPrivateTokenCredentials(creds)) {
-            return `${this.scheme}gitlab-ci-token:${creds.privateToken}@` +
+            return `${this.scheme}${gitlabCiTokenMarker}${creds.privateToken}${afterTheToken}` +
                 `${this.remoteBase}/${this.pathComponent}.git`;
         }
         if (!!creds && isTokenCredentials(creds)) {
-            return `${this.scheme}${creds.token}:x-oauth-basic@${this.remoteBase}/${this.pathComponent}.git`;
+            return `${this.scheme}${creds.token}${stuffAfterTheSensitiveToken}${this.remoteBase}/${this.pathComponent}.git`;
         }
         return `${this.scheme}${this.remoteBase}/${this.pathComponent}.git`;
     }
