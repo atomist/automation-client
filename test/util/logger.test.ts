@@ -1,6 +1,9 @@
 import * as assert from "assert";
 import { TransformableInfo } from "logform";
-import { addLogRedaction, redact } from "../../lib/util/logger";
+import {
+    addLogRedaction,
+    redact,
+} from "../../lib/util/logger";
 
 describe("redaction", () => {
     it("redacts things", async () => {
