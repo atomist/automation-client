@@ -255,6 +255,7 @@ export {
     raiseIssue,
 } from "./lib/util/gitHub";
 export {
+    addLogRedaction,
     LoggingFormat,
     LoggingConfiguration,
     NoLogging,
