@@ -53,7 +53,7 @@ async function patchGraphQLCodeGenerator(cwd: string): Promise<void> {
         console.error(`Failed to patch graphql-code-generator: ${e.message}`);
         process.exit(103);
     }
-};
+}
 
 /**
  * Generate TypeScript typings for GraphQL schema entities.

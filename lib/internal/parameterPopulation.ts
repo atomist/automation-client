@@ -71,6 +71,7 @@ function computeValue(parameter: { name: string, type?: ParameterType }, value: 
             }
             break;
         default:
+            /* tslint:disable:deprecation */
             // It's a Chooser
             const chooser = parameter.type as Chooser;
             if (chooser.pickOne) {
@@ -82,6 +83,7 @@ function computeValue(parameter: { name: string, type?: ParameterType }, value: 
                     throw new Error(`Parameter '${parameter.name}' has string value, but should be array`);
                 }
             }
+            /* tslint:enable:deprecation */
             break;
     }
     return newValue;

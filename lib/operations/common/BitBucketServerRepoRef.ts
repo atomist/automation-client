@@ -89,7 +89,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
             .then(response => ({
                 success: true,
                 target: this,
-                response: response,
+                response,
             }))
             .catch(error => {
                 logger.error(`Error attempting to delete repository: ${error}`);

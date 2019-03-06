@@ -85,6 +85,7 @@
     "glob-stream": "^6.1.0",
     "graphql": "14.0.2",
     "graphql-code-generator": "^0.16.1",
+    "graphql-codegen-core": "^0.16.1",
     "graphql-codegen-typescript-client": "^0.16.1",
     "graphql-codegen-typescript-common": "^0.16.1",
     "graphql-codegen-typescript-server": "^0.16.1",

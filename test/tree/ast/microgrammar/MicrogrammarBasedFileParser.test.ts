@@ -18,7 +18,6 @@ interface Person {
     age: number;
 }
 
-
 const nameAndAgeTerms = {
     name: takeUntil(":"),
     age: Integer,

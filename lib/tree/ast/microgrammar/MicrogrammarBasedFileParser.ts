@@ -27,8 +27,8 @@ export class MicrogrammarBasedFileParser implements FileParser {
      * @param {Grammar<any>} grammar
      */
     constructor(public readonly rootName: string,
-        public readonly matchName: string,
-        public readonly grammar: Grammar<any>) {
+                public readonly matchName: string,
+                public readonly grammar: Grammar<any>) {
     }
 
     public async toAst(f: File): Promise<TreeNode> {

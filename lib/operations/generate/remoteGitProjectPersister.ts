@@ -57,7 +57,7 @@ export const RemoteGitProjectPersister: ProjectPersister<GitProject> =
                 let msg = "Initial commit from Atomist\n\n[atomist:generated]";
                 const ctx = nsp.get();
                 if (!!ctx) {
-                    msg = `${msg} [atomist:generator=${ctx.operation.toLowerCase()}]`
+                    msg = `${msg} [atomist:generator=${ctx.operation.toLowerCase()}]`;
                 }
                 return gp.commit(msg);
             })

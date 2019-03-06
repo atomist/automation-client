@@ -1,4 +1,3 @@
-
 export interface Option {
     value: string;
     description?: string;
@@ -47,6 +46,7 @@ export interface Options {
  */
 export const FreeChoices = "freeChoices";
 
+// tslint:disable-next-line:deprecation
 export type ParameterType = "string" | "number" | "boolean" | Chooser | Options | "freeChoices";
 
 /**

@@ -22,9 +22,9 @@ import {
  */
 export type ProjectPersister<P extends Project = Project, R extends ActionResult<P> = ActionResult<P>> =
     (p: Project,
-        credentials: ProjectOperationCredentials,
-        targetId: RepoId,
-        params?: object) => Promise<R>;
+     credentials: ProjectOperationCredentials,
+     targetId: RepoId,
+     params?: object) => Promise<R>;
 
 /**
  * Generate a new project given the starting point project.
