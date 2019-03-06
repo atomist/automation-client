@@ -24,7 +24,7 @@ describe("editorUtils", () => {
             { branch: "dont-create-me-or-i-barf&&&####&&& we", message: "whocares" });
         assert(!er.edited);
         await p.release();
-    });
+    }).timeout(5000);
 
     it("doesn't attempt to create PR without changes", async () => {
         const p = await GitCommandGitProject.cloned(Creds, RepoThatExists);
@@ -33,6 +33,6 @@ describe("editorUtils", () => {
         const er = await editProjectUsingPullRequest(undefined, p, NoOpEditor, new PullRequest("x", "y"));
         assert(!er.edited);
         await p.release();
-    });
+    }).timeout(5000);
 
 });

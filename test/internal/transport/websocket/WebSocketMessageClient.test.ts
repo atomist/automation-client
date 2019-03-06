@@ -44,19 +44,19 @@ describe("WebSocketMessageClient", () => {
                 data: {},
                 extensions: { team_id: "Txxxxxxx", correlation_id: corrId, operationName: "Foor" },
                 secrets: [],
-            }, new QueuingWebSocketLifecycle() );
+            }, new QueuingWebSocketLifecycle());
 
         const msg: SlackMessage = {
             attachments: [{
                 fallback: "test",
                 text: "test",
                 actions: [
-                    buttonForCommand({text: "Foo"}, "HelloWorld", {name: "cd"}),
+                    buttonForCommand({ text: "Foo" }, "HelloWorld", { name: "cd" }),
                 ],
             }],
         };
 
-        client.send(msg, { userAgent: "slack", team: "Txxxxxxx", users: ["cd", "rod"] } as SlackDestination, { id: "123456"})
+        client.send(msg, { userAgent: "slack", team: "Txxxxxxx", users: ["cd", "rod"] } as SlackDestination, { id: "123456" })
             .then(fm => {
                 assert(fm.api_version === "1");
                 assert(fm.correlation_id === corrId);
@@ -89,19 +89,19 @@ describe("WebSocketMessageClient", () => {
                 data: {},
                 extensions: { team_id: "Txxxxxxx", correlation_id: corrId, operationName: "Foor" },
                 secrets: [],
-            }, new QueuingWebSocketLifecycle() );
+            }, new QueuingWebSocketLifecycle());
 
         const msg: SlackMessage = {
             attachments: [{
                 fallback: "test",
                 text: "test",
                 actions: [
-                    buttonForCommand({text: "Foo"}, "HelloWorld", {name: "cd"}),
+                    buttonForCommand({ text: "Foo" }, "HelloWorld", { name: "cd" }),
                 ],
             }],
         };
 
-        client.send(msg, { userAgent: "slack", team: "Txxxxxxx", channels: ["general", "test"] } as SlackDestination, {id: "123456"})
+        client.send(msg, { userAgent: "slack", team: "Txxxxxxx", channels: ["general", "test"] } as SlackDestination, { id: "123456" })
             .then(fm => {
                 assert(fm.api_version === "1");
                 assert(fm.correlation_id === corrId);
@@ -152,19 +152,19 @@ describe("WebSocketMessageClient", () => {
                 parameters: [],
                 mapped_parameters: [],
                 secrets: [],
-            }, new QueuingWebSocketLifecycle() );
+            }, new QueuingWebSocketLifecycle());
 
         const msg: SlackMessage = {
             attachments: [{
                 fallback: "test",
                 text: "test",
                 actions: [
-                    buttonForCommand({text: "Foo"}, "HelloWorld", {name: "cd"}),
+                    buttonForCommand({ text: "Foo" }, "HelloWorld", { name: "cd" }),
                 ],
             }],
         };
 
-        client.respond(msg, {id: "123456"})
+        client.respond(msg, { id: "123456" })
             .then(fm => {
                 assert(fm.api_version === "1");
                 assert(fm.correlation_id === corrId);
@@ -213,7 +213,7 @@ describe("WebSocketMessageClient", () => {
                 parameters: [],
                 mapped_parameters: [],
                 secrets: [],
-            }, new QueuingWebSocketLifecycle() );
+            }, new QueuingWebSocketLifecycle());
 
         const msg: SlackFileMessage = {
             content: "some basic text",
@@ -223,7 +223,7 @@ describe("WebSocketMessageClient", () => {
             fileName: "some file",
         };
 
-        client.respond(msg, {id: "123456"})
+        client.respond(msg, { id: "123456" })
             .then(fm => {
                 assert(fm.api_version === "1");
                 assert(fm.correlation_id === corrId);
