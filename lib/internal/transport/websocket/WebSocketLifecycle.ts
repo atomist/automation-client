@@ -1,5 +1,6 @@
 import * as TinyQueue from "tinyqueue";
 import * as WebSocket from "ws";
+import { logger } from "../../../util/logger";
 import { sendMessage } from "./WebSocketMessageClient";
 
 export interface WebSocketLifecycle {
@@ -82,7 +83,10 @@ export class QueuingWebSocketLifecycle implements WebSocketLifecycle {
      * @param msg
      */
     public send(msg: any): void {
-        if (this.connected()) {
+        if (!this) {
+            logger.warn(`WebSocket has been destroyed before we were able to send the message`);
+            return;
+        } else if (this.connected()) {
             sendMessage(msg, this.ws, true);
         } else {
             if (!this.timer) {
