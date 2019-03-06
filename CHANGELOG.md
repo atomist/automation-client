@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Do not swallow exceptions thrown by transforms in generators. [#465](https://github.com/atomist/automation-client/issues/465)
 -   Fix typo that crashed it. [#475](https://github.com/atomist/automation-client/issues/475)
 -   WebSocket can be destroyed before message sent. [#483](https://github.com/atomist/automation-client/issues/483)
+-   Disable TSLint on generated types. [#485](https://github.com/atomist/automation-client/issues/485)
 
 ## [1.2.0](https://github.com/atomist/automation-client-ts/compare/1.1.0...1.2.0) - 2018-12-27
 
