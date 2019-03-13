@@ -847,5 +847,19 @@ describe("configuration", () => {
             assert.equal(v, false);
         });
 
+        it("should resolve the entire configuration", () => {
+            (global as any).__runningAutomationClient = {
+                configuration: {
+                    sdm: {
+                        build: {
+                            tag: false,
+                        },
+                    },
+                },
+            };
+            const v = configurationValue<Configuration>();
+            assert.deepStrictEqual(v, (global as any).__runningAutomationClient.configuration);
+        });
+
     });
 });
