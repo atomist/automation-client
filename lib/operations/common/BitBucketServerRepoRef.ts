@@ -32,14 +32,17 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
      * @param {boolean} isProject
      * @param {string} sha
      * @param {string} path
+     * @param {string} branch
      */
     constructor(remoteBase: string,
                 owner: string,
                 repo: string,
                 private readonly isProject: boolean = true,
                 sha?: string,
-                path?: string) {
+                path?: string,
+                branch?: string) {
         super(ProviderType.bitbucket, remoteBase, noTrailingSlash(remoteBase) + "/rest/api/1.0/", owner, repo, sha, path);
+        this.branch = branch;
         this.ownerType = isProject ? "projects" : "users";
         logger.info("Constructed BitBucketServerRepoRef: %j", this);
     }
