@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Add getContentBuffer method to File. [#476](https://github.com/atomist/automation-client/issues/476)
 -   Test failure case in doWithFiles. [#471](https://github.com/atomist/automation-client/issues/471)
 -   Allow configurationValue without path. [128f8e4](https://github.com/atomist/automation-client/commit/128f8e49081574e5709298fe10b23fa244bc0a0a)
+-   Add Namespace support for Gitlab. [#477](https://github.com/atomist/automation-client/issues/477)
 
 ### Changed
 
