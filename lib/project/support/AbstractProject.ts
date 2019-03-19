@@ -36,6 +36,8 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
 
     public abstract getFile(path: string): Promise<File | undefined>;
 
+    public abstract getFiles(pattern: string): Promise<string[] | undefined>;
+
     public async hasFile(path: string): Promise<boolean> {
         return !!(await this.getFile(path));
     }

@@ -15,7 +15,6 @@ import {
 import { LocalProject } from "../../../lib/project/local/LocalProject";
 import { NodeFsLocalProject } from "../../../lib/project/local/NodeFsLocalProject";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
-import { Project } from "../../../lib/project/Project";
 import { toPromise } from "../../../lib/project/util/projectUtils";
 import { tempProject } from "../utils";
 
@@ -198,6 +197,33 @@ describe("NodeFsLocalProject", () => {
         it("should return undefined for directory", async () => {
             const f = await thisProject.getFile(existingDirectory);
             assert(f === undefined);
+        });
+
+    });
+
+    describe("getFiles", () => {
+
+        const proj = tempProject(new GitHubRepoRef("owner", "name"));
+        proj.addFileSync(path.join("filestesting.js"), "{ node }");
+        proj.addFileSync(path.join("some", "nested", "filestesting.js"), "{ node }");
+        proj.addDirectory(path.join("my", "directory"));
+
+        it("should return undefined for non-existent file", async () => {
+            const f = await proj.getFiles("**/*.json");
+            assert(f.length === 0);
+        });
+
+        it("should return file object for existing file", async () => {
+            const f = await proj.getFiles("**/*.js");
+            assert(!!f);
+            const files = await f;
+            assert(files[0] === "filestesting.js");
+            assert(files[1] === path.join("some", "nested", "filestesting.js"));
+        });
+
+        it("should return undefined for directory", async () => {
+            const f = await proj.getFiles("**/directory");
+            assert(f.length === 0);
         });
 
     });

@@ -85,6 +85,10 @@ export class InMemoryProject extends AbstractProject {
         return this.memFiles.find(f => f.path === path);
     }
 
+    public async getFiles(pattern: string): Promise<string[]> {
+        return minimatch.match(this.memFiles.map(f => f.path), pattern);
+    }
+
     public findFileSync(path: string): File {
         return this.memFiles.find(f => f.path === path);
     }

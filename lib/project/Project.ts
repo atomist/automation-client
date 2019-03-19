@@ -126,6 +126,15 @@ export interface ProjectAsync extends ProjectCore {
     findFile(path: string): Promise<File>;
 
     /**
+     * Attempt to find files at path based on a pattern.  This method will
+     * return undefined if no files exist that match.
+     *
+     * @param {string} pattern file pattern
+     * @return {Promise<File>}
+     */
+    getFiles(pattern: string): Promise<string[]>;
+
+    /**
      * Attempt to find a regular file at path.  Never throws an
      * exception, returns undefined if file does not exist or is not a
      * regular file.

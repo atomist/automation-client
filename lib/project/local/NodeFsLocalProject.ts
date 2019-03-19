@@ -1,4 +1,5 @@
 import * as fs from "fs-extra";
+import * as glob from "glob-promise";
 import * as gs from "glob-stream";
 import * as fpath from "path";
 import * as stream from "stream";
@@ -217,6 +218,10 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         } catch (e) {
             return undefined;
         }
+    }
+
+    public async getFiles(pattern: string): Promise<string[]> {
+        return glob(pattern, { nodir: true, cwd: this.baseDir});
     }
 
     public findFileSync(path: string): File {
