@@ -17,6 +17,7 @@
 
 import { ActionResult } from "../../action/ActionResult";
 import { Configurable } from "../../project/git/Configurable";
+import { addLogRedaction } from "../../util/logger";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
 import { isGitlabPrivateTokenCredentials } from "./GitlabPrivateTokenCredentials";
 import {
@@ -27,6 +28,18 @@ import {
     ProviderType,
     RemoteRepoRef,
 } from "./RepoId";
+
+const stuffAfterTheSensitiveToken = ":x-oauth-basic@";
+const gitHubTokenPattern = "[0-9a-f]{40}";
+addLogRedaction(new RegExp(gitHubTokenPattern + group(stuffAfterTheSensitiveToken), "g"), "[REDACTED_GITHUB_TOKEN]$1");
+
+// ordering matters: keep this after the Github token one, which happens to look at the password, and this replacement would make it not match
+addLogRedaction(/(https?:\/\/[^:\/\?#\[\]@]+:)[^:\/\?#\[\]@]+(@)/g,
+    "$1[REDACTED_URL_PASSWORD]$2");
+
+function group(str: string) {
+    return "(" + str + ")";
+}
 
 /**
  * Superclass for RemoteRepoRef implementations.
@@ -92,7 +105,7 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
                 `${this.remoteBase}/${this.pathComponent}.git`;
         }
         if (!!creds && isTokenCredentials(creds)) {
-            return `${this.scheme}${creds.token}:x-oauth-basic@${this.remoteBase}/${this.pathComponent}.git`;
+            return `${this.scheme}${creds.token}${stuffAfterTheSensitiveToken}${this.remoteBase}/${this.pathComponent}.git`;
         }
         return `${this.scheme}${this.remoteBase}/${this.pathComponent}.git`;
     }
