@@ -52,64 +52,73 @@ export class ExpressServer {
 
         // Enable cors for all endpoints
         const cors = require("cors");
-        this.exp.options("*", cors());
-
         this.setupAuthentication();
 
         // Set up routes
+        this.exp.options(`${ApiBase}/health`, cors());
         this.exp.get(`${ApiBase}/health`, cors(),
             (req, res) => {
                 const h = health();
                 res.status(h.status === HealthStatus.Up ? 200 : 500).json(h);
             });
 
+        this.exp.options(`${ApiBase}/info`, cors());
         this.exp.get(`${ApiBase}/info`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 res.json(info(automations.automations));
             });
 
+        this.exp.options(`${ApiBase}/registration`, cors());
         this.exp.get(`${ApiBase}/registration`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 res.json(prepareRegistration(automations.automations));
             });
 
+        this.exp.options(`${ApiBase}/metrics`, cors());
         this.exp.get(`${ApiBase}/metrics`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 res.json(metrics());
             });
 
+        this.exp.options(`${ApiBase}/memory/gc`, cors());
         this.exp.put(`${ApiBase}/memory/gc`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 gc();
                 res.sendStatus(201);
             });
 
+        this.exp.options(`${ApiBase}/memory/heapdump`, cors());
         this.exp.put(`${ApiBase}/memory/heapdump`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 heapDump();
                 res.sendStatus(201);
             });
 
+        this.exp.options(`${ApiBase}/log/events`, cors());
         this.exp.get(`${ApiBase}/log/events`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 res.json(globals.eventStore().events(req.query.from));
             });
 
+        this.exp.options(`${ApiBase}/log/commands`, cors());
         this.exp.get(`${ApiBase}/log/commands`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 res.json(globals.eventStore().commands(req.query.from));
             });
 
+        this.exp.options(`${ApiBase}/log/messages`, cors());
         this.exp.get(`${ApiBase}/log/messages`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 res.json(globals.eventStore().messages(req.query.from));
             });
 
+        this.exp.options(`${ApiBase}/series/events`, cors());
         this.exp.get(`${ApiBase}/series/events`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 res.json(globals.eventStore().eventSeries());
             });
 
+        this.exp.options(`${ApiBase}/series/commands`, cors());
         this.exp.get(`${ApiBase}/series/commands`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 res.json(globals.eventStore().commandSeries());
