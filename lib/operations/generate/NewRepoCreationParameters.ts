@@ -18,8 +18,8 @@ export abstract class NewRepoCreationParameters implements RepoCreationParameter
 
     @Parameter({
         pattern: GitHubNameRegExp.pattern,
-        displayName: "Target Repository Name",
-        description: "name of the target repository",
+        displayName: "New Repository Name",
+        description: "name of the new repository",
         validInput: GitHubNameRegExp.validInput,
         minLength: 1,
         maxLength: 100,
