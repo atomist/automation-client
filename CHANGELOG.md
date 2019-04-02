@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Session ID being used as Bearer in Authorization header. [#491](https://github.com/atomist/automation-client/issues/491)
 
+### Fixed
+
+-   Handle empty parameter list on incoming command. [#490](https://github.com/atomist/automation-client/issues/490)
+
 ## [1.3.0](https://github.com/atomist/automation-client-ts/compare/1.2.0...1.3.0) - 2019-03-14
 
 ### Added
