@@ -127,6 +127,8 @@ function parametersFromInstance(r: any, prefix: string = ""): Parameter[] {
                 options = chooser.options;
             }
 
+            options = options.map(o => ( { value: o.value, description: o.description || o.value}));
+
             const newChooser: Options = {
                 kind,
                 options,
