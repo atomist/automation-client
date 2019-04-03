@@ -1,4 +1,3 @@
-
 import { HandlerResult } from "../../HandlerResult";
 
 /**
@@ -68,19 +67,29 @@ export interface CommandIncoming {
 }
 
 export interface Source {
-    user_agent: "slack";
+    user_agent: "slack" | "web";
     slack?: {
         team: {
             id: string;
+            name?: string;
         };
         channel?: {
             id: string;
+            name?: string;
         };
         user?: {
             id: string;
+            name?: string;
         };
         thread_ts?: string;
     };
+    web?: {
+        identity: {
+            sub: string;
+            pid: string;
+        },
+    };
+    identity?: any;
 }
 
 export interface Team {
