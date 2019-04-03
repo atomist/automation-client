@@ -17,7 +17,7 @@ import { Arg } from "./invoker/Payload";
  * @param args string args
  */
 export function populateParameters(instanceToPopulate: any, hm: CommandHandlerMetadata, args: Arg[]) {
-    args.forEach(arg => {
+    (args || []).forEach(arg => {
         if (arg.value !== undefined) {
             const parameter = hm.parameters.find(p => p.name === arg.name);
             if (parameter) {
