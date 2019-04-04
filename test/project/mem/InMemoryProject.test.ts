@@ -8,6 +8,20 @@ import { toPromise } from "../../../lib/project/util/projectUtils";
 
 describe("InMemoryProject", () => {
 
+    describe("binaryness", () => {
+
+        it("file should be nonbinary by default", async () => {
+            const p = InMemoryProject.of({
+                path: "evil.js",
+                content: "const awsLeak = 'AKIAIMW6ASF43DFX57X9'",
+            });
+            const f = await p.getFile("evil.js");
+            assert(!!f);
+            assert.strictEqual(f.isBinary(), false);
+        });
+
+    });
+
     describe("findFile", () => {
 
         it("findFileSync: existing file", () => {
