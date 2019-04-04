@@ -5,19 +5,29 @@ import { File } from "../../../lib/project/File";
 import { AllFiles } from "../../../lib/project/fileGlobs";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import { toPromise } from "../../../lib/project/util/projectUtils";
+import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
 
 describe("InMemoryProject", () => {
 
     describe("binaryness", () => {
 
-        it("file should be nonbinary by default", async () => {
+        it("inline file should be nonbinary by default", async () => {
             const p = InMemoryProject.of({
                 path: "evil.js",
                 content: "const awsLeak = 'AKIAIMW6ASF43DFX57X9'",
             });
             const f = await p.getFile("evil.js");
             assert(!!f);
-            assert.strictEqual(f.isBinary(), false);
+            assert.strictEqual(await f.isBinary(), false);
+        });
+
+        it("object file should be nonbinary by default", async () => {
+            const p = InMemoryProject.of(new InMemoryFile(
+                "evil.js",
+                "const awsLeak = 'AKIAIMW6ASF43DFX57X9'"));
+            const f = await p.getFile("evil.js");
+            assert(!!f);
+            assert.strictEqual(await f.isBinary(), false);
         });
 
     });
