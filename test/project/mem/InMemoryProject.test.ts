@@ -3,9 +3,9 @@ import * as assert from "power-assert";
 
 import { File } from "../../../lib/project/File";
 import { AllFiles } from "../../../lib/project/fileGlobs";
+import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import { toPromise } from "../../../lib/project/util/projectUtils";
-import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
 
 describe("InMemoryProject", () => {
 
