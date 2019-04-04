@@ -148,17 +148,13 @@ describe("InMemoryProject", () => {
 
     describe("streamFiles", () => {
 
-        it("files returns enough files", done => {
+        it("files returns enough files", async () => {
             const p = InMemoryProject.of(
                 { path: "package.json", content: "{ node: true }" },
                 { path: "package-lock.json", content: "{ node: true }" },
             );
-
-            assert(toPromise(p.streamFiles())
-                .then(files => {
-                    assert(files.length === 2);
-                    done();
-                }).catch(done));
+            const files = await toPromise(p.streamFiles());
+            assert.strictEqual(files.length, 2);
         });
 
         it("streamFiles returns enough files", done => {
@@ -169,12 +165,12 @@ describe("InMemoryProject", () => {
             );
             p.streamFiles()
                 .on("data", (f: File) => {
-                    // console.log(`File path is [${f.path}]`);
-                    assert(f.name);
-                    count++;
-                },
-            ).on("end", () => {
-                assert(count === 2);
+                        // console.log(`File path is [${f.path}]`);
+                        assert(f.name);
+                        count++;
+                    },
+                ).on("end", () => {
+                assert.strictEqual(count, 2);
                 done();
             });
         });
@@ -188,11 +184,11 @@ describe("InMemoryProject", () => {
             );
             p.streamFiles("config/**")
                 .on("data", (f: File) => {
-                    // console.log(`File path is [${f.path}]`);
-                    assert(f.name);
-                    count++;
-                },
-            ).on("end", () => {
+                        // console.log(`File path is [${f.path}]`);
+                        assert(f.name);
+                        count++;
+                    },
+                ).on("end", () => {
                 assert.equal(count, 2);
                 done();
             });
@@ -208,11 +204,11 @@ describe("InMemoryProject", () => {
             );
             p.streamFiles(AllFiles)
                 .on("data", (f: File) => {
-                    // console.log(`File path is [${f.path}]`);
-                    assert(f.name);
-                    count++;
-                },
-            ).on("end", () => {
+                        // console.log(`File path is [${f.path}]`);
+                        assert(f.name);
+                        count++;
+                    },
+                ).on("end", () => {
                 assert.equal(count, 3);
                 done();
             });
@@ -229,11 +225,11 @@ describe("InMemoryProject", () => {
             );
             p.streamFiles(AllFiles)
                 .on("data", (f: File) => {
-                    // console.log(`File path is [${f.path}]`);
-                    assert(f.name);
-                    count++;
-                },
-            ).on("end", () => {
+                        // console.log(`File path is [${f.path}]`);
+                        assert(f.name);
+                        count++;
+                    },
+                ).on("end", () => {
                 assert.equal(count, 3);
                 done();
             });
@@ -248,11 +244,11 @@ describe("InMemoryProject", () => {
             );
             p.streamFilesRaw(["config/**", "!**/exclude.*"], {})
                 .on("data", (f: File) => {
-                    // console.log(`File path is [${f.path}]`);
-                    assert(f.name);
-                    count++;
-                },
-            ).on("end", () => {
+                        // console.log(`File path is [${f.path}]`);
+                        assert(f.name);
+                        count++;
+                    },
+                ).on("end", () => {
                 assert.equal(count, 2);
                 done();
             });
@@ -270,87 +266,70 @@ describe("InMemoryProject", () => {
                 }).catch(done);
         });
 
-        it("glob returns well-known file", done => {
+        it("glob returns well-known file", async () => {
             const p = InMemoryProject.of(
                 { path: "package.json", content: "{ node: true }" },
                 { path: "package-lock.json", content: "{ node: true }" },
             );
-            toPromise(p.streamFiles("package.json"))
-                .then(files => {
-                    assert(files.some(f => f.name === "package.json"));
-                    done();
-                }).catch(done);
+            const files = await toPromise(p.streamFiles("package.json"));
+            assert(files.some(f => f.name === "package.json"));
         });
 
     });
 
-    it("file count", done => {
+    it("file count", async () => {
         const p = InMemoryProject.of(
             { path: "package.json", content: "{ node: true }" },
             { path: "package-lock.json", content: "{ node: true }" },
         );
-        p.totalFileCount().then(num => {
-            assert(num > 0);
-            done();
-        }).catch(done);
+        const num = await p.totalFileCount();
+        assert(num > 0);
     }).timeout(5000);
 
     describe("addFile", () => {
 
-        it("adds file", done => {
+        it("adds file", async () => {
             const p = new InMemoryProject();
             p.recordAddFile("thing", "1");
             assert(!p.dirty);
-            p.flush()
-                .then(_ => {
-                    const f2 = p.findFileSync("thing");
-                    assert(f2);
-                    done();
-                }).catch(done);
+            await p.flush();
+            const f2 = p.findFileSync("thing");
+            assert(f2);
         });
 
-        it("adds nested file", done => {
+        it("adds nested file", async () => {
             const p = new InMemoryProject();
             p.recordAddFile("config/thing", "1");
             assert(!p.dirty);
-            p.flush()
-                .then(_ => {
-                    const f2 = p.findFileSync("config/thing");
-                    assert(f2);
-                    done();
-                }).catch(done);
+            await p.flush();
+            const f2 = p.findFileSync("config/thing");
+            assert(f2);
         });
 
-        it("adds deeply nested file", done => {
+        it("adds deeply nested file", async () => {
             const p = new InMemoryProject();
             p.recordAddFile("config/and/more/thing", "1");
             assert(!p.dirty);
-            p.flush()
-                .then(_ => {
-                    const f2 = p.findFileSync("config/and/more/thing");
-                    assert(f2);
-                    done();
-                }).catch(done);
+            await p.flush();
+            const f2 = p.findFileSync("config/and/more/thing");
+            assert(f2);
         });
 
     });
 
     describe("delete", () => {
 
-        it("deletes file", done => {
+        it("deletes file", async () => {
             const p = new InMemoryProject();
             p.addFileSync("thing", "1");
             const f1 = p.findFileSync("thing");
-            assert(f1.getContentSync() === "1");
+            assert.strictEqual(f1.getContentSync(), "1");
             assert(!p.dirty);
             p.recordDeleteFile("thing");
             assert(p.dirty);
-            p.flush()
-                .then(_ => {
-                    const f2 = p.findFileSync("thing");
-                    assert(!f2);
-                    done();
-                }).catch(done);
+            await p.flush();
+            const f2 = p.findFileSync("thing");
+            assert(!f2);
         });
 
         const deleteTestFiles = [
@@ -385,18 +364,15 @@ describe("InMemoryProject", () => {
             deleteTestDirs.forEach(d => assert(p.directoryExistsSync(d)));
         });
 
-        it("should async delete a file", done => {
+        it("should async delete a file", async () => {
             const p = InMemoryProject.of(...deleteTestFiles);
             const paths = deleteTestFiles.map(f => f.path);
             const remove = ["CODE_OF_CONDUCT.md"];
             const remain = paths.filter(f => !remove.includes(f));
-            Promise.all(remove.map(f => p.deleteFile(f)))
-                .then(() => {
-                    remain.forEach(f => assert(p.fileExistsSync(f)));
-                    remove.forEach(f => assert(!p.fileExistsSync(f)));
-                    deleteTestDirs.forEach(d => assert(p.directoryExistsSync(d)));
-                })
-                .then(done, done);
+            await Promise.all(remove.map(f => p.deleteFile(f)));
+            remain.forEach(f => assert(p.fileExistsSync(f)));
+            remove.forEach(f => assert(!p.fileExistsSync(f)));
+            deleteTestDirs.forEach(d => assert(p.directoryExistsSync(d)));
         });
 
         it("should sync delete files", () => {
@@ -410,18 +386,15 @@ describe("InMemoryProject", () => {
             deleteTestDirs.forEach(d => assert(p.directoryExistsSync(d)));
         });
 
-        it("should async delete files", done => {
+        it("should async delete files", async () => {
             const p = InMemoryProject.of(...deleteTestFiles);
             const paths = deleteTestFiles.map(f => f.path);
             const remove = ["CODE_OF_CONDUCT.md", ".travis/some.patch"];
             const remain = paths.filter(f => !remove.includes(f));
-            Promise.all(remove.map(f => p.deleteFile(f)))
-                .then(() => {
-                    remain.forEach(f => assert(p.fileExistsSync(f)));
-                    remove.forEach(f => assert(!p.fileExistsSync(f)));
-                    deleteTestDirs.forEach(d => assert(p.directoryExistsSync(d)));
-                })
-                .then(done, done);
+            await Promise.all(remove.map(f => p.deleteFile(f)));
+            remain.forEach(f => assert(p.fileExistsSync(f)));
+            remove.forEach(f => assert(!p.fileExistsSync(f)));
+            deleteTestDirs.forEach(d => assert(p.directoryExistsSync(d)));
         });
 
         it("should sync delete a file and empty directories", () => {
@@ -438,21 +411,18 @@ describe("InMemoryProject", () => {
             removeDirs.forEach(d => assert(!p.directoryExistsSync(d)));
         });
 
-        it("should async delete a file and empty directories", done => {
+        it("should async delete a file and empty directories", async () => {
             const p = InMemoryProject.of(...deleteTestFiles);
             const paths = deleteTestFiles.map(f => f.path);
             const remove = ["CODE_OF_CONDUCT.md", "src/main/java/Command.java"];
             const remain = paths.filter(f => !remove.includes(f));
             const removeDirs = ["src/main", "src/main/java"];
             const remainDirs = deleteTestDirs.filter(d => !removeDirs.includes(d));
-            Promise.all(remove.map(f => p.deleteFile(f)))
-                .then(() => {
-                    remain.forEach(f => assert(p.fileExistsSync(f)));
-                    remove.forEach(f => assert(!p.fileExistsSync(f)));
-                    remainDirs.forEach(d => assert(p.directoryExistsSync(d)));
-                    removeDirs.forEach(d => assert(!p.directoryExistsSync(d)));
-                })
-                .then(done, done);
+            await Promise.all(remove.map(f => p.deleteFile(f)));
+            remain.forEach(f => assert(p.fileExistsSync(f)));
+            remove.forEach(f => assert(!p.fileExistsSync(f)));
+            remainDirs.forEach(d => assert(p.directoryExistsSync(d)));
+            removeDirs.forEach(d => assert(!p.directoryExistsSync(d)));
         });
 
         it("should sync delete a directory and its contents", () => {
@@ -469,21 +439,18 @@ describe("InMemoryProject", () => {
             removeDirs.forEach(d => assert(!p.directoryExistsSync(d)));
         });
 
-        it("should async delete a file and empty directories", done => {
+        it("should async delete a file and empty directories", async () => {
             const p = InMemoryProject.of(...deleteTestFiles);
             const paths = deleteTestFiles.map(f => f.path);
             const removeDirs = [".travis"];
             const remainDirs = deleteTestDirs.filter(d => !removeDirs.includes(d));
             const remove = [".travis/travis-build.bash", ".travis/some.patch"];
             const remain = paths.filter(f => !remove.includes(f));
-            Promise.all(removeDirs.map(d => p.deleteDirectory(d)))
-                .then(() => {
-                    remain.forEach(f => assert(p.fileExistsSync(f)));
-                    remove.forEach(f => assert(!p.fileExistsSync(f)));
-                    remainDirs.forEach(d => assert(p.directoryExistsSync(d)));
-                    removeDirs.forEach(d => assert(!p.directoryExistsSync(d)));
-                })
-                .then(done, done);
+            await Promise.all(removeDirs.map(d => p.deleteDirectory(d)));
+            remain.forEach(f => assert(p.fileExistsSync(f)));
+            remove.forEach(f => assert(!p.fileExistsSync(f)));
+            remainDirs.forEach(d => assert(p.directoryExistsSync(d)));
+            removeDirs.forEach(d => assert(!p.directoryExistsSync(d)));
         });
 
     });
