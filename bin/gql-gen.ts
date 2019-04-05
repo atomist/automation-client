@@ -5,10 +5,10 @@
  * See LICENSE file.
  */
 
+import { generate } from "@graphql-codegen/cli";
+import { Types } from "@graphql-codegen/plugin-helpers";
 import * as fs from "fs-extra";
 import * as glob from "glob";
-import { generate } from "graphql-code-generator";
-import { Types } from "graphql-codegen-core";
 import * as path from "path";
 import * as util from "util";
 
@@ -29,26 +29,6 @@ async function libDir(cwd: string): Promise<string> {
         return src;
     } else {
         return lib;
-    }
-}
-
-/**
- * Patch the handlebar template that renders the generated types out.
- * This patch puts back the original behaviour of creating only optional properties on generated types.
- *
- * @param cwd
- */
-async function patchGraphQLCodeGenerator(cwd: string): Promise<void> {
-    try {
-        // patch up codegen template to create optional properties
-        const codegenTemplate = path.join(cwd, "node_modules", "graphql-codegen-typescript-client", "dist", "index.js");
-        if (await fs.pathExists(codegenTemplate)) {
-            const contents = await fs.readFile(codegenTemplate, "utf8");
-            await fs.writeFile(codegenTemplate, contents.replace(/{{ name }}: {{ convertedFieldType/, "{{ name }}?: {{ convertedFieldType"));
-        }
-    } catch (e) {
-        console.error(`Failed to patch graphql-code-generator: ${e.message}`);
-        process.exit(103);
     }
 }
 
@@ -78,13 +58,12 @@ async function main(): Promise<void> {
             generates: {
                 [gqlGenOutput]: {
                     plugins: [
-                        "typescript-common",
-                        "typescript-client",
+                        "typescript",
+                        "typescript-operations",
                     ],
                     config: {
-                        namingConvention: {
-                            enumValues: "keep",
-                        },
+                        namingConvention: "keep",
+                        avoidOptionals: false,
                     },
                 },
             },
@@ -93,7 +72,6 @@ async function main(): Promise<void> {
         const graphqlFiles = await util.promisify(glob)(graphQlGlob);
 
         if (graphqlFiles && graphqlFiles.length > 0) {
-            await patchGraphQLCodeGenerator(cwd);
             config.documents = [graphQlGlob];
             await generate(config);
             const typesContent = await fs.readFile(gqlGenOutput, "utf8");
