@@ -16,7 +16,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Clearer description for generated repo name. [#493](https://github.com/atomist/automation-client/issues/493)
--   Update to latest version of @graphql-codegen. [#505](https://github.com/atomist/automation-client/issues/505)
 
 ### Deprecated
 
@@ -25,10 +24,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 -   Handle empty parameter list on incoming command. [#490](https://github.com/atomist/automation-client/issues/490)
-
-### Security
-
--   Update to latest version of @graphql-codegen. [#505](https://github.com/atomist/automation-client/issues/505)
 
 ## [1.3.0](https://github.com/atomist/automation-client-ts/compare/1.2.0...1.3.0) - 2019-03-14
 
