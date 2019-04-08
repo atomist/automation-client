@@ -267,7 +267,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         };
 
         const dispatched = new Dispatched(new Deferred<HandlerResult>(), ctx);
-        this.messages.add({ message, dispatched, ts: new Date().getTime() });
+        this.messages.push({ message, dispatched, ts: new Date().getTime() });
         callback(dispatched.result.promise);
 
         this.startMessage();
@@ -285,7 +285,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         };
 
         const dispatched = new Dispatched(new Deferred<HandlerResult[]>(), ctx);
-        this.messages.add({ message, dispatched, ts: new Date().getTime() });
+        this.messages.push({ message, dispatched, ts: new Date().getTime() });
         callback(dispatched.result.promise);
 
         this.startMessage();
@@ -342,10 +342,10 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
     }
 
     private startMessage(): void {
-        if (!this.messages.isEmpty()) {
+        if (this.messages.length > 0) {
             const worker = this.assignWorker();
             if (!!worker) {
-                const message = this.messages.poll();
+                const message = this.messages.pop();
                 namespace.set(message.message.context);
                 if (message.message.type === "atomist:command") {
                     this.commands.set(message.message.context.invocationId, {
@@ -378,7 +378,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                 if (!!statsd) {
                     statsd.gauge(
                         "work_queue.pending",
-                        this.messages.size,
+                        this.messages.length,
                         1,
                         [],
                         () => {
