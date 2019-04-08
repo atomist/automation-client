@@ -1,4 +1,6 @@
 import * as cluster from "cluster";
+import FastPriorityQueue from "fastpriorityqueue";
+import { StatsD } from "hot-shots";
 import * as stringify from "json-stringify-safe";
 import * as WebSocket from "ws";
 import { Configuration } from "../../../configuration";
@@ -30,7 +32,6 @@ import {
 } from "../RequestProcessor";
 import { WebSocketLifecycle } from "../websocket/WebSocketLifecycle";
 import {
-    sendMessage,
     WebSocketCommandMessageClient,
     WebSocketEventMessageClient,
 } from "../websocket/WebSocketMessageClient";
@@ -44,6 +45,8 @@ import {
     WorkerMessage,
 } from "./messages";
 
+type MessageType = { message: MasterMessage, dispatched: Dispatched<any> };
+
 /**
  * A RequestProcessor that delegates to Node.JS Cluster workers to do the actual
  * command and event processing.
@@ -54,14 +57,21 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
     private registration?: RegistrationConfirmation;
     private webSocketLifecycle: WebSocketLifecycle;
-    private commands: Map<string, Dispatched<HandlerResult>> = new Map();
-    private events: Map<string, Dispatched<HandlerResult[]>> = new Map();
+    private commands: Map<string, { dispatched: Dispatched<HandlerResult>, worker: number }> = new Map();
+    private events: Map<string, { dispatched: Dispatched<HandlerResult[]>, worker: number }> = new Map();
+    private messages: FastPriorityQueue<MessageType> = require("FastPriorityQueue")((a: MessageType, b: MessageType) => {
+        if (a.message.type === "atomist:command" && b.message.type !== "atomist:command") {
+            return true;
+        }
+        return false;
+    }) as FastPriorityQueue<MessageType>;
     private shutdownInitiated: boolean = false;
 
     constructor(protected automations: AutomationServer,
                 protected configuration: Configuration,
                 protected listeners: AutomationEventListener[] = [],
-                protected numWorkers: number = require("os").cpus().length) {
+                protected numWorkers: number = require("os").cpus().length,
+                protected maxConcurrentPerWorker: number = 4) {
         super(automations, configuration, listeners);
         this.webSocketLifecycle = (configuration.ws as any).lifecycle as WebSocketLifecycle;
 
@@ -77,6 +87,8 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
             this.shutdownInitiated = true;
             return Promise.resolve(0);
         }, Number.MIN_VALUE);
+
+        this.reportQueueLength();
     }
 
     public onRegistration(registration: RegistrationConfirmation) {
@@ -104,13 +116,8 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
     public run(): Promise<any> {
         const ws = () => this.webSocketLifecycle;
-        const listeners = this.listeners;
-        const commands = this.commands;
-        const events = this.events;
-        const clearNamespace = this.clearNamespace;
 
-        function attachEvents(worker: cluster.Worker, deferred: Deferred<any>) {
-
+        const attachEvents = (worker: cluster.Worker, deferred: Deferred<any>) => {
             worker.on("message", message => {
                 const msg = message as WorkerMessage;
 
@@ -136,80 +143,85 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                     if (msg.type === "atomist:message") {
 
                         let messageClient: MessageClient;
-                        if (commands.has(invocationId)) {
-                            messageClient = commands.get(invocationId).context.messageClient;
-                        } else if (events.has(invocationId)) {
-                            messageClient = events.get(invocationId).context.messageClient;
+                        if (this.commands.has(invocationId)) {
+                            messageClient = this.commands.get(invocationId).dispatched.context.messageClient;
+                        } else if (this.events.has(invocationId)) {
+                            messageClient = this.events.get(invocationId).dispatched.context.messageClient;
                         } else {
                             logger.error("Can't handle message from worker due to missing messageClient");
-                            clearNamespace();
+                            this.clearNamespace();
                             return;
                         }
 
                         if (msg.data.destinations && msg.data.destinations.length > 0) {
                             messageClient.send(msg.data.message, msg.data.destinations, msg.data.options)
-                                .then(clearNamespace, clearNamespace);
+                                .then(this.clearNamespace, this.clearNamespace);
                         } else {
                             messageClient.respond(msg.data.message, msg.data.options)
-                                .then(clearNamespace, clearNamespace);
+                                .then(this.clearNamespace, this.clearNamespace);
                         }
                     } else if (msg.type === "atomist:status") {
                         ws().send(msg.data);
                     } else if (msg.type === "atomist:command_success") {
-                        listeners.map(l => () => l.commandSuccessful(msg.event as CommandInvocation,
+                        this.listeners.map(l => () => l.commandSuccessful(msg.event as CommandInvocation,
                             ctx, msg.data as HandlerResult))
                             .reduce((p, f) => p.then(f), Promise.resolve())
                             .then(() => {
-                                if (commands.has(invocationId)) {
-                                    commands.get(invocationId).result.resolve(msg.data as HandlerResult);
-                                    commands.delete(invocationId);
+                                if (this.commands.has(invocationId)) {
+                                    this.commands.get(invocationId).dispatched.result.resolve(msg.data as HandlerResult);
+                                    this.commands.delete(invocationId);
                                 }
-                                clearNamespace();
+                                this.clearNamespace();
+                                this.startMessage();
                             })
-                            .catch(clearNamespace);
+                            .catch(this.clearNamespace);
                     } else if (msg.type === "atomist:command_failure") {
-                        listeners.map(l => () => l.commandFailed(msg.event as CommandInvocation,
+                        this.listeners.map(l => () => l.commandFailed(msg.event as CommandInvocation,
                             ctx, msg.data as HandlerResult))
                             .reduce((p, f) => p.then(f), Promise.resolve())
                             .then(() => {
-                                if (commands.has(invocationId)) {
-                                    commands.get(invocationId).result.resolve(msg.data as HandlerResult);
-                                    commands.delete(invocationId);
+                                if (this.commands.has(invocationId)) {
+                                    this.commands.get(invocationId).dispatched.result.resolve(msg.data as HandlerResult);
+                                    this.commands.delete(invocationId);
                                 }
-                                clearNamespace();
+                                this.clearNamespace();
+                                this.startMessage();
                             })
-                            .catch(clearNamespace);
+                            .catch(this.clearNamespace);
                     } else if (msg.type === "atomist:event_success") {
-                        listeners.map(l => () => l.eventSuccessful(msg.event as EventFired<any>,
+                        this.listeners.map(l => () => l.eventSuccessful(msg.event as EventFired<any>,
                             ctx, msg.data as HandlerResult[]))
                             .reduce((p, f) => p.then(f), Promise.resolve())
                             .then(() => {
-                                if (events.has(invocationId)) {
-                                    events.get(invocationId).result.resolve(msg.data as HandlerResult[]);
-                                    events.delete(invocationId);
+                                if (this.events.has(invocationId)) {
+                                    this.events.get(invocationId).dispatched.result.resolve(msg.data as HandlerResult[]);
+                                    this.events.delete(invocationId);
                                 }
-                                clearNamespace();
+                                this.clearNamespace();
+                                this.startMessage();
                             })
-                            .catch(clearNamespace);
+                            .catch(this.clearNamespace);
                     } else if (msg.type === "atomist:event_failure") {
-                        listeners.map(l => () => l.eventFailed(msg.event as EventFired<any>,
+                        this.listeners.map(l => () => l.eventFailed(msg.event as EventFired<any>,
                             ctx, msg.data as HandlerResult[]))
                             .reduce((p, f) => p.then(f), Promise.resolve())
                             .then(() => {
-                                if (events.has(invocationId)) {
-                                    events.get(invocationId).result.resolve(msg.data as HandlerResult[]);
-                                    events.delete(invocationId);
+                                if (this.events.has(invocationId)) {
+                                    this.events.get(invocationId).dispatched.result.resolve(msg.data as HandlerResult[]);
+                                    this.events.delete(invocationId);
                                 }
-                                clearNamespace();
+                                this.clearNamespace();
+                                this.startMessage();
                             })
-                            .catch(clearNamespace);
+                            .catch(this.clearNamespace);
                     } else if (msg.type === "atomist:shutdown") {
                         logger.info(`Shutdown requested from worker`);
                         process.exit(msg.data);
                     }
                 });
             });
-        }
+        };
+        attachEvents.bind(this);
 
         const promises: Array<Promise<any>> = [];
 
@@ -252,11 +264,10 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         };
 
         const dispatched = new Dispatched(new Deferred<HandlerResult>(), ctx);
-        this.commands.set(ctx.context.invocationId, dispatched);
-        const worker = this.assignWorker();
-        logger.debug("Incoming command handler request '%s' dispatching to worker '%s'", ci.name, worker.id);
-        worker.send(message);
+        this.messages.add({ message, dispatched });
         callback(dispatched.result.promise);
+
+        this.startMessage();
     }
 
     protected invokeEvent(ef: EventFired<any>,
@@ -271,12 +282,10 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         };
 
         const dispatched = new Dispatched(new Deferred<HandlerResult[]>(), ctx);
-        this.events.set(ctx.context.invocationId, dispatched);
-        const worker = this.assignWorker();
-        logger.debug("Incoming event handler subscription '%s' dispatching to worker '%s'",
-            ef.extensions.operationName, worker.id);
-        worker.send(message);
+        this.messages.add({ message, dispatched });
         callback(dispatched.result.promise);
+
+        this.startMessage();
     }
 
     protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {
@@ -297,17 +306,97 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         }
     }
 
-    private assignWorker(): cluster.Worker {
-        const workers = [];
+    private assignWorker(): cluster.Worker | undefined {
+        let workers: Array<{ worker: cluster.Worker, messages: number }> = [];
         for (const id in cluster.workers) {
             if (cluster.workers.hasOwnProperty(id)) {
                 const worker = cluster.workers[id];
                 if (worker.isConnected) {
-                    workers.push(worker);
+                    workers.push({ worker, messages: 0 });
                 }
             }
         }
-        return workers[Math.floor(Math.random() * workers.length)];
+
+        this.events.forEach(e => {
+            const worker = workers.find(w => w.worker.id === e.worker);
+            if (!!worker) {
+                worker.messages = worker.messages + 1;
+            }
+        });
+
+        this.commands.forEach(e => {
+            const worker = workers.find(w => w.worker.id === e.worker);
+            if (!!worker) {
+                worker.messages = worker.messages + 1;
+            }
+        });
+
+        workers = workers.filter(w => w.messages < this.maxConcurrentPerWorker);
+        if (workers.length === 0) {
+            return undefined;
+        }
+        return workers[Math.floor(Math.random() * workers.length)].worker;
+    }
+
+    private startMessage(): void {
+        if (!this.messages.isEmpty()) {
+            const worker = this.assignWorker();
+            if (!!worker) {
+                const message = this.messages.poll();
+                namespace.set(message.message.context);
+                if (message.message.type === "atomist:command") {
+                    this.commands.set(message.message.context.invocationId, {
+                        dispatched: message.dispatched,
+                        worker: worker.id,
+                    });
+                    logger.debug(
+                        "Incoming command handler request '%s' dispatching to worker '%s'",
+                        message.message.data.command,
+                        worker.id);
+                } else if (message.message.type === "atomist:event") {
+                    this.events.set(message.message.context.invocationId, {
+                        dispatched: message.dispatched,
+                        worker: worker.id,
+                    });
+                    logger.debug(
+                        "Incoming event handler subscription '%s' dispatching to worker '%s'",
+                        message.message.data.extensions.operationName,
+                        worker.id);
+                }
+                worker.send(message.message);
+            }
+        }
+    }
+
+    private reportQueueLength(): void {
+        if (this.configuration.statsd.enabled) {
+            setInterval(() => {
+                const statsd = (this.configuration.statsd as any).__instance as StatsD;
+                if (!!statsd) {
+                    statsd.gauge(
+                        "work_queue.pending",
+                        this.messages.size,
+                        1,
+                        [],
+                        () => {
+                        });
+                    statsd.gauge(
+                        "work_queue.events",
+                        this.events.size,
+                        1,
+                        [],
+                        () => {
+                        });
+                    statsd.gauge(
+                        "work_queue.commands",
+                        this.commands.size,
+                        1,
+                        [],
+                        () => {
+                        });
+                }
+            }, 1000).unref();
+        }
     }
 }
 

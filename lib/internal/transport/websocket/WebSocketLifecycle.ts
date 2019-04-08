@@ -1,4 +1,4 @@
-import * as TinyQueue from "tinyqueue";
+import FastPriorityQueue from "fastpriorityqueue";
 import * as WebSocket from "ws";
 import { logger } from "../../../util/logger";
 import { sendMessage } from "./WebSocketMessageClient";
@@ -39,12 +39,13 @@ export interface WebSocketLifecycle {
  */
 export class QueuingWebSocketLifecycle implements WebSocketLifecycle {
 
-    private messages: TinyQueue;
+    private messages: FastPriorityQueue<any>;
     private ws: WebSocket;
     private timer: NodeJS.Timer;
 
     constructor() {
-        this.messages = new TinyQueue();
+        // This is odd but the only way to the types working
+        this.messages = require("FastPriorityQueue")() as FastPriorityQueue<any>;
     }
 
     /**
@@ -92,7 +93,7 @@ export class QueuingWebSocketLifecycle implements WebSocketLifecycle {
             if (!this.timer) {
                 this.init();
             }
-            this.messages.push(msg);
+            this.messages.add(msg);
         }
     }
 
@@ -102,8 +103,8 @@ export class QueuingWebSocketLifecycle implements WebSocketLifecycle {
     private init(): void {
         this.timer = setInterval(async () => {
             const queuedMessages = [];
-            while (this.messages.length) {
-                queuedMessages.push(this.messages.pop());
+            while (!this.messages.isEmpty()) {
+                queuedMessages.push(this.messages.poll());
             }
             queuedMessages.forEach(this.send);
         }, 1000);

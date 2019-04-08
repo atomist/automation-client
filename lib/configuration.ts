@@ -223,6 +223,7 @@ export interface AutomationServerOptions extends AutomationOptions {
     cluster?: {
         enabled?: boolean;
         workers?: number;
+        maxConcurrentPerWorker?: number;
     };
     /** Logging configuration */
     logging?: {
