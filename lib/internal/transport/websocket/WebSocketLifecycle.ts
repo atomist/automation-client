@@ -1,4 +1,4 @@
-import * as TinyQueue from "tinyqueue";
+import TinyQueue from "tinyqueue";
 import * as WebSocket from "ws";
 import { logger } from "../../../util/logger";
 import { sendMessage } from "./WebSocketMessageClient";
@@ -39,11 +39,12 @@ export interface WebSocketLifecycle {
  */
 export class QueuingWebSocketLifecycle implements WebSocketLifecycle {
 
-    private messages: TinyQueue;
+    private messages: TinyQueue<any>;
     private ws: WebSocket;
     private timer: NodeJS.Timer;
 
     constructor() {
+        // This is odd but the only way to the types working
         this.messages = new TinyQueue();
     }
 
@@ -102,7 +103,7 @@ export class QueuingWebSocketLifecycle implements WebSocketLifecycle {
     private init(): void {
         this.timer = setInterval(async () => {
             const queuedMessages = [];
-            while (this.messages.length) {
+            while (this.messages.length > 0) {
                 queuedMessages.push(this.messages.pop());
             }
             queuedMessages.forEach(this.send);

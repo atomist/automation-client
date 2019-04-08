@@ -1,6 +1,7 @@
 import * as stringify from "json-stringify-safe";
 import "mocha";
 import * as assert from "power-assert";
+import * as TinyQueue from "tinyqueue";
 import { promisify } from "util";
 import {
     actionChain,
@@ -8,6 +9,7 @@ import {
     NoAction,
 } from "../../lib/action/actionOps";
 import { ActionResult } from "../../lib/action/ActionResult";
+import { MasterMessage } from "../../lib/internal/transport/cluster/messages";
 import { GitHubRepoRef } from "../../lib/operations/common/GitHubRepoRef";
 import { InMemoryProject } from "../../lib/project/mem/InMemoryProject";
 
@@ -92,7 +94,9 @@ describe("action chaining", () => {
 
     it("should catch errors and return failure", done => {
         const f1 = (s: string) => Promise.resolve(s + " yeah!");
-        const f2 = (s: string) => { throw new Error("What is " + s); };
+        const f2 = (s: string) => {
+            throw new Error("What is " + s);
+        };
 
         const chain = actionChain(f1, f2);
         chain("Southwest").then(result => {
@@ -106,7 +110,9 @@ describe("action chaining", () => {
 
     it("should catch errors in the first function", done => {
         const f2 = (s: string) => Promise.resolve(s + " yeah!");
-        const f1 = (s: string) => { throw new Error("What is " + s); };
+        const f1 = (s: string) => {
+            throw new Error("What is " + s);
+        };
 
         const chain = actionChain(f1, f2);
         chain("Southwest").then(result => {
@@ -121,6 +127,7 @@ describe("action chaining", () => {
     interface BonusActionResult extends ActionResult<string> {
         bonusField: string;
     }
+
     it("should allow for custom combination of results", done => {
         const f1 = (s: string) => Promise.resolve({ success: true, target: s + " and 1", bonusField: "yes" });
         const f2 = (s: string) => Promise.resolve({ success: true, target: s + " and 2", bonusField: " and no" });
@@ -163,5 +170,4 @@ describe("action chaining", () => {
             done();
         }).catch(done);
     }).timeout(20000);
-
 });
