@@ -160,7 +160,7 @@ export class AutomationClient implements RequestProcessor {
     private setupWebSocketClusterRequestHandler(): ClusterMasterRequestProcessor {
         return new ClusterMasterRequestProcessor(this.automations, this.configuration,
             [...this.defaultListeners, ...this.configuration.listeners],
-            this.configuration.cluster.workers);
+            this.configuration.cluster.workers, this.configuration.cluster.maxConcurrentPerWorker);
     }
 
     private setupWebSocketClusterWorkerRequestHandler(): ClusterWorkerRequestProcessor {
