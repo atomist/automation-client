@@ -60,6 +60,7 @@ async function main(): Promise<void> {
                     plugins: [
                         "typescript",
                         "typescript-operations",
+                        "typescript-compatibility",
                     ],
                     config: {
                         namingConvention: "keep",
