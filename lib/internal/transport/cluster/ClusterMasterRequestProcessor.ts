@@ -1,7 +1,7 @@
 import * as cluster from "cluster";
-import * as TinyQueue from "tinyqueue";
 import { StatsD } from "hot-shots";
 import * as stringify from "json-stringify-safe";
+import * as TinyQueue from "tinyqueue";
 import * as WebSocket from "ws";
 import { Configuration } from "../../../configuration";
 import { EventFired } from "../../../HandleEvent";
@@ -91,7 +91,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
             return Promise.resolve(0);
         }, Number.MIN_VALUE);
 
-        this.reportQueueLength();
+        this.scheduleQueueLength();
     }
 
     public onRegistration(registration: RegistrationConfirmation) {
@@ -369,36 +369,43 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                 worker.send(message.message);
             }
         }
+        this.reportQueueLength();
+    }
+
+    private scheduleQueueLength(): void {
+        if (this.configuration.statsd.enabled) {
+            setInterval(() => {
+                this.reportQueueLength();
+            }, 1000).unref();
+        }
     }
 
     private reportQueueLength(): void {
         if (this.configuration.statsd.enabled) {
-            setInterval(() => {
-                const statsd = (this.configuration.statsd as any).__instance as StatsD;
-                if (!!statsd) {
-                    statsd.gauge(
-                        "work_queue.pending",
-                        this.messages.length,
-                        1,
-                        [],
-                        () => {
-                        });
-                    statsd.gauge(
-                        "work_queue.events",
-                        this.events.size,
-                        1,
-                        [],
-                        () => {
-                        });
-                    statsd.gauge(
-                        "work_queue.commands",
-                        this.commands.size,
-                        1,
-                        [],
-                        () => {
-                        });
-                }
-            }, 1000).unref();
+            const statsd = (this.configuration.statsd as any).__instance as StatsD;
+            if (!!statsd) {
+                statsd.gauge(
+                    "work_queue.pending",
+                    this.messages.length,
+                    1,
+                    [],
+                    () => {
+                    });
+                statsd.gauge(
+                    "work_queue.events",
+                    this.events.size,
+                    1,
+                    [],
+                    () => {
+                    });
+                statsd.gauge(
+                    "work_queue.commands",
+                    this.commands.size,
+                    1,
+                    [],
+                    () => {
+                    });
+            }
         }
     }
 }
