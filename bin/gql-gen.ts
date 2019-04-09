@@ -63,7 +63,10 @@ async function main(): Promise<void> {
                         "typescript-compatibility",
                     ],
                     config: {
-                        namingConvention: "keep",
+                        namingConvention: {
+                            typeNames: "change-case#pascalCase",
+                            enumValues: "keep",
+                        },
                         avoidOptionals: false,
                     },
                 },
