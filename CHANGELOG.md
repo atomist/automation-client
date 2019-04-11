@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Clearer description for generated repo name. [#493](https://github.com/atomist/automation-client/issues/493)
+-   Hide secrets in messages. [ae43b4f](https://github.com/atomist/automation-client/commit/ae43b4ff21e11cd6493b8acac657a440904baf7c)
 
 ### Deprecated
 
