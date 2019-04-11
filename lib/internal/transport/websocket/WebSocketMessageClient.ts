@@ -19,6 +19,7 @@ import { MessageClientSupport } from "../../../spi/message/MessageClientSupport"
 import { logger } from "../../../util/logger";
 import {
     guid,
+    replacer,
     toStringArray,
 } from "../../util/string";
 import {
@@ -253,11 +254,10 @@ function mapParameters(data: {}): Parameter[] {
 }
 
 export function sendMessage(message: any, ws: WebSocket, log: boolean = true): void {
-    const payload = JSON.stringify(message);
     if (log) {
-        logger.debug(`Sending message '${payload}'`);
+        logger.debug(`Sending message '${JSON.stringify(message, replacer)}'`);
     }
-    ws.send(payload);
+    ws.send(JSON.stringify(message));
 }
 
 export function clean(addresses: string[] | string): string[] {

@@ -79,6 +79,16 @@ export function obfuscateJson(key: string, value: any) {
     return value;
 }
 
+export function replacer(key: string, value: any) {
+    if (key === "secrets" && value) {
+        return value.map(v => ({ uri: v.uri, value: hideString(v.value) }));
+    } else if (/token|password|jwt|url|secret|authorization|key|cert|pass|user/i.test(key)) {
+        return hideString(value);
+    } else {
+        return value;
+    }
+}
+
 export function generateHash(url: string): string {
     return mmh3.x86.hash32(url);
 }

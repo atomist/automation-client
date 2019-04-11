@@ -32,6 +32,7 @@ import * as namespace from "../util/cls";
 import {
     guid,
     hideString,
+    replacer,
 } from "../util/string";
 import {
     CommandIncoming,
@@ -475,16 +476,6 @@ export function defaultErrorResult(context: AutomationContextAware): HandlerResu
         message: `Command '${context.context.operation}' failed`,
     };
     return result as HandlerResult;
-}
-
-export function replacer(key: string, value: any) {
-    if (key === "secrets" && value) {
-        return value.map(v => ({ uri: v.uri, value: hideString(v.value) }));
-    } else if (key === "secret") {
-        return hideString(value);
-    } else {
-        return value;
-    }
 }
 
 export function possibleAxiosObjectReplacer(key: string, value: any) {
