@@ -56,7 +56,11 @@ describe("WebSocketMessageClient", () => {
             }],
         };
 
-        client.send(msg, { userAgent: "slack", team: "Txxxxxxx", users: ["cd", "rod"] } as SlackDestination, { id: "123456" })
+        client.send(msg, {
+            userAgent: "slack",
+            team: "Txxxxxxx",
+            users: ["cd", "rod"],
+        } as SlackDestination, { id: "123456" })
             .then(fm => {
                 assert(fm.api_version === "1");
                 assert(fm.correlation_id === corrId);
@@ -101,7 +105,11 @@ describe("WebSocketMessageClient", () => {
             }],
         };
 
-        client.send(msg, { userAgent: "slack", team: "Txxxxxxx", channels: ["general", "test"] } as SlackDestination, { id: "123456" })
+        client.send(msg, {
+            userAgent: "slack",
+            team: "Txxxxxxx",
+            channels: ["general", "test"],
+        } as SlackDestination, { id: "123456" })
             .then(fm => {
                 assert(fm.api_version === "1");
                 assert(fm.correlation_id === corrId);
@@ -248,5 +256,4 @@ describe("WebSocketMessageClient", () => {
             });
 
     });
-
 });
