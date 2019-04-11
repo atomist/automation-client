@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
+-   Maintain internal priority queue of command/event invocations [#512](https://github.com/atomist/automation-client/issues/512)
 -   BitBucketServerRepoRef support cloning from specific branch. [#482](https://github.com/atomist/automation-client/issues/482)
 -   Support web user_agent in source of incoming command request. [#498](https://github.com/atomist/automation-client/issues/498)
 -   Identity tokens in CommandHandlerRequest maps. [#497](https://github.com/atomist/automation-client/issues/497)
