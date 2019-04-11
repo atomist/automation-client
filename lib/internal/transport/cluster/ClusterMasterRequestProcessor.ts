@@ -243,6 +243,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
         cluster.on("online", worker => {
             logger.debug(`Worker '${worker.id}' connected`);
+            this.startMessage();
         });
 
         cluster.on("exit", (worker, code, signal) => {
@@ -320,19 +321,27 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
             }
         }
 
-        this.events.forEach(e => {
+        const deadEvents = [];
+        this.events.forEach((e,k) => {
             const worker = workers.find(w => w.worker.id === e.worker);
             if (!!worker) {
                 worker.messages = worker.messages + 1;
+            } else {
+                deadEvents.push(k);
             }
         });
+        deadEvents.forEach(de => this.events.delete(de));
 
-        this.commands.forEach(e => {
-            const worker = workers.find(w => w.worker.id === e.worker);
+        const deadCommands = [];
+        this.commands.forEach((c, k) => {
+            const worker = workers.find(w => w.worker.id === c.worker);
             if (!!worker) {
                 worker.messages = worker.messages + 1;
+            } else {
+                deadCommands.push(k);
             }
         });
+        deadCommands.forEach(dc => this.commands.delete(dc));
 
         workers = workers.filter(w => w.messages < this.maxConcurrentPerWorker);
         if (workers.length === 0) {
