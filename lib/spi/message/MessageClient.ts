@@ -75,6 +75,20 @@ export interface Destination {
 }
 
 /**
+ * Message Destination for the Web App.
+ */
+export class WebDestination implements Destination {
+
+    public static WEB_USER_AGENT: string = "web";
+
+    public userAgent: string = WebDestination.WEB_USER_AGENT;
+}
+
+export function addressWeb(): WebDestination {
+    return new WebDestination();
+}
+
+/**
  * Message Destination for Slack.
  */
 export class SlackDestination implements Destination {

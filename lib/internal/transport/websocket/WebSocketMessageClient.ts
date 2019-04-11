@@ -13,6 +13,7 @@ import {
     MessageMimeTypes,
     MessageOptions,
     SlackDestination,
+    WebDestination,
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { logger } from "../../../util/logger";
@@ -48,7 +49,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             destinations = [destinations];
         }
 
-        let destinationIdentifier: "slack" | "ingester";
+        let destinationIdentifier: "slack" | "ingester" | "web";
         const responseDestinations = [];
         destinations.forEach(d => {
             if (d.userAgent === SlackDestination.SLACK_USER_AGENT) {
@@ -93,6 +94,8 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                         root_type: (d as CustomEventDestination).rootType,
                     },
                 });
+            } else if (d.userAgent === WebDestination.WEB_USER_AGENT) {
+                destinationIdentifier = "web";
             }
         });
 
@@ -120,7 +123,9 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             post_mode: options.post === "update_only" ? "update_only" : (options.post === "always" ? "always" : "ttl"),
         };
 
-        if (destinationIdentifier === "slack") {
+        if (destinationIdentifier === "web") {
+            return Promise.resolve();
+        } else if (destinationIdentifier === "slack") {
             if (isSlackMessage(msg)) {
                 const msgClone = _.cloneDeep(msg);
                 const actions = mapActions(msgClone);
