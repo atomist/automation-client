@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,6 +97,9 @@ export {
     OnEvent,
 } from "./lib/onEvent";
 export {
+    BitBucketRepoRef,
+} from "./lib/operations/common/BitBucketRepoRef";
+export {
     BitBucketServerRepoRef,
 } from "./lib/operations/common/BitBucketServerRepoRef";
 export {
@@ -114,6 +117,11 @@ export {
     TokenCredentials,
 } from "./lib/operations/common/ProjectOperationCredentials";
 export {
+    remoteRepoRefFrom,
+    RemoteRepoRefFromParams,
+} from "./lib/operations/common/remoteRepoRef";
+export {
+    ProviderType as ScmProviderType,
     RemoteRepoRef,
     RepoId,
     RepoRef,

@@ -1,4 +1,3 @@
-
 import { ActionResult } from "../../action/ActionResult";
 import { Configurable } from "../../project/git/Configurable";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
@@ -50,12 +49,21 @@ export interface RepoRef extends RepoId {
 
 }
 
+/**
+ * Supported SCM providers.
+ */
 export enum ProviderType {
-    bitbucket_cloud,
-    github_com,
-    ghe,
+    /** BitBucket server instances, maps to [[BitBucketServerRepoRef]] */
     bitbucket,
+    /** Atlassian-hosted BitBucket cloud, maps to [[BitBucketRepoRef]] */
+    bitbucket_cloud,
+    /** GitHub.com, maps to [[GitHubRepoRef]] */
+    github_com,
+    /** GitHub Enterprise, maps to [[GitHubRepoRef]] */
+    ghe,
+    /** Gitlab.com, maps to [[GitlabRepoRef]] */
     gitlab_com,
+    /** Gitlab Enterprise, maps to [[GitlabRepoRef]] */
     gitlab_enterprise,
 }
 
@@ -66,12 +74,11 @@ export enum ProviderType {
  */
 export interface RemoteRepoRef extends RepoRef {
 
+    /** @deprecated use providerType */
     readonly kind: string;
-    /**
-     * Remote base
-     */
+    /** Base root remote clone */
     readonly remoteBase: string;
-
+    /** SCM provider of remote repo */
     readonly providerType: ProviderType;
 
     /**

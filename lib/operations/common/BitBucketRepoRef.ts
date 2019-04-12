@@ -28,9 +28,9 @@ export class BitBucketRepoRef extends AbstractRemoteRepoRef {
                 sha?: string,
                 public apiBase = BitBucketDotComBase,
                 path?: string,
-                branch?: string) {
-        super(ProviderType.bitbucket_cloud, "https://bitbucket.org", apiBase, owner, repo, sha, path);
-        this.branch = branch;
+                branch?: string,
+                remote?: string) {
+        super(ProviderType.bitbucket_cloud, remote || "https://bitbucket.org", apiBase, owner, repo, sha, path, branch);
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {

@@ -1,4 +1,4 @@
-import * as TinyQueue from "tinyqueue"
+import * as TinyQueue from "tinyqueue";
 import * as WebSocket from "ws";
 import { logger } from "../../../util/logger";
 import { sendMessage } from "./WebSocketMessageClient";
