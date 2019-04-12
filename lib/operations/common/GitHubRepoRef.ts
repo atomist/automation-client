@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,8 +46,7 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
         if (params.sha && !params.sha.match(GitShaRegExp.pattern)) {
             throw new Error("You provided an invalid SHA: " + params.sha);
         }
-        const result = new GitHubRepoRef(params.owner, params.repo, params.sha, params.rawApiBase, params.path);
-        result.branch = params.branch;
+        const result = new GitHubRepoRef(params.owner, params.repo, params.sha, params.rawApiBase, params.path, params.branch);
         return result;
     }
 
@@ -55,14 +54,9 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
 
     public readonly apiBase: string;
 
-    constructor(owner: string,
-                repo: string,
-                sha?: string,
-                rawApiBase = GitHubDotComBase,
-                path?: string) {
-        super(
-            rawApiBase === GitHubDotComBase || rawApiBase === FullGitHubDotComBase ? ProviderType.github_com : ProviderType.ghe,
-            apiBaseToRemoteBase(rawApiBase), rawApiBase, owner, repo, sha, path);
+    constructor(owner: string, repo: string, sha?: string, rawApiBase = GitHubDotComBase, path?: string, branch?: string, remoteBase?: string) {
+        super(rawApiBase === GitHubDotComBase || rawApiBase === FullGitHubDotComBase ? ProviderType.github_com : ProviderType.ghe,
+            remoteBase || apiBaseToRemoteBase(rawApiBase), rawApiBase, owner, repo, sha, path, branch);
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility: string): Promise<ActionResult<this>> {

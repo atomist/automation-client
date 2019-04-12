@@ -40,9 +40,9 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
                 private readonly isProject: boolean = true,
                 sha?: string,
                 path?: string,
-                branch?: string) {
-        super(ProviderType.bitbucket, remoteBase, noTrailingSlash(remoteBase) + "/rest/api/1.0/", owner, repo, sha, path);
-        this.branch = branch;
+                branch?: string,
+                apiUrl?: string) {
+        super(ProviderType.bitbucket_server, remoteBase, apiUrl || `${noTrailingSlash(remoteBase)}/rest/api/1.0/`, owner, repo, sha, path, branch);
         this.ownerType = isProject ? "projects" : "users";
         logger.info("Constructed BitBucketServerRepoRef: %j", this);
     }
@@ -151,11 +151,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
     }
 
     get url() {
-        let url: string = `projects/${this.owner}/repos`;
-        if (!this.isProject) {
-            url = `users/${this.owner}/repos`;
-        }
-        return `${this.scheme}${this.remoteBase}/${url}/${this.repo}`;
+        return `${this.scheme}${this.remoteBase}/${this.ownerType}/${this.owner}/repos/${this.repo}`;
     }
 
     get pathComponent(): string {

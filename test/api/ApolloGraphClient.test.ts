@@ -16,7 +16,7 @@ import {
 
 describe("ApolloGraphClient", () => {
 
-    describe("api", () => {
+    describe.skip("api", () => {
 
         it("should run repos query", done => {
 

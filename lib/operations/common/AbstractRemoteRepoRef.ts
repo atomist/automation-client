@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,17 +29,9 @@ import {
     RemoteRepoRef,
 } from "./RepoId";
 
-const stuffAfterTheSensitiveToken = ":x-oauth-basic@";
-const gitHubTokenPattern = "[0-9a-f]{40}";
-addLogRedaction(new RegExp(gitHubTokenPattern + group(stuffAfterTheSensitiveToken), "g"), "[REDACTED_GITHUB_TOKEN]$1");
-
+addLogRedaction(/[0-9a-f]{40}((?::x-oauth-basic)?@)/g, "[REDACTED_GITHUB_TOKEN]$1");
 // ordering matters: keep this after the Github token one, which happens to look at the password, and this replacement would make it not match
-addLogRedaction(/(https?:\/\/[^:\/\?#\[\]@]+:)[^:\/\?#\[\]@]+(@)/g,
-    "$1[REDACTED_URL_PASSWORD]$2");
-
-function group(str: string) {
-    return "(" + str + ")";
-}
+addLogRedaction(/(https?:\/\/[^:\/\?#\[\]@]+:)[^:\/\?#\[\]@]+(@)/g, "$1[REDACTED_URL_PASSWORD]$2");
 
 /**
  * Superclass for RemoteRepoRef implementations.
@@ -49,26 +41,21 @@ function group(str: string) {
  */
 export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
 
-    public branch?: string;
-
     public readonly scheme: "http://" | "https://";
 
     public readonly apiBase: string;
 
     public readonly abstract kind: string;
 
-    /**
-     * Remote url not including scheme or trailing /
-     */
+    /** Remote url not including scheme or trailing '/' */
     public readonly remoteBase: string;
 
     /**
      * Construct a new RemoteRepoRef
      * @param {ProviderType} providerType
      * @param {string} rawRemote remote url, like for cloning or linking into the repo. Should start with a scheme.
-     * May have a trailing slash, which will be stripped
-     * @param rawApiBase raw API base url. Should start with a scheme.
-     * May have a trailing slash, which will be stripped
+     *                           May have a trailing slash, which will be stripped
+     * @param rawApiBase API base url. Should start with a scheme. May have a trailing slash, which will be stripped.
      * @param {string} owner
      * @param {string} repo
      * @param {string} sha
@@ -80,7 +67,8 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
                           public readonly owner: string,
                           public readonly repo: string,
                           public readonly sha: string,
-                          public readonly path?: string) {
+                          public readonly path?: string,
+                          public branch?: string) {
         const [remoteScheme, remoteBase] = splitSchemeFromUrl(rawRemote);
         const [apiScheme, apiBase] = splitSchemeFromUrl(rawApiBase);
         if (apiScheme !== remoteScheme) { // that's confusing, don't handle it
@@ -105,7 +93,7 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
                 `${this.remoteBase}/${this.pathComponent}.git`;
         }
         if (!!creds && isTokenCredentials(creds)) {
-            return `${this.scheme}${creds.token}${stuffAfterTheSensitiveToken}${this.remoteBase}/${this.pathComponent}.git`;
+            return `${this.scheme}${creds.token}:x-oauth-basic@${this.remoteBase}/${this.pathComponent}.git`;
         }
         return `${this.scheme}${this.remoteBase}/${this.pathComponent}.git`;
     }
