@@ -45,7 +45,11 @@ import {
     WorkerMessage,
 } from "./messages";
 
-type MessageType = { message: MasterMessage, dispatched: Dispatched<any>, ts: number };
+interface MessageType {
+    message: MasterMessage;
+    dispatched: Dispatched<any>;
+    ts: number;
+}
 
 /**
  * A RequestProcessor that delegates to Node.JS Cluster workers to do the actual
@@ -322,7 +326,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         }
 
         const deadEvents = [];
-        this.events.forEach((e,k) => {
+        this.events.forEach((e, k) => {
             const worker = workers.find(w => w.worker.id === e.worker);
             if (!!worker) {
                 worker.messages = worker.messages + 1;
@@ -398,22 +402,19 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                     this.messages.length,
                     1,
                     [],
-                    () => {
-                    });
+                    () => { /* intentionally empty */ });
                 statsd.gauge(
                     "work_queue.events",
                     this.events.size,
                     1,
                     [],
-                    () => {
-                    });
+                    () => { /* intentionally empty */ });
                 statsd.gauge(
                     "work_queue.commands",
                     this.commands.size,
                     1,
                     [],
-                    () => {
-                    });
+                    () => { /* intentionally empty */ });
             }
         }
     }

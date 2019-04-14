@@ -34,8 +34,8 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
         if (params.sha && !params.sha.match(GitShaRegExp.pattern)) {
             throw new Error("You provided an invalid SHA: " + params.sha);
         }
-        const result = new GitlabRepoRef(params.owner, params.repo, params.sha, params.rawApiBase, params.gitlabRemoteUrl, params.path);
-        result.branch = params.branch;
+        const result = new GitlabRepoRef(params.owner, params.repo, params.sha, params.rawApiBase, params.gitlabRemoteUrl, params.path,
+            params.branch);
         return result;
     }
 
@@ -62,14 +62,10 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
                         sha: string,
                         public apiBase = GitlabDotComApiBase,
                         gitlabRemoteUrl: string = GitlabDotComRemoteUrl,
-                        path?: string) {
+                        path?: string,
+                        branch?: string) {
         super(apiBase === GitlabDotComApiBase ? ProviderType.gitlab_com : ProviderType.gitlab_enterprise,
-            gitlabRemoteUrl,
-            apiBase,
-            owner,
-            repo,
-            sha,
-            path);
+            gitlabRemoteUrl, apiBase, owner, repo, sha, path, branch);
     }
 
     public async createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
@@ -95,10 +91,10 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
                 response,
             };
         }).catch(err => {
-                logger.error(`Error attempting to create remote project, status code ${err.response.status}. ` +
-                    `The response was ${JSON.stringify(err.response.data)}`);
-                return Promise.reject(err);
-            });
+            logger.error(`Error attempting to create remote project, status code ${err.response.status}. ` +
+                `The response was ${JSON.stringify(err.response.data)}`);
+            return Promise.reject(err);
+        });
     }
 
     public deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>> {
@@ -118,9 +114,9 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
                 response,
             };
         }).catch(err => {
-                logger.error("Error attempting to delete repository: " + err);
-                return Promise.reject(err);
-            });
+            logger.error("Error attempting to delete repository: " + err);
+            return Promise.reject(err);
+        });
     }
 
     public setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>> {
@@ -152,10 +148,10 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
                 response,
             };
         }).catch(err => {
-                logger.error(`Error attempting to raise PR, status code ${err.response.status}. ` +
-                    `The response was ${JSON.stringify(err.response.data)}`);
-                return Promise.reject(err);
-            });
+            logger.error(`Error attempting to raise PR, status code ${err.response.status}. ` +
+                `The response was ${JSON.stringify(err.response.data)}`);
+            return Promise.reject(err);
+        });
     }
 
     private getNamespaceForOwner(owner: string, creds: ProjectOperationCredentials): Promise<number> {
