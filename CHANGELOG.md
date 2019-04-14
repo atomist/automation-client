@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   BitBucketServerRepoRef support cloning from specific branch. [#482](https://github.com/atomist/automation-client/issues/482)
 -   Support web user_agent in source of incoming command request. [#498](https://github.com/atomist/automation-client/issues/498)
 -   Identity tokens in CommandHandlerRequest maps. [#497](https://github.com/atomist/automation-client/issues/497)
+-   Create single interface for creating RemoteRepoRef. [#513](https://github.com/atomist/automation-client/issues/513)
 
 ### Changed
 
