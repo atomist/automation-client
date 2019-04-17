@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +27,11 @@ import { LocalProject } from "../../lib/project/local/LocalProject";
 import { logger } from "../../lib/util/logger";
 import { TestRepositoryVisibility } from "../credentials";
 
-function barf(): string {
-    throw new Error("<please set GITHUB_TOKEN env variable>");
-}
-
-export const GitHubToken: string = process.env.GITHUB_TOKEN || barf();
+export const GitHubToken: string = process.env.GITHUB_TOKEN;
 
 export const Creds = { token: GitHubToken };
+
+export const AtomistApiKey = process.env.ATOMIST_API_KEY;
 
 export const SlackTeamId = "T095SFFBK";
 

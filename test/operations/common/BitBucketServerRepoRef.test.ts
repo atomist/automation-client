@@ -1,16 +1,15 @@
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import * as assert from "power-assert";
-import { BasicAuthCredentials } from "../../lib/operations/common/BasicAuthCredentials";
-import { BitBucketServerRepoRef } from "../../lib/operations/common/BitBucketServerRepoRef";
+import { BasicAuthCredentials } from "../../../lib/operations/common/BasicAuthCredentials";
+import { BitBucketServerRepoRef } from "../../../lib/operations/common/BitBucketServerRepoRef";
 
 export const BitBucketServerUsername = "username";
 export const BitBucketServerPassword = "password";
-
-export const BitBucketServerCredentials = {
+export const BitBucketServerCredentials: BasicAuthCredentials = {
     username: BitBucketServerUsername,
     password: BitBucketServerPassword,
-} as BasicAuthCredentials;
+};
 
 describe("BitBucketServer support", () => {
 

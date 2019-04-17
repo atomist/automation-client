@@ -17,6 +17,7 @@ import { Project } from "../../lib/project/Project";
 import {
     cleanAfterTest,
     Creds,
+    GitHubToken,
     newRepo,
     TestRepo,
 } from "./apiUtils";
@@ -24,6 +25,12 @@ import {
 describe("editorUtils", () => {
 
     describe("GitHub pull requests", () => {
+
+        before(function() {
+            if (!GitHubToken) {
+                this.skip();
+            }
+        });
 
         const EditorThatChangesProject = toEditor(p => p.addFile("thing", "thing"));
 
@@ -60,6 +67,12 @@ describe("editorUtils", () => {
     });
 
     describe("branch commit", () => {
+
+        before(function() {
+            if (!GitHubToken) {
+                this.skip();
+            }
+        });
 
         const TinyChangeEditor: ProjectEditor = (p: Project) => {
             return p.findFile("README.md")

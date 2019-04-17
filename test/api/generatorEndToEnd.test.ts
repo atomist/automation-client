@@ -20,6 +20,12 @@ import {
 
 describe("generator end to end", () => {
 
+    before(function() {
+        if (!GitHubToken) {
+            this.skip();
+        }
+    });
+
     const noEd = (p: Project) => Promise.resolve(p);
 
     it("should create a new GitHub repo using generate function", async function() {

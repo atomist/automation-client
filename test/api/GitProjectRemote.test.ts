@@ -20,6 +20,12 @@ import {
 
 describe("GitProject remote", () => {
 
+    before(function() {
+        if (!GitHubToken) {
+            this.skip();
+        }
+    });
+
     it("add a file, init and commit, then push to new remote repo", async function() {
         this.retries(5);
 

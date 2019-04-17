@@ -13,10 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/atomist/automation-client.git"
   },
-  "keywords": [
-    "atomist",
-    "automation"
-  ],
+  "keywords": ["atomist", "automation"],
   "bugs": {
     "url": "https://github.com/atomist/automation-client/issues"
   },
@@ -153,7 +150,7 @@
   },
   "scripts": {
     "autotest": "supervisor --watch index.ts,lib,test --extensions ts --no-restart-on exit --quiet --exec npm -- test",
-    "build": "run-s compile test test:api lint doc",
+    "build": "run-s compile test lint doc",
     "clean": "run-p clean:compile clean:test clean:doc clean:run",
     "clean:compile": "rimraf git-info.json build \"index.{d.ts,js{,.map}}\" \"{lib,test}/**/*.{d.ts,js{,.map}}\" lib/typings/types.ts",
     "clean:dist": "run-s clean clean:npm",
@@ -166,13 +163,13 @@
     "doc": "typedoc --mode modules --excludeExternals --ignoreCompilerErrors --exclude \"**/*.d.ts\" --out doc index.ts lib",
     "lint": "tslint --config tslint.json --format verbose --project .",
     "lint:fix": "npm run lint -- --fix",
-    "test": "mocha --require espower-typescript/guess \"test/{*est.ts,!(api|benchmark|bitbucket-api)/**/*est.ts}\"",
-    "test:api": "mocha --require espower-typescript/guess \"test/api/**/*est.ts\"",
-    "test:bitbucket-api": "mocha --require espower-typescript/guess \"test/bitbucket-api/**/*est.ts\"",
-    "test:benchmark": "run-s test:benchmark:run test:benchmark:process clean:benchmark",
+    "test": "mocha --require espower-typescript/guess \"test/**/*.test.ts\"",
+    "test:api": "mocha --require espower-typescript/guess \"test/api/**/*.test.ts\"",
+    "test:bitbucket-api": "mocha --require espower-typescript/guess \"test/bitbucket-api/**/*.test.ts\"",
+    "test:benchmark": "run-s test:benchmark:run test:benchmark:process",
     "test:benchmark:process": "node --prof-process isolate-*-v8.log > profile.txt",
-    "test:benchmark:run": "mocha --prof --require espower-typescript/guess \"test/benchmark/**/*est.ts\"",
-    "test:one": "mocha --require espower-typescript/guess \"test/**/${TEST:-*est.ts}\"",
+    "test:benchmark:run": "mocha --prof --require espower-typescript/guess \"test/**/*.benchmark.ts\"",
+    "test:one": "mocha --require espower-typescript/guess \"test/**/${TEST:-*.test.ts}\"",
     "typedoc": "npm run doc"
   },
   "bin": {
