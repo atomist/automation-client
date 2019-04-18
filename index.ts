@@ -117,10 +117,6 @@ export {
     TokenCredentials,
 } from "./lib/operations/common/ProjectOperationCredentials";
 export {
-    remoteRepoRefFrom,
-    RemoteRepoRefFromParams,
-} from "./lib/operations/common/remoteRepoRef";
-export {
     ProviderType as ScmProviderType,
     RemoteRepoRef,
     RepoId,
