@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.4.0...HEAD)
 
+### Changed
+
+-   Consolidate and make test running smarter. [#517](https://github.com/atomist/automation-client/issues/517)
+
 ## [1.4.0](https://github.com/atomist/automation-client-ts/compare/1.3.0...1.4.0) - 2019-04-15
 
 ### Added
