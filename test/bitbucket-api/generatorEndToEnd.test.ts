@@ -1,6 +1,4 @@
-import "mocha";
 import * as assert from "power-assert";
-
 import { BitBucketRepoRef } from "../../lib/operations/common/BitBucketRepoRef";
 import { generate } from "../../lib/operations/generate/generatorUtils";
 import { RemoteGitProjectPersister } from "../../lib/operations/generate/remoteGitProjectPersister";
@@ -12,9 +10,16 @@ import {
 import {
     BitBucketCredentials,
     BitBucketUser,
-} from "./BitBucketGit.test";
+    skipBitBucketTests,
+} from "./BitBucketHelpers";
 
 describe("BitBucket generator end to end", () => {
+
+    before(function() {
+        if (skipBitBucketTests()) {
+            this.skip();
+        }
+    });
 
     it("should create a new BitBucket repo using generate function", function(done) {
         this.retries(3);
