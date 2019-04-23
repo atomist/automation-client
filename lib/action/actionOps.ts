@@ -38,10 +38,10 @@ export function actionChainWithCombiner<T, R extends ActionResult<T> = ActionRes
                         // console.log("Applied action " + c2.toString());
                         const combinedResult: ActionResult<T> = combiner((r1 as R), (r2 as R));
                         return combinedResult;
-                    });
+                    }) as any;
                 }
             });
-        }, NoAction) as TAction<T>; // Consider adding R as a type parameter to TAction
+        }) as TAction<T>; // Consider adding R as a type parameter to TAction
 }
 
 function toAction<T>(link: Chainable<T>): TAction<T> {
