@@ -41,7 +41,7 @@ export function actionChainWithCombiner<T, R extends ActionResult<T> = ActionRes
                     });
                 }
             });
-        }) as TAction<T>; // Consider adding R as a type parameter to TAction
+        }, NoAction) as TAction<T>; // Consider adding R as a type parameter to TAction
 }
 
 function toAction<T>(link: Chainable<T>): TAction<T> {

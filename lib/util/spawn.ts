@@ -22,7 +22,7 @@ import {
 import * as spawn from "cross-spawn";
 import * as os from "os";
 import * as path from "path";
-import strip_ansi = require("strip-ansi");
+import stripAnsi from "strip-ansi";
 import * as treeKill from "tree-kill";
 import {
     killProcess,
@@ -159,7 +159,7 @@ async function watchSpawned(childProcess: ChildProcess,
         }
 
         function sendToLog(data) {
-            const formatted = optsToUse.stripAnsi ? strip_ansi(data.toString()) : data.toString();
+            const formatted = optsToUse.stripAnsi ? stripAnsi(data.toString()) : data.toString();
             return log.write(formatted);
         }
 
