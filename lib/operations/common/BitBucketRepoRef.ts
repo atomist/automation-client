@@ -35,7 +35,7 @@ export class BitBucketRepoRef extends AbstractRemoteRepoRef {
     }
 
     /**
-     * Construct a new BitBucketServerRepoRef
+     * Construct a new BitBucketRepoRef
      * @param {string} params Creation parameters
      */
     public static from(params: {owner: string;
