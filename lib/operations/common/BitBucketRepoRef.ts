@@ -14,6 +14,7 @@ import {
 import { logger } from "../../util/logger";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
+import { GitShaRegExp } from "./params/validationPatterns";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import { ProviderType } from "./RepoId";
 
@@ -26,11 +27,35 @@ export class BitBucketRepoRef extends AbstractRemoteRepoRef {
     constructor(owner: string,
                 repo: string,
                 sha?: string,
-                public apiBase = BitBucketDotComBase,
+                public apiBase: string = BitBucketDotComBase,
                 path?: string,
                 branch?: string,
                 remote?: string) {
         super(ProviderType.bitbucket_cloud, remote || "https://bitbucket.org", apiBase, owner, repo, sha, path, branch);
+    }
+
+    /**
+     * Construct a new BitBucketServerRepoRef
+     * @param {string} params Creation parameters
+     */
+    public static from(params: {owner: string;
+        repo: string;
+        sha?: string;
+        apiBase?: string;
+        path?: string;
+        branch?: string;
+        remote?: string;
+    }): BitBucketRepoRef {
+        if (params.sha && !params.sha.match(GitShaRegExp.pattern)) {
+            throw new Error("You provided an invalid SHA: " + params.sha);
+        }
+        return new BitBucketRepoRef(params.owner,
+            params.repo,
+            params.sha,
+            params.apiBase || BitBucketDotComBase,
+            params.path,
+            params.branch,
+            params.remote);
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {

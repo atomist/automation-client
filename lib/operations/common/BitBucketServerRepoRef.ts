@@ -12,6 +12,7 @@ import {
 import { logger } from "../../util/logger";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
+import { GitShaRegExp } from "./params/validationPatterns";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
 import { ProviderType } from "./RepoId";
 
@@ -33,6 +34,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
      * @param {string} sha
      * @param {string} path
      * @param {string} branch
+     * @param {string} apiUrl
      */
     constructor(remoteBase: string,
                 owner: string,
@@ -45,6 +47,32 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
         super(ProviderType.bitbucket, remoteBase, apiUrl || `${noTrailingSlash(remoteBase)}/rest/api/1.0/`, owner, repo, sha, path, branch);
         this.ownerType = isProject ? "projects" : "users";
         logger.info("Constructed BitBucketServerRepoRef: %j", this);
+    }
+
+    /**
+     * Construct a new BitBucketServerRepoRef
+     * @param {string} params Creation parameters
+     */
+    public static from(params: { remoteBase: string;
+                                 owner: string;
+                                 repo: string;
+                                 isProject?: boolean;
+                                 sha?: string;
+                                 path?: string;
+                                 branch?: string;
+                                 apiUrl?: string;
+                      }): BitBucketServerRepoRef {
+        if (params.sha && !params.sha.match(GitShaRegExp.pattern)) {
+            throw new Error("You provided an invalid SHA: " + params.sha);
+        }
+        return new BitBucketServerRepoRef(params.remoteBase,
+            params.owner,
+            params.repo,
+            params.isProject || true,
+            params.sha,
+            params.path,
+            params.branch,
+            params.apiUrl);
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
