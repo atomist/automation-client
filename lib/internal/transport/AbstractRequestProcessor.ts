@@ -31,7 +31,6 @@ import { CommandInvocation } from "../invoker/Payload";
 import * as namespace from "../util/cls";
 import {
     guid,
-    hideString,
     replacer,
 } from "../util/string";
 import {
@@ -413,22 +412,22 @@ class AutomationEventListenerEnabledMessageClient implements MessageClient {
     public async respond(msg: any,
                          options?: MessageOptions): Promise<any> {
         const newMsg = await this.listeners.map(
-            l => m => l.messageSending(m, [], options, this.ctx))
-            .reduce((p, f) => p.then(f), Promise.resolve(msg));
+            l => m => l.messageSending(m.message, [], m.options, this.ctx))
+            .reduce((p, f) => p.then(f), Promise.resolve({ message: msg, destinations: [] as any, options }));
 
         eventStore().recordMessage(
-            options && options.id ? options.id : guid(),
+            newMsg.options && newMsg.options.id ? newMsg.options.id : guid(),
             this.ctx.correlationId,
-            newMsg);
+            newMsg.message);
 
-        await this.delegate.respond(newMsg, options);
+        await this.delegate.respond(newMsg.message, newMsg.options);
 
         return Promise.all(
             this.listeners.map(
                 l => l.messageSent(
-                    newMsg,
+                    newMsg.message,
                     [],
-                    options,
+                    newMsg.options,
                     this.ctx),
             ),
         );
@@ -438,22 +437,22 @@ class AutomationEventListenerEnabledMessageClient implements MessageClient {
                       destinations: Destination | Destination[],
                       options?: MessageOptions): Promise<any> {
         const newMsg = await this.listeners.map(
-            l => m => l.messageSending(m, destinations, options, this.ctx))
-            .reduce((p, f) => p.then(f), Promise.resolve(msg));
+            l => m => l.messageSending(m.message, m.destinations, m.options, this.ctx))
+            .reduce((p, f) => p.then(f), Promise.resolve({ message: msg, destinations, options }));
 
         eventStore().recordMessage(
-            options && options.id ? options.id : guid(),
+            newMsg.options && newMsg.options.id ? newMsg.options.id : guid(),
             this.ctx.correlationId,
-            newMsg);
+            newMsg.message);
 
-        await this.delegate.send(newMsg, destinations, options);
+        await this.delegate.send(newMsg.message, newMsg.destinations, newMsg.options);
 
         return Promise.all(
             this.listeners.map(
                 l => l.messageSent(
-                    newMsg,
-                    destinations,
-                    options,
+                    newMsg.message,
+                    newMsg.destinations,
+                    newMsg.options,
                     this.ctx),
             ),
         );

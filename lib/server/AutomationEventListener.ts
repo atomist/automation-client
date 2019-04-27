@@ -107,7 +107,7 @@ export interface AutomationEventListener {
     messageSending(message: any,
                    destinations: Destination | Destination[],
                    options: MessageOptions,
-                   ctx: HandlerContext): Promise<any>;
+                   ctx: HandlerContext): Promise<{ message: any, destinations: Destination | Destination[], options: MessageOptions }>;
 
     /**
      * Message was sent via the MessageClient
@@ -172,8 +172,12 @@ export class AutomationEventListenerSupport implements AutomationEventListener {
     public messageSending(message: any,
                           destinations: Destination | Destination[],
                           options: MessageOptions,
-                          ctx: HandlerContext): Promise<any> {
-        return Promise.resolve(message);
+                          ctx: HandlerContext): Promise<{ message: any, destinations: Destination | Destination[], options: MessageOptions }> {
+        return Promise.resolve({
+            message,
+            destinations,
+            options,
+        });
     }
 
     public messageSent(message: any,
