@@ -380,11 +380,9 @@ export function addLogRedaction(redacted: RegExp, suggestedReplacement?: string)
 // exported only for testing
 export function redact(logInfo: logform.TransformableInfo): logform.TransformableInfo {
     let output = logInfo.message;
-    if (!!output) {
-        redactions.forEach(r => {
-            output = output.replace(r.redacted, r.replacement);
-        });
-    }
+    redactions.forEach(r => {
+        output = typeof output === "string" ? output.replace(r.redacted, r.replacement) : output;
+    });
     return { ...logInfo, message: output };
 }
 
