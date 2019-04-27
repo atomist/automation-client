@@ -412,7 +412,7 @@ class AutomationEventListenerEnabledMessageClient implements MessageClient {
     public async respond(msg: any,
                          options?: MessageOptions): Promise<any> {
         const newMsg = await this.listeners.map(
-            l => m => l.messageSending(m.message, [], m.options, this.ctx))
+            l => m => l.messageSending(m.message || msg, [], m.options || options, this.ctx))
             .reduce((p, f) => p.then(f), Promise.resolve({ message: msg, destinations: [] as any, options }));
 
         eventStore().recordMessage(
@@ -437,7 +437,7 @@ class AutomationEventListenerEnabledMessageClient implements MessageClient {
                       destinations: Destination | Destination[],
                       options?: MessageOptions): Promise<any> {
         const newMsg = await this.listeners.map(
-            l => m => l.messageSending(m.message, m.destinations, m.options, this.ctx))
+            l => m => l.messageSending(m.message || msg, m.destinations || destinations, m.options || options, this.ctx))
             .reduce((p, f) => p.then(f), Promise.resolve({ message: msg, destinations, options }));
 
         eventStore().recordMessage(
