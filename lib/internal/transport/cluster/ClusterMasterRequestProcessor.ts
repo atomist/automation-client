@@ -83,20 +83,30 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         this.webSocketLifecycle = (configuration.ws as any).lifecycle as WebSocketLifecycle;
 
         registerHealthIndicator(() => {
+            const cmds: string[] = [];
+            for (const key of this.commands.keys()) {
+                cmds.push(key);
+            }
+
+            const evts: string[] = [];
+            for (const key of this.events.keys()) {
+                evts.push(key);
+            }
+
             if (this.webSocketLifecycle.connected() && this.registration) {
                 return {
                     status: HealthStatus.Up,
                     detail: {
-                        commands: this.commands.keys(),
-                        events: this.events.keys(),
+                        commands: cmds,
+                        events: evts,
                     },
                 };
             } else {
                 return {
                     status: HealthStatus.Down,
                     detail: {
-                        commands: this.commands.keys(),
-                        events: this.events.keys(),
+                        commands: cmds,
+                        events: evts,
                     },
                 };
             }
