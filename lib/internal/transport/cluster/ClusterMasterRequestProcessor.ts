@@ -88,7 +88,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                     status: HealthStatus.Up,
                     detail: {
                         commands: this.commands.keys(),
-                        events: this.commands.keys(),
+                        events: this.events.keys(),
                     },
                 };
             } else {
@@ -96,7 +96,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                     status: HealthStatus.Down,
                     detail: {
                         commands: this.commands.keys(),
-                        events: this.commands.keys(),
+                        events: this.events.keys(),
                     },
                 };
             }
