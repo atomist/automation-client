@@ -84,9 +84,21 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
 
         registerHealthIndicator(() => {
             if (this.webSocketLifecycle.connected() && this.registration) {
-                return { status: HealthStatus.Up, detail: "WebSocket connection established" };
+                return {
+                    status: HealthStatus.Up,
+                    detail: {
+                        commands: this.commands.keys(),
+                        events: this.commands.keys(),
+                    },
+                };
             } else {
-                return { status: HealthStatus.Down, detail: "WebSocket disconnected" };
+                return {
+                    status: HealthStatus.Down,
+                    detail: {
+                        commands: this.commands.keys(),
+                        events: this.commands.keys(),
+                    },
+                };
             }
         });
 
@@ -402,19 +414,22 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                     this.messages.length,
                     1,
                     [],
-                    () => { /* intentionally empty */ });
+                    () => { /* intentionally empty */
+                    });
                 statsd.gauge(
                     "work_queue.events",
                     this.events.size,
                     1,
                     [],
-                    () => { /* intentionally empty */ });
+                    () => { /* intentionally empty */
+                    });
                 statsd.gauge(
                     "work_queue.commands",
                     this.commands.size,
                     1,
                     [],
-                    () => { /* intentionally empty */ });
+                    () => { /* intentionally empty */
+                    });
             }
         }
     }
