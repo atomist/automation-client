@@ -1,5 +1,6 @@
 import { SlackMessage } from "@atomist/slack-messages";
 import * as stringify from "json-stringify-safe";
+import * as _ from "lodash";
 import { Configuration } from "../../../configuration";
 import { EventFired } from "../../../HandleEvent";
 import {
@@ -33,8 +34,6 @@ import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
     CommandIncoming,
     EventIncoming,
-    isCommandIncoming,
-    isEventIncoming,
     RequestProcessor,
     workspaceId,
 } from "../RequestProcessor";
@@ -166,7 +165,7 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
             type: "atomist:command_success",
             event: payload,
             context: (ctx as any).context,
-            data: result,
+            data: sanitize(result),
         });
     }
 
@@ -175,7 +174,7 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
             type: "atomist:command_failure",
             event: payload,
             context: (ctx as any).context,
-            data: err,
+            data: sanitize(err),
         });
     }
 
@@ -184,7 +183,7 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
             type: "atomist:event_success",
             event: payload,
             context: (ctx as any).context,
-            data: result,
+            data: sanitize(result),
         });
     }
 
@@ -193,7 +192,7 @@ class ClusterWorkerAutomationEventListener extends AutomationEventListenerSuppor
             type: "atomist:event_failure",
             event: payload,
             context: (ctx as any).context,
-            data: err,
+            data: sanitize(err),
         });
     }
 
@@ -231,4 +230,23 @@ function decorateContext(msg: MasterMessage): any {
     const event = msg.data;
     event.__context = msg.context;
     return event;
+}
+
+function sanitize(obj: any): any {
+    const newObj: any = {};
+    _.forEach(obj, (v, k) => {
+        try {
+            JSON.stringify(v);
+            newObj[k] = v;
+        } catch (e) {
+            newObj[k] = "[circular]";
+        }
+    });
+    if (!!obj.message) {
+        newObj.message = obj.message;
+    }
+    if (!!obj.stack) {
+        newObj.stack = obj.stack;
+    }
+    return newObj;
 }
