@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.4.0...HEAD)
 
+### Added
+
+-   Support sending response messages back into a thread. [dc005f2](https://github.com/atomist/automation-client/commit/dc005f2237b650d2f96ea5206db9a31b7453b1c9)
+
 ### Changed
 
 -   Consolidate and make test running smarter. [#517](https://github.com/atomist/automation-client/issues/517)
