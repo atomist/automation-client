@@ -275,9 +275,10 @@ export interface MessageOptions extends AnyOptions {
     post?: "update_only" | "always";
 
     /**
-     * Optional thread identifier to send this message to.
+     * Optional thread identifier to send this message to or true to send
+     * this to the message that triggered this command.
      */
-    thread?: string;
+    thread?: string | boolean;
 }
 
 /** Valid MessageClient types. */

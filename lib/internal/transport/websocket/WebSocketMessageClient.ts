@@ -52,6 +52,14 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
 
         let destinationIdentifier: "slack" | "ingester" | "web";
         const responseDestinations = [];
+
+        let thread_ts;
+        if (options.thread === true && !!this.source) {
+            thread_ts = _.get(this.source, "slack.message.ts");
+        } else if (typeof options.thread === "string") {
+            thread_ts = options.thread;
+        }
+
         destinations.forEach(d => {
             if (d.userAgent === SlackDestination.SLACK_USER_AGENT) {
                 destinationIdentifier = "slack";
@@ -68,7 +76,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                             channel: {
                                 name: c,
                             },
-                            thread_ts: options.thread,
+                            thread_ts,
                         },
                     });
                 });
@@ -83,7 +91,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                             user: {
                                 name: c,
                             },
-                            thread_ts: options.thread,
+                            thread_ts,
                         },
                     });
                 });
