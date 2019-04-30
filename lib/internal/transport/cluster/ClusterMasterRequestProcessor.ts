@@ -14,6 +14,7 @@ import { AutomationEventListener } from "../../../server/AutomationEventListener
 import { AutomationServer } from "../../../server/AutomationServer";
 import { GraphClient } from "../../../spi/graph/GraphClient";
 import { MessageClient } from "../../../spi/message/MessageClient";
+import { printError } from "../../../util/error";
 import { logger } from "../../../util/logger";
 import { CommandInvocation } from "../../invoker/Payload";
 import * as namespace from "../../util/cls";
@@ -203,20 +204,38 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                                 this.clearNamespace();
                                 this.startMessage();
                             })
-                            .catch(this.clearNamespace);
-                    } else if (msg.type === "atomist:command_failure") {
-                        this.listeners.map(l => () => l.commandFailed(msg.event as CommandInvocation,
-                            ctx, msg.data as HandlerResult))
-                            .reduce((p, f) => p.then(f), Promise.resolve())
-                            .then(() => {
+                            .catch(e => {
+                                logger.warn(`Failed to run listeners: ${e.message}`);
+                                printError(e);
                                 if (this.commands.has(invocationId)) {
                                     this.commands.get(invocationId).dispatched.result.resolve(msg.data as HandlerResult);
                                     this.commands.delete(invocationId);
                                 }
                                 this.clearNamespace();
                                 this.startMessage();
+                            });
+                    } else if (msg.type === "atomist:command_failure") {
+                        this.listeners.map(l => () => l.commandFailed(msg.event as CommandInvocation,
+                            ctx, msg.data as HandlerResult))
+                            .reduce((p, f) => p.then(f), Promise.resolve())
+                            .then(() => {
+                                if (this.commands.has(invocationId)) {
+                                    this.commands.get(invocationId).dispatched.result.reject(msg.data as HandlerResult);
+                                    this.commands.delete(invocationId);
+                                }
+                                this.clearNamespace();
+                                this.startMessage();
                             })
-                            .catch(this.clearNamespace);
+                            .catch(e => {
+                                logger.warn(`Failed to run listeners: ${e.message}`);
+                                printError(e);
+                                if (this.commands.has(invocationId)) {
+                                    this.commands.get(invocationId).dispatched.result.reject(msg.data as HandlerResult);
+                                    this.commands.delete(invocationId);
+                                }
+                                this.clearNamespace();
+                                this.startMessage();
+                            });
                     } else if (msg.type === "atomist:event_success") {
                         this.listeners.map(l => () => l.eventSuccessful(msg.event as EventFired<any>,
                             ctx, msg.data as HandlerResult[]))
@@ -229,20 +248,38 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                                 this.clearNamespace();
                                 this.startMessage();
                             })
-                            .catch(this.clearNamespace);
+                            .catch(e => {
+                                logger.warn(`Failed to run listeners: ${e.message}`);
+                                printError(e);
+                                if (this.events.has(invocationId)) {
+                                    this.events.get(invocationId).dispatched.result.resolve(msg.data as HandlerResult);
+                                    this.events.delete(invocationId);
+                                }
+                                this.clearNamespace();
+                                this.startMessage();
+                            });
                     } else if (msg.type === "atomist:event_failure") {
                         this.listeners.map(l => () => l.eventFailed(msg.event as EventFired<any>,
                             ctx, msg.data as HandlerResult[]))
                             .reduce((p, f) => p.then(f), Promise.resolve())
                             .then(() => {
                                 if (this.events.has(invocationId)) {
-                                    this.events.get(invocationId).dispatched.result.resolve(msg.data as HandlerResult[]);
+                                    this.events.get(invocationId).dispatched.result.reject(msg.data as HandlerResult[]);
                                     this.events.delete(invocationId);
                                 }
                                 this.clearNamespace();
                                 this.startMessage();
                             })
-                            .catch(this.clearNamespace);
+                            .catch(e => {
+                                logger.warn(`Failed to run listeners: ${e.message}`);
+                                printError(e);
+                                if (this.events.has(invocationId)) {
+                                    this.events.get(invocationId).dispatched.result.reject(msg.data as HandlerResult);
+                                    this.events.delete(invocationId);
+                                }
+                                this.clearNamespace();
+                                this.startMessage();
+                            });
                     } else if (msg.type === "atomist:shutdown") {
                         logger.info(`Shutdown requested from worker`);
                         process.exit(msg.data);
