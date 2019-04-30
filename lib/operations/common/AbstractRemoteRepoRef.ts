@@ -17,7 +17,6 @@
 
 import { ActionResult } from "../../action/ActionResult";
 import { Configurable } from "../../project/git/Configurable";
-import { addLogRedaction } from "../../util/logger";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
 import { isGitlabPrivateTokenCredentials } from "./GitlabPrivateTokenCredentials";
 import {
@@ -28,10 +27,6 @@ import {
     ProviderType,
     RemoteRepoRef,
 } from "./RepoId";
-
-addLogRedaction(/[0-9a-f]{40}((?::x-oauth-basic)?@)/g, "[REDACTED_GITHUB_TOKEN]$1");
-// ordering matters: keep this after the Github token one, which happens to look at the password, and this replacement would make it not match
-addLogRedaction(/(https?:\/\/[^:\/\?#\[\]@]+:)[^:\/\?#\[\]@]+(@)/g, "$1[REDACTED_URL_PASSWORD]$2");
 
 /**
  * Superclass for RemoteRepoRef implementations.

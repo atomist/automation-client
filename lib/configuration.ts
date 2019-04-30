@@ -258,6 +258,15 @@ export interface AutomationServerOptions extends AutomationOptions {
             level?: "silly" | "debug" | "verbose" | "info" | "warn" | "error";
         };
     };
+    /** Redaction configuration */
+    redact?: {
+        /** Redact log messages */
+        log?: boolean;
+        /** Redact messages send via the message client */
+        messages?: boolean;
+        /** Register patterns to look for and optional replacements */
+        patterns?: Array<{ regexp: RegExp | string, replacement?: string }>;
+    };
     /** statsd config */
     statsd?: {
         /** Whether to send metrics statsd, default is false */
@@ -941,6 +950,17 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
         });
 }
 
+export const DEFAULT_REDACTION_PATTERNS = [
+    {
+        regexp: /[0-9a-f]{40}((?::x-oauth-basic)?@)/g,
+        replacement: "[REDACTED_GITHUB_TOKEN]$1",
+    },
+    {
+        regexp: /(https?:\/\/[^:\/\?#\[\]@]+:)[^:\/\?#\[\]@]+(@)/g,
+        replacement: "$1[REDACTED_URL_PASSWORD]$2",
+    },
+];
+
 /**
  * Default configuration when running in neither testing or
  * production.
@@ -1008,6 +1028,11 @@ export const LocalDefaultConfiguration: Configuration = {
     },
     statsd: {
         enabled: false,
+    },
+    redact: {
+        log: true,
+        messages: true,
+        patterns: DEFAULT_REDACTION_PATTERNS,
     },
     commands: null,
     events: null,

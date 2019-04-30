@@ -11,6 +11,7 @@ import {
     AutomationServerOptions,
     Configuration,
     configurationValue,
+    DEFAULT_REDACTION_PATTERNS,
     defaultConfiguration,
     loadAtomistConfig,
     loadAtomistConfigPath,
@@ -109,6 +110,11 @@ describe("configuration", () => {
                 enabled: true,
                 contributors: [],
             },
+        },
+        redact: {
+            log: true,
+            messages: true,
+            patterns: DEFAULT_REDACTION_PATTERNS,
         },
         statsd: {
             enabled: false,

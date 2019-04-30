@@ -3,7 +3,9 @@ import {
     SlackMessage,
 } from "@atomist/slack-messages";
 import * as _ from "lodash";
+import { Config } from "winston/lib/winston/config";
 import * as WebSocket from "ws";
+import { Configuration } from "../../../configuration";
 import {
     CommandReferencingAction,
     CustomEventDestination,
@@ -17,6 +19,7 @@ import {
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { logger } from "../../../util/logger";
+import { redact } from "../../../util/redact";
 import {
     guid,
     replacer,
@@ -37,7 +40,8 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 private request: CommandIncoming | EventIncoming,
                 private correlationId: string,
                 private team: { id: string, name?: string },
-                private source: Source) {
+                private source: Source,
+                private configuration: Configuration) {
         super();
     }
 
@@ -154,6 +158,9 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 response.content_type = MessageMimeTypes.PLAIN_TEXT;
                 response.body = msg as string;
             }
+            if (_.get(this.configuration, "redact.messages", true) === true) {
+                response.body = redact(response.body);
+            }
         } else if (destinationIdentifier === "ingester") {
             response.content_type = MessageMimeTypes.APPLICATION_JSON;
             response.body = JSON.stringify(msg);
@@ -178,8 +185,8 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
 
 export class WebSocketCommandMessageClient extends AbstractWebSocketMessageClient {
 
-    constructor(request: CommandIncoming, ws: WebSocketLifecycle) {
-        super(ws, request, request.correlation_id, request.team, request.source);
+    constructor(request: CommandIncoming, ws: WebSocketLifecycle, configuration: Configuration) {
+        super(ws, request, request.correlation_id, request.team, request.source, configuration);
     }
 
     protected async doSend(msg: string | SlackMessage,
@@ -191,9 +198,9 @@ export class WebSocketCommandMessageClient extends AbstractWebSocketMessageClien
 
 export class WebSocketEventMessageClient extends AbstractWebSocketMessageClient {
 
-    constructor(request: EventIncoming, ws: WebSocketLifecycle) {
+    constructor(request: EventIncoming, ws: WebSocketLifecycle, configuration: Configuration) {
         super(ws, request, request.extensions.correlation_id,
-            { id: request.extensions.team_id, name: request.extensions.team_name }, null);
+            { id: request.extensions.team_id, name: request.extensions.team_name }, null, configuration);
     }
 
     protected async doSend(msg: string | SlackMessage,

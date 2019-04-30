@@ -36,6 +36,7 @@ import {
     configureLogging,
     logger,
 } from "./util/logger";
+import { addRedaction } from "./util/redact";
 import { StatsdAutomationEventListener } from "./util/statsd";
 
 export class AutomationClient implements RequestProcessor {
@@ -98,6 +99,7 @@ export class AutomationClient implements RequestProcessor {
     }
 
     public run(): Promise<void> {
+        this.configureRedactions();
         configureLogging(clientLoggingConfiguration(this.configuration));
         this.configureStatsd();
 
@@ -142,6 +144,20 @@ export class AutomationClient implements RequestProcessor {
                     this.webSocketHandler = workerProcessor;
                     return this.raiseStartupEvent();
                 });
+        }
+    }
+
+    private configureRedactions() {
+        if (!!this.configuration.redact && !!this.configuration.redact.patterns) {
+            this.configuration.redact.patterns.forEach(p => {
+                let regexp: RegExp;
+                if (typeof p.regexp === "string") {
+                    regexp = new RegExp(p.regexp, "g");
+                } else {
+                    regexp = p.regexp;
+                }
+                addRedaction(regexp, p.replacement);
+            });
         }
     }
 

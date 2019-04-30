@@ -61,7 +61,7 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
                                   context: AutomationContextAware): MessageClient {
         return !!this.configuration.http.messageClientFactory ?
             this.configuration.http.messageClientFactory(context) :
-            new ExpressMessageClient(event);
+            new ExpressMessageClient(event, this.configuration);
     }
 }
 
@@ -69,14 +69,14 @@ class ExpressMessageClient implements MessageClient {
 
     private delegate: MessageClient;
 
-    constructor(private event: EventIncoming | CommandIncoming) {
+    constructor(private event: EventIncoming | CommandIncoming, configuration: Configuration) {
         if (automationClientInstance().webSocketHandler
             && (automationClientInstance().webSocketHandler as any).webSocketLifecycle) {
             const ws = (automationClientInstance().webSocketHandler as any).webSocketLifecycle as WebSocketLifecycle;
             if (isCommandIncoming(this.event)) {
-                this.delegate = new WebSocketCommandMessageClient(this.event, ws);
+                this.delegate = new WebSocketCommandMessageClient(this.event, ws, configuration);
             } else if (isEventIncoming(this.event)) {
-                this.delegate = new WebSocketEventMessageClient(this.event, ws);
+                this.delegate = new WebSocketEventMessageClient(this.event, ws, configuration);
             }
         }
     }

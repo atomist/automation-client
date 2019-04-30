@@ -88,9 +88,9 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
 
     protected createMessageClient(event: CommandIncoming | EventIncoming): MessageClient {
         if (isCommandIncoming(event)) {
-            return new WebSocketCommandMessageClient(event, this.webSocketLifecycle);
+            return new WebSocketCommandMessageClient(event, this.webSocketLifecycle, this.configuration);
         } else if (isEventIncoming(event)) {
-            return new WebSocketEventMessageClient(event, this.webSocketLifecycle);
+            return new WebSocketEventMessageClient(event, this.webSocketLifecycle, this.configuration);
         }
     }
 }

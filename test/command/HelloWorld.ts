@@ -17,10 +17,10 @@ import {
 import {
     addressEvent,
     addressSlackChannels,
-    addressSlackChannelsFromContext,
     addressSlackUsers,
     addressSlackUsersFromContext,
 } from "../../lib/spi/message/MessageClient";
+import { logger } from "../../lib/util/logger";
 import { SecretBaseHandler } from "./SecretBaseHandler";
 
 @ConfigurableCommandHandler("Send a hello back to the client", { intent: "hello cd", autoSubmit: true })
@@ -45,7 +45,10 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
             },
         };
 
-        await ctx.messageClient.send({ text: "test"}, await addressSlackUsersFromContext(ctx, "cd"));
+
+        logger.info(" hello look bla bla https://test:superpassword@google.com test");
+
+        await ctx.messageClient.send({ text: "https://test:superpassword@google.com"}, await addressSlackUsersFromContext(ctx, "cd"), { thread: true });
 
         await ctx.messageClient.send({ text: "test" }, addressSlackChannels(ctx.workspaceId, "handlers"));
         await ctx.messageClient.send({ text: "test" }, addressSlackUsers(ctx.workspaceId, "cd"), { id: null });
