@@ -15,6 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/* tslint:disable:max-file-line-count */
+
 import * as appRoot from "app-root-path";
 import * as cluster from "cluster";
 import * as exp from "express";
@@ -342,12 +344,11 @@ export interface UserConfig extends AutomationServerOptions {
 export function defaultConfiguration(): Configuration {
     interface SimplePackage {
         name?: string;
-        version?;
-        string;
+        version?: string;
         keywords?: string[];
     }
 
-    const pj: SimplePackage = loadHostPackageJson() || {} as SimplePackage;
+    const pj: SimplePackage = loadHostPackageJson() || {};
     pj.name = pj.name || "atm-client-" + guid();
     pj.version = pj.version || "0.0.0";
     pj.keywords = pj.keywords || [];
@@ -377,7 +378,8 @@ export function configurationValue<T>(path: string = "", defaultValue?: T): T {
         } else {
             value = _.get(conf, path);
         }
-        if (value != null) {
+        // tslint:disable-next-line:no-null-keyword
+        if (value !== null && value !== undefined) {
             return value;
         } else if (defaultValue !== undefined) {
             return defaultValue;
@@ -477,7 +479,7 @@ export function getUserConfig(): UserConfig {
  *
  * @param source name of configuration source
  */
-function cfgLog(source: string) {
+function cfgLog(source: string): void {
     if (cluster.isMaster) {
         logger.debug(`Loading configuration '${source}'`);
     }
@@ -596,7 +598,8 @@ export function loadUserConfiguration(name?: string, version?: string): Automati
  * @param cfgPath location of automation configuration
  * @return automation configuration or undefined
  */
-export function loadAutomationConfig(cfgPath?: string): Configuration | undefined {
+export function loadAutomationConfig(configPath?: string): Configuration | undefined {
+    let cfgPath = configPath;
     if (!cfgPath) {
         const cfgFile = "atomist.config.js";
         const files = glob.sync(`${appRoot.path}/**/${cfgFile}`, { ignore: ["**/{.git,node_modules}/**"] });
@@ -766,7 +769,7 @@ const EnvironmentVariablePrefix = "ATOMIST_";
  * a json path of custom.foo.bar.
  * @param {Configuration} cfg
  */
-export function resolveEnvironmentVariables(cfg: Configuration) {
+export function resolveEnvironmentVariables(cfg: Configuration): void {
     for (const key in process.env) {
         if (key.startsWith(EnvironmentVariablePrefix)
             && process.env.hasOwnProperty(key)) {
@@ -783,7 +786,7 @@ export function resolveEnvironmentVariables(cfg: Configuration) {
  * Placeholders should be of form ${ENV_VAR}. Placeholders support default values
  * in case they aren't defined: ${ENV_VAR:default value}
  */
-export async function resolvePlaceholders(cfg: Configuration, replacer: (value: string) => Promise<string> = resolvePlaceholder) {
+export async function resolvePlaceholders(cfg: Configuration, replacer: (value: string) => Promise<string> = resolvePlaceholder): Promise<void> {
     await resolvePlaceholdersRecursively(cfg, [], replacer);
 }
 
@@ -805,26 +808,27 @@ async function resolvePlaceholdersRecursively(obj: any, visited: any[], replacer
 const PlaceholderExpression = /\$\{([.a-zA-Z_-]+)([.:0-9a-zA-Z-_ \" ]+)*\}/g;
 
 async function resolvePlaceholder(value: string): Promise<string> {
-    if (PlaceholderExpression.test(value)) {
-        PlaceholderExpression.lastIndex = 0;
-        let result;
+    if (!PlaceholderExpression.test(value)) {
+        return value;
+    }
+    PlaceholderExpression.lastIndex = 0;
+    let currentValue = value;
+    let result: RegExpExecArray;
+    // tslint:disable-next-line:no-conditional-assignment
+    while (result = PlaceholderExpression.exec(currentValue)) {
+        const fm = result[0];
+        const envValue = process.env[result[1]];
+        const defaultValue = result[2] ? result[2].trim().slice(1) : undefined;
 
-        // tslint:disable-next-line:no-conditional-assignment
-        while (result = PlaceholderExpression.exec(value)) {
-            const fm = result[0];
-            const envValue = process.env[result[1]];
-            const defaultValue = result[2] ? result[2].trim().slice(1) : undefined;
-
-            if (envValue) {
-                value = value.split(fm).join(envValue);
-            } else if (defaultValue) {
-                value = value.split(fm).join(defaultValue);
-            } else {
-                throw new Error(`Environment variable '${result[1]}' is not defined`);
-            }
+        if (envValue) {
+            currentValue = currentValue.split(fm).join(envValue);
+        } else if (defaultValue) {
+            currentValue = currentValue.split(fm).join(defaultValue);
+        } else {
+            throw new Error(`Environment variable '${result[1]}' is not defined`);
         }
     }
-    return value;
+    return currentValue;
 }
 
 /**
@@ -840,7 +844,7 @@ export function invokePostProcessors(cfg: Configuration): Promise<Configuration>
  *
  * @param cfg final configuration
  */
-export function validateConfiguration(cfg: Configuration) {
+export function validateConfiguration(cfg: Configuration): void {
     if (!cfg) {
         throw new Error(`no configuration defined`);
     }
@@ -950,14 +954,17 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
         });
 }
 
+/**
+ * Default set of regular expressions used to remove sensitive
+ * information from messages and logs.  The entries are applied in
+ * order, so more specific regular expressions should be placed
+ * earlier in the list to avoid a shorter replacement preventing a
+ * longer replacement from being applied.
+ */
 export const DEFAULT_REDACTION_PATTERNS = [
     {
-        regexp: /[a-f0-9]{40}/g,
-        replacement: "[GITHUB_TOKEN]",
-    },
-    {
-        regexp: /(https?:\/\/[^:\/\?#\[\]@]+:)[^:\/\?#\[\]@]+(@)/g,
-        replacement: "$1[URL_PASSWORD]$2",
+        regexp: /[A-F0-9]{64}/g,
+        replacement: "[ATOMIST_API_KEY]",
     },
     {
         regexp: /[1-9][0-9]+-[0-9a-zA-Z]{40}/g,
@@ -970,6 +977,10 @@ export const DEFAULT_REDACTION_PATTERNS = [
     {
         regexp: /AIza[0-9A-Za-z\-_]{35}/g,
         replacement: "[GOOGLE_API_KEY]",
+    },
+    {
+        regexp: /[a-f0-9]{40}/g,
+        replacement: "[GITHUB_TOKEN]",
     },
     {
         regexp: /[0-9]+-[0-9A-Za-z_]{32}\.apps\.googleusercontent\.com/g,
@@ -1024,8 +1035,8 @@ export const DEFAULT_REDACTION_PATTERNS = [
         replacement: "[AMAZON_SECRET_KEY]",
     },
     {
-        regexp: /[A-F0-9]{64}/g,
-        replacement: "[ATOMIST_API_KEY]",
+        regexp: /(https?:\/\/[^:\/\?#\[\]@]+:)[^:\/\?#\[\]@]+(@)/g,
+        replacement: "$1[URL_PASSWORD]$2",
     },
 ];
 
@@ -1102,8 +1113,10 @@ export const LocalDefaultConfiguration: Configuration = {
         messages: true,
         patterns: DEFAULT_REDACTION_PATTERNS,
     },
+    /* tslint:disable:no-null-keyword */
     commands: null,
     events: null,
+    /* tslint:enable:no-null-keyword */
     ingesters: [],
     listeners: [],
     postProcessors: [],
