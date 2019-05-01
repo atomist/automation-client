@@ -952,12 +952,80 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
 
 export const DEFAULT_REDACTION_PATTERNS = [
     {
-        regexp: /[0-9a-f]{40}((?::x-oauth-basic)?@)/g,
-        replacement: "[REDACTED_GITHUB_TOKEN]$1",
+        regexp: /[a-f0-9]{40}/g,
+        replacement: "[GITHUB_TOKEN]",
     },
     {
         regexp: /(https?:\/\/[^:\/\?#\[\]@]+:)[^:\/\?#\[\]@]+(@)/g,
-        replacement: "$1[REDACTED_URL_PASSWORD]$2",
+        replacement: "$1[URL_PASSWORD]$2",
+    },
+    {
+        regexp: /[1-9][0-9]+-[0-9a-zA-Z]{40}/g,
+        replacement: "[TWITTER_ACCESS_TOKEN]",
+    },
+    {
+        regexp: /EAACEdEose0cBA[0-9A-Za-z]+/g,
+        replacement: "[FACEBOOK_ACCESS_TOKEN]",
+    },
+    {
+        regexp: /AIza[0-9A-Za-z\-_]{35}/g,
+        replacement: "[GOOGLE_API_KEY]",
+    },
+    {
+        regexp: /[0-9]+-[0-9A-Za-z_]{32}\.apps\.googleusercontent\.com/g,
+        replacement: "[GOOGLE_OAUTH_ID]",
+    },
+    {
+        regexp: /sk_live_[0-9a-z]{32}/g,
+        replacement: "[PICATIC_API_KEY|",
+    },
+    {
+        regexp: /sk_live_[0-9a-zA-Z]{24}/g,
+        replacement: "[STRIPE_REGULAR_API_KEY]",
+    },
+    {
+        regexp: /rk_live_[0-9a-zA-Z]{24}/g,
+        replacement: "[STRIPE_RESTRICTED_API_KEY]",
+    },
+    {
+        regexp: /sq0atp-[0-9A-Za-z\-_]{22}/g,
+        replacement: "[SQUARE_OAUTH_TOKEN]",
+    },
+    {
+        regexp: /sq0csp-[0-9A-Za-z\-_]{43}/g,
+        replacement: "[SQUARE_OAUTH_SECRET]",
+    },
+    {
+        regexp: /access_token\$production\$[0-9a-z]{16}\$[0-9a-f]{32}/g,
+        replacement: "[BRAINTREE_ACCESS_TOKEN]",
+    },
+    {
+        regexp: /amzn\.mws\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/g,
+        replacement: "[AMAZON_AUTH_TOKEN]",
+    },
+    {
+        regexp: /SK[0-9a-fA-F]{32}/g,
+        replacement: "[TWILLIO_API_KEY]",
+    },
+    {
+        regexp: /key-[0-9a-zA-Z]{32}/g,
+        replacement: "[MAILGUN_KEY]",
+    },
+    {
+        regexp: /[0-9a-f]{32}-us[0-9]{1,2}/g,
+        replacement: "[MAILCHIMP_API_KEY]",
+    },
+    {
+        regexp: /AKIA[0-9A-Z]{16}/g,
+        replacement: "[AMAZON_ACCESS_KEY]",
+    },
+    {
+        regexp: /[A-Za-z0-9/+=]{40}/g,
+        replacement: "[AMAZON_SECRET_KEY]",
+    },
+    {
+        regexp: /[A-F0-9]{64}/g,
+        replacement: "[ATOMIST_API_KEY]",
     },
 ];
 

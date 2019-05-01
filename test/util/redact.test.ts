@@ -59,7 +59,7 @@ describe("util/redact", () => {
             } as TransformableInfo);
 
             assert(!result.message.includes("12093847103847561098457012abfcdefab456ef"), "This should have been redacted");
-            assert(result.message.includes("https://[REDACTED_GITHUB_TOKEN]:x-oauth-basic@blah"),
+            assert(result.message.includes("https://[GITHUB_TOKEN]:x-oauth-basic@blah"),
                 "Should be obvious about why it is changed");
         });
 
@@ -70,7 +70,7 @@ describe("util/redact", () => {
             } as TransformableInfo);
 
             assert(!result.message.includes("12093847103847561098457012abfcdefab456ef"), "This should have been redacted");
-            assert(result.message.includes("https://[REDACTED_GITHUB_TOKEN]@blah"), "bare token not removed");
+            assert(result.message.includes("https://[GITHUB_TOKEN]@blah"), "bare token not removed");
         });
 
         // now let's try the other creds that get into cloneUrls
@@ -82,7 +82,7 @@ describe("util/redact", () => {
             } as TransformableInfo);
 
             assert(!result.message.includes("passwordy"), "This should have been redacted");
-            assert(result.message.includes("https://urlencoded%2Fusername:[REDACTED_URL_PASSWORD]@some"), "Be clear about why this is changed");
+            assert(result.message.includes("https://urlencoded%2Fusername:[URL_PASSWORD]@some"), "Be clear about why this is changed");
         });
 
         // `${this.scheme}gitlab-ci-token:${creds.privateToken}@`
@@ -92,7 +92,7 @@ describe("util/redact", () => {
             } as TransformableInfo);
 
             assert(!result.message.includes("something-tokeny"), "This should have been redacted");
-            assert(result.message.includes("https://gitlab-ci-token:[REDACTED_URL_PASSWORD]@blah"), "Be clear about why this is changed");
+            assert(result.message.includes("https://gitlab-ci-token:[URL_PASSWORD]@blah"), "Be clear about why this is changed");
         });
 
     });
