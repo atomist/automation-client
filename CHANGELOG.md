@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 -   Support sending response messages back into a thread. [dc005f2](https://github.com/atomist/automation-client/commit/dc005f2237b650d2f96ea5206db9a31b7453b1c9)
+-   Redact outgoing messages. [#527](https://github.com/atomist/automation-client/issues/527)
 
 ### Changed
 
