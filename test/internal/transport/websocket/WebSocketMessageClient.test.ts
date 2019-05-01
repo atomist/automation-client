@@ -22,7 +22,7 @@ describe("WebSocketMessageClient", () => {
                 data: {},
                 extensions: { team_id: "Txxxxxxx", correlation_id: guid(), operationName: "Foor" },
                 secrets: [],
-            }, null);
+            }, null, {});
         client.respond("Some test message")
             .catch(err => {
                 assert(err.message === "Response messages are not supported for event handlers");
@@ -44,7 +44,7 @@ describe("WebSocketMessageClient", () => {
                 data: {},
                 extensions: { team_id: "Txxxxxxx", correlation_id: corrId, operationName: "Foor" },
                 secrets: [],
-            }, new QueuingWebSocketLifecycle());
+            }, new QueuingWebSocketLifecycle(), {});
 
         const msg: SlackMessage = {
             attachments: [{
@@ -93,7 +93,7 @@ describe("WebSocketMessageClient", () => {
                 data: {},
                 extensions: { team_id: "Txxxxxxx", correlation_id: corrId, operationName: "Foor" },
                 secrets: [],
-            }, new QueuingWebSocketLifecycle());
+            }, new QueuingWebSocketLifecycle(), {});
 
         const msg: SlackMessage = {
             attachments: [{
@@ -160,7 +160,7 @@ describe("WebSocketMessageClient", () => {
                 parameters: [],
                 mapped_parameters: [],
                 secrets: [],
-            }, new QueuingWebSocketLifecycle());
+            }, new QueuingWebSocketLifecycle(), {});
 
         const msg: SlackMessage = {
             attachments: [{
@@ -221,7 +221,7 @@ describe("WebSocketMessageClient", () => {
                 parameters: [],
                 mapped_parameters: [],
                 secrets: [],
-            }, new QueuingWebSocketLifecycle());
+            }, new QueuingWebSocketLifecycle(), {});
 
         const msg: SlackFileMessage = {
             content: "some basic text",

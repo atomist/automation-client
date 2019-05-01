@@ -27,6 +27,7 @@ export {
     Configuration,
     ConfigurationPostProcessor,
     configurationValue,
+    DEFAULT_REDACTION_PATTERNS,
 } from "./lib/configuration";
 export {
     MappedParameter,
@@ -259,7 +260,6 @@ export {
     raiseIssue,
 } from "./lib/util/gitHub";
 export {
-    addLogRedaction,
     LoggingFormat,
     LoggingConfiguration,
     NoLogging,
@@ -274,6 +274,10 @@ export {
     LogCallback,
     logger,
 } from "./lib/util/logger";
+export {
+    addRedaction,
+    addLogRedaction,
+} from "./lib/util/redact"
 export {
     doWithRetry,
     RetryOptions,
