@@ -979,10 +979,6 @@ export const DEFAULT_REDACTION_PATTERNS = [
         replacement: "[GOOGLE_API_KEY]",
     },
     {
-        regexp: /\b[a-f0-9]{40}\b/g,
-        replacement: "[GITHUB_TOKEN]",
-    },
-    {
         regexp: /[0-9]+-[0-9A-Za-z_]{32}\.apps\.googleusercontent\.com/g,
         replacement: "[GOOGLE_OAUTH_ID]",
     },
@@ -1027,12 +1023,12 @@ export const DEFAULT_REDACTION_PATTERNS = [
         replacement: "[MAILCHIMP_API_KEY]",
     },
     {
-        regexp: /\bAKIA[0-9A-Z]{16}\b/g,
+        regexp: /\bAK[0-9A-Z]{18}\b/g,
         replacement: "[AMAZON_ACCESS_KEY]",
     },
     {
-        regexp: /(^|[^A-Za-z0-9/+=])[A-Za-z0-9/+=]{40}([^A-Za-z0-9/+=]|$)/g,
-        replacement: "$1[AMAZON_SECRET_KEY]$2",
+        regexp: /\b(https?:\/\/)[a-f0-9]{40}((?::x-oauth-basic)?@)/g,
+        replacement: "$1[GITHUB_TOKEN]$2",
     },
     {
         regexp: /\b(https?:\/\/[^:\/\?#\[\]@]+:)[^:\/\?#\[\]@]+(@)/g,
