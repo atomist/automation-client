@@ -72,9 +72,6 @@ describe("util/redact", () => {
             assert(result.message.includes("https://[GITHUB_TOKEN]@blah"), "bare token not removed");
         });
 
-        // now let's try the other creds that get into cloneUrls
-
-        //  `${this.scheme}${encodeURIComponent(creds.username)}:${encodeURIComponent(creds.password)}@`
         it("removes url auth password", () => {
             const l: TransformableInfo = {
                 level: "debug",
@@ -83,6 +80,21 @@ describe("util/redact", () => {
             const result = redactLog(l);
             assert(!result.message.includes("passwordy"), "This should have been redacted");
             assert(result.message.includes("https://urlencoded%2Fusername:[URL_PASSWORD]@some"), "Be clear about why this is changed");
+        });
+
+        it("should not redact non-url auth password", () => {
+            const ms = [
+                "ahttps://urlencoded%2Fusername:something%2Fpasswordy4785748@some.handy.website.com/things",
+                "xtp://urlencoded%2Fusername:something%2Fpasswordy4785748@some.handy.website.com/things",
+            ];
+            ms.forEach(m => {
+                const l: TransformableInfo = {
+                    level: "debug",
+                    message: m,
+                };
+                const r = redactLog(l);
+                assert.deepStrictEqual(r, l);
+            });
         });
 
         // `${this.scheme}gitlab-ci-token:${creds.privateToken}@`
@@ -97,6 +109,14 @@ describe("util/redact", () => {
         });
 
         it("should redact the entire Atomist API key", () => {
+            const ms = [
+                "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF",
+                "This 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF is not a real API key",
+                "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF is not a real API key",
+                "Not real 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF",
+                "This\n0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF is not a real API key",
+                "This 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF\nis not a real API key",
+            ];
             const l: TransformableInfo = {
                 level: "warning",
                 message: "This 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF is not a real API key",
@@ -107,6 +127,26 @@ describe("util/redact", () => {
                 message: "This [ATOMIST_API_KEY] is not a real API key",
             };
             assert.deepStrictEqual(r, e);
+        });
+
+        it("should not redact something longer than an Atomist API key", () => {
+            const ms = [
+                "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0",
+                "This 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF01 is not a real API key",
+                "F0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0 is not a real API key",
+                "Not real ABCEDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF",
+                "This\n0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0 is not a real API key",
+                "This 0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0\nis not a real API key",
+                "This\n0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0\nis not a real API key",
+            ];
+            ms.forEach(m => {
+                const l: TransformableInfo = {
+                    level: "warning",
+                    message: m,
+                };
+                const r = redactLog(l);
+                assert.deepStrictEqual(r, l);
+            });
         });
 
         it("should redact the entire Twitter access token", () => {
@@ -125,12 +165,92 @@ describe("util/redact", () => {
         it("should redact a free-standing GitHub personal access token", () => {
             const l: TransformableInfo = {
                 level: "error",
-                message: "This 0123456789abcdef0123456789abcdef01234567 is not a real personal access token",
+                message: "\n\n\tThis 0123456789abcdef0123456789abcdef01234567 is not a real personal access token\n",
             };
             const r = redactLog(l);
             const e = {
                 level: "error",
-                message: "This [GITHUB_TOKEN] is not a real personal access token",
+                message: "\n\n\tThis [GITHUB_TOKEN] is not a real personal access token\n",
+            };
+            assert.deepStrictEqual(r, e);
+        });
+
+        it("should not redact something longer than a GitHub personal access token", () => {
+            const l: TransformableInfo = {
+                level: "error",
+                message: "\n\n\tThis f0123456789abcdef0123456789abcdef01234567 is not a real personal access token\n",
+            };
+            const r = redactLog(l);
+            assert.deepStrictEqual(r, l);
+        });
+
+        it("should redact the entire AWS access key", () => {
+            const l: TransformableInfo = {
+                level: "debug",
+                message: "This\nAKIA0123456789ABCDEF\nis not a real access key",
+            };
+            const r = redactLog(l);
+            const e = {
+                level: "debug",
+                message: "This\n[AMAZON_ACCESS_KEY]\nis not a real access key",
+            };
+            assert.deepStrictEqual(r, e);
+        });
+
+        it("should not redact something longer than an AWS access key", () => {
+            const l: TransformableInfo = {
+                level: "warning",
+                message: "This\nAKIA0123456789ABCDEF01234\nis not a real access key",
+            };
+            const r = redactLog(l);
+            assert.deepStrictEqual(r, l);
+        });
+
+        it("should redact the entire AWS secret key", () => {
+            const l: TransformableInfo = {
+                level: "warning",
+                message: "0123456789ABCDEF+123456789/BCdef0123456= is not a real secret key",
+            };
+            const r = redactLog(l);
+            const e = {
+                level: "warning",
+                message: "[AMAZON_SECRET_KEY] is not a real secret key",
+            };
+            assert.deepStrictEqual(r, e);
+        });
+
+        it("should not redact something longer than an AWS secret key", () => {
+            const l: TransformableInfo = {
+                level: "warning",
+                message: "0123456789ABCDEF+123456789/BCdef0123456== is not a real secret key",
+            };
+            const r = redactLog(l);
+            assert.deepStrictEqual(r, l);
+        });
+
+        it("should redact a lot", () => {
+            const l: TransformableInfo = {
+                level: "error",
+                message: `0123456789ABCDEF+123456789/BCdef0123456= is not a real AWS secret key
+Also, 0123456789abcdef0123456789abcdef01234567 is not a real GitHub personal access token
+Similarly, this may look like a Google OAuth ID but it is not 123456789-0123456789ABCDEFabcdef01234567Aa.apps.googleusercontent.com
+https://user:p%40$$w04D@en.wikipedia.org/ blah blah blah blah "https://12093847103847561098457012abfcdefab456ef:x-oauth-basic@github.com/goo/nar"
+Not Atomist API key ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789.
+Do not redact 0123456789ABCDEF+123456789/BCdef0123456=+
+But do 0123456789ABCDEF+123456789/BCdef0123456=?
+`,
+            };
+            const r = redactLog(l);
+            const e = {
+                level: "error",
+                message: `[AMAZON_SECRET_KEY] is not a real AWS secret key
+Also, [GITHUB_TOKEN] is not a real GitHub personal access token
+Similarly, this may look like a Google OAuth ID but it is not [GOOGLE_OAUTH_ID]
+https://user:[URL_PASSWORD]@en.wikipedia.org/ blah blah blah blah "https://[GITHUB_TOKEN]:x-oauth-basic@github.com/goo/nar"
+Not Atomist API key [ATOMIST_API_KEY].
+Do not redact 0123456789ABCDEF+123456789/BCdef0123456=+
+But do [AMAZON_SECRET_KEY]?
+`,
             };
             assert.deepStrictEqual(r, e);
         });

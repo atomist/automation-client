@@ -963,7 +963,7 @@ export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
  */
 export const DEFAULT_REDACTION_PATTERNS = [
     {
-        regexp: /[A-F0-9]{64}/g,
+        regexp: /\b[A-F0-9]{64}\b/g,
         replacement: "[ATOMIST_API_KEY]",
     },
     {
@@ -979,7 +979,7 @@ export const DEFAULT_REDACTION_PATTERNS = [
         replacement: "[GOOGLE_API_KEY]",
     },
     {
-        regexp: /[a-f0-9]{40}/g,
+        regexp: /\b[a-f0-9]{40}\b/g,
         replacement: "[GITHUB_TOKEN]",
     },
     {
@@ -1027,15 +1027,15 @@ export const DEFAULT_REDACTION_PATTERNS = [
         replacement: "[MAILCHIMP_API_KEY]",
     },
     {
-        regexp: /AKIA[0-9A-Z]{16}/g,
+        regexp: /\bAKIA[0-9A-Z]{16}\b/g,
         replacement: "[AMAZON_ACCESS_KEY]",
     },
     {
-        regexp: /[A-Za-z0-9/+=]{40}/g,
-        replacement: "[AMAZON_SECRET_KEY]",
+        regexp: /(^|[^A-Za-z0-9/+=])[A-Za-z0-9/+=]{40}([^A-Za-z0-9/+=]|$)/g,
+        replacement: "$1[AMAZON_SECRET_KEY]$2",
     },
     {
-        regexp: /(https?:\/\/[^:\/\?#\[\]@]+:)[^:\/\?#\[\]@]+(@)/g,
+        regexp: /\b(https?:\/\/[^:\/\?#\[\]@]+:)[^:\/\?#\[\]@]+(@)/g,
         replacement: "$1[URL_PASSWORD]$2",
     },
 ];
