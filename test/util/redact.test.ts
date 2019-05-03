@@ -53,12 +53,12 @@ describe("util/redact", () => {
 
         it("should redact github token in username position", () => {
             const l: TransformableInfo = {
-                level: "warning",
+                level: "warn",
                 message: "https://12093847103847561098457012abfcdefab456ef:x-oauth-basic@blah blah blah blah",
             };
             const r = redactLog(l);
             const e = {
-                level: "warning",
+                level: "warn",
                 message: "https://[GITHUB_TOKEN]:x-oauth-basic@blah blah blah blah",
             };
             assert.deepStrictEqual(r, e);
@@ -151,12 +151,12 @@ describe("util/redact", () => {
             ];
             ms.forEach(m => {
                 const l: TransformableInfo = {
-                    level: "warning",
+                    level: "warn",
                     message: m,
                 };
                 const r = redactLog(l);
                 const e = {
-                    level: "warning",
+                    level: "warn",
                     message: m.replace("0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF", "[ATOMIST_API_KEY]"),
                 };
                 assert.deepStrictEqual(r, e);
@@ -175,7 +175,7 @@ describe("util/redact", () => {
             ];
             ms.forEach(m => {
                 const l: TransformableInfo = {
-                    level: "warning",
+                    level: "warn",
                     message: m,
                 };
                 const r = redactLog(l);
@@ -185,12 +185,12 @@ describe("util/redact", () => {
 
         it("should redact the entire Twitter access token", () => {
             const l: TransformableInfo = {
-                level: "warning",
+                level: "warn",
                 message: "This 123456789-0123456789abcdef0123456789abcdef01234567 is not a real access token",
             };
             const r = redactLog(l);
             const e = {
-                level: "warning",
+                level: "warn",
                 message: "This [TWITTER_ACCESS_TOKEN] is not a real access token",
             };
             assert.deepStrictEqual(r, e);
@@ -211,7 +211,7 @@ describe("util/redact", () => {
 
         it("should not redact something longer than an AWS access key", () => {
             const l: TransformableInfo = {
-                level: "warning",
+                level: "warn",
                 message: "This\nAKIA0123456789ABCDEF01234\nis not a real access key",
             };
             const r = redactLog(l);
@@ -241,6 +241,25 @@ Do not redact BAKIJ0123456789ABCDEF
 `,
             };
             assert.deepStrictEqual(r, e);
+        });
+
+        it("should not redact discontinuous URL-like structures", () => {
+            const ms = [
+                `{"text":"https://some.where.com","author":"@atomist"}`,
+                `https://some.where.com: @atomist`,
+                `<https://some.where.com>@atomist</>`,
+                `<https://some.where.com|@atomist>`,
+                `{https://some.where.com}(@atomist)`,
+                `[https://some.where.com](@atomist)`,
+            ];
+            ms.forEach(m => {
+                const l: TransformableInfo = {
+                    level: "warn",
+                    message: m,
+                };
+                const r = redactLog(l);
+                assert.deepStrictEqual(r, l);
+            });
         });
 
     });

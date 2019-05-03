@@ -1031,8 +1031,10 @@ export const DEFAULT_REDACTION_PATTERNS = [
         replacement: "$1[GITHUB_TOKEN]$2",
     },
     {
-        regexp: /\b(https?:\/\/[^:\/\?#\[\]@]+:)[^:\/\?#\[\]@]+(@)/g,
-        replacement: "$1[URL_PASSWORD]$2",
+        // https://perishablepress.com/stop-using-unsafe-characters-in-urls/
+        // https://www.ietf.org/rfc/rfc3986.txt
+        regexp: /\b((?:ht|f|sm)tps?:\/\/[^:/?#\[\]@""<>{}|\\^``\s]+:)[^:/?#\[\]@""<>{}|\\^``\s]+@/g,
+        replacement: "$1[URL_PASSWORD]@",
     },
 ];
 
