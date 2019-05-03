@@ -20,13 +20,19 @@ import { guid } from "../lib/internal/util/string";
 import { enableDefaultScanning } from "../lib/scan";
 import { AutomationServer } from "../lib/server/AutomationServer";
 
-main();
+/* tslint:disable:no-console */
+
+main()
+    .catch((err: Error) => {
+        console.error(`Unhandled exception: ${err.message}`);
+        process.exit(101);
+    });
 
 /**
  * Parse command line CommandInvocation argument, set up, and call the
  * command handler.  This method will not return.
  */
-async function main() {
+async function main(): Promise<void> {
     if (!process.argv[2]) {
         console.error(`[ERROR] Missing command, you must supply the CommandInvocation on the command line`);
         process.exit(3);
@@ -69,7 +75,7 @@ function createHandlerContext(config: Configuration): HandlerContext {
  * @param ci command and its parameters
  * @param ctx suitable execution context
  */
-async function invokeOnConsole(automationServer: AutomationServer, ci: CommandInvocation, ctx: HandlerContext) {
+async function invokeOnConsole(automationServer: AutomationServer, ci: CommandInvocation, ctx: HandlerContext): Promise<void> {
 
     // Set up the parameter, mappend parameters and secrets
     const handler = automationServer.automations.commands.find(c => c.name === ci.name);
@@ -99,9 +105,9 @@ async function invokeOnConsole(automationServer: AutomationServer, ci: CommandIn
     }
     try {
         const result = await automationServer.invokeCommand(invocation, ctx);
-        console.log(`Command succeeded: ${stringify(result, null, 2)}`);
+        console.log(`Command succeeded: ${stringify(result, undefined, 2)}`);
     } catch (e) {
-        console.error(`[ERROR] Command failed: ${stringify(e, null, 2)}`);
+        console.error(`[ERROR] Command failed: ${stringify(e, undefined, 2)}`);
         process.exit(1);
     }
     process.exit(0);

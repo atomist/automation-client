@@ -12,6 +12,8 @@ import { Types } from "graphql-codegen-core";
 import * as path from "path";
 import * as util from "util";
 
+/* tslint:disable:no-console */
+
 /**
  * Figure out whether the lib directory is named lib or src.  lib is
  * preferred, meaning if it exists, it is returned and if neither it

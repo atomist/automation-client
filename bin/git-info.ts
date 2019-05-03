@@ -9,6 +9,8 @@ import * as fs from "fs-extra";
 import * as path from "path";
 import { obtainGitInfo } from "../lib/internal/env/gitInfo";
 
+/* tslint:disable:no-console */
+
 /**
  * Generate git-info.json for automation client.
  */

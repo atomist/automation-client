@@ -5,8 +5,11 @@
  * See LICENSE file.
  */
 
+// tslint:disable-next-line:no-import-side-effect
 import "source-map-support/register";
 import { printError } from "../lib/util/error";
+
+/* tslint:disable:no-console */
 
 async function main(): Promise<void> {
     try {
