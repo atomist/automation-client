@@ -70,7 +70,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
 
                 const sd = d as SlackDestination;
 
-                toStringArray(sd.channels).forEach(c => {
+                toStringArray(sd.channels).filter(c => !!c).forEach(c => {
                     responseDestinations.push({
                         user_agent: SlackDestination.SLACK_USER_AGENT,
                         slack: {
@@ -85,7 +85,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                     });
                 });
 
-                toStringArray(sd.users).forEach(c => {
+                toStringArray(sd.users).filter(u => !!u).forEach(u => {
                     responseDestinations.push({
                         user_agent: SlackDestination.SLACK_USER_AGENT,
                         slack: {
@@ -93,7 +93,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                                 id: sd.team,
                             },
                             user: {
-                                name: c,
+                                name: u,
                             },
                             thread_ts,
                         },
