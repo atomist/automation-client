@@ -13,7 +13,10 @@
     "type": "git",
     "url": "git+https://github.com/atomist/automation-client.git"
   },
-  "keywords": ["atomist", "automation"],
+  "keywords": [
+    "atomist",
+    "automation"
+  ],
   "bugs": {
     "url": "https://github.com/atomist/automation-client/issues"
   },
