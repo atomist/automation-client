@@ -24,6 +24,7 @@ const winstonLogger = winston.createLogger({
  */
 export const logger: Logger = winstonLogger;
 
+/* tslint:disable:no-console */
 // Save console log methods
 const GlobalConsoleMethods = {
     error: console.error,
@@ -33,6 +34,7 @@ const GlobalConsoleMethods = {
     log: console.log,
     trace: console.trace,
 };
+/* tslint:enable:no-console */
 
 /**
  * Constants for the logging format
@@ -162,7 +164,7 @@ export const ClientLogging: LoggingConfiguration = {
  * It is safe to call this method several times to re-configure the logger.
  * @param config
  */
-export function configureLogging(config: LoggingConfiguration) {
+export function configureLogging(config: LoggingConfiguration): void {
     try {
         winstonLogger.silent = true;
         winstonLogger.clear();
@@ -281,6 +283,7 @@ function validateLevel(level: string): string {
     return level;
 }
 
+/* tslint:disable:cyclomatic-complexity */
 const clientFormat = info => {
     const c = winston.format.colorize();
     const executionContext = context.get();
@@ -342,8 +345,10 @@ ${meta.stack}`;
 
     return formatted;
 };
+/* tslint:enable:cyclomatic-complexity */
 
-function unRedirectConsoleLogging() {
+/* tslint:disable:no-console */
+function unRedirectConsoleLogging(): void {
     console.error = GlobalConsoleMethods.error;
     console.info = GlobalConsoleMethods.info;
     console.log = GlobalConsoleMethods.log;
@@ -351,7 +356,7 @@ function unRedirectConsoleLogging() {
     console.warn = GlobalConsoleMethods.warn;
 }
 
-function redirectConsoleLogging() {
+function redirectConsoleLogging(): void {
     console.error = (message?: any, ...optionalParams: any[]) => {
         winstonLogger.error(message, ...optionalParams);
     };
@@ -368,8 +373,7 @@ function redirectConsoleLogging() {
         winstonLogger.warn(message, ...optionalParams);
     };
 }
-
-
+/* tslint:enable:no-console */
 
 function getFormat(format: LoggingFormat, redact: boolean): logform.Format {
     switch (format) {
