@@ -152,7 +152,7 @@ ding dong ding
         const gs2 = await p2.gitStatus();
         assert(gs1.sha === gs2.sha);
         await p.release();
-    }).timeout(5000);
+    }).timeout(10000);
 
     it("clones a project subdirectory", async () => {
         const gp = await GitCommandGitProject.cloned(Creds, new GitHubRepoRef("pallets", "flask",

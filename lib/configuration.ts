@@ -55,6 +55,7 @@ import {
 import { Maker } from "./util/constructionUtils";
 import { logger } from "./util/logger";
 import { loadHostPackageJson } from "./util/packageJson";
+import { StatsdAdapterConfig } from "./util/statsdAdapter";
 
 /**
  * Customize the express server configuration: For example to add custom routes
@@ -283,6 +284,13 @@ export interface AutomationServerOptions extends AutomationOptions {
          * at the time of this writing.
          */
         port?: number;
+
+        /**
+         * adapterConfig. If not set, uses the default adapter which
+         * adapts to hot-shots statsd at the time of this writing.
+         */
+        adapterConfig?: StatsdAdapterConfig
+
     };
     /** Register a custom secret resolver */
     secretResolver?: SecretResolver;

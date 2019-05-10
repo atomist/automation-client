@@ -1,11 +1,6 @@
 import Timer = NodeJS.Timer;
 import * as cluster from "cluster";
 import * as Heavy from "heavy";
-import {
-    ClientOptions,
-    StatsD,
-} from "hot-shots";
-import * as os from "os";
 import * as trace from "stack-trace";
 import { Configuration } from "../configuration";
 import { EventFired } from "../HandleEvent";
@@ -28,6 +23,8 @@ import {
     SlackDestination,
 } from "../spi/message/MessageClient";
 import { logger } from "./logger";
+import { StatsdAdapter, defaultStatsdAdapterConfig } from "./statsdAdapter";
+import { configuration } from "../../test/empty.config";
 
 const GcTypes = {
     0: "unknown",
@@ -39,9 +36,10 @@ const GcTypes = {
     15: "all",
 };
 
+
 export class StatsdAutomationEventListener extends AutomationEventListenerSupport {
 
-    private statsd: StatsD;
+    private statsd: StatsdAdapter;
     private timer: Timer;
     private registrationName: string;
     private heavy: Heavy;
@@ -211,20 +209,16 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
     }
 
     private initStatsd() {
-        const options: ClientOptions = {
-            prefix: "automation_client.",
-            host: this.configuration.statsd.host || "localhost",
-            port: this.configuration.statsd.port || 8125,
-            globalTags: [
-                `atomist_name:${this.configuration.name.replace("@", "").replace("/", ".")}`,
-                `atomist_version:${this.configuration.version}`,
-                `atomist_environment:${this.configuration.environment}`,
-                `atomist_application_id:${this.configuration.application}`,
-                `atomist_process_id:${process.pid}`,
-                `atomist_host:${os.hostname()}`,
-            ],
-        };
-        this.statsd = new StatsD(options);
+
+        const statsdAdapterConfig = this.configuration.statsd.adapterConfig;
+        const { adaptClient: defaultAdaptClient, adapterOptions: defaultAdapterOptions } = defaultStatsdAdapterConfig(this.configuration);
+        
+        if (statsdAdapterConfig) {
+            this.statsd = statsdAdapterConfig.adaptClient(statsdAdapterConfig.adapterOptions || defaultAdapterOptions);
+        } else {
+            this.statsd = defaultAdaptClient(defaultAdapterOptions);
+        }
+
         this.timer = setInterval(() => {
             this.submitHeapStats();
             this.submitEventLoopDelay();
