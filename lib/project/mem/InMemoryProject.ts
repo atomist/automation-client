@@ -164,6 +164,25 @@ export class InMemoryProject extends AbstractProject {
         return Promise.reject(new Error("makeExecutable not implemented"));
     }
 
+    /**
+     * return a subproject of this one.
+     * This uses the SAME FILES.
+     */
+    public async toSubproject(subprojectPath: string): Promise<Project> {
+        // deliberately not using path.sep, because I don't want tests behaving differently by filesystem
+        const pathSeparator = "/";
+        const newRepoRef = {
+            ...this.id,
+            path: this.id.path + pathSeparator + subprojectPath,
+        };
+        const subp = new InMemoryProject(newRepoRef);
+        this.memFiles
+            .filter(f => f.path.startsWith(subprojectPath + pathSeparator))
+            .forEach(f => subp.memFiles.push(f));
+
+        return subp;
+    }
+
 }
 
 export function isInMemoryProject(p: Project): p is InMemoryProject {
