@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Safely serialze response data from workers. [d827034](https://github.com/atomist/automation-client/commit/d827034a22f091b9136ae6385ff23ca86d2d7737)
 -   Messages should not be sent to "null" users. [#530](https://github.com/atomist/automation-client/issues/530)
+-   configurationValue does not allow the use of a falsey default value. [#534](https://github.com/atomist/automation-client/issues/534)
 
 ## [1.4.0](https://github.com/atomist/automation-client-ts/compare/1.3.0...1.4.0) - 2019-04-15
 
