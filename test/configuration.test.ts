@@ -867,5 +867,9 @@ describe("configuration", () => {
             assert.deepStrictEqual(v, (global as any).__runningAutomationClient.configuration);
         });
 
+        it("should fall back to empty string default value", () => {
+            const v = configurationValue<string>("foo.bar", "");
+            assert.deepStrictEqual(v,"");
+        });
     });
 });

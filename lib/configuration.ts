@@ -381,13 +381,13 @@ export function configurationValue<T>(path: string = "", defaultValue?: T): T {
         // tslint:disable-next-line:no-null-keyword
         if (value !== null && value !== undefined) {
             return value;
-        } else if (defaultValue !== undefined) {
-            return defaultValue;
         }
+    }
 
-    } else if (defaultValue) {
+    if (defaultValue !== undefined) {
         return defaultValue;
     }
+    
     throw new Error(`Required @Value '${path}' not available`);
 }
 
