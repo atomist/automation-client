@@ -23,8 +23,7 @@ import {
     SlackDestination,
 } from "../spi/message/MessageClient";
 import { logger } from "./logger";
-import { StatsdAdapter, defaultStatsdAdapterConfig } from "./statsdAdapter";
-import { configuration } from "../../test/empty.config";
+import { defaultStatsDClientOptions, DefaultStatsDClientFactory, StatsDClient} from "./statsdClientFactory";
 
 const GcTypes = {
     0: "unknown",
@@ -36,10 +35,9 @@ const GcTypes = {
     15: "all",
 };
 
-
 export class StatsdAutomationEventListener extends AutomationEventListenerSupport {
 
-    private statsd: StatsdAdapter;
+    private statsd: StatsDClient;
     private timer: Timer;
     private registrationName: string;
     private heavy: Heavy;
@@ -210,13 +208,13 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
 
     private initStatsd() {
 
-        const statsdAdapterConfig = this.configuration.statsd.adapterConfig;
-        const { adaptClient: defaultAdaptClient, adapterOptions: defaultAdapterOptions } = defaultStatsdAdapterConfig(this.configuration);
-        
-        if (statsdAdapterConfig) {
-            this.statsd = statsdAdapterConfig.adaptClient(statsdAdapterConfig.adapterOptions || defaultAdapterOptions);
+        const statsdClientFactory = this.configuration.statsd.client && this.configuration.statsd.client.factory;
+        const statsdClientDefaultOptions = defaultStatsDClientOptions(this.configuration);
+
+        if (statsdClientFactory) {
+            this.statsd = statsdClientFactory.create(statsdClientDefaultOptions);
         } else {
-            this.statsd = defaultAdaptClient(defaultAdapterOptions);
+            this.statsd = DefaultStatsDClientFactory.create(statsdClientDefaultOptions);
         }
 
         this.timer = setInterval(() => {
