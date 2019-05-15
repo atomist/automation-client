@@ -19,7 +19,7 @@ This page details all runtime OSS dependencies of `@atomist/automation-client`.
 |[GPL-3.0](#gpl-30)|2|
 |[ISC](#isc)|61|
 |[MIT AND BSD-3-Clause](#mit-and-bsd-3-clause)|1|
-|[MIT](#mit)|773|
+|[MIT](#mit)|772|
 |[UNKNOWN](#unknown)|1|
 |[Unlicense](#unlicense)|1|
 |[WTFPL](#wtfpl)|1|
@@ -462,7 +462,6 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`dasherize`|`2.0.0`|Shahar Talmi|[https://github.com/shahata/dasherize](https://github.com/shahata/dasherize)|
 |`date-fns`|`1.30.1`|Sasha Koss|[https://github.com/date-fns/date-fns](https://github.com/date-fns/date-fns)|
 |`debug`|`2.6.9`|TJ Holowaychuk|[https://github.com/visionmedia/debug](https://github.com/visionmedia/debug)|
-|`debug`|`3.1.0`|TJ Holowaychuk|[https://github.com/visionmedia/debug](https://github.com/visionmedia/debug)|
 |`debug`|`3.2.6`|TJ Holowaychuk|[https://github.com/visionmedia/debug](https://github.com/visionmedia/debug)|
 |`debug`|`4.1.1`|TJ Holowaychuk|[https://github.com/visionmedia/debug](https://github.com/visionmedia/debug)|
 |`decode-uri-component`|`0.2.0`|Sam Verschueren|[https://github.com/SamVerschueren/decode-uri-component](https://github.com/SamVerschueren/decode-uri-component)|
@@ -538,7 +537,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`fill-range`|`4.0.0`|Jon Schlinkert|[https://github.com/jonschlinkert/fill-range](https://github.com/jonschlinkert/fill-range)|
 |`finalhandler`|`1.1.1`|Douglas Christopher Wilson|[https://github.com/pillarjs/finalhandler](https://github.com/pillarjs/finalhandler)|
 |`find-up`|`3.0.0`|Sindre Sorhus|[https://github.com/sindresorhus/find-up](https://github.com/sindresorhus/find-up)|
-|`follow-redirects`|`1.6.1`|Ruben Verborgh|[https://github.com/follow-redirects/follow-redirects](https://github.com/follow-redirects/follow-redirects)|
+|`follow-redirects`|`1.7.0`|Ruben Verborgh|[https://github.com/follow-redirects/follow-redirects](https://github.com/follow-redirects/follow-redirects)|
 |`for-in`|`1.0.2`|Jon Schlinkert|[https://github.com/jonschlinkert/for-in](https://github.com/jonschlinkert/for-in)|
 |`form-data`|`2.3.3`|Felix Geisendörfer|[https://github.com/form-data/form-data](https://github.com/form-data/form-data)|
 |`forwarded`|`0.1.2`||[https://github.com/jshttp/forwarded](https://github.com/jshttp/forwarded)|
