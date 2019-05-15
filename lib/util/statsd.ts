@@ -23,7 +23,11 @@ import {
     SlackDestination,
 } from "../spi/message/MessageClient";
 import { logger } from "./logger";
-import { defaultStatsDClientOptions, DefaultStatsDClientFactory, StatsDClient} from "./statsdClientFactory";
+import {
+    DefaultStatsDClientFactory,
+    defaultStatsDClientOptions,
+    StatsDClient,
+} from "./statsdClientFactory";
 
 const GcTypes = {
     0: "unknown",

@@ -55,7 +55,10 @@ import {
 import { Maker } from "./util/constructionUtils";
 import { logger } from "./util/logger";
 import { loadHostPackageJson } from "./util/packageJson";
-import { DefaultStatsDClientFactory, StatsDClientFactory } from "./util/statsdClientFactory";
+import {
+    DefaultStatsDClientFactory,
+    StatsDClientFactory,
+} from "./util/statsdClientFactory";
 
 /**
  * Customize the express server configuration: For example to add custom routes
