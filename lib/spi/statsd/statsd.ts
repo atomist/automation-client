@@ -186,12 +186,18 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
 
     private increment(stat: string | string[],
                       tags?: string[]) {
+        if (!this.statsd) {
+            return;
+        }
         if (cluster.isMaster) {
             this.statsd.increment(stat, 1, 1, tags, this.callback);
         }
     }
 
     private event(title: string, text?: string, tags?: string[]) {
+        if (!this.statsd) {
+            return;
+        }
         if (cluster.isMaster && !!this.statsd.event) {
             this.statsd.event(`automation_client.${title}`, text, {}, tags, this.callback);
         }
@@ -200,6 +206,9 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
     private timing(stat: string | string[],
                    ctx: HandlerContext,
                    tags?: string[]) {
+        if (!this.statsd) {
+            return;
+        }
         if (cluster.isMaster &&
             ctx &&
             (ctx as any as AutomationContextAware).context &&
@@ -240,9 +249,13 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         });
         clearInterval(this.timer);
         this.heavy.stop();
+        this.statsd = undefined;
     }
 
     private submitHeapStats() {
+        if (!this.statsd) {
+            return;
+        }
         const heap = process.memoryUsage();
         this.statsd.gauge("heap.rss", heap.rss, 1, [], this.callback);
         this.statsd.gauge("heap.total", heap.heapTotal, 1, [], this.callback);
@@ -250,7 +263,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
     }
 
     private submitEventLoopDelay() {
-        if (this.heavy && this.heavy.load) {
+        if (this.heavy && this.heavy.load && !!this.statsd) {
             this.statsd.timing(
                 "event_loop.delay",
                 this.heavy.load.eventLoopDelay,
@@ -264,6 +277,10 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         try {
             const gc = require("gc-stats");
             gc().on("stats", stats => {
+                if (!this.statsd) {
+                    return;
+                }
+
                 const gcType = GcTypes[stats.gctype];
 
                 const tags = [
