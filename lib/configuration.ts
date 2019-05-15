@@ -55,6 +55,7 @@ import {
 import { Maker } from "./util/constructionUtils";
 import { logger } from "./util/logger";
 import { loadHostPackageJson } from "./util/packageJson";
+import { DefaultStatsDClientFactory, StatsDClientFactory } from "./util/statsdClientFactory";
 
 /**
  * Customize the express server configuration: For example to add custom routes
@@ -283,6 +284,15 @@ export interface AutomationServerOptions extends AutomationOptions {
          * at the time of this writing.
          */
         port?: number;
+
+        /**
+         * statsd client. If not set, uses the default hot-shots
+         * statsd client at the time of this writing.
+         */
+        client?: {
+            factory?: StatsDClientFactory,
+        }
+
     };
     /** Register a custom secret resolver */
     secretResolver?: SecretResolver;
@@ -1105,6 +1115,9 @@ export const LocalDefaultConfiguration: Configuration = {
     },
     statsd: {
         enabled: false,
+        client: {
+            factory: DefaultStatsDClientFactory,
+        },
     },
     redact: {
         log: true,
