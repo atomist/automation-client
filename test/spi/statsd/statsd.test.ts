@@ -11,7 +11,7 @@ import {
     StatsDClientOptions,
     StatsDClientStat,
     StatsDClientTags,
-} from "../../../lib/spi/statsd/statsDClient";
+} from "../../../lib/spi/statsd/statsdClient";
 
 describe("StatsdAutomationEventListener", () => {
     describe("constructor", () => {

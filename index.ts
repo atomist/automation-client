@@ -329,4 +329,4 @@ export {
     DefaultStatsDClientFactory,
     HotShotStatsDClientFactory,
     NodeStatsDClientFactory,
-} from "./lib/spi/statsd/statsDClient";
+} from "./lib/spi/statsd/statsdClient";

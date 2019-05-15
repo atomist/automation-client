@@ -58,7 +58,7 @@ import { loadHostPackageJson } from "./util/packageJson";
 import {
     DefaultStatsDClientFactory,
     StatsDClientFactory,
-} from "./spi/statsd/statsDClient";
+} from "./spi/statsd/statsdClient";
 
 /**
  * Customize the express server configuration: For example to add custom routes

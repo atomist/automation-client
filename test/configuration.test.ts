@@ -34,7 +34,7 @@ import { QueuingWebSocketLifecycle } from "../lib/internal/transport/websocket/W
 import { DefaultGraphClientFactory } from "../lib/spi/graph/GraphClientFactory";
 import { DefaultHttpClientFactory } from "../lib/spi/http/httpClient";
 import { DefaultWebSocketFactory } from "../lib/spi/http/wsClient";
-import { DefaultStatsDClientFactory } from "../lib/spi/statsd/statsDClient";
+import { DefaultStatsDClientFactory } from "../lib/spi/statsd/statsdClient";
 
 describe("configuration", () => {
 
