@@ -22,7 +22,7 @@ import {
 } from "child_process";
 import * as spawn from "cross-spawn";
 import * as process from "process";
-import stripAnsi = require("strip-ansi");
+import stripAnsi from "strip-ansi";
 import * as treeKill from "tree-kill";
 import { logger } from "./logger";
 
