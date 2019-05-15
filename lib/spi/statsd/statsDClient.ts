@@ -5,7 +5,6 @@ import {
 } from "node-statsd";
 import * as os from "os";
 import { Configuration } from "../../configuration";
-import { StatsdClient } from "./statsdClient";
 
 export type StatsDClientStat = string | string[];
 export type StatsDClientTags = { [key: string]: string } | string[];
@@ -40,7 +39,7 @@ export interface StatsDClient {
 /**
  * Factory to construct StatsDClient instances.
  */
-export interface StatsdClient {
+export interface StatsDClientFactory {
 
     /**
      * Create a StatsDClient with the given options.
@@ -66,7 +65,7 @@ export function defaultStatsDClientOptions(configuration: Configuration): StatsD
     return options;
 }
 
-export class HotShotStatsDClientFactory implements StatsdClient {
+export class HotShotStatsDClientFactory implements StatsDClientFactory {
 
     public create(clientOptions: StatsDClientOptions): StatsDClient {
         const options: HotShots.ClientOptions = {
@@ -81,7 +80,7 @@ export class HotShotStatsDClientFactory implements StatsdClient {
 
 }
 
-export class NodeStatsDClientFactory implements StatsdClient {
+export class NodeStatsDClientFactory implements StatsDClientFactory {
 
     public create(clientOptions: StatsDClientOptions): StatsDClient {
         const nodeStatsDClientOptions: StatsDConfig = {

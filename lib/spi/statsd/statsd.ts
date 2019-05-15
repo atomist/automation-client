@@ -26,7 +26,7 @@ import {
 import {
     defaultStatsDClientOptions,
     StatsDClient,
-} from "./statsdClient";
+} from "./statsDClient";
 
 const GcTypes = {
     0: "unknown",

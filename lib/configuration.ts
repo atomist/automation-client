@@ -57,8 +57,8 @@ import { logger } from "./util/logger";
 import { loadHostPackageJson } from "./util/packageJson";
 import {
     DefaultStatsDClientFactory,
-    StatsdClient,
-} from "./spi/statsd/statsdClient";
+    StatsDClientFactory,
+} from "./spi/statsd/statsDClient";
 
 /**
  * Customize the express server configuration: For example to add custom routes
@@ -292,7 +292,7 @@ export interface AutomationServerOptions extends AutomationOptions {
          * statsd client factory to create instances of StatsDClient
          */
         client?: {
-            factory: StatsdClient,
+            factory: StatsDClientFactory,
         }
 
     };
