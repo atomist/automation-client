@@ -36,7 +36,7 @@ export function actionChainWithCombiner<T, R extends ActionResult<T> = ActionRes
                 if (!r1.success) { return r1; } else {
                     return ed2(r1.target).then(r2 => {
                         // console.log("Applied action " + c2.toString());
-                        const combinedResult: ActionResult<T> = combiner((r1 as R), (r2 as R));
+                        const combinedResult: any = combiner((r1 as R), (r2 as R));
                         return combinedResult;
                     });
                 }
