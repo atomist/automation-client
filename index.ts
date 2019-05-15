@@ -277,7 +277,7 @@ export {
 export {
     addRedaction,
     addLogRedaction,
-} from "./lib/util/redact"
+} from "./lib/util/redact";
 export {
     doWithRetry,
     RetryOptions,
@@ -325,3 +325,8 @@ export {
     WebSocketFactory,
     DefaultWebSocketFactory,
 } from "./lib/spi/http/wsClient";
+export {
+    DefaultStatsDClientFactory,
+    HotShotStatsDClientFactory,
+    NodeStatsDClientFactory,
+} from "./lib/spi/statsd/statsdClient";

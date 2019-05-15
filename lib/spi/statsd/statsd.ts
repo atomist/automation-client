@@ -2,32 +2,31 @@ import Timer = NodeJS.Timer;
 import * as cluster from "cluster";
 import * as Heavy from "heavy";
 import * as trace from "stack-trace";
-import { Configuration } from "../configuration";
-import { EventFired } from "../HandleEvent";
+import { Configuration } from "../../configuration";
+import { EventFired } from "../../HandleEvent";
 import {
     AutomationContextAware,
     HandlerContext,
-} from "../HandlerContext";
-import { HandlerResult } from "../HandlerResult";
-import { CommandInvocation } from "../internal/invoker/Payload";
-import { RequestProcessor } from "../internal/transport/RequestProcessor";
-import { registerShutdownHook } from "../internal/util/shutdown";
-import { AutomationEventListenerSupport } from "../server/AutomationEventListener";
+} from "../../HandlerContext";
+import { HandlerResult } from "../../HandlerResult";
+import { CommandInvocation } from "../../internal/invoker/Payload";
+import { RequestProcessor } from "../../internal/transport/RequestProcessor";
+import { registerShutdownHook } from "../../internal/util/shutdown";
+import { AutomationEventListenerSupport } from "../../server/AutomationEventListener";
+import { logger } from "../../util/logger";
 import {
     MutationOptions,
     QueryOptions,
-} from "../spi/graph/GraphClient";
+} from "../graph/GraphClient";
 import {
     Destination,
     MessageOptions,
     SlackDestination,
-} from "../spi/message/MessageClient";
-import { logger } from "./logger";
+} from "../message/MessageClient";
 import {
-    DefaultStatsDClientFactory,
     defaultStatsDClientOptions,
     StatsDClient,
-} from "./statsdClientFactory";
+} from "./statsdClient";
 
 const GcTypes = {
     0: "unknown",
@@ -193,7 +192,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
     }
 
     private event(title: string, text?: string, tags?: string[]) {
-        if (cluster.isMaster) {
+        if (cluster.isMaster && !!this.statsd.event) {
             this.statsd.event(`automation_client.${title}`, text, {}, tags, this.callback);
         }
     }
@@ -212,14 +211,8 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
 
     private initStatsd() {
 
-        const statsdClientFactory = this.configuration.statsd.client && this.configuration.statsd.client.factory;
         const statsdClientDefaultOptions = defaultStatsDClientOptions(this.configuration);
-
-        if (statsdClientFactory) {
-            this.statsd = statsdClientFactory.create(statsdClientDefaultOptions);
-        } else {
-            this.statsd = DefaultStatsDClientFactory.create(statsdClientDefaultOptions);
-        }
+        this.statsd = this.configuration.statsd.client.factory.create(statsdClientDefaultOptions);
 
         this.timer = setInterval(() => {
             this.submitHeapStats();

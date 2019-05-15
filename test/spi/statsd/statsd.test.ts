@@ -1,19 +1,17 @@
+import * as HotShotsLib from "hot-shots";
 import * as assert from "power-assert";
-import { defaultConfiguration } from "../../lib/configuration";
-import { StatsdAutomationEventListener } from "../../lib/util/statsd";
+import * as StatsdClientLib from "statsd-client";
+import { defaultConfiguration } from "../../../lib/configuration";
+import { StatsdAutomationEventListener } from "../../../lib/spi/statsd/statsd";
 import {
-    DefaultStatsDClientFactory,
     defaultStatsDClientOptions,
+    NodeStatsDClientFactory,
     StatsDClient,
     StatsDClientCallback,
     StatsDClientOptions,
     StatsDClientStat,
     StatsDClientTags,
-} from "../../lib/util/statsdClientFactory";
-
-import * as HotShotsLib from "hot-shots";
-import * as NodeStatsDLib from "node-statsd";
-import * as StatsdClientLib from "statsd-client";
+} from "../../../lib/spi/statsd/statsdClient";
 
 describe("StatsdAutomationEventListener", () => {
     describe("constructor", () => {
@@ -46,62 +44,9 @@ describe("StatsdAutomationEventListener", () => {
             const config = defaultConfiguration();
             const expectedStatsdClientOptions = defaultStatsDClientOptions(config);
 
-            class NodeStatsdClient implements StatsDClient {
-                private statsd: NodeStatsDLib.StatsD;
-
-                constructor(clientOptions: StatsDClientOptions) {
-                    this.statsd = new NodeStatsDLib.StatsD(clientOptions);
-                }
-                public increment(
-                    stat: StatsDClientStat,
-                    value: number,
-                    sampleRate?: number,
-                    tags?: StatsDClientTags,
-                    callback?: StatsDClientCallback,
-                ): void {
-                    this.statsd.increment(stat, value, sampleRate, tags as string[], callback);
-                }
-                public timing(
-                    stat: StatsDClientStat,
-                    value: number,
-                    sampleRate?: number,
-                    tags?: StatsDClientTags,
-                    callback?: StatsDClientCallback,
-                ): void {
-                    this.statsd.timing(stat, value, sampleRate, tags as string[], callback);
-                }
-                public gauge(
-                    stat: StatsDClientStat,
-                    value: number,
-                    sampleRate?: number,
-                    tags?: StatsDClientTags,
-                    callback?: StatsDClientCallback,
-                ): void {
-                    this.statsd.gauge(stat, value, sampleRate, tags as string[], callback);
-                }
-                public event(
-                    stat: StatsDClientStat,
-                    text?: string,
-                    options?: {},
-                    tags?: StatsDClientTags,
-                    callback?: StatsDClientCallback,
-                ): void {
-                    // Datadog specific, not supported by NodeStatsD
-                }
-                public close(callback: StatsDClientCallback): void {
-                    this.statsd.close();
-                }
-            }
-
             config.statsd.enabled = true;
             config.statsd.client = {
-                factory: {
-                    create(clientOptions: StatsDClientOptions) {
-                        assert.deepEqual(clientOptions, expectedStatsdClientOptions);
-
-                        return new NodeStatsdClient(clientOptions);
-                    },
-                },
+                factory: new NodeStatsDClientFactory(),
             };
             assert.doesNotThrow(() => {
 

@@ -1,11 +1,13 @@
-import * as os from "os";
-import { Configuration } from "../configuration";
-
 import * as HotShots from "hot-shots";
+import * as NodeStatsDLib from "node-statsd";
+import * as os from "os";
+import { Configuration } from "../../configuration";
+import { StatsdClient } from "./statsdClient";
 
 export type StatsDClientStat = string | string[];
 export type StatsDClientTags = { [key: string]: string } | string[];
 export type StatsDClientCallback = (err?: Error) => void;
+
 export interface StatsDClientOptions {
     host?: string;
     port?: number;
@@ -21,11 +23,13 @@ export interface StatsDClientOptions {
 
 export interface StatsDClient {
     increment(stat: StatsDClientStat, value: number, sampleRate?: number, tags?: StatsDClientTags, callback?: StatsDClientCallback): void;
+
     timing(stat: StatsDClientStat, value: number, sampleRate?: number, tags?: StatsDClientTags, callback?: StatsDClientCallback): void;
+
     gauge(stat: StatsDClientStat, value: number, sampleRate?: number, tags?: StatsDClientTags, callback?: StatsDClientCallback): void;
 
     // TODO: This one is dogstatsd specific, as such it should be removed or made optional
-    event(stat: StatsDClientStat, text?: string, options?: {}, tags?: StatsDClientTags, callback?: StatsDClientCallback): void;
+    event?(stat: StatsDClientStat, text?: string, options?: {}, tags?: StatsDClientTags, callback?: StatsDClientCallback): void;
 
     close(callback: StatsDClientCallback): void;
 
@@ -34,7 +38,7 @@ export interface StatsDClient {
 /**
  * Factory to construct StatsDClient instances.
  */
-export interface StatsDClientFactory {
+export interface StatsdClient {
 
     /**
      * Create a StatsDClient with the given options.
@@ -60,8 +64,9 @@ export function defaultStatsDClientOptions(configuration: Configuration): StatsD
     return options;
 }
 
-export class HotShotStatsDClientFactory implements StatsDClientFactory {
-    create(clientOptions: StatsDClientOptions): StatsDClient {
+export class HotShotStatsDClientFactory implements StatsdClient {
+
+    public create(clientOptions: StatsDClientOptions): StatsDClient {
         const options: HotShots.ClientOptions = {
             prefix: clientOptions.prefix,
             host: clientOptions.host || "localhost",
@@ -72,6 +77,55 @@ export class HotShotStatsDClientFactory implements StatsDClientFactory {
         return new HotShots.StatsD(options);
     }
 
+}
+
+export class NodeStatsDClientFactory implements StatsdClient {
+
+    public create(clientOptions: StatsDClientOptions): StatsDClient {
+        return new NodeStatsDClient(clientOptions);
+    }
+}
+
+class NodeStatsDClient implements StatsDClient {
+    private statsd: NodeStatsDLib.StatsD;
+
+    constructor(clientOptions: StatsDClientOptions) {
+        this.statsd = new NodeStatsDLib.StatsD(clientOptions);
+    }
+
+    public increment(
+        stat: StatsDClientStat,
+        value: number,
+        sampleRate?: number,
+        tags?: StatsDClientTags,
+        callback?: StatsDClientCallback,
+    ): void {
+        this.statsd.increment(stat, value, sampleRate, tags as string[], callback);
+    }
+
+    public timing(
+        stat: StatsDClientStat,
+        value: number,
+        sampleRate?: number,
+        tags?: StatsDClientTags,
+        callback?: StatsDClientCallback,
+    ): void {
+        this.statsd.timing(stat, value, sampleRate, tags as string[], callback);
+    }
+
+    public gauge(
+        stat: StatsDClientStat,
+        value: number,
+        sampleRate?: number,
+        tags?: StatsDClientTags,
+        callback?: StatsDClientCallback,
+    ): void {
+        this.statsd.gauge(stat, value, sampleRate, tags as string[], callback);
+    }
+
+    public close(callback: StatsDClientCallback): void {
+        this.statsd.close();
+    }
 }
 
 export const DefaultStatsDClientFactory = new HotShotStatsDClientFactory();

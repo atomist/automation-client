@@ -37,7 +37,7 @@ import {
     logger,
 } from "./util/logger";
 import { addRedaction } from "./util/redact";
-import { StatsdAutomationEventListener } from "./util/statsd";
+import { StatsdAutomationEventListener } from "./spi/statsd/statsd";
 
 export class AutomationClient implements RequestProcessor {
 
