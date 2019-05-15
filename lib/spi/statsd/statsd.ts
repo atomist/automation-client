@@ -40,7 +40,7 @@ const GcTypes = {
 
 export class StatsdAutomationEventListener extends AutomationEventListenerSupport {
 
-    private statsd: StatsDClient;
+    public statsd: StatsDClient;
     private timer: Timer;
     private registrationName: string;
     private heavy: Heavy;
@@ -218,6 +218,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
             this.submitHeapStats();
             this.submitEventLoopDelay();
         }, 2500);
+        this.timer.unref();
 
         this.heavy = new Heavy({
             sampleInterval: 1000,
@@ -226,13 +227,19 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
 
         // Register orderly shutdown
         registerShutdownHook(() => {
-            this.event("event.shutdown", `Shutting down client ${this.registrationName}`);
-            this.statsd.close(() => {
-                logger.debug("Closing StatsD connection");
-            });
+            this.close();
             return Promise.resolve(0);
         });
         (this.configuration.statsd as any).__instance = this.statsd;
+    }
+
+    public close(): void {
+        this.event("event.shutdown", `Shutting down client ${this.registrationName}`);
+        this.statsd.close(() => {
+            logger.debug("Closing StatsD connection");
+        });
+        clearInterval(this.timer);
+        this.heavy.stop();
     }
 
     private submitHeapStats() {

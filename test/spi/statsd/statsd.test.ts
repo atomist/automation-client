@@ -19,6 +19,7 @@ describe("StatsdAutomationEventListener", () => {
             const config = defaultConfiguration();
             assert.doesNotThrow(() => {
                 const statsdListener = new StatsdAutomationEventListener(config);
+                statsdListener.close();
             });
         });
         it("works with hot-shots statsd", () => {
@@ -37,6 +38,7 @@ describe("StatsdAutomationEventListener", () => {
             };
             assert.doesNotThrow(() => {
                 const statsdListener = new StatsdAutomationEventListener(config);
+                statsdListener.close();
             });
         });
 
@@ -49,8 +51,8 @@ describe("StatsdAutomationEventListener", () => {
                 factory: new NodeStatsDClientFactory(),
             };
             assert.doesNotThrow(() => {
-
                 const statsdListener = new StatsdAutomationEventListener(config);
+                statsdListener.close();
             });
         });
 
@@ -110,14 +112,13 @@ describe("StatsdAutomationEventListener", () => {
                 factory: {
                     create(clientOptions: StatsDClientOptions) {
                         assert.deepEqual(clientOptions, expectedStatsdClientOptions);
-
                         return new StatsdclientStatsD(clientOptions);
                     },
                 }
             };
             assert.doesNotThrow(() => {
-
                 const statsdListener = new StatsdAutomationEventListener(config);
+                statsdListener.close();
             });
         });
     });
