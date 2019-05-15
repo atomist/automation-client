@@ -1,5 +1,8 @@
 import * as HotShots from "hot-shots";
-import * as NodeStatsDLib from "node-statsd";
+import {
+    StatsD,
+    StatsDConfig,
+} from "node-statsd";
 import * as os from "os";
 import { Configuration } from "../../configuration";
 import { StatsdClient } from "./statsdClient";
@@ -28,7 +31,6 @@ export interface StatsDClient {
 
     gauge(stat: StatsDClientStat, value: number, sampleRate?: number, tags?: StatsDClientTags, callback?: StatsDClientCallback): void;
 
-    // TODO: This one is dogstatsd specific, as such it should be removed or made optional
     event?(stat: StatsDClientStat, text?: string, options?: {}, tags?: StatsDClientTags, callback?: StatsDClientCallback): void;
 
     close(callback: StatsDClientCallback): void;
@@ -82,15 +84,22 @@ export class HotShotStatsDClientFactory implements StatsdClient {
 export class NodeStatsDClientFactory implements StatsdClient {
 
     public create(clientOptions: StatsDClientOptions): StatsDClient {
-        return new NodeStatsDClient(clientOptions);
+        const nodeStatsDClientOptions: StatsDConfig = {
+            host: clientOptions.host,
+            port: clientOptions.port,
+            prefix: clientOptions.prefix,
+            suffix: clientOptions.suffix,
+            global_tags: clientOptions.globalTags,
+        };
+        return new NodeStatsDClient(nodeStatsDClientOptions);
     }
 }
 
 class NodeStatsDClient implements StatsDClient {
-    private statsd: NodeStatsDLib.StatsD;
+    private statsd: StatsD;
 
     constructor(clientOptions: StatsDClientOptions) {
-        this.statsd = new NodeStatsDLib.StatsD(clientOptions);
+        this.statsd = new StatsD(clientOptions);
     }
 
     public increment(
