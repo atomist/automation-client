@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Consolidate and make test running smarter. [#517](https://github.com/atomist/automation-client/issues/517)
+-   MsgIds should not contain spaces. [#539](https://github.com/atomist/automation-client/issues/539)
 
 ### Removed
 
