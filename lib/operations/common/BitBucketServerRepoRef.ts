@@ -159,36 +159,19 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
     }
 
     private async getDefaultReviewers(creds: ProjectOperationCredentials, repoId: number, head: string, base: string): Promise<string[]> {
-        const url = `${noTrailingSlash(this.remoteBase)}/rest/default-reviewers/1.0/projects/${this.apiBasePathComponent}${this.repo}/reviewers`;
+        const restApiPath = `/rest/default-reviewers/1.0/${this.apiBasePathComponent}${this.repo}/reviewers`;
+        const url = `${this.scheme}${noTrailingSlash(this.remoteBase)}${restApiPath}`;
         const queryParams = `sourceRepoId=${repoId}&targetRepoId=${repoId}&sourceRefId=${head}&targetRefId=${base}`;
 
+        const urlWithQueryParams = `${url}?${queryParams}`;
         const apiResponse = await configurationValue<HttpClientFactory>("http.client.factory", DefaultHttpClientFactory)
-            .create(`${url}?${queryParams}`).exchange(url, {
+            .create(urlWithQueryParams).exchange(url, {
             method: HttpMethod.Get,
             headers: {
-                Accept: "application/json",
                 ...usernameColonPassword(creds),
             },
-        })
-            .then(response => ({
-                success: true,
-                target: this,
-                response,
-            }))
-            .catch(error => {
-                logger.error(`Error trying to get repository id`);
-                return {
-                    success: false,
-                    target: this,
-                    error,
-                };
-            });
-        if (apiResponse.success) {
-            return ((apiResponse as any).response as any[]).map(reviewer => reviewer.name as string);
-        } else {
-            return Promise.reject((apiResponse as any).error);
-        }
-
+        });
+        return ((apiResponse as any).body as any[]).map(reviewer => reviewer.name as string);
     }
 
     private async getRepoId(creds: ProjectOperationCredentials): Promise<number> {
@@ -196,28 +179,10 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
         const apiResponse =  await configurationValue<HttpClientFactory>("http.client.factory", DefaultHttpClientFactory).create(url).exchange(url, {
             method: HttpMethod.Get,
             headers: {
-                Accept: "application/json",
                 ...usernameColonPassword(creds),
             },
-        })
-            .then(response => ({
-                success: true,
-                target: this,
-                response,
-            }))
-            .catch(error => {
-                logger.error(`Error trying to get repository id`);
-                return {
-                    success: false,
-                    target: this,
-                    error,
-                };
-            });
-        if (apiResponse.success) {
-            return (apiResponse as any).response.id;
-        } else {
-            return Promise.reject((apiResponse as any).error);
-        }
+        });
+        return (apiResponse as any).body.id;
     }
 
     get url(): string {
