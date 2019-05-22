@@ -66,7 +66,7 @@ describe("InMemoryProject", () => {
                 .then(() => assert.fail("should not have found xxxxpackage.json"), err => {
                     assert(err.message === "File not found at xxxxpackage.json");
                 })
-                .then(() => done(), done);
+                .then(done, done);
         });
 
         it("findFile: not return directory as file", done => {
@@ -76,7 +76,7 @@ describe("InMemoryProject", () => {
                 .then(() => assert.fail("should not have found directory"), err => {
                     assert(err.message === `File not found at ${d}`);
                 })
-                .then(() => done(), done);
+                .then(done, done);
         });
 
     });
@@ -189,14 +189,14 @@ describe("InMemoryProject", () => {
             );
             p.streamFiles()
                 .on("data", (f: File) => {
-                        // console.log(`File path is [${f.path}]`);
-                        assert(f.name);
-                        count++;
-                    },
+                    // console.log(`File path is [${f.path}]`);
+                    assert(f.name);
+                    count++;
+                },
                 ).on("end", () => {
-                assert.strictEqual(count, 2);
-                done();
-            });
+                    assert.strictEqual(count, 2);
+                    done();
+                });
         });
 
         it("streamFiles excludes glob non-matches", done => {
@@ -208,14 +208,14 @@ describe("InMemoryProject", () => {
             );
             p.streamFiles("config/**")
                 .on("data", (f: File) => {
-                        // console.log(`File path is [${f.path}]`);
-                        assert(f.name);
-                        count++;
-                    },
+                    // console.log(`File path is [${f.path}]`);
+                    assert(f.name);
+                    count++;
+                },
                 ).on("end", () => {
-                assert.equal(count, 2);
-                done();
-            });
+                    assert.equal(count, 2);
+                    done();
+                });
         });
 
         it("streamFiles excludes .git by default", done => {
@@ -228,14 +228,14 @@ describe("InMemoryProject", () => {
             );
             p.streamFiles(AllFiles)
                 .on("data", (f: File) => {
-                        // console.log(`File path is [${f.path}]`);
-                        assert(f.name);
-                        count++;
-                    },
+                    // console.log(`File path is [${f.path}]`);
+                    assert(f.name);
+                    count++;
+                },
                 ).on("end", () => {
-                assert.equal(count, 3);
-                done();
-            });
+                    assert.equal(count, 3);
+                    done();
+                });
         });
 
         it("streamFiles excludes nested .git and node_modules by default", done => {
@@ -249,14 +249,14 @@ describe("InMemoryProject", () => {
             );
             p.streamFiles(AllFiles)
                 .on("data", (f: File) => {
-                        // console.log(`File path is [${f.path}]`);
-                        assert(f.name);
-                        count++;
-                    },
+                    // console.log(`File path is [${f.path}]`);
+                    assert(f.name);
+                    count++;
+                },
                 ).on("end", () => {
-                assert.equal(count, 3);
-                done();
-            });
+                    assert.equal(count, 3);
+                    done();
+                });
         });
 
         it("streamFiles respects negative globs", done => {
@@ -268,14 +268,14 @@ describe("InMemoryProject", () => {
             );
             p.streamFilesRaw(["config/**", "!**/exclude.*"], {})
                 .on("data", (f: File) => {
-                        // console.log(`File path is [${f.path}]`);
-                        assert(f.name);
-                        count++;
-                    },
+                    // console.log(`File path is [${f.path}]`);
+                    assert(f.name);
+                    count++;
+                },
                 ).on("end", () => {
-                assert.equal(count, 2);
-                done();
-            });
+                    assert.equal(count, 2);
+                    done();
+                });
         });
 
         it("files returns well-known files", done => {
@@ -477,6 +477,28 @@ describe("InMemoryProject", () => {
             removeDirs.forEach(d => assert(!p.directoryExistsSync(d)));
         });
 
+    });
+
+    describe("toSubproject", () => {
+        it("Can pull out the files in a directory", async () => {
+            const subject = InMemoryProject.of({ content: "", path: "home.txt" },
+                { content: "", path: "subdir/subhome.txt" },
+                { content: "deeper stuff", path: "subdir/deeper/stuff.txt" });
+            const result = await subject.toSubproject("subdir");
+
+            assert(await result.hasFile("subhome.txt"), "Local file is missing");
+            assert(await result.hasFile("deeper/stuff.txt"), "Deeper file is missing");
+            assert(!await result.hasFile("home.txt"));
+            assert.strictEqual(result.findFileSync("deeper/stuff.txt").getContentSync(), "deeper stuff", "wrong content");
+        });
+
+        it("Gives an empty subproject for a directory that does not exist", async () => {
+            const subject = InMemoryProject.of({ content: "", path: "home.txt" },
+                { content: "", path: "subdir/deeper/stuff.txt" });
+            const result = await subject.toSubproject("not-here");
+
+            assert.strictEqual(await result.totalFileCount(), 0);
+        });
     });
 
 });

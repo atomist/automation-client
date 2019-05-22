@@ -166,7 +166,7 @@ export class InMemoryProject extends AbstractProject {
 
     /**
      * return a subproject of this one.
-     * This uses the SAME FILES.
+     * This copies each file
      */
     public async toSubproject(subprojectPath: string): Promise<Project> {
         // deliberately not using path.sep, because I don't want tests behaving differently by filesystem
@@ -178,7 +178,9 @@ export class InMemoryProject extends AbstractProject {
         const subp = new InMemoryProject(newRepoRef);
         this.memFiles
             .filter(f => f.path.startsWith(subprojectPath + pathSeparator))
-            .forEach(f => subp.memFiles.push(f));
+            .forEach(f => {
+                subp.addFile(f.path.replace(subprojectPath + pathSeparator, ""), f.content);
+            });
 
         return subp;
     }
