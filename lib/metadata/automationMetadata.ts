@@ -160,4 +160,5 @@ export interface CommandHandlerMetadata extends AutomationMetadata, ParameterMet
 
     intent?: string[];
     auto_submit?: boolean;
+    question?: "dialog" | "threaded" | "unthreaded" | "dialog_action";
 }
