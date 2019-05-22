@@ -93,7 +93,6 @@ export {
 } from "./lib/internal/util/string";
 export {
     OnCommand,
-    QuestionStyle,
 } from "./lib/onCommand";
 export {
     OnEvent,
