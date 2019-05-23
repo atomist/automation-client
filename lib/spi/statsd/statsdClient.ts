@@ -61,6 +61,8 @@ export function defaultStatsDClientOptions(configuration: Configuration): StatsD
             `atomist_process_id:${process.pid}`,
             `atomist_host:${os.hostname()}`,
         ],
+        host: configuration.statsd.host || "localhost",
+        port: configuration.statsd.port || 8125,
     };
     return options;
 }
@@ -70,8 +72,8 @@ export class HotShotStatsDClientFactory implements StatsDClientFactory {
     public create(clientOptions: StatsDClientOptions): StatsDClient {
         const options: HotShots.ClientOptions = {
             prefix: clientOptions.prefix,
-            host: clientOptions.host || "localhost",
-            port: clientOptions.port || 8125,
+            host: clientOptions.host,
+            port: clientOptions.port,
             globalTags: clientOptions.globalTags,
         };
 
