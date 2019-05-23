@@ -19,6 +19,7 @@ import {
     Destination,
     MessageClient,
     MessageOptions,
+    RequiredMessageOptions,
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { logger } from "../../../util/logger";
@@ -141,6 +142,11 @@ class ClusterWorkerMessageClient extends MessageClientSupport {
 
     constructor(protected event: EventIncoming | CommandIncoming, protected ctx: AutomationContextAware) {
         super();
+    }
+
+    public async delete(destinations: Destination | Destination[],
+                        options: RequiredMessageOptions): Promise<void> {
+        return this.doSend(undefined, destinations, { ...options, delete: true });
     }
 
     protected doSend(msg: string | SlackMessage,
