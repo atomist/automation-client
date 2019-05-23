@@ -35,6 +35,14 @@ export interface MessageClient {
     send(msg: any,
          destinations: Destination | Destination[],
          options?: MessageOptions): Promise<any>;
+
+    /**
+     * Optionally delete message that was previously sent.
+     * @param destinations
+     * @param id
+     */
+    delete?(destinations: Destination | Destination[],
+           options: RequiredMessageOptions): Promise<void>;
 }
 
 /**
@@ -241,6 +249,8 @@ export interface SlackFileMessage {
 
 }
 
+export type RequiredMessageOptions = Pick<MessageOptions, "id" | "thread"> & { id: string };
+
 /**
  * Options for sending messages using the MessageClient.
  */
@@ -365,14 +375,14 @@ export function menuForCommand(selectSpec: MenuSpecification,
  * Check if the object is a valid Slack message.
  */
 export function isSlackMessage(object: any): object is SlackMessage {
-    return (object.text || object.attachments) && !object.content;
+    return !!object && (object.text || object.attachments) && !object.content;
 }
 
 /**
  * Check if the object is a valid Slack file message, i.e., a snippet.
  */
 export function isFileMessage(object: any): object is SlackFileMessage {
-    return !object.length && object.content;
+    return !!object && !object.length && object.content;
 }
 
 /**
