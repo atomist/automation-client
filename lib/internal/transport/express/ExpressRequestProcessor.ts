@@ -14,6 +14,7 @@ import {
     Destination,
     MessageClient,
     MessageOptions,
+    RequiredMessageOptions,
 } from "../../../spi/message/MessageClient";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
@@ -92,6 +93,15 @@ class ExpressMessageClient implements MessageClient {
     public send(msg: any, destinations: Destination | Destination[], options?: MessageOptions): Promise<any> {
         if (this.delegate) {
             return this.delegate.send(msg, destinations, options);
+        } else {
+            return Promise.resolve();
+        }
+    }
+
+    public delete(destinations: Destination | Destination[],
+                  options: RequiredMessageOptions): Promise<void> {
+        if (this.delegate) {
+            return this.delegate.delete(destinations, options);
         } else {
             return Promise.resolve();
         }
