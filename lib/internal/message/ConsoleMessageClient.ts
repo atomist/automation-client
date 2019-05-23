@@ -4,6 +4,7 @@ import {
     isSlackMessage,
     MessageClient,
     MessageOptions,
+    RequiredMessageOptions,
 } from "../../spi/message/MessageClient";
 import {
     DefaultSlackMessageClient,
@@ -15,6 +16,10 @@ import { logger } from "../../util/logger";
  * Clearly display messages with channels and recipients (if DMs) on the console.
  */
 export class ConsoleMessageClient extends MessageClientSupport implements MessageClient {
+
+    public async delete(destinations: Destination | Destination[],
+                        options: RequiredMessageOptions): Promise<void> {
+    }
 
     protected async doSend(msg: any,
                            destinations: Destination | Destination[],

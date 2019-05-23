@@ -53,6 +53,7 @@ function prepareCommandRegistration(c: CommandHandlerMetadata) {
         tags: typeof c.tags === "string" ? [c.tags] : (c.tags || []).map(t => t.name),
         intent: toStringArray(c.intent),
         auto_submit: c.auto_submit ? c.auto_submit : false,
+        question: c.question,
         parameters: c.parameters,
         mapped_parameters: c.mapped_parameters,
         secrets: c.secrets ? c.secrets.map(s => ({ uri: s.uri })) : [],

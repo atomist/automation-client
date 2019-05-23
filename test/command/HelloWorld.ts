@@ -5,22 +5,12 @@ import {
     Parameter,
 } from "../../lib/decorators";
 import { HandleCommand } from "../../lib/HandleCommand";
+import { HandlerContext } from "../../lib/HandlerContext";
 import {
-    ConfigurationAware,
-    HandlerContext,
-} from "../../lib/HandlerContext";
-import {
-    failure,
     HandlerResult,
     Success,
 } from "../../lib/HandlerResult";
-import {
-    addressEvent,
-    addressSlackChannels,
-    addressSlackUsers,
-    addressSlackUsersFromContext,
-} from "../../lib/spi/message/MessageClient";
-import { logger } from "../../lib/util/logger";
+import { addressSlackUsersFromContext } from "../../lib/spi/message/MessageClient";
 import { SecretBaseHandler } from "./SecretBaseHandler";
 
 @ConfigurableCommandHandler("Send a hello back to the client", { intent: "hello cd", autoSubmit: true })
@@ -34,31 +24,16 @@ export class HelloWorld extends SecretBaseHandler implements HandleCommand {
 
     public async handle(ctx: HandlerContext): Promise<HandlerResult> {
 
-        const conf = (ctx as any as ConfigurationAware).configuration;
+        await ctx.messageClient.send(
+            { text: "https://test:superpassword@google.com" }, await addressSlackUsersFromContext(ctx, "cd"),
+            {
+                id: "test",
+            });
 
-        const helloWorld = {
-            sender: {
-                name: this.sender,
-            },
-            recipient: {
-                name: this.name,
-            },
-        };
+        await ctx.messageClient.delete(
+            await addressSlackUsersFromContext(ctx, "cd"),
+            { id: "test" });
 
-
-        logger.info(" hello look bla bla https://test:superpassword@google.com test");
-
-        await ctx.messageClient.send({ text: "https://test:superpassword@google.com"}, await addressSlackUsersFromContext(ctx, "cd"), { thread: true });
-
-        await ctx.messageClient.send({ text: "test" }, addressSlackChannels(ctx.workspaceId, "handlers"));
-        await ctx.messageClient.send({ text: "test" }, addressSlackUsers(ctx.workspaceId, "cd"), { id: null });
-
-        return ctx.messageClient.send(helloWorld, addressEvent("HelloWorld"))
-            .then(result => {
-                // result.bla.bla;
-                return Success;
-            })
-            .catch(failure);
-
+        return Success;
     }
 }
