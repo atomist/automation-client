@@ -14,6 +14,7 @@ import {
     isSlackMessage,
     MessageMimeTypes,
     MessageOptions,
+    RequiredMessageOptions,
     SlackDestination,
     WebDestination,
 } from "../../../spi/message/MessageClient";
@@ -43,6 +44,11 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 private source: Source,
                 private configuration: Configuration) {
         super();
+    }
+
+    public async delete(destinations: Destination | Destination[],
+                        options: RequiredMessageOptions): Promise<void> {
+        return this.doSend(undefined, destinations, { ...options, delete: true });
     }
 
     protected async doSend(msg: string | SlackMessage,
@@ -157,6 +163,9 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             } else if (typeof msg === "string") {
                 response.content_type = MessageMimeTypes.PLAIN_TEXT;
                 response.body = msg as string;
+            } else if (!!options.delete) {
+                response.content_type = "application/x-atomist-delete";
+                response.body === undefined;
             }
             if (_.get(this.configuration, "redact.messages", true) === true) {
                 response.body = redact(response.body);
