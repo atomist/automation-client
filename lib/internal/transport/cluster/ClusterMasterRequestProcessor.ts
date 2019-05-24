@@ -1,6 +1,7 @@
 import * as cluster from "cluster";
 import { StatsD } from "hot-shots";
 import * as stringify from "json-stringify-safe";
+import * as _ from "lodash";
 import * as TinyQueue from "tinyqueue";
 import * as WebSocket from "ws";
 import { Configuration } from "../../../configuration";
@@ -23,7 +24,11 @@ import {
     HealthStatus,
     registerHealthIndicator,
 } from "../../util/health";
-import { registerShutdownHook } from "../../util/shutdown";
+import { poll } from "../../util/poll";
+import {
+    defaultGracePeriod,
+    registerShutdownHook,
+} from "../../util/shutdown";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
     CommandIncoming,
@@ -52,19 +57,20 @@ interface MessageType {
     ts: number;
 }
 
+/* tslint:disable:max-file-line-count */
+
 /**
  * A RequestProcessor that delegates to Node.JS Cluster workers to do the actual
  * command and event processing.
  * @see ClusterWorkerRequestProcessor
  */
-export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
-    implements WebSocketRequestProcessor {
+export class ClusterMasterRequestProcessor extends AbstractRequestProcessor implements WebSocketRequestProcessor {
 
     private registration?: RegistrationConfirmation;
-    private webSocketLifecycle: WebSocketLifecycle;
-    private commands: Map<string, { dispatched: Dispatched<HandlerResult>, worker: number }> = new Map();
-    private events: Map<string, { dispatched: Dispatched<HandlerResult[]>, worker: number }> = new Map();
-    private messages: TinyQueue<MessageType> = new TinyQueue([], (a: MessageType, b: MessageType) => {
+    private readonly webSocketLifecycle: WebSocketLifecycle;
+    private readonly commands: Map<string, { dispatched: Dispatched<HandlerResult>, worker: number }> = new Map();
+    private readonly events: Map<string, { dispatched: Dispatched<HandlerResult[]>, worker: number }> = new Map();
+    private readonly messages: TinyQueue<MessageType> = new TinyQueue([], (a: MessageType, b: MessageType) => {
         if (a.message.type === "atomist:command" && b.message.type !== "atomist:command") {
             return -1;
         } else if (a.message.type !== "atomist:command" && b.message.type === "atomist:command") {
@@ -113,15 +119,27 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
             }
         });
 
-        registerShutdownHook(() => {
+        registerShutdownHook(async () => {
             this.shutdownInitiated = true;
-            return Promise.resolve(0);
-        }, Number.MIN_VALUE);
+            const gracePeriod = _.get(this.configuration, "ws.termination.gracePeriod", defaultGracePeriod);
+            if (_.get(this.configuration, "ws.termination.graceful", false)) {
+                try {
+                    logger.debug("Waiting for queue to empty");
+                    await poll(() => this.queueLength() < 1, gracePeriod);
+                } catch (e) {
+                    logger.warn("Work queue did not empty within grace period");
+                    return 1;
+                }
+            }
+            logger.debug("Terminating workers");
+            await this.terminateWorkers(gracePeriod);
+            return new Promise(resolve => setTimeout(() => resolve(0), gracePeriod));
+        }, 0, "drain work queue and shutdown workers");
 
         this.scheduleQueueLength();
     }
 
-    public onRegistration(registration: RegistrationConfirmation) {
+    public onRegistration(registration: RegistrationConfirmation): void {
         logger.info("Registration successful: %s", stringify(registration));
         (this.configuration.ws as any).session = registration;
         this.registration = registration;
@@ -129,19 +147,19 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         broadcast({
             type: "atomist:registration",
             registration: this.registration,
-            context: null,
+            context: undefined,
         });
     }
 
-    public onConnect(ws: WebSocket) {
+    public onConnect(ws: WebSocket): void {
         logger.info("WebSocket connection established. Listening for incoming messages");
         this.webSocketLifecycle.set(ws);
         this.listeners.forEach(l => l.registrationSuccessful(this));
     }
 
-    public onDisconnect() {
+    public onDisconnect(): void {
         this.webSocketLifecycle.reset();
-        this.registration = null;
+        this.registration = undefined;
     }
 
     public run(): Promise<any> {
@@ -310,8 +328,10 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         });
 
         cluster.on("exit", (worker, code, signal) => {
-            if (code !== 0 && !this.shutdownInitiated) {
-                logger.warn(`Worker '${worker.id}' exited with '${code}' '${signal}'. Restarting ...`);
+            if (this.shutdownInitiated) {
+                logger.info(`Worker '${worker.id}' shut down with status '${code}' and signal '${signal}'`);
+            } else {
+                logger.warn(`Worker '${worker.id}' exited with status '${code}' and signal '${signal}', replacing...`);
                 attachEvents(cluster.fork(), new Deferred());
             }
         });
@@ -322,7 +342,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
     protected invokeCommand(ci: CommandInvocation,
                             ctx: HandlerContext & AutomationContextAware,
                             command: CommandIncoming,
-                            callback: (result: Promise<HandlerResult>) => void) {
+                            callback: (result: Promise<HandlerResult>) => void): void {
         const message: MasterMessage = {
             type: "atomist:command",
             registration: this.registration,
@@ -340,7 +360,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
     protected invokeEvent(ef: EventFired<any>,
                           ctx: HandlerContext & AutomationContextAware,
                           event: EventIncoming,
-                          callback: (results: Promise<HandlerResult[]>) => void) {
+                          callback: (results: Promise<HandlerResult[]>) => void): void {
         const message: MasterMessage = {
             type: "atomist:event",
             registration: this.registration,
@@ -355,14 +375,12 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         this.startMessage();
     }
 
-    protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {
-        return Promise.resolve(
-            this.webSocketLifecycle.send(payload),
-        );
+    protected async sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {
+        return this.webSocketLifecycle.send(payload);
     }
 
     protected createGraphClient(event: CommandIncoming | EventIncoming): GraphClient {
-        return null;
+        return undefined;
     }
 
     protected createMessageClient(event: CommandIncoming | EventIncoming): MessageClient {
@@ -444,6 +462,10 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
         this.reportQueueLength();
     }
 
+    private queueLength(): number {
+        return this.messages.length + this.events.size + this.commands.size;
+    }
+
     private scheduleQueueLength(): void {
         if (this.configuration.statsd.enabled) {
             setInterval(() => {
@@ -461,31 +483,42 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor
                     this.messages.length,
                     1,
                     [],
-                    () => { /* intentionally empty */
-                    });
+                    () => { /* intentionally empty */ },
+                );
                 statsd.gauge(
                     "work_queue.events",
                     this.events.size,
                     1,
                     [],
-                    () => { /* intentionally empty */
-                    });
+                    () => { /* intentionally empty */ },
+                );
                 statsd.gauge(
                     "work_queue.commands",
                     this.commands.size,
                     1,
                     [],
-                    () => { /* intentionally empty */
-                    });
+                    () => { /* intentionally empty */ },
+                );
             }
+        }
+    }
+
+    private async terminateWorkers(gracePeriod: number): Promise<void> {
+        const workerIds = Object.keys(cluster.workers).map(id => cluster.workers[id].id);
+        logger.debug("Sending workers the shutdown message");
+        workerIds.forEach(id => cluster.workers[id].send({ type: "atomist:shutdown" }));
+        try {
+            logger.debug("Waiting for workers to exit");
+            await poll(() => Object.keys(cluster.workers).length < 1, gracePeriod);
+            logger.debug("All workers have exited");
+        } catch (e) {
+            logger.warn(`Not all workers exited in allotted time: ${Object.keys(cluster.workers).join(",")}`);
         }
     }
 }
 
 class Dispatched<T> {
-
-    constructor(public result: Deferred<T>, public context: HandlerContext) {
-    }
+    constructor(public result: Deferred<T>, public context: HandlerContext) { }
 }
 
 function hydrateContext(msg: WorkerMessage): HandlerContext {

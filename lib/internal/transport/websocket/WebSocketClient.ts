@@ -25,9 +25,9 @@ import Timer = NodeJS.Timer;
 export class WebSocketClient {
 
     public constructor(
-        private registrationCallback: () => any,
-        private configuration: Configuration,
-        private requestProcessor: WebSocketRequestProcessor,
+        private readonly registrationCallback: () => any,
+        private readonly configuration: Configuration,
+        private readonly requestProcessor: WebSocketRequestProcessor,
     ) {
     }
 
@@ -40,28 +40,10 @@ export class WebSocketClient {
 
             registerShutdownHook(() => {
                 reconnect = false;
-
-                if (this.configuration.ws.termination && this.configuration.ws.termination.graceful === true) {
-                    logger.info("Initiating WebSocket connection shutdown");
-
-                    // Now wait for configured timeout to let in-flight messages finish processing
-                    const deferred = new Deferred<number>();
-                    setTimeout(() => {
-                        ws.close();
-                        logger.info("Closing WebSocket connection");
-                        deferred.resolve(0);
-                    }, this.configuration.ws.termination.gracePeriod);
-
-                    return deferred.promise
-                        .then(code => {
-                            return code;
-                        });
-                } else {
-                    ws.close();
-                    logger.info("Closing WebSocket connection");
-                    return Promise.resolve(0);
-                }
-            });
+                logger.info("Closing WebSocket connection");
+                ws.close();
+                return Promise.resolve(0);
+            }, undefined /* last thing to do */, "closing websocket");
 
         }).catch(() => {
             logger.error("Persistent error registering with Atomist. Exiting...");
@@ -81,11 +63,11 @@ function connect(registrationCallback: () => any,
                  requestProcessor: WebSocketRequestProcessor): Promise<WebSocket> {
 
     // Functions are inline to avoid "this" peculiarities
-    function invokeCommandHandler(chr: CommandIncoming) {
+    function invokeCommandHandler(chr: CommandIncoming): void {
         requestProcessor.processCommand(chr);
     }
 
-    function invokeEventHandler(e: EventIncoming) {
+    function invokeEventHandler(e: EventIncoming): void {
         requestProcessor.processEvent(e);
     }
 
@@ -96,7 +78,8 @@ function connect(registrationCallback: () => any,
 
         let timer: Timer;
 
-        ws.on("open", function open() {
+        ws.on("open", function open(): void {
+            // tslint:disable-next-line:no-invalid-this
             requestProcessor.onConnect(this);
             resolve(ws);
 
@@ -113,13 +96,14 @@ function connect(registrationCallback: () => any,
             }, 10000);
         });
 
-        ws.on("message", function incoming(data: WebSocket.Data) {
+        ws.on("message", function incoming(data: WebSocket.Data): void {
 
-            function handleMessage(request: string) {
+            function handleMessage(reqString: string): void {
+                let request: any;
                 try {
-                    request = JSON.parse(request);
+                    request = JSON.parse(reqString);
                 } catch (err) {
-                    logger.error(`Failed to parse incoming message: %s`, request);
+                    logger.error(`Failed to parse incoming message: %s`, reqString);
                     return;
                 }
 
@@ -140,7 +124,7 @@ function connect(registrationCallback: () => any,
                         }
                     }
                 } catch (err) {
-                    console.error("Failed processing of message payload with: %s", JSON.stringify(serializeError(err)));
+                    logger.error("Failed processing of message payload with: %s", JSON.stringify(serializeError(err)));
                 }
             }
 
@@ -179,7 +163,7 @@ function connect(registrationCallback: () => any,
             }
         });
 
-        function reset() {
+        function reset(): void {
             requestProcessor.onDisconnect();
             clearInterval(timer);
             ping = 0;
@@ -216,14 +200,14 @@ function register(registrationCallback: () => any,
         const authorization = `Bearer ${configuration.apiKey}`;
 
         return client.exchange<RegistrationConfirmation>(configuration.endpoints.api, {
-                body: registrationPayload,
-                method: HttpMethod.Post,
-                headers: { Authorization: authorization },
-                options: {
-                    timeout: configuration.ws.timeout,
-                },
-                retry: { retries: 0, log: false },
-            })
+            body: registrationPayload,
+            method: HttpMethod.Post,
+            headers: { Authorization: authorization },
+            options: {
+                timeout: configuration.ws.timeout,
+            },
+            retry: { retries: 0, log: false },
+        })
             .then(result => {
                 const registration = result.body;
 
@@ -253,17 +237,19 @@ function register(registrationCallback: () => any,
     });
 }
 
+/* tslint:disable:no-null-keyword */
 function isPing(a: any): a is Ping {
-    return a.ping != null;
+    return a.ping !== null && a.ping !== undefined;
 }
 
 function isPong(a: any): a is Pong {
-    return a.pong != null;
+    return a.pong !== null && a.pong !== undefined;
 }
 
 function isControl(a: any): a is Control {
-    return a.control != null;
+    return a.control !== null && a.control !== undefined;
 }
+/* tslint:enable:no-null-keyword */
 
 interface Ping {
     ping: string;

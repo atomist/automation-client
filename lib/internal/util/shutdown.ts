@@ -1,31 +1,65 @@
 import * as exitHook from "async-exit-hook";
 import { logger } from "../../util/logger";
 
-let shutdownHooks: Array<{priority: number, hook: () => Promise<number>}> = [];
+export const defaultGracePeriod = 10000;
 
-export function registerShutdownHook(cb: () => Promise<number>, priority: number = Number.MAX_VALUE) {
-    shutdownHooks = [{ priority, hook: cb }, ...shutdownHooks].sort((h1, h2) => h1.priority - h2.priority);
+/**
+ * Shutdown hook function and metadata.
+ */
+export interface ShutdownHook {
+    /** Function to call at shutdown. */
+    hook: () => Promise<number>;
+    /** Priority of hook.  Lower number values are executed first. */
+    priority: number;
+    /** Optional description used in logging. */
+    description?: string;
 }
 
-exitHook.forceExitTimeout(60000 * 2);
-exitHook(callback => {
-    // Exit early if no shutdown hooks got registered
+let shutdownHooks: ShutdownHook[] = [];
+
+/**
+ * Add callback to run when shutdown is initiated prior to process
+ * exit.  See [[ShutdownHook]] for description of parameters.
+ */
+export function registerShutdownHook(cb: () => Promise<number>, priority: number = Number.MAX_VALUE, desc?: string): void {
+    const description = desc || `Shutdown hook with priority ${priority}`;
+    shutdownHooks = [{ priority, hook: cb, description }, ...shutdownHooks].sort((h1, h2) => h1.priority - h2.priority);
+}
+
+/**
+ * Run each shutdown hook and collect its result.
+ */
+export async function executeShutdownHooks(cb: () => void): Promise<never> {
     if (shutdownHooks.length === 0) {
-        process.exit(0);
+        logger.info("Shutting down");
+        cb();
+        throw new Error(`async-exit-hook callback returned but should not have`);
     }
 
-    logger.info("Shutdown initiated. Calling shutdown hooks");
-    shutdownHooks
-        .map(h => h.hook)
-        .reduce((p, c, i, result) => p.then(c), Promise.resolve(0))
-        .then(result => {
-            logger.info("Shutdown hooks completed. Exiting...");
-            callback();
-            process.exit(result);
-        })
-        .catch(() => {
-            logger.info("Shutdown hooks failed. Exiting...");
-            callback();
-            process.exit(1);
-        });
-});
+    logger.info("Shutdown initiated, calling shutdown hooks");
+    let status = 0;
+    for (const hook of shutdownHooks) {
+        try {
+            logger.debug(`Calling shutdown hook '${hook.description}'...`);
+            const result = await hook.hook();
+            logger.debug(`Shutdown hook '${hook.description}' completed with status '${result}'`);
+            status += result;
+        } catch (e) {
+            logger.warn(`Shutdown hook threw an error: ${e.message}`);
+            status += 10;
+        }
+    }
+    logger.info(`Shutdown hooks completed with status '${status}', exiting`);
+    shutdownHooks = [];
+    cb();
+    throw new Error(`async-exit-hook callback returned but should not have`);
+}
+exitHook(executeShutdownHooks);
+
+/**
+ * Set the absolute longer number of milliseconds shutdown should
+ * take.
+ */
+export function setForceExitTimeout(ms: number): void {
+    exitHook.forceExitTimeout(ms);
+}
