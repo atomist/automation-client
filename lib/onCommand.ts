@@ -23,6 +23,13 @@ import {
     toFactory,
 } from "./util/constructionUtils";
 
+export enum QuestionStyle {
+    Dialog = "dialog",
+    Threaded = "threaded",
+    Unthreaded = "unthreaded",
+    DialogAction = "dialog_action",
+}
+
 /**
  * Handle the given command. Parameters will have been set on a fresh
  * parameters instance before invocation
@@ -37,13 +44,6 @@ export type OnCommand<P = undefined> =
 /**
  * Create a HandleCommand instance with the appropriate metadata wrapping
  * the given function
- * @param h handle function
- * @param factory construction function
- * @param {string} name can be omitted if the function isn't exported
- * @param {string} description
- * @param {string[]} intent
- * @param {Tag[]} tags
- * @return {HandleCommand<P>}
  */
 export function commandHandlerFrom<P>(h: OnCommand<P>,
                                       factory: Maker<P>,
@@ -51,8 +51,9 @@ export function commandHandlerFrom<P>(h: OnCommand<P>,
                                       description: string = name,
                                       intent: string | string[] = [],
                                       tags: string | string[] = [],
-                                      autoSubmit: boolean = false): HandleCommand<P> & CommandHandlerMetadata {
-    const handler = new FunctionWrappingCommandHandler(name, description, h, factory, tags, intent, autoSubmit);
+                                      autoSubmit: boolean = false,
+                                      question?: QuestionStyle): HandleCommand<P> & CommandHandlerMetadata {
+    const handler = new FunctionWrappingCommandHandler(name, description, h, factory, tags, intent, autoSubmit, question);
     registerCommand(handler);
     return handler;
 }
@@ -70,16 +71,19 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
     public tags?: Tag[];
     // tslint:disable-next-line:variable-name
     public auto_submit: boolean;
+    public question: "dialog" | "threaded" | "unthreaded" | "dialog_action";
 
     constructor(public name: string,
                 public description: string,
-                private h: OnCommand<P>,
-                private parametersFactory: Maker<P>,
+                private readonly h: OnCommand<P>,
+                private readonly parametersFactory: Maker<P>,
                 // tslint:disable-next-line:variable-name
-                private _tags: string | string[] = [],
+                private readonly _tags: string | string[] = [],
                 // tslint:disable-next-line:variable-name
-                private _intent: string | string[] = [],
-                private autoSubmit: boolean = false) {
+                private readonly _intent: string | string[] = [],
+                private readonly autoSubmit: boolean = false,
+                // tslint:disable-next-line:variable-name
+                public _question?: QuestionStyle) {
         const newParamInstance = this.freshParametersInstance();
         const md = metadataFromInstance(newParamInstance) as CommandHandlerMetadata;
         this.parameters = md.parameters;
@@ -89,6 +93,7 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
         this.intent = toStringArray(_intent);
         this.tags = toStringArray(_tags).map(t => ({ name: t, description: t }));
         this.auto_submit = autoSubmit;
+        this.question = (!!_question ? _question.toString() : undefined) as any;
     }
 
     public freshParametersInstance(): P {

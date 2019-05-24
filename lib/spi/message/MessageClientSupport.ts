@@ -10,6 +10,7 @@ import {
     Destination,
     MessageClient,
     MessageOptions,
+    RequiredMessageOptions,
     SlackMessageClient,
 } from "./MessageClient";
 
@@ -29,6 +30,9 @@ export abstract class MessageClientSupport implements MessageClient {
         return this.doSend(msg, destinations as Destination[], options);
     }
 
+    public abstract delete(destinations: Destination | Destination[],
+                           options: RequiredMessageOptions): Promise<void>;
+
     protected abstract doSend(msg: any,
                               destinations: Destination[],
                               options?: MessageOptions): Promise<any>;
@@ -44,7 +48,8 @@ query ChatTeam {
 
 export class DefaultSlackMessageClient implements MessageClient, SlackMessageClient {
 
-    constructor(private delegate: MessageClient, private graphClient: GraphClient) {}
+    constructor(private delegate: MessageClient,
+                private graphClient: GraphClient) {}
 
     public respond(msg: any,
                    options?: MessageOptions): Promise<any> {
@@ -55,6 +60,11 @@ export class DefaultSlackMessageClient implements MessageClient, SlackMessageCli
                 destinations: Destination | Destination[],
                 options?: MessageOptions): Promise<any> {
         return this.delegate.send(msg, destinations, options);
+    }
+
+    public async delete(destinations: Destination | Destination[],
+                        options: RequiredMessageOptions): Promise<void> {
+        return this.delegate.delete(destinations, options);
     }
 
     public addressUsers(msg: string | SlackMessage,

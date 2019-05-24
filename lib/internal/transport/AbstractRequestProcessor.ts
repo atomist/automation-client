@@ -19,6 +19,7 @@ import {
     Destination,
     MessageClient,
     MessageOptions,
+    RequiredMessageOptions,
     SlackMessageClient,
 } from "../../spi/message/MessageClient";
 import { DefaultSlackMessageClient } from "../../spi/message/MessageClientSupport";
@@ -456,6 +457,11 @@ class AutomationEventListenerEnabledMessageClient implements MessageClient {
                     this.ctx),
             ),
         );
+    }
+
+    public async delete(destinations: Destination | Destination[],
+                        options: RequiredMessageOptions): Promise<void> {
+        return this.delegate.delete(destinations, options);
     }
 }
 
