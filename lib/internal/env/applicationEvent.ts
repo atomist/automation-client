@@ -1,4 +1,5 @@
 import * as appRoot from "app-root-path";
+// tslint:disable-next-line:import-blacklist
 import axios from "axios";
 import * as stringify from "json-stringify-safe";
 import * as os from "os";
@@ -64,11 +65,8 @@ export function registerApplicationEvents(workspaceId: string): Promise<any> {
     }
 
     // register shutdown hook
-    registerShutdownHook(() => {
-        return stopping(workspaceId, event)
-            .then(() => Promise.resolve(0))
-            .catch(() => Promise.resolve(1));
-    });
+    registerShutdownHook(() => stopping(workspaceId, event).then(() => Promise.resolve(0), () => Promise.resolve(1)),
+        2000, "application stopping event");
 
     // trigger application started event
     return started(workspaceId, event);

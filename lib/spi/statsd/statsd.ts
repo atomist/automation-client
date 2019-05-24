@@ -42,22 +42,22 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
 
     public statsd: StatsDClient;
     private timer: Timer;
-    private registrationName: string;
+    private readonly registrationName: string;
     private heavy: Heavy;
 
-    constructor(private configuration: Configuration) {
+    constructor(private readonly configuration: Configuration) {
         super();
         this.registrationName = `${this.configuration.name}/${this.configuration.version}`;
         this.initStatsd();
         this.initGc();
     }
 
-    public registrationSuccessful(handler: RequestProcessor) {
+    public registrationSuccessful(handler: RequestProcessor): void {
         this.increment("counter.registration");
         this.event("event.registration", `New registration for ${this.registrationName}`);
     }
 
-    public contextCreated(ctx: HandlerContext) {
+    public contextCreated(ctx: HandlerContext): void {
         const context = (ctx as any as AutomationContextAware).context;
         const graphClient = ctx.graphClient;
 
@@ -73,13 +73,9 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                 endpoint: graphClient.endpoint,
                 mutate: (optionsOrName: MutationOptions<any> | string) => {
                     const start = Date.now();
-                    if (typeof optionsOrName === "string") {
-                        optionsOrName = {
-                            name: optionsOrName,
-                        };
-                    }
-                    (optionsOrName as any).moduleDir = trace.get()[1].getFileName();
-                    return graphClient.mutate(optionsOrName)
+                    const options = (typeof optionsOrName === "string") ? { name: optionsOrName } : optionsOrName;
+                    (options as any).moduleDir = trace.get()[1].getFileName();
+                    return graphClient.mutate(options)
                         .then(result => {
                             this.statsd.increment("counter.graphql.mutation.success", 1, 1, tags, this.callback);
                             this.statsd.timing("timer.graphql.mutation", Date.now() - start, 1, tags, this.callback);
@@ -93,13 +89,9 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                 },
                 query: (optionsOrName: QueryOptions<any> | string) => {
                     const start = Date.now();
-                    if (typeof optionsOrName === "string") {
-                        optionsOrName = {
-                            name: optionsOrName,
-                        };
-                    }
-                    (optionsOrName as any).moduleDir = trace.get()[1].getFileName();
-                    return graphClient.query(optionsOrName)
+                    const options = (typeof optionsOrName === "string") ? { name: optionsOrName } : optionsOrName;
+                    (options as any).moduleDir = trace.get()[1].getFileName();
+                    return graphClient.query(options)
                         .then(result => {
                             this.statsd.increment("counter.graphql.query.success", 1, 1, tags, this.callback);
                             this.statsd.timing("timer.graphql.query", Date.now() - start, 1, tags, this.callback);
@@ -156,11 +148,12 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
     }
 
     public messageSent(message: any,
-                       destinations: Destination | Destination[],
+                       dests: Destination | Destination[],
                        options: MessageOptions,
-                       ctx: HandlerContext & AutomationContextAware) {
+                       ctx: HandlerContext & AutomationContextAware): Promise<void> {
+
         let type: string;
-        destinations = Array.isArray(destinations) ? destinations : [destinations];
+        const destinations = Array.isArray(dests) ? dests : [dests];
         destinations.forEach(d => {
             if (d.userAgent === "slack") {
                 const sd = d as SlackDestination;
@@ -180,12 +173,11 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
     }
 
     /** Do-nothing callback */
-    private callback(err: Error) {
+    private callback(err: Error): void {
         return;
     }
 
-    private increment(stat: string | string[],
-                      tags?: string[]) {
+    private increment(stat: string | string[], tags?: string[]): void {
         if (!this.statsd) {
             return;
         }
@@ -194,7 +186,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         }
     }
 
-    private event(title: string, text?: string, tags?: string[]) {
+    private event(title: string, text?: string, tags?: string[]): void {
         if (!this.statsd) {
             return;
         }
@@ -203,9 +195,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         }
     }
 
-    private timing(stat: string | string[],
-                   ctx: HandlerContext,
-                   tags?: string[]) {
+    private timing(stat: string | string[], ctx: HandlerContext, tags?: string[]): void {
         if (!this.statsd) {
             return;
         }
@@ -218,7 +208,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         }
     }
 
-    private initStatsd() {
+    private initStatsd(): void {
 
         const statsdClientDefaultOptions = defaultStatsDClientOptions(this.configuration);
         this.statsd = this.configuration.statsd.client.factory.create(statsdClientDefaultOptions);
@@ -238,7 +228,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         registerShutdownHook(() => {
             this.close();
             return Promise.resolve(0);
-        });
+        }, 5000, "close statsd");
         (this.configuration.statsd as any).__instance = this.statsd;
     }
 
@@ -252,7 +242,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         this.statsd = undefined;
     }
 
-    private submitHeapStats() {
+    private submitHeapStats(): void {
         if (!this.statsd) {
             return;
         }
@@ -262,7 +252,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         this.statsd.gauge("heap.used", heap.heapUsed, 1, [], this.callback);
     }
 
-    private submitEventLoopDelay() {
+    private submitEventLoopDelay(): void {
         if (this.heavy && this.heavy.load && !!this.statsd) {
             this.statsd.timing(
                 "event_loop.delay",
@@ -273,7 +263,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         }
     }
 
-    private initGc() {
+    private initGc(): void {
         try {
             const gc = require("gc-stats");
             gc().on("stats", stats => {

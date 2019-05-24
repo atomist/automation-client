@@ -33,6 +33,7 @@ import { HandleEvent } from "./HandleEvent";
 import { ExpressServerOptions } from "./internal/transport/express/ExpressServer";
 import { QueuingWebSocketLifecycle } from "./internal/transport/websocket/WebSocketLifecycle";
 import { config } from "./internal/util/config";
+import { defaultGracePeriod } from "./internal/util/shutdown";
 import {
     guid,
     obfuscateJson,
@@ -52,13 +53,13 @@ import {
     DefaultWebSocketFactory,
     WebSocketFactory,
 } from "./spi/http/wsClient";
-import { Maker } from "./util/constructionUtils";
-import { logger } from "./util/logger";
-import { loadHostPackageJson } from "./util/packageJson";
 import {
     DefaultStatsDClientFactory,
     StatsDClientFactory,
 } from "./spi/statsd/statsdClient";
+import { Maker } from "./util/constructionUtils";
+import { logger } from "./util/logger";
+import { loadHostPackageJson } from "./util/packageJson";
 
 /**
  * Customize the express server configuration: For example to add custom routes
@@ -170,11 +171,18 @@ export interface AutomationOptions extends AnyOptions {
         },
         termination?: {
             /**
-             * if true, give in-flight transactions `gracePeriod`
-             * milliseconds to complete when shutting down
+             * If true, wait for up to `gracePeriod` milliseconds to
+             * process in-flight and queued requests.
              */
             graceful?: boolean;
-            /** grace period in milliseconds */
+            /**
+             * Grace period in milliseconds.  Note the actual time to
+             * shutdown gracefully may be more than twice this, as
+             * this period is used to first wait for requests and then
+             * used again to wait for any cluster workers to shutdown.
+             * If some part of the shutdown hangs, it could take up to
+             * ten times this period for all processes to exit.
+             */
             gracePeriod?: number;
         };
         /** compress messages over websocket */
@@ -399,7 +407,7 @@ export function configurationValue<T>(path: string = "", defaultValue?: T): T {
     if (defaultValue !== undefined) {
         return defaultValue;
     }
-    
+
     throw new Error(`Required @Value '${path}' not available`);
 }
 
@@ -1087,7 +1095,7 @@ export const LocalDefaultConfiguration: Configuration = {
         },
         termination: {
             graceful: false,
-            gracePeriod: 10000,
+            gracePeriod: defaultGracePeriod,
         },
         compress: false,
         timeout: 30000,

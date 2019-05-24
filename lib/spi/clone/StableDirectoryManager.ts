@@ -40,7 +40,7 @@ export class StableDirectoryManager implements DirectoryManager {
 
     public opts: StableDirectoryManagerOpts;
 
-    private directoriesUsed = 0;
+    private directoriesUsed: number = 0;
 
     constructor(pOpts: StableDirectoryManagerOpts) {
         this.opts = {
@@ -52,7 +52,7 @@ export class StableDirectoryManager implements DirectoryManager {
             registerShutdownHook(() => {
                 logger.debug("Cleaning up temporary directories under '%s'", this.opts.baseDir);
                 return fs.remove(this.opts.baseDir).then(() => 0);
-            });
+            }, 3000, `directory cleanup: ${this.opts.baseDir}`);
         }
     }
 
@@ -85,7 +85,7 @@ export class StableDirectoryManager implements DirectoryManager {
      * Return undefined if not found
      */
     private existingDirectoryFor(owner: string, repo: string, branch: string,
-                                 opts: CloneOptions): Promise<CloneDirectoryInfo> {
+        opts: CloneOptions): Promise<CloneDirectoryInfo> {
         const expectedPath = this.pathFor(owner, repo);
         return fs.pathExists(expectedPath)
             .then(exists => {
