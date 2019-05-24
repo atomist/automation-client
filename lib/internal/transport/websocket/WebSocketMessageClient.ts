@@ -226,7 +226,7 @@ export function mapActions(msg: SlackMessage): Action[] {
     if (msg.attachments) {
         msg.attachments.filter(attachment => attachment.actions).forEach(attachment => {
             attachment.actions.forEach(a => {
-                if ((a as CommandReferencingAction).command) {
+                if (!!a && !!(a as CommandReferencingAction).command) {
                     const cra = a as CommandReferencingAction;
 
                     const id = counter++;
