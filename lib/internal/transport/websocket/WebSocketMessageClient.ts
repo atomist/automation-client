@@ -130,7 +130,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             command: isCommandIncoming(this.request) ? this.request.command : undefined,
             event: isEventIncoming(this.request) ? this.request.extensions.operationName : undefined,
             destinations: responseDestinations,
-            id: options.id ? options.id.replace(/ /g, "_") : undefined,
+            id: options.id ? options.id : undefined,
             timestamp: ts,
             ttl: ts && options.ttl ? options.ttl : undefined,
             post_mode: options.post === "update_only" ? "update_only" : (options.post === "always" ? "always" : "ttl"),
