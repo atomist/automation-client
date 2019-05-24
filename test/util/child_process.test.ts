@@ -17,6 +17,7 @@
 
 import * as appRoot from "app-root-path";
 import * as assert from "power-assert";
+import { sleep } from "../../lib/internal/util/poll";
 import {
     execPromise,
     killProcess,
@@ -68,9 +69,6 @@ describe("child_promise", () => {
         });
 
         it("should not kill if signal handled", async () => {
-            function sleep(ms: number): Promise<void> {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
             // delay to allow the spawned node process to start and set up signal handler
             const delay = 100;
             const script = "process.on('SIGTERM', function() { return; }); let t = setTimeout(function() { process.exit(7) }, 7000)";

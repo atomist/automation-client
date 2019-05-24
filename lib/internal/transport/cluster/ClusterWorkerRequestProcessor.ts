@@ -29,7 +29,12 @@ import {
     gc,
     heapDump,
 } from "../../util/memory";
-import { registerShutdownHook } from "../../util/shutdown";
+import { poll } from "../../util/poll";
+import {
+    registerShutdownHook,
+    terminationGraceful,
+    terminationGracePeriod,
+} from "../../util/shutdown";
 import { guid } from "../../util/string";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
@@ -51,61 +56,72 @@ export class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
 
     private graphClients: GraphClientFactory;
     private registration?: RegistrationConfirmation;
+    private shutdownInitiated: boolean = false;
 
     /* tslint:disable:variable-name */
     constructor(
-        private _automations: AutomationServer,
-        private _configuration: Configuration,
-        private _listeners: AutomationEventListener[] = [],
+        private readonly _automations: AutomationServer,
+        private readonly _configuration: Configuration,
+        private readonly _listeners: AutomationEventListener[] = [],
     ) {
 
         super(_automations, _configuration, [..._listeners, new ClusterWorkerAutomationEventListener()]);
-        workerSend({ type: "atomist:online", context: null })
-            .then(() => { /** intentionally left empty */
-            });
-        registerShutdownHook(() => {
-
-            if (this._configuration.ws &&
-                this._configuration.ws.termination &&
-                this._configuration.ws.termination.graceful === true) {
-                logger.info("Initiating worker shutdown");
-
-                // Now wait for configured timeout to let in-flight messages finish processing
-                const deferred = new Deferred<number>();
-                setTimeout(() => {
-                    logger.info("Shutting down worker");
-                    deferred.resolve(0);
-                }, this._configuration.ws.termination.gracePeriod + 2500);
-
-                return deferred.promise
-                    .then(code => {
-                        return code;
-                    });
-            } else {
-                logger.info("Shutting down worker");
-                return Promise.resolve(0);
+        // workerSend is async, so we cannot call it in a constructor
+        process.send({ type: "atomist:online", context: undefined });
+        process.on("message", msg => {
+            if (msg.type === "atomist:registration") {
+                this.setRegistration(msg.registration as RegistrationConfirmation);
+            } else if (msg.type === "atomist:command") {
+                this.setRegistrationIfRequired(msg);
+                this.processCommand(decorateContext(msg) as CommandIncoming);
+            } else if (msg.type === "atomist:event") {
+                this.setRegistrationIfRequired(msg);
+                this.processEvent(decorateContext(msg) as EventIncoming);
+            } else if (msg.type === "atomist:gc") {
+                gc();
+            } else if (msg.type === "atomist:heapdump") {
+                heapDump();
+            } else if (msg.type === "atomist:shutdown") {
+                logger.debug("Received shutdown message");
+                this.shutdownInitiated = true;
+                // async-exit-hook ensures hooks are only run once, so
+                // this is safe even if worker already received signal
+                process.kill(process.pid);
             }
         });
+        registerShutdownHook(async () => {
+            if (this.shutdownInitiated) {
+                return 0;
+            }
+            if (!terminationGraceful(this._configuration)) {
+                return 0;
+            }
+            const gracePeriod = terminationGracePeriod(this._configuration);
+            try {
+                await poll(() => this.shutdownInitiated, gracePeriod * 2);
+            } catch (e) {
+                logger.warn("Did not receive shutdown message from master within twice the grace period");
+                return 1;
+            }
+            return 0;
+        }, 0, "wait for shutdown message");
     }
-
     /* tslint:enable:variable-name */
 
-    public setRegistration(registration: RegistrationConfirmation) {
+    public setRegistration(registration: RegistrationConfirmation): void {
         logger.debug("Receiving registration '%s'", stringify(registration));
         this.registration = registration;
         this.graphClients = this._configuration.graphql.client.factory;
     }
 
-    public setRegistrationIfRequired(data: any) {
+    public setRegistrationIfRequired(data: any): void {
         if (!this.registration) {
             this.setRegistration(data.registration as RegistrationConfirmation);
         }
     }
 
-    public sendShutdown(code: number, ctx: HandlerContext & AutomationContextAware) {
-        workerSend({ type: "atomist:shutdown", data: code, context: ctx.context })
-            .then(() => { /** intentionally left empty */
-            });
+    public async sendShutdown(code: number, ctx: HandlerContext & AutomationContextAware): Promise<void> {
+        await workerSend({ type: "atomist:shutdown", data: code, context: ctx.context });
     }
 
     protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {
@@ -131,7 +147,7 @@ export class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
     protected setupNamespace(request: any,
                              automations: AutomationServer,
                              invocationId: string = guid(),
-                             ts: number = Date.now()) {
+                             ts: number = Date.now()): any {
         const context = request.__context;
         delete request.__context;
         return context;
@@ -214,21 +230,6 @@ export function startWorker(automations: AutomationServer,
                             configuration: Configuration,
                             listeners: AutomationEventListener[] = []): ClusterWorkerRequestProcessor {
     const worker = new ClusterWorkerRequestProcessor(automations, configuration, listeners);
-    process.on("message", msg => {
-        if (msg.type === "atomist:registration") {
-            worker.setRegistration(msg.registration as RegistrationConfirmation);
-        } else if (msg.type === "atomist:command") {
-            worker.setRegistrationIfRequired(msg);
-            worker.processCommand(decorateContext(msg) as CommandIncoming);
-        } else if (msg.type === "atomist:event") {
-            worker.setRegistrationIfRequired(msg);
-            worker.processEvent(decorateContext(msg) as EventIncoming);
-        } else if (msg.type === "atomist:gc") {
-            gc();
-        } else if (msg.type === "atomist:heapdump") {
-            heapDump();
-        }
-    });
     return worker;
 }
 

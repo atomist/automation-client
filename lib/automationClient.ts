@@ -27,9 +27,15 @@ import { DefaultWebSocketRequestProcessor } from "./internal/transport/websocket
 import { prepareRegistration } from "./internal/transport/websocket/payloads";
 import { WebSocketClient } from "./internal/transport/websocket/WebSocketClient";
 import { WebSocketRequestProcessor } from "./internal/transport/websocket/WebSocketRequestProcessor";
+import {
+    setForceExitTimeout,
+    terminationGracePeriod,
+} from "./internal/util/shutdown";
 import { obfuscateJson } from "./internal/util/string";
+import { AutomationEventListener } from "./server/AutomationEventListener";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
+import { StatsdAutomationEventListener } from "./spi/statsd/statsd";
 import { Maker } from "./util/constructionUtils";
 import {
     clientLoggingConfiguration,
@@ -37,7 +43,6 @@ import {
     logger,
 } from "./util/logger";
 import { addRedaction } from "./util/redact";
-import { StatsdAutomationEventListener } from "./spi/statsd/statsd";
 
 export class AutomationClient implements RequestProcessor {
 
@@ -47,7 +52,7 @@ export class AutomationClient implements RequestProcessor {
     public webSocketHandler: RequestProcessor;
     public httpHandler: RequestProcessor;
 
-    private defaultListeners = [
+    private defaultListeners: AutomationEventListener[] = [
         new MetricEnabledAutomationEventListener(),
         new EventStoringAutomationEventListener(),
         new StartupMessageAutomationEventListener(),
@@ -78,7 +83,7 @@ export class AutomationClient implements RequestProcessor {
         return this;
     }
 
-    public processCommand(command: CommandIncoming, callback?: (result: Promise<HandlerResult>) => void) {
+    public processCommand(command: CommandIncoming, callback?: (result: Promise<HandlerResult>) => void): void {
         if (this.webSocketHandler) {
             return this.webSocketHandler.processCommand(command, callback);
         } else if (this.httpHandler) {
@@ -88,7 +93,7 @@ export class AutomationClient implements RequestProcessor {
         }
     }
 
-    public processEvent(event: EventIncoming, callback?: (results: Promise<HandlerResult[]>) => void) {
+    public processEvent(event: EventIncoming, callback?: (results: Promise<HandlerResult[]>) => void): void {
         if (this.webSocketHandler) {
             return this.webSocketHandler.processEvent(event, callback);
         } else if (this.httpHandler) {
@@ -101,6 +106,7 @@ export class AutomationClient implements RequestProcessor {
     public run(): Promise<void> {
         this.configureRedactions();
         configureLogging(clientLoggingConfiguration(this.configuration));
+        this.configureShutdown();
         this.configureStatsd();
 
         const clientSig = `${this.configuration.name}:${this.configuration.version}`;
@@ -147,7 +153,7 @@ export class AutomationClient implements RequestProcessor {
         }
     }
 
-    private configureRedactions() {
+    private configureRedactions(): void {
         if (!!this.configuration.redact && !!this.configuration.redact.patterns) {
             this.configuration.redact.patterns.forEach(p => {
                 let regexp: RegExp;
@@ -161,13 +167,18 @@ export class AutomationClient implements RequestProcessor {
         }
     }
 
-    private raiseStartupEvent() {
+    private raiseStartupEvent(): Promise<void> {
         return [...this.defaultListeners, ...this.configuration.listeners].filter(l => l.startupSuccessful)
             .map(l => () => l.startupSuccessful(this))
             .reduce((p, f) => p.then(f), Promise.resolve());
     }
 
-    private configureStatsd() {
+    private configureShutdown(): void {
+        const gracePeriod = terminationGracePeriod(this.configuration);
+        setForceExitTimeout(gracePeriod * 10);
+    }
+
+    private configureStatsd(): void {
         if (this.configuration.statsd.enabled === true) {
             this.defaultListeners.push(new StatsdAutomationEventListener(this.configuration));
         }
