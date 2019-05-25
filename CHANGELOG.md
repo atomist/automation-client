@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   configurationValue does not allow the use of a falsey default value. [#534](https://github.com/atomist/automation-client/issues/534)
 -   Send valid statsd metrics. [#532](https://github.com/atomist/automation-client/issues/532)
 -   edit-all fails if a branch already exists on one repo. [#168](https://github.com/atomist/automation-client/issues/168)
+-   Rework cluster shutdown. [#549](https://github.com/atomist/automation-client/issues/549)
 
 ## [1.4.0](https://github.com/atomist/automation-client-ts/compare/1.3.0...1.4.0) - 2019-04-15
 
