@@ -1,42 +1,53 @@
 import * as appRoot from "app-root-path";
-// tslint:disable-next-line:import-blacklist
-import axios from "axios";
-import * as stringify from "json-stringify-safe";
 import * as os from "os";
-import { automationClientInstance } from "../../globals";
+import { Configuration } from "../../configuration";
+import { HttpMethod } from "../../spi/http/httpClient";
 import { logger } from "../../util/logger";
 import { registerShutdownHook } from "../util/shutdown";
 import { guid } from "../util/string";
 
 const Url = "https://webhook.atomist.com/atomist/application/teams";
 
-function started(teamId: string, event: ApplicationEvent): Promise<any> {
-    return sendEvent("started", teamId, event);
+function started(teamId: string,
+                 event: ApplicationEvent,
+                 configuration: Configuration): Promise<void> {
+    return sendEvent("started", teamId, event, configuration);
 }
 
-function stopping(teamId: string, event: ApplicationEvent): Promise<any> {
-    return sendEvent("stopping", teamId, event);
+function stopping(teamId: string,
+                  event: ApplicationEvent,
+                  configuration: Configuration): Promise<void> {
+    return sendEvent("stopping", teamId, event, configuration);
 }
 
-function sendEvent(state: "stopping" | "started", teamId: string, event: ApplicationEvent): Promise<any> {
+async function sendEvent(state: "stopping" | "started",
+                         teamId: string,
+                         event: ApplicationEvent,
+                         configuration: Configuration): Promise<void> {
     event.state = state;
     event.ts = Date.now();
 
-    logger.debug("Sending application event:", stringify(event));
+    logger.debug("Sending application event: %j", event);
 
-    return axios.post(`${Url}/${teamId}`, event)
-        .catch(err => {
-            logger.error(err);
-        });
+    try {
+        await configuration.http.client.factory.create(Url).exchange(
+            `${Url}/${teamId}`,
+            {
+                method: HttpMethod.Post,
+                body: event,
+            });
+    } catch (e) {
+        logger.error("Failed to send application event: %s", e.message);
+        logger.debug(e);
+    }
 }
 
 /**
  * Register the automation client to send application events to Atomist.
  * This is useful to show starting and stopping automation clients as part of their general lifecycle in eg Slack.
- * @param {string} workspaceId
- * @returns {Promise<any>}
  */
-export function registerApplicationEvents(workspaceId: string): Promise<any> {
+export async function registerApplicationEvents(workspaceId: string,
+                                                configuration: Configuration): Promise<void> {
 
     // tslint:disable-next-line:no-var-requires
     const git = require(`${appRoot.path}/git-info.json`);
@@ -52,7 +63,7 @@ export function registerApplicationEvents(workspaceId: string): Promise<any> {
             branch,
             repo,
         },
-        domain: automationClientInstance().configuration.environment,
+        domain: configuration.environment,
         pod: env ? env.instance_id : os.hostname(),
         host: env ? env.instance_id : os.hostname(),
         id: env ? env.instance_id : guid(),
@@ -65,11 +76,14 @@ export function registerApplicationEvents(workspaceId: string): Promise<any> {
     }
 
     // register shutdown hook
-    registerShutdownHook(() => stopping(workspaceId, event).then(() => Promise.resolve(0), () => Promise.resolve(1)),
-        2000, "application stopping event");
+    registerShutdownHook(
+        () => stopping(workspaceId, event, configuration)
+            .then(() => Promise.resolve(0), () => Promise.resolve(1)),
+        2000,
+        "application stopping event");
 
     // trigger application started event
-    return started(workspaceId, event);
+    await started(workspaceId, event, configuration);
 }
 
 interface ApplicationEvent {

@@ -203,9 +203,9 @@ export class AutomationClient implements RequestProcessor {
     private setupApplicationEvents(): Promise<any> {
         if (this.configuration.applicationEvents.enabled) {
             if (this.configuration.applicationEvents.workspaceId) {
-                return registerApplicationEvents(this.configuration.applicationEvents.workspaceId);
+                return registerApplicationEvents(this.configuration.applicationEvents.workspaceId, this.configuration);
             } else if (this.configuration.workspaceIds.length > 0) {
-                return registerApplicationEvents(this.configuration.workspaceIds[0]);
+                return registerApplicationEvents(this.configuration.workspaceIds[0], this.configuration);
             }
         }
         return Promise.resolve();
