@@ -15,6 +15,12 @@ import {
     HealthStatus,
     registerHealthIndicator,
 } from "../../util/health";
+import { sleep } from "../../util/poll";
+import {
+    registerShutdownHook,
+    terminationGraceful,
+    terminationGracePeriod,
+} from "../../util/shutdown";
 import { AbstractRequestProcessor } from "../AbstractRequestProcessor";
 import {
     CommandIncoming,
@@ -39,7 +45,7 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
 
     private graphClients: GraphClientFactory;
     private registration?: RegistrationConfirmation;
-    private webSocketLifecycle: WebSocketLifecycle;
+    private readonly webSocketLifecycle: WebSocketLifecycle;
 
     constructor(protected automations: AutomationServer,
                 protected configuration: Configuration,
@@ -54,24 +60,33 @@ export class DefaultWebSocketRequestProcessor extends AbstractRequestProcessor
                 return { status: HealthStatus.Down, detail: "WebSocket disconnected" };
             }
         });
+
+        registerShutdownHook(async () => {
+            if (!terminationGraceful(this.configuration)) {
+                return Promise.resolve(0);
+            }
+            logger.debug("Waiting for any in-flight work");
+            await sleep(terminationGracePeriod(this.configuration));
+            return 0;
+        }, 0, "grace period");
     }
 
-    public onRegistration(registration: RegistrationConfirmation) {
+    public onRegistration(registration: RegistrationConfirmation): void {
         logger.info("Registration successful: %s", stringify(registration));
         (this.configuration.ws as any).session = registration;
         this.registration = registration;
         this.graphClients = this.configuration.graphql.client.factory;
     }
 
-    public onConnect(ws: WebSocket) {
+    public onConnect(ws: WebSocket): void {
         logger.info("WebSocket connection established. Listening for incoming messages");
         this.webSocketLifecycle.set(ws);
         this.listeners.forEach(l => l.registrationSuccessful(this));
     }
 
-    public onDisconnect() {
+    public onDisconnect(): void {
         this.webSocketLifecycle.reset();
-        this.registration = null;
+        this.registration = undefined;
     }
 
     protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {

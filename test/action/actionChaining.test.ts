@@ -1,5 +1,4 @@
 import * as stringify from "json-stringify-safe";
-import "mocha";
 import * as assert from "power-assert";
 import * as TinyQueue from "tinyqueue";
 import { promisify } from "util";
@@ -10,12 +9,12 @@ import {
 } from "../../lib/action/actionOps";
 import { ActionResult } from "../../lib/action/ActionResult";
 import { MasterMessage } from "../../lib/internal/transport/cluster/messages";
+import { sleep } from "../../lib/internal/util/poll";
 import { GitHubRepoRef } from "../../lib/operations/common/GitHubRepoRef";
 import { InMemoryProject } from "../../lib/project/mem/InMemoryProject";
 
 class Person {
-    constructor(public name: string) {
-    }
+    constructor(public name: string) { }
 }
 
 describe("action chaining", () => {
@@ -142,19 +141,16 @@ describe("action chaining", () => {
         }).catch(done);
     });
 
-    const sleepPlease: (timeout: number) => Promise<void> =
-        promisify((a, b) => setTimeout(b, a));
-
     it("runs all of them for realz", done => {
         const report = [];
         const f1 = (s: string) => {
-            return sleepPlease(50).then(_ => {
+            return sleep(50).then(() => {
                 report.push("f1");
                 return Promise.resolve({ success: true, target: s + " and 1" });
             });
         };
         const f2 = (s: string) => {
-            return sleepPlease(50).then(_ => {
+            return sleep(50).then(() => {
                 report.push("f2");
                 return Promise.resolve({ success: true, target: s + " and 2" });
             });
