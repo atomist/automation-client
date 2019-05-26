@@ -80,6 +80,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
         }
     });
     private shutdownInitiated: boolean = false;
+    private replaceWorkers: boolean = true;
 
     constructor(protected automations: AutomationServer,
                 protected configuration: Configuration,
@@ -120,6 +121,9 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
         });
 
         registerShutdownHook(async () => {
+            if (this.shutdownInitiated) {
+                return 0;
+            }
             this.shutdownInitiated = true;
             const gracePeriod = terminationGracePeriod(this.configuration);
             if (terminationGraceful(this.configuration)) {
@@ -300,7 +304,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
                             });
                     } else if (msg.type === "atomist:shutdown") {
                         logger.info(`Shutdown requested from worker`);
-                        process.exit(msg.data);
+                        process.kill(process.pid);
                     }
                 });
             });
@@ -328,11 +332,11 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
         });
 
         cluster.on("exit", (worker, code, signal) => {
-            if (this.shutdownInitiated) {
-                logger.info(`Worker '${worker.id}' shut down with status '${code}' and signal '${signal}'`);
-            } else {
+            if (this.replaceWorkers) {
                 logger.warn(`Worker '${worker.id}' exited with status '${code}' and signal '${signal}', replacing...`);
                 attachEvents(cluster.fork(), new Deferred());
+            } else {
+                logger.info(`Worker '${worker.id}' shut down with status '${code}' and signal '${signal}'`);
             }
         });
 
@@ -504,6 +508,10 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
     }
 
     private async terminateWorkers(gracePeriod: number): Promise<void> {
+        if (!this.replaceWorkers) {
+            return;
+        }
+        this.replaceWorkers = false;
         const workerIds = Object.keys(cluster.workers).map(id => cluster.workers[id].id);
         logger.debug("Sending workers the shutdown message");
         workerIds.forEach(id => cluster.workers[id].send({ type: "atomist:shutdown" }));
