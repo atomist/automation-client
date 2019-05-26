@@ -80,6 +80,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
         }
     });
     private shutdownInitiated: boolean = false;
+    private replaceWorkers: boolean = true;
 
     constructor(protected automations: AutomationServer,
                 protected configuration: Configuration,
@@ -131,6 +132,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
                     return 1;
                 }
             }
+            this.replaceWorkers = false;
             logger.debug("Terminating workers");
             await this.terminateWorkers(gracePeriod);
             return 0;
@@ -300,7 +302,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
                             });
                     } else if (msg.type === "atomist:shutdown") {
                         logger.info(`Shutdown requested from worker`);
-                        process.exit(msg.data);
+                        process.kill(process.pid);
                     }
                 });
             });
@@ -328,11 +330,11 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
         });
 
         cluster.on("exit", (worker, code, signal) => {
-            if (this.shutdownInitiated) {
-                logger.info(`Worker '${worker.id}' shut down with status '${code}' and signal '${signal}'`);
-            } else {
+            if (this.replaceWorkers) {
                 logger.warn(`Worker '${worker.id}' exited with status '${code}' and signal '${signal}', replacing...`);
                 attachEvents(cluster.fork(), new Deferred());
+            } else {
+                logger.info(`Worker '${worker.id}' shut down with status '${code}' and signal '${signal}'`);
             }
         });
 
