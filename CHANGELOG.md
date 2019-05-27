@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Redact outgoing messages. [#527](https://github.com/atomist/automation-client/issues/527)
 -   Expose integration point for different statsd client libraries. [#533](https://github.com/atomist/automation-client/issues/533)
 -   Improvements to message sending protocol. [#546](https://github.com/atomist/automation-client/issues/546)
+-   Add default reviewer mechanism for BitBucket. [#542](https://github.com/atomist/automation-client/issues/542)
 
 ### Changed
 
