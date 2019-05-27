@@ -23,7 +23,8 @@ const OperationNameExpression = /(subscription|query)[\s]*([^({\s]*)/i;
 const FragmentExpression = /\.\.\.\s*([_A-Za-z][_0-9A-Za-z]*)/gi;
 
 export class ParameterEnum {
-    constructor(public value: string | string[]) { }
+    constructor(public value: string | string[]) {
+    }
 }
 
 export function enumValue(value: string | string[]): ParameterEnum {
@@ -232,8 +233,8 @@ export function prettyPrintErrors(errors: GraphQLError[], q?: string): string {
 
 export function replaceParameters(q: string,
                                   parameters: {
-        [name: string]: string | boolean | number | ParameterEnum;
-    } = {}): string {
+                                      [name: string]: string | boolean | number | ParameterEnum;
+                                  } = {}): string {
     if (Object.keys(parameters).length > 0) {
         const exp = OperationParameterExpression;
         if (exp.test(q)) {
@@ -276,7 +277,10 @@ function inlineFragments(q: string, name: string, moduleDir: string, fragmentDir
     if (!fragmentDir && !name) {
         fragmentDir = p.dirname(moduleDir);
     } else if (!fragmentDir && name) {
-        fragmentDir = p.resolve(findUp.sync("graphql", { cwd: p.resolve(p.dirname(moduleDir)) }), "fragment");
+        fragmentDir = p.resolve(findUp.sync("graphql", {
+            cwd: p.resolve(p.dirname(moduleDir)),
+            type: "directory",
+        }), "fragment");
     } else if (!p.isAbsolute(fragmentDir)) {
         fragmentDir = p.resolve(p.dirname(moduleDir), fragmentDir);
     }
@@ -330,7 +334,7 @@ function locateAndLoadGraphql(
         }
     } else if (options.name) {
         const cwd = p.resolve(p.dirname(moduleDir));
-        const graphqlDir = findUp.sync("graphql", { cwd });
+        const graphqlDir = findUp.sync("graphql", { cwd, type: "directory" });
         if (graphqlDir) {
             const queryDir = p.join(graphqlDir, subfolder);
             const queries = fs.readdirSync(queryDir).filter(f => f.endsWith(".graphql")).filter(f => {
@@ -371,8 +375,8 @@ function locateAndLoadGraphql(
 export function resolveAndReadFileSync(path: string,
                                        current: string = appRoot.path,
                                        parameters: {
-        [name: string]: string | boolean | number | ParameterEnum;
-    } = {}): string {
+                                           [name: string]: string | boolean | number | ParameterEnum;
+                                       } = {}): string {
     if (!path.endsWith(".graphql")) {
         path = `${path}.graphql`;
     }

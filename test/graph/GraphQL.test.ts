@@ -1,6 +1,5 @@
 import * as assert from "power-assert";
 import * as GraphQL from "../../lib/graph/graphQL";
-import * as internalGraphql from "../../lib/internal/graph/graphQL";
 
 describe("GraphQL", () => {
 
