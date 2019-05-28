@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Update to graphql-codegen 0.18.2. [a9101f8](https://github.com/atomist/automation-client/commit/a9101f8eff0f4c02a087cbec8ffc602e4292735f)
 
+### Fixed
+
+-   Allow for normal exit with async hooks. [#553](https://github.com/atomist/automation-client/issues/553)
+
 ## [1.5.0](https://github.com/atomist/automation-client-ts/compare/1.4.0...1.5.0) - 2019-05-27
 
 ### Added
