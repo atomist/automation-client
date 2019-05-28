@@ -23,7 +23,7 @@ export interface WorkerMessage {
     data?: any;
 }
 
-export function broadcast(message: MasterMessage | MasterManagementMessage) {
+export function broadcast(message: MasterMessage | MasterManagementMessage): void {
     if (cluster.isMaster) {
         for (const id in cluster.workers) {
             if (cluster.workers.hasOwnProperty(id)) {

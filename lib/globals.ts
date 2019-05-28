@@ -5,7 +5,7 @@ import { EventStore } from "./spi/event/EventStore";
 ////////////////////////////////////////////////////////
 let es: EventStore;
 
-function initEventStore() {
+function initEventStore(): void {
     if (!es) {
         es = new InMemoryEventStore();
     }
@@ -20,7 +20,7 @@ export function eventStore(): EventStore {
     return es;
 }
 
-export function setEventStore(newEventStore: EventStore) {
+export function setEventStore(newEventStore: EventStore): void {
     es = newEventStore;
 }
 

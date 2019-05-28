@@ -42,7 +42,7 @@ export class WebSocketClient {
                 logger.info("Closing WebSocket connection");
                 ws.close();
                 return Promise.resolve(0);
-            }, undefined /* last thing to do */, "closing websocket");
+            }, 100000, "closing websocket");
 
         }).catch(() => {
             logger.error("Persistent error registering with Atomist, exiting");

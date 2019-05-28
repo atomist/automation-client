@@ -26,6 +26,7 @@ import {
 import { poll } from "../../util/poll";
 import {
     registerShutdownHook,
+    safeExit,
     terminationGraceful,
     terminationGracePeriod,
 } from "../../util/shutdown";
@@ -303,8 +304,11 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
                                 this.startMessage();
                             });
                     } else if (msg.type === "atomist:shutdown") {
-                        logger.info(`Shutdown requested from worker`);
-                        process.kill(process.pid);
+                        logger.info(`Immediate shutdown requested from worker`);
+                        this.replaceWorkers = false;
+                        this.shutdownInitiated = true;
+                        this.configuration.ws.termination.graceful = false;
+                        safeExit(msg.data);
                     }
                 });
             });
