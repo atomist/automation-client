@@ -86,6 +86,7 @@ export {
 
 export {
     registerShutdownHook,
+    safeExit,
 } from "./lib/internal/util/shutdown";
 export {
     guid,

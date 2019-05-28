@@ -1,6 +1,7 @@
 import * as exitHook from "async-exit-hook";
 import { get as _get } from "lodash";
 import { Configuration } from "../../configuration";
+import { automationClientInstance } from "../../globals";
 import { logger } from "../../util/logger";
 
 /** Believe or not, this is the default grace period. */
@@ -26,7 +27,12 @@ export function terminationGracePeriod(cfg: Configuration): number {
 export interface ShutdownHook {
     /** Function to call at shutdown. */
     hook: () => Promise<number>;
-    /** Priority of hook.  Lower number values are executed first. */
+    /**
+     * Priority of hook.  Lower number values are executed first.  The
+     * number provided should be greater than 0 and less 100000.
+     * Using a priority outside (0, 100000) may interfere with
+     * internal shutdown behaviors.
+     */
     priority: number;
     /** Optional description used in logging. */
     description?: string;
@@ -38,7 +44,7 @@ let shutdownHooks: ShutdownHook[] = [];
  * Add callback to run when shutdown is initiated prior to process
  * exit.  See [[ShutdownHook]] for description of parameters.
  */
-export function registerShutdownHook(cb: () => Promise<number>, priority: number = Number.MAX_VALUE, desc?: string): void {
+export function registerShutdownHook(cb: () => Promise<number>, priority: number = 1000, desc?: string): void {
     const description = desc || `Shutdown hook with priority ${priority}`;
     shutdownHooks = [{ priority, hook: cb, description }, ...shutdownHooks].sort((h1, h2) => h1.priority - h2.priority);
 }
@@ -74,9 +80,28 @@ export async function executeShutdownHooks(cb: () => never): Promise<never> {
 exitHook(executeShutdownHooks);
 
 /**
- * Set the absolute longer number of milliseconds shutdown should
+ * Set the absolute longest number of milliseconds shutdown should
  * take.
  */
 export function setForceExitTimeout(ms: number): void {
     exitHook.forceExitTimeout(ms);
+}
+
+/**
+ * Register a final shutdown hook that calls `process.exit(code)` and
+ * then initiates shutdown.  This allows you to exit with a specific
+ * exit code _and_ process all async shutdown hooks, something not
+ * possible when calling process.exit directly.
+ *
+ * For the fastest safe exit, set the automation client configuration
+ * ws.termination.graceful to false before calling this.
+ *
+ * @param code Exit code
+ */
+export function safeExit(code: number): void {
+    registerShutdownHook(async () => {
+        process.exit(code);
+        return 0; // make the compiler happy
+    }, Number.MAX_VALUE);
+    process.kill(process.pid);
 }
