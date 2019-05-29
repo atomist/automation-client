@@ -69,7 +69,7 @@ describe("BitBucketServer support", () => {
         mock.onGet("https://bitbucket.organisation.co.za/rest/api/1.0/projects/a-project/repos/test-app")
             .reply(200, {id: 1});
 
-        mock.onGet("https://bitbucket.organisation.co.za/rest/default-reviewers/1.0/projects/a-project/repos/test-app/reviewers")
+        mock.onGet("https://bitbucket.organisation.co.za/rest/default-reviewers/1.0/projects/a-project/repos/test-app/reviewers?sourceRepoId=1&targetRepoId=1&sourceRefId=refs/heads/thing1&targetRefId=refs/heads/master")
             .reply(200, [{name: "johndoe"}]);
 
         mock.onPost("https://bitbucket.organisation.co.za/rest/api/1.0/projects/a-project/repos/test-app/pull-requests")
@@ -97,7 +97,7 @@ describe("BitBucketServer support", () => {
         mock.onGet("https://bitbucket.organisation.co.za/rest/api/1.0/projects/a-project/repos/test-app")
             .reply(200, {id: 1});
 
-        mock.onGet("https://bitbucket.organisation.co.za/rest/default-reviewers/1.0/projects/a-project/repos/test-app/reviewers")
+        mock.onGet("https://bitbucket.organisation.co.za/rest/default-reviewers/1.0/projects/a-project/repos/test-app/reviewers?sourceRepoId=1&targetRepoId=1&sourceRefId=refs/heads/thing1&targetRefId=refs/heads/master")
             .reply(200, []);
 
         mock.onPost("https://bitbucket.organisation.co.za/rest/api/1.0/projects/a-project/repos/test-app/pull-requests")
