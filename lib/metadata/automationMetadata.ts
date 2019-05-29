@@ -107,6 +107,7 @@ export interface AutomationMetadata {
 
     name: string;
     description: string;
+    expose?: boolean;
     tags?: Tag[];
     values?: ValueDeclaration[];
 }
