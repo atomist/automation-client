@@ -141,7 +141,7 @@ function handlers(configuration: Configuration,
 
     const events = automations.events
         .sort((e1, e2) => e1.name.localeCompare(e2.name))
-        .map(e => `   ${e.expose === false ? "[" : " "}${e.name}${e.expose === false ? "]" : ""} ${e.description ? `(${_.upperFirst(e.description)})` : ""}`);
+        .map(e => `   ${e.expose === false ? chalk.gray("[") : " "}${e.name}${e.expose === false ? chalk.gray("]") : ""} ${e.description ? `(${_.upperFirst(e.description)})` : ""}`);
     const commands = automations.commands
         .sort((c1, c2) => c1.name.localeCompare(c2.name))
         .map(cmd => `   ${cmd.expose === false ? chalk.gray("[") : " "}${cmd.name}${cmd.expose === false ? chalk.gray("]") : ""} ${cmd.description ?
