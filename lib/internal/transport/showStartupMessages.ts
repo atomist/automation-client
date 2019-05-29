@@ -141,10 +141,10 @@ function handlers(configuration: Configuration,
 
     const events = automations.events
         .sort((e1, e2) => e1.name.localeCompare(e2.name))
-        .map(e => `    ${e.name} ${e.description ? `(${_.upperFirst(e.description)})` : ""}`);
+        .map(e => `   ${e.expose === false ? "[" : " "}${e.name}${e.expose === false ? "]" : ""} ${e.description ? `(${_.upperFirst(e.description)})` : ""}`);
     const commands = automations.commands
         .sort((c1, c2) => c1.name.localeCompare(c2.name))
-        .map(cmd => `    ${cmd.name} ${cmd.description ?
+        .map(cmd => `   ${cmd.expose === false ? chalk.gray("[") : " "}${cmd.name}${cmd.expose === false ? chalk.gray("]") : ""} ${cmd.description ?
             `(${_.upperFirst(cmd.description)})` : ""} ${cmd.intent ? chalk.gray(cmd.intent.join(", ")) : ""}`);
 
     let c = "";
