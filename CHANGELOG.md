@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.5.1...HEAD)
 
+### Fixed
+
+-   Ensure query params are passed when retrieving default reviewers. [#556](https://github.com/atomist/automation-client/issues/556)
+
 ## [1.5.1](https://github.com/atomist/automation-client-ts/compare/1.5.0...1.5.1) - 2019-05-29
 
 ### Changed
