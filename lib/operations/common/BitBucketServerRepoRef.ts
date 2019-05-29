@@ -165,7 +165,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
 
         const urlWithQueryParams = `${url}?${queryParams}`;
         const apiResponse = await configurationValue<HttpClientFactory>("http.client.factory", DefaultHttpClientFactory)
-            .create(urlWithQueryParams).exchange(url, {
+            .create(urlWithQueryParams).exchange(urlWithQueryParams, {
             method: HttpMethod.Get,
             headers: {
                 ...usernameColonPassword(creds),
