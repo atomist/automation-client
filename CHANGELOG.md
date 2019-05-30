@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 -   Ensure query params are passed when retrieving default reviewers. [#556](https://github.com/atomist/automation-client/issues/556)
+-   Improve behavior when immediate shutdown requested. [7055ec1](https://github.com/atomist/automation-client/commit/7055ec155f9f1aefd0254fc64509543495538391)
 
 ## [1.5.1](https://github.com/atomist/automation-client-ts/compare/1.5.0...1.5.1) - 2019-05-29
 
