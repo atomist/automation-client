@@ -115,6 +115,9 @@ export abstract class MappedParameters {
     public static readonly GitHubWebHookUrl: string = "atomist://github_webhook_url";
     public static readonly GitHubUrl: string = "atomist://github_url";
     public static readonly GitHubApiUrl: string = "atomist://github_api_url";
+    /*
+    * @deprecated no alternative required
+    */
     public static readonly GitHubDefaultRepositoryVisibility: string = "atomist://github/default_repo_visibility";
     public static readonly GitHubUserLogin: string = "atomist://github/username";
 
