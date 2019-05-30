@@ -102,6 +102,6 @@ export function safeExit(code: number): void {
     registerShutdownHook(async () => {
         process.exit(code);
         return 0; // make the compiler happy
-    }, Number.MAX_VALUE);
+    }, Number.MAX_VALUE, `safeExit ${code}`);
     process.kill(process.pid);
 }

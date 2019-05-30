@@ -305,8 +305,6 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
                             });
                     } else if (msg.type === "atomist:shutdown") {
                         logger.info(`Immediate shutdown requested from worker`);
-                        this.replaceWorkers = false;
-                        this.shutdownInitiated = true;
                         this.configuration.ws.termination.graceful = false;
                         safeExit(msg.data);
                     }
