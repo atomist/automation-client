@@ -292,7 +292,7 @@ describe("configuration", () => {
 
     describe("loadAutomationConfig", () => {
 
-        it("should load from index.js", () => {
+        it("should load from index.js", async () => {
             const root = appRoot.path;
             const indexJs = path.join(root, "test", "index.js");
             const indexUtilJs = path.join(root, "test", "util", "index.js");
@@ -316,7 +316,7 @@ describe("configuration", () => {
 `;
             fs.writeFileSync(indexJs, atomistConfigJs);
             fs.writeFileSync(indexUtilJs, atomistConfigUtilJs);
-            const cfg = loadIndexConfig();
+            const cfg = await loadIndexConfig();
             assert.deepStrictEqual(cfg, JSON.parse(`{
   "apiKey": "nightclubjitters",
   "http": {
@@ -333,13 +333,17 @@ describe("configuration", () => {
             fs.removeSync(indexUtilJs);
         });
 
-        it("should throw error for missing config", () => {
+        it("should throw error for missing config", async () => {
             const p = "/this/file/should/not/exist/so/please/do/not/make/it";
             const re = new RegExp(`Failed to load ${p}.configuration: Cannot find module '${p}'`);
-            assert.throws(() => loadAutomationConfig(p), re);
+            try {
+                await loadAutomationConfig(p)
+            } catch (e) {
+                assert(re.test(e.message))
+            }
         });
 
-        it("should load provided path", () => {
+        it("should load provided path", async () => {
             const e: Configuration = {
                 apiKey: "nightclubjitters",
                 workspaceIds: ["TIM"],
@@ -361,12 +365,12 @@ describe("configuration", () => {
 `;
             const atomistConfigJsFile = tmp.fileSync();
             fs.writeFileSync(atomistConfigJsFile.name, atomistConfigJs);
-            const c = loadAutomationConfig(atomistConfigJsFile.name);
+            const c = await loadAutomationConfig(atomistConfigJsFile.name);
             assert.deepStrictEqual(c, e);
         });
 
-        it("should find the test automation config", () => {
-            const c = loadAutomationConfig();
+        it("should find the test automation config", async () => {
+            const c = await loadAutomationConfig();
             assert.equal(c.name, "@atomist/automation-node-tests");
             assert.equal(c.version, "0.0.7");
             assert.deepStrictEqual(c.workspaceIds, ["T1L0VDKJP"]);
