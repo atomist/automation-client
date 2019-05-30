@@ -618,7 +618,7 @@ export function loadUserConfiguration(name?: string, version?: string): Automati
  * @param cfgPath location of automation configuration
  * @return automation configuration or undefined
  */
-export function loadAutomationConfig(configPath?: string): Configuration | undefined {
+export async function loadAutomationConfig(configPath?: string): Promise<Configuration | undefined> {
     let cfgPath = configPath;
     if (!cfgPath) {
         const cfgFile = "atomist.config.js";
@@ -631,7 +631,10 @@ export function loadAutomationConfig(configPath?: string): Configuration | undef
     }
     if (cfgPath) {
         try {
-            const cfg = require(cfgPath).configuration;
+            let cfg = require(cfgPath).configuration;
+            if (cfg instanceof Promise) {
+                cfg = await cfg;
+            }
             cfgLog(cfgPath);
             return cfg;
         } catch (e) {
@@ -648,21 +651,25 @@ export function loadAutomationConfig(configPath?: string): Configuration | undef
  *
  * @return automation configuration
  */
-export function loadIndexConfig(): Configuration {
+export async function loadIndexConfig(): Promise<Configuration> {
     const cfgFile = "index.js";
     const files = glob.sync(`${appRoot.path}/**/${cfgFile}`, { ignore: ["**/{.git,node_modules}/**"] });
 
     if (files.length > 0) {
-        const cfgs = files.map(f => {
+        const cfgs = [];
+        for (const f of files) {
             try {
-                const cfg = require(f).configuration || {};
+                let cfg = require(f).configuration || {};
+                if (cfg instanceof Promise) {
+                    cfg = await cfg;
+                }
                 cfgLog(f);
-                return cfg;
+                cfgs.push(cfg);
             } catch (e) {
                 e.message = `Failed to load ${f}.configuration: ${e.message}`;
                 throw e;
             }
-        });
+        }
         return deepMergeConfigs({}, ...cfgs);
     }
     return {};
@@ -935,14 +942,14 @@ export function validateConfiguration(cfg: Configuration): void {
  *                not provided the package is searched for one
  * @return merged configuration object
  */
-export function loadConfiguration(cfgPath?: string): Promise<Configuration> {
+export async function loadConfiguration(cfgPath?: string): Promise<Configuration> {
     // Register the logger globally so that downstream modules can see it
     (global as any).__logger = logger;
 
     let cfg: Configuration;
     try {
         const defCfg = defaultConfiguration();
-        const autoCfg = loadAutomationConfig(cfgPath) || loadIndexConfig();
+        const autoCfg = (await loadAutomationConfig(cfgPath)) || (await loadIndexConfig());
         const userCfg = loadUserConfiguration(defCfg.name, defCfg.version);
         const atmPathCfg = loadAtomistConfigPath();
         const atmCfg = loadAtomistConfig();
