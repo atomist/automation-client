@@ -62,7 +62,9 @@ export function Value(pathOrValue: string | BaseValue) {
  * @constructor
  */
 export function CommandHandler(description: string, ...intent: string[]) {
-    return (obj: any) => { declareCommandHandler(obj, description, null, intent); };
+    return (obj: any) => {
+        declareCommandHandler(obj, description, null, intent);
+    };
 }
 
 /**
@@ -76,7 +78,9 @@ export function ConfigurableCommandHandler(description: string,
                                            options: { intent?: string | string[], autoSubmit?: boolean }) {
     const intent = options.intent ? toStringArray(options.intent) : [];
     const autoSubmit = options.autoSubmit ? options.autoSubmit : false;
-    return (obj: any) => { declareCommandHandler(obj, description, autoSubmit, intent); };
+    return (obj: any) => {
+        declareCommandHandler(obj, description, autoSubmit, intent);
+    };
 }
 
 /**
@@ -85,7 +89,9 @@ export function ConfigurableCommandHandler(description: string,
  * @constructor
  */
 export function Parameters() {
-    return (obj: any) => { declareParameters(obj); };
+    return (obj: any) => {
+        declareParameters(obj);
+    };
 }
 
 export function EventHandler(
@@ -115,11 +121,12 @@ export abstract class MappedParameters {
     public static readonly GitHubWebHookUrl: string = "atomist://github_webhook_url";
     public static readonly GitHubUrl: string = "atomist://github_url";
     public static readonly GitHubApiUrl: string = "atomist://github_api_url";
-    /*
-    * @deprecated no alternative required
-    */
-    public static readonly GitHubDefaultRepositoryVisibility: string = "atomist://github/default_repo_visibility";
     public static readonly GitHubUserLogin: string = "atomist://github/username";
+
+    /**
+     * @deprecated no alternative available
+     */
+    public static readonly GitHubDefaultRepositoryVisibility: string = "atomist://github/default_repo_visibility";
 
     public static readonly SlackChannel: string = "atomist://slack/channel";
     public static readonly SlackChannelName: string = "atomist://slack/channel_name";
