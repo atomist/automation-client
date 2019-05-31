@@ -334,8 +334,10 @@ describe("configuration", () => {
         });
 
         it("should load async from index.js", async () => {
+
             const root = appRoot.path;
             const indexJs = path.join(root, "test", "index.js");
+            delete require.cache[require.resolve(indexJs)];
             const asyncConfigJs = path.join(root, "test", "asyncConfig.js");
 
             fs.copyFileSync(asyncConfigJs, indexJs);
