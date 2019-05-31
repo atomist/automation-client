@@ -333,6 +333,22 @@ describe("configuration", () => {
             fs.removeSync(indexUtilJs);
         });
 
+        it("should load async from index.js", async () => {
+            const root = appRoot.path;
+            const indexJs = path.join(root, "test", "index.js");
+            const asyncConfigJs = path.join(root, "test", "asyncConfig.js");
+
+            fs.copyFileSync(asyncConfigJs, indexJs);
+            const cfg = await loadIndexConfig();
+            assert.deepStrictEqual(cfg, JSON.parse(`{
+  "name": "asyn-test",
+  "workspaceIds": [
+    "123456"
+  ]
+}`));
+            fs.removeSync(indexJs);
+        });
+
         it("should throw error for missing config", async () => {
             const p = "/this/file/should/not/exist/so/please/do/not/make/it";
             const re = new RegExp(`Failed to load ${p}.configuration: Cannot find module '${p}'`);
@@ -881,3 +897,4 @@ describe("configuration", () => {
         });
     });
 });
+
