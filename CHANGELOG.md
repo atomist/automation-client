@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.5.2...HEAD)
 
+### Changed
+
+-   Allow configuration to be a `Promise<Configuration>`. [#564](https://github.com/atomist/automation-client/issues/564)
+
 ### Deprecated
 
 -   Deprecate `atomist://github/default_repo_visibility` mapped parameter. [#559](https://github.com/atomist/automation-client/issues/559)
