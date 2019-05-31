@@ -79,7 +79,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                         .then(result => {
                             this.statsd.increment("counter.graphql.mutation.success", 1, 1, tags, this.callback);
                             this.statsd.timing("timer.graphql.mutation", Date.now() - start, 1, tags, this.callback);
-                            return result;
+                            return result as any;
                         })
                         .catch(err => {
                             this.statsd.increment("counter.graphql.mutation.failure", 1, 1, tags, this.callback);
@@ -95,7 +95,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                         .then(result => {
                             this.statsd.increment("counter.graphql.query.success", 1, 1, tags, this.callback);
                             this.statsd.timing("timer.graphql.query", Date.now() - start, 1, tags, this.callback);
-                            return result;
+                            return result as any;
                         })
                         .catch(err => {
                             this.statsd.increment("counter.graphql.query.failure", 1, 1, tags, this.callback);
