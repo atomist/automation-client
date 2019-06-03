@@ -191,7 +191,7 @@ function urls(configuration: Configuration,
         const c = automations.team_ids.filter(t => t !== "local").map(t => {
             return `
   ${chalk.grey("Url")} ${chalk.underline(`https://app.atomist.com/workspace/${t}/sdms`)}
-  ${chalk.grey("GraphiQL")} ${chalk.underline(`https://app.atomist.com/workspace/${t}/graphql`)}`;
+  ${chalk.grey("GraphQL")} ${chalk.underline(`https://app.atomist.com/workspace/${t}/graphql`)}`;
         });
         return c.join("\n\n");
     } else {
