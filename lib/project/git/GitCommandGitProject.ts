@@ -114,7 +114,8 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
 
     private constructor(id: RepoRef,
                         public baseDir: string,
-                        private credentials: ProjectOperationCredentials, release: ReleaseFunction,
+                        private readonly credentials: ProjectOperationCredentials,
+                        release: ReleaseFunction,
                         public provenance?: string) {
         super(id, baseDir, release);
         this.branch = (id.branch || id.sha) || "master";
@@ -332,7 +333,7 @@ async function cloneInto(
     targetDirectoryInfo: CloneDirectoryInfo,
     opts: CloneOptions,
     id: RemoteRepoRef,
-) {
+): Promise<GitCommandGitProject> {
     logger.debug(
         `Cloning repo with owner '${id.owner}', name '${id.repo}', branch '${id.branch}', sha '${id.sha}' and options '${JSON.stringify(opts)}'`);
     const sha = id.sha || "HEAD";
@@ -406,6 +407,6 @@ async function clean(repoDir: string): Promise<ExecPromiseResult> {
         .then(() => execPromise("git", ["checkout", "--", "."], { cwd: repoDir }));
 }
 
-function isValidSHA1(s: string): boolean {
-    return s.match(/[a-fA-F0-9]{40}/) != null;
+export function isValidSHA1(s: string): boolean {
+    return /^[a-fA-F0-9]{40}$/.test(s);
 }

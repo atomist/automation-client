@@ -1141,10 +1141,8 @@ export const LocalDefaultConfiguration: Configuration = {
         messages: true,
         patterns: DEFAULT_REDACTION_PATTERNS,
     },
-    /* tslint:disable:no-null-keyword */
-    commands: null,
-    events: null,
-    /* tslint:enable:no-null-keyword */
+    commands: undefined,
+    events: undefined,
     ingesters: [],
     listeners: [],
     postProcessors: [],

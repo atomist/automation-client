@@ -1,7 +1,9 @@
-import "mocha";
 import * as assert from "power-assert";
 
-import { GitCommandGitProject } from "../../../lib/project/git/GitCommandGitProject";
+import {
+    GitCommandGitProject,
+    isValidSHA1,
+} from "../../../lib/project/git/GitCommandGitProject";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 
 describe("GitCommandGitProject", () => {
@@ -153,6 +155,35 @@ describe("GitCommandGitProject", () => {
             }
             assert(gp.branch === "master");
             assert(err === "testing");
+        });
+
+    });
+
+    describe("isValidSHA1", () => {
+
+        it("should validate a SHA1", () => {
+            const ss = [
+                "1234567890abcdef1234567890abcdef12345678",
+                "33e38b6c72788866004acfd736ed12b2e9529ea7",
+                "f6dee8b272248aab385f840f4799a707dcb7af26",
+                "b8947fc4370c99d3137d7d6b6e20ec26c8036370",
+            ];
+            ss.forEach(s => assert(isValidSHA1(s)));
+        });
+
+        it("should not validate invalid SHA1", () => {
+            const ss = [
+                // tslint:disable-next-line:no-null-keyword
+                null,
+                undefined,
+                "",
+                "master",
+                "some-branch",
+                "other/branch",
+                "b8947fc4370c99d3137d7d6b6e20ec26c8036370a",
+                "masterb8947fc4370c99d3137d7d6b6e20ec26c8036370",
+            ];
+            ss.forEach(s => assert(!isValidSHA1(s)));
         });
 
     });

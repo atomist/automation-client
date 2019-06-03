@@ -1,5 +1,4 @@
 import * as assert from "power-assert";
-
 import { GitHubRepoRef } from "../../lib/operations/common/GitHubRepoRef";
 import {
     createCommitComment,
@@ -7,6 +6,7 @@ import {
     fileContent,
     hasFile,
 } from "../../lib/util/gitHub";
+import { SeedRepoRef } from "../credentials";
 import {
     GitHubToken,
 } from "./apiUtils";
@@ -16,8 +16,7 @@ describe("gitHubUtils", () => {
     describe("deepLink", () => {
 
         it("creates a valid link with line number", () => {
-            const target = new GitHubRepoRef("atomist-seeds", "spring-rest-seed", "1c097a4897874b08e3b3ddb9675a1ac460ae46de");
-            const href = deepLink(target, {
+            const href = deepLink(SeedRepoRef, {
                 path: "pom.xml",
                 lineFrom1: 6,
                 offset: -1,
@@ -27,8 +26,7 @@ describe("gitHubUtils", () => {
         });
 
         it("creates a valid link without line number", () => {
-            const target = new GitHubRepoRef("atomist-seeds", "spring-rest-seed", "1c097a4897874b08e3b3ddb9675a1ac460ae46de");
-            const href = deepLink(target, {
+            const href = deepLink(SeedRepoRef, {
                 path: "pom.xml",
                 offset: -1,
             });
@@ -37,8 +35,7 @@ describe("gitHubUtils", () => {
         });
 
         it("copes without defined source location", () => {
-            const target = new GitHubRepoRef("atomist-seeds", "spring-rest-seed", "1c097a4897874b08e3b3ddb9675a1ac460ae46de");
-            const href = deepLink(target, undefined);
+            const href = deepLink(SeedRepoRef, undefined);
             assert(!!href);
             assert(!href.includes("#L"));
         });
@@ -47,41 +44,26 @@ describe("gitHubUtils", () => {
 
     describe("hasFile", () => {
 
-        it("check an existing file", done => {
-            hasFile(GitHubToken, "atomist-seeds", "spring-rest-seed", "pom.xml")
-                .then(r => {
-                    assert.equal(r, true);
-                    done();
-                }).catch(done);
-        }).timeout(5000);
+        it("check an existing file", async () => {
+            assert(await hasFile(GitHubToken, SeedRepoRef.owner, SeedRepoRef.repo, "pom.xml"));
+        }).timeout(8000);
 
-        it("check a non-existing file", done => {
-            hasFile(GitHubToken, "atomist-seeds", "spring-rest-seed", "the/quick/brown/foxpom.xml")
-                .then(r => {
-                    assert.equal(r, false);
-                    done();
-                }).catch(done);
-        }).timeout(5000);
+        it("check a non-existing file", async () => {
+            assert(!await hasFile(GitHubToken, SeedRepoRef.owner, SeedRepoRef.repo, "the/quick/brown/foxpom.xml"));
+        }).timeout(8000);
 
-        it("check an existing nested file", done => {
-            hasFile(GitHubToken, "atomist-seeds", "spring-rest-seed",
-                "/src/main/java/com/atomist/spring/SpringRestSeedApplication.java")
-                .then(r => {
-                    assert.equal(r, true);
-                    done();
-                }).catch(done);
-        }).timeout(5000);
+        it("check an existing nested file", async () => {
+            assert(await hasFile(GitHubToken, SeedRepoRef.owner, SeedRepoRef.repo,
+                "/src/main/java/com/atomist/spring/SpringRestSeedApplication.java"));
+        }).timeout(8000);
     });
 
     describe("fileContent", () => {
 
-        it("get content of an existing file", done => {
-            fileContent(GitHubToken, "atomist-seeds", "spring-rest-seed", "pom.xml")
-                .then(r => {
-                    assert(r.includes("spring-boot"), r);
-                    done();
-                }).catch(done);
-        }).timeout(5000);
+        it("get content of an existing file", async () => {
+            const c = await fileContent(GitHubToken, SeedRepoRef.owner, SeedRepoRef.repo, "pom.xml");
+            assert(c.includes("spring-boot"));
+        }).timeout(8000);
 
     });
 
@@ -89,10 +71,9 @@ describe("gitHubUtils", () => {
 
         // Skipped as we don't need this functionality yet and there's no cleanup
         it.skip("comment with absolute line number", done => {
-            const target = new GitHubRepoRef("atomist-travisorg", "this-repository-exists", "68ffbfaa4b6ddeff563541b4b08d3b53060a51d8");
-            hasFile(GitHubToken, target.owner, target.repo, "README.md")
+            hasFile(GitHubToken, SeedRepoRef.owner, SeedRepoRef.repo, "README.md")
                 .then(() => {
-                    createCommitComment(GitHubToken, target, {
+                    createCommitComment(GitHubToken, SeedRepoRef, {
                         body: "Not great",
                         path: "README.md",
                         position: 2,

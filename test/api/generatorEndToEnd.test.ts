@@ -11,6 +11,11 @@ import { GitProject } from "../../lib/project/git/GitProject";
 import { Project } from "../../lib/project/Project";
 import { hasFile } from "../../lib/util/gitHub";
 import {
+    SeedRepoName,
+    SeedRepoOwner,
+    SeedRepoRef,
+} from "../credentials";
+import {
     Creds,
     deleteOrIgnore,
     getOwnerByToken,
@@ -20,15 +25,17 @@ import {
 
 describe("generator end to end", () => {
 
-    before(function() {
+    before(function(): void {
         if (!GitHubToken) {
+            // tslint:disable-next-line:no-invalid-this
             this.skip();
         }
     });
 
     const noEd = (p: Project) => Promise.resolve(p);
 
-    it("should create a new GitHub repo using generate function", async function() {
+    it("should create a new GitHub repo using generate function", async function(): Promise<void> {
+        // tslint:disable-next-line:no-invalid-this
         this.retries(3);
 
         let rr: GitHubRepoRef;
@@ -38,8 +45,7 @@ describe("generator end to end", () => {
             const targetOwner = await getOwnerByToken();
             const repoName = tempRepoName();
             rr = new GitHubRepoRef(targetOwner, repoName);
-            clonedSeed = await GitCommandGitProject.cloned(Creds,
-                new GitHubRepoRef("atomist-seeds", "spring-rest-seed"));
+            clonedSeed = await GitCommandGitProject.cloned(Creds, new GitHubRepoRef(SeedRepoOwner, SeedRepoName));
             const targetRepo = new GitHubRepoRef(targetOwner, repoName);
             const result = await generate(clonedSeed, undefined, Creds, noEd, RemoteGitProjectPersister, targetRepo);
             gp = result.target;
@@ -64,9 +70,8 @@ describe("generator end to end", () => {
     }).timeout(20000);
 
     it("should refuse to create a new GitHub repo using existing repo name", async () => {
-        const clonedSeed = await GitCommandGitProject.cloned(Creds,
-            new GitHubRepoRef("atomist-seeds", "spring-rest-seed"));
-        const targetRepo = new GitHubRepoRef("atomist-travisorg", "this-repository-exists");
+        const clonedSeed = await GitCommandGitProject.cloned(Creds, new GitHubRepoRef(SeedRepoOwner, SeedRepoName));
+        const targetRepo = new GitHubRepoRef("atomist", "welcome");
 
         try {
             const result = await generate(clonedSeed, undefined, Creds, noEd, RemoteGitProjectPersister, targetRepo);

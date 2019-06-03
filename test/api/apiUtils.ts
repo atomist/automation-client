@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// tslint:disable-next-line:import-blacklist
 import axios from "axios";
 import * as _ from "lodash";
 
@@ -118,23 +119,15 @@ export async function cleanAfterTest(p: LocalProject, r: TestRepo): Promise<void
     }
 }
 
-/*
-let TargetOwner = "atomist-travisorg";
-const config = {
-    headers: {
-        Authorization: `token ${GitHubToken}`,
-    },
-};
-*/
-
 export function deleteOrIgnore(rr: RemoteRepoRef, creds: ProjectOperationCredentials): Promise<ActionResult<any>> {
     return rr.deleteRemote(creds)
         .catch(err => {
+            // tslint:disable-next-line:no-console
             console.log(`cleanup: deleting ${JSON.stringify(rr)} failed with ${err}. oh well`);
-            return null;
+            return undefined;
         });
 }
 
-export function tempRepoName() {
+export function tempRepoName(): string {
     return `test-repo-${new Date().getTime()}`;
 }

@@ -2,7 +2,6 @@ import * as appRoot from "app-root-path";
 import * as fs from "fs-extra";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
-import "mocha";
 import * as path from "path";
 import * as assert from "power-assert";
 import * as tmp from "tmp-promise";
@@ -35,6 +34,8 @@ import { DefaultGraphClientFactory } from "../lib/spi/graph/GraphClientFactory";
 import { DefaultHttpClientFactory } from "../lib/spi/http/httpClient";
 import { DefaultWebSocketFactory } from "../lib/spi/http/wsClient";
 import { DefaultStatsDClientFactory } from "../lib/spi/statsd/statsdClient";
+
+/* tslint:disable:max-file-line-count */
 
 describe("configuration", () => {
 
@@ -121,13 +122,13 @@ describe("configuration", () => {
             enabled: false,
             client: {
                 factory: DefaultStatsDClientFactory,
-            }
+            },
         },
         applicationEvents: {
             enabled: false,
         },
-        commands: null,
-        events: null,
+        commands: undefined,
+        events: undefined,
         ingesters: [],
         listeners: [],
         postProcessors: [],
@@ -221,6 +222,7 @@ describe("configuration", () => {
         });
 
         it("should handled null", () => {
+            // tslint:disable-next-line:no-null-keyword
             const moduleConfig = resolveModuleConfig(null);
             assert.equal(moduleConfig.apiKey, undefined);
             assert.equal(moduleConfig.workspaceIds, undefined);
@@ -355,9 +357,9 @@ describe("configuration", () => {
             const p = "/this/file/should/not/exist/so/please/do/not/make/it";
             const re = new RegExp(`Failed to load ${p}.configuration: Cannot find module '${p}'`);
             try {
-                await loadAutomationConfig(p)
+                await loadAutomationConfig(p);
             } catch (e) {
-                assert(re.test(e.message))
+                assert(re.test(e.message));
             }
         });
 
@@ -709,8 +711,13 @@ describe("configuration", () => {
 
     describe("loadDefaultConfiguration", () => {
 
-        it("should default local config", () => {
+        it("should default null to local config", () => {
+            // tslint:disable-next-line:no-null-keyword
             assertEnvConfiguration(null, LocalDefaultConfiguration);
+        });
+
+        it("should default undefined to local config", () => {
+            assertEnvConfiguration(undefined, LocalDefaultConfiguration);
         });
 
         it("should default testing config", () => {
@@ -721,7 +728,7 @@ describe("configuration", () => {
             assertEnvConfiguration("production", ProductionDefaultConfiguration);
         });
 
-        function assertEnvConfiguration(env: string, envSpecificCfg: Configuration) {
+        function assertEnvConfiguration(env: string, envSpecificCfg: Configuration): void {
             const oldEnv = process.env.NODE_ENV;
             process.env.NODE_ENV = env;
 
@@ -744,6 +751,7 @@ describe("configuration", () => {
         it("should resolve simple placeholder", async () => {
             const c = defaultConfiguration();
             c.custom = {
+                // tslint:disable-next-line:no-invalid-template-strings
                 foo: "${BAR}",
             };
 
@@ -757,6 +765,7 @@ describe("configuration", () => {
         it("should resolve simple placeholder and apply default value", async () => {
             const c = defaultConfiguration();
             c.custom = {
+                // tslint:disable-next-line:no-invalid-template-strings
                 foo: "${BAR:super foo}",
             };
 
@@ -769,6 +778,7 @@ describe("configuration", () => {
         it("should resolve simple placeholder and not apply default value", async () => {
             const c = defaultConfiguration();
             c.custom = {
+                // tslint:disable-next-line:no-invalid-template-strings
                 foo: "${BAR:super foo}",
             };
 
@@ -782,6 +792,7 @@ describe("configuration", () => {
         it("should resolve multiple placeholders", async () => {
             const c = defaultConfiguration();
             c.custom = {
+                // tslint:disable-next-line:no-invalid-template-strings
                 foo: "Careful ${DUDE }, there's a ${DRINK:beverage} here!",
             };
 
@@ -795,6 +806,7 @@ describe("configuration", () => {
         it("should fail if placeholder can't be resolved", async () => {
             const c = defaultConfiguration();
             c.custom = {
+                // tslint:disable-next-line:no-invalid-template-strings
                 foo: "Careful ${DUDE }, there's a ${DRINK:beverage} here!",
             };
             delete process.env.DUDE;
@@ -861,11 +873,13 @@ describe("configuration", () => {
             (global as any).__runningAutomationClient = {
                 configuration: {},
             };
+            /* tslint:disable:no-null-keyword */
             const v = configurationValue<string>("test.foo", null);
             assert.equal(v, null);
+            /* tslint:enable:no-null-keyword */
         });
 
-        it("should resolve boolean config value from null", () => {
+        it("should resolve boolean config value from false", () => {
             (global as any).__runningAutomationClient = {
                 configuration: {
                     sdm: {
@@ -895,8 +909,15 @@ describe("configuration", () => {
 
         it("should fall back to empty string default value", () => {
             const v = configurationValue<string>("foo.bar", "");
-            assert.deepStrictEqual(v,"");
+            assert.deepStrictEqual(v, "");
         });
+
+        it("should throw an error if config not found and no default provided", () => {
+            (global as any).__runningAutomationClient = {
+                configuration: {},
+            };
+            assert.throws(() => configurationValue<string>("test.foo"), /Required @Value 'test.foo' not available/);
+        });
+
     });
 });
-

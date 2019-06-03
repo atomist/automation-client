@@ -1,5 +1,4 @@
 import * as stringify from "json-stringify-safe";
-import "mocha";
 import * as assert from "power-assert";
 
 import { GitHubRepoRef } from "../../../lib/operations/common/GitHubRepoRef";
@@ -7,19 +6,19 @@ import { GitCommandGitProject } from "../../../lib/project/git/GitCommandGitProj
 import { GitProject } from "../../../lib/project/git/GitProject";
 import { isFullyClean } from "../../../lib/project/git/gitStatus";
 import { TmpDirectoryManager } from "../../../lib/spi/clone/tmpDirectoryManager";
-import { GitHubToken } from "../../credentials";
-
-const TargetOwner = "atomist-travisorg";
-const ExistingRepo = "this-repository-exists";
-const ExistingSha = "68ffbfaa4b6ddeff563541b4b08d3b53060a51d8";
-
-const ExistingRepoRef = new GitHubRepoRef(TargetOwner, ExistingRepo);
+import {
+    ExistingRepoName,
+    ExistingRepoOwner,
+    ExistingRepoRef,
+    ExistingRepoSha,
+    GitHubToken,
+} from "../../credentials";
 
 const Creds = { token: GitHubToken };
 
 describe("GitStatus", () => {
 
-    function freshClone(repoRef: GitHubRepoRef = ExistingRepoRef): Promise<GitProject> {
+    function freshClone(repoRef: GitHubRepoRef = new GitHubRepoRef(ExistingRepoOwner, ExistingRepoName)): Promise<GitProject> {
         return GitCommandGitProject.cloned(Creds, repoRef, {}, TmpDirectoryManager);
     }
 
@@ -42,11 +41,12 @@ describe("GitStatus", () => {
 
     it("should recognize ignored files, but still call it clean", async () => {
         const project = await freshClone();
-        await project.addFile("ignored-file", "this file is gonna be ignored");
+        const ignoredFile = "ignored-file";
+        await project.addFile(ignoredFile, "this file is gonna be ignored");
         const status = await project.gitStatus();
         assert(status.isClean);
-        assert(status.raw === "!! ignored-file\n", status.raw);
-        assert.deepEqual(status.ignoredChanges, ["ignored-file"], stringify(status.ignoredChanges));
+        assert(status.raw === `!! ${ignoredFile}\n`);
+        assert.deepEqual(status.ignoredChanges, [ignoredFile]);
         await project.release();
     }).timeout(5000);
 
@@ -76,9 +76,9 @@ describe("GitStatus", () => {
     }).timeout(5000);
 
     it("should work in detached HEAD", async () => {
-        const project = await freshClone(new GitHubRepoRef(TargetOwner, ExistingRepo, ExistingSha));
+        const project = await freshClone(ExistingRepoRef);
         const status1 = await project.gitStatus();
-        assert(status1.sha === ExistingSha, `asked for ${ExistingSha}, got ${status1.sha}`);
+        assert(status1.sha === ExistingRepoSha);
         await project.release();
     }).timeout(5000);
 

@@ -20,39 +20,38 @@ import { TmpDirectoryManager } from "../../../lib/spi/clone/tmpDirectoryManager"
 import { execPromise } from "../../../lib/util/child_process";
 import {
     Creds,
-    GitHubToken,
+    ExistingRepoName,
+    ExistingRepoOwner,
+    ExistingRepoRef,
 } from "../../credentials";
 
 describe("CachedGitClone", () => {
 
-    const Owner = "atomist-travisorg";
-    const RepoName = "this-repository-exists";
-
     function reuseKey(repo: string): string {
-        return `${ReuseKey}.${Owner}/${repo}`;
+        return `${ReuseKey}.${ExistingRepoOwner}/${repo}`;
     }
 
     function fallbackKey(repo: string): string {
-        return `${FallbackKey}.${Owner}/${repo}`;
+        return `${FallbackKey}.${ExistingRepoOwner}/${repo}`;
     }
 
     describe("cached git clone projects", () => {
 
         const getAClone = (opts: { branch?: string, repoName?: string, token?: string } = {}) => {
-            const repoName = opts.repoName || RepoName;
+            const repoName = opts.repoName || ExistingRepoName;
             const repositoryThatExists =
                 opts.branch ? GitHubRepoRef.from({
-                    owner: Owner,
+                    owner: ExistingRepoOwner,
                     repo: repoName,
                     branch: opts.branch,
-                }) : new GitHubRepoRef(Owner, repoName);
+                }) : new GitHubRepoRef(ExistingRepoOwner, repoName);
             const creds = opts.token ? { token: opts.token } : Creds;
             return GitCommandGitProject.cloned(creds, repositoryThatExists, DefaultCloneOptions, CachingDirectoryManager);
         };
 
         it("never returns the same place on the filesystem twice at once", done => {
             const clones = [getAClone(), getAClone()];
-            const reusedBefore = getCounter(fallbackKey(RepoName)).printObj().count;
+            const reusedBefore = getCounter(fallbackKey(ExistingRepoName)).printObj().count;
             const cleaningDone = (err: Error | void) => {
                 Promise.all(clones)
                     .then(them =>
@@ -66,7 +65,7 @@ describe("CachedGitClone", () => {
                         "Oh no! two simultaneous projects in " + them[0].baseDir);
                 })
                 .then(() => {
-                    const reusedAfter = getCounter(fallbackKey(RepoName)).printObj().count;
+                    const reusedAfter = getCounter(fallbackKey(ExistingRepoName)).printObj().count;
                     // we fell back to transient at least once
                     assert(reusedBefore < reusedAfter, `${reusedBefore} < ${reusedAfter}`);
                 })
@@ -213,7 +212,7 @@ describe("CachedGitClone", () => {
         it("should start with a new clone if that directory if any of the setup fails", done => {
             const repoName = "this-repository-exists-to-test-cached-clones-1";
 
-            function screwUp(repoRoot: string) {
+            function screwUp(repoRoot: string): Promise<void> {
                 // this will make git commands fail fer sher
                 return fs.remove(path.join(repoRoot, ".git"));
             }
@@ -242,8 +241,8 @@ describe("CachedGitClone", () => {
 
     describe("even transient clones have some properties", () => {
 
-        function cloneTransiently(opts: CloneOptions = DefaultCloneOptions) {
-            const repositoryThatExists = GitHubRepoRef.from({ owner: Owner, repo: RepoName, branch: "master" });
+        function cloneTransiently(opts: CloneOptions = DefaultCloneOptions): Promise<GitProject> {
+            const repositoryThatExists = GitHubRepoRef.from({ owner: ExistingRepoOwner, repo: ExistingRepoName, branch: "master" });
             return GitCommandGitProject.cloned(Creds, repositoryThatExists, opts, TmpDirectoryManager);
         }
 

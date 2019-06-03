@@ -178,6 +178,7 @@ export {
 } from "./lib/project/fingerprint/Fingerprint";
 export {
     GitCommandGitProject,
+    isValidSHA1,
 } from "./lib/project/git/GitCommandGitProject";
 export {
     GitProject,

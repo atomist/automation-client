@@ -13,7 +13,7 @@ class HandlerRegistry {
     private scanForCommands: boolean = false;
     private scanForEvents: boolean = false;
 
-    public registerCommand(command: any) {
+    public registerCommand(command: any): void {
         if (this.scanForCommands) {
             logger.debug(`Registered command '${command.name}'`);
             if (typeof command === "function") {
@@ -24,7 +24,7 @@ class HandlerRegistry {
         }
     }
 
-    public registerEvent(event: any) {
+    public registerEvent(event: any): void {
         if (this.scanForEvents) {
             logger.debug(`Registered event '${event.name}'`);
             if (typeof event === "function") {
@@ -35,7 +35,7 @@ class HandlerRegistry {
         }
     }
 
-    public start(commands: boolean, events: boolean) {
+    public start(commands: boolean, events: boolean): void {
         this.commands = [];
         this.scanForCommands = commands;
 
@@ -46,11 +46,11 @@ class HandlerRegistry {
 
 const registry = new HandlerRegistry();
 
-export function registerCommand(command: any) {
+export function registerCommand(command: any): void {
     registry.registerCommand(command);
 }
 
-export function registerEvent(event: any) {
+export function registerEvent(event: any): void {
     registry.registerEvent(event);
 }
 
@@ -97,16 +97,16 @@ export function enableDefaultScanning(configuration: Configuration): Configurati
     return configuration;
 }
 
-function scan(patterns: string[]) {
+function scan(patterns: string[]): void {
     const glob = require("glob");
     patterns.forEach(pattern => {
         const ignore = ["**/node_modules/**", "**/.git/**", "**/*Test.js", "**/*Tests.js"];
         const files = glob.sync(pattern, { ignore });
-        files.forEach(f => safeRequire(f));
+        files.forEach(safeRequire);
     });
 }
 
-function safeRequire(file: string) {
+function safeRequire(file: string): void {
     try {
         logger.debug(`Scanning file '${file}'`);
         require(`${appRoot.path}/${file}`);

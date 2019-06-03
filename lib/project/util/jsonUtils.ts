@@ -47,7 +47,7 @@ export function manipulate<M = any>(jsonIn: string, manipulation: JsonManipulati
 
         let space: number | string = 2;
         for (const sp of spacePossibilities) {
-            const maybe = JSON.stringify(obj, null, sp);
+            const maybe = JSON.stringify(obj, undefined, sp);
             if (jsonToCompare === maybe) {
                 logger.debug(`Definitely inferred space as [${sp}]`);
                 space = sp;
@@ -58,7 +58,7 @@ export function manipulate<M = any>(jsonIn: string, manipulation: JsonManipulati
         logger.debug(`Inferred space is [${space}]`);
 
         manipulation(obj);
-        return JSON.stringify(obj, null, space) + (newline ? "\n" : "");
+        return JSON.stringify(obj, undefined, space) + (newline ? "\n" : "");
     } catch (e) {
         logger.warn("Syntax error parsing supposed JSON (%s). Context:[%s]. Alleged JSON:\n%s", e, context, jsonIn);
         return jsonIn;
