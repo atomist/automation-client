@@ -8,9 +8,15 @@ import {
 
 /**
  * Return a HttpClient for given url
+ *
+ * This implementation falls back to the DefaultHttpClientFactory if no
+ * configuration is provided and no running client instance can be found.
  */
 export function httpClient(url: string,
                            configuration?: Configuration): HttpClient {
-    const cfg = configuration || automationClientInstance() ? automationClientInstance().configuration : {};
+    let cfg = configuration;
+    if (!cfg && !!automationClientInstance()) {
+        cfg = automationClientInstance().configuration;
+    }
     return _.get(cfg, "http.client.factory", DefaultHttpClientFactory).create(url);
 }
