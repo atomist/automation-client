@@ -35,13 +35,14 @@ export function deepLink(grr: GitHubRepoRef, sourceLocation: SourceLocation) {
  * @param path
  * @return {Promise<boolean|T>}
  */
-export function hasFile(token: string, user: string, repo: string, path: string): Promise<boolean> {
+export async function hasFile(token: string, user: string, repo: string, path: string): Promise<boolean> {
     // We only care if it returns 200. Otherwise it isn't there
-    return filePromise(token, user, repo, path)
-        .then(() => true)
-        .catch(err => {
-            return false;
-        });
+    try {
+        await filePromise(token, user, repo, path);
+        return true;
+    } catch (e) {
+        return false;
+    }
 }
 
 /**
@@ -64,7 +65,10 @@ function filePromise(token: string, user: string, repo: string, path: string): P
     const url = `${GitHubDotComBase}/repos/${user}/${repo}/contents/${path}`;
     logger.debug(`Request to '${url}' to check for file existence]`);
     // We only care if it returns 200. Otherwise it isn't there
-    return httpClient(url).exchange<{ content: string }>(url, { method: HttpMethod.Post, ...authHeaders(token) });
+    return httpClient(url).exchange<{ content: string }>(url, {
+        method: HttpMethod.Get, ...authHeaders(token),
+        retry: { retries: 0 },
+    });
 }
 
 export interface Issue {
@@ -114,12 +118,12 @@ export async function createRepo(token: string,
 
     // check if owner is a user
     const userOrOrg = await client.exchange<{ type: "Organization" | "User" }>(
-        `${rr.scheme}${rr.apiBase}/user/${rr.owner}`,
+        `${rr.scheme}${rr.apiBase}/users/${rr.owner}`,
         {
             method: HttpMethod.Get,
             ...authHeaders(token),
         });
-    
+
     if (userOrOrg.body.type === "User") {
         repoUrl = `${rr.scheme}${rr.apiBase}/user/repos`;
     } else if (userOrOrg.body.type === "Organization") {
@@ -132,7 +136,11 @@ export async function createRepo(token: string,
     };
 
     logger.debug(`Request to '${repoUrl}' to create repo`);
-    return client.exchange(repoUrl, { method: HttpMethod.Post, body: payload, ...authHeaders(token) });
+    return client.exchange(repoUrl, {
+        method: HttpMethod.Post,
+        body: payload, ...authHeaders(token),
+        retry: { retries: 0 },
+    });
 }
 
 function authHeaders(token: string): HttpClientOptions {

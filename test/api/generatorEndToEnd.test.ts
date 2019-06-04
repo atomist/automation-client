@@ -13,7 +13,6 @@ import { hasFile } from "../../lib/util/gitHub";
 import {
     SeedRepoName,
     SeedRepoOwner,
-    SeedRepoRef,
 } from "../credentials";
 import {
     Creds,
