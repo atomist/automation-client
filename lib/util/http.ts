@@ -11,6 +11,6 @@ import {
  */
 export function httpClient(url: string,
                            configuration?: Configuration): HttpClient {
-    const cfg = !!configuration ? configuration : automationClientInstance().configuration;
+    const cfg = configuration || automationClientInstance() ? automationClientInstance().configuration : {};
     return _.get(cfg, "http.client.factory", DefaultHttpClientFactory).create(url);
 }
