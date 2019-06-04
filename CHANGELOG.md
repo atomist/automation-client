@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Allow configuration to be a `Promise<Configuration>`. [#564](https://github.com/atomist/automation-client/issues/564)
+-   Rework github helpers to not use axios. [7d854b6](https://github.com/atomist/automation-client/commit/7d854b6ef8a931308d93618941963feb432c81c7)
 
 ### Deprecated
 
