@@ -24,7 +24,6 @@ import {
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
 import { logger } from "../../../util/logger";
 import { CommandInvocation } from "../../invoker/Payload";
-import { Deferred } from "../../util/Deferred";
 import {
     gc,
     heapDump,
@@ -106,6 +105,7 @@ export class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
             return 0;
         }, 0, "wait for shutdown message");
     }
+
     /* tslint:enable:variable-name */
 
     public setRegistration(registration: RegistrationConfirmation): void {
@@ -162,7 +162,10 @@ class ClusterWorkerMessageClient extends MessageClientSupport {
 
     public async delete(destinations: Destination | Destination[],
                         options: RequiredMessageOptions): Promise<void> {
-        return this.doSend(undefined, destinations, { ...options, delete: true });
+        return this.doSend(
+            undefined,
+            Array.isArray(destinations) ? destinations : [destinations],
+            { ...options, delete: true });
     }
 
     protected doSend(msg: string | SlackMessage,
