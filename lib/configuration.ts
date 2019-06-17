@@ -189,6 +189,21 @@ export interface AutomationOptions extends AnyOptions {
         compress?: boolean;
         /** timeout in milliseconds */
         timeout?: number;
+        /** Configure backoff behavior on the WS connection */
+        backoff?: {
+            /**
+             * Max number of the pending messages in the queue before
+             * initiating backoff
+             */
+            threshold?: number;
+            /** Interval in ms to check threshold */
+            interval?: number;
+            /**
+             * Duration in ms the backend should backoff before sending
+             * any more messages
+             */
+            duration?: number;
+        },
     };
     graphql?: {
         client?: {

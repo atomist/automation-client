@@ -1,6 +1,7 @@
 import * as cluster from "cluster";
 import { StatsD } from "hot-shots";
 import * as stringify from "json-stringify-safe";
+import * as _ from "lodash";
 import * as TinyQueue from "tinyqueue";
 import * as WebSocket from "ws";
 import { Configuration } from "../../../configuration";
@@ -39,6 +40,7 @@ import {
 } from "../RequestProcessor";
 import { WebSocketLifecycle } from "../websocket/WebSocketLifecycle";
 import {
+    sendMessage,
     WebSocketCommandMessageClient,
     WebSocketEventMessageClient,
 } from "../websocket/WebSocketMessageClient";
@@ -82,6 +84,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
     });
     private shutdownInitiated: boolean = false;
     private replaceWorkers: boolean = true;
+    private backoffInitiated: boolean = false;
 
     constructor(protected automations: AutomationServer,
                 protected configuration: Configuration,
@@ -142,6 +145,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
         }, 0, "drain work queue and shutdown workers");
 
         this.scheduleQueueLength();
+        this.scheduleBackoffCheck();
     }
 
     public onRegistration(registration: RegistrationConfirmation): void {
@@ -356,8 +360,9 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
             data: command,
         };
 
+        logger.debug(`Queuing incoming command handler request '${command.command}'`);
         const dispatched = new Dispatched(new Deferred<HandlerResult>(), ctx);
-        this.messages.push({ message, dispatched, ts: new Date().getTime() });
+        this.messages.push({ message, dispatched, ts: Date.now() });
         callback(dispatched.result.promise);
 
         this.startMessage();
@@ -374,8 +379,9 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
             data: event,
         };
 
+        logger.debug(`Queuing incoming event subscription '${event.extensions.operationName}'`);
         const dispatched = new Dispatched(new Deferred<HandlerResult[]>(), ctx);
-        this.messages.push({ message, dispatched, ts: new Date().getTime() });
+        this.messages.push({ message, dispatched, ts: Date.now() });
         callback(dispatched.result.promise);
 
         this.startMessage();
@@ -480,6 +486,38 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
         }
     }
 
+    private scheduleBackoffCheck(): void {
+        const workers = this.numWorkers;
+        const maxConcurrent = this.maxConcurrentPerWorker;
+
+        const threshold = _.get(this.configuration, "ws.backoff.threshold") || (workers * maxConcurrent);
+        const interval = _.get(this.configuration, "ws.backoff.interval") || 2500;
+        const duration = _.get(this.configuration, "ws.backoff.duration") || 5000;
+
+        setInterval(() => {
+            const messageCount = this.messages.length;
+            if (messageCount >= threshold) {
+                sendMessage({
+                    control: {
+                        name: "backoff",
+                        params: {
+                            millis: duration,
+                        },
+                    },
+                }, this.webSocketLifecycle.get(), false);
+                if (!this.backoffInitiated) {
+                    logger.info(`Initiated incoming messages backoff. queue size: ${messageCount}, threshold: ${threshold}`);
+                }
+                this.backoffInitiated = true;
+            } else {
+                if (this.backoffInitiated) {
+                    logger.info(`Stopped incoming messages backoff. queue size: ${messageCount}, threshold: ${threshold}`);
+                }
+                this.backoffInitiated = false;
+            }
+        }, interval).unref();
+    }
+
     private reportQueueLength(): void {
         if (this.configuration.statsd.enabled) {
             const statsd = (this.configuration.statsd as any).__instance as StatsD;
@@ -489,21 +527,24 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
                     this.messages.length,
                     1,
                     [],
-                    () => { /* intentionally empty */ },
+                    () => { /* intentionally empty */
+                    },
                 );
                 statsd.gauge(
                     "work_queue.events",
                     this.events.size,
                     1,
                     [],
-                    () => { /* intentionally empty */ },
+                    () => { /* intentionally empty */
+                    },
                 );
                 statsd.gauge(
                     "work_queue.commands",
                     this.commands.size,
                     1,
                     [],
-                    () => { /* intentionally empty */ },
+                    () => { /* intentionally empty */
+                    },
                 );
             }
         }
@@ -528,7 +569,8 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
 }
 
 class Dispatched<T> {
-    constructor(public result: Deferred<T>, public context: HandlerContext) { }
+    constructor(public result: Deferred<T>, public context: HandlerContext) {
+    }
 }
 
 function hydrateContext(msg: WorkerMessage): HandlerContext {

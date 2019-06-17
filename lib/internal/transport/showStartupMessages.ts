@@ -18,7 +18,7 @@ export class StartupTimeMessageUatomationEventListener extends AutomationEventLi
     public async startupSuccessful(client: AutomationClient): Promise<void> {
         if (cluster.isMaster || !client.configuration.cluster.enabled) {
             const uptime = process.uptime();
-            logger.debug(`Atomist automation client startup completed in ${uptime}s`);
+            logger.debug(`Atomist automation client startup completed in ${uptime.toFixed(2)}s`);
         }
     }
 }
