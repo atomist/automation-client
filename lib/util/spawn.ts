@@ -316,5 +316,5 @@ function clearAndReject(pid: number, reject: (e: Error) => void, ...timers: Node
  * @deprecated only used by deprecated functions
  */
 function clearTimers(timers: NodeJS.Timer[]): void {
-    timers.filter(t => !!t).map(t => clearTimeout(t));
+    timers.filter(t => !!t).map(clearTimeout);
 }

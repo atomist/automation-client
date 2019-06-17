@@ -37,11 +37,11 @@ import { prepareRegistration } from "../websocket/payloads";
  */
 export class ExpressServer {
 
-    private exp: express.Express;
+    private readonly exp: express.Express;
 
-    constructor(private automations: AutomationServer,
-                private configuration: Configuration,
-                private handler: RequestProcessor) {
+    constructor(private readonly automations: AutomationServer,
+                private readonly configuration: Configuration,
+                private readonly handler: RequestProcessor) {
 
         this.exp = express();
 
@@ -284,12 +284,12 @@ export class ExpressServer {
         }
     }
 
-    private adminRoute = (req, res, next) => {
+    private readonly adminRoute = (req, res, next) => {
         req.__admin = true;
         next();
     }
 
-    private authenticate = (req, res, next) => {
+    private readonly authenticate = (req, res, next) => {
         if (this.configuration.http.auth) {
             const strategies = [];
             if (this.configuration.http.auth.bearer && this.configuration.http.auth.bearer.enabled === true) {

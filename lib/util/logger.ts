@@ -320,7 +320,7 @@ const clientFormat = info => {
     if (info.meta) {
         const meta = info.meta;
         if (meta instanceof Error) {
-            const err = meta as Error;
+            const err = meta;
             if (err.stack && err.stack.includes(err.message)) {
                 formatted = `${formatted}${formatted.endsWith(":") ? " " : ": "}
 ${err.stack}`;

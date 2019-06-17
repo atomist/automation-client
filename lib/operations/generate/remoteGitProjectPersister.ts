@@ -62,7 +62,7 @@ export const RemoteGitProjectPersister: ProjectPersister<GitProject> =
                 return gp.commit(msg);
             })
             .then(() => retryPush(gp))
-            .then(tp => successOn(tp));
+            .then(successOn);
     };
 
 function retryPush(gp: GitProject, opts: WrapOptions = {}): Promise<GitProject> {

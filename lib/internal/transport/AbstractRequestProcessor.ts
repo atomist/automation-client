@@ -141,7 +141,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                              code: number,
                              request: CommandIncoming,
                              ctx: HandlerContext & AutomationContextAware): Promise<any> {
-        const source = _.cloneDeep(request.source) as Source;
+        const source = _.cloneDeep(request.source);
         if (source && source.slack) {
             delete source.slack.user;
         }
@@ -405,9 +405,9 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
 class AutomationEventListenerEnabledMessageClient implements MessageClient {
 
-    constructor(private ctx: HandlerContext,
-                private delegate: MessageClient,
-                private listeners: AutomationEventListener[] = []) {
+    constructor(private readonly ctx: HandlerContext,
+                private readonly delegate: MessageClient,
+                private readonly listeners: AutomationEventListener[] = []) {
     }
 
     public async respond(msg: any,

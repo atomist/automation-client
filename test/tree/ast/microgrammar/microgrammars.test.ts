@@ -41,7 +41,7 @@ describe("microgrammar integration and path expression", () => {
                 assert(matches.length === 2);
                 assert(matches[0].$value === "Tom");
                 assert(matches[1].$value === "Mary");
-            }).then(() => done(), done);
+            }).then(done, done);
     });
 
     it("should get into AST with strong typing", done => {
@@ -55,7 +55,7 @@ describe("microgrammar integration and path expression", () => {
                 assert.strictEqual(matches.length, 2);
                 assert.strictEqual(matches[0].name, "Tom");
                 assert.strictEqual(matches[0].$value, "Tom:16");
-            }).then(() => done(), done);
+            }).then(done, done);
     });
 
     it("should get into AST with strong typing and conversion", done => {
@@ -75,7 +75,7 @@ describe("microgrammar integration and path expression", () => {
                 assert.strictEqual(matches[0].name, "Tom");
                 assert.strictEqual(matches[0].age, 16);
                 assert.strictEqual(matches[0].$value, "Tom:16");
-            }).then(() => done(), done);
+            }).then(done, done);
     });
 
     it("exposes source locations", done => {
@@ -94,7 +94,7 @@ describe("microgrammar integration and path expression", () => {
                     assert(m.sourceLocation.path === "Thing");
                     assert(m.sourceLocation.offset === m.$offset);
                 });
-            }).then(() => done(), done);
+            }).then(done, done);
     });
 
     it("retains AST in file matches", done => {
@@ -111,7 +111,7 @@ describe("microgrammar integration and path expression", () => {
                 assert(matches[0].matches[1].$value === "Mary");
                 assert(matches[0].fileNode.$children.length === 1);
                 assert(matches[0].fileNode.$children[0].$name === "people");
-            }).then(() => done(), done);
+            }).then(done, done);
     });
 
     it("enable within check using path expression", done => {
@@ -134,7 +134,7 @@ describe("microgrammar integration and path expression", () => {
                 assert(matches[0].matches[0].$value === "Tom");
                 assert(matches[0].fileNode.$children.length === 1);
                 assert(matches[0].fileNode.$children[0].$name === "people");
-            }).then(() => done(), done);
+            }).then(done, done);
     });
 
     function within(n: TreeNode, nodeName: string): boolean {
@@ -162,7 +162,7 @@ describe("microgrammar integration and path expression", () => {
                     .then(_ => {
                         assert(p.findFileSync("Thing").getContentSync() === "Tom:16 Mark:25");
                     });
-            }).then(() => done(), done);
+            }).then(done, done);
     });
 
     it("should get into AST and update two terminals", done => {
@@ -181,7 +181,7 @@ describe("microgrammar integration and path expression", () => {
                     .then(_ => {
                         assert(p.findFileSync("Thing").getContentSync() === "Jose:16 Mark:25");
                     });
-            }).then(() => done(), done);
+            }).then(done, done);
     });
 
     it("should get into AST and update single non-terminal", done => {
@@ -203,7 +203,7 @@ describe("microgrammar integration and path expression", () => {
                         const f = p.findFileSync("Thing");
                         assert(f.getContentSync() === content.replace(firstPerson, secondPerson));
                     });
-            }).then(() => done(), done);
+            }).then(done, done);
     });
 
     it("should get into AST and add content after non-terminal", done => {
@@ -225,7 +225,7 @@ describe("microgrammar integration and path expression", () => {
                         const f = p.findFileSync("Thing");
                         assert(f.getContentSync() === content.replace(firstPerson, firstPerson + newContent));
                     });
-            }).then(() => done(), done);
+            }).then(done, done);
     });
 
     it("should get into AST and add content before non-terminal", done => {
@@ -247,7 +247,7 @@ describe("microgrammar integration and path expression", () => {
                         const f = p.findFileSync("Thing");
                         assert(f.getContentSync() === firstPerson + " " + newContent + secondPerson);
                     });
-            }).then(() => done(), done);
+            }).then(done, done);
     });
 
     it("should allow predicate on file", done => {
@@ -263,7 +263,7 @@ describe("microgrammar integration and path expression", () => {
                 assert(matches.length === 2);
                 assert(matches[0].$value === "Tom");
                 assert(matches[1].$value === "Mary");
-            }).then(() => done(), done);
+            }).then(done, done);
     });
 
     it("should veto with MatchTester", async () => {

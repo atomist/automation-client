@@ -14,7 +14,7 @@ export class VerifyEditMode implements CustomExecutionEditMode {
 
     public message = "foo";
 
-    constructor(private assertions: (p: Project) => void) {
+    constructor(private readonly assertions: (p: Project) => void) {
     }
 
     public edit<P>(p: Project, action: ProjectEditor<P>, context: HandlerContext, parameters: P): Promise<EditResult> {

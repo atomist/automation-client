@@ -48,7 +48,7 @@ export function subscription(optionsOrName: SubscriptionOptions | string): strin
             name: optionsOrName,
         };
     } else {
-        options = optionsOrName as SubscriptionOptions;
+        options = optionsOrName;
     }
     options.moduleDir = options.moduleDir || pathToCallingFunction;
 
@@ -82,7 +82,7 @@ export function ingester(optionsOrName: IngesterOptions | string): string {
             name: optionsOrName,
         };
     } else {
-        options = optionsOrName as IngesterOptions;
+        options = optionsOrName;
     }
     options.moduleDir = options.moduleDir || pathToCallingFunction;
 

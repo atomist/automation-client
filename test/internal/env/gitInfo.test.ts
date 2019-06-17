@@ -17,7 +17,7 @@ describe("gitInfo", () => {
                 assert(info.branch);
                 assert(info.repository);
                 assert(info.sha);
-            }).then(() => done(), done);
+            }).then(done, done);
 
     });
 
@@ -61,7 +61,7 @@ describe("gitInfo", () => {
                         assert(info.sha === sha);
                     })
                     .then(() => dir.cleanup());
-            }).then(() => done(), done);
+            }).then(done, done);
 
     });
 
@@ -86,7 +86,7 @@ describe("gitInfo", () => {
                         assert(info.sha === sha);
                     })
                     .then(() => dir.cleanup());
-            }).then(() => done(), done);
+            }).then(done, done);
 
     });
 
@@ -109,7 +109,7 @@ describe("gitInfo", () => {
                         assert(info.sha === sha);
                     })
                     .then(() => dir.cleanup());
-            }).then(() => done(), done);
+            }).then(done, done);
 
     });
 
@@ -123,7 +123,7 @@ describe("gitInfo", () => {
                         assert(info.sha === "");
                     })
                     .then(() => dir.cleanup());
-            }).then(() => done(), done);
+            }).then(done, done);
 
     });
 

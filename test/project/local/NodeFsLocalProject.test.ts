@@ -41,7 +41,7 @@ describe("NodeFsLocalProject", () => {
             }, err => {
                 return;
             })
-            .then(() => done(), done);
+            .then(done, done);
     });
 
     it("copies in memory project", done => {
@@ -60,7 +60,7 @@ describe("NodeFsLocalProject", () => {
             assert(p.findFileSync(path.join("some", "nested", "thing")));
         })
             .then(() => tmpDir.removeCallback())
-            .then(() => done(), done);
+            .then(done, done);
     });
 
     it("copies in memory project including empty directory", done => {
@@ -78,7 +78,7 @@ describe("NodeFsLocalProject", () => {
                 })
                     .then(() => tmpDir.removeCallback());
             })
-            .then(() => done(), done);
+            .then(done, done);
     });
 
     it.skip("copies in memory project including empty directory and copies back", done => {
@@ -102,7 +102,7 @@ describe("NodeFsLocalProject", () => {
                 })
                     .then(() => tmpDir.removeCallback());
             })
-            .then(() => done(), done);
+            .then(done, done);
     });
 
     it("copies other local project", done => {
@@ -121,7 +121,7 @@ describe("NodeFsLocalProject", () => {
                 assert(p.findFileSync(path.join("some", "nested", "thing")));
             })
             .then(() => tmpDir.removeCallback())
-            .then(() => done(), done);
+            .then(done, done);
     });
 
     describe("findFile", () => {
@@ -146,7 +146,7 @@ describe("NodeFsLocalProject", () => {
         it("findFile: no such file", done => {
             thisProject.findFile(nonExistentFile)
                 .then(() => assert.fail("found nonexistent file"), err => assert(err.code === "ENOENT"))
-                .then(() => done(), done);
+                .then(done, done);
         });
 
         it("findFile: existing file", async () => {
@@ -160,7 +160,7 @@ describe("NodeFsLocalProject", () => {
             thisProject.findFile(existingDirectory)
                 .then(() => assert.fail("returned directory as a file"),
                     err => assert(err.message === `Path ${existingDirectory} is not a regular file`))
-                .then(() => done(), done);
+                .then(done, done);
         });
 
     });
@@ -209,7 +209,7 @@ describe("NodeFsLocalProject", () => {
                 .then(files => {
                     assert(files.length > 50);
                 })
-                .then(() => done(), done);
+                .then(done, done);
         });
 
         it("streamFiles returns enough files", done => {
@@ -254,7 +254,7 @@ describe("NodeFsLocalProject", () => {
                 .then(files => {
                     assert(files.some(f => f.name === existingFile));
                 })
-                .then(() => done(), done);
+                .then(done, done);
         });
 
     });
@@ -263,7 +263,7 @@ describe("NodeFsLocalProject", () => {
         thisProject.totalFileCount().then(num => {
             assert(num > 0);
         })
-            .then(() => done(), done);
+            .then(done, done);
     });
 
     describe("addFile", () => {

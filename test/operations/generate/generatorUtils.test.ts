@@ -44,7 +44,7 @@ describe("generatorUtils", () => {
             mockProjectPersister,
             new SimpleRepoId("foo", "bar"),
         )
-            .then(() => done(), done);
+            .then(done, done);
     });
 
     it("passes parameters", done => {
@@ -59,7 +59,7 @@ describe("generatorUtils", () => {
             new SimpleRepoId("foo", "bar"),
             params,
         )
-            .then(() => done(), done);
+            .then(done, done);
     });
 
     it("sees correct target repo id", done => {
@@ -76,7 +76,7 @@ describe("generatorUtils", () => {
             new SimpleRepoId("foo", "bar"),
             params,
         )
-            .then(() => done(), done);
+            .then(done, done);
     });
 
     it("invokes after action", done => {
@@ -99,7 +99,7 @@ describe("generatorUtils", () => {
         )
             .then(r => {
                 assert((r as any).thingToReturn === thingToReturn);
-            }).then(() => done(), done);
+            }).then(done, done);
     });
 
     it("preserves persist extra data", done => {
@@ -120,7 +120,7 @@ describe("generatorUtils", () => {
         )
             .then(r => {
                 assert((r as any).extraThing === true);
-            }).then(() => done(), done);
+            }).then(done, done);
     });
 
     it("preserves persist extra data after after action", done => {
@@ -144,7 +144,7 @@ describe("generatorUtils", () => {
             .then(r => {
                 assert((r as any).extraThing === true);
                 assert((r as any).thingToReturn === thingToReturn);
-            }).then(() => done(), done);
+            }).then(done, done);
     });
 
 });

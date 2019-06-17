@@ -25,7 +25,7 @@ const allTypeMatches = [
 ];
 
 const allTypeElements: UnionPathExpression = {
-    unions: allTypeMatches.map(pe => parsePathExpression(pe)),
+    unions: allTypeMatches.map(parsePathExpression),
 };
 
 /**

@@ -72,17 +72,17 @@ interface EventHandlerRegistration {
  */
 export class BuildableAutomationServer extends AbstractAutomationServer {
 
-    private graphClient: GraphClient;
+    private readonly graphClient: GraphClient;
 
-    private commandHandlers: CommandHandlerRegistration[] = [];
+    private readonly commandHandlers: CommandHandlerRegistration[] = [];
 
-    private eventHandlers: EventHandlerRegistration[] = [];
+    private readonly eventHandlers: EventHandlerRegistration[] = [];
 
-    private ingesters: string[] = [];
+    private readonly ingesters: string[] = [];
 
-    private secretResolver: SecretResolver = new NodeConfigSecretResolver();
+    private readonly secretResolver: SecretResolver = new NodeConfigSecretResolver();
 
-    private metadataProcessor: AutomationMetadataProcessor = new PassThroughMetadataProcessor();
+    private readonly metadataProcessor: AutomationMetadataProcessor = new PassThroughMetadataProcessor();
 
     constructor(public opts: Configuration) {
         super();
@@ -218,7 +218,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
             return SuccessPromise;
         }
 
-        return (handlerResult as Promise<HandlerResult>)
+        return (handlerResult)
             .then(result => {
                 if (result) {
                     return result;
@@ -236,7 +236,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
     private populateMappedParameters(h: {}, metadata: CommandHandlerMetadata, invocation: Invocation) {
         // Resolve from the invocation, otherwise from our fallback
         class InvocationSecretResolver implements SecretResolver {
-            constructor(private mp: Arg[]) {
+            constructor(private readonly mp: Arg[]) {
             }
 
             public resolve(key: string): string {
@@ -269,7 +269,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
     private populateSecrets(h: {}, metadata: SecretsMetadata, invocationSecrets: Secret[] | undefined) {
         // Resolve from the invocation, otherwise from our fallback
         class InvocationSecretResolver implements SecretResolver {
-            constructor(private sec: Secret[]) {
+            constructor(private readonly sec: Secret[]) {
             }
 
             public resolve(key: string): string {

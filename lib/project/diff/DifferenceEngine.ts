@@ -12,7 +12,7 @@ import { Chain } from "./Chain";
  */
 export class DifferenceEngine {
 
-    constructor(private githubIssueAuth: GithubIssueAuth, private chains: Array<Chain<any, any>>) {
+    constructor(private readonly githubIssueAuth: GithubIssueAuth, private readonly chains: Array<Chain<any, any>>) {
     }
 
     /**

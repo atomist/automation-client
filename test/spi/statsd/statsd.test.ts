@@ -61,7 +61,7 @@ describe("StatsdAutomationEventListener", () => {
             const expectedStatsdClientOptions = defaultStatsDClientOptions(config);
 
             class StatsdclientStatsD implements StatsDClient {
-                private statsd: StatsdClientLib;
+                private readonly statsd: StatsdClientLib;
 
                 constructor(adapterOptions: StatsDClientOptions) {
                     this.statsd = new StatsdClientLib(adapterOptions);
@@ -114,7 +114,7 @@ describe("StatsdAutomationEventListener", () => {
                         assert.deepEqual(clientOptions, expectedStatsdClientOptions);
                         return new StatsdclientStatsD(clientOptions);
                     },
-                }
+                },
             };
             assert.doesNotThrow(() => {
                 const statsdListener = new StatsdAutomationEventListener(config);

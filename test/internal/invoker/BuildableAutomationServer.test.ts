@@ -123,7 +123,7 @@ describe("BuildableAutomationServer", () => {
             handle: (ch, params) => {
                 return Promise.resolve({
                     code: 0,
-                    paramVal: (params as any).one,
+                    paramVal: (params).one,
                 });
             },
         };

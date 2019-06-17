@@ -16,7 +16,7 @@ import {
  */
 class CleaningTmpDirectoryManager implements DirectoryManager {
 
-    private prefix = `atm-${process.pid}-`;
+    private readonly prefix = `atm-${process.pid}-`;
 
     constructor() {
         setInterval(() => {

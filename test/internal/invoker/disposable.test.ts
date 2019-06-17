@@ -33,7 +33,7 @@ describe("disposing resources", () => {
             .then(() => {
                 assert(called);
             })
-            .then(() => done(), done);
+            .then(done, done);
     });
 
     it("should release resources even when some fail", done => {
@@ -64,7 +64,7 @@ describe("disposing resources", () => {
             .then(() => {
                 assert(called);
             })
-            .then(() => done(), done);
+            .then(done, done);
     });
 
     it("should release resources even when some fail, reverse order", done => {
@@ -95,7 +95,7 @@ describe("disposing resources", () => {
             .then(() => {
                 assert(called);
             })
-            .then(() => done(), done);
+            .then(done, done);
     });
 
     it("returns quickly when there are no steps", done => {
@@ -111,6 +111,6 @@ describe("disposing resources", () => {
         };
 
         ctx.lifecycle.dispose()
-            .then(() => done(), done);
+            .then(done, done);
     });
 });

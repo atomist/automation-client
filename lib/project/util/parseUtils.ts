@@ -221,7 +221,7 @@ class UpdatingFileHits<M> implements FileWithMatches<M> {
 
     private updatable = false;
 
-    constructor(private project: ProjectAsync, public readonly file: File,
+    constructor(private readonly project: ProjectAsync, public readonly file: File,
                 public matches: Array<Match<M>>, public content: string) {
     }
 

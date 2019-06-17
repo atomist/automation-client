@@ -27,7 +27,7 @@ describe("exploratory tests for proper-locking", () => {
             }, err => {
                 assert(err.code === "ENOENT");
             })
-            .then(() => done(), done);
+            .then(done, done);
     });
 
     it("should be able to release a lock in a promise", done => {

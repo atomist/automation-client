@@ -63,7 +63,7 @@ export class AlwaysOkEventHandler implements HandleEvent<any> {
 export class TrustMeIGaveMySecret implements HandleEvent<any> {
 
     @Secret(Secrets.OrgToken)
-    private mySecret: string;
+    private readonly mySecret: string;
 
     public handle(e: EventFired<any>, ctx: HandlerContext, params: this): Promise<HandlerResult> {
         assert(params.mySecret === "valid");

@@ -14,13 +14,13 @@ import {
  */
 export class InMemoryEventStore implements EventStore {
 
-    private eventCache: LRUMap<CacheKey, EventIncoming>;
-    private commandCache: LRUMap<CacheKey, CommandIncoming>;
-    private messageCache: LRUMap<CacheKey, any>;
+    private readonly eventCache: LRUMap<CacheKey, EventIncoming>;
+    private readonly commandCache: LRUMap<CacheKey, CommandIncoming>;
+    private readonly messageCache: LRUMap<CacheKey, any>;
 
     // 5 mins for 3 hours
-    private eventSer = new RRD(60 * 5, 12 * 3);
-    private commandSer = new RRD(60 * 5, 12 * 3);
+    private readonly eventSer = new RRD(60 * 5, 12 * 3);
+    private readonly commandSer = new RRD(60 * 5, 12 * 3);
 
     constructor() {
         this.eventCache = new LRUMap<CacheKey, EventIncoming>(100);
@@ -106,11 +106,11 @@ class Count {
 
 class RRD {
 
-    private buckets: any[];
-    private interval: any;
+    private readonly buckets: any[];
+    private readonly interval: any;
     private index: number;
-    private iid: any;
-    private dataFunc = new Count();
+    private readonly iid: any;
+    private readonly dataFunc = new Count();
 
     constructor(interval, count) {
         this.buckets = new Array(count).fill(0);

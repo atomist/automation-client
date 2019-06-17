@@ -19,7 +19,7 @@ export function hideString(value) {
         }
         return newValue;
     } else if (Array.isArray(value)) {
-        return value.map(v => hideString(v));
+        return value.map(hideString);
     }
     return value;
 }
@@ -45,9 +45,9 @@ export function findLine(str, idx) {
 export function toStringArray(strings: string | string[]): string[] {
     if (strings) {
         if (Array.isArray(strings)) {
-            return strings as string[];
+            return strings;
         } else {
-            return [strings as string];
+            return [strings];
         }
     } else {
         return [];

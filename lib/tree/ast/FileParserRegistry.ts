@@ -30,7 +30,7 @@ export interface FileParserRegistry {
  */
 export class DefaultFileParserRegistry implements FileParserRegistry {
 
-    private parserRegistry: Dictionary<FileParser> = {};
+    private readonly parserRegistry: Dictionary<FileParser> = {};
 
     public addParser(pr: FileParser): this {
         this.parserRegistry[pr.rootName] = pr;

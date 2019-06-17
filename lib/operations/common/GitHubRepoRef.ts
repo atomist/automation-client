@@ -88,7 +88,7 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
                 }
             })
             .catch(() => project.setUserConfig("Atomist Bot", "bot@atomist.com"))
-            .then(t => successOn(t));
+            .then(successOn);
     }
 
     public raisePullRequest(credentials: ProjectOperationCredentials,

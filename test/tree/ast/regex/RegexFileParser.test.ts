@@ -44,7 +44,7 @@ describe("RegexFileParser", () => {
         const root = await personParserNoCapture.toAst(f);
         assert(root.$name === "people");
         assert(root.$children.length === 2);
-        const tom = root.$children[0] as TreeNode;
+        const tom = root.$children[0];
         assert(tom.$name === "person");
         assert.strictEqual(tom.$value, "Tom:16");
         assert.strictEqual(tom.$children, undefined);

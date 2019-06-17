@@ -40,9 +40,9 @@ describe("generator benchmark", () => {
                                 for (let i = 1; i < numberOfTimesToGenerate; i++) {
                                     generationPromises.push(generateFromSeed(seed, repoName));
                                 }
-                                Promise.all(generationPromises).then(() => done());
+                                Promise.all(generationPromises).then(done);
                             },
-                            e => done(e),
+                            done,
                         );
                     });
             });

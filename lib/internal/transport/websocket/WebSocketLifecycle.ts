@@ -39,7 +39,7 @@ export interface WebSocketLifecycle {
  */
 export class QueuingWebSocketLifecycle implements WebSocketLifecycle {
 
-    private messages: TinyQueue<any>;
+    private readonly messages: TinyQueue<any>;
     private ws: WebSocket;
     private timer: NodeJS.Timer;
 

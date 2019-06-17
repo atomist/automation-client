@@ -78,7 +78,7 @@ async function header(configuration: Configuration,
     const b = configuration.logging.banner.message;
 
     if (typeof b === "string") {
-        message = chalk.green(await toAscii(b as string));
+        message = chalk.green(await toAscii(b));
     } else if (configuration.logging.banner.enabled === true) {
         message = chalk.green(await toAscii(message));
     } else if (_.isFunction(b)) {
@@ -175,7 +175,7 @@ function contributors(configuration: Configuration): string {
             if (typeof section === "string") {
                 return section;
             } else {
-                const bs = section as BannerSection;
+                const bs = section;
                 return `  ${chalk.gray(bs.title)}
     ${bs.body.split("\n").join("\n    ")}`;
             }

@@ -37,12 +37,12 @@ import { WebSocketLifecycle } from "./WebSocketLifecycle";
 
 export abstract class AbstractWebSocketMessageClient extends MessageClientSupport {
 
-    constructor(private ws: WebSocketLifecycle,
-                private request: CommandIncoming | EventIncoming,
-                private correlationId: string,
-                private team: { id: string, name?: string },
-                private source: Source,
-                private configuration: Configuration) {
+    constructor(private readonly ws: WebSocketLifecycle,
+                private readonly request: CommandIncoming | EventIncoming,
+                private readonly correlationId: string,
+                private readonly team: { id: string, name?: string },
+                private readonly source: Source,
+                private readonly configuration: Configuration) {
         super();
     }
 
@@ -121,7 +121,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
         if (responseDestinations.length === 0 && this.source) {
             // TODO CD this is probably not always going to be valid
             destinationIdentifier = "slack";
-            const responseDestination = _.cloneDeep(this.source) as Source;
+            const responseDestination = _.cloneDeep(this.source);
             if (responseDestination.slack) {
                 delete responseDestination.slack.user;
             }
@@ -162,7 +162,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 });
             } else if (typeof msg === "string") {
                 response.content_type = MessageMimeTypes.PLAIN_TEXT;
-                response.body = msg as string;
+                response.body = msg;
             } else if (!!options.delete) {
                 response.content_type = "application/x-atomist-delete";
                 response.body === undefined;

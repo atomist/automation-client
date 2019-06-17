@@ -52,7 +52,7 @@ export class AutomationClient implements RequestProcessor {
     public webSocketHandler: RequestProcessor;
     public httpHandler: RequestProcessor;
 
-    private defaultListeners: AutomationEventListener[] = [
+    private readonly defaultListeners: AutomationEventListener[] = [
         new MetricEnabledAutomationEventListener(),
         new EventStoringAutomationEventListener(),
         new StartupMessageAutomationEventListener(),

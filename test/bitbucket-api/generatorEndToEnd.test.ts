@@ -42,7 +42,7 @@ describe("BitBucket generator end to end", () => {
                     .then(p => {
                         assert(p.findFileSync("pom.xml") !== undefined);
                     });
-            }).then(() => cleanupDone(), cleanupDone);
+            }).then(cleanupDone, cleanupDone);
     }).timeout(20000);
 
 });

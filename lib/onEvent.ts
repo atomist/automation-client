@@ -67,12 +67,12 @@ class FunctionWrappingEventHandler<T, P> implements SelfDescribingHandleEvent<T,
 
     constructor(public name: string,
                 public description: string,
-                private h: OnEvent<T, P>,
-                private parametersFactory: Maker<P>,
+                private readonly h: OnEvent<T, P>,
+                private readonly parametersFactory: Maker<P>,
                 // tslint:disable-next-line:variable-name
-                private _subscription: string,
+                private readonly _subscription: string,
                 // tslint:disable-next-line:variable-name
-                private _tags: string | string[] = []) {
+                private readonly _tags: string | string[] = []) {
         const newParamInstance = this.freshParametersInstance();
         const md = metadataFromInstance(newParamInstance) as EventHandlerMetadata;
         this.values = md.values;

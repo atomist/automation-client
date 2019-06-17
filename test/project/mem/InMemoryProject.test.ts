@@ -66,7 +66,7 @@ describe("InMemoryProject", () => {
                 .then(() => assert.fail("should not have found xxxxpackage.json"), err => {
                     assert(err.message === "File not found at xxxxpackage.json");
                 })
-                .then(() => done(), done);
+                .then(done, done);
         });
 
         it("findFile: not return directory as file", done => {
@@ -76,7 +76,7 @@ describe("InMemoryProject", () => {
                 .then(() => assert.fail("should not have found directory"), err => {
                     assert(err.message === `File not found at ${d}`);
                 })
-                .then(() => done(), done);
+                .then(done, done);
         });
 
     });

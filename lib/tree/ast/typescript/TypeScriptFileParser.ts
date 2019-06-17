@@ -81,7 +81,7 @@ function scriptKindFor(f: File): ts.ScriptKind {
 
 function locationSteps(pex: PathExpression): LocationStep[] {
     return isUnionPathExpression(pex) ?
-        _.flatten(pex.unions.map(p => locationSteps(p))) :
+        _.flatten(pex.unions.map(locationSteps)) :
         pex.locationSteps;
 }
 
@@ -96,7 +96,7 @@ class TypeScriptAstNodeTreeNode implements TreeNode {
 
     public readonly $offset: number;
 
-    constructor(private sourceFile: ts.SourceFile, private node: ts.Node, public $parent: TreeNode) {
+    constructor(private readonly sourceFile: ts.SourceFile, private readonly node: ts.Node, public $parent: TreeNode) {
         this.$name = extractName(node);
         try {
             this.$offset = node.getStart(sourceFile, true);

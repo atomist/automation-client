@@ -36,7 +36,7 @@ import {
  */
 export class ExpressRequestProcessor extends AbstractRequestProcessor {
 
-    private graphClientFactory: GraphClientFactory;
+    private readonly graphClientFactory: GraphClientFactory;
 
     constructor(protected automations: AutomationServer,
                 protected configuration: Configuration,
@@ -68,9 +68,9 @@ export class ExpressRequestProcessor extends AbstractRequestProcessor {
 
 class ExpressMessageClient implements MessageClient {
 
-    private delegate: MessageClient;
+    private readonly delegate: MessageClient;
 
-    constructor(private event: EventIncoming | CommandIncoming, configuration: Configuration) {
+    constructor(private readonly event: EventIncoming | CommandIncoming, configuration: Configuration) {
         if (automationClientInstance().webSocketHandler
             && (automationClientInstance().webSocketHandler as any).webSocketLifecycle) {
             const ws = (automationClientInstance().webSocketHandler as any).webSocketLifecycle as WebSocketLifecycle;

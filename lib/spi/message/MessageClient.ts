@@ -42,7 +42,7 @@ export interface MessageClient {
      * @param id
      */
     delete?(destinations: Destination | Destination[],
-           options: RequiredMessageOptions): Promise<void>;
+            options: RequiredMessageOptions): Promise<void>;
 }
 
 /**
@@ -391,7 +391,7 @@ export function isFileMessage(object: any): object is SlackFileMessage {
 export function commandName(command: any): string {
     try {
         if (typeof command === "string") {
-            return command as string;
+            return command;
         } else if (typeof command === "function") {
             return command.prototype.constructor.name;
         } else {

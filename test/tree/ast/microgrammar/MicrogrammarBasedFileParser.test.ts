@@ -33,7 +33,7 @@ describe("MicrogrammarBasedFileParser", () => {
             .then(root => {
                 assert(root.$name === "people");
                 assert(root.$children.length === 2);
-                const tom = root.$children[0] as TreeNode;
+                const tom = root.$children[0];
                 assert(tom.$name === "person");
                 assert(tom.$children.length === 2);
                 done();

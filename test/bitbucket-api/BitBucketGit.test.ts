@@ -22,7 +22,7 @@ describe("BitBucket support", () => {
         GitCommandGitProject.cloned(BitBucketCredentials,
             new BitBucketRepoRef("jessitron", "poetry", "master"))
             .then(bp => bp.gitStatus())
-            .then(() => done(), done);
+            .then(done, done);
     }).timeout(15000);
 
     it("should clone and add file in new branch", () => {

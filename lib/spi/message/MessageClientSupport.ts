@@ -27,7 +27,7 @@ export abstract class MessageClientSupport implements MessageClient {
         if (!Array.isArray(destinations)) {
             destinations = [ destinations ];
         }
-        return this.doSend(msg, destinations as Destination[], options);
+        return this.doSend(msg, destinations, options);
     }
 
     public abstract delete(destinations: Destination | Destination[],
@@ -48,8 +48,8 @@ query ChatTeam {
 
 export class DefaultSlackMessageClient implements MessageClient, SlackMessageClient {
 
-    constructor(private delegate: MessageClient,
-                private graphClient: GraphClient) {}
+    constructor(private readonly delegate: MessageClient,
+                private readonly graphClient: GraphClient) {}
 
     public respond(msg: any,
                    options?: MessageOptions): Promise<any> {

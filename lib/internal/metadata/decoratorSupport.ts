@@ -49,14 +49,14 @@ function set_metadata(obj: any, key: string, value: any) {
 }
 
 function get_metadata(obj: any, key: string) {
-    if (obj == null) {
+    if (obj == undefined) {
         return null;
     }
     let desc = Object.getOwnPropertyDescriptor(obj, key);
-    if ((desc == null || desc === undefined) && (Object.getPrototypeOf(obj) !== undefined)) {
+    if ((desc == undefined || desc === undefined) && (Object.getPrototypeOf(obj) !== undefined)) {
         desc = get_metadata(Object.getPrototypeOf(obj), key);
     }
-    if (desc != null && desc !== undefined) {
+    if (desc != undefined && desc !== undefined) {
         return desc.value;
     }
     return null;
@@ -64,13 +64,13 @@ function get_metadata(obj: any, key: string) {
 
 export function declareParameter(target: any, propertyKey: string, details: BaseParameter) {
     let params: any[] = get_metadata(target, "__parameters");
-    if (params == null) {
+    if (params == undefined) {
         params = [];
     } else {
         // remove any that have the same name already (i.e. if folk are calling declareParameter)
         // use a cheeky method so that we can reuse the same array
         const found: any[] = params.filter(p => p.name === propertyKey);
-        if (found != null && found.length > 0) {
+        if (found != undefined && found.length > 0) {
             const index = params.indexOf(found[0]);
             params.splice(index, 1);
         }
@@ -83,9 +83,9 @@ export function declareParameter(target: any, propertyKey: string, details: Base
 
     // merge parameters from parent if it has some
     let parent = Object.getPrototypeOf(target);
-    while (parent != null) {
+    while (parent != undefined) {
         const protoParams: any[] = get_metadata(parent, "__parameters");
-        if (protoParams != null) {
+        if (protoParams != undefined) {
             protoParams.forEach(protoParam => {
                 // if we don't already have a parameter with the same name
                 if (!params.some(param => param.name === protoParam.name)) {
@@ -102,13 +102,13 @@ export function declareParameter(target: any, propertyKey: string, details: Base
 
 export function declareMappedParameter(target: any, name: string, uri: string, required: boolean) {
     let params = get_metadata(target, "__mappedParameters");
-    if (params == null) {
+    if (params == undefined) {
         params = [];
     } else {
         // remove any that have the same name already (i.e. if folk are calling declareMappedParameter)
         // use a cheeky method so that we can reuse the same array
         const found: any[] = params.filter(p => p.localKey === name);
-        if (found != null && found.length > 0) {
+        if (found != undefined && found.length > 0) {
             const index = params.indexOf(found[0]);
             params.splice(index, 1);
         }
@@ -118,9 +118,9 @@ export function declareMappedParameter(target: any, name: string, uri: string, r
 
     // merge mapped_parameters from parent if it has some
     let parent = Object.getPrototypeOf(target);
-    while (parent != null) {
+    while (parent != undefined) {
         const protoParams: any[] = get_metadata(parent, "__mappedParameters");
-        if (protoParams != null) {
+        if (protoParams != undefined) {
             protoParams.forEach(protoParam => {
                 // if we don't already have a parameter with the same name
                 if (!params.some(p => p.name === protoParam.name)) {
@@ -137,13 +137,13 @@ export function declareMappedParameter(target: any, name: string, uri: string, r
 
 export function declareValue(target: any, name: string, value: BaseValue) {
     let params = get_metadata(target, "__values");
-    if (params == null) {
+    if (params == undefined) {
         params = [];
     } else {
         // remove any that have the same name already (i.e. if folk are calling declareValue)
         // use a cheeky method so that we can reuse the same array
         const found: any[] = params.filter(p => p.localKey === name);
-        if (found != null && found.length > 0) {
+        if (found != undefined && found.length > 0) {
             const index = params.indexOf(found[0]);
             params.splice(index, 1);
         }
@@ -153,9 +153,9 @@ export function declareValue(target: any, name: string, value: BaseValue) {
 
     // merge values from parent if it has some
     let parent = Object.getPrototypeOf(target);
-    while (parent != null) {
+    while (parent != undefined) {
         const protoParams: any[] = get_metadata(parent, "__values");
-        if (protoParams != null) {
+        if (protoParams != undefined) {
             protoParams.forEach(protoParam => {
                 // if we don't already have a value with the same name
                 if (!params.some(p => p.name === protoParam.name)) {
@@ -172,13 +172,13 @@ export function declareValue(target: any, name: string, value: BaseValue) {
 
 export function declareSecret(target: any, name: string, uri: string) {
     let params = get_metadata(target, "__secrets");
-    if (params == null) {
+    if (params == undefined) {
         params = [];
     } else {
         // remove any that have the same name already (i.e. if folk are calling declareSecret)
         // use a cheeky method so that we can reuse the same array
         const found: any[] = params.filter(p => p.name === name);
-        if (found != null && found.length > 0) {
+        if (found != undefined && found.length > 0) {
             const index = params.indexOf(found[0]);
             params.splice(index, 1);
         }
@@ -188,9 +188,9 @@ export function declareSecret(target: any, name: string, uri: string) {
 
     // merge secrets from parent if it has some
     let parent = Object.getPrototypeOf(target);
-    while (parent != null) {
+    while (parent != undefined) {
         const protoParams: any[] = get_metadata(parent, "__secrets");
-        if (protoParams != null) {
+        if (protoParams != undefined) {
             protoParams.forEach(protoParam => {
                 // if we don't already have a parameter with the same name
                 if (!params.some(p => p.name === protoParam.name)) {

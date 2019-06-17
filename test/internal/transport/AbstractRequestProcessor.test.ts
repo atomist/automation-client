@@ -130,15 +130,15 @@ describe("the processCommand method", () => {
                 context,
                 command, resultPromise => {
                     return resultPromise
-                        .then(result => resolve(result))
-                        .catch(error => reject(error));
+                        .then(resolve)
+                        .catch(reject);
                 },
             ));
     }
 
     it("should call a command", done => {
         invokeSomething()
-            .then(() => done(), done);
+            .then(done, done);
     });
 
     it("should release resources allocated during a command", done => {
@@ -155,7 +155,7 @@ describe("the processCommand method", () => {
             .then(() => {
                 assert(watchMe === "changed", watchMe);
             })
-            .then(() => done(), done);
+            .then(done, done);
     });
 
     it("should release resources when the command failed", done => {
@@ -171,7 +171,7 @@ describe("the processCommand method", () => {
             .then(() => {
                 assert(watchMe === "changed", watchMe);
             })
-            .then(() => done(), done);
+            .then(done, done);
     });
 
 });
@@ -248,7 +248,7 @@ describe("the processEvent method", () => {
                 incoming, resultPromise => {
                     return resultPromise
                         .then(result => resolve(result[0]))
-                        .catch(error => reject(error));
+                        .catch(reject);
                 },
             ));
     }
@@ -259,7 +259,7 @@ describe("the processEvent method", () => {
             called = true;
         }).then(() => {
             assert(called);
-        }).then(() => done(), done);
+        }).then(done, done);
     });
 
     it("should release resources allocated during an event", done => {
@@ -275,7 +275,7 @@ describe("the processEvent method", () => {
             .then(() => {
                 assert(watchMe === "changed", watchMe);
             })
-            .then(() => done(), done);
+            .then(done, done);
     });
 
     it("should release resources when the event failed", done => {
@@ -291,7 +291,7 @@ describe("the processEvent method", () => {
             .then(() => {
                 assert(watchMe === "changed", watchMe);
             })
-            .then(() => done(), done);
+            .then(done, done);
     });
 
 });

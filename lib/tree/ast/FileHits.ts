@@ -75,7 +75,7 @@ export class FileHit {
      * we don't need to reparse the file.
      * @param {TreeNode[]} nodes
      */
-    constructor(private project: ProjectAsync,
+    constructor(private readonly project: ProjectAsync,
                 public file: File,
                 public fileNode: TreeNode,
                 public readonly nodes: LocatedTreeNode[]) {
@@ -108,7 +108,7 @@ export class FileHit {
 
         this.matches = nodes as MatchResult[];
         makeUpdatable(this.matches, updates);
-        (project as any as ScriptedFlushable<Project>).recordAction(() => doReplace());
+        (project as any as ScriptedFlushable<Project>).recordAction(doReplace);
     }
 }
 

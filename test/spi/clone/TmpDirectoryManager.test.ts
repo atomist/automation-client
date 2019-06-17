@@ -23,7 +23,7 @@ describe("the TmpDirectoryManager", () => {
                         assert.equal(err.code, "ENOENT", "directory should not exists");
                     });
             })
-            .then(() => done(), done);
+            .then(done, done);
         return;
     });
 
@@ -44,7 +44,7 @@ describe("the TmpDirectoryManager", () => {
                         }
                     });
             })
-            .then(() => done(), done);
+            .then(done, done);
         return;
     });
 

@@ -437,7 +437,7 @@ export function gitHubRepoLoader(context: HandlerContext, credentials: ProjectOp
                 const modified = mutableProject.findFileSync("src/gitHubRepoLoader.ts").getContentSync();
                 assert.equal(modified, After, modified);
 
-            }).then(() => done(), done);
+            }).then(done, done);
 
     }).timeout(20000);
 });

@@ -97,7 +97,7 @@ export class NodeStatsDClientFactory implements StatsDClientFactory {
 }
 
 class NodeStatsDClient implements StatsDClient {
-    private statsd: StatsD;
+    private readonly statsd: StatsD;
 
     constructor(clientOptions: StatsDClientOptions) {
         this.statsd = new StatsD(clientOptions);

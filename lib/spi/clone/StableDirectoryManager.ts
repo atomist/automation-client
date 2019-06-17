@@ -85,7 +85,7 @@ export class StableDirectoryManager implements DirectoryManager {
      * Return undefined if not found
      */
     private existingDirectoryFor(owner: string, repo: string, branch: string,
-        opts: CloneOptions): Promise<CloneDirectoryInfo> {
+                                 opts: CloneOptions): Promise<CloneDirectoryInfo> {
         const expectedPath = this.pathFor(owner, repo);
         return fs.pathExists(expectedPath)
             .then(exists => {
