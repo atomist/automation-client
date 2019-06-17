@@ -136,9 +136,8 @@ describe("the processCommand method", () => {
             ));
     }
 
-    it("should call a command", done => {
-        invokeSomething()
-            .then(done, done);
+    it("should call a command", async () => {
+        await invokeSomething()
     });
 
     it("should release resources allocated during a command", done => {

@@ -6,10 +6,10 @@ import { execPromise } from "../../../lib/util/child_process";
 
 describe("the TmpDirectoryManager", () => {
 
-    it("deletes the directory after it's done", done => {
+    it("deletes the directory after it's done", async () => {
         const subject = TmpDirectoryManager;
 
-        subject.directoryFor("anOwner", "aRepo", "abranch", { keep: false })
+        await subject.directoryFor("anOwner", "aRepo", "abranch", { keep: false })
             .then(cdi => {
                 const suppliedDirectory = cdi.path;
                 return fs.stat(suppliedDirectory) // if this succeeds, it exists
@@ -23,14 +23,12 @@ describe("the TmpDirectoryManager", () => {
                         assert.equal(err.code, "ENOENT", "directory should not exists");
                     });
             })
-            .then(done, done);
-        return;
     });
 
-    it("does not delete the directory if keep is true", done => {
+    it("does not delete the directory if keep is true", async () => {
         const subject = TmpDirectoryManager;
 
-        subject.directoryFor("anOwner", "aRepo", "abranch", { keep: true })
+        await subject.directoryFor("anOwner", "aRepo", "abranch", { keep: true })
             .then(cdi => {
                 const suppliedDirectory = cdi.path;
                 return fs.stat(suppliedDirectory)
@@ -44,8 +42,6 @@ describe("the TmpDirectoryManager", () => {
                         }
                     });
             })
-            .then(done, done);
-        return;
     });
 
 });

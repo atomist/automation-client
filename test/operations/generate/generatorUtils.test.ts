@@ -5,7 +5,6 @@ import {
     ActionResult,
     successOn,
 } from "../../../lib/action/ActionResult";
-import { GitHubSourceRepoParameters } from "../../../lib/operations/common/params/GitHubSourceRepoParameters";
 import { ProjectOperationCredentials } from "../../../lib/operations/common/ProjectOperationCredentials";
 import {
     RepoId,
@@ -16,7 +15,6 @@ import {
     generate,
     ProjectPersister,
 } from "../../../lib/operations/generate/generatorUtils";
-import { GitHubRepoCreationParameters } from "../../../lib/operations/generate/GitHubRepoCreationParameters";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import { Project } from "../../../lib/project/Project";
 
@@ -37,19 +35,18 @@ export const mockProjectPersister: ProjectPersister<Project, ActionResult<Projec
 
 describe("generatorUtils", () => {
 
-    it("succeeds with no op editor and empty project", done => {
-        generate(InMemoryProject.of(),
+    it("succeeds with no op editor and empty project", async () => {
+        await generate(InMemoryProject.of(),
             null, null,
             p => Promise.resolve(p),
             mockProjectPersister,
             new SimpleRepoId("foo", "bar"),
-        )
-            .then(done, done);
+        );
     });
 
-    it("passes parameters", done => {
+    it("passes parameters", async () => {
         const params = new BaseSeedDrivenGeneratorParameters();
-        generate(InMemoryProject.of(),
+        await generate(InMemoryProject.of(),
             null, null,
             (p, ctx, parms) => {
                 assert(parms === params);
@@ -58,13 +55,12 @@ describe("generatorUtils", () => {
             mockProjectPersister,
             new SimpleRepoId("foo", "bar"),
             params,
-        )
-            .then(done, done);
+        );
     });
 
-    it("sees correct target repo id", done => {
+    it("sees correct target repo id", async () => {
         const params = new BaseSeedDrivenGeneratorParameters();
-        generate(InMemoryProject.of(),
+        await generate(InMemoryProject.of(),
             null, null,
             (p, ctx, parms) => {
                 assert(parms === params);
@@ -75,8 +71,7 @@ describe("generatorUtils", () => {
             mockProjectPersister,
             new SimpleRepoId("foo", "bar"),
             params,
-        )
-            .then(done, done);
+        );
     });
 
     it("invokes after action", done => {
