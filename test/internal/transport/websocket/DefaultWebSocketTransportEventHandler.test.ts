@@ -80,16 +80,16 @@ describe("DefaultWebSocketRequestProcessor", () => {
                 team_id: "x-team",
                 correlation_id: "555",
             },
-        }, () => done());
+        }, done);
 
     }).timeout(5000);
 
     it("check successful command received and processed", done => {
-        verifyCommandHandler(0, () => done());
+        verifyCommandHandler(0, done);
     }).timeout(5000);
 
     it("check unsuccessful command received and processed", done => {
-        verifyCommandHandler(1, () => done());
+        verifyCommandHandler(1, done);
     }).timeout(5000);
 });
 

@@ -22,7 +22,7 @@ describe("the TmpDirectoryManager", () => {
                     }, err => {
                         assert.equal(err.code, "ENOENT", "directory should not exists");
                     });
-            })
+            });
     });
 
     it("does not delete the directory if keep is true", async () => {
@@ -41,7 +41,7 @@ describe("the TmpDirectoryManager", () => {
                             throw err;
                         }
                     });
-            })
+            });
     });
 
 });
