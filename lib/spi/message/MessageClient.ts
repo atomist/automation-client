@@ -103,7 +103,7 @@ export class SourceDestination implements Destination {
     public userAgent: string = SourceDestination.SOURCE_USER_AGENT;
 
     constructor(public readonly source: Source,
-                public readonly system: "slack" | "web") {};
+                public readonly system: "slack" | "web") {}
 }
 
 export function addressWeb(): WebDestination {
