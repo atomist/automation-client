@@ -8,6 +8,7 @@ import { AnyOptions } from "../../configuration";
 import { HandleCommand } from "../../HandleCommand";
 import { HandlerContext } from "../../HandlerContext";
 import { metadataFromInstance } from "../../internal/metadata/metadataReading";
+import { Source } from "../../internal/transport/RequestProcessor";
 import { ParameterType } from "../../SmartParameters";
 import { lookupChatTeam } from "./MessageClientSupport";
 
@@ -90,6 +91,19 @@ export class WebDestination implements Destination {
     public static WEB_USER_AGENT: string = "web";
 
     public userAgent: string = WebDestination.WEB_USER_AGENT;
+}
+
+/**
+ * Message Destination for the Web App.
+ */
+export class SourceDestination implements Destination {
+
+    public static SOURCE_USER_AGENT: string = "source";
+
+    public userAgent: string = SourceDestination.SOURCE_USER_AGENT;
+
+    constructor(public readonly source: Source,
+                public readonly system: "slack" | "web") {};
 }
 
 export function addressWeb(): WebDestination {

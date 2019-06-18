@@ -16,6 +16,7 @@ import {
     MessageOptions,
     RequiredMessageOptions,
     SlackDestination,
+    SourceDestination,
     WebDestination,
 } from "../../../spi/message/MessageClient";
 import { MessageClientSupport } from "../../../spi/message/MessageClientSupport";
@@ -115,6 +116,9 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                 });
             } else if (d.userAgent === WebDestination.WEB_USER_AGENT) {
                 destinationIdentifier = "web";
+            } else if (d.userAgent === SourceDestination.SOURCE_USER_AGENT) {
+                destinationIdentifier = (d as SourceDestination).system;
+                responseDestinations.push((d as SourceDestination).source);
             }
         });
 
