@@ -186,48 +186,41 @@ class ClusterWorkerMessageClient extends MessageClientSupport {
 class ClusterWorkerAutomationEventListener extends AutomationEventListenerSupport {
 
     public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<any> {
-        if (!(ctx as any).__spawned) {
-            return workerSend({
-                type: "atomist:command_success",
-                event: payload,
-                context: (ctx as any).context,
-                data: sanitize(result),
-            });
-        }
+        return workerSend({
+            type: "atomist:command_success",
+            event: payload,
+            context: (ctx as any).context,
+            data: sanitize(result),
+        });
     }
 
     public commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): Promise<any> {
-        if (!(ctx as any).__spawned) {
-            return workerSend({
-                type: "atomist:command_failure",
-                event: payload,
-                context: (ctx as any).context,
-                data: sanitize(err),
-            });
-        }
+        return workerSend({
+            type: "atomist:command_failure",
+            event: payload,
+            context: (ctx as any).context,
+            data: sanitize(err),
+        });
     }
 
     public eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): Promise<any> {
-        if (!(ctx as any).__spawned) {
-            return workerSend({
-                type: "atomist:event_success",
-                event: payload,
-                context: (ctx as any).context,
-                data: sanitize(result),
-            });
-        }
+        return workerSend({
+            type: "atomist:event_success",
+            event: payload,
+            context: (ctx as any).context,
+            data: sanitize(result),
+        });
     }
 
     public eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): Promise<any> {
-        if (!(ctx as any).__spawned) {
-            return workerSend({
-                type: "atomist:event_failure",
-                event: payload,
-                context: (ctx as any).context,
-                data: sanitize(err),
-            });
-        }
+        return workerSend({
+            type: "atomist:event_failure",
+            event: payload,
+            context: (ctx as any).context,
+            data: sanitize(err),
+        });
     }
+
 }
 
 /**
