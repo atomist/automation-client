@@ -10,7 +10,11 @@ import {
 } from "../../HandlerContext";
 import { HandlerResult } from "../../HandlerResult";
 import { CommandInvocation } from "../../internal/invoker/Payload";
-import { RequestProcessor } from "../../internal/transport/RequestProcessor";
+import {
+    CommandIncoming,
+    EventIncoming,
+    RequestProcessor,
+} from "../../internal/transport/RequestProcessor";
 import { registerShutdownHook } from "../../internal/util/shutdown";
 import { AutomationEventListenerSupport } from "../../server/AutomationEventListener";
 import { logger } from "../../util/logger";
@@ -107,6 +111,13 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         }
     }
 
+    public commandIncoming(payload: CommandIncoming) {
+        const tags = [
+            `atomist_operation_type:command`,
+        ];
+        this.increment("counter.operation", tags);
+    }
+
     public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<any> {
         const tags = [
             `atomist_operation_type:command`,
@@ -125,6 +136,13 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         this.timing("timer.operation", ctx, tags);
         this.event("event.operation.failure", "Unsuccessfully invoked command", tags);
         return Promise.resolve();
+    }
+
+    public eventIncoming(payload: EventIncoming) {
+        const tags = [
+            `atomist_operation_type:event`,
+        ];
+        this.increment("counter.operation", tags);
     }
 
     public eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): Promise<any> {
