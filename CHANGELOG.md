@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.5.3...HEAD)
 
+### Added
+
+-   Add statsd metric to indicate WS backoff. [d0701de](https://github.com/atomist/automation-client/commit/d0701de2fecb730e1ca659913acac771c4ec3b0b)
+
 ## [1.5.3](https://github.com/atomist/automation-client-ts/compare/1.5.2...1.5.3) - 2019-06-04
 
 ### Changed
