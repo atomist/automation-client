@@ -10,6 +10,7 @@ import * as trace from "stack-trace";
 import * as internalGraphql from "../internal/graph/graphQL";
 import * as namespace from "../internal/util/cls";
 import { configureProxy } from "../internal/util/http";
+import { replacer } from "../internal/util/string";
 import {
     GraphClient,
     MutationOptions,
@@ -127,7 +128,7 @@ export class ApolloGraphClient implements GraphClient {
             .then(result => {
                 if (log) {
                     // The following statement is needed for debugging; we can always disable that later
-                    logger.debug("Query returned data: %s", stringify(result.data));
+                    logger.debug("Query returned data: %s", stringify(result.data, replacer));
                 }
                 return result.data;
             });
@@ -156,7 +157,7 @@ export class ApolloGraphClient implements GraphClient {
             .then(response => {
                 if (log) {
                     // The following statement is needed for debugging; we can always disable that later
-                    logger.debug("Mutation returned data: %s", stringify(response.data));
+                    logger.debug("Mutation returned data: %s", stringify(response.data, replacer));
                 }
                 return response.data;
             });
