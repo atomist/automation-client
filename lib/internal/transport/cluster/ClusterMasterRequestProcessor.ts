@@ -497,7 +497,8 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
         setInterval(() => {
             const messageCount = this.messages.length;
             const statsd = (this.configuration.statsd as any).__instance as StatsD;
-            if (messageCount >= threshold) {
+            if ((!this.backoffInitiated && messageCount >= threshold) ||
+                (this.backoffInitiated && messageCount >= (threshold / 2))) {
                 sendMessage({
                     control: {
                         name: "backoff",
@@ -515,7 +516,8 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
                         "work_queue.backoff",
                         1,
                         [],
-                        () => {});
+                        () => {
+                        });
                 }
             } else {
                 if (this.backoffInitiated) {
@@ -527,7 +529,8 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
                         "work_queue.backoff",
                         0,
                         [],
-                        () => {});
+                        () => {
+                        });
                 }
             }
         }, interval).unref();
