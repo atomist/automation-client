@@ -115,7 +115,7 @@ export class ApolloGraphClient implements GraphClient {
 
         if (log) {
             logger.debug(`Querying '%s' with variables '%s' and query: %s`,
-                this.endpoint, stringify(variables), internalGraphql.inlineQuery(q));
+                this.endpoint, stringify(variables || {}), internalGraphql.inlineQuery(q));
         }
         const query = gql(q);
 
@@ -143,7 +143,7 @@ export class ApolloGraphClient implements GraphClient {
 
         if (log) {
             logger.debug(`Mutating '%s' with variables '%s' and mutation: %s`,
-                this.endpoint, stringify(variables), internalGraphql.inlineQuery(m));
+                this.endpoint, stringify(variables || {}), internalGraphql.inlineQuery(m));
         }
 
         const mutation = gql(m);
