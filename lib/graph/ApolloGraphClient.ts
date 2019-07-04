@@ -84,7 +84,7 @@ export class ApolloGraphClient implements GraphClient {
             if (!!response) {
                 msg += ` [Response]: ${stringify(response, replacer)}`;
             }
-            
+
             logger.error(msg);
         });
 
