@@ -203,6 +203,11 @@ export interface AutomationOptions extends AnyOptions {
              * any more messages
              */
             duration?: number;
+            /**
+             * Factor (0 < x <= 1) multiply threshold to get to the lower backoff
+             * boundary
+             */
+            factor?: number;
         },
     };
     graphql?: {

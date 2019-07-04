@@ -493,12 +493,19 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
         const threshold = _.get(this.configuration, "ws.backoff.threshold") || (workers * maxConcurrent);
         const interval = _.get(this.configuration, "ws.backoff.interval") || 2500;
         const duration = _.get(this.configuration, "ws.backoff.duration") || 5000;
+        let factor = _.get(this.configuration, "ws.backoff.factor") || 0.5;
+
+        if (factor > 1) {
+            factor = 0.5;
+        } else if (factor < 0) {
+            factor = 0;
+        }
 
         setInterval(() => {
             const messageCount = this.messages.length;
             const statsd = (this.configuration.statsd as any).__instance as StatsD;
             if ((!this.backoffInitiated && messageCount >= threshold) ||
-                (this.backoffInitiated && messageCount >= (threshold / 2))) {
+                (this.backoffInitiated && messageCount >= (threshold * factor))) {
                 sendMessage({
                     control: {
                         name: "backoff",
