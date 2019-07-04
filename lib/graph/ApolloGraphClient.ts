@@ -1,6 +1,7 @@
 import { InMemoryCache } from "apollo-cache-inmemory";
 import ApolloClient from "apollo-client";
 import { ApolloLink } from "apollo-link";
+import { onError } from "apollo-link-error";
 import { createHttpLink } from "apollo-link-http";
 import axios from "axios";
 import { buildAxiosFetch } from "axios-fetch";
@@ -68,7 +69,25 @@ export class ApolloGraphClient implements GraphClient {
             return forward(operation);
         });
 
-        const link = middlewareLink.concat(httpLink);
+        const errorLink = onError(({ graphQLErrors, networkError, response }) => {
+            let msg = `GraphQL operation failed: `;
+            if (!!graphQLErrors) {
+                const g = graphQLErrors.map(({ message }) =>
+                    ` - [GraphQL]: ${message}`,
+                );
+                msg += `\n${g.join("\n")}`;
+            }
+
+            if (!!networkError) {
+                msg += `\n - [Network]: ${networkError}`;
+            }
+            if (!!response) {
+                msg += `\n [Response]: ${response}`;
+            }
+            logger.error(msg);
+        });
+
+        const link = errorLink.concat(middlewareLink.concat(httpLink));
 
         this.client = new ApolloClient({
             link,
