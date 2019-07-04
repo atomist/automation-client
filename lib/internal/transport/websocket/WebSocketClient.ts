@@ -1,4 +1,3 @@
-import * as HttpsProxyAgent from "https-proxy-agent";
 import * as stringify from "json-stringify-safe";
 import promiseRetry = require("promise-retry");
 import * as serializeError from "serialize-error";
@@ -7,7 +6,6 @@ import * as zlib from "zlib";
 import { Configuration } from "../../../configuration";
 import { HttpMethod } from "../../../spi/http/httpClient";
 import { logger } from "../../../util/logger";
-import { Deferred } from "../../util/Deferred";
 import { registerShutdownHook } from "../../util/shutdown";
 import {
     CommandIncoming,

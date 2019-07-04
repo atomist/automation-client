@@ -505,7 +505,8 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
             const messageCount = this.messages.length;
             const statsd = (this.configuration.statsd as any).__instance as StatsD;
             if ((!this.backoffInitiated && messageCount >= threshold) ||
-                (this.backoffInitiated && messageCount >= (threshold * factor))) {
+                (this.backoffInitiated && messageCount >= (threshold * factor)) ||
+                this.shutdownInitiated) {
                 sendMessage({
                     control: {
                         name: "backoff",

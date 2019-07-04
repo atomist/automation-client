@@ -1,5 +1,6 @@
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
+import * as semver from "semver";
 import { Configuration } from "../configuration";
 import { ApolloGraphClient } from "../graph/ApolloGraphClient";
 import { HandleCommand } from "../HandleCommand";
@@ -295,9 +296,11 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
     }
 
     get automations(): Automations {
+        const version = !!this.opts.version && this.opts.policy === "durable" ?
+            `${semver.major(this.opts.version)}.0.0` : this.opts.version;
         return {
             name: this.opts.name,
-            version: this.opts.version,
+            version: version || "0.0.0",
             policy: this.opts.policy,
             team_ids: this.opts.workspaceIds,
             groups: toStringArray((this.opts as any).groups),

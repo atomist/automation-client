@@ -96,7 +96,7 @@ function firstRow(configuration: Configuration,
     const gitInfo = info(automations);
     let c: string = "";
 
-    c += `  ${chalk.grey("Version")} ${automations.version}`;
+    c += `  ${chalk.grey("Version")} ${configuration.version}`;
     if (gitInfo && gitInfo.git) {
         c += `  ${chalk.grey("Sha")} ${gitInfo.git.sha.slice(0, 7)}`;
         c += `  ${chalk.grey("Repository")} ${gitInfo.git.repository}`;

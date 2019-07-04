@@ -27,6 +27,7 @@ function prepareMetadata(automations: Automations, metadata: any) {
     const i = info(automations);
     const cfg = automationClientInstance().configuration;
     return {
+        "atomist.version": cfg.version,
         "atomist.description": i.description,
         "atomist.license": i.license,
         "atomist.author": i.author,
