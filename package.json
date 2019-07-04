@@ -84,7 +84,7 @@
     "glob": "^7.1.4",
     "glob-promise": "^3.4.0",
     "glob-stream": "^6.1.0",
-    "graphql": "~14.2.1",
+    "graphql": "14.4.2",
     "graphql-code-generator": "^0.18.2",
     "graphql-codegen-core": "^0.18.2",
     "graphql-codegen-typescript-client": "^0.18.2",
