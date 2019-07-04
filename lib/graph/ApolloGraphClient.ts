@@ -70,19 +70,19 @@ export class ApolloGraphClient implements GraphClient {
         });
 
         const errorLink = onError(({ graphQLErrors, networkError, response }) => {
-            let msg = `GraphQL operation failed: `;
+            let msg = `GraphQL operation failed:`;
             if (!!graphQLErrors) {
                 const g = graphQLErrors.map(({ message }) =>
                     ` [GraphQL]: ${message}`,
                 );
-                msg += `\n${g.join("\n")}`;
+                msg += `${g.join(" ")}`;
             }
 
             if (!!networkError) {
-                msg += `\n [Network]: ${networkError}`;
+                msg += ` [Network]: ${networkError}`;
             }
             if (!!response) {
-                msg += `\n [Response]: ${stringify(response, replacer)}`;
+                msg += ` [Response]: ${stringify(response, replacer)}`;
             }
             
             logger.error(msg);
