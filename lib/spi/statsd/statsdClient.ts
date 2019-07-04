@@ -75,6 +75,7 @@ export class HotShotStatsDClientFactory implements StatsDClientFactory {
             host: clientOptions.host,
             port: clientOptions.port,
             globalTags: clientOptions.globalTags,
+            cacheDns: true,
         };
 
         return new HotShots.StatsD(options);
