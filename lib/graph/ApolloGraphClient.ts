@@ -57,6 +57,7 @@ export class ApolloGraphClient implements GraphClient {
                     headers: {
                         ...headers,
                         "correlation-id": correlationId,
+                        "x-request-id": correlationId,
                     },
                 });
             } else {
