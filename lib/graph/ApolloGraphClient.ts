@@ -66,7 +66,7 @@ export class ApolloGraphClient implements GraphClient {
             operation.setContext({
                 headers,
             });
-            
+
             return forward(operation);
         });
 
