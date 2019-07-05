@@ -55,22 +55,18 @@ export class ApolloGraphClient implements GraphClient {
         const middlewareLink = new ApolloLink((operation, forward) => {
             // attach the correlation-id to the request
             const correlationId = namespace.get() ? namespace.get().correlationId : undefined;
-            if (correlationId) {
-                operation.setContext({
-                    headers: {
-                        ...headers,
-                        "correlation-id": correlationId,
-                        "x-request-id": guid(),
-                    },
-                });
-            } else {
-                operation.setContext({
-                    headers: {
-                        ...headers,
-                        "x-request-id": guid(),
-                    },
-                });
+            if (!!correlationId) {
+                headers["correlation-id"] = correlationId;
             }
+
+            const invocationId = namespace.get() ? namespace.get().invocationId : guid();
+            if (!!invocationId) {
+                headers["x-request-id"] = invocationId;
+            }
+            operation.setContext({
+                headers,
+            });
+            
             return forward(operation);
         });
 
