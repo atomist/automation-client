@@ -11,7 +11,10 @@ import * as trace from "stack-trace";
 import * as internalGraphql from "../internal/graph/graphQL";
 import * as namespace from "../internal/util/cls";
 import { configureProxy } from "../internal/util/http";
-import { replacer } from "../internal/util/string";
+import {
+    guid,
+    replacer,
+} from "../internal/util/string";
 import {
     GraphClient,
     MutationOptions,
@@ -57,13 +60,14 @@ export class ApolloGraphClient implements GraphClient {
                     headers: {
                         ...headers,
                         "correlation-id": correlationId,
-                        "x-request-id": correlationId,
+                        "x-request-id": guid(),
                     },
                 });
             } else {
                 operation.setContext({
                     headers: {
                         ...headers,
+                        "x-request-id": guid(),
                     },
                 });
             }
