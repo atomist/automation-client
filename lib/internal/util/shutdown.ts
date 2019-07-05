@@ -1,7 +1,6 @@
 import * as exitHook from "async-exit-hook";
 import { get as _get } from "lodash";
 import { Configuration } from "../../configuration";
-import { automationClientInstance } from "../../globals";
 import { logger } from "../../util/logger";
 
 /** Believe or not, this is the default grace period. */
