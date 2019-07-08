@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.6.0...HEAD)
 
+### Added
+
+-   Add x-request-id to apollo requests. [caef74a](https://github.com/atomist/automation-client-ts/compare/2015a1ef062c4c5d3954b002d46e101da643b7e8...caef74a92e47207849d76c88d7c0a4c95b67f5bd)
+
+### Fixed
+
+-   Use major version for durable registrations. [46a9200](https://github.com/atomist/automation-client/commit/46a920020ed613c7a7a6c24e995d946e4abc2754)
+
 ## [1.6.0](https://github.com/atomist/automation-client-ts/compare/1.5.3...1.6.0) - 2019-07-04
 
 ### Added
