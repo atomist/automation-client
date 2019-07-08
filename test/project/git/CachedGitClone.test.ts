@@ -97,7 +97,7 @@ describe("CachedGitClone", () => {
                             .then(() => assert.fail("that shouldn't work with an invalid token"),
                                 error => {
                                     // I did expect that to fail
-                                    assert(0 <= error.message.indexOf("https://NOT-THE-SAME-YO:x-oauth-basic@github.com"));
+                                    assert(0 <= error.message.indexOf("Authentication failed for"));
                                 })
                             .then(() => clone2.release()));
             }).then(done, done);
