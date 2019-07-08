@@ -139,7 +139,7 @@
     "@types/statsd-client": "^0.4.0",
     "axios-mock-adapter": "^1.16.0",
     "config": "^3.0.1",
-    "espower-typescript": "^9.0.1",
+    "espower-typescript": "^9.0.2",
     "gc-stats": "^1.2.1",
     "handlebars": "^4.0.13",
     "mocha": "^6.1.4",
