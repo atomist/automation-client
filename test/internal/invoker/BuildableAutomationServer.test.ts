@@ -1,5 +1,4 @@
 import stringify = require("json-stringify-safe");
-import "mocha";
 import * as assert from "power-assert";
 import {
     CommandHandler,

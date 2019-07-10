@@ -1,4 +1,3 @@
-import "mocha";
 
 import * as assert from "power-assert";
 import { GitHubRepoRef } from "../../../../lib/operations/common/GitHubRepoRef";

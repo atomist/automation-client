@@ -1,4 +1,3 @@
-import "mocha";
 import * as assert from "power-assert";
 import { Automations } from "../../../../lib/internal/metadata/metadata";
 import { prepareRegistration } from "../../../../lib/internal/transport/websocket/payloads";

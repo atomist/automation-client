@@ -1,4 +1,3 @@
-import "mocha";
 import * as assert from "power-assert";
 
 import { obfuscateJson } from "../../../lib/internal/util/string";

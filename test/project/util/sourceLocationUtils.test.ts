@@ -1,4 +1,3 @@
-import "mocha";
 
 import * as assert from "power-assert";
 import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";

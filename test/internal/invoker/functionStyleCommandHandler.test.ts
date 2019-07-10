@@ -1,4 +1,3 @@
-import "mocha";
 import { HandlerContext } from "../../../lib/HandlerContext";
 import { CommandInvocation } from "../../../lib/internal/invoker/Payload";
 import { BuildableAutomationServer } from "../../../lib/server/BuildableAutomationServer";

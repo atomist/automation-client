@@ -1,6 +1,5 @@
 import * as stringify from "json-stringify-safe";
 
-import "mocha";
 import * as assert from "power-assert";
 
 describe("Safe Stringify", () => {
@@ -15,9 +14,9 @@ describe("Safe Stringify", () => {
     it("should space things out", () => {
         const nested = { a: { b: 1, c: 2 } };
 
-        const result = stringify(nested, null, 7);
+        const result = stringify(nested, undefined, 7);
 
-        assert(stringify(nested, null, 7) === result,
+        assert(stringify(nested, undefined, 7) === result,
             result);
     });
 

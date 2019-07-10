@@ -1,4 +1,3 @@
-import "mocha";
 import * as assert from "power-assert";
 import { HandlerContext } from "../../../lib/HandlerContext";
 import {

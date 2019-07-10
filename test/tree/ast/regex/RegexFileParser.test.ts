@@ -1,5 +1,4 @@
 import { TreeNode } from "@atomist/tree-path";
-import "mocha";
 import * as assert from "power-assert";
 import { AllFiles } from "../../../../lib/project/fileGlobs";
 import { InMemoryFile } from "../../../../lib/project/mem/InMemoryFile";

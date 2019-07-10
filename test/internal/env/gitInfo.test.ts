@@ -1,6 +1,5 @@
 import * as appRoot from "app-root-path";
 import * as fs from "fs-extra";
-import "mocha";
 import * as assert from "power-assert";
 import * as tmp from "tmp-promise";
 

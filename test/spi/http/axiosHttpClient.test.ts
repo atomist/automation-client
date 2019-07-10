@@ -7,7 +7,6 @@
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import * as http from "http";
-import "mocha";
 import * as os from "os";
 import * as assert from "power-assert";
 import { AxiosHttpClientFactory } from "../../../lib/spi/http/axiosHttpClient";

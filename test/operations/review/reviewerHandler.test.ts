@@ -1,5 +1,4 @@
 import { SlackMessage } from "@atomist/slack-messages";
-import "mocha";
 import * as assert from "power-assert";
 import {
     fromListRepoFinder,

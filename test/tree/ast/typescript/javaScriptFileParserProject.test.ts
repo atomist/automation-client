@@ -1,5 +1,4 @@
 import * as appRoot from "app-root-path";
-import "mocha";
 import * as assert from "power-assert";
 import { NodeFsLocalProject } from "../../../../lib/project/local/NodeFsLocalProject";
 import {

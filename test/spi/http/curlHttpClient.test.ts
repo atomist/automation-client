@@ -5,7 +5,6 @@
  */
 
 import * as http from "http";
-import "mocha";
 import * as assert from "power-assert";
 import { CurlHttpClientFactory } from "../../../lib/spi/http/curlHttpClient";
 import { HttpMethod } from "../../../lib/spi/http/httpClient";

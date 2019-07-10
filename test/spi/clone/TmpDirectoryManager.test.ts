@@ -1,5 +1,4 @@
 import * as fs from "fs-extra";
-import "mocha";
 import * as assert from "power-assert";
 import { TmpDirectoryManager } from "../../../lib/spi/clone/tmpDirectoryManager";
 import { execPromise } from "../../../lib/util/child_process";

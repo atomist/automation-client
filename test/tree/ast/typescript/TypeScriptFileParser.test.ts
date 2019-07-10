@@ -7,7 +7,6 @@ import {
     TreeVisitor,
     visit,
 } from "@atomist/tree-path";
-import "mocha";
 import * as assert from "power-assert";
 import { InMemoryFile } from "../../../../lib/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../../lib/project/mem/InMemoryProject";

@@ -1,4 +1,3 @@
-import "mocha";
 
 import * as assert from "power-assert";
 import { AbstractScriptedFlushable } from "../../../lib/internal/common/AbstractScriptedFlushable";

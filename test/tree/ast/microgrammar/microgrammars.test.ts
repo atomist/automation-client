@@ -4,7 +4,6 @@ import {
     takeUntil,
 } from "@atomist/microgrammar";
 import { TreeNode } from "@atomist/tree-path";
-import "mocha";
 import * as assert from "power-assert";
 import { AllFiles } from "../../../../lib/project/fileGlobs";
 import { InMemoryProject } from "../../../../lib/project/mem/InMemoryProject";
@@ -27,6 +26,8 @@ const nameAndAgeTerms = {
     name: takeUntil(":"),
     age: Integer,
 };
+
+/* tslint:disable:no-invalid-template-strings */
 
 describe("microgrammar integration and path expression", () => {
 

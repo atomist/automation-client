@@ -1,5 +1,4 @@
 import * as fs from "fs";
-import "mocha";
 import * as assert from "power-assert";
 import {
     ProjectEditor,

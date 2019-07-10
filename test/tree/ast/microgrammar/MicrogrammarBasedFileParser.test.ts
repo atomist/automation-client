@@ -8,7 +8,6 @@ import {
     TreeVisitor,
     visit,
 } from "@atomist/tree-path";
-import "mocha";
 import * as assert from "power-assert";
 import { InMemoryFile } from "../../../../lib/project/mem/InMemoryFile";
 import { MicrogrammarBasedFileParser } from "../../../../lib/tree/ast/microgrammar/MicrogrammarBasedFileParser";
@@ -22,6 +21,8 @@ const nameAndAgeTerms = {
     name: takeUntil(":"),
     age: Integer,
 };
+
+/* tslint:disable:no-invalid-template-strings */
 
 describe("MicrogrammarBasedFileParser", () => {
 
