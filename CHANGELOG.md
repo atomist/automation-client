@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.6.1...HEAD)
 
+### Added
+
+-   Add support for configuration profiles. [144fb03](https://github.com/atomist/automation-client/commit/144fb033b98292784cae30317fc0ba72dfe74dbb)
+
 ## [1.6.1](https://github.com/atomist/automation-client-ts/compare/1.6.0...1.6.1) - 2019-07-08
 
 ### Added
