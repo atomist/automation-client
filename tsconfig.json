@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
     "newLine": "LF",
-    "target": "ES6",
+    "target": "ES2016",
     "module": "CommonJS",
     "moduleResolution": "Node",
     "jsx": "React",
     "declaration": true,
+    "declarationMap": true,
     "sourceMap": true,
     "rootDir": ".",
     "lib": [
