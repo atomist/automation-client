@@ -269,6 +269,29 @@ describe("configuration", () => {
             process.env.HOME = save;
         });
 
+        it("should load the user config with profile", () => {
+            const save = process.env.HOME;
+            const profileSave = process.env.ATOMIST_CONFIG_PROFILE;
+            process.env.HOME = path.join(process.cwd(), "test");
+            process.env.ATOMIST_CONFIG_PROFILE = "production";
+            const c = loadUserConfiguration();
+            const e = {
+                workspaceIds: [
+                    "A998ENNA2",
+                ],
+                apiKey: "6**************************************2",
+                endpoints: {
+                    graphql: "https://user.graphql.ep:1313/gql/team",
+                    api: "https://user.api.ep:4141/reg",
+                },
+                environment: "env-user",
+                application: "app-user",
+            };
+            assert.deepStrictEqual(c, e);
+            process.env.HOME = save;
+            process.env.ATOMIST_CONFIG_PROFILE = profileSave;
+        });
+
         it("should load the module config over user config", () => {
             const save = process.env.HOME;
             process.env.HOME = __dirname;

@@ -478,6 +478,21 @@ export function userConfigPath(): string {
 }
 
 /**
+ * Return user automation client configuration paths including
+ * such referenced by configuration profiles.
+ */
+export function userConfigPaths(): string[] {
+    const configPaths = [userConfigPath()];
+    const profiles = process.env.ATOMIST_CONFIG_PROFILE || process.env.ATOMIST_CONFIG_PROFILES;
+    if (!!profiles) {
+        for (const profile of profiles.split(",")) {
+            configPaths.push(p.join(userConfigDir(), `client.config-${profile}.json`));
+        }
+    }
+    return configPaths;
+}
+
+/**
  * Write user config securely, creating directories as necessary.
  */
 export function writeUserConfig(cfg: UserConfig): Promise<void> {
@@ -495,23 +510,32 @@ export function writeUserConfig(cfg: UserConfig): Promise<void> {
  * Read and return user config from UserConfigFile.
  */
 export function getUserConfig(): UserConfig {
-    if (fs.existsSync(userConfigPath())) {
-        try {
-            const cfg = fs.readJsonSync(userConfigPath());
-            // user config should not have name or version
-            if (cfg.name) {
-                delete cfg.name;
+    const configPaths = userConfigPaths();
+    const userConfigs = [];
+    for (const configPath of configPaths) {
+        if (fs.existsSync(configPath)) {
+            try {
+                const cfg = fs.readJsonSync(configPath);
+                // user config should not have name or version
+                if (cfg.name) {
+                    delete cfg.name;
+                }
+                if (cfg.version) {
+                    delete cfg.version;
+                }
+                userConfigs.push(cfg);
+            } catch (e) {
+                e.message = `Failed to read user config: ${e.message}`;
+                throw e;
             }
-            if (cfg.version) {
-                delete cfg.version;
-            }
-            return cfg;
-        } catch (e) {
-            e.message = `Failed to read user config: ${e.message}`;
-            throw e;
         }
     }
-    return undefined;
+
+    if (userConfigs.length > 0) {
+        return mergeConfigs({}, ...userConfigs);
+    } else {
+        return undefined;
+    }
 }
 
 /**
