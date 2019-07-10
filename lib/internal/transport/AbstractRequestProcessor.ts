@@ -38,7 +38,6 @@ import {
     CommandIncoming,
     EventIncoming,
     RequestProcessor,
-    Source,
 } from "./RequestProcessor";
 import { HandlerResponse } from "./websocket/WebSocketMessageClient";
 
