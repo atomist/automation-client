@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 -   Add support for configuration profiles. [144fb03](https://github.com/atomist/automation-client/commit/144fb033b98292784cae30317fc0ba72dfe74dbb)
+-   Update lodash, lodash.merge and lodash.template to fix security vulnerability. [](https://github.com/atomist/automation-client/commit/dcf21d8d8ade37f192231f9d5bee28131c110c8a)
 
 ## [1.6.1](https://github.com/atomist/automation-client-ts/compare/1.6.0...1.6.1) - 2019-07-08
 
