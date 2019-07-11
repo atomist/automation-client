@@ -20,7 +20,7 @@ This page details all runtime OSS dependencies of `@atomist/automation-client`.
 |[GPL-3.0](#gpl-30)|2|
 |[ISC](#isc)|69|
 |[MIT AND BSD-3-Clause](#mit-and-bsd-3-clause)|1|
-|[MIT](#mit)|753|
+|[MIT](#mit)|754|
 |[Unlicense](#unlicense)|1|
 |[WTFPL](#wtfpl)|1|
 
@@ -691,6 +691,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`lodash.templatesettings`|`4.1.0`|John-David Dalton|[https://github.com/lodash/lodash](https://github.com/lodash/lodash)|
 |`lodash.uniq`|`4.5.0`|John-David Dalton|[https://github.com/lodash/lodash](https://github.com/lodash/lodash)|
 |`lodash`|`4.17.11`|John-David Dalton|[https://github.com/lodash/lodash](https://github.com/lodash/lodash)|
+|`lodash`|`4.17.14`|John-David Dalton|[https://github.com/lodash/lodash](https://github.com/lodash/lodash)|
 |`log-symbols`|`1.0.2`|Sindre Sorhus|[https://github.com/sindresorhus/log-symbols](https://github.com/sindresorhus/log-symbols)|
 |`log-symbols`|`2.2.0`|Sindre Sorhus|[https://github.com/sindresorhus/log-symbols](https://github.com/sindresorhus/log-symbols)|
 |`log-update`|`2.3.0`|Sindre Sorhus|[https://github.com/sindresorhus/log-update](https://github.com/sindresorhus/log-update)|
