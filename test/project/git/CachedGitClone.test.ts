@@ -261,8 +261,17 @@ describe("CachedGitClone", () => {
             // we can see all the commits
             assert(result.stdout.trim().split("\n").length > 1);
             const branchResult = await execPromise("git", ["rev-list", "this-tag-exists"], { cwd: baseDir });
-            // now we have access to branches
+            // now we have access to tags
             assert(branchResult.stdout.trim().split("\n").length >= 1);
+            await clone1.release();
+        }).timeout(20000);
+
+        it("clones all branches when requested", async () => {
+            const clone1 = await cloneTransiently({ alwaysDeep: false, noSingleBranch: true });
+            const baseDir = clone1.baseDir;
+            const result = await execPromise("git", ["rev-list", "origin/this-branch-exists"], { cwd: baseDir });
+            // we can see exactly one sha
+            assert(result.stdout.trim().length === 40);
             await clone1.release();
         }).timeout(20000);
     });

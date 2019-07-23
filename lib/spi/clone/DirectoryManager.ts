@@ -16,6 +16,15 @@ export interface CloneOptions {
     alwaysDeep?: boolean;
 
     /**
+     * If we are not doing a deep clone (alwaysDeep is false),
+     * then the default is to clone only one branch.
+     * Set noSingleBranch to true to clone the tips of all branches instead.
+     * This passes `--no-single-branch` to `git clone`.
+     * If alwaysDeep is true, this option has no effect.
+     */
+    noSingleBranch?: boolean;
+
+    /**
      * Set this to the number of commits that should be cloned into the transient
      * place. This only applies when alwaysDeep is set to false.
      */

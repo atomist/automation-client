@@ -350,6 +350,9 @@ async function cloneInto(
             // if not cloning deeply, be sure we clone the right branch
             cloneArgs.push("--branch", cloneBranch);
         }
+        if (opts.noSingleBranch) {
+            cloneArgs.push("--no-single-branch");
+        }
     }
     // Note: branch takes preference for checkout because we might be about to commit to it.
     // If you want to be sure to land on your SHA, set opts.detachHead to true.
