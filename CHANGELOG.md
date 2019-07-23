@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.6.2...HEAD)
 
+### Added
+
+-   Add a clone option to shallowly fetch all branches. [#572](https://github.com/atomist/automation-client/issues/572)
+
 ## [1.6.2](https://github.com/atomist/automation-client-ts/compare/1.6.1...1.6.2) - 2019-07-11
 
 ### Added
