@@ -1098,7 +1098,7 @@ export const DEFAULT_REDACTION_PATTERNS = [
         replacement: "[AMAZON_ACCESS_KEY]",
     },
     {
-        regexp: /\b(https?:\/\/)[a-f0-9]{40}((?::x-oauth-basic)?@)/g,
+        regexp: /\b(https?:\/\/)(?:v1\.)?[a-f0-9]{40}((?::x-oauth-basic)?@)/g,
         replacement: "$1[GITHUB_TOKEN]$2",
     },
     {
