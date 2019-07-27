@@ -22,10 +22,8 @@ export class ApolloGraphClientFactory implements GraphClientFactory {
         this.init();
         let graphClient = this.graphClients.get<GraphClient>(workspaceId);
         if (graphClient) {
-            logger.debug("Re-using cached graph client for team '%s'", workspaceId);
             return graphClient;
         } else {
-            logger.debug("Creating new graph client for team '%s'", workspaceId);
             graphClient = new ApolloGraphClient(`${configuration.endpoints.graphql}/${workspaceId}`,
                 { Authorization: `Bearer ${configuration.apiKey}` }, this.configure(configuration));
             this.graphClients.set<GraphClient>(workspaceId, graphClient);
