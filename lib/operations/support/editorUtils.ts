@@ -135,9 +135,8 @@ export function createAndPushBranch(gp: GitProject, ci: BranchCommit): Promise<E
         .then(() => {
             let cm = ci.message;
             if (ci.autoMerge) {
-                cm = `${cm}
-
-${ci.autoMerge.mode} ${ci.autoMerge.method ? ci.autoMerge.method : ""}`.trim();
+                const needsLineBreaks = !cm.trim().endsWith("]");
+                cm = `${cm}${needsLineBreaks ? "\n\n": " "}${ci.autoMerge.mode} ${ci.autoMerge.method ? ci.autoMerge.method : ""}`.trim();
             }
             return gp.commit(cm);
         })
@@ -155,10 +154,9 @@ export function raisePr(gp: GitProject, pr: PullRequest): Promise<EditResult> {
     return createAndPushBranch(gp, pr)
         .then(x => {
             let body = pr.body;
+            const needsLineBreaks = !body.trim().endsWith("]");
             if (pr.autoMerge) {
-                body = `${body}
-
-${pr.autoMerge.mode} ${pr.autoMerge.method ? pr.autoMerge.method : ""}`.trim();
+                body = `${body}${needsLineBreaks ? "\n\n" : " "}${pr.autoMerge.mode} ${pr.autoMerge.method ? pr.autoMerge.method : ""}`.trim();
             }
             return gp.raisePullRequest(pr.title, body, targetBranch)
                 .then(r => successfulEdit(gp, true));
