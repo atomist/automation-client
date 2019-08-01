@@ -1,7 +1,10 @@
 
 import * as assert from "power-assert";
 
-import { GitHubRepoRef } from "../../../lib/operations/common/GitHubRepoRef";
+import {
+    beautifyPullRequestBody,
+    GitHubRepoRef,
+} from "../../../lib/operations/common/GitHubRepoRef";
 
 describe("GitHubRepoRef tests", () => {
 
@@ -41,6 +44,39 @@ describe("GitHubRepoRef tests", () => {
 
     it("does not let you provide a sha that is not a sha, when you could put that in branch", () => {
         assert.throws(() => GitHubRepoRef.from({ owner: "owner", repo: "repo", sha: "fester" }));
+    });
+
+    describe("GitHubRepoRef tests", () => {
+
+        it("should process tags in PR body", () => {
+            const body = `#### New NPM Package Target
+Target version for NPM package *@atomist/sdm* is \`^1.6.1\`.
+Project *atomist/sdm-pack-fingerprints/remove-global* is currently configured to use version \`^1.6.0\`.
+[atomist:generated]
+#### New NPM Package Target
+Target version for NPM package *@atomist/sdm-core* is \`^1.6.1\`.
+Project *atomist/sdm-pack-fingerprints/remove-global* is currently configured to use version \`^1.6.0\`.
+
+[auto-merge:on-approve] 
+
+[auto-merge-method:squash] [auto-merge:on-approve] [auto-merge-method:squash] `;
+            const expectedBody = `#### New NPM Package Target
+Target version for NPM package *@atomist/sdm* is \`^1.6.1\`.
+Project *atomist/sdm-pack-fingerprints/remove-global* is currently configured to use version \`^1.6.0\`.
+
+#### New NPM Package Target
+Target version for NPM package *@atomist/sdm-core* is \`^1.6.1\`.
+Project *atomist/sdm-pack-fingerprints/remove-global* is currently configured to use version \`^1.6.0\`.
+<details>
+  <summary><img src="http://images.atomist.com/logo/atomist-color-mark-small.png" height="20" valign="bottom"/>Tags</summary>
+<br/>
+[atomist:generated]<br/>[auto-merge:on-approve]<br/>[auto-merge-method:squash]<br/>[auto-merge:on-approve]<br/>[auto-merge-method:squash]
+</details>`;
+
+            const newBody = beautifyPullRequestBody(body);
+            assert.strictEqual(newBody, expectedBody);
+        })
+
     });
 
 });

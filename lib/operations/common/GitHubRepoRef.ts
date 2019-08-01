@@ -98,7 +98,7 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
         logger.debug(`Making request to '${url}' to raise PR`);
         return axios.post(url, {
             title,
-            body,
+            body: beautifyPullRequestBody(body),
             head,
             base,
         }, config)
@@ -147,4 +147,25 @@ function apiBaseToRemoteBase(rawApiBase: string) {
         return rawApiBase.substring(0, rawApiBase.indexOf("api/v3"));
     }
     return rawApiBase;
+}
+
+// exported for testing
+export function beautifyPullRequestBody(body: string): string {
+    const tagRegEx = /(\[[-\w]+:[-\w:]+\])/gm;
+    let tagMatches = tagRegEx.exec(body);
+    const tags = [];
+    while (!!tagMatches) {
+        tags.push(tagMatches[1]);
+        tagMatches = tagRegEx.exec(body);
+    }
+    if (tags.length > 0) {
+        let newBody = body.replace(/\[[-\w]+:[-\w:]+\]/g, "").trim();
+        return `${newBody}
+<details>
+  <summary><img src="http://images.atomist.com/logo/atomist-color-mark-small.png" height="20" valign="bottom"/>Tags</summary>
+<br/>
+${tags.join("<br/>")}
+</details>`;
+    }
+    return body;
 }
