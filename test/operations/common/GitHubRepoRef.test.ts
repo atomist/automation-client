@@ -53,9 +53,9 @@ describe("GitHubRepoRef tests", () => {
 Target version for NPM package *@atomist/sdm* is \`^1.6.1\`.
 Project *atomist/sdm-pack-fingerprints/remove-global* is currently configured to use version \`^1.6.0\`.
 [atomist:generated]
-       
-       
-             
+
+
+
 #### New NPM Package Target
 Target version for NPM package *@atomist/sdm-core* is \`^1.6.1\`.
 Project *atomist/sdm-pack-fingerprints/remove-global* is currently configured to use version \`^1.6.0\`.
