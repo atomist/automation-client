@@ -136,7 +136,7 @@ export function createAndPushBranch(gp: GitProject, ci: BranchCommit): Promise<E
             let cm = ci.message;
             if (ci.autoMerge) {
                 const needsLineBreaks = !cm.trim().endsWith("]");
-                cm = `${cm}${needsLineBreaks ? "\n\n": " "}${ci.autoMerge.mode} ${ci.autoMerge.method ? ci.autoMerge.method : ""}`.trim();
+                cm = `${cm}${needsLineBreaks ? "\n\n" : " "}${ci.autoMerge.mode} ${ci.autoMerge.method ? ci.autoMerge.method : ""}`.trim();
             }
             return gp.commit(cm);
         })
