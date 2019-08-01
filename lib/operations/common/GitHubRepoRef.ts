@@ -166,7 +166,7 @@ export function beautifyPullRequestBody(body: string): string {
 <details>
   <summary><img src="http://images.atomist.com/logo/atomist-color-mark-small.png" height="20" valign="bottom"/>Tags</summary>
 <br/>
-${tags.sort().join("<br/>")}
+${tags.sort().map(t => `<code>${t}</code>`).join("<br/>")}
 </details>`;
     }
     return body;
