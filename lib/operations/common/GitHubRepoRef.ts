@@ -161,6 +161,8 @@ export function beautifyPullRequestBody(body: string): string {
     if (tags.length > 0) {
         const newBody = body.replace(/\[[-\w]+:[-\w:]+\]/g, "").trim();
         return `${newBody}
+
+---
 <details>
   <summary><img src="http://images.atomist.com/logo/atomist-color-mark-small.png" height="20" valign="bottom"/>Tags</summary>
 <br/>
