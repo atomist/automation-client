@@ -159,7 +159,9 @@ export function beautifyPullRequestBody(body: string): string {
         tagMatches = tagRegEx.exec(body);
     }
     if (tags.length > 0) {
-        const newBody = body.replace(/\[[-\w]+:[-\w:]+\]/g, "").trim();
+        const newBody = body.replace(/\[[-\w]+:[-\w:]+\]/g, "")
+            .replace(/\n\s*\n\s*\n/g, '\n\n')
+            .trim();
         return `${newBody}
 
 ---
