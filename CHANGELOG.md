@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Add a clone option to shallowly fetch all branches. [#572](https://github.com/atomist/automation-client/issues/572)
 -   Add support for GitHub App tokens. [b58833a](https://github.com/atomist/automation-client/commit/b58833a4a91fab2cdd9bd5cdc8cc74da634359e4)
+-   Export isRemoteRepoRef. [#578](https://github.com/atomist/automation-client/issues/578)
 
 ## [1.6.2](https://github.com/atomist/automation-client-ts/compare/1.6.1...1.6.2) - 2019-07-11
 
