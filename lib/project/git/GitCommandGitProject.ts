@@ -396,7 +396,7 @@ async function resetOrigin(
     id: RemoteRepoRef,
 ): Promise<ExecPromiseResult> {
 
-    return execPromise("git", ["remote", "set", "origin", id.cloneUrl(credentials)], { cwd: repoDir });
+    return execPromise("git", ["remote", "set-url", "origin", id.cloneUrl(credentials)], { cwd: repoDir });
 }
 
 async function checkout(repoDir: string, branch: string = "HEAD"): Promise<ExecPromiseResult> {
