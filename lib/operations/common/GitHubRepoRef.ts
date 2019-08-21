@@ -151,7 +151,7 @@ function apiBaseToRemoteBase(rawApiBase: string) {
 
 // exported for testing
 export function beautifyPullRequestBody(body: string): string {
-    const tagRegEx = /(\[[-\w]+:[-\w:=]+\])/gm;
+    const tagRegEx = /(\[[-\w]+:[-\w:=\/]+\])/gm;
     let tagMatches = tagRegEx.exec(body);
     const tags = [];
     while (!!tagMatches) {
@@ -159,8 +159,8 @@ export function beautifyPullRequestBody(body: string): string {
         tagMatches = tagRegEx.exec(body);
     }
     if (tags.length > 0) {
-        const newBody = body.replace(/\[[-\w]+:[-\w:=]+\]/g, "")
-            .replace(/\n\s*\n\s*\n/g, "\n\n")
+        const newBody = body.replace(/\[[-\w]+:[-\w:=\/]+\]/g, "")
+            .replace(/\n\s*\n\s*\n/g, '\n\n')
             .trim();
         return `${newBody}
 
