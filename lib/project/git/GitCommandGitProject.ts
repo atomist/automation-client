@@ -16,7 +16,6 @@
  */
 
 import * as _ from "lodash";
-import promiseRetry = require("promise-retry");
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
 import {
     isRemoteRepoRef,
@@ -49,6 +48,7 @@ import {
     GitStatus,
     runStatusIn,
 } from "./gitStatus";
+import promiseRetry = require("promise-retry");
 
 export const DefaultDirectoryManager: DirectoryManager = TmpDirectoryManager;
 
@@ -275,8 +275,19 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
     }
 
     public async hasBranch(name: string): Promise<boolean> {
-        return this.gitInProjectBaseDir(["branch", "--list", name])
-            .then(result => result.stdout.includes(name));
+        try {
+            await this.gitInProjectBaseDir(["config", "remote.origin.fetch", "+refs/heads/*:refs/remotes/origin/*"]);
+            await this.gitInProjectBaseDir(["fetch", "--all"]);
+            return this.gitInProjectBaseDir(["branch", "--list", "-r", `origin/${name}`])
+                .then(result => result.stdout.includes(name));
+        } catch (e) {
+            return this.gitInProjectBaseDir(["branch", "--list", name])
+                .then(result => result.stdout.includes(name));
+        }
+    }
+
+    public async rebase(from: string): Promise<this> {
+        return this.gitInProjectBaseDir(["rebase", "-X", "ours", from]).then(() => this);
     }
 
     private async gitInProjectBaseDir(args: string[]): Promise<ExecPromiseResult> {

@@ -127,4 +127,9 @@ export interface GitProject extends LocalProject, Configurable {
      */
     hasBranch(name: string): Promise<boolean>;
 
+    /**
+     * Rebase the current branch from the provided branch
+     */
+    rebase(from: string): Promise<this>;
+
 }

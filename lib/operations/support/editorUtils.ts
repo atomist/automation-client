@@ -123,25 +123,21 @@ function doWithEditResult(r: EditResult<GitProject>, gitop: () => Promise<EditRe
  * @param {GitProject} gp
  * @param {BranchCommit} ci
  */
-export function createAndPushBranch(gp: GitProject, ci: BranchCommit): Promise<EditResult> {
-    return gp.configureFromRemote()
-        .then(() => gp.hasBranch(ci.branch).then(branchExists => {
-            if (branchExists) {
-                return gp.checkout(ci.branch);
-            } else {
-                return gp.createBranch(ci.branch); // this also checks it out
-            }
-        }))
-        .then(() => {
-            let cm = ci.message;
-            if (ci.autoMerge) {
-                const needsLineBreaks = !cm.trim().endsWith("]");
-                cm = `${cm}${needsLineBreaks ? "\n\n" : " "}${ci.autoMerge.mode} ${ci.autoMerge.method ? ci.autoMerge.method : ""}`.trim();
-            }
-            return gp.commit(cm);
-        })
-        .then(() => gp.push())
-        .then(tp => successfulEdit(tp, true));
+export async function createAndPushBranch(gp: GitProject, ci: BranchCommit): Promise<EditResult> {
+    await gp.configureFromRemote();
+    if (await gp.hasBranch(ci.branch)) {
+        await gp.checkout(ci.branch);
+    } else {
+        await gp.createBranch(ci.branch);
+    }
+    let cm = ci.message;
+    if (ci.autoMerge) {
+        const needsLineBreaks = !cm.trim().endsWith("]");
+        cm = `${cm}${needsLineBreaks ? "\n\n" : " "}${ci.autoMerge.mode} ${ci.autoMerge.method ? ci.autoMerge.method : ""}`.trim();
+    }
+    await gp.commit(cm);
+    await gp.push();
+    return successfulEdit(gp, true);
 }
 
 /**
