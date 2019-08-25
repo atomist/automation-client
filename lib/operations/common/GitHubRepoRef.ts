@@ -91,28 +91,49 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
             .then(successOn);
     }
 
-    public raisePullRequest(credentials: ProjectOperationCredentials,
-                            title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
-        const url = `${this.scheme}${this.apiBase}/repos/${this.owner}/${this.repo}/pulls`;
+    public async raisePullRequest(credentials: ProjectOperationCredentials,
+                                  title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
+
+        const url = `${this.scheme}${this.apiBase}/repos/${this.owner}/${this.repo}`;
         const config = headers(credentials);
-        logger.debug(`Making request to '${url}' to raise PR`);
-        return axios.post(url, {
-            title,
-            body: beautifyPullRequestBody(body),
-            head,
-            base,
-        }, config)
-            .then(axiosResponse => {
+
+        // Check if PR already exists on the branch
+        const pr = (await axios.get(`${url}/pulls?state=open&head=${this.owner}:${head}`, config)).data;
+        if (!!pr && pr.length > 0) {
+            try {
+                await axios.patch(`${url}/pulls/${pr[0].number}`, {
+                    title,
+                }, config);
+                await axios.post(`${url}/issues/${pr[0].number}/comments`, {
+                    body: beautifyPullRequestBody(body),
+                }, config);
                 return {
                     target: this,
                     success: true,
-                    axiosResponse,
                 };
-            })
-            .catch(err => {
-                logger.error(`Error attempting to raise PR. ${url}  ${err}`);
-                return Promise.reject(err);
-            });
+            } catch (e) {
+                logger.error(`Error attempting to add PR comment. ${url}  ${e}`);
+                throw e;
+            }
+        } else {
+            return axios.post(`${url}/pulls`, {
+                title,
+                body: beautifyPullRequestBody(body),
+                head,
+                base,
+            }, config)
+                .then(axiosResponse => {
+                    return {
+                        target: this,
+                        success: true,
+                        axiosResponse,
+                    };
+                })
+                .catch(err => {
+                    logger.error(`Error attempting to raise PR. ${url}  ${err}`);
+                    return Promise.reject(err);
+                });
+        }
     }
 
     public deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>> {
