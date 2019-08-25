@@ -78,7 +78,7 @@ Project *atomist/sdm-pack-fingerprints/remove-global* is currently configured to
 
 ---
 <details>
-  <summary><img src="https://images.atomist.com/logo/atomist-color-mark-small.png" height="20" valign="bottom"/>Tags</summary>
+  <summary>Tags</summary>
 <br/>
 <code>[atomist:generated]</code><br/><code>[auto-merge-method:squash]</code><br/><code>[auto-merge-method:squash]</code><br/><code>[auto-merge:on-approve]</code><br/><code>[auto-merge:on-approve]</code>
 </details>`;
