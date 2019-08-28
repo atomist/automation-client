@@ -67,6 +67,8 @@ export class ApolloGraphClient implements GraphClient {
                 headers,
             });
 
+            logger.debug(`GraphQL operation using headers: ${JSON.stringify(headers, replacer)}`);
+
             return forward(operation);
         });
 
