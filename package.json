@@ -127,7 +127,7 @@
     "tinyqueue": "2.0.0",
     "tmp-promise": "^2.0.2",
     "tree-kill": "^1.2.1",
-    "typescript": "3.5.3",
+    "typescript": "^3.5.3",
     "utf8": "^3.0.0",
     "uuid": "^3.3.2",
     "winston": "^3.2.1",
