@@ -59,7 +59,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             this.ws.send(msg);
             return Promise.resolve(msg);
         }
-        
+
         const ts = this.ts(options);
 
         if (!Array.isArray(destinations)) {
