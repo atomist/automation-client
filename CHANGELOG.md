@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Add support for GitHub App tokens. [b58833a](https://github.com/atomist/automation-client/commit/b58833a4a91fab2cdd9bd5cdc8cc74da634359e4)
 -   Export isRemoteRepoRef. [#578](https://github.com/atomist/automation-client/issues/578)
 
+### Changed
+
+-   Modify GitHub token pattern to match on app tokens. [#593](https://github.com/atomist/automation-client/issues/593)
+
 ### Fixed
 
 -   `promptFor` not sending continuation message in cluster mode. [#592](https://github.com/atomist/automation-client/issues/592)
