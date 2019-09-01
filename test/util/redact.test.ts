@@ -64,6 +64,19 @@ describe("util/redact", () => {
             assert.deepStrictEqual(r, e);
         });
 
+        it("should redact github app token in username position", () => {
+            const l: TransformableInfo = {
+                level: "warn",
+                message: "https://v1.12093847103847561098457012abfcdefab456ef:x-oauth-basic@blah blah blah blah",
+            };
+            const r = redactLog(l);
+            const e = {
+                level: "warn",
+                message: "https://[GITHUB_TOKEN]:x-oauth-basic@blah blah blah blah",
+            };
+            assert.deepStrictEqual(r, e);
+        });
+
         it("should redact github token without x-oauth-basic", () => {
             const l: TransformableInfo = {
                 level: "error",
