@@ -89,6 +89,7 @@
     "glob-stream": "^6.1.0",
     "graphql": "^14.5.4",
     "graphql-tag": "^2.10.1",
+    "graphql-tag-pluck": "^0.8.4",
     "graphql-toolkit": "^0.5.11",
     "graphql-tools": "^4.0.5",
     "heavy": "^6.1.2",
