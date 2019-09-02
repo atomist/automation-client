@@ -90,7 +90,7 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
         if (!!creds && isTokenCredentials(creds)) {
             const token = creds.token;
             // GitHub App tokens start with v1. and are expected in the password field
-            if (token.startsWith("v1.")) {
+            if (!!token && token.startsWith("v1.")) {
                 return `${this.scheme}atomist:${token}@${this.remoteBase}/${this.pathComponent}.git`;
             } else {
                 return `${this.scheme}${token}:x-oauth-basic@${this.remoteBase}/${this.pathComponent}.git`;
