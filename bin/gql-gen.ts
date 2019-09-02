@@ -5,8 +5,8 @@
  * See LICENSE file.
  */
 
-import { codegen } from '@graphql-codegen/core';
-import { Types } from '@graphql-codegen/plugin-helpers';
+import { codegen } from "@graphql-codegen/core";
+import { Types } from "@graphql-codegen/plugin-helpers";
 import * as typescriptPlugin from "@graphql-codegen/typescript";
 import * as typescriptCompatibilityPlugin from "@graphql-codegen/typescript-compatibility";
 import * as typescriptOperationsPlugin from "@graphql-codegen/typescript-operations";
