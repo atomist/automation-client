@@ -5,10 +5,19 @@
  * See LICENSE file.
  */
 
+import { codegen } from '@graphql-codegen/core';
+import { Types } from '@graphql-codegen/plugin-helpers';
+import * as typescriptPlugin from "@graphql-codegen/typescript";
+import * as typescriptCompatibilityPlugin from "@graphql-codegen/typescript-compatibility";
+import * as typescriptOperationsPlugin from "@graphql-codegen/typescript-operations";
 import * as fs from "fs-extra";
 import * as glob from "glob";
-import { generate } from "graphql-code-generator";
-import { Types } from "graphql-codegen-core";
+import {
+    parse,
+    printSchema,
+} from "graphql";
+import { loadSchema } from "graphql-toolkit";
+import { RenameTypes } from "graphql-tools";
 import * as path from "path";
 import * as util from "util";
 
@@ -35,26 +44,6 @@ async function libDir(cwd: string): Promise<string> {
 }
 
 /**
- * Patch the handlebar template that renders the generated types out.
- * This patch puts back the original behaviour of creating only optional properties on generated types.
- *
- * @param cwd
- */
-async function patchGraphQLCodeGenerator(cwd: string): Promise<void> {
-    try {
-        // patch up codegen template to create optional properties
-        const codegenTemplate = path.join(cwd, "node_modules", "graphql-codegen-typescript-client", "dist", "index.js");
-        if (await fs.pathExists(codegenTemplate)) {
-            const contents = await fs.readFile(codegenTemplate, "utf8");
-            await fs.writeFile(codegenTemplate, contents.replace(/{{ name }}: {{ convertedFieldType/, "{{ name }}?: {{ convertedFieldType"));
-        }
-    } catch (e) {
-        console.error(`Failed to patch graphql-code-generator: ${e.message}`);
-        process.exit(103);
-    }
-}
-
-/**
  * Generate TypeScript typings for GraphQL schema entities.
  */
 async function main(): Promise<void> {
@@ -67,38 +56,65 @@ async function main(): Promise<void> {
         const defaultSchemaLocation = path.join(cwd, "node_modules", "@atomist", "automation-client", "lib",
             "graph", "schema.json");
         const schema = (await fs.pathExists(customSchemaLocation)) ? customSchemaLocation : defaultSchemaLocation;
+        const transform = new RenameTypes(name => {
+            switch (name) {
+                case "Fingerprint":
+                case "PushImpact":
+                    return `Deprecated${name}`;
+                default:
+                    return undefined;
+            }
+        });
 
         const gqlGenOutput = path.join(lib, "typings", "types.ts");
         await fs.ensureDir(path.dirname(gqlGenOutput));
 
         const graphQlGlob = `${lib}/graphql/!(ingester)/*.graphql`;
 
-        const config: Types.Config = {
-            overwrite: true,
-            watch: false,
-            schema: [schema],
-            generates: {
-                [gqlGenOutput]: {
-                    plugins: [
-                        "typescript-common",
-                        "typescript-client",
-                    ],
-                    config: {
-                        namingConvention: {
-                            enumValues: "keep",
-                        },
+        const config: Types.GenerateOptions = {
+            schema: parse(printSchema(transform.transformSchema(await loadSchema(schema)))),
+            filename: gqlGenOutput,
+            plugins: [{
+                typescript: {
+                    namingConvention: {
+                        enumValues: "keep",
                     },
                 },
+            }, {
+                typescriptOperations: {
+                },
+            }, {
+                typescriptCompatibility: {
+                    preResolveTypes: true,
+                },
+            }],
+            pluginMap: {
+                typescript: typescriptPlugin,
+                typescriptOperations: typescriptOperationsPlugin,
+                typescriptCompatibility: typescriptCompatibilityPlugin,
             },
+            documents: [],
+            config: {},
         };
 
         const graphqlFiles = await util.promisify(glob)(graphQlGlob);
+        const documents: Types.DocumentFile[] = [];
 
         if (graphqlFiles && graphqlFiles.length > 0) {
-            await patchGraphQLCodeGenerator(cwd);
-            config.documents = [graphQlGlob];
-            await generate(config);
-            const typesContent = await fs.readFile(gqlGenOutput, "utf8");
+            for (const graphqlFile of graphqlFiles) {
+                const content = (await fs.readFile(graphqlFile)).toString();
+                const document = parse(content);
+                documents.push({
+                    content: document,
+                    filePath: graphqlFile,
+                });
+            }
+            config.documents = documents;
+
+            // Make all properties optional to retain backwards compatibility
+            const typesContent = (await codegen(config)).replace(/ ([a-zA-Z_\-0-9]+): Maybe/g, ` $1?: Maybe`);
+
+            // Write the new types.ts content back out
             await fs.writeFile(gqlGenOutput, `/* tslint:disable */\n\n${typesContent}`, "utf8");
         } else {
             console.info("No GraphQL files found in project, skipping type generation.");
