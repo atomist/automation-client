@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Modify GitHub token pattern to match on app tokens. [#593](https://github.com/atomist/automation-client/issues/593)
+-   Upgrade to graphql-codegen version 1.7.1. [#595](https://github.com/atomist/automation-client/issues/595)
 
 ### Fixed
 
