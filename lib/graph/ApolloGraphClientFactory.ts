@@ -33,7 +33,7 @@ export class ApolloGraphClientFactory implements GraphClientFactory {
         return null;
     }
 
-    protected configure(configuration: Configuration): GlobalFetch["fetch"] {
+    protected configure(configuration: Configuration): WindowOrWorkerGlobalScope["fetch"] {
         return buildAxiosFetch(axios.create(configureProxy({})));
     }
 

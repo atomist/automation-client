@@ -42,7 +42,7 @@ export class ApolloGraphClient implements GraphClient {
      */
     constructor(public endpoint: string,
                 headers: any = {},
-                fetch: GlobalFetch["fetch"] = buildAxiosFetch(axios.create(configureProxy({})))) {
+                fetch: WindowOrWorkerGlobalScope["fetch"] = buildAxiosFetch(axios.create(configureProxy({})))) {
         const cache = new InMemoryCache({
             addTypename: false,
         });
