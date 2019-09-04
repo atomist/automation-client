@@ -39,7 +39,7 @@ async function main(): Promise<void> {
 
                 require("../lib/util/logger").logger.warn("Change to '%s' file detected. Attempting reload...", path);
 
-                Object.keys(require.cache).forEach((id) => {
+                Object.keys(require.cache).forEach(id => {
                     if (id.startsWith(indexPath) || id.startsWith(libPath)) {
                         delete require.cache[id];
                     }
@@ -50,7 +50,7 @@ async function main(): Promise<void> {
 
                 const newCfgCommands = newCfg.commands.map(c => metadataFromInstance(toFactory(c)())).sort((c1, c2) => c1.name.localeCompare(c2.name));
                 const newCfgEvents = newCfg.events.map(c => metadataFromInstance(toFactory(c)())).sort((c1, c2) => c1.name.localeCompare(c2.name));
-                
+
                 if (JSON.stringify(newCfgCommands) !== JSON.stringify(cfgCommands) || JSON.stringify(newCfgEvents) !== JSON.stringify(cfgEvents)) {
                     require("../lib/util/logger").logger.error("Unable to reload. Incompatible changes to registration metadata detected. Exiting...");
                     process.exit(15);
