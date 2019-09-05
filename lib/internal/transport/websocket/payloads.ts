@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import { automationClientInstance } from "../../../globals";
 import {
     CommandHandlerMetadata,
@@ -51,19 +52,19 @@ function prepareCommandRegistration(c: CommandHandlerMetadata) {
     return {
         name: c.name,
         description: c.description,
-        tags: typeof c.tags === "string" ? [c.tags] : (c.tags || []).map(t => t.name),
-        intent: toStringArray(c.intent),
+        tags: _.uniq(typeof c.tags === "string" ? [c.tags] : (c.tags || []).map(t => t.name)),
+        intent: _.uniq(toStringArray(c.intent)),
         auto_submit: c.auto_submit ? c.auto_submit : false,
         question: c.question,
-        parameters: c.parameters,
-        mapped_parameters: c.mapped_parameters,
-        secrets: c.secrets ? c.secrets.map(s => ({ uri: s.uri })) : [],
+        parameters: _.uniqBy(c.parameters, "name"),
+        mapped_parameters: _.uniqBy(c.mapped_parameters, "name"),
+        secrets: _.uniqBy(c.secrets ? c.secrets.map(s => ({ uri: s.uri })) : [], "uri"),
     };
 }
 
 function prepareEventRegistration(e: EventHandlerMetadata) {
     return {
         subscription: e.subscription,
-        secrets: e.secrets ? e.secrets.map(s => ({ uri: s.uri })) : [],
+        secrets: _.uniqBy(e.secrets ? e.secrets.map(s => ({ uri: s.uri })) : [], "uri"),
     };
 }
