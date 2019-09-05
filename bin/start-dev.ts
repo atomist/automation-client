@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 /*
  * Copyright © 2018 Atomist, Inc.
  *
@@ -8,25 +9,23 @@
 import "source-map-support/register";
 
 import * as appRoot from "app-root-path";
+import * as _ from "lodash";
 import * as path from "path";
-import { metadataFromInstance } from "../lib/internal/metadata/metadataReading";
-import { toFactory } from "../lib/util/constructionUtils";
 import { printError } from "../lib/util/error";
 
 /* tslint:disable:no-console */
-
 async function main(): Promise<void> {
     try {
         const logging = require("../lib/util/logger");
         logging.configureLogging(logging.ClientLogging);
+        const logger = logging.logger;
 
         let cfg = await require("../lib/configuration").loadConfiguration();
         cfg = require("../lib/scan").enableDefaultScanning(cfg);
-        const cfgCommands = cfg.commands.map(c => metadataFromInstance(toFactory(c)())).sort((c1, c2) => c1.name.localeCompare(c2.name));
-        const cfgEvents = cfg.events.map(c => metadataFromInstance(toFactory(c)())).sort((c1, c2) => c1.name.localeCompare(c2.name));
 
         const automationClient = require("../lib/automationClient").automationClient(cfg);
         await automationClient.run();
+        const registration = prepareRegistration(cfg);
 
         const chokidar = require("chokidar");
         const watcher = chokidar.watch(["index.js", "lib/*.js", "lib/**/*.js"], { ignored: "\.ts" });
@@ -36,44 +35,65 @@ async function main(): Promise<void> {
 
         watcher.on("ready", () => {
             watcher.on("all", async (e, path) => {
+                const start = Date.now();
+                logger.warn("Change to '%s' file detected. Attempting reload...", path);
 
-                require("../lib/util/logger").logger.warn("Change to '%s' file detected. Attempting reload...", path);
-
-                Object.keys(require.cache).forEach(id => {
+                Object.keys(require.cache).forEach((id) => {
                     if (id.startsWith(indexPath) || id.startsWith(libPath)) {
                         delete require.cache[id];
                     }
                 });
 
-                let newCfg = await require("../lib/configuration").loadConfiguration();
-                newCfg = require("../lib/scan").enableDefaultScanning(newCfg);
+                try {
+                    let newCfg = await require("../lib/configuration").loadConfiguration();
+                    newCfg = require("../lib/scan").enableDefaultScanning(newCfg);
 
-                const newCfgCommands = newCfg.commands.map(c => metadataFromInstance(toFactory(c)())).sort((c1, c2) => c1.name.localeCompare(c2.name));
-                const newCfgEvents = newCfg.events.map(c => metadataFromInstance(toFactory(c)())).sort((c1, c2) => c1.name.localeCompare(c2.name));
+                    diffRegistration(prepareRegistration(newCfg), registration);
 
-                if (JSON.stringify(newCfgCommands) !== JSON.stringify(cfgCommands) || JSON.stringify(newCfgEvents) !== JSON.stringify(cfgEvents)) {
-                    require("../lib/util/logger").logger.error("Unable to reload. Incompatible changes to registration metadata detected. Exiting...");
-                    process.exit(15);
+                    // Clean out previous handlers and install new ones
+                    automationClient.automationServer.commandHandlers = [];
+                    newCfg.commands.forEach(automationClient.withCommandHandler);
+                    automationClient.automationServer.eventHandlers = [];
+                    newCfg.events.forEach(automationClient.withEventHandler);
+
+                    // Clean out the startup banner listeners
+                    if (automationClient.defaultListeners.length > 2) {
+                        automationClient.defaultListeners.splice(2);
+                    }
+                    await automationClient.raiseStartupEvent();
+
+                    logger.warn(`Reload successful in ${((Date.now() - start) / 1000).toFixed(2)}s`);
+                } catch (e) {
+                    logger.error("Reload failed");
+                    printError(e);
                 }
-
-                automationClient.automationServer.commandHandlers = [];
-                automationClient.automationServer.eventHandlers = [];
-                newCfg.commands.forEach(c => {
-                    automationClient.withCommandHandler(c);
-                });
-                newCfg.events.forEach(e => {
-                    automationClient.withEventHandler(e);
-                });
-
-                require("../lib/util/logger").logger.warn("Reload successful");
-
-                await automationClient.raiseStartupEvent();
             });
         });
 
     } catch (e) {
         printError(e);
         process.exit(5);
+    }
+}
+
+function prepareRegistration(configuration: any): any {
+    const automations = new (require("../lib/server/BuildableAutomationServer").BuildableAutomationServer)(configuration);
+    configuration.commands.forEach(automations.registerCommandHandler);
+    configuration.events.forEach(automations.registerEventHandler);
+    configuration.ingesters.forEach(automations.registerIngester);
+    return require("../lib/internal/transport/websocket/payloads")
+        .prepareRegistration(automations.automations, {}, configuration.metadata);
+}
+
+function diffRegistration(newReg: any, oldReg: any): void {
+    if (!_.isEqual(newReg, oldReg)) {
+        const jsonDiff = require("json-diff");
+        const logging = require("../lib/util/logger");
+        logging.logger.error(
+            `Unable to reload. Incompatible changes to registration metadata detected:
+${jsonDiff.diffString(newReg, oldReg).trim()}`);
+        logging.logger.error("Exiting...");
+        process.exit(15);
     }
 }
 
