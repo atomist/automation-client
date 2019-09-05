@@ -74,6 +74,7 @@
     "body-parser": "^1.18.3",
     "chalk": "^2.4.2",
     "child-process-promise": "^2.2.1",
+    "chokidar": "^3.0.2",
     "cluster": "^0.7.7",
     "cors": "^2.8.5",
     "cross-spawn": "^6.0.5",
@@ -98,6 +99,7 @@
     "https-proxy-agent": "^2.2.1",
     "inquirer": "^6.3.1",
     "isbinaryfile": "^4.0.0",
+    "json-diff": "^0.5.4",
     "json-stringify-safe": "^5.0.1",
     "lodash": "^4.17.14",
     "lodash.merge": "^4.6.2",
@@ -186,7 +188,8 @@
     "atm-command": "./bin/command.js",
     "atm-git-info": "./bin/git-info.js",
     "atm-gql-gen": "./bin/gql-gen.js",
-    "atm-start": "./bin/start.js"
+    "atm-start": "./bin/start.js",
+    "atm-start-dev": "./bin/start-dev.js"
   },
   "engines": {
     "node": ">=8.2.0",

@@ -3,10 +3,7 @@ import * as cluster from "cluster";
 import * as _ from "lodash";
 import { promisify } from "util";
 import { AutomationClient } from "../../automationClient";
-import {
-    BannerSection,
-    Configuration,
-} from "../../configuration";
+import { Configuration } from "../../configuration";
 import { AutomationEventListenerSupport } from "../../server/AutomationEventListener";
 import { logger } from "../../util/logger";
 import { Automations } from "../metadata/metadata";
@@ -31,6 +28,9 @@ export class StartupMessageAutomationEventListener extends AutomationEventListen
         }
     }
 }
+
+export const DevModeBannerContributor =
+    () => ({ title: "Development", body: chalk.green("Code reloading enabled") });
 
 /**
  * Build and log startup message, including any user banner
