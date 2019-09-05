@@ -38,7 +38,7 @@ async function main(): Promise<void> {
                 const start = Date.now();
                 logger.warn("Change to '%s' file detected. Attempting reload...", path);
 
-                Object.keys(require.cache).forEach((id) => {
+                Object.keys(require.cache).forEach(id => {
                     if (id.startsWith(indexPath) || id.startsWith(libPath)) {
                         delete require.cache[id];
                     }
