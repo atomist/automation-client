@@ -14,15 +14,15 @@ import * as _ from "lodash";
 import * as path from "path";
 import { printError } from "../lib/util/error";
 
-/* tslint:disable:no-console */
 async function main(): Promise<void> {
     try {
         const logging = require("../lib/util/logger");
         logging.configureLogging(logging.ClientLogging);
-        const logger = logging.logger;
 
         let cfg = await require("../lib/configuration").loadConfiguration();
         cfg = require("../lib/scan").enableDefaultScanning(cfg);
+        cfg.logging.banner.contributors.push(
+            require("../lib/internal/transport/showStartupMessages").DevModeBannerContributor);
 
         const automationClient = require("../lib/automationClient").automationClient(cfg);
         await automationClient.run();
@@ -33,6 +33,7 @@ async function main(): Promise<void> {
 
         const indexPath = path.join(appRoot.path, "index.js");
         const libPath = path.join(appRoot.path, "lib");
+        const logger = logging.logger;
 
         watcher.on("ready", () => {
             watcher.on("all", async (e, path) => {
