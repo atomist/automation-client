@@ -5,6 +5,7 @@
  *
  * See LICENSE file.
  */
+
 // tslint:disable-next-line:no-import-side-effect
 import "source-map-support/register";
 
@@ -52,9 +53,9 @@ async function main(): Promise<void> {
 
                     // Clean out previous handlers and install new ones
                     automationClient.automationServer.commandHandlers = [];
-                    newCfg.commands.forEach(automationClient.withCommandHandler);
+                    newCfg.commands.forEach(c => automationClient.withCommandHandler(c));
                     automationClient.automationServer.eventHandlers = [];
-                    newCfg.events.forEach(automationClient.withEventHandler);
+                    newCfg.events.forEach(e => automationClient.withEventHandler(e));
 
                     // Clean out the startup banner listeners
                     if (automationClient.defaultListeners.length > 2) {
@@ -78,9 +79,9 @@ async function main(): Promise<void> {
 
 function prepareRegistration(configuration: any): any {
     const automations = new (require("../lib/server/BuildableAutomationServer").BuildableAutomationServer)(configuration);
-    configuration.commands.forEach(automations.registerCommandHandler);
-    configuration.events.forEach(automations.registerEventHandler);
-    configuration.ingesters.forEach(automations.registerIngester);
+    (configuration.commands || []).forEach(c => automations.registerCommandHandler(c));
+    (configuration.events || []).forEach(e => automations.registerEventHandler(e));
+    (configuration.ingesters || []).forEach(i => automations.registerIngester(i));
     return require("../lib/internal/transport/websocket/payloads")
         .prepareRegistration(automations.automations, {}, configuration.metadata);
 }
