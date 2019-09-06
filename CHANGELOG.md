@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 -   `promptFor` not sending continuation message in cluster mode. [#592](https://github.com/atomist/automation-client/issues/592)
+-   Fix threaded messages for responses. [b782039](https://github.com/atomist/automation-client/commit/b7820393301f3707dfb21b0b323fc1c3a944864e)
 
 ## [1.6.2](https://github.com/atomist/automation-client-ts/compare/1.6.1...1.6.2) - 2019-07-11
 
