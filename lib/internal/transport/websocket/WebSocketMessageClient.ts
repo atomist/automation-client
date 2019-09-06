@@ -133,8 +133,9 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             const responseDestination = _.cloneDeep(this.source);
             if (responseDestination.slack) {
                 delete responseDestination.slack.user;
+                responseDestination.slack.thread_ts = thread_ts;
             }
-            responseDestinations.push(this.source);
+            responseDestinations.push(responseDestination);
         }
 
         const response: HandlerResponse = {
