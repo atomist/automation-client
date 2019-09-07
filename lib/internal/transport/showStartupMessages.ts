@@ -30,7 +30,7 @@ export class StartupMessageAutomationEventListener extends AutomationEventListen
 }
 
 export const DevModeBannerContributor =
-    () => ({ title: "Development", body: chalk.green("Code reloading enabled") });
+    () => ({ title: "Development", body: chalk.green("watch mode enabled") });
 
 /**
  * Build and log startup message, including any user banner
