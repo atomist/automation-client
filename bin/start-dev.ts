@@ -57,6 +57,8 @@ async function main(): Promise<void> {
                     newCfg.commands.forEach(c => automationClient.withCommandHandler(c));
                     automationClient.automationServer.eventHandlers = [];
                     newCfg.events.forEach(e => automationClient.withEventHandler(e));
+                    // Now drop reference to previous configuration
+                    automationClient.configuration = newCfg;
 
                     // Clean out the startup banner listeners
                     if (automationClient.defaultListeners.length > 2) {
