@@ -5,7 +5,10 @@ import { promisify } from "util";
 import { AutomationClient } from "../../automationClient";
 import { Configuration } from "../../configuration";
 import { AutomationEventListenerSupport } from "../../server/AutomationEventListener";
-import { logger } from "../../util/logger";
+import {
+    clientLoggingConfiguration,
+    logger,
+} from "../../util/logger";
 import { Automations } from "../metadata/metadata";
 import { info } from "../util/info";
 import { RegistrationConfirmation } from "./websocket/WebSocketRequestProcessor";
@@ -15,7 +18,7 @@ export class StartupTimeMessageUatomationEventListener extends AutomationEventLi
     public async startupSuccessful(client: AutomationClient): Promise<void> {
         if (cluster.isMaster || !client.configuration.cluster.enabled) {
             const uptime = process.uptime();
-            logger.debug(`Atomist automation client startup completed in ${uptime.toFixed(2)}s`);
+            logger.info(`Atomist automation client startup completed in ${uptime.toFixed(2)}s`);
         }
     }
 }
@@ -31,6 +34,19 @@ export class StartupMessageAutomationEventListener extends AutomationEventListen
 
 export const DevModeBannerContributor =
     () => ({ title: "Development", body: chalk.green("watch mode enabled") });
+
+export const LoggingBannerContributor =
+    cfg => {
+        const loggingConfig = clientLoggingConfiguration(_.cloneDeep(cfg));
+        const rows = [`  ${chalk.gray("Logging")}`];
+        if (loggingConfig.console.enabled) {
+            rows.push(`    ${chalk.gray("Console")} ${loggingConfig.console.level}`);
+        }
+        if (loggingConfig.file.enabled) {
+            rows.push(`    ${chalk.gray("File")} ${loggingConfig.file.level}  ${chalk.gray("Location")} ${loggingConfig.file.filename}`);
+        }
+        return rows.join("\n");
+    };
 
 /**
  * Build and log startup message, including any user banner
@@ -167,7 +183,7 @@ ${events.join("\n")}`;
 
 function contributors(configuration: Configuration): string {
     let c: string = "";
-    const contribs = configuration.logging.banner.contributors || [];
+    const contribs = [LoggingBannerContributor, ...(configuration.logging.banner.contributors || [])];
     if (contribs && contribs.length > 0) {
         c += contribs.map(cfg => {
             const section = cfg(configuration);

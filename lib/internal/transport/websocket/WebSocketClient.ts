@@ -37,7 +37,7 @@ export class WebSocketClient {
 
             registerShutdownHook(() => {
                 reconnect = false;
-                logger.info("Closing WebSocket connection");
+                logger.debug("Closing WebSocket connection");
                 ws.close();
                 return Promise.resolve(0);
             }, 100000, "closing websocket");
@@ -70,7 +70,7 @@ function connect(registrationCallback: () => any,
 
     return new Promise<WebSocket>(resolve => {
 
-        logger.info(`Opening WebSocket connection`);
+        logger.debug(`Opening WebSocket connection`);
         ws = configuration.ws.client.factory.create(registration);
 
         let timer: NodeJS.Timer;
@@ -110,7 +110,7 @@ function connect(registrationCallback: () => any,
                     } else if (isPong(request)) {
                         pong = request.pong;
                     } else if (isControl(request)) {
-                        logger.info("WebSocket connection stopped listening for incoming messages");
+                        logger.debug("WebSocket connection stopped listening for incoming messages");
                     } else {
                         if (isCommandIncoming(request)) {
                             invokeCommandHandler(request);

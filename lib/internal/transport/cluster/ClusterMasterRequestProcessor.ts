@@ -149,7 +149,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
     }
 
     public onRegistration(registration: RegistrationConfirmation): void {
-        logger.info("Registration successful: %s", stringify(registration));
+        logger.debug("Registration successful: %s", stringify(registration));
         (this.configuration.ws as any).session = registration;
         this.registration = registration;
 
@@ -161,7 +161,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
     }
 
     public onConnect(ws: WebSocket): void {
-        logger.info("WebSocket connection established. Listening for incoming messages");
+        logger.debug("WebSocket connection established. Listening for incoming messages");
         this.webSocketLifecycle.set(ws);
         this.listeners.forEach(l => l.registrationSuccessful(this));
     }
@@ -342,7 +342,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
                 logger.warn(`Worker '${worker.id}' exited with status '${code}' and signal '${signal}', replacing...`);
                 attachEvents(cluster.fork(), new Deferred());
             } else {
-                logger.info(`Worker '${worker.id}' shut down with status '${code}' and signal '${signal}'`);
+                logger.debug(`Worker '${worker.id}' shut down with status '${code}' and signal '${signal}'`);
             }
         });
 
@@ -516,7 +516,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
                     },
                 }, this.webSocketLifecycle.get(), false);
                 if (!this.backoffInitiated) {
-                    logger.info(`Initiated incoming messages backoff. queue size: ${messageCount}, threshold: ${threshold}`);
+                    logger.debug(`Initiated incoming messages backoff. queue size: ${messageCount}, threshold: ${threshold}`);
                 }
                 this.backoffInitiated = true;
                 if (!!statsd) {
@@ -529,7 +529,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
                 }
             } else {
                 if (this.backoffInitiated) {
-                    logger.info(`Stopped incoming messages backoff. queue size: ${messageCount}, threshold: ${threshold}`);
+                    logger.debug(`Stopped incoming messages backoff. queue size: ${messageCount}, threshold: ${threshold}`);
                 }
                 this.backoffInitiated = false;
                 if (!!statsd) {

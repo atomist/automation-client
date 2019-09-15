@@ -135,7 +135,7 @@ export const configuration: Configuration = {
         },
     ],
     logging: {
-        level: "debug",
+        level: "info",
         banner: {
             enabled: true,
             contributors: [

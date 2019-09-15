@@ -12,7 +12,7 @@ let DataDirectory = `${appRoot.path}/heap`;
  * @param {string} dataDirectory
  */
 export function initMemoryMonitoring(dataDirectory: string = `${appRoot.path}/heap`, log: boolean = true) {
-    logger.info("Initialising memory monitoring");
+    logger.debug("Initialising memory monitoring");
     DataDirectory = dataDirectory;
 
     if (log) {
@@ -36,7 +36,7 @@ export function heapDump(): string {
             fs.mkdirSync(DataDirectory);
         }
         heapdump.writeSnapshot(`${DataDirectory}/${name}`, (err, filename) => {
-            logger.warn("Heap dump written to '%s'", filename);
+            logger.debug("Heap dump written to '%s'", filename);
         });
         broadcast({ type: "atomist:heapdump" });
         return name;
@@ -73,7 +73,7 @@ export function memoryUsage() {
  */
 export function gc() {
     if (global.gc) {
-        logger.warn("Triggering GC");
+        logger.debug("Triggering GC");
         global.gc();
         logger.debug("Memory statistics: %j", memoryUsage());
         broadcast({ type: "atomist:gc" });

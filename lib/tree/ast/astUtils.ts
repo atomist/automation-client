@@ -250,7 +250,7 @@ async function parseFile(parser: FileParser,
                 return undefined;
             }
         }).catch(err => {
-            logger.info("Failed to parse file '%s': %s", file.path, err);
+            logger.debug("Failed to parse file '%s': %s", file.path, err);
             return undefined;
         });
 }
