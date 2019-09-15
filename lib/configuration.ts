@@ -1164,7 +1164,7 @@ export const LocalDefaultConfiguration: Configuration = {
         enabled: false,
     },
     logging: {
-        level: "debug",
+        level: "info",
         file: {
             enabled: true,
             level: "debug",

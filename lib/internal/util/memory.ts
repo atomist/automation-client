@@ -12,7 +12,7 @@ let DataDirectory = `${appRoot.path}/heap`;
  * @param {string} dataDirectory
  */
 export function initMemoryMonitoring(dataDirectory: string = `${appRoot.path}/heap`, log: boolean = true) {
-    logger.info("Initialising memory monitoring");
+    logger.debug("Initialising memory monitoring");
     DataDirectory = dataDirectory;
 
     if (log) {

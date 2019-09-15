@@ -167,7 +167,7 @@ async function watchSpawned(childProcess: ChildProcess,
         childProcess.stderr.on("data", sendToLog);
         childProcess.addListener("exit", (code, signal) => {
             running = false;
-            logger.info("Spawn exit with pid '%d': code '%d', signal '%d'", childProcess.pid, code, signal);
+            logger.debug("Spawn exit with pid '%d': code '%d', signal '%d'", childProcess.pid, code, signal);
             clearTimeout(timer);
             resolve({
                 error: optsToUse.errorFinder(code, signal, log),

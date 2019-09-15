@@ -149,7 +149,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
     }
 
     public onRegistration(registration: RegistrationConfirmation): void {
-        logger.info("Registration successful: %s", stringify(registration));
+        logger.debug("Registration successful: %s", stringify(registration));
         (this.configuration.ws as any).session = registration;
         this.registration = registration;
 
@@ -161,7 +161,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
     }
 
     public onConnect(ws: WebSocket): void {
-        logger.info("WebSocket connection established. Listening for incoming messages");
+        logger.debug("WebSocket connection established. Listening for incoming messages");
         this.webSocketLifecycle.set(ws);
         this.listeners.forEach(l => l.registrationSuccessful(this));
     }

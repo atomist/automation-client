@@ -301,7 +301,7 @@ async function clone(
 ): Promise<GitProject> {
 
     const cloneDirectoryInfo = await directoryManager.directoryFor(id.owner, id.repo, id.branch, opts);
-    logger.info("Directory info: %j", cloneDirectoryInfo);
+    logger.debug("Directory info: %j", cloneDirectoryInfo);
     switch (cloneDirectoryInfo.type) {
         case "empty-directory":
             return cloneInto(credentials, cloneDirectoryInfo, opts, id);
