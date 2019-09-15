@@ -64,7 +64,7 @@ export const configuration: Configuration = {
     name: "@atomist/automation-node-tests",
     version: "0.0.7",
     // policy: "durable",
-    // workspaceIds: ["T1L0VDKJP"],
+    workspaceIds: ["T1L0VDKJP"],
     keywords: ["test", "automation"],
     commands: [
         // ...scanCommands( ["**/metadata/addAtomistSpringAgent.js", "**/command/Search*.js"] ),
