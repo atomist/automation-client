@@ -63,7 +63,7 @@ export function scanCommands(patterns: string | string[] =
     registry.start(true, false);
     // tslint:disable-next-line:variable-name
     const _patterns = toStringArray(patterns);
-    logger.info(`Scanning for commands using file patterns: ${_patterns.join(", ")}`);
+    logger.debug(`Scanning for commands using file patterns: ${_patterns.join(", ")}`);
     scan(_patterns);
     logger.debug(`Completed scanning for commands`);
     return registry.commands;
@@ -78,7 +78,7 @@ export function scanEvents(patterns: string | string[] =
     registry.start(false, true);
     // tslint:disable-next-line:variable-name
     const _patterns = toStringArray(patterns);
-    logger.info(`Scanning for events using file patterns: ${_patterns.join(", ")}`);
+    logger.debug(`Scanning for events using file patterns: ${_patterns.join(", ")}`);
     scan(_patterns);
     logger.debug(`Completed scanning for events`);
     return registry.events;

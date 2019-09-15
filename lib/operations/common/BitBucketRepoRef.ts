@@ -36,7 +36,7 @@ export class BitBucketRepoRef extends AbstractRemoteRepoRef {
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
         const url = `${this.scheme}${this.apiBase}/repositories/${this.owner}/${this.repo}`;
 
-        logger.info("Making request to BitBucket '%s' to create repo", url);
+        logger.debug("Making request to BitBucket '%s' to create repo", url);
         return configurationValue<HttpClientFactory>("http.client.factory", DefaultHttpClientFactory).create(url).exchange(url, {
             method: HttpMethod.Post,
             headers: {
