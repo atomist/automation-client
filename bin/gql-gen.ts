@@ -20,6 +20,7 @@ import { loadSchema } from "graphql-toolkit";
 import { RenameTypes } from "graphql-tools";
 import * as path from "path";
 import * as util from "util";
+import yargs from "yargs";
 
 /* tslint:disable:no-console */
 
@@ -47,12 +48,16 @@ async function libDir(cwd: string): Promise<string> {
  * Generate TypeScript typings for GraphQL schema entities.
  */
 async function main(): Promise<void> {
+
+    const specified = yargs({ output: "", input: "" }, "").argv;
+
     try {
         const cwd = process.cwd();
         const lib = await libDir(cwd);
+        const inputDir = specified.input || path.join(lib, "graphql");
 
         // check if the project has a custom schema
-        const customSchemaLocation = path.join(lib, "graphql", "schema.json");
+        const customSchemaLocation = path.join(inputDir, "schema.json");
         const defaultSchemaLocation = path.join(cwd, "node_modules", "@atomist", "automation-client", "lib",
             "graph", "schema.json");
         const schema = (await fs.pathExists(customSchemaLocation)) ? customSchemaLocation : defaultSchemaLocation;
@@ -66,10 +71,10 @@ async function main(): Promise<void> {
             }
         });
 
-        const gqlGenOutput = path.join(lib, "typings", "types.ts");
+        const gqlGenOutput = specified.output || path.join(lib, "typings", "types.ts");
         await fs.ensureDir(path.dirname(gqlGenOutput));
 
-        const graphQlGlob = `${lib}/graphql/!(ingester)/*.graphql`;
+        const graphQlGlob = path.join(inputDir, "!(ingester)", "*.graphql");
 
         const config: Types.GenerateOptions = {
             schema: parse(printSchema(transform.transformSchema(await loadSchema(schema)))),
@@ -123,6 +128,7 @@ async function main(): Promise<void> {
 
     } catch (e) {
         console.error(`Generating GraphQL types failed: ${e.message}`);
+        console.error(`Generating GraphQL types failed: ${e}`);
         process.exit(1);
     }
     throw new Error("Should never get here, process.exit() called above");
