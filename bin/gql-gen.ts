@@ -127,8 +127,7 @@ async function main(): Promise<void> {
         process.exit(0);
 
     } catch (e) {
-        console.error(`Generating GraphQL types failed: ${e.message}`);
-        console.error(`Generating GraphQL types failed: ${e}`);
+        console.error(`Generating GraphQL types failed: ${e.message || e}`);
         process.exit(1);
     }
     throw new Error("Should never get here, process.exit() called above");
@@ -136,6 +135,6 @@ async function main(): Promise<void> {
 
 main()
     .catch((err: Error) => {
-        console.error(`Unhandled exception: ${err.message}`);
+        console.error(`Unhandled exception: ${err.message || err}`);
         process.exit(101);
     });
