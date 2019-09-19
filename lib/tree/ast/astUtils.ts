@@ -360,16 +360,15 @@ export function findParser(pathExpression: PathExpression, fp: FileParser | File
  * @return {string[]}
  */
 export function literalValues(pex: PathExpression): string[] {
-    return allPredicates(pex)
-        .filter(isAttributeEqualityPredicate)
-        .map(p => p.value);
+    return _.uniq(
+        allPredicates(pex)
+            .filter(isAttributeEqualityPredicate)
+            .map(p => p.value));
 }
 
 function allPredicates(pe: PathExpression): Predicate[] {
     if (isUnionPathExpression(pe)) {
-        // We do not attempt to handle union path expressions for now.
-        // If you want efficiency, don't write one
-        return [];
+        return _.flatten(pe.unions.map(allPredicates));
     }
     return _.flatten(pe.locationSteps.map(s => {
         return _.flatten(s.predicates.map(p => {

@@ -361,11 +361,11 @@ describe("astUtils", () => {
             assert.deepEqual(literalValues(pex), ["@SpringBootApplication", "foo"]);
         });
 
-        it("should not opine on a union path expression", () => {
+        it("should find literals in a union path expression", () => {
             const pex = toPathExpression(`//normalClassDeclaration
                                 [//annotation[@value='@SpringBootApplication']]
                                 /identifier[@value='foo'] | //foo`);
-            assert.deepEqual(literalValues(pex), []);
+            assert.deepEqual(literalValues(pex), [ "@SpringBootApplication", "foo"]);
         });
 
     });
