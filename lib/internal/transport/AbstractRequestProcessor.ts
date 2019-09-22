@@ -193,7 +193,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                     logger.warn("Unable to send status for command '%s': %s", command.command, err.message))
                 .then(() => {
                     callback(Promise.resolve(result));
-                    logger.info(`Finished invocation of command '%s': %s`,
+                    logger.debug(`Finished invocation of command '%s': %s`,
                         command.command, stringify(result, possibleAxiosObjectReplacer));
                     this.clearNamespace();
                 });
@@ -261,7 +261,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                         event.extensions.operationName, err.message))
                 .then(() => {
                     callback(Promise.resolve(noncircularResults));
-                    logger.info(`Finished invocation of event subscription '%s': %s`,
+                    logger.debug(`Finished invocation of event subscription '%s': %s`,
                         event.extensions.operationName, stringify(noncircularResults, possibleAxiosObjectReplacer));
                     this.clearNamespace();
                 });

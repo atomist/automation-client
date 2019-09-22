@@ -36,7 +36,7 @@ export async function doWithAllRepos<R, P>(ctx: HandlerContext,
     const promises = ids.map(id =>
         () => repoLoader(id)
             .catch(err => {
-                logger.warn("Unable to load repo %s/%s: %s", id.owner, id.repo, err);
+                logger.debug("Unable to load repo %s/%s: %s", id.owner, id.repo, err);
                 logger.debug(err.stack);
                 return undefined;
             })

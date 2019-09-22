@@ -36,7 +36,7 @@ export function heapDump(): string {
             fs.mkdirSync(DataDirectory);
         }
         heapdump.writeSnapshot(`${DataDirectory}/${name}`, (err, filename) => {
-            logger.warn("Heap dump written to '%s'", filename);
+            logger.debug("Heap dump written to '%s'", filename);
         });
         broadcast({ type: "atomist:heapdump" });
         return name;
@@ -73,7 +73,7 @@ export function memoryUsage() {
  */
 export function gc() {
     if (global.gc) {
-        logger.warn("Triggering GC");
+        logger.debug("Triggering GC");
         global.gc();
         logger.debug("Memory statistics: %j", memoryUsage());
         broadcast({ type: "atomist:gc" });

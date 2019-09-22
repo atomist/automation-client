@@ -372,7 +372,7 @@ async function cloneInto(
     await promiseRetry(retryOptions, (retry, count) => {
         return execPromise("git", cloneArgs)
             .catch(err => {
-                logger.warn(`Clone of ${id.owner}/${id.repo} attempt ${count} failed: ` + err.message);
+                logger.debug(`Clone of ${id.owner}/${id.repo} attempt ${count} failed: ` + err.message);
                 retry(err);
             });
     });
@@ -380,7 +380,7 @@ async function cloneInto(
         await execPromise("git", ["checkout", checkoutRef, "--"], { cwd: repoDir });
     } catch (err) {
         // When the head moved on and we only cloned with depth; we might have to do a full clone to get to the commit we want
-        logger.warn(`Ref ${checkoutRef} not in cloned history. Attempting full clone`);
+        logger.debug(`Ref ${checkoutRef} not in cloned history. Attempting full clone`);
         await execPromise("git", ["fetch", "--unshallow"], { cwd: repoDir })
             .then(() => execPromise("git", ["checkout", checkoutRef, "--"], { cwd: repoDir }));
     }

@@ -342,7 +342,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
                 logger.warn(`Worker '${worker.id}' exited with status '${code}' and signal '${signal}', replacing...`);
                 attachEvents(cluster.fork(), new Deferred());
             } else {
-                logger.info(`Worker '${worker.id}' shut down with status '${code}' and signal '${signal}'`);
+                logger.debug(`Worker '${worker.id}' shut down with status '${code}' and signal '${signal}'`);
             }
         });
 
@@ -516,7 +516,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
                     },
                 }, this.webSocketLifecycle.get(), false);
                 if (!this.backoffInitiated) {
-                    logger.info(`Initiated incoming messages backoff. queue size: ${messageCount}, threshold: ${threshold}`);
+                    logger.debug(`Initiated incoming messages backoff. queue size: ${messageCount}, threshold: ${threshold}`);
                 }
                 this.backoffInitiated = true;
                 if (!!statsd) {
@@ -529,7 +529,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
                 }
             } else {
                 if (this.backoffInitiated) {
-                    logger.info(`Stopped incoming messages backoff. queue size: ${messageCount}, threshold: ${threshold}`);
+                    logger.debug(`Stopped incoming messages backoff. queue size: ${messageCount}, threshold: ${threshold}`);
                 }
                 this.backoffInitiated = false;
                 if (!!statsd) {
