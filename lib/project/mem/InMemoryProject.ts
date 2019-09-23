@@ -10,7 +10,10 @@ import {
     FileStream,
     Project,
 } from "../Project";
-import { AbstractProject, globMatchesWithin } from "../support/AbstractProject";
+import {
+    AbstractProject,
+    globMatchesWithin,
+} from "../support/AbstractProject";
 import { copyFiles } from "../support/projectUtils";
 import { InMemoryFile } from "./InMemoryFile";
 
