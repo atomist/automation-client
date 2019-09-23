@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import { AbstractScriptedFlushable } from "../../internal/common/AbstractScriptedFlushable";
 import { RepoRef } from "../../operations/common/RepoId";
 import { logger } from "../../util/logger";
@@ -13,7 +14,6 @@ import {
     FileStream,
     Project,
 } from "../Project";
-import * as _ from "lodash";
 
 import * as minimatch from "minimatch";
 

@@ -1,8 +1,8 @@
-import { GitCommandGitProject } from "../../../lib/project/git/GitCommandGitProject";
+import { microgrammar } from "@atomist/microgrammar";
 import { GitHubRepoRef } from "../../../lib/operations/common/GitHubRepoRef";
+import { GitCommandGitProject } from "../../../lib/project/git/GitCommandGitProject";
 import { Project } from "../../../lib/project/Project";
 import { gatherFromFiles } from "../../../lib/project/util/projectUtils";
-import { microgrammar } from "@atomist/microgrammar";
 import { findMatches } from "../../../lib/tree/ast/astUtils";
 import { MicrogrammarBasedFileParser } from "../../../lib/tree/ast/microgrammar/MicrogrammarBasedFileParser";
 
