@@ -1,5 +1,4 @@
-import * as _ from "lodash";
-import * as minimatch from "minimatch";
+
 import * as spigot from "stream-spigot";
 
 import { RepoRef } from "../../operations/common/RepoId";
@@ -68,7 +67,7 @@ export class InMemoryProject extends AbstractProject {
         super(xid);
     }
 
-    get fileCount() {
+    get fileCount(): number {
         return this.memFiles.length;
     }
 
@@ -90,6 +89,7 @@ export class InMemoryProject extends AbstractProject {
     }
 
     public recordAddFile(path: string, content: string): this {
+        this.invalidateCache();
         this.memFiles.push(new InMemoryFile(path, content));
         return this;
     }
@@ -104,11 +104,13 @@ export class InMemoryProject extends AbstractProject {
     }
 
     public addDirectory(path: string): Promise<this> {
+        this.invalidateCache();
         this.addedDirectoryPaths.push(path);
         return Promise.resolve(this);
     }
 
     public deleteDirectorySync(path: string): void {
+        this.invalidateCache();
         this.memFiles.forEach(f => {
             if (f.path.startsWith(`${path}/`)) {
                 this.deleteFileSync(f.path);
@@ -117,11 +119,13 @@ export class InMemoryProject extends AbstractProject {
     }
 
     public deleteDirectory(path: string): Promise<this> {
+        this.invalidateCache();
         this.deleteDirectorySync(path);
         return Promise.resolve(this);
     }
 
     public deleteFileSync(path: string): this {
+        this.invalidateCache();
         this.memFiles = this.memFiles.filter(f => f.path !== path);
         return this;
     }

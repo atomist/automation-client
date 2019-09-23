@@ -16,7 +16,6 @@ import {
 import * as _ from "lodash";
 
 import * as minimatch from "minimatch";
-import { toArray } from "lodash";
 
 /**
  * Support for implementations of Project interface
@@ -66,6 +65,9 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
      * @return {Promise<File[]>}
      */
     public async getFiles(globPatterns: string | string[] = []): Promise<File[]> {
+        const globPatternsToUse = globPatterns ?
+            (typeof globPatterns === "string" ? [globPatterns] : globPatterns) :
+            [];
         if (this.cachedFiles) {
             return this.cachedFiles;
         }
@@ -77,7 +79,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
                 .on("end", _ => resolve(this.cachedFiles));
         });
         return globPatterns ?
-            globMatchesWithin(this.cachedFiles, toArray(globPatterns)) :
+            globMatchesWithin(this.cachedFiles, globPatternsToUse) :
             this.cachedFiles;
     }
 
@@ -137,6 +139,10 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
     public abstract directoryExistsSync(path: string): boolean;
 
     public abstract fileExistsSync(path: string): boolean;
+
+    protected invalidateCache(): void {
+        this.cachedFiles = undefined;
+    }
 
 }
 

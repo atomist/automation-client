@@ -175,7 +175,6 @@ describe("TypeScriptFileParser", () => {
         // console.log(stringify(root, null, 2));
         assert(functions.length === 1);
         assert.equal(functions[0].identifier, "it");
-        console.log(JSON.stringify(functions[0]));
         assert.equal(functions[0].canonicalBody,
             "function it(a, b){return 'frogs';}");
         assert.equal(functions[0].path,
