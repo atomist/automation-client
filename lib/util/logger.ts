@@ -203,7 +203,7 @@ export function configureLogging(config: LoggingConfiguration): void {
                     os.homedir(),
                     ".atomist",
                     "log",
-                    `${pj.name.replace(/^.*\//, "")}-local.log`);
+                    `${pj.name.replace(/@/g, "").replace(/\//g, "_")}_local.log`);
             }
 
             const path = p.resolve(filename);
@@ -257,7 +257,7 @@ export function clientLoggingConfiguration(configuration: Configuration): Loggin
             };
         }
         if (_.get(configuration, "logging.file.enabled") === true) {
-            let filename = p.join(".", "log", `${configuration.name.replace(/^.*\//, "")}.log`);
+            let filename = p.join(".", "log", `${configuration.name.replace(/@/g, "").replace(/\//g, "_")}.log`);
             if (configuration.logging.file.name) {
                 filename = configuration.logging.file.name;
             }

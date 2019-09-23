@@ -103,7 +103,7 @@ describe("configuration", () => {
             enabled: false,
         },
         logging: {
-            level: "debug",
+            level: "info",
             file: {
                 enabled: true,
                 level: "debug",

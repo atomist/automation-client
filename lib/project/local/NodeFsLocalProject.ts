@@ -124,7 +124,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         try {
             await fs.remove(this.toRealPath(path));
         } catch (e) {
-            logger.warn("Unable to delete directory '%s': %s", path, e.message);
+            logger.debug("Unable to delete directory '%s': %s", path, e.message);
         }
         return this;
     }
@@ -134,7 +134,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         try {
             fs.removeSync(localPath);
         } catch (e) {
-            logger.warn("Unable to delete directory '%s': %s", path, e.message);
+            logger.debug("Unable to delete directory '%s': %s", path, e.message);
         }
     }
 
@@ -142,7 +142,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         try {
             fs.unlinkSync(this.toRealPath(path));
         } catch (e) {
-            logger.warn("Unable to delete file '%s': %s", path, e.message);
+            logger.debug("Unable to delete file '%s': %s", path, e.message);
         }
     }
 
@@ -150,7 +150,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         try {
             await fs.unlink(this.toRealPath(path));
         } catch (e) {
-            logger.warn("Unable to delete file '%s': %s", path, e.message);
+            logger.debug("Unable to delete file '%s': %s", path, e.message);
         }
         return this;
     }

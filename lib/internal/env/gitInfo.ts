@@ -72,7 +72,7 @@ export function obtainGitInfo(directory: string): Promise<GitInformation> {
                 });
         })
         .then(() => Promise.resolve(gitInfo), err => {
-            logger.info(`failed to fully populate git information: ${err.message}`);
+            logger.debug(`failed to fully populate git information: ${err.message}`);
             return Promise.resolve(gitInfo);
         });
 }

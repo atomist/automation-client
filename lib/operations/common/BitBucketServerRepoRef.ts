@@ -45,7 +45,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
                 apiUrl?: string) {
         super(ProviderType.bitbucket, remoteBase, apiUrl || `${noTrailingSlash(remoteBase)}/rest/api/1.0/`, owner, repo, sha, path, branch);
         this.ownerType = isProject ? "projects" : "users";
-        logger.info("Constructed BitBucketServerRepoRef: %j", this);
+        logger.debug("Constructed BitBucketServerRepoRef: %j", this);
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility: any): Promise<ActionResult<this>> {
@@ -56,7 +56,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
             forkable: "true",
         };
 
-        logger.info("Making request to BitBucket '%s' to create repo, data=%j", url, data);
+        logger.debug("Making request to BitBucket '%s' to create repo, data=%j", url, data);
         return configurationValue<HttpClientFactory>("http.client.factory", DefaultHttpClientFactory).create(url).exchange(url, {
             method: HttpMethod.Post,
             body: data,

@@ -215,7 +215,7 @@ export class ExpressServer {
             ));
 
             if (!this.configuration.http.auth.basic.password) {
-                logger.info(`Auto-generated credentials for web endpoints are user '${user}' and password '${pwd}'`);
+                logger.debug(`Auto-generated credentials for web endpoints are user '${user}' and password '${pwd}'`);
             }
         }
 
