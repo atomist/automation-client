@@ -89,7 +89,7 @@ export async function gatherFromFiles<T>(project: ProjectAsync,
 export async function* fileIterator(project: Project,
                                     globPatterns: GlobOptions,
                                     filter: (f: File) => Promise<boolean> = async () => true): AsyncIterable<File> {
-    const files = await toPromise(project.streamFiles(...toStringArray(globPatterns)));
+    const files = await project.getFiles(globPatterns);
     for (const file of files) {
         if (await filter(file)) {
             yield file;
@@ -103,28 +103,23 @@ export async function* fileIterator(project: Project,
  * @param globPatterns glob patterns to match
  * @param op operation to perform on files. Can return void or a promise.
  */
-export function doWithFiles<P extends ProjectAsync>(project: P,
-                                                    globPatterns: GlobOptions,
-                                                    op: (f: File) => void | Promise<any>): Promise<P> {
-    return new Promise(
-        (resolve, reject) => {
-            const filePromises: Array<Promise<File>> = [];
-            return project.streamFiles(...toStringArray(globPatterns))
-                .on("data", f => {
-                    const r = op(f);
-                    if (isPromise(r)) {
-                        filePromises.push(r.then(_ => f.flush()));
-                    } else {
-                        if (f.dirty) {
-                            filePromises.push(f.flush());
-                        }
-                    }
-                })
-                .on("error", reject)
-                .on("end", _ => {
-                    resolve(Promise.all(filePromises));
-                });
-        }).then(files => project);
+export async function doWithFiles<P extends ProjectAsync>(project: P,
+                                                          globPatterns: GlobOptions,
+                                                          op: (f: File) => void | Promise<any>): Promise<P> {
+    const files = await project.getFiles(globPatterns);
+    const filePromises: Array<Promise<File>> = [];
+    files.map(f => {
+        const r = op(f);
+        if (isPromise(r)) {
+            filePromises.push(r.then(_ => f.flush()));
+        } else {
+            if (f.dirty) {
+                filePromises.push(f.flush());
+            }
+        }
+    });
+    await Promise.all(filePromises);
+    return project;
 }
 
 /**

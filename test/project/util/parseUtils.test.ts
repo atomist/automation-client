@@ -185,7 +185,7 @@ describe("parseUtils", () => {
             .then(_ => {
                 // Check file persistence
                 const updatedFile = t.findFileSync(f.path);
-                assert(updatedFile.getContentSync() === initialContent.replace(oldPackage, oldPackage + "x"),
+                assert.strictEqual(updatedFile.getContentSync(), initialContent.replace(oldPackage, oldPackage + "x"),
                     `Content is [${updatedFile.getContentSync()}]`);
                 done();
             }).catch(done);
