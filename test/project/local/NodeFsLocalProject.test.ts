@@ -15,7 +15,6 @@ import {
 import { LocalProject } from "../../../lib/project/local/LocalProject";
 import { NodeFsLocalProject } from "../../../lib/project/local/NodeFsLocalProject";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
-import { Project } from "../../../lib/project/Project";
 import { toPromise } from "../../../lib/project/util/projectUtils";
 import { tempProject } from "../utils";
 

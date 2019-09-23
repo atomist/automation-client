@@ -13,11 +13,20 @@ import {
     FileStream,
     Project,
 } from "../Project";
+import * as _ from "lodash";
+
+import * as minimatch from "minimatch";
+import { toArray } from "lodash";
 
 /**
  * Support for implementations of Project interface
  */
 export abstract class AbstractProject extends AbstractScriptedFlushable<Project> implements Project {
+
+    /**
+     * Cached paths
+     */
+    private cachedFiles: File[];
 
     get name(): string {
         return !!this.id ? this.id.repo : undefined;
@@ -51,14 +60,30 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
 
     public abstract streamFilesRaw(globPatterns: string[], opts: {}): FileStream;
 
-    public totalFileCount(): Promise<number> {
-        return new Promise((resolve, reject) => {
-            let count = 0;
+    /**
+     * Get files matching these patterns
+     * @param {string[]} globPatterns
+     * @return {Promise<File[]>}
+     */
+    public async getFiles(globPatterns: string | string[] = []): Promise<File[]> {
+        if (this.cachedFiles) {
+            return this.cachedFiles;
+        }
+        this.cachedFiles = [];
+        await new Promise((resolve, reject) => {
             this.streamFiles()
-                .on("data", f => count++)
+                .on("data", f => this.cachedFiles.push(f))
                 .on("error", reject)
-                .on("end", _ => resolve(count));
+                .on("end", _ => resolve(this.cachedFiles));
         });
+        return globPatterns ?
+            globMatchesWithin(this.cachedFiles, toArray(globPatterns)) :
+            this.cachedFiles;
+    }
+
+    public async totalFileCount(): Promise<number> {
+        const files = await this.getFiles();
+        return files.length;
     }
 
     public trackFile(f: FileNonBlocking): this {
@@ -72,7 +97,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
         return this.findFile(oldPath)
             .then(f =>
                 f.setPath(newPath).then(() => this),
-        )
+            )
             // Not an error if no such file
             .catch(err => this);
     }
@@ -113,4 +138,15 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
 
     public abstract fileExistsSync(path: string): boolean;
 
+}
+
+export function globMatchesWithin(files: File[], globPatterns: string[]): File[] {
+    const positiveMatches = _.flatten(
+        files.filter(f =>
+            globPatterns.some(gp => !gp.startsWith("!") && minimatch.match([f.path], gp).includes(f.path)),
+        ));
+    const matchingFiles = _.reject(positiveMatches,
+        f => globPatterns.some(gp => gp.startsWith("!") && minimatch.match([f.path], gp.substring(1)).includes(f.path)),
+    );
+    return matchingFiles;
 }

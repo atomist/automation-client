@@ -11,7 +11,7 @@ import {
     FileStream,
     Project,
 } from "../Project";
-import { AbstractProject } from "../support/AbstractProject";
+import { AbstractProject, globMatchesWithin } from "../support/AbstractProject";
 import { copyFiles } from "../support/projectUtils";
 import { InMemoryFile } from "./InMemoryFile";
 
@@ -148,13 +148,7 @@ export class InMemoryProject extends AbstractProject {
     }
 
     public streamFilesRaw(globPatterns: string[], opts: {}): FileStream {
-        const positiveMatches = _.flatten(
-            this.memFiles.filter(f =>
-                globPatterns.some(gp => !gp.startsWith("!") && minimatch.match([f.path], gp).includes(f.path)),
-            ));
-        const matchingFiles = _.reject(positiveMatches,
-            f => globPatterns.some(gp => gp.startsWith("!") && minimatch.match([f.path], gp.substring(1)).includes(f.path)),
-        );
+        const matchingFiles = globMatchesWithin(this.memFiles, globPatterns);
         return spigot.array({ objectMode: true },
             matchingFiles,
         );

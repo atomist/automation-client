@@ -70,23 +70,26 @@ export async function countFiles<T>(p: ProjectAsync,
  * Undefined returns will be filtered out
  * @return {Promise<T[]>}
  */
-export function gatherFromFiles<T>(project: ProjectAsync,
-                                   globPatterns: GlobOptions,
-                                   gather: (f: File) => Promise<T> | undefined): Promise<T[]> {
-    return new Promise((resolve, reject) => {
-        const gathered: Array<Promise<T>> = [];
-        project.streamFiles(...toStringArray(globPatterns))
-            .on("data", f => {
-                const g = gather(f);
-                if (g) {
-                    gathered.push(g);
-                }
-            })
-            .on("error", reject)
-            .on("end", _ => {
-                resolve(Promise.all(gathered).then(ts => ts.filter(t => !!t)));
-            });
-    });
+export async function gatherFromFiles<T>(project: ProjectAsync,
+                                         globPatterns: GlobOptions,
+                                         gather: (f: File) => Promise<T> | undefined): Promise<T[]> {
+    // return new Promise((resolve, reject) => {
+    //     const gathered: Array<Promise<T>> = [];
+    //     project.streamFiles(...toStringArray(globPatterns))
+    //         .on("data", f => {
+    //             const g = gather(f);
+    //             if (g) {
+    //                 gathered.push(g);
+    //             }
+    //         })
+    //         .on("error", reject)
+    //         .on("end", _ => {
+    //             resolve(Promise.all(gathered).then(ts => ts.filter(t => !!t)));
+    //         });
+    // });
+    const allFiles = await project.getFiles(globPatterns);
+    const matches = allFiles.map(gather);
+    return (await Promise.all(matches)).filter(t => !!t);
 }
 
 /**

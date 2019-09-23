@@ -86,6 +86,13 @@ export interface ProjectSync extends ProjectCore {
 export interface ProjectAsync extends ProjectCore {
 
     /**
+     * Get files matching these patterns
+     * @param {string[]} globPatterns
+     * @return {Promise<File[]>}
+     */
+    getFiles(globPatterns?: string | string[]): Promise<File[]>;
+
+    /**
      * Return a node stream of the files in the project meeting
      * the given path criteria. Uses default exclusions in the glob path.
      * @param globPatterns glob patterns. If none is provided,
