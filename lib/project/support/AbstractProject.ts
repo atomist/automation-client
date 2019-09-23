@@ -68,19 +68,16 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
         const globPatternsToUse = globPatterns ?
             (typeof globPatterns === "string" ? [globPatterns] : globPatterns) :
             [];
-        if (this.cachedFiles) {
-            return this.cachedFiles;
+        if (!this.cachedFiles) {
+            this.cachedFiles = [];
+            await new Promise((resolve, reject) => {
+                this.streamFiles()
+                    .on("data", f => this.cachedFiles.push(f))
+                    .on("error", reject)
+                    .on("end", _ => resolve(this.cachedFiles));
+            });
         }
-        this.cachedFiles = [];
-        await new Promise((resolve, reject) => {
-            this.streamFiles()
-                .on("data", f => this.cachedFiles.push(f))
-                .on("error", reject)
-                .on("end", _ => resolve(this.cachedFiles));
-        });
-        return globPatterns ?
-            globMatchesWithin(this.cachedFiles, globPatternsToUse) :
-            this.cachedFiles;
+        return globMatchesWithin(this.cachedFiles, globPatternsToUse);
     }
 
     public async totalFileCount(): Promise<number> {
@@ -146,7 +143,10 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
 
 }
 
-export function globMatchesWithin(files: File[], globPatterns: string[]): File[] {
+export function globMatchesWithin(files: File[], globPatterns?: string[]): File[] {
+    if (!globPatterns || globPatterns.length === 0) {
+        return files;
+    }
     const positiveMatches = _.flatten(
         files.filter(f =>
             globPatterns.some(gp => !gp.startsWith("!") && minimatch.match([f.path], gp).includes(f.path)),

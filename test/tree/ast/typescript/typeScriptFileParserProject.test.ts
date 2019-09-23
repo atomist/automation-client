@@ -26,7 +26,7 @@ describe("TypeScriptFileParser real project parsing: TypeScript", () => {
                     ["TypeScriptFileParser", "TypeScriptAstNodeTreeNode"]);
                 done();
             }).catch(done);
-    }).timeout(5000);
+    }).timeout(15000);
 
     it("should parse sources from project and use a path expression to find values using convenience method", done => {
         findValues(thisProject, TypeScriptES6FileParser,
@@ -37,7 +37,7 @@ describe("TypeScriptFileParser real project parsing: TypeScript", () => {
                     ["TypeScriptFileParser", "TypeScriptAstNodeTreeNode"]);
                 done();
             }).catch(done);
-    }).timeout(5000);
+    }).timeout(15000);
 
     it("should parse sources from project and find functions", done => {
         findValues(thisProject, TypeScriptES6FileParser,
@@ -47,7 +47,7 @@ describe("TypeScriptFileParser real project parsing: TypeScript", () => {
                 assert(values.length > 2);
                 done();
             }).catch(done);
-    }).timeout(5000);
+    }).timeout(15000);
 
     it("should parse sources from project and find exported functions", done => {
         findMatches(thisProject, TypeScriptES6FileParser,
@@ -57,7 +57,7 @@ describe("TypeScriptFileParser real project parsing: TypeScript", () => {
                 assert(values.length > 2);
                 done();
             }).catch(done);
-    }).timeout(5000);
+    }).timeout(15000);
 
     it("should find all exported functions in project", done => {
         findValues(thisProject, TypeScriptES6FileParser,
@@ -67,6 +67,6 @@ describe("TypeScriptFileParser real project parsing: TypeScript", () => {
                 assert(values.length > 5);
                 done();
             }).catch(done);
-    }).timeout(5000);
+    }).timeout(15000);
 
 });
