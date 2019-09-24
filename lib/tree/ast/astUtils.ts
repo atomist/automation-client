@@ -234,14 +234,13 @@ async function parseFile(parser: FileParser,
 
     // If we get here, we need to parse the file
     try {
-        // Use a cached AST if possible
-        const topLevelProduction = cacheAst ?
-            await retrieveOrCompute(file, `ast_${parser.rootName}`, async f => {
+        // Use a cached AST if appropriate
+        const topLevelProduction = await retrieveOrCompute(file, `ast_${parser.rootName}`, async f => {
                 const prod = await parser.toAst(f);
                 defineDynamicProperties(prod);
                 return prod;
-            }) :
-            await parser.toAst(file);
+            }, cacheAst);
+
         logger.debug("Successfully parsed file '%s' to AST with root node named '%s'. Will execute '%s'",
             file.path, topLevelProduction.$name, stringify(pex));
         const fileNode = {
@@ -352,7 +351,7 @@ export async function doWithAllMatches<P extends ProjectAsync = ProjectAsync>(p:
     return (p as any).flush();
 }
 
-function applyActionToMatches(fh: FileHit, action: (m: MatchResult) => void) {
+function applyActionToMatches(fh: FileHit, action: (m: MatchResult) => void): void {
     // Sort file hits in reverse order so that offsets aren't upset by applications
     const sorted = fh.matches.sort((m1, m2) => m1.$offset - m2.$offset);
     sorted.forEach(action);

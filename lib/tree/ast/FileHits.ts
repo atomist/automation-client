@@ -12,7 +12,6 @@ import {
 } from "../../project/Project";
 import { logger } from "../../util/logger";
 import { LocatedTreeNode } from "../LocatedTreeNode";
-import { ExecutionResult } from "@atomist/tree-path/lib/path/pathExpression";
 
 /**
  * Options for handling production replacements
@@ -37,20 +36,20 @@ export const ZapTrailingWhitespace: NodeReplacementOptions = {
  */
 export interface MatchResult extends LocatedTreeNode {
 
-    append(content: string): void;
+    append(content: string);
 
-    prepend(content: string): void;
+    prepend(content: string);
 
     /**
      * Delete the match. Same as setting $value to the empty string,
      * but can zap trailing spaces also
      * @param {NodeReplacementOptions} opts
      */
-    zap(opts: NodeReplacementOptions): void;
+    zap(opts: NodeReplacementOptions);
 
-    replace(newContent: string, opts: NodeReplacementOptions): void;
+    replace(newContent: string, opts: NodeReplacementOptions);
 
-    evaluateExpression(pex: string | PathExpression): ExecutionResult;
+    evaluateExpression(pex: string | PathExpression);
 }
 
 interface Update extends NodeReplacementOptions {
@@ -119,24 +118,22 @@ function requireOffset(m: MatchResult) {
     }
 }
 
-function makeUpdatable(matches: MatchResult[], updates: Update[]): void {
+function makeUpdatable(matches: MatchResult[], updates: Update[]) {
     matches.forEach(m => {
         const initialValue = m.$value;
         let currentValue = m.$value;
-        if (!m.$value) {
-            Object.defineProperty(m, "$value", {
-                get() {
-                    return currentValue;
-                },
-                set(v2) {
-                    logger.debug("Updating value from '%s' to '%s' on '%s'", currentValue, v2, m.$name);
-                    // TODO allow only one
-                    currentValue = v2;
-                    requireOffset(m);
-                    updates.push({ initialValue, currentValue, offset: m.$offset });
-                },
-            });
-        }
+        Object.defineProperty(m, "$value", {
+            get() {
+                return currentValue;
+            },
+            set(v2) {
+                logger.debug("Updating value from '%s' to '%s' on '%s'", currentValue, v2, m.$name);
+                // TODO allow only one
+                currentValue = v2;
+                requireOffset(m);
+                updates.push({ initialValue, currentValue, offset: m.$offset });
+            },
+        });
         m.append = (content: string) => {
             requireOffset(m);
             updates.push({ initialValue: "", currentValue: content, offset: m.$offset + currentValue.length });
