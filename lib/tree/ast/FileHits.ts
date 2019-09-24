@@ -4,6 +4,7 @@ import {
     PathExpression,
     TreeNode,
 } from "@atomist/tree-path";
+import { ExecutionResult } from "@atomist/tree-path/lib/path/pathExpression";
 import { ScriptedFlushable } from "../../internal/common/Flushable";
 import { File } from "../../project/File";
 import {
@@ -12,7 +13,6 @@ import {
 } from "../../project/Project";
 import { logger } from "../../util/logger";
 import { LocatedTreeNode } from "../LocatedTreeNode";
-import { ExecutionResult } from "@atomist/tree-path/lib/path/pathExpression";
 
 /**
  * Options for handling production replacements
