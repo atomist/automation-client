@@ -1,9 +1,10 @@
 import { ScriptedFlushable } from "../internal/common/Flushable";
+import { HasCache } from "./HasCache";
 
 /**
  * Operations common to all File interfaces
  */
-export interface FileCore {
+export interface FileCore extends HasCache {
 
     /**
      * Return file name, excluding path

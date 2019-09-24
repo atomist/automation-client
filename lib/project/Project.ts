@@ -1,21 +1,16 @@
 import { Stream } from "stream";
 import { RepoRef } from "../operations/common/RepoId";
 import { File } from "./File";
+import { HasCache } from "./HasCache";
 
 /**
  * Project operations common to all projects
  */
-export interface ProjectCore {
+export interface ProjectCore extends HasCache {
 
     readonly name: string;
 
     id: RepoRef;
-
-    /**
-     * Use to cache arbitrary content associated with this Project instance.
-     * Use for smallish objects that are expensive to compute.
-     */
-    readonly cache: Record<string, object>;
 
 }
 
