@@ -18,6 +18,7 @@ import {
     NestedPathExpressionPredicate,
 } from "@atomist/tree-path/lib/path/predicates";
 import { File } from "../../project/File";
+import { retrieveOrCompute } from "../../project/HasCache";
 import {
     Project,
     ProjectAsync,
@@ -39,7 +40,6 @@ import {
     isFileParser,
 } from "./FileParser";
 import { FileParserRegistry } from "./FileParserRegistry";
-import { retrieveOrCompute } from "../../project/HasCache";
 
 /**
  * Create a MatchTester to use against this file, caching
