@@ -27,6 +27,8 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
      */
     private cachedFiles: File[];
 
+    public readonly cache: Record<string, object> = {};
+
     get name(): string {
         return !!this.id ? this.id.repo : undefined;
     }

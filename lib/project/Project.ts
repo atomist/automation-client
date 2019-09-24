@@ -11,6 +11,12 @@ export interface ProjectCore {
 
     id: RepoRef;
 
+    /**
+     * Use to cache arbitrary content associated with this Project instance.
+     * Use for smallish objects that are expensive to compute.
+     */
+    readonly cache: Record<string, object>;
+
 }
 
 /**
@@ -86,8 +92,8 @@ export interface ProjectSync extends ProjectCore {
 export interface ProjectAsync extends ProjectCore {
 
     /**
-     * Get files matching these patterns
-     * @param {string[]} globPatterns
+     * Get files matching these patterns glob patterns.
+     * @param {string[]} globPatterns. If none is supplied, return all files.
      * @return {Promise<File[]>}
      */
     getFiles(globPatterns?: string | string[]): Promise<File[]>;
@@ -98,6 +104,8 @@ export interface ProjectAsync extends ProjectCore {
      * @param globPatterns glob patterns. If none is provided,
      * include all files. If at least one positive pattern is provided,
      * one or more negative glob patterns can be provided.
+     *
+     * Prefer getFiles()
      *
      * @param {string[]} globPatterns glob patterns per minimatch
      * @return {FileStream}
