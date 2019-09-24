@@ -39,6 +39,7 @@ import {
     isFileParser,
 } from "./FileParser";
 import { FileParserRegistry } from "./FileParserRegistry";
+import { retrieveOrCompute } from "../../project/HasCache";
 
 /**
  * Create a MatchTester to use against this file, caching
@@ -82,6 +83,13 @@ export interface PathExpressionQueryOptions {
      * @return {Promise<MatchTester>}
      */
     testWith?: MatchTesterMaker;
+
+    /**
+     * Whether to cache the AST for the given parser for this file.
+     * Caching will occur unless this property is explicitly set to false.
+     * Disable caching if many files are likely to be parsed as one offs.
+     */
+    cacheAst?: boolean;
 }
 
 /**
@@ -176,7 +184,7 @@ export async function findFileMatches(p: ProjectAsync,
     }
     const valuesToCheckFor = literalValues(parsed);
     const files = await gatherFromFiles(p, globPatterns, file => parseFile(parser, parsed,
-        functionRegistry, p, file, valuesToCheckFor, undefined));
+        functionRegistry, p, file, valuesToCheckFor, undefined, true));
     const all = await Promise.all(files);
     return all.filter(x => !!x);
 }
@@ -195,7 +203,9 @@ export async function* fileHitIterator(p: Project,
     }
     const valuesToCheckFor = literalValues(parsed);
     for await (const file of await fileIterator(p, opts.globPatterns, opts.fileFilter)) {
-        const fileHit = await parseFile(parser, parsed, opts.functionRegistry, p, file, valuesToCheckFor, opts.testWith);
+        const fileHit = await parseFile(parser, parsed, opts.functionRegistry, p, file, valuesToCheckFor,
+            opts.testWith,
+            opts.cacheAst !== false);
         if (!!fileHit) {
             yield fileHit;
         }
@@ -208,7 +218,8 @@ async function parseFile(parser: FileParser,
                          p: ProjectAsync,
                          file: File,
                          valuesToCheckFor: string[],
-                         matchTester: MatchTesterMaker): Promise<FileHit> {
+                         matchTester: MatchTesterMaker,
+                         cacheAst: boolean): Promise<FileHit> {
     // First, apply optimizations
     if (valuesToCheckFor.length > 0) {
         const content = await file.getContent();
@@ -222,37 +233,43 @@ async function parseFile(parser: FileParser,
     }
 
     // If we get here, we need to parse the file
-    return parser.toAst(file)
-        .then(topLevelProduction => {
-            logger.debug("Successfully parsed file '%s' to AST with root node named '%s'. Will execute '%s'",
-                file.path, topLevelProduction.$name, stringify(pex));
-            defineDynamicProperties(topLevelProduction);
-            const fileNode = {
-                path: file.path,
-                name: file.name,
-                $name: file.name,
-                $children: [topLevelProduction],
-            };
-            const r = evaluateExpression(fileNode, pex, functionRegistry);
-            if (isSuccessResult(r)) {
-                logger.debug("%d matches in file '%s'", r.length, file.path);
-                return fillInSourceLocations(file, r)
-                    .then(locatedNodes => {
-                        if (matchTester) {
-                            return matchTester(file)
-                                .then(test => new FileHit(p, file, fileNode,
-                                    locatedNodes.filter(test)));
-                        }
-                        return new FileHit(p, file, fileNode, locatedNodes);
-                    });
-            } else {
-                logger.debug("No matches in file '%s'", file.path);
-                return undefined;
-            }
-        }).catch(err => {
-            logger.debug("Failed to parse file '%s': %s", file.path, err);
+    try {
+        // Use a cached AST if possible
+        const topLevelProduction = cacheAst ?
+            await retrieveOrCompute(file, `ast_${parser.rootName}`, async f => {
+                const prod = await parser.toAst(f);
+                defineDynamicProperties(prod);
+                return prod;
+            }) :
+            await parser.toAst(file);
+        logger.debug("Successfully parsed file '%s' to AST with root node named '%s'. Will execute '%s'",
+            file.path, topLevelProduction.$name, stringify(pex));
+        const fileNode = {
+            path: file.path,
+            name: file.name,
+            $name: file.name,
+            $children: [topLevelProduction],
+        };
+        const r = evaluateExpression(fileNode, pex, functionRegistry);
+        if (isSuccessResult(r)) {
+            logger.debug("%d matches in file '%s'", r.length, file.path);
+            return fillInSourceLocations(file, r)
+                .then(locatedNodes => {
+                    if (matchTester) {
+                        return matchTester(file)
+                            .then(test => new FileHit(p, file, fileNode,
+                                locatedNodes.filter(test)));
+                    }
+                    return new FileHit(p, file, fileNode, locatedNodes);
+                });
+        } else {
+            logger.debug("No matches in file '%s'", file.path);
             return undefined;
-        });
+        }
+    } catch (err) {
+        logger.debug("Failed to parse file '%s': %s", file.path, err);
+        return undefined;
+    }
 }
 
 /**
