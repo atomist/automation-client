@@ -119,11 +119,11 @@ function requireOffset(m: MatchResult) {
     }
 }
 
-function makeUpdatable(matches: MatchResult[], updates: Update[]) {
+function makeUpdatable(matches: MatchResult[], updates: Update[]): void {
     matches.forEach(m => {
         const initialValue = m.$value;
         let currentValue = m.$value;
-        if (!m.$value) {
+        try {
             Object.defineProperty(m, "$value", {
                 get() {
                     return currentValue;
@@ -136,6 +136,8 @@ function makeUpdatable(matches: MatchResult[], updates: Update[]) {
                     updates.push({ initialValue, currentValue, offset: m.$offset });
                 },
             });
+        } catch {
+            // Ok
         }
         m.append = (content: string) => {
             requireOffset(m);
