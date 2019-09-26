@@ -1,6 +1,7 @@
 
 import * as spigot from "stream-spigot";
 
+import { IOptions } from "minimatch";
 import { RepoRef } from "../../operations/common/RepoId";
 import {
     File,
@@ -16,7 +17,6 @@ import {
 } from "../support/AbstractProject";
 import { copyFiles } from "../support/projectUtils";
 import { InMemoryFile } from "./InMemoryFile";
-import { IOptions } from "minimatch";
 
 /**
  * In memory Project implementation. Primarily intended

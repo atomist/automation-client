@@ -14,8 +14,8 @@ import {
     Project,
 } from "../Project";
 
-import * as multimatch from "multimatch";
 import { IOptions } from "minimatch";
+import * as multimatch from "multimatch";
 
 /**
  * Support for implementations of Project interface

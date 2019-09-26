@@ -1,8 +1,8 @@
+import { IOptions } from "minimatch";
 import { Stream } from "stream";
 import { RepoRef } from "../operations/common/RepoId";
 import { File } from "./File";
 import { HasCache } from "./HasCache";
-import { IOptions } from "minimatch";
 
 /**
  * Project operations common to all projects
