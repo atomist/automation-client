@@ -9,6 +9,51 @@ import { toPromise } from "../../../lib/project/util/projectUtils";
 
 describe("InMemoryProject", () => {
 
+    describe("getFiles", () => {
+
+        it("all", async () => {
+            const p = InMemoryProject.of({
+                path: "evil.js",
+                content: "const awsLeak = 'AKIAIMW6ASF43DFX57X9'",
+            });
+            const allFiles = await p.getFiles();
+            assert.deepStrictEqual(allFiles.map(f => f.path), ["evil.js"]);
+        });
+
+        it("one", async () => {
+            const p = InMemoryProject.of({
+                path: "evil.js",
+                content: "const a = b;",
+            });
+            const allFiles = await p.getFiles("evil.js");
+            assert.deepStrictEqual(allFiles.map(f => f.path), ["evil.js"]);
+        });
+
+        it("none", async () => {
+            const p = InMemoryProject.of({
+                path: "evil.js",
+                content: "const a = b;",
+            });
+            const allFiles = await p.getFiles("xevil.js");
+            assert.deepStrictEqual(allFiles.map(f => f.path), []);
+        });
+
+        it("complex glob", async () => {
+            const p = InMemoryProject.of({
+                path: ".github/workflows/mine.yml",
+                content: "x",
+            }, {
+                path: ".github/workflows/yours.yaml",
+                content: "x",
+            });
+            const allFiles = await p.getFiles(".github/workflows/*.y{,a}ml");
+            assert.deepStrictEqual(allFiles.map(f => f.path), [
+                ".github/workflows/mine.yml",
+                ".github/workflows/yours.yaml"]);
+        });
+
+    });
+
     describe("binaryness", () => {
 
         it("inline file should be nonbinary by default", async () => {
