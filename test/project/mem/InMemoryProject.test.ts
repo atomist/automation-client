@@ -8,6 +8,7 @@ import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import { toPromise } from "../../../lib/project/util/projectUtils";
 
 import * as minimatch from "minimatch";
+import multimatch = require("multimatch");
 
 describe("InMemoryProject", () => {
 
@@ -66,6 +67,8 @@ describe("InMemoryProject", () => {
             const allFiles = await p.getFiles(".github/workflows/*.y{,a}ml");
             // Why does this work?
             assert(minimatch.match([".github/workflows/yours.yaml"], ".github/workflows/*.y{,a}ml"));
+            assert(multimatch([".github/workflows/yours.yaml"], ".github/workflows/*.y{,a}ml"));
+
             assert.deepStrictEqual(allFiles.map(f => f.path), [
                 ".github/workflows/mine.yml",
                 ".github/workflows/yours.yaml"]);
