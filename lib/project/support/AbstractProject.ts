@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import { AbstractScriptedFlushable } from "../../internal/common/AbstractScriptedFlushable";
 import { RepoRef } from "../../operations/common/RepoId";
 import { logger } from "../../util/logger";
@@ -15,7 +14,7 @@ import {
     Project,
 } from "../Project";
 
-import * as minimatch from "minimatch";
+import * as multimatch from "multimatch";
 
 /**
  * Support for implementations of Project interface
@@ -145,16 +144,14 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
 
 }
 
+/**
+ * Return the files that match these glob patterns, including negative globs
+ */
 export function globMatchesWithin(files: File[], globPatterns?: string[]): File[] {
     if (!globPatterns || globPatterns.length === 0) {
         return files;
     }
-    const positiveMatches = _.flatten(
-        files.filter(f =>
-            globPatterns.some(gp => !gp.startsWith("!") && minimatch.match([f.path], gp).includes(f.path)),
-        ));
-    const matchingFiles = _.reject(positiveMatches,
-        f => globPatterns.some(gp => gp.startsWith("!") && minimatch.match([f.path], gp.substring(1)).includes(f.path)),
-    );
-    return matchingFiles;
+    const paths = files.map(f => f.path);
+    const matchingPaths = multimatch(paths, globPatterns);
+    return files.filter(f => matchingPaths.includes(f.path));
 }

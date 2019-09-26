@@ -7,6 +7,8 @@ import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import { toPromise } from "../../../lib/project/util/projectUtils";
 
+import * as minimatch from "minimatch";
+
 describe("InMemoryProject", () => {
 
     describe("getFiles", () => {
@@ -38,7 +40,22 @@ describe("InMemoryProject", () => {
             assert.deepStrictEqual(allFiles.map(f => f.path), []);
         });
 
-        it("complex glob", async () => {
+        it("simple glob", async () => {
+            const p = InMemoryProject.of({
+                path: "github/workflows/mine.yml",
+                content: "x",
+            }, {
+                path: "github/workflows/yours.yaml",
+                content: "x",
+            });
+            const allFiles = await p.getFiles("github/workflows/*.y{,a}ml");
+            assert.deepStrictEqual(allFiles.map(f => f.path), [
+                "github/workflows/mine.yml",
+                "github/workflows/yours.yaml"]);
+        });
+
+        // TODO does this does NOT fail because of the git exclusion
+        it("dot glob", async () => {
             const p = InMemoryProject.of({
                 path: ".github/workflows/mine.yml",
                 content: "x",
@@ -47,9 +64,26 @@ describe("InMemoryProject", () => {
                 content: "x",
             });
             const allFiles = await p.getFiles(".github/workflows/*.y{,a}ml");
+            // Why does this work?
+            assert(minimatch.match([".github/workflows/yours.yaml"], ".github/workflows/*.y{,a}ml"));
             assert.deepStrictEqual(allFiles.map(f => f.path), [
                 ".github/workflows/mine.yml",
                 ".github/workflows/yours.yaml"]);
+        });
+
+        it("respects negative globs", async () => {
+            const p = InMemoryProject.of(
+                { path: "config/thing.js", content: "{ node: true }" },
+                { path: "config/other.ts", content: "{ node: true }" },
+                { path: "config/exclude.ts", content: "{ node: true }" },
+            );
+            const paths = ["config/**", "!config/exclude.*"];
+            assert(minimatch.match(["config/this.js"], "config/**"));
+            assert(minimatch.match(["config/other.ts"], "config/**"));
+            assert(minimatch.match(["config/exclude.ts"], "!config/exclude.*"));
+
+            const files = await p.getFiles(paths);
+            assert.strictEqual(files.length, 2);
         });
 
     });
@@ -299,6 +333,7 @@ describe("InMemoryProject", () => {
                         count++;
                     },
                 ).on("end", () => {
+                // Exclude node modules but not git as it's not at the root
                 assert.equal(count, 3);
                 done();
             });
