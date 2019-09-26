@@ -74,6 +74,26 @@ describe("InMemoryProject", () => {
                 ".github/workflows/yours.yaml"]);
         });
 
+        it("nested dot glob", async () => {
+            const p = InMemoryProject.of({
+                path: "test/.buckconfig",
+                content: "x",
+            });
+            const allFiles = await p.getFiles("**/.buckconfig");
+            assert.deepStrictEqual(allFiles.map(f => f.path), [
+                "test/.buckconfig"]);
+        });
+
+        it("nested dot glob x2", async () => {
+            const p = InMemoryProject.of({
+                path: "anywhere/.openshift/stuff",
+                content: "x",
+            });
+            const allFiles = await p.getFiles("**/.openshift/*");
+            assert.deepStrictEqual(allFiles.map(f => f.path), [
+                "anywhere/.openshift/stuff"]);
+        });
+
         it("respects negative globs", async () => {
             const p = InMemoryProject.of(
                 { path: "config/thing.js", content: "{ node: true }" },
@@ -337,7 +357,7 @@ describe("InMemoryProject", () => {
                     },
                 ).on("end", () => {
                 // Exclude node modules but not git as it's not at the root
-                assert.equal(count, 3);
+                assert.equal(count, 4);
                 done();
             });
         });

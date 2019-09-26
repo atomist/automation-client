@@ -15,6 +15,7 @@ import {
 } from "../Project";
 
 import * as multimatch from "multimatch";
+import { IOptions } from "minimatch";
 
 /**
  * Support for implementations of Project interface
@@ -55,7 +56,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
 
     public streamFiles(...globPatterns: string[]): FileStream {
         const globsToUse = globPatterns.length > 0 ? globPatterns.concat(DefaultExcludes) : DefaultFiles;
-        return this.streamFilesRaw(globsToUse, {});
+        return this.streamFilesRaw(globsToUse, { dot: true });
     }
 
     public abstract streamFilesRaw(globPatterns: string[], opts: {}): FileStream;
@@ -147,11 +148,11 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
 /**
  * Return the files that match these glob patterns, including negative globs
  */
-export function globMatchesWithin(files: File[], globPatterns?: string[]): File[] {
+export function globMatchesWithin(files: File[], globPatterns?: string[], opts?: IOptions): File[] {
     if (!globPatterns || globPatterns.length === 0) {
         return files;
     }
     const paths = files.map(f => f.path);
-    const matchingPaths = multimatch(paths, globPatterns);
+    const matchingPaths = multimatch(paths, globPatterns, opts);
     return files.filter(f => matchingPaths.includes(f.path));
 }

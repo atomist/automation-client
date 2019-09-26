@@ -16,6 +16,7 @@ import {
 } from "../support/AbstractProject";
 import { copyFiles } from "../support/projectUtils";
 import { InMemoryFile } from "./InMemoryFile";
+import { IOptions } from "minimatch";
 
 /**
  * In memory Project implementation. Primarily intended
@@ -154,8 +155,8 @@ export class InMemoryProject extends AbstractProject {
         return this.memFiles.some(f => f.path === path);
     }
 
-    public streamFilesRaw(globPatterns: string[], opts: {}): FileStream {
-        const matchingFiles = globMatchesWithin(this.memFiles, globPatterns);
+    public streamFilesRaw(globPatterns: string[], opts: IOptions): FileStream {
+        const matchingFiles = globMatchesWithin(this.memFiles, globPatterns, opts);
         return spigot.array({ objectMode: true },
             matchingFiles,
         );

@@ -2,6 +2,7 @@ import { Stream } from "stream";
 import { RepoRef } from "../operations/common/RepoId";
 import { File } from "./File";
 import { HasCache } from "./HasCache";
+import { IOptions } from "minimatch";
 
 /**
  * Project operations common to all projects
@@ -115,7 +116,7 @@ export interface ProjectAsync extends ProjectCore {
      * @param opts for glob handling
      * @return {FileStream}
      */
-    streamFilesRaw(globPatterns: string[], opts: {}): FileStream;
+    streamFilesRaw(globPatterns: string[], opts: IOptions): FileStream;
 
     /**
      * The total number of files in this project or directory

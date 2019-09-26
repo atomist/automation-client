@@ -1,10 +1,7 @@
 /**
- * Glob pattern to match all files in a project. Standard glob syntax
- * @type {string}
+ * Glob pattern to match all files in a project. Standard glob syntax.
  */
 export const AllFiles = "**/**";
-
-export const AllDotFiles = ".**/**";
 
 /**
  * Negative glob to exclude .git directory
@@ -32,4 +29,4 @@ export const DefaultExcludes = [ExcludeGit, ExcludeNodeModules, ExcludeTarget];
  * Include all files except with default exclusions (git and node modules)
  * @type {[string , string , string]}
  */
-export const DefaultFiles = [AllFiles, AllDotFiles].concat(DefaultExcludes);
+export const DefaultFiles = [AllFiles].concat(DefaultExcludes);
