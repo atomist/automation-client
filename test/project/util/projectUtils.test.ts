@@ -276,4 +276,16 @@ describe("projectUtils", () => {
             .then(done, done);
     });
 
+    it("gathers correct count", async () => {
+        const p = tempProject();
+        p.addFileSync("Thing", "A");
+        p.addFileSync("config/Thing", "B");
+        p.addFileSync("pom.xml", "A");
+        p.addFileSync("config/pom.xml", "B");
+        const files = await gatherFromFiles(p,
+            "**/pom.xml",
+            async file => file);
+        assert.strictEqual(files.length, 2);
+    });
+
 });

@@ -16,6 +16,7 @@ import {
 
 import { IOptions } from "minimatch";
 import * as multimatch from "multimatch";
+import { toPromise } from "../util/projectUtils";
 
 /**
  * Support for implementations of Project interface
@@ -25,7 +26,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
     /**
      * Cached paths
      */
-    private cachedFiles: File[];
+    private cachedFiles: Promise<File[]> | undefined;
 
     public readonly cache: Record<string, object> = {};
 
@@ -70,16 +71,11 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
         const globPatternsToUse = globPatterns ?
             (typeof globPatterns === "string" ? [globPatterns] : globPatterns) :
             [];
+        // Deliberately checking truthiness of promise
         if (!this.cachedFiles) {
-            this.cachedFiles = [];
-            await new Promise((resolve, reject) => {
-                this.streamFiles()
-                    .on("data", f => this.cachedFiles.push(f))
-                    .on("error", reject)
-                    .on("end", _ => resolve(this.cachedFiles));
-            });
+            this.cachedFiles = toPromise(this.streamFiles());
         }
-        return globMatchesWithin(this.cachedFiles, globPatternsToUse);
+        return globMatchesWithin(await this.cachedFiles, globPatternsToUse);
     }
 
     public async totalFileCount(): Promise<number> {
