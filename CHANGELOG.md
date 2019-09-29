@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.7.0...HEAD)
 
+### Added
+
+-   Introduce caching to Project API. [#606](https://github.com/atomist/automation-client/issues/606)
+
 ### Changed
 
 -   Make output less verbose during development. [#603](https://github.com/atomist/automation-client/issues/603)
+
+### Deprecated
+
+-   Introduce caching to Project API. [#606](https://github.com/atomist/automation-client/issues/606)
 
 ## [1.7.0](https://github.com/atomist/automation-client-ts/compare/1.6.2...1.7.0) - 2019-09-09
 
