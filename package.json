@@ -108,6 +108,7 @@
     "lru_map": "^0.3.3",
     "metrics": "^0.1.21",
     "minimatch": "^3.0.4",
+    "multimatch": "^4.0.0",
     "murmurhash3js": "^3.0.1",
     "node-cache": "^4.2.0",
     "node-statsd": "^0.1.1",

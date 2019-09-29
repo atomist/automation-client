@@ -14,10 +14,21 @@ import {
     Project,
 } from "../Project";
 
+import { IOptions } from "minimatch";
+import * as multimatch from "multimatch";
+import { toPromise } from "../util/projectUtils";
+
 /**
  * Support for implementations of Project interface
  */
 export abstract class AbstractProject extends AbstractScriptedFlushable<Project> implements Project {
+
+    /**
+     * Cached paths
+     */
+    private cachedFiles: Promise<File[]> | undefined;
+
+    public readonly cache: Record<string, object> = {};
 
     get name(): string {
         return !!this.id ? this.id.repo : undefined;
@@ -46,19 +57,30 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
 
     public streamFiles(...globPatterns: string[]): FileStream {
         const globsToUse = globPatterns.length > 0 ? globPatterns.concat(DefaultExcludes) : DefaultFiles;
-        return this.streamFilesRaw(globsToUse, {});
+        return this.streamFilesRaw(globsToUse, { dot: true });
     }
 
     public abstract streamFilesRaw(globPatterns: string[], opts: {}): FileStream;
 
-    public totalFileCount(): Promise<number> {
-        return new Promise((resolve, reject) => {
-            let count = 0;
-            this.streamFiles()
-                .on("data", f => count++)
-                .on("error", reject)
-                .on("end", _ => resolve(count));
-        });
+    /**
+     * Get files matching these patterns
+     * @param {string[]} globPatterns
+     * @return {Promise<File[]>}
+     */
+    public async getFiles(globPatterns: string | string[] = []): Promise<File[]> {
+        const globPatternsToUse = globPatterns ?
+            (typeof globPatterns === "string" ? [globPatterns] : globPatterns) :
+            [];
+        // Deliberately checking truthiness of promise
+        if (!this.cachedFiles) {
+            this.cachedFiles = toPromise(this.streamFiles());
+        }
+        return globMatchesWithin(await this.cachedFiles, globPatternsToUse);
+    }
+
+    public async totalFileCount(): Promise<number> {
+        const files = await this.getFiles();
+        return files.length;
     }
 
     public trackFile(f: FileNonBlocking): this {
@@ -72,7 +94,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
         return this.findFile(oldPath)
             .then(f =>
                 f.setPath(newPath).then(() => this),
-        )
+            )
             // Not an error if no such file
             .catch(err => this);
     }
@@ -113,4 +135,20 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
 
     public abstract fileExistsSync(path: string): boolean;
 
+    protected invalidateCache(): void {
+        this.cachedFiles = undefined;
+    }
+
+}
+
+/**
+ * Return the files that match these glob patterns, including negative globs
+ */
+export function globMatchesWithin(files: File[], globPatterns?: string[], opts?: IOptions): File[] {
+    if (!globPatterns || globPatterns.length === 0) {
+        return files;
+    }
+    const paths = files.map(f => f.path);
+    const matchingPaths = multimatch(paths, globPatterns, opts);
+    return files.filter(f => matchingPaths.includes(f.path));
 }

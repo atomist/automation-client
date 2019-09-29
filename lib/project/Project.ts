@@ -1,11 +1,13 @@
+import { IOptions } from "minimatch";
 import { Stream } from "stream";
 import { RepoRef } from "../operations/common/RepoId";
 import { File } from "./File";
+import { HasCache } from "./HasCache";
 
 /**
  * Project operations common to all projects
  */
-export interface ProjectCore {
+export interface ProjectCore extends HasCache {
 
     readonly name: string;
 
@@ -86,11 +88,20 @@ export interface ProjectSync extends ProjectCore {
 export interface ProjectAsync extends ProjectCore {
 
     /**
+     * Get files matching these patterns glob patterns.
+     * @param {string[]} globPatterns. If none is supplied, return all files.
+     * @return {Promise<File[]>}
+     */
+    getFiles(globPatterns?: string | string[]): Promise<File[]>;
+
+    /**
      * Return a node stream of the files in the project meeting
      * the given path criteria. Uses default exclusions in the glob path.
      * @param globPatterns glob patterns. If none is provided,
      * include all files. If at least one positive pattern is provided,
      * one or more negative glob patterns can be provided.
+     *
+     * Prefer getFiles()
      *
      * @param {string[]} globPatterns glob patterns per minimatch
      * @return {FileStream}
@@ -105,7 +116,7 @@ export interface ProjectAsync extends ProjectCore {
      * @param opts for glob handling
      * @return {FileStream}
      */
-    streamFilesRaw(globPatterns: string[], opts: {}): FileStream;
+    streamFilesRaw(globPatterns: string[], opts: IOptions): FileStream;
 
     /**
      * The total number of files in this project or directory

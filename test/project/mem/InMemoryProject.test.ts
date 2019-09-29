@@ -7,7 +7,109 @@ import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import { toPromise } from "../../../lib/project/util/projectUtils";
 
+import * as minimatch from "minimatch";
+import multimatch = require("multimatch");
+
 describe("InMemoryProject", () => {
+
+    describe("getFiles", () => {
+
+        it("all", async () => {
+            const p = InMemoryProject.of({
+                path: "evil.js",
+                content: "const awsLeak = 'AKIAIMW6ASF43DFX57X9'",
+            });
+            const allFiles = await p.getFiles();
+            assert.deepStrictEqual(allFiles.map(f => f.path), ["evil.js"]);
+        });
+
+        it("one", async () => {
+            const p = InMemoryProject.of({
+                path: "evil.js",
+                content: "const a = b;",
+            });
+            const allFiles = await p.getFiles("evil.js");
+            assert.deepStrictEqual(allFiles.map(f => f.path), ["evil.js"]);
+        });
+
+        it("none", async () => {
+            const p = InMemoryProject.of({
+                path: "evil.js",
+                content: "const a = b;",
+            });
+            const allFiles = await p.getFiles("xevil.js");
+            assert.deepStrictEqual(allFiles.map(f => f.path), []);
+        });
+
+        it("simple glob", async () => {
+            const p = InMemoryProject.of({
+                path: "github/workflows/mine.yml",
+                content: "x",
+            }, {
+                path: "github/workflows/yours.yaml",
+                content: "x",
+            });
+            const allFiles = await p.getFiles("github/workflows/*.y{,a}ml");
+            assert.deepStrictEqual(allFiles.map(f => f.path), [
+                "github/workflows/mine.yml",
+                "github/workflows/yours.yaml"]);
+        });
+
+        // TODO does this does NOT fail because of the git exclusion
+        it("dot glob", async () => {
+            const p = InMemoryProject.of({
+                path: ".github/workflows/mine.yml",
+                content: "x",
+            }, {
+                path: ".github/workflows/yours.yaml",
+                content: "x",
+            });
+            const allFiles = await p.getFiles(".github/workflows/*.y{,a}ml");
+            // Why does this work?
+            assert(minimatch.match([".github/workflows/yours.yaml"], ".github/workflows/*.y{,a}ml"));
+            assert(multimatch([".github/workflows/yours.yaml"], ".github/workflows/*.y{,a}ml"));
+
+            assert.deepStrictEqual(allFiles.map(f => f.path), [
+                ".github/workflows/mine.yml",
+                ".github/workflows/yours.yaml"]);
+        });
+
+        it("nested dot glob", async () => {
+            const p = InMemoryProject.of({
+                path: "test/.buckconfig",
+                content: "x",
+            });
+            const allFiles = await p.getFiles("**/.buckconfig");
+            assert.deepStrictEqual(allFiles.map(f => f.path), [
+                "test/.buckconfig"]);
+        });
+
+        it("nested dot glob x2", async () => {
+            const p = InMemoryProject.of({
+                path: "anywhere/.openshift/stuff",
+                content: "x",
+            });
+            const allFiles = await p.getFiles("**/.openshift/*");
+            assert.deepStrictEqual(allFiles.map(f => f.path), [
+                "anywhere/.openshift/stuff"]);
+        });
+
+        it("respects negative globs", async () => {
+            const p = InMemoryProject.of(
+                { path: "config/thing.js", content: "{ node: true }" },
+                { path: "config/other.ts", content: "{ node: true }" },
+                { path: "config/exclude.ts", content: "{ node: true }" },
+            );
+            const paths = ["config/**", "!config/exclude.*"];
+            assert(minimatch.match(["config/this.js"], "config/**"));
+            assert(minimatch.match(["config/other.ts"], "config/**"));
+            assert(minimatch.match(["config/exclude.ts"], "!config/exclude.*"));
+
+            const files = await p.getFiles(paths);
+            assert.strictEqual(files.length, 2);
+        });
+
+    });
 
     describe("binaryness", () => {
 
@@ -254,7 +356,8 @@ describe("InMemoryProject", () => {
                         count++;
                     },
                 ).on("end", () => {
-                assert.equal(count, 3);
+                // Exclude node modules but not git as it's not at the root
+                assert.equal(count, 4);
                 done();
             });
         });

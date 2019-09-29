@@ -48,7 +48,6 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
      * Copy the contents of the other project to this project
      * @param {Project} other
      * @param {string} baseDir
-     * @param newName new name of the project. Defaults to name of old project
      * @param cleanup
      * @returns {LocalProject}
      */
@@ -104,17 +103,20 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
     }
 
     public addFileSync(path: string, content: string): void {
+        this.invalidateCache();
         const realName = this.toRealPath(path);
         fs.outputFileSync(realName, content);
     }
 
     public async addFile(path: string, content: string): Promise<this> {
+        this.invalidateCache();
         const realName = this.toRealPath(path);
         await fs.outputFile(realName, content);
         return this;
     }
 
     public async addDirectory(path: string): Promise<this> {
+        this.invalidateCache();
         const realName = this.toRealPath(path);
         await fs.ensureDir(realName);
         return this;
@@ -123,6 +125,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
     public async deleteDirectory(path: string): Promise<this> {
         try {
             await fs.remove(this.toRealPath(path));
+            this.invalidateCache();
         } catch (e) {
             logger.debug("Unable to delete directory '%s': %s", path, e.message);
         }
@@ -133,6 +136,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         const localPath = this.toRealPath(path);
         try {
             fs.removeSync(localPath);
+            this.invalidateCache();
         } catch (e) {
             logger.debug("Unable to delete directory '%s': %s", path, e.message);
         }
@@ -141,6 +145,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
     public deleteFileSync(path: string): void {
         try {
             fs.unlinkSync(this.toRealPath(path));
+            this.invalidateCache();
         } catch (e) {
             logger.debug("Unable to delete file '%s': %s", path, e.message);
         }
@@ -149,6 +154,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
     public async deleteFile(path: string): Promise<this> {
         try {
             await fs.unlink(this.toRealPath(path));
+            this.invalidateCache();
         } catch (e) {
             logger.debug("Unable to delete file '%s': %s", path, e.message);
         }

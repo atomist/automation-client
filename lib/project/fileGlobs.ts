@@ -1,8 +1,7 @@
 /**
- * Glob pattern to match all files in a project. Standard glob syntax
- * @type {string}
+ * Glob pattern to match all files in a project. Standard glob syntax.
  */
-export const AllFiles = "**";
+export const AllFiles = "**/**";
 
 /**
  * Negative glob to exclude .git directory

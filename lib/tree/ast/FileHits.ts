@@ -4,6 +4,7 @@ import {
     PathExpression,
     TreeNode,
 } from "@atomist/tree-path";
+import { ExecutionResult } from "@atomist/tree-path/lib/path/pathExpression";
 import { ScriptedFlushable } from "../../internal/common/Flushable";
 import { File } from "../../project/File";
 import {
@@ -36,20 +37,20 @@ export const ZapTrailingWhitespace: NodeReplacementOptions = {
  */
 export interface MatchResult extends LocatedTreeNode {
 
-    append(content: string);
+    append(content: string): void;
 
-    prepend(content: string);
+    prepend(content: string): void;
 
     /**
      * Delete the match. Same as setting $value to the empty string,
      * but can zap trailing spaces also
      * @param {NodeReplacementOptions} opts
      */
-    zap(opts: NodeReplacementOptions);
+    zap(opts: NodeReplacementOptions): void;
 
-    replace(newContent: string, opts: NodeReplacementOptions);
+    replace(newContent: string, opts: NodeReplacementOptions): void;
 
-    evaluateExpression(pex: string | PathExpression);
+    evaluateExpression(pex: string | PathExpression): ExecutionResult;
 }
 
 interface Update extends NodeReplacementOptions {
@@ -118,22 +119,26 @@ function requireOffset(m: MatchResult) {
     }
 }
 
-function makeUpdatable(matches: MatchResult[], updates: Update[]) {
+function makeUpdatable(matches: MatchResult[], updates: Update[]): void {
     matches.forEach(m => {
         const initialValue = m.$value;
         let currentValue = m.$value;
-        Object.defineProperty(m, "$value", {
-            get() {
-                return currentValue;
-            },
-            set(v2) {
-                logger.debug("Updating value from '%s' to '%s' on '%s'", currentValue, v2, m.$name);
-                // TODO allow only one
-                currentValue = v2;
-                requireOffset(m);
-                updates.push({ initialValue, currentValue, offset: m.$offset });
-            },
-        });
+        try {
+            Object.defineProperty(m, "$value", {
+                get() {
+                    return currentValue;
+                },
+                set(v2) {
+                    logger.debug("Updating value from '%s' to '%s' on '%s'", currentValue, v2, m.$name);
+                    // TODO allow only one
+                    currentValue = v2;
+                    requireOffset(m);
+                    updates.push({ initialValue, currentValue, offset: m.$offset });
+                },
+            });
+        } catch {
+            // Ok
+        }
         m.append = (content: string) => {
             requireOffset(m);
             updates.push({ initialValue: "", currentValue: content, offset: m.$offset + currentValue.length });
