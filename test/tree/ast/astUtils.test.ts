@@ -4,8 +4,10 @@ import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import {
     doWithAllMatches,
-    findMatches, gather,
-    gatherFromMatches, gatherWithLocation,
+    findMatches,
+    gather,
+    gatherFromMatches,
+    gatherWithLocation,
     literalValues,
     matchIterator,
     zapAllMatches,
