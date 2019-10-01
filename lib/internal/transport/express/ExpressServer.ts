@@ -163,8 +163,7 @@ export class ExpressServer {
                 const hostname = this.configuration.http.host || "127.0.0.1";
                 this.exp.listen(port, hostname, () => {
                     logger.debug(
-                        `Atomist automation client api running at 'http://${
-                            hostname}:${port}'`);
+                        `Atomist automation client api running at 'http://${hostname}:${port}'`);
                     return true;
                 }).on("error", err => {
                     logger.error(`Failed to start automation client api: ${err.message}`);
