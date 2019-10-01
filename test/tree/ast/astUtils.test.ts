@@ -1,11 +1,11 @@
 import { toPathExpression } from "@atomist/tree-path";
-import * as assert from "power-assert";
+import * as assert from "assert";
 import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import {
     doWithAllMatches,
     findMatches, gather,
-    gatherFromMatches,
+    gatherFromMatches, gatherWithLocation,
     literalValues,
     matchIterator,
     zapAllMatches,
@@ -83,6 +83,24 @@ describe("astUtils", () => {
                 });
             assert.equal(matches.length, 2);
             assert.deepEqual(matches, ["x".length, "xylophone".length]);
+        });
+
+        it("should save simple with location", async () => {
+            const f = new InMemoryFile("src/test.ts",
+                "const x: number = 10; const y = 13; const xylophone = 3;");
+            const p = InMemoryProject.of(f);
+            const matches = await gatherWithLocation<number>(p,
+                {
+                    parseWith: TypeScriptES6FileParser,
+                    globPatterns: "src/**/*.ts",
+                    pathExpression: "//VariableDeclaration[?check]/Identifier",
+                    mapper: m => m.$value.length,
+                    functionRegistry: { check: n => n.$value.includes("x") },
+                });
+            assert.strictEqual(matches.length, 2);
+            assert.deepStrictEqual(matches.map(m => m.value), ["x".length, "xylophone".length]);
+            assert.deepStrictEqual(matches.map(m => m.file.path), ["src/test.ts", "src/test.ts"]);
+
         });
 
         it("matchIterator: no matches due to glob mismatch", async () => {

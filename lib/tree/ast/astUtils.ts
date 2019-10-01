@@ -192,6 +192,37 @@ export async function gather<T>(p: ProjectAsync,
 }
 
 /**
+ * A match within a project, including location information
+ */
+export interface Gathered<T> {
+
+    readonly value: T;
+
+    readonly file: File;
+
+    /**
+     * Raw match result
+     */
+    readonly matchResult: MatchResult;
+}
+
+/**
+ * Like gather but keep location
+ */
+export async function gatherWithLocation<T>(p: ProjectAsync,
+                                            peqo: PathExpressionQueryOptions & { mapper: (m: MatchResult) => T }): Promise<Array<Gathered<T>>> {
+    const fileHits = await fileMatches(p, peqo);
+    const result: Array<Gathered<T>> = [];
+    for (const fileHit of fileHits) {
+        const values = fileHit.matches.map(peqo.mapper).filter(x => !!x);
+        values.forEach((value, index) =>
+            result.push({ value, file: fileHit.file, matchResult: fileHit.matches[index] }),
+        );
+    }
+    return result;
+}
+
+/**
  * Integrate path expressions with project operations to find all matches
  * and their files
  * @param p project
