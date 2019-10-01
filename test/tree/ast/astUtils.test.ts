@@ -4,7 +4,7 @@ import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import {
     doWithAllMatches,
-    findMatches,
+    findMatches, gather,
     gatherFromMatches,
     literalValues,
     matchIterator,
@@ -67,23 +67,22 @@ describe("astUtils", () => {
 
     });
 
-    describe("gatherFromMatches", () => {
+    describe("gather", () => {
 
-        it("should save simple", done => {
+        it("should save simple", async () => {
             const f = new InMemoryFile("src/test.ts",
                 "const x: number = 10; const y = 13; const xylophone = 3;");
             const p = InMemoryProject.of(f);
-            gatherFromMatches<number>(p,
-                TypeScriptES6FileParser,
-                "src/**/*.ts",
-                "//VariableDeclaration[?check]/Identifier",
-                m => m.$value.length,
-                { check: n => n.$value.includes("x") })
-                .then(matches => {
-                    assert.equal(matches.length, 2);
-                    assert.deepEqual(matches, ["x".length, "xylophone".length]);
-                    done();
-                }).catch(done);
+            const matches = await gather<number>(p,
+                {
+                    parseWith: TypeScriptES6FileParser,
+                    globPatterns: "src/**/*.ts",
+                    pathExpression: "//VariableDeclaration[?check]/Identifier",
+                    mapper: m => m.$value.length,
+                    functionRegistry: { check: n => n.$value.includes("x") },
+                });
+            assert.equal(matches.length, 2);
+            assert.deepEqual(matches, ["x".length, "xylophone".length]);
         });
 
         it("matchIterator: no matches due to glob mismatch", async () => {
@@ -365,7 +364,7 @@ describe("astUtils", () => {
             const pex = toPathExpression(`//normalClassDeclaration
                                 [//annotation[@value='@SpringBootApplication']]
                                 /identifier[@value='foo'] | //foo`);
-            assert.deepEqual(literalValues(pex), [ "@SpringBootApplication", "foo"]);
+            assert.deepEqual(literalValues(pex), ["@SpringBootApplication", "foo"]);
         });
 
     });
