@@ -18,7 +18,7 @@ import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import { toPromise } from "../../../lib/project/util/projectUtils";
 import { tempProject } from "../utils";
 
-/* tslint:disable:file-max-line-count */
+/* tslint:disable:max-file-line-count */
 
 describe("NodeFsLocalProject", () => {
 
