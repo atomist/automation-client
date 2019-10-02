@@ -3,6 +3,7 @@ import * as path from "path";
 import * as assert from "power-assert";
 
 import { getCounter } from "../../../lib/internal/util/metric";
+import { guid } from "../../../lib/internal/util/string";
 import { GitHubRepoRef } from "../../../lib/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../lib/project/git/GitCommandGitProject";
 import { GitProject } from "../../../lib/project/git/GitProject";
@@ -85,22 +86,20 @@ describe("CachedGitClone", () => {
             }).then(done, done);
         }).timeout(20000);
 
-        it("uses a new token the second time", done => {
+        it("uses a new token the second time", async () => {
             const repoName = "this-repository-exists-to-test-cached-clones-6";
-            getAClone({ repoName }).then(clone1 => {
-                const baseDir1 = clone1.baseDir;
-                return clone1.release()
-                    .then(() => getAClone({ repoName, token: "NOT-THE-SAME-YO" }))
-                    .then(clone2 =>
-                        clone2.createBranch("banana")
-                            .then(() => clone2.push())
-                            .then(() => assert.fail("that shouldn't work with an invalid token"),
-                                error => {
-                                    // I did expect that to fail
-                                    assert(0 <= error.message.indexOf("Authentication failed for"));
-                                })
-                            .then(() => clone2.release()));
-            }).then(done, done);
+            const clone1 = await getAClone({ repoName });
+            const baseDir1 = clone1.baseDir;
+            await clone1.release();
+            const clone2 = await getAClone({ repoName, token: "NOT-THE-SAME-YO" });
+            await clone2.createBranch("new-token-test-branch-" + guid());
+            try {
+                await clone2.push();
+                assert.fail("that shouldn't work with an invalid token");
+            } catch (e) {
+                assert(e.message.includes("Authentication failed for"));
+            }
+            await clone2.release();
         }).timeout(20000);
 
         it("should be clean when you get the directory again", done => {
