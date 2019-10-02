@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Make output less verbose during development. [#603](https://github.com/atomist/automation-client/issues/603)
+-   Do not create typings dir if not creating types. [#609](https://github.com/atomist/automation-client/issues/609)
 
 ### Deprecated
 
