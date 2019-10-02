@@ -67,8 +67,6 @@ async function main(): Promise<void> {
         });
 
         const gqlGenOutput = path.join(lib, "typings", "types.ts");
-        await fs.ensureDir(path.dirname(gqlGenOutput));
-
         const graphQlGlob = `${lib}/graphql/!(ingester)/*.graphql`;
 
         const config: Types.GenerateOptions = {
@@ -110,6 +108,8 @@ async function main(): Promise<void> {
                 });
             }
             config.documents = documents;
+
+            await fs.ensureDir(path.dirname(gqlGenOutput));
 
             // Make all properties optional to retain backwards compatibility
             const typesContent = (await codegen(config)).replace(/ ([a-zA-Z_\-0-9]+): Maybe/g, ` $1?: Maybe`);
