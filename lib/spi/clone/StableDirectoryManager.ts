@@ -1,6 +1,5 @@
 import * as fs from "fs-extra";
 import * as path from "path";
-
 import { registerShutdownHook } from "../../internal/util/shutdown";
 import { logger } from "../../util/logger";
 import {
@@ -50,7 +49,7 @@ export class StableDirectoryManager implements DirectoryManager {
 
         if (this.opts.cleanOnExit === true) {
             registerShutdownHook(() => {
-                logger.debug("Cleaning up temporary directories under '%s'", this.opts.baseDir);
+                logger.debug("Cleaning up directories under '%s'", this.opts.baseDir);
                 return fs.remove(this.opts.baseDir).then(() => 0);
             }, 3000, `directory cleanup: ${this.opts.baseDir}`);
         }
