@@ -12,6 +12,8 @@ import { Source } from "../../internal/transport/RequestProcessor";
 import { ParameterType } from "../../SmartParameters";
 import { lookupChatTeam } from "./MessageClientSupport";
 
+/* tslint:disable:max-file-line-count */
+
 /**
  * Implemented by classes that can send bot messages, whether to
  * channels or individuals, including actions and updates.
@@ -103,7 +105,7 @@ export class SourceDestination implements Destination {
     public userAgent: string = SourceDestination.SOURCE_USER_AGENT;
 
     constructor(public readonly source: Source,
-                public readonly system: "slack" | "web") {}
+                public readonly system: "slack" | "web") { }
 }
 
 export function addressWeb(): WebDestination {
@@ -306,13 +308,12 @@ export interface MessageOptions extends AnyOptions {
 }
 
 /** Valid MessageClient types. */
-export class MessageMimeTypes {
-
-    public static SLACK_JSON = "application/x-atomist-slack+json";
-    public static SLACK_FILE_JSON = "application/x-atomist-slack-file+json";
-    public static PLAIN_TEXT = "text/plain";
-    public static APPLICATION_JSON = "application/json";
-}
+export const MessageMimeTypes = {
+    SLACK_JSON: "application/x-atomist-slack+json",
+    SLACK_FILE_JSON: "application/x-atomist-slack-file+json",
+    PLAIN_TEXT: "text/plain",
+    APPLICATION_JSON: "application/json",
+};
 
 export interface CommandReferencingAction extends Action {
 

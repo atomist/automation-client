@@ -22,6 +22,7 @@ export async function executeAll<T>(promises: Array<() => Promise<T>>,
             index++;
             return promise;
         } else {
+            // tslint:disable-next-line:no-null-keyword
             return null;
         }
     };

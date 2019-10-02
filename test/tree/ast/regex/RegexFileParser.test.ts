@@ -3,7 +3,7 @@ import * as assert from "power-assert";
 import { AllFiles } from "../../../../lib/project/fileGlobs";
 import { InMemoryFile } from "../../../../lib/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../../lib/project/mem/InMemoryProject";
-import { findMatches } from "../../../../lib/tree/ast/astUtils";
+import { matches } from "../../../../lib/tree/ast/astUtils";
 import { RegexFileParser } from "../../../../lib/tree/ast/regex/RegexFileParser";
 
 interface Person {
@@ -53,11 +53,11 @@ describe("RegexFileParser", () => {
         const content = "Tom:16 Mary:25";
         const p = InMemoryProject.of(
             { path: "Thing", content });
-        const matches = await findMatches<Person>(p, personParser, AllFiles, "/people/person/name");
-        assert(matches.length === 2);
-        assert(matches[0].$value === "Tom");
-        assert(matches[1].$value === "Mary");
-        matches.forEach(m => {
+        const ms = await matches<Person>(p, { parseWith: personParser, globPatterns: AllFiles, pathExpression: "/people/person/name" });
+        assert(ms.length === 2);
+        assert(ms[0].$value === "Tom");
+        assert(ms[1].$value === "Mary");
+        ms.forEach(m => {
             assert(!!m.sourceLocation);
             assert(m.sourceLocation.path === "Thing");
             assert(m.sourceLocation.offset === m.$offset);
@@ -71,19 +71,19 @@ describe("RegexFileParser", () => {
         const content = "Tom:16 Mary:25";
         const p = InMemoryProject.of(
             { path: "Thing", content });
-        const matches = await findMatches<Person>(p, personParser, AllFiles, "/people/person");
-        assert(matches.length === 2);
-        assert(matches[0].$value === "Tom:16");
-        const tom = matches[0];
+        const ms = await matches<Person>(p, { parseWith: personParser, globPatterns: AllFiles, pathExpression: "/people/person" });
+        assert(ms.length === 2);
+        assert(ms[0].$value === "Tom:16");
+        const tom = ms[0];
         assert.strictEqual("Tom", tom.name);
         assert.strictEqual(tom.$children[0].$offset, 0);
         assert.strictEqual(tom.$children[1].$offset, 4);
-        const mary = matches[1];
+        const mary = ms[1];
         assert.strictEqual("Mary", mary.name);
         assert.strictEqual(mary.$children[0].$offset, 7);
         assert.strictEqual(mary.$children[1].$offset, 12);
-        assert(matches[1].$value === "Mary:25");
-        matches.forEach(m => {
+        assert(ms[1].$value === "Mary:25");
+        ms.forEach(m => {
             assert(!!m.sourceLocation);
             assert(m.sourceLocation.path === "Thing");
             assert(m.sourceLocation.offset === m.$offset);

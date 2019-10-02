@@ -111,7 +111,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         }
     }
 
-    public commandIncoming(payload: CommandIncoming) {
+    public commandIncoming(payload: CommandIncoming): void {
         const tags = [
             `atomist_operation_type:command`,
         ];
@@ -138,7 +138,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         return Promise.resolve();
     }
 
-    public eventIncoming(payload: EventIncoming) {
+    public eventIncoming(payload: EventIncoming): void {
         const tags = [
             `atomist_operation_type:event`,
         ];

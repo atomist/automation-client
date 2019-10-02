@@ -29,7 +29,7 @@ describe("StatsdAutomationEventListener", () => {
             config.statsd.enabled = true;
             config.statsd.client = {
                 factory: {
-                    create(clientOptions: StatsDClientOptions) {
+                    create(clientOptions: StatsDClientOptions): HotShotsLib.StatsD {
                         assert.deepEqual(clientOptions, expectedStatsdClientOptions);
 
                         return new HotShotsLib.StatsD(clientOptions);
@@ -73,7 +73,7 @@ describe("StatsdAutomationEventListener", () => {
                     tags?: StatsDClientTags,
                     callback?: StatsDClientCallback,
                 ): void {
-                    this.statsd.increment(stat as string, value, tags as {[key: string]: string});
+                    this.statsd.increment(stat as string, value, tags as { [key: string]: string });
                 }
                 public timing(
                     stat: StatsDClientStat,
@@ -82,7 +82,7 @@ describe("StatsdAutomationEventListener", () => {
                     tags?: StatsDClientTags,
                     callback?: StatsDClientCallback,
                 ): void {
-                    this.statsd.timing(stat as string, value, tags as {[key: string]: string});
+                    this.statsd.timing(stat as string, value, tags as { [key: string]: string });
                 }
                 public gauge(
                     stat: StatsDClientStat,
@@ -91,7 +91,7 @@ describe("StatsdAutomationEventListener", () => {
                     tags?: StatsDClientTags,
                     callback?: StatsDClientCallback,
                 ): void {
-                    this.statsd.gauge(stat as string, value, tags as {[key: string]: string});
+                    this.statsd.gauge(stat as string, value, tags as { [key: string]: string });
                 }
                 public event(
                     stat: StatsDClientStat,
@@ -110,7 +110,7 @@ describe("StatsdAutomationEventListener", () => {
             config.statsd.enabled = true;
             config.statsd.client = {
                 factory: {
-                    create(clientOptions: StatsDClientOptions) {
+                    create(clientOptions: StatsDClientOptions): StatsdclientStatsD {
                         assert.deepEqual(clientOptions, expectedStatsdClientOptions);
                         return new StatsdclientStatsD(clientOptions);
                     },

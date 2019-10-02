@@ -275,7 +275,7 @@ export async function* fileHitIterator(p: Project,
         throw new Error(`Cannot find parser for path expression [${opts.pathExpression}]: Using ${opts.parseWith}`);
     }
     const valuesToCheckFor = literalValues(parsed);
-    for await (const file of await fileIterator(p, opts.globPatterns, opts.fileFilter)) {
+    for await (const file of fileIterator(p, opts.globPatterns, opts.fileFilter)) {
         const fileHit = await parseFile(parser, parsed, opts.functionRegistry, p, file, valuesToCheckFor,
             opts.testWith,
             opts.cacheAst !== false);
@@ -380,7 +380,7 @@ export function findValues(p: ProjectAsync,
                            globPatterns: GlobOptions,
                            pathExpression: string | PathExpression,
                            functionRegistry?: FunctionRegistry): Promise<string[]> {
-    return findFileMatches(p, parserOrRegistry, globPatterns, pathExpression, functionRegistry)
+    return fileMatches(p, { parseWith: parserOrRegistry, globPatterns, pathExpression, functionRegistry })
         .then(fileHits => _.flatten(fileHits.map(f => f.matches))
             .map(m => m.$value));
 }
@@ -419,7 +419,7 @@ export async function doWithAllMatches<P extends ProjectAsync = ProjectAsync>(p:
                                                                               globPatterns: GlobOptions,
                                                                               pathExpression: string | PathExpression,
                                                                               action: (m: MatchResult) => void): Promise<P> {
-    const fileHits = await findFileMatches(p, parserOrRegistry, globPatterns, pathExpression);
+    const fileHits = await fileMatches(p, { parseWith: parserOrRegistry, globPatterns, pathExpression });
     fileHits.forEach(fh => applyActionToMatches(fh, action));
     return (p as any).flush();
 }

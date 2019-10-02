@@ -11,7 +11,7 @@ import * as assert from "power-assert";
 import { InMemoryFile } from "../../../../lib/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../../lib/project/mem/InMemoryProject";
 import { Project } from "../../../../lib/project/Project";
-import { findMatches } from "../../../../lib/tree/ast/astUtils";
+import { matches } from "../../../../lib/tree/ast/astUtils";
 import { MatchResult } from "../../../../lib/tree/ast/FileHits";
 import { FileParser } from "../../../../lib/tree/ast/FileParser";
 import {
@@ -113,55 +113,49 @@ describe("TypeScriptFileParser", () => {
             }).catch(done);
     });
 
-    it("should parse project and use a path expression to find a value", done => {
-        const p = InMemoryProject.of({path: "script.ts", content: "const x = 1;"});
-        findMatches(p, TypeScriptES6FileParser,
-            "**/*.ts",
-            "//VariableDeclaration/Identifier")
-            .then(matchResults => {
-                // console.log(stringify(root, null, 2));
-                assert.equal(matchResults.length, 1);
-                assert(matchResults[0].$value === "x");
-                done();
-            }).catch(done);
+    it("should parse project and use a path expression to find a value", async () => {
+        const p = InMemoryProject.of({ path: "script.ts", content: "const x = 1;" });
+        const matchResults = await matches(p, {
+            parseWith: TypeScriptES6FileParser,
+            globPatterns: "**/*.ts",
+            pathExpression: "//VariableDeclaration/Identifier",
+        });
+        // console.log(stringify(root, null, 2));
+        assert.equal(matchResults.length, 1);
+        assert(matchResults[0].$value === "x");
     });
 
-    it("should parse project and use a path expression to find and update a value", done => {
-        const p = InMemoryProject.of({path: "script.ts", content: "const x = 1;"});
-        findMatches(p, TypeScriptES6FileParser,
-            "**/*.ts",
-            "//VariableDeclaration/Identifier")
-            .then(matchResults => {
-                // console.log(stringify(root, null, 2));
-                assert(matchResults.length === 1);
-                assert(matchResults[0].$value === "x");
-                matchResults[0].$value = "y";
-                p.flush().then(_ => {
-                    const f = p.findFileSync("script.ts");
-                    assert(f.getContentSync() === "const y = 1;");
-                    done();
-                });
-            }).catch(done);
+    it("should parse project and use a path expression to find and update a value", async () => {
+        const p = InMemoryProject.of({ path: "script.ts", content: "const x = 1;" });
+        const matchResults = await matches(p, {
+            parseWith: TypeScriptES6FileParser,
+            globPatterns: "**/*.ts",
+            pathExpression: "//VariableDeclaration/Identifier",
+        });
+        // console.log(stringify(root, null, 2));
+        assert(matchResults.length === 1);
+        assert(matchResults[0].$value === "x");
+        matchResults[0].$value = "y";
+        await p.flush();
+        const f = p.findFileSync("script.ts");
+        assert(f.getContentSync() === "const y = 1;");
     });
 
-    it("should parse project and use a path expression to find and update a value in an inner search", done => {
-        const p = InMemoryProject.of({path: "script.ts", content: "const x = 1;"});
-        findMatches(p, TypeScriptES6FileParser,
-            "**/*.ts",
-            "//VariableDeclaration")
-            .then(outer => {
-                const matchResults = outer[0].evaluateExpression("//Identifier") as TreeNode[];
-
-                // console.log(stringify(root, null, 2));
-                assert(matchResults.length === 1);
-                assert(matchResults[0].$value === "x");
-                matchResults[0].$value = "y";
-                p.flush().then(_ => {
-                    const f = p.findFileSync("script.ts");
-                    assert(f.getContentSync() === "const y = 1;");
-                    done();
-                });
-            }).catch(done);
+    it("should parse project and use a path expression to find and update a value in an inner search", async () => {
+        const p = InMemoryProject.of({ path: "script.ts", content: "const x = 1;" });
+        const outer = await matches(p, {
+            parseWith: TypeScriptES6FileParser,
+            globPatterns: "**/*.ts",
+            pathExpression: "//VariableDeclaration",
+        });
+        const matchResults = outer[0].evaluateExpression("//Identifier") as TreeNode[];
+        // console.log(stringify(root, null, 2));
+        assert(matchResults.length === 1);
+        assert(matchResults[0].$value === "x");
+        matchResults[0].$value = "y";
+        await p.flush();
+        const f = p.findFileSync("script.ts");
+        assert(f.getContentSync() === "const y = 1;");
     });
 
     it("shas functions", async () => {
@@ -223,13 +217,13 @@ async function getFunctionSignatures(p: Project,
         ...JavaScriptFunctionSignatureRequest,
         ...opts,
     };
-    const matches = await findMatches(p,
-        optsToUse.fileParser,
-        optsToUse.globPattern,
-        optsToUse.pathExpression,
-    );
+    const ms = await matches(p, {
+        parseWith: optsToUse.fileParser,
+        globPatterns: optsToUse.globPattern,
+        pathExpression: optsToUse.pathExpression,
+    });
     const helper = new CFamilyLangHelper();
-    return matches.map(m => {
+    return ms.map(m => {
         const identifier = optsToUse.extractIdentifier(m);
         const body = m.$value;
         return {

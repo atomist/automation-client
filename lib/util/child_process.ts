@@ -182,6 +182,7 @@ export async function spawnPromise(cmd: string, args: string[] = [], opts: Spawn
             timer = clearTimer(timer);
             logger.debug(`Child process exit with code ${code} and signal ${signal}: ${cmdString}`);
         });
+        /* tslint:disable:no-null-keyword */
         childProcess.on("close", (code, signal) => {
             timer = clearTimer(timer);
             logger.debug(`Child process close with code ${code} and signal ${signal}: ${cmdString}`);
@@ -211,6 +212,7 @@ export async function spawnPromise(cmd: string, args: string[] = [], opts: Spawn
                 error: err,
             });
         });
+        /* tslint:enable:no-null-keyword */
     });
 }
 

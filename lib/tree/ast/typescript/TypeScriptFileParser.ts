@@ -29,7 +29,7 @@ import { FileParser } from "../FileParser";
  */
 export class TypeScriptFileParser implements FileParser {
 
-    public rootName = ts.SyntaxKind[ts.SyntaxKind.SourceFile];
+    public rootName: string = ts.SyntaxKind[ts.SyntaxKind.SourceFile];
 
     constructor(public scriptTarget: ts.ScriptTarget) {
     }
@@ -92,7 +92,7 @@ class TypeScriptAstNodeTreeNode implements TreeNode {
 
     public readonly $children: TreeNode[] = [];
 
-    public readonly $name;
+    public readonly $name: string;
 
     public readonly $offset: number;
 
@@ -124,7 +124,7 @@ class TypeScriptAstNodeTreeNode implements TreeNode {
         }
     }
 
-    get $value() {
+    get $value(): string {
         return extractValue(this.sourceFile, this.node);
     }
 

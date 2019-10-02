@@ -1,3 +1,4 @@
+/* tslint:disable:no-console */
 export function printError(e: any): void {
     if (e instanceof Error) {
         if (e.stack && e.stack.includes(e.message)) {

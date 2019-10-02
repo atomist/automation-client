@@ -113,7 +113,7 @@ export class FileHit {
     }
 }
 
-function requireOffset(m: MatchResult) {
+function requireOffset(m: MatchResult): void {
     if (m.$offset === undefined) {
         throw new Error("Sorry, you can't update this because I don't know its offset. " + m.$name + "=" + m.$value);
     }
@@ -125,10 +125,10 @@ function makeUpdatable(matches: MatchResult[], updates: Update[]): void {
         let currentValue = m.$value;
         try {
             Object.defineProperty(m, "$value", {
-                get() {
+                get(): string {
                     return currentValue;
                 },
-                set(v2) {
+                set(v2: string): void {
                     logger.debug("Updating value from '%s' to '%s' on '%s'", currentValue, v2, m.$name);
                     // TODO allow only one
                     currentValue = v2;

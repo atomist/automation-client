@@ -24,10 +24,8 @@ export abstract class MessageClientSupport implements MessageClient {
     public send(msg: any,
                 destinations: Destination | Destination[],
                 options?: MessageOptions): Promise<any> {
-        if (!Array.isArray(destinations)) {
-            destinations = [ destinations ];
-        }
-        return this.doSend(msg, destinations, options);
+        const dests = (Array.isArray(destinations)) ? destinations : [destinations];
+        return this.doSend(msg, dests, options);
     }
 
     public abstract delete(destinations: Destination | Destination[],
@@ -49,7 +47,7 @@ query ChatTeam {
 export class DefaultSlackMessageClient implements MessageClient, SlackMessageClient {
 
     constructor(private readonly delegate: MessageClient,
-                private readonly graphClient: GraphClient) {}
+                private readonly graphClient: GraphClient) { }
 
     public respond(msg: any,
                    options?: MessageOptions): Promise<any> {
@@ -94,10 +92,10 @@ export class DefaultSlackMessageClient implements MessageClient, SlackMessageCli
 export function lookupChatTeam(graphClient: GraphClient): Promise<string> {
     if (graphClient) {
         return graphClient.query<any, any>({
-                query: Query,
-                variables: {},
-                options: QueryNoCacheOptions,
-            })
+            query: Query,
+            variables: {},
+            options: QueryNoCacheOptions,
+        })
             .then(result => {
                 if (result.ChatTeam && result.ChatTeam.length !== 1) {
                     return Promise.reject("More then one or no ChatTeam found. Please use fully qualified " +

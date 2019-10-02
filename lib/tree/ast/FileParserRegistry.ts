@@ -54,7 +54,7 @@ export class DefaultFileParserRegistry implements FileParserRegistry {
         return undefined;
     }
 
-    public toString() {
+    public toString(): string {
         return `DefaultFileParserRegistry: parsers=[${Object.getOwnPropertyNames(this.parserRegistry)}]`;
     }
 }

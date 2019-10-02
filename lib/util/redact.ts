@@ -10,7 +10,7 @@ const redactions: Array<{ redacted: RegExp, replacement: string }> = [];
  *
  * Pass a regular expression that will match the secret thing and very little else.
  */
-export function addRedaction(redacted: RegExp, suggestedReplacement?: string) {
+export function addRedaction(redacted: RegExp, suggestedReplacement?: string): void {
     const replacement = suggestedReplacement || "[REDACTED]";
     redactions.push({ redacted, replacement });
 }

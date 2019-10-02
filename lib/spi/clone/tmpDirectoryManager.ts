@@ -30,7 +30,7 @@ class CleaningTmpDirectoryManager implements DirectoryManager {
                         fs.removeSync(p);
                     }
                 });
-        }, 1000 * 60 * 30).unref(); // 30 second intervals
+        }, 1000 * 60 * 30).unref(); // 30 minute intervals
     }
 
     public directoryFor(owner: string, repo: string, branch: string, opts: CloneOptions): Promise<CloneDirectoryInfo> {

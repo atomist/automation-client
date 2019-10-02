@@ -158,9 +158,9 @@ async function watchSpawned(childProcess: ChildProcess,
             optsToUse.errorFinder = SuccessIsReturn0ErrorFinder;
         }
 
-        function sendToLog(data) {
+        function sendToLog(data: any): void {
             const formatted = optsToUse.stripAnsi ? stripAnsi(data.toString()) : data.toString();
-            return log.write(formatted);
+            log.write(formatted);
         }
 
         childProcess.stdout.on("data", sendToLog);

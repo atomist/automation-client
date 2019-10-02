@@ -20,7 +20,7 @@ import { logger } from "./logger";
  * @param {SourceLocation} sourceLocation
  * @return {string}
  */
-export function deepLink(grr: GitHubRepoRef, sourceLocation: SourceLocation) {
+export function deepLink(grr: GitHubRepoRef, sourceLocation: SourceLocation): string {
     return `${grr.scheme}${grr.remoteBase}/${grr.owner}/${grr.repo}/blob/${grr.sha}` +
         (!!sourceLocation ? `/${sourceLocation.path}` : "") +
         (!!sourceLocation && !!sourceLocation.lineFrom1 ? `#L${sourceLocation.lineFrom1}` : "");
@@ -145,9 +145,9 @@ export async function createRepo(token: string,
 
 function authHeaders(token: string): HttpClientOptions {
     return token ? {
-            headers: {
-                Authorization: `token ${token}`,
-            },
-        }
+        headers: {
+            Authorization: `token ${token}`,
+        },
+    }
         : {};
 }
