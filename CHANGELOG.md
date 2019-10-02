@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Introduce caching to Project API. [#606](https://github.com/atomist/automation-client/issues/606)
 
+### Fixed
+
+-   Use host configuration in Express listen call. [#607](https://github.com/atomist/automation-client/issues/607)
+
 ## [1.7.0](https://github.com/atomist/automation-client-ts/compare/1.6.2...1.7.0) - 2019-09-09
 
 ### Added
