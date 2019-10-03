@@ -88,6 +88,7 @@
     "glob": "^7.1.4",
     "glob-promise": "^3.4.0",
     "glob-stream": "^6.1.0",
+    "globby": "^10.0.1",
     "graphql": "^14.5.4",
     "graphql-tag": "^2.10.1",
     "graphql-tag-pluck": "^0.8.4",

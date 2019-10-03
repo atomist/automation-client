@@ -13,7 +13,7 @@ async function getProject(): Promise<Project> {
         return project;
     }
     project = await GitCommandGitProject.cloned(undefined, new GitHubRepoRef(
-        "spring-projects", "spring-boot"));
+        "xylocarp-whelky", "spring-boot"));
     return project;
 }
 
@@ -25,13 +25,15 @@ async function getProject(): Promise<Project> {
  * read from globx5: 7552ms
  * parse globx5: 21510ms
  */
-describe.skip("disk read performance", () => {
+describe("disk read performance", () => {
 
     it("should count files", async () => {
-        const p = await getProject();
-        await time("file count", async () => {
-            const count = await p.totalFileCount();
-        }, 5);
+        await time("do it", async ()=> {
+            const p = await getProject();
+            await time("file count", async () => {
+                const count = await p.totalFileCount();
+            }, 5);
+        });
     }).timeout(200000);
 
     it("should look for file", async () => {

@@ -3,6 +3,10 @@ import * as gs from "glob-stream";
 import * as fpath from "path";
 import * as stream from "stream";
 
+import * as globby from "globby";
+
+import * as pathlib from "path";
+
 import {
     RepoRef,
     SimpleRepoId,
@@ -234,12 +238,28 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         }
     }
 
+    protected async getFilesInternal(globPatterns: string[]): Promise<File[]> {
+        const optsToUse = {
+            // We can override these defaults...
+            nodir: true,
+            allowEmpty: true,
+            // ...but we force this one
+            cwd: this.baseDir,
+        };
+        //const paths = await glob.promise(`{${globPatterns.join(",")}}`, optsToUse);
+        const paths = await globby(globPatterns, optsToUse);
+
+        console.log(`Found ${paths.length} paths`);
+
+        return paths.map(path => new NodeFsLocalFile(this.baseDir, pathlib.join(this.baseDir, path)));
+    }
+
     public streamFilesRaw(globPatterns: string[], opts: {}): FileStream {
         // Fight arrow function "this" issue
         const baseDir = this.baseDir;
         const toFileTransform = new stream.Transform({ objectMode: true });
 
-        toFileTransform._transform = function(chunk, encoding, done) {
+        toFileTransform._transform = function (chunk, encoding, done) {
             const f = new NodeFsLocalFile(baseDir, pathWithinArchive(baseDir, chunk.path));
             this.push(f);
             done();
