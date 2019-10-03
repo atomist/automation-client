@@ -25,7 +25,7 @@ async function getProject(): Promise<Project> {
  * read from globx5: 7552ms
  * parse globx5: 21510ms
  */
-describe("disk read performance", () => {
+describe.skip("disk read performance", () => {
 
     it("should count files", async () => {
         await time("do it", async () => {

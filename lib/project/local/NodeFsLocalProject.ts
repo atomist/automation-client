@@ -5,8 +5,6 @@ import * as stream from "stream";
 
 import * as globby from "globby";
 
-import * as pathlib from "path";
-
 import {
     RepoRef,
     SimpleRepoId,
@@ -248,10 +246,8 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         };
         // const paths = await glob.promise(`{${globPatterns.join(",")}}`, optsToUse);
         const paths = await globby(globPatterns, optsToUse);
-
-        console.log(`Found ${paths.length} paths`);
-
-        return paths.map(path => new NodeFsLocalFile(this.baseDir, pathlib.join(this.baseDir, path)));
+        const files = paths.map(path => new NodeFsLocalFile(this.baseDir, path));
+        return files;
     }
 
     public streamFilesRaw(globPatterns: string[], opts: {}): FileStream {
