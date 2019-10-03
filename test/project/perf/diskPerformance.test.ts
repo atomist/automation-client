@@ -28,7 +28,7 @@ async function getProject(): Promise<Project> {
 describe("disk read performance", () => {
 
     it("should count files", async () => {
-        await time("do it", async ()=> {
+        await time("do it", async () => {
             const p = await getProject();
             await time("file count", async () => {
                 const count = await p.totalFileCount();

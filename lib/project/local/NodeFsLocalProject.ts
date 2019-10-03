@@ -246,7 +246,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
             // ...but we force this one
             cwd: this.baseDir,
         };
-        //const paths = await glob.promise(`{${globPatterns.join(",")}}`, optsToUse);
+        // const paths = await glob.promise(`{${globPatterns.join(",")}}`, optsToUse);
         const paths = await globby(globPatterns, optsToUse);
 
         console.log(`Found ${paths.length} paths`);
@@ -259,7 +259,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         const baseDir = this.baseDir;
         const toFileTransform = new stream.Transform({ objectMode: true });
 
-        toFileTransform._transform = function (chunk, encoding, done) {
+        toFileTransform._transform = function(chunk, encoding, done) {
             const f = new NodeFsLocalFile(baseDir, pathWithinArchive(baseDir, chunk.path));
             this.push(f);
             done();
