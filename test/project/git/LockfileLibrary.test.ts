@@ -9,10 +9,8 @@ describe("exploratory tests for proper-locking", () => {
     it("should be able to release a lock", done => {
         lockfile.lock("docs", (err, release) => {
             if (err) {
-                console.log("unable to get the lock");
                 done(err);
             } else {
-                console.log("let me now release the lock");
                 release();
                 done();
             }
@@ -32,7 +30,6 @@ describe("exploratory tests for proper-locking", () => {
     it("should be able to release a lock in a promise", done => {
         pleaseLock("docs").then(result => {
             if (result.success) {
-                console.log("let me now release the lock");
                 return result.release();
             }
         }).then(done, done);

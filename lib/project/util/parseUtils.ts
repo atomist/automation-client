@@ -88,8 +88,8 @@ export function findFileMatches<M>(p: ProjectAsync,
                                    opts: Opts = DefaultOpts): Promise<Array<FileWithMatches<M>>> {
     return gatherFromFiles(p, globPatterns, file => {
         return file.getContent()
-            .then(async content => {
-                const matches = await microgrammar.findMatches(transformIfNecessary(content, opts));
+            .then(content => {
+                const matches = microgrammar.findMatches(transformIfNecessary(content, opts));
                 if (matches.length > 0) {
                     logger.debug(`${matches.length} matches in '${file.path}'`);
                     return new UpdatingFileHits(p, file, matches, content);
@@ -116,8 +116,8 @@ export function doWithFileMatches<M, P extends ProjectAsync = ProjectAsync>(p: P
                                                                             opts: Opts = DefaultOpts): Promise<P> {
     return doWithFiles(p, globPatterns, file => {
         return file.getContent()
-            .then(async content => {
-                const matches = await microgrammar.findMatches(transformIfNecessary(content, opts));
+            .then(content => {
+                const matches = microgrammar.findMatches(transformIfNecessary(content, opts));
                 if (matches && matches.length > 0) {
                     logger.debug(`${matches.length} matches in '${file.path}'`);
                     const fh = new UpdatingFileHits(p, file, matches, content);
@@ -219,13 +219,13 @@ export function doWithAtMostOneMatch<M, P extends ProjectAsync = ProjectAsync>(p
  */
 class UpdatingFileHits<M> implements FileWithMatches<M> {
 
-    private updatable = false;
+    private updatable: boolean = false;
 
     constructor(private readonly project: ProjectAsync, public readonly file: File,
                 public matches: Array<Match<M>>, public content: string) {
     }
 
-    public makeUpdatable() {
+    public makeUpdatable(): void {
         if (!this.updatable) {
             const um = Microgrammar.updatable<M>(this.matches, this.content);
 

@@ -11,7 +11,7 @@ describe("Local editing", () => {
     it("should not edit with no op editor", done => {
         const project = tempProject();
         const editor: ProjectEditor = p => Promise.resolve(successfulEdit(p, false));
-        editor(project, null, null)
+        editor(project, undefined, undefined)
             .then(r => {
                 assert(!r.edited);
                 done();
@@ -24,7 +24,7 @@ describe("Local editing", () => {
             p.addFileSync("thing", "1");
             return Promise.resolve(successfulEdit(p, true));
         };
-        editor(project, null)
+        editor(project, undefined)
             .then(r => {
                 assert(r.edited);
                 // Reload project

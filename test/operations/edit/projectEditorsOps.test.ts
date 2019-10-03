@@ -27,7 +27,7 @@ describe("editor chaining", () => {
     it("should make no op with empty chainEditors", done => {
         const project = tempProject();
         const editorChain = chainEditors();
-        editorChain(project, null, null)
+        editorChain(project, undefined, undefined)
             .then(r => {
                 assert(!r.edited);
                 done();
@@ -37,7 +37,7 @@ describe("editor chaining", () => {
     it("should not edit with no op editor", done => {
         const project = tempProject();
         const editorChain = chainEditors(NoOpEditor);
-        editorChain(project, null, null)
+        editorChain(project, undefined, undefined)
             .then(r => {
                 assert(!r.edited);
                 done();
@@ -51,7 +51,7 @@ describe("editor chaining", () => {
             return Promise.resolve(successfulEdit(p, true));
         };
         const editorChain = chainEditors(editor, NoOpEditor);
-        editorChain(project, null)
+        editorChain(project, undefined)
             .then(r => {
                 assert(r.edited);
                 assert(!!project.findFileSync("thing"));
@@ -66,7 +66,7 @@ describe("editor chaining", () => {
             return Promise.resolve(p);
         };
         const editorChain = chainEditors(editor, NoOpEditor);
-        editorChain(project, null)
+        editorChain(project, undefined)
             .then(r => {
                 assert(r.edited === undefined);
                 assert(!!project.findFileSync("thing"));
@@ -81,7 +81,7 @@ describe("editor chaining", () => {
             return Promise.resolve(successfulEdit(p, true));
         };
         const editorChain = chainEditors(NoOpEditor, editor);
-        editorChain(project, null)
+        editorChain(project, undefined)
             .then(r => {
                 assert(r.edited);
                 done();
@@ -101,7 +101,7 @@ describe("editor chaining", () => {
 
         const project = new InMemoryProject();
 
-        chain(project, null).then(res => {
+        chain(project, undefined).then(res => {
             assert(res.success);
             done();
         }).catch(done);
@@ -112,7 +112,7 @@ describe("editor chaining", () => {
 
         const project = new InMemoryProject();
 
-        chain(project, null).then(res => {
+        chain(project, undefined).then(res => {
             assert(!res.success);
             assert(res.error.message === "This was supposed to fail");
             done();
@@ -125,7 +125,7 @@ describe("editor chaining", () => {
             return p.addFile("thing", "1");
         };
         const editorChain = chainEditors(projectFunction, NoOpEditor);
-        editorChain(project, null)
+        editorChain(project, undefined)
             .then(r => {
                 assert(r.edited === undefined);
                 done();
@@ -138,7 +138,7 @@ describe("editor chaining", () => {
             return p.addFile("thing", "1");
         };
         const editorChain = chainEditors(projectFunction, NoOpEditor, (p: Project) => Promise.resolve(p));
-        editorChain(project, null)
+        editorChain(project, undefined)
             .then(r => {
                 assert(r.edited === undefined);
                 done();

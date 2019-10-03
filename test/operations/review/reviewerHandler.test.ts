@@ -24,9 +24,9 @@ describe("reviewerHandler", () => {
             comments: [new DefaultReviewComment("warn", "category", "bad", undefined)],
         }),
         BaseEditorOrReviewerParameters, "test", {
-            repoFinder: fromListRepoFinder([p]),
-            repoLoader: () => fromListRepoLoader([p]),
-        });
+        repoFinder: fromListRepoFinder([p]),
+        repoLoader: () => fromListRepoLoader([p]),
+    });
 
     it("should return ReviewResult structure", done => {
         const params = new BaseEditorOrReviewerParameters();
@@ -45,7 +45,7 @@ describe("reviewerHandler", () => {
 
 const MockHandlerContext = {
     messageClient: {
-        respond(msg: string | SlackMessage) {
+        respond(msg: string | SlackMessage): Promise<void> {
             return Promise.resolve();
         },
     },

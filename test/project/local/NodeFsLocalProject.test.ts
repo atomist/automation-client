@@ -93,7 +93,7 @@ describe("NodeFsLocalProject", () => {
                 return NodeFsLocalProject.copy(proj, baseDir).then(p => {
                     assert(fs.statSync(path.join(p.baseDir, "emptyDir")).isDirectory());
                     const inmp = InMemoryProject.cache(proj);
-                    inmp.then(inm => {
+                    return inmp.then(inm => {
                         assert(!!inm.findFileSync("package.json"));
                         assert(!!inm.findFileSync(path.join("some", "nested", "thing")));
                         assert(inm.addedDirectoryPaths.includes("emptyDir"));
@@ -327,7 +327,7 @@ describe("NodeFsLocalProject", () => {
             assert(fs.existsSync(rp2) === true);
             const rc2 = await fs.readFile(rp2, { encoding: "utf8" });
             assert(rc2 === "1");
-            p.release();
+            await p.release();
         });
 
         it("attempts to move file that's not there without error", async () => {
@@ -345,7 +345,7 @@ describe("NodeFsLocalProject", () => {
             const rc = await fs.readFile(rp, { encoding: "utf8" });
             assert(rc === "1");
             assert(await p.hasFile(pp2) === false);
-            p.release();
+            await p.release();
         });
 
     });
@@ -360,7 +360,7 @@ describe("NodeFsLocalProject", () => {
             await p.deleteFile("thing");
             const f2 = p.findFileSync("thing");
             assert(!f2);
-            p.release();
+            await p.release();
         });
 
         it("deletes non-empty directory", async () => {
@@ -371,7 +371,7 @@ describe("NodeFsLocalProject", () => {
             await p.deleteDirectory("dir");
             const f2 = p.findFileSync(pf);
             assert(!f2);
-            p.release();
+            await p.release();
         });
 
         it("deletes directory with subdirectories", async () => {
@@ -400,7 +400,7 @@ describe("NodeFsLocalProject", () => {
             // but leave the rest
             assert(await p.hasFile(filePaths[2]) === true);
             assert(fs.existsSync(path.join(p.baseDir, filePaths[2])) === true);
-            p.release();
+            await p.release();
         });
 
         it("deletes a non-existant directory without error", async () => {
@@ -420,7 +420,7 @@ describe("NodeFsLocalProject", () => {
             assert(await p.hasFile(pp2) === true);
             assert(fs.existsSync(rp1) === true);
             assert(fs.existsSync(rp2) === true);
-            p.release();
+            await p.release();
         });
 
     });

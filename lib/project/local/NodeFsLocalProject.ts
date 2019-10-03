@@ -239,7 +239,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         const baseDir = this.baseDir;
         const toFileTransform = new stream.Transform({ objectMode: true });
 
-        toFileTransform._transform = function(chunk, encoding, done) {
+        toFileTransform._transform = function(chunk: any, encoding: string, done: (e?: any) => void): void {
             const f = new NodeFsLocalFile(baseDir, pathWithinArchive(baseDir, chunk.path));
             this.push(f);
             done();

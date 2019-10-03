@@ -36,7 +36,7 @@ describe("generatorUtils", () => {
 
     it("succeeds with no op editor and empty project", async () => {
         await generate(InMemoryProject.of(),
-            null, null,
+            undefined, undefined,
             p => Promise.resolve(p),
             mockProjectPersister,
             new SimpleRepoId("foo", "bar"),
@@ -46,7 +46,7 @@ describe("generatorUtils", () => {
     it("passes parameters", async () => {
         const params = new BaseSeedDrivenGeneratorParameters();
         await generate(InMemoryProject.of(),
-            null, null,
+            undefined, undefined,
             (p, ctx, parms) => {
                 assert(parms === params);
                 return Promise.resolve(p);
@@ -60,7 +60,7 @@ describe("generatorUtils", () => {
     it("sees correct target repo id", async () => {
         const params = new BaseSeedDrivenGeneratorParameters();
         await generate(InMemoryProject.of(),
-            null, null,
+            undefined, undefined,
             (p, ctx, parms) => {
                 assert(parms === params);
                 assert.strictEqual(p.id.owner, "foo");
@@ -77,7 +77,7 @@ describe("generatorUtils", () => {
         const thingToReturn = { what: "isthis" };
         const params = new BaseSeedDrivenGeneratorParameters();
         generate(InMemoryProject.of(),
-            null, null,
+            undefined, undefined,
             p => Promise.resolve(p),
             mockProjectPersister,
             new SimpleRepoId("foo", "bar"),
@@ -98,7 +98,7 @@ describe("generatorUtils", () => {
 
     it("preserves persist extra data", done => {
         generate(InMemoryProject.of(),
-            null, null,
+            undefined, undefined,
             p => Promise.resolve(p),
             p => Promise.resolve({
                 target: p,
@@ -120,7 +120,7 @@ describe("generatorUtils", () => {
     it("preserves persist extra data after after action", done => {
         const thingToReturn = { what: "isthis" };
         generate(InMemoryProject.of(),
-            null, null,
+            undefined, undefined,
             p => Promise.resolve(p),
             p => Promise.resolve({
                 target: p,

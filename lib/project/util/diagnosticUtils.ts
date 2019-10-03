@@ -18,6 +18,7 @@ export function diagnosticDump(stepName: string,
                                stringifier: (f: File) => string = f => f.path): (project: Project) => Promise<Project> {
     return project => gatherFromFiles(project, globPattern, async f => f)
         .then(files =>
+            // tslint:disable-next-line:no-console
             console.log(`${Separator}\nProject name ${project.name}: Step=${stepName}; Files[${globPattern}]=\n` +
                 `${files.map(f => "\t" + stringifier(f)).join("\n")}\n${Separator}`))
         .then(() => project);

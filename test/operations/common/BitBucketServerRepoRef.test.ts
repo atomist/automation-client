@@ -1,3 +1,4 @@
+// tslint:disable-next-line:import-blacklist
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import * as assert from "power-assert";
@@ -67,10 +68,11 @@ describe("BitBucketServer support", () => {
         const mock = new MockAdapter(axios);
 
         mock.onGet("https://bitbucket.organisation.co.za/rest/api/1.0/projects/a-project/repos/test-app")
-            .reply(200, {id: 1});
+            .reply(200, { id: 1 });
 
+        // tslint:disable-next-line:max-line-length
         mock.onGet("https://bitbucket.organisation.co.za/rest/default-reviewers/1.0/projects/a-project/repos/test-app/reviewers?sourceRepoId=1&targetRepoId=1&sourceRefId=refs/heads/thing1&targetRefId=refs/heads/master")
-            .reply(200, [{name: "johndoe"}]);
+            .reply(200, [{ name: "johndoe" }]);
 
         mock.onPost("https://bitbucket.organisation.co.za/rest/api/1.0/projects/a-project/repos/test-app/pull-requests")
             .reply(config => {
@@ -95,8 +97,9 @@ describe("BitBucketServer support", () => {
         const mock = new MockAdapter(axios);
 
         mock.onGet("https://bitbucket.organisation.co.za/rest/api/1.0/projects/a-project/repos/test-app")
-            .reply(200, {id: 1});
+            .reply(200, { id: 1 });
 
+        // tslint:disable-next-line:max-line-length
         mock.onGet("https://bitbucket.organisation.co.za/rest/default-reviewers/1.0/projects/a-project/repos/test-app/reviewers?sourceRepoId=1&targetRepoId=1&sourceRefId=refs/heads/thing1&targetRefId=refs/heads/master")
             .reply(200, []);
 

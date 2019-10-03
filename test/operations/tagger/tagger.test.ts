@@ -1,4 +1,3 @@
-
 import * as assert from "power-assert";
 import { SimpleRepoId } from "../../../lib/operations/common/RepoId";
 import {
@@ -14,7 +13,7 @@ describe("tag unification", () => {
         const rr = new SimpleRepoId("a", "b");
         const springTagger: Tagger = () => Promise.resolve(new DefaultTaggerTags(rr, ["spring"]));
         const unified: Tagger = unifiedTagger(springTagger);
-        unified(InMemoryProject.from(null), null, null)
+        unified(InMemoryProject.from(undefined), undefined, undefined)
             .then(tags => {
                 assert.deepEqual(tags.repoId, rr);
                 assert.deepEqual(tags.tags, ["spring"]);
@@ -28,7 +27,7 @@ describe("tag unification", () => {
         const kotlinTagger: Tagger = () => Promise.resolve(new DefaultTaggerTags(rr, ["kotlin"]));
 
         const unified: Tagger = unifiedTagger(springTagger, kotlinTagger);
-        unified(InMemoryProject.from(null), null, null)
+        unified(InMemoryProject.from(undefined), undefined, undefined)
             .then(tags => {
                 assert.deepEqual(tags.repoId, rr);
                 assert.deepEqual(tags.tags, ["spring", "kotlin"]);

@@ -3,7 +3,7 @@ import { GitHubRepoRef } from "../../../lib/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../../lib/project/git/GitCommandGitProject";
 import { Project } from "../../../lib/project/Project";
 import { gatherFromFiles } from "../../../lib/project/util/projectUtils";
-import { findMatches } from "../../../lib/tree/ast/astUtils";
+import { matches } from "../../../lib/tree/ast/astUtils";
 import { MicrogrammarBasedFileParser } from "../../../lib/tree/ast/microgrammar/MicrogrammarBasedFileParser";
 
 let project: Project;
@@ -64,23 +64,24 @@ describe.skip("disk read performance", () => {
         });
         const p = await getProject();
         await time("parse glob", async () => {
-            const matches = await findMatches(p, new MicrogrammarBasedFileParser("x", "x", mg),
-                "**/*.java", "//fqn");
-            // console.log("count=" + matches.length);
+            await matches(p, {
+                parseWith: new MicrogrammarBasedFileParser("x", "x", mg),
+                globPatterns: "**/*.java",
+                pathExpression: "//fqn",
+            });
         }, 5);
     }).timeout(200000);
 
 });
 
-async function time(name: string,
-                    what: () => Promise<any>,
-                    n: number = 1): Promise<number> {
+async function time(name: string, what: () => Promise<any>, n: number = 1): Promise<number> {
     const st = new Date().getTime();
     for (let i = 0; i < n; i++) {
         await what();
     }
     const et = new Date().getTime();
     const millis = et - st;
+    // tslint:disable-next-line:no-console
     console.log(`${name}x${n}: ${millis}ms`);
     return millis;
 }

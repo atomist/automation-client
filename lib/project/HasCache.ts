@@ -19,7 +19,7 @@ export async function retrieveOrCompute<T extends HasCache, R extends object>(t:
         return how(t);
     }
     if (!t.cache[key]) {
-        t.cache[key] = await how(t);
+        t.cache[key] = how(t);
     }
     return t.cache[key] as R;
 }

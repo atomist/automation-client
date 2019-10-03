@@ -10,6 +10,8 @@ import { toPromise } from "../../../lib/project/util/projectUtils";
 import * as minimatch from "minimatch";
 import multimatch = require("multimatch");
 
+/* tslint:disable:max-file-line-count */
+
 describe("InMemoryProject", () => {
 
     describe("getFiles", () => {
@@ -291,14 +293,14 @@ describe("InMemoryProject", () => {
             );
             p.streamFiles()
                 .on("data", (f: File) => {
-                        // console.log(`File path is [${f.path}]`);
-                        assert(f.name);
-                        count++;
-                    },
+                    // console.log(`File path is [${f.path}]`);
+                    assert(f.name);
+                    count++;
+                },
                 ).on("end", () => {
-                assert.strictEqual(count, 2);
-                done();
-            });
+                    assert.strictEqual(count, 2);
+                    done();
+                });
         });
 
         it("streamFiles excludes glob non-matches", done => {
@@ -310,14 +312,14 @@ describe("InMemoryProject", () => {
             );
             p.streamFiles("config/**")
                 .on("data", (f: File) => {
-                        // console.log(`File path is [${f.path}]`);
-                        assert(f.name);
-                        count++;
-                    },
+                    // console.log(`File path is [${f.path}]`);
+                    assert(f.name);
+                    count++;
+                },
                 ).on("end", () => {
-                assert.equal(count, 2);
-                done();
-            });
+                    assert.equal(count, 2);
+                    done();
+                });
         });
 
         it("streamFiles excludes .git by default", done => {
@@ -330,14 +332,14 @@ describe("InMemoryProject", () => {
             );
             p.streamFiles(AllFiles)
                 .on("data", (f: File) => {
-                        // console.log(`File path is [${f.path}]`);
-                        assert(f.name);
-                        count++;
-                    },
+                    // console.log(`File path is [${f.path}]`);
+                    assert(f.name);
+                    count++;
+                },
                 ).on("end", () => {
-                assert.equal(count, 3);
-                done();
-            });
+                    assert.equal(count, 3);
+                    done();
+                });
         });
 
         it("streamFiles excludes nested .git and node_modules by default", done => {
@@ -351,15 +353,15 @@ describe("InMemoryProject", () => {
             );
             p.streamFiles(AllFiles)
                 .on("data", (f: File) => {
-                        // console.log(`File path is [${f.path}]`);
-                        assert(f.name);
-                        count++;
-                    },
+                    // console.log(`File path is [${f.path}]`);
+                    assert(f.name);
+                    count++;
+                },
                 ).on("end", () => {
-                // Exclude node modules but not git as it's not at the root
-                assert.equal(count, 4);
-                done();
-            });
+                    // Exclude node modules but not git as it's not at the root
+                    assert.equal(count, 4);
+                    done();
+                });
         });
 
         it("streamFiles respects negative globs", done => {
@@ -371,14 +373,14 @@ describe("InMemoryProject", () => {
             );
             p.streamFilesRaw(["config/**", "!**/exclude.*"], {})
                 .on("data", (f: File) => {
-                        // console.log(`File path is [${f.path}]`);
-                        assert(f.name);
-                        count++;
-                    },
+                    // console.log(`File path is [${f.path}]`);
+                    assert(f.name);
+                    count++;
+                },
                 ).on("end", () => {
-                assert.equal(count, 2);
-                done();
-            });
+                    assert.equal(count, 2);
+                    done();
+                });
         });
 
         it("files returns well-known files", done => {

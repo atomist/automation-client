@@ -1,4 +1,3 @@
-
 import * as assert from "power-assert";
 import { metadataFromInstance } from "../../../lib/internal/metadata/metadataReading";
 import { CommandHandlerMetadata } from "../../../lib/metadata/automationMetadata";
@@ -30,9 +29,9 @@ describe("editorHandler", () => {
         const h = editorHandler(() => p => Promise.resolve(p),
             BaseEditorOrReviewerParameters,
             "editor", {
-                description,
-                intent,
-            });
+            description,
+            intent,
+        });
         const chm = metadataFromInstance(h) as CommandHandlerMetadata;
         assert(chm.description === description);
         assert.deepEqual(chm.intent, [intent]);
@@ -62,15 +61,15 @@ describe("editorHandler", () => {
         },
             MyParameters,
             "editor", {
-                repoFinder: fromListRepoFinder([]),
-            });
+            repoFinder: fromListRepoFinder([]),
+        });
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
         s.registerCommandHandler(() => h);
         await s.invokeCommand({
             name: "editor",
             args: [{ name: "slackTeam", value: "T1691" }, { name: "owner", value: "foo" }],
             secrets: [{ uri: "github://user_token?scopes=repo,user:email,read:user", value: "antechinus" }],
-        }, { workspaceId: "T666", correlationId: "555", messageClient: null });
+        }, { workspaceId: "T666", correlationId: "555", messageClient: undefined });
     }).timeout(10000);
 
     it("should use custom repo loader and verify result", async () => {
@@ -89,19 +88,19 @@ describe("editorHandler", () => {
         },
             MyParameters,
             "editor", {
-                repoFinder: fromListRepoFinder([proj]),
-                repoLoader: () => fromListRepoLoader([proj]),
-                editMode: new VerifyEditMode(p => {
-                    assert(p.findFileSync("Thing").getContentSync() === "1");
-                }),
-            });
+            repoFinder: fromListRepoFinder([proj]),
+            repoLoader: () => fromListRepoLoader([proj]),
+            editMode: new VerifyEditMode(p => {
+                assert(p.findFileSync("Thing").getContentSync() === "1");
+            }),
+        });
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
         s.registerCommandHandler(() => h);
         await s.invokeCommand({
             name: "editor",
             args: [{ name: "slackTeam", value: "T1691" }, { name: "owner", value: "foo" }],
             secrets: [{ uri: "github://user_token?scopes=repo,user:email,read:user", value: "antechinus" }],
-        }, { workspaceId: "T666", correlationId: "555", messageClient: null })
+        }, { workspaceId: "T666", correlationId: "555", messageClient: undefined })
             .then(() => assert(proj.findFileSync("Thing").getContentSync() === "1"));
     });
 

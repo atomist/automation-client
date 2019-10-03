@@ -54,7 +54,7 @@ describe("CachedGitClone", () => {
             const clones = [getAClone(), getAClone()];
             const reusedBefore = getCounter(fallbackKey(ExistingRepoName)).printObj().count;
             const cleaningDone = (err: Error | void) => {
-                Promise.all(clones)
+                return Promise.all(clones)
                     .then(them =>
                         them.forEach(clone => clone.release()))
                     .then(() => done(err));

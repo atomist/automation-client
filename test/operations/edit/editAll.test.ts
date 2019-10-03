@@ -40,7 +40,7 @@ describe("editAll", () => {
             },
         };
 
-        editAll(null, null, editor, cei,
+        editAll(undefined, undefined, editor, cei,
             undefined,
             fromListRepoFinder(projects),
             p => true,
@@ -82,7 +82,7 @@ describe("editAll", () => {
             },
         };
 
-        editAll(null, null, editor, cei,
+        editAll(undefined, undefined, editor, cei,
             new VerySpecialParams("thing"),
             fromListRepoFinder(projects),
             p => true,
@@ -116,7 +116,7 @@ describe("editAll", () => {
             },
         };
 
-        editAll(null, null, editor, cei,
+        editAll(undefined, undefined, editor, cei,
             new BaseEditorOrReviewerParameters(new AlwaysAskRepoParameters()),
             fromListRepoFinder(projects),
             p => true,

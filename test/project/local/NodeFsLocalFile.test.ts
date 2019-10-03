@@ -14,12 +14,11 @@ describe("NodeFsLocalFile", () => {
         assert(f.getContentSync().indexOf("node") !== -1);
     });
 
-    it("should read file and check content async", () => {
+    it("should read file and check content async", async () => {
         const f = new NodeFsLocalFile(appRoot.path, "package.json");
-        f.getContent().then(content => {
-            assert(content);
-            assert(content.indexOf("node") !== -1);
-        });
+        const content = await f.getContent();
+        assert(content);
+        assert(content.indexOf("node") !== -1);
     });
 
     it("should read file and check name and path in root", () => {
@@ -49,16 +48,13 @@ describe("NodeFsLocalFile", () => {
         assert(f.getContentSync() === "The slow brown");
     });
 
-    it("should set content and read back from disk", done => {
+    it("should set content and read back from disk", async () => {
         const p = tempProject();
-        p.addFileSync("Thing", "The quick brown");
-        const f = p.findFileSync("Thing");
-        assert(f.getContentSync() === "The quick brown");
-        f.setContent("The slow brown")
-            .then(() => {
-                assert(f.getContentSync() === "The slow brown");
-                done();
-            });
+        await p.addFile("Thing", "The quick brown");
+        const f = await p.findFile("Thing");
+        assert((await f.getContent()) === "The quick brown");
+        await f.setContent("The slow brown");
+        assert((await f.getContent()) === "The slow brown");
     });
 
     it("should test nonbinary file", done => {
@@ -66,7 +62,7 @@ describe("NodeFsLocalFile", () => {
         p.addFile("Thing1", "The quick brown")
             .then(() => {
                 const f = p.findFileSync("Thing1");
-                f.isBinary().then(bin => {
+                return f.isBinary().then(bin => {
                     assert(!bin);
                     done();
                 });
@@ -95,7 +91,7 @@ describe("NodeFsLocalFile", () => {
         p.addFile("runMe", "echo hooray")
             .then(pp =>
                 pp.findFile("runMe").then(file => {
-                    console.log(file.path);
+                    // console.log(file.path);
                     return file.isExecutable().then(before => {
                         assert(!before, "should not be created executable " + (tempProject as any).baseDir);
                         return pp.makeExecutable("runMe").then(_ =>

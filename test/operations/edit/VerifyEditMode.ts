@@ -12,7 +12,7 @@ import { Project } from "../../../lib/project/Project";
  */
 export class VerifyEditMode implements CustomExecutionEditMode {
 
-    public message = "foo";
+    public message: string = "foo";
 
     constructor(private readonly assertions: (p: Project) => void) {
     }

@@ -18,10 +18,10 @@ describe("doWithAllRepos", () => {
         const blowUpLoader: RepoLoader = () => {
             throw new Error();
         };
-        doWithAllRepos(null, null,
+        doWithAllRepos(undefined, undefined,
             p => {
                 throw new Error();
-            }, null,
+            }, undefined,
             noRepos, () => true, blowUpLoader)
             .then(results => {
                 assert(results.length === 0);
@@ -42,14 +42,14 @@ describe("doWithAllRepos", () => {
         };
 
         const dontBotherRepoLoader: RepoLoader = (r: RepoRef) => {
-            return Promise.resolve({ id: r } as Project);
+            return Promise.resolve({ id: r } as any as Project);
         };
 
-        doWithAllRepos(null, null,
+        doWithAllRepos(undefined, undefined,
             p => {
                 assert(p.id.repo === "good" || p.id.repo === "redeemed");
                 return Promise.resolve(p);
-            }, null,
+            }, undefined,
             threeRepos, notBadFilter, dontBotherRepoLoader)
             .then(results => {
                 assert(results.length === 2, `Got ${results.length} results`);
@@ -76,11 +76,11 @@ describe("doWithAllRepos", () => {
                     return Promise.resolve(redeemed);
             }
         };
-        doWithAllRepos<Project, Project>(null, null,
+        doWithAllRepos<Project, Project>(undefined, undefined,
             p => {
                 assert(p.id.repo === "good" || p.id.repo === "redeemed");
                 return Promise.resolve(p);
-            }, null,
+            }, undefined,
             noRepos, () => true, blowUpLoader)
             .then(results => {
                 assert(results.length === 2);

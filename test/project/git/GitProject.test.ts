@@ -34,7 +34,7 @@ describe("GitProject", () => {
     it("never returns the same place on the filesystem twice at once", async () => {
         const clones = [getAClone(), getAClone()];
         let them: GitProject[] = [];
-        const clean = () => them.filter(c => !!c).forEach(c => c.release());
+        const clean = () => Promise.all(them.filter(c => !!c).map(c => c.release()));
         try {
             them = await Promise.all(clones);
         } catch (e) {
@@ -128,7 +128,7 @@ ding dong ding
             "0cbe698958f81efe202e71ac07446b87ad694789", GitHubDotComBase, "examples/tutorial"));
         assert(!!gp.findFileSync("flaskr/__init__.py"), "Should be able to find file under subdirectory");
         assert(await gp.isClean(), "We should be able to get git status for a subdirectory");
-        gp.release();
+        await gp.release();
     }).timeout(10000);
 
     it("can tell whether a branch exists", async () => {

@@ -1,4 +1,3 @@
-
 import * as assert from "power-assert";
 
 import { fromListRepoLoader } from "../../../lib/operations/common/fromProjectList";
@@ -35,7 +34,7 @@ describe("editOne", () => {
             },
         };
 
-        editOne(null, null, editor, cei,
+        editOne(undefined, undefined, editor, cei,
             repoRef, undefined,
             fromListRepoLoader(projects))
             .then(editResult => {
@@ -70,7 +69,7 @@ describe("editOne", () => {
             },
         };
 
-        editOne(null, null, editor, cei, repoRef,
+        editOne(undefined, undefined, editor, cei, repoRef,
             new BaseEditorOrReviewerParameters(new MappedRepoParameters()),
             fromListRepoLoader(projects))
             .then(editResult => {
