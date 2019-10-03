@@ -71,9 +71,7 @@ export const configuration: Configuration = {
         HelloWorld,
         MessageTest,
         FileMessageTest,
-        () => {
-            return null;
-        },
+        () => undefined,
     ],
     events: [
         // HelloCircle,

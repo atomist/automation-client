@@ -21,7 +21,7 @@ describe("WebSocketMessageClient", () => {
                 data: {},
                 extensions: { team_id: "Txxxxxxx", correlation_id: guid(), operationName: "Foor" },
                 secrets: [],
-            }, null, {});
+            }, undefined, {});
         client.respond("Some test message")
             .catch(err => {
                 assert(err.message === "Response messages are not supported for event handlers");
@@ -59,7 +59,7 @@ describe("WebSocketMessageClient", () => {
             userAgent: "slack",
             team: "Txxxxxxx",
             users: ["cd", "rod"],
-        } as SlackDestination, { id: "123456" })
+        } as any as SlackDestination, { id: "123456" })
             .then(fm => {
                 assert(fm.api_version === "1");
                 assert(fm.correlation_id === corrId);
@@ -108,7 +108,7 @@ describe("WebSocketMessageClient", () => {
             userAgent: "slack",
             team: "Txxxxxxx",
             channels: ["general", "test"],
-        } as SlackDestination, { id: "123456" })
+        } as any as SlackDestination, { id: "123456" })
             .then(fm => {
                 assert(fm.api_version === "1");
                 assert(fm.correlation_id === corrId);

@@ -1,4 +1,3 @@
-
 import * as assert from "power-assert";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import {
@@ -10,6 +9,7 @@ describe("jsonUtils", () => {
 
     describe("manipulate", () => {
 
+        /* tslint:disable:no-null-keyword */
         it("should handle undefined", () => {
             assert(manipulate(undefined, o => null) === undefined);
         });
@@ -22,6 +22,7 @@ describe("jsonUtils", () => {
             const s = "not json at all";
             assert(manipulate(s, o => null) === s);
         });
+        /* tslint:enable:no-null-keyword */
 
         it("should handle simple number", () => {
             const json = simpleJson(25);
@@ -80,7 +81,7 @@ describe("jsonUtils", () => {
             const notJson = "bar";
 
             const p = InMemoryProject.of({ path: "thing.json", content: notJson });
-            doWithJson(p, "not_there.json", o => null)
+            doWithJson(p, "not_there.json", o => undefined)
                 .then(() => {
                     done();
                 }).catch(done);
@@ -91,7 +92,7 @@ describe("jsonUtils", () => {
 
             const p = InMemoryProject.of({ path: "thing.json", content: notJson });
 
-            doWithJson(p, "thing.json", o => null)
+            doWithJson(p, "thing.json", o => undefined)
                 .then(() => {
                     const transformed = p.findFileSync("thing.json").getContentSync();
                     assert(transformed === notJson);
@@ -118,11 +119,11 @@ describe("jsonUtils", () => {
 
 });
 
-function simpleJson(b: number) {
+function simpleJson(b: number): string {
     return `{"x":5,"y":${b}}`;
 }
 
-function fromPackageJson(name: string) {
+function fromPackageJson(name: string): string {
     return `{
   "name": "${name}",
   "version": "0.3.5",

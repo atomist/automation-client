@@ -14,6 +14,7 @@ import {
     SelfDescribingHandleCommand,
 } from "../../../lib/HandleCommand";
 import { HandleEvent } from "../../../lib/HandleEvent";
+import { HandlerResult } from "../../../lib/HandlerResult";
 import { consoleMessageClient } from "../../../lib/internal/message/ConsoleMessageClient";
 import { succeed } from "../../../lib/operations/support/contextUtils";
 import { AutomationServer } from "../../../lib/server/AutomationServer";
@@ -27,6 +28,8 @@ import {
     AlwaysOkEventHandler,
     TrustMeIGaveMySecret,
 } from "./TestHandlers";
+
+/* tslint:disable:max-classes-per-file max-file-line-count */
 
 const messageClient = consoleMessageClient;
 
@@ -82,10 +85,10 @@ describe("BuildableAutomationServer", () => {
                 name: "foo",
                 args: [],
             }, {
-                    workspaceId: "T666",
-                    correlationId: "555",
-                    messageClient,
-                });
+                workspaceId: "T666",
+                correlationId: "555",
+                messageClient,
+            });
         });
     });
 
@@ -103,16 +106,16 @@ describe("BuildableAutomationServer", () => {
             name: "foo",
             args: [],
         }, {
-                workspaceId: "T666",
-                correlationId: "555",
-                messageClient,
-            }).then(res => {
-                assert(res.code === 0);
-                done();
-            });
+            workspaceId: "T666",
+            correlationId: "555",
+            messageClient,
+        }).then(res => {
+            assert(res.code === 0);
+            done();
+        });
     });
 
-    it("should register one single arg handler and invoke with valid parameter", done => {
+    it("should register one single arg handler and invoke with valid parameter", async () => {
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
         const h: SelfDescribingHandleCommand = {
             name: "foo", description: "foo", parameters: [{
@@ -127,21 +130,20 @@ describe("BuildableAutomationServer", () => {
             },
         };
         s.registerCommandHandler(() => h);
-        registerOneSingleArgHandlerAndInvokeWithValidParameter(s, done);
+        await registerOneSingleArgHandlerAndInvokeWithValidParameter(s);
     });
 
-    function registerOneSingleArgHandlerAndInvokeWithValidParameter(s: AutomationServer, done) {
-        s.invokeCommand({
+    function registerOneSingleArgHandlerAndInvokeWithValidParameter(s: AutomationServer): Promise<void> {
+        return s.invokeCommand({
             name: "foo",
             args: [{ name: "one", value: "value" }],
         }, {
-                workspaceId: "T666",
-                correlationId: "555",
-                messageClient,
-            }).then(hr => {
-                assert((hr as any).paramVal === "value");
-                done();
-            }).catch(done);
+            workspaceId: "T666",
+            correlationId: "555",
+            messageClient,
+        }).then(hr => {
+            assert((hr as any).paramVal === "value");
+        });
     }
 
     it("should register one command handler instance and invoke with valid parameter", done => {
@@ -152,10 +154,10 @@ describe("BuildableAutomationServer", () => {
             args: [{ name: "slackTeam", value: "T1691" }],
             secrets: [{ uri: "atomist://some_secret", value: "some_secret" }],
         }, {
-                workspaceId: "T666",
-                correlationId: "555",
-                messageClient,
-            })
+            workspaceId: "T666",
+            correlationId: "555",
+            messageClient,
+        })
             .then(_ => done());
     });
 
@@ -172,18 +174,18 @@ describe("BuildableAutomationServer", () => {
                 }],
             },
         }, {
-                workspaceId: "T666",
-                correlationId: "555",
-                messageClient,
-            }).then(_ => {
-                assert((_[0] as any).thing === 27);
-                done();
-            });
+            workspaceId: "T666",
+            correlationId: "555",
+            messageClient,
+        }).then(_ => {
+            assert((_[0] as any).thing === 27);
+            done();
+        });
     });
 
     it("should register one event handler instance and access secret through params", done => {
         const sr: SecretResolver = {
-            resolve(sec: string) {
+            resolve(sec: string): string {
                 assert(sec === "github://org_token");
                 return "valid";
             },
@@ -201,13 +203,13 @@ describe("BuildableAutomationServer", () => {
                 }],
             },
         }, {
-                workspaceId: "T666",
-                correlationId: "555",
-                messageClient,
-            }).then(_ => {
-                assert((_[0] as any).thing === 27);
-                done();
-            });
+            workspaceId: "T666",
+            correlationId: "555",
+            messageClient,
+        }).then(_ => {
+            assert((_[0] as any).thing === 27);
+            done();
+        });
     });
 
     it("should register one single arg handler using nested parameters and invoke with valid parameter", done => {
@@ -220,9 +222,9 @@ describe("BuildableAutomationServer", () => {
 
         @CommandHandler("goo bar")
         class Handler {
-            public nested = new Params();
+            public nested: Params = new Params();
 
-            public handle(ch, params) {
+            public handle(ch, params): Promise<HandlerResult> {
                 return Promise.resolve({
                     code: 0,
                     paramVal: params.nested.one,
@@ -235,22 +237,22 @@ describe("BuildableAutomationServer", () => {
             name: "Handler",
             args: [{ name: "nested.one", value: "value" }],
         }, {
-                workspaceId: "T666",
-                correlationId: "555",
-                messageClient,
-            }).then(hr => {
-                assert((hr as any).paramVal === "value");
-                done();
-            }).catch(done);
+            workspaceId: "T666",
+            correlationId: "555",
+            messageClient,
+        }).then(hr => {
+            assert((hr as any).paramVal === "value");
+            done();
+        }).catch(done);
     });
 
-    it("should register single arg handler using nested mapped parameters and invoke with valid parameter", done =>
-        mappedParameterTest(done, true));
+    it("should register single arg handler using nested mapped parameters and invoke with valid parameter",
+        async () => mappedParameterTest(true));
 
-    it("should register single arg handler using nested optional mapped parameters and invoke with valid parameter", done =>
-        mappedParameterTest(done, false));
+    it("should register single arg handler using nested optional mapped parameters and invoke with valid parameter",
+        async () => mappedParameterTest(false));
 
-    function mappedParameterTest(done: any, required: boolean) {
+    async function mappedParameterTest(required: boolean): Promise<void> {
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
 
         class Params {
@@ -262,9 +264,9 @@ describe("BuildableAutomationServer", () => {
 
         @CommandHandler("goo bar")
         class Handler {
-            public nested = new Params();
+            public nested: Params = new Params();
 
-            public handle(ch, params) {
+            public handle(ch, params): Promise<HandlerResult> {
                 return Promise.resolve({
                     code: 0,
                     paramVal: params.nested.one,
@@ -274,21 +276,20 @@ describe("BuildableAutomationServer", () => {
         }
 
         s.registerCommandHandler(Handler);
-        s.invokeCommand({
+        await s.invokeCommand({
             name: "Handler",
             args: [{ name: "nested.one", value: "value" }],
             mappedParameters: [{ name: "nested.mapped", value: "resolved" }],
         }, {
-                workspaceId: "T666",
-                correlationId: "555",
-                messageClient,
-            }).then(hr => {
-                assert((hr as any).mappedVal === "resolved", stringify(hr, null, 2));
-                done();
-            }).catch(done);
+            workspaceId: "T666",
+            correlationId: "555",
+            messageClient,
+        }).then(hr => {
+            assert((hr as any).mappedVal === "resolved", stringify(hr, undefined, 2));
+        });
     }
 
-    it("should register single arg handler using nested optional mapped parameters and invoke with valid parameter", done => {
+    it("should register single arg handler using nested optional mapped parameters and invoke with valid parameter", async () => {
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
 
         class Params {
@@ -300,9 +301,9 @@ describe("BuildableAutomationServer", () => {
 
         @CommandHandler("goo bar")
         class Handler {
-            public nested = new Params();
+            public nested: Params = new Params();
 
-            public handle(ch, params) {
+            public handle(ch, params): Promise<HandlerResult> {
                 return Promise.resolve({
                     code: 0,
                     paramVal: params.nested.one,
@@ -312,21 +313,20 @@ describe("BuildableAutomationServer", () => {
         }
 
         s.registerCommandHandler(Handler);
-        s.invokeCommand({
+        await s.invokeCommand({
             name: "Handler",
             args: [{ name: "nested.one", value: "value" }],
             mappedParameters: [],
         }, {
-                workspaceId: "T666",
-                correlationId: "555",
-                messageClient,
-            }).then(hr => {
-                assert((hr as any).mappedVal === "should_not_be_overwitten", stringify(hr, null, 2));
-                done();
-            }).catch(done);
+            workspaceId: "T666",
+            correlationId: "555",
+            messageClient,
+        }).then(hr => {
+            assert((hr as any).mappedVal === "should_not_be_overwitten", stringify(hr, undefined, 2));
+        });
     });
 
-    it("should register single arg handler using nested secrets and invoke with valid parameter", done => {
+    it("should register single arg handler using nested secrets and invoke with valid parameter", async () => {
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
 
         class Params {
@@ -338,9 +338,9 @@ describe("BuildableAutomationServer", () => {
 
         @CommandHandler("goo bar")
         class Handler {
-            public nested = new Params();
+            public nested: Params = new Params();
 
-            public handle(ch, params) {
+            public handle(ch, params): Promise<HandlerResult> {
                 return Promise.resolve({
                     code: 0,
                     paramVal: params.nested.one,
@@ -350,21 +350,20 @@ describe("BuildableAutomationServer", () => {
         }
 
         s.registerCommandHandler(Handler);
-        s.invokeCommand({
+        await s.invokeCommand({
             name: "Handler",
             args: [{ name: "nested.one", value: "value" }],
             secrets: [{ uri: "pathOfMySecret", value: "resolved" }],
         }, {
-                workspaceId: "T666",
-                correlationId: "555",
-                messageClient,
-            }).then(hr => {
-                assert((hr as any).mappedVal === "resolved", stringify(hr, null, 2));
-                done();
-            }).catch(done);
+            workspaceId: "T666",
+            correlationId: "555",
+            messageClient,
+        }).then(hr => {
+            assert((hr as any).mappedVal === "resolved", stringify(hr, undefined, 2));
+        });
     });
 
-    it("should fail parameter validation", done => {
+    it("should fail parameter validation", async () => {
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
 
         class Params {
@@ -376,13 +375,13 @@ describe("BuildableAutomationServer", () => {
 
         @CommandHandler("goo bar")
         class Handler implements SmartParameters {
-            public nested = new Params();
+            public nested: Params = new Params();
 
-            public bindAndValidate() {
+            public bindAndValidate(): { message: string } {
                 return { message: "The sploshing flange is invalid" };
             }
 
-            public handle(ch, params) {
+            public handle(ch, params): Promise<HandlerResult> {
                 return Promise.resolve({
                     code: 0,
                     mappedVal: params.nested.mySecret,
@@ -391,25 +390,24 @@ describe("BuildableAutomationServer", () => {
         }
 
         s.registerCommandHandler(Handler);
-        s.invokeCommand({
+        await s.invokeCommand({
             name: "Handler",
             args: [{ name: "nested.isSmart", value: "value" }],
             secrets: [{ uri: "pathOfMySecret", value: "resolved" }],
         }, {
-                workspaceId: "T666",
-                correlationId: "555",
-                messageClient,
-            })
+            workspaceId: "T666",
+            correlationId: "555",
+            messageClient,
+        })
             .then(ok => {
-                done(new Error("Should have failed validation"));
+                assert.fail("Should have failed validation");
             },
-            err => {
-                assert(err.includes("sploshing flange"));
-                done();
-            });
+                err => {
+                    assert(err.includes("sploshing flange"));
+                });
     });
 
-    it("should use bind call to compute property", done => {
+    it("should use bind call to compute property", async () => {
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
 
         class Params {
@@ -421,14 +419,14 @@ describe("BuildableAutomationServer", () => {
 
         @CommandHandler("goo bar")
         class Handler implements SmartParameters {
-            public nested = new Params();
-            private additional = "should_be_overwritten";
+            public nested: Params = new Params();
+            private additional: string = "should_be_overwritten";
 
-            public bindAndValidate() {
+            public bindAndValidate(): void {
                 this.additional = this.nested.isSmart;
             }
 
-            public handle(ch, params) {
+            public handle(ch, params): Promise<HandlerResult> {
                 return Promise.resolve({
                     code: 0,
                     computed: params.additional,
@@ -437,23 +435,21 @@ describe("BuildableAutomationServer", () => {
         }
 
         s.registerCommandHandler(Handler);
-        s.invokeCommand({
+        await s.invokeCommand({
             name: "Handler",
             args: [{ name: "nested.isSmart", value: "value" }],
             secrets: [{ uri: "pathOfMySecret", value: "resolved" }],
         }, {
-                workspaceId: "T666",
-                correlationId: "555",
-                messageClient,
-            })
+            workspaceId: "T666",
+            correlationId: "555",
+            messageClient,
+        })
             .then(hr => {
                 assert((hr as any).computed === "value");
-                done();
-            },
-            done);
+            });
     });
 
-    it("should use bind call to compute on external parameters", done => {
+    it("should use bind call to compute on external parameters", async () => {
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
 
         @Parameters()
@@ -463,11 +459,11 @@ describe("BuildableAutomationServer", () => {
             @Secret("pathOfMySecret")
             public mySecret: string = "should_be_overwitten";
 
-            public random = "this is fine, leave it alone";
+            public random: string = "this is fine, leave it alone";
 
-            public computed = "should_be_overwritten";
+            public computed: string = "should_be_overwritten";
 
-            public bindAndValidate() {
+            public bindAndValidate(): void {
                 this.computed = this.isSmartExternal;
             }
         }
@@ -475,11 +471,11 @@ describe("BuildableAutomationServer", () => {
         @CommandHandler("goo bar")
         class Handler implements HandleCommand<SParams> {
 
-            public freshParametersInstance() {
+            public freshParametersInstance(): SParams {
                 return new SParams();
             }
 
-            public handle(ch, params) {
+            public handle(ch, params): Promise<HandlerResult> {
                 return Promise.resolve({
                     code: 0,
                     computed: params.computed,
@@ -488,24 +484,23 @@ describe("BuildableAutomationServer", () => {
         }
 
         s.registerCommandHandler(Handler);
-        s.invokeCommand({
+        await s.invokeCommand({
             name: "Handler",
             args: [{ name: "isSmartExternal", value: "value1" }],
             secrets: [{ uri: "pathOfMySecret", value: "resolved" }],
         }, {
-                workspaceId: "T666",
-                correlationId: "555",
-                messageClient,
-            })
+            workspaceId: "T666",
+            correlationId: "555",
+            messageClient,
+        })
             .then(hr => {
                 assert((hr as any).computed === "value1", stringify(hr));
-                done();
-            },
-            done);
+            });
     });
 
     it("should allow registration of null command handler", () => {
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
+        // tslint:disable-next-line:no-null-keyword
         s.registerCommandHandler(() => null);
         assert.equal(s.automations.commands.length, 0);
         assert.equal(s.automations.events.length, 0);
@@ -513,6 +508,7 @@ describe("BuildableAutomationServer", () => {
 
     it("should allow registration of null event handler", () => {
         const s = new BuildableAutomationServer({ name: "foobar", version: "1.0.0", workspaceIds: ["bar"], keywords: [] });
+        // tslint:disable-next-line:no-null-keyword
         s.registerEventHandler(() => null);
         assert.equal(s.automations.commands.length, 0);
         assert.equal(s.automations.events.length, 0);
@@ -525,7 +521,7 @@ describe("BuildableAutomationServer", () => {
             if (register) {
                 return new HelloWorld();
             } else {
-                return null;
+                return undefined;
             }
         });
         assert.equal(s.automations.commands.length, 0);
@@ -534,7 +530,7 @@ describe("BuildableAutomationServer", () => {
             if (register) {
                 return new HelloWorld();
             } else {
-                return null;
+                return undefined;
             }
         });
         assert.equal(s.automations.commands.length, 1);
@@ -547,7 +543,7 @@ describe("BuildableAutomationServer", () => {
         @CommandHandler("goo bar")
         class Handler implements HandleCommand {
 
-            public handle(ch, params) {
+            public handle(ch, params): Promise<HandlerResult> {
                 return Promise.resolve(undefined);
             }
         }
@@ -562,11 +558,11 @@ describe("BuildableAutomationServer", () => {
             correlationId: "555",
             messageClient,
         })
-        .then(hr => {
+            .then(hr => {
                 assert(hr.code === 0);
                 done();
             },
-            done);
+                done);
     });
 
     it("should succeed if event handler returns undefined or null", done => {
@@ -575,7 +571,7 @@ describe("BuildableAutomationServer", () => {
         @EventHandler("goo bar", "subscription Test { Issue { title }}")
         class Handler implements HandleEvent<any> {
 
-            public handle(ch, params) {
+            public handle(ch, params): Promise<HandlerResult> {
                 return Promise.resolve(undefined);
             }
         }
@@ -595,22 +591,22 @@ describe("BuildableAutomationServer", () => {
             correlationId: "555",
             messageClient,
         })
-        .then(hr => {
+            .then(hr => {
                 assert(hr[0].code === 0);
                 done();
             },
-            done);
+                done);
     });
 
     it("should use registered metadata processor", () => {
 
         class TestAutomationMetadataProcessor implements AutomationMetadataProcessor {
-             public process(metadata) {
-                 assert.equal(1, metadata.secrets.length);
-                 metadata.values.push({name: "orgToken", path: "token", required: true, type: "string" });
-                 metadata.secrets = [];
-                 return metadata;
-             }
+            public process(metadata: any, c: any): any {
+                assert.equal(1, metadata.secrets.length);
+                metadata.values.push({ name: "orgToken", path: "token", required: true, type: "string" });
+                metadata.secrets = [];
+                return metadata;
+            }
         }
 
         const s = new BuildableAutomationServer({
@@ -625,9 +621,9 @@ describe("BuildableAutomationServer", () => {
         class Handler implements HandleEvent<any> {
 
             @Secret(Secrets.OrgToken)
-            public orgToken;
+            public orgToken: string;
 
-            public handle(ch, params) {
+            public handle(ch, params): Promise<HandlerResult> {
                 return Promise.resolve(undefined);
             }
         }

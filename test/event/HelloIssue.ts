@@ -68,10 +68,10 @@ export class HelloIssue implements HandleEvent<any> {
 
 export class HelloIssueViaProperties implements HandleEvent<any>, EventHandlerMetadata {
 
-    public name = "HelloIssueViaProperties";
-    public description = "";
-    public subscriptionName = "BlaBla";
-    public subscription = `subscription BlaBla
+    public name: string = "HelloIssueViaProperties";
+    public description: string = "";
+    public subscriptionName: string = "BlaBla";
+    public subscription: string = `subscription BlaBla
 {
   Issue {
     number
@@ -92,7 +92,6 @@ export class HelloIssueViaProperties implements HandleEvent<any>, EventHandlerMe
 }`;
 
     public handle(e: EventFired<any>, ctx: HandlerContext): Promise<HandlerResult> {
-        console.log(e);
-        return null;
+        return undefined;
     }
 }

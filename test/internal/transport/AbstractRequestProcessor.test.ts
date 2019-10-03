@@ -1,4 +1,3 @@
-
 import * as assert from "power-assert";
 import { AutomationServerOptions } from "../../../lib/configuration";
 import { HandleCommand } from "../../../lib/HandleCommand";
@@ -32,14 +31,14 @@ class ConcreteRequestProcessor extends AbstractRequestProcessor {
     public invokeCommandPlease(ci: CommandInvocation,
                                ctx: HandlerContext & AutomationContextAware,
                                command: CommandIncoming,
-                               callback: (result: Promise<HandlerResult>) => void) {
+                               callback: (result: Promise<HandlerResult>) => void): void {
         this.invokeCommand(ci, ctx, command, callback);
     }
 
     public invokeEventPlease(ci: EventFired<any>,
                              ctx: HandlerContext & AutomationContextAware,
                              command: EventIncoming,
-                             callback: (result: Promise<HandlerResult[]>) => void) {
+                             callback: (result: Promise<HandlerResult[]>) => void): void {
         this.invokeEvent(ci, ctx, command, callback);
     }
 
@@ -111,7 +110,7 @@ describe("the processCommand method", () => {
         };
 
         const context: HandlerContext & AutomationContextAware = {
-            messageClient: null,
+            messageClient: undefined,
             workspaceId: automationContext.workspaceId,
             correlationId: automationContext.correlationId,
             context: automationContext,
@@ -227,7 +226,7 @@ describe("the processEvent method", () => {
         };
 
         const context: HandlerContext & AutomationContextAware = {
-            messageClient: null,
+            messageClient: undefined,
             workspaceId: automationContext.workspaceId,
             correlationId: automationContext.correlationId,
             context: automationContext,

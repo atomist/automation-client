@@ -73,7 +73,7 @@ describe("payloads", () => {
         const rugs: Automations = {
             name: "foo",
             version: "1.0.0",
-            policy: null,
+            policy: undefined,
             team_ids: [],
             groups: ["all"],
             commands: [],

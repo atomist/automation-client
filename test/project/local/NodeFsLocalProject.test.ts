@@ -18,6 +18,8 @@ import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import { toPromise } from "../../../lib/project/util/projectUtils";
 import { tempProject } from "../utils";
 
+/* tslint:disable:file-max-line-count */
+
 describe("NodeFsLocalProject", () => {
 
     const thisProject: LocalProject = new NodeFsLocalProject(
@@ -219,7 +221,7 @@ describe("NodeFsLocalProject", () => {
                     assert(f.getContentSync() !== undefined);
                     count++;
                 },
-            )
+                )
                 .on("end", () => {
                     assert(count > 0);
                     done();
@@ -241,11 +243,11 @@ describe("NodeFsLocalProject", () => {
                     assert(f.name);
                     count++;
                 },
-            ).on("end", () => {
-                assert(count === 2, "Found " + count);
-                fs.removeSync(p.baseDir);
-                done();
-            }).on("error", done);
+                ).on("end", () => {
+                    assert(count === 2, "Found " + count);
+                    fs.removeSync(p.baseDir);
+                    done();
+                }).on("error", done);
         });
 
         it("glob returns well-known file", done => {
@@ -464,7 +466,7 @@ describe("NodeFsLocalProject", () => {
             const f = path.join("dir", "thing");
             await fs.outputFile(path.join(tmpDir.name, f), "1\n", { mode: 0o777 });
             const p = await NodeFsLocalProject.fromExistingDirectory(new GitHubRepoRef("owner", "name"), tmpDir.name,
-                () => tmpDir.removeCallback());
+                async () => tmpDir.removeCallback());
             await p.makeExecutable(f);
             const s = await fs.stat(path.join(p.baseDir, f));
             assert(s.mode & fs.constants.S_IXUSR);
@@ -508,7 +510,7 @@ describe("NodeFsLocalProject", () => {
             const f = path.join("dir", "thing");
             await fs.outputFile(path.join(tmpDir.name, f), "1\n", { mode: 0o777 });
             const p = await NodeFsLocalProject.fromExistingDirectory(new GitHubRepoRef("owner", "name"), tmpDir.name,
-                () => tmpDir.removeCallback());
+                async () => tmpDir.removeCallback());
             p.makeExecutableSync(f);
             const s = await fs.stat(path.join(p.baseDir, f));
             assert(s.mode & fs.constants.S_IXUSR);
@@ -529,8 +531,8 @@ describe("NodeFsLocalProject", () => {
             const d = path.join(...dirs);
             const f = path.join(d, "thing");
             await fs.outputFile(path.join(tmpDir.name, f), "1\n");
-            const p = await NodeFsLocalProject.fromExistingDirectory(new GitHubRepoRef("owner", "name"),
-                tmpDir.name, () => tmpDir.removeCallback());
+            const p = await NodeFsLocalProject.fromExistingDirectory(new GitHubRepoRef("owner", "name"), tmpDir.name,
+                async () => tmpDir.removeCallback());
             for (let i = 0; i < dirs.length; i++) {
                 assert(p.directoryExistsSync(path.join(...dirs.slice(0, i + 1))));
             }
@@ -541,8 +543,8 @@ describe("NodeFsLocalProject", () => {
             const tmpDir = tmp.dirSync({ unsafeCleanup: true });
             const f = path.join(tmpDir.name, "dir", "nested", "deeply", "into", "project", "thing");
             await fs.outputFile(f, "1\n");
-            const p = await NodeFsLocalProject.fromExistingDirectory(new GitHubRepoRef("owner", "name"),
-                tmpDir.name, () => tmpDir.removeCallback());
+            const p = await NodeFsLocalProject.fromExistingDirectory(new GitHubRepoRef("owner", "name"), tmpDir.name,
+                async () => tmpDir.removeCallback());
             [path.join("does", "not", "exist"), path.join("nor", "this"), "nope"].forEach(d => {
                 assert(!p.directoryExistsSync(d));
             });

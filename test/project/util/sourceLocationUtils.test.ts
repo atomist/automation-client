@@ -1,4 +1,3 @@
-
 import * as assert from "power-assert";
 import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
 import { toSourceLocation } from "../../../lib/project/util/sourceLocationUtils";
@@ -11,6 +10,7 @@ describe("sourceLocationUtils", () => {
     });
 
     it("should survive null", () => {
+        // tslint:disable-next-line:no-null-keyword
         const pos = toSourceLocation("x", null, 0);
         assert(pos === undefined);
     });
