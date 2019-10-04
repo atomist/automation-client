@@ -771,14 +771,10 @@ export function loadAtomistConfig(): AutomationServerOptions {
 /**
  * Examine environment, config, and cfg for Atomist workspace IDs.
  * The ATOMIST_WORKSPACES environment variable takes precedence over
- * the configuration "workspaceIds", which takes precedence over
+ * the config "workspaceIds", which takes precedence over
  * cfg.workspaceId, which may be undefined, null, or an empty array.
- * If the ATOMIST_WORKSPACES environment variable is not set,
- * workspaceIds is not set in config, and workspaceIds is falsey in
- * cfg and teamIds is resolvable from the configuration, workspaceIds
- * is set to teamIds.
  *
- * @param cfg current configuration, whose workspaceIds and teamIds
+ * @param cfg current configuration, whose workspaceIds
  *            properties may be modified by this function
  * @return the resolved workspace IDs
  */
@@ -789,36 +785,6 @@ export function resolveWorkspaceIds(cfg: Configuration): string[] {
         cfg.workspaceIds = config("workspaceIds");
     }
     return cfg.workspaceIds;
-}
-
-/**
- * Resolve a value from a environment variables or configuration keys.
- * The environment variables are checked in order and take precedence
- * over the configuration key, which are also checked in order.  If
- * no truthy values are found, undefined is returned.
- *
- * @param environmentVariables environment variables to check
- * @param configKeyPaths configuration keys, as JSON paths, to check
- * @param defaultValue value to use if no environment variables or config keys have values
- * @return first truthy value found, or defaultValue
- */
-export function resolveConfigurationValue(
-    environmentVariables: string[],
-    configKeyPaths: string[],
-    defaultValue?: string,
-): string {
-
-    for (const ev of environmentVariables) {
-        if (process.env[ev]) {
-            return process.env[ev];
-        }
-    }
-    for (const cv of configKeyPaths) {
-        if (config(cv)) {
-            return config(cv);
-        }
-    }
-    return defaultValue;
 }
 
 /**
@@ -842,8 +808,7 @@ const EnvironmentVariablePrefix = "ATOMIST_";
  */
 export function resolveEnvironmentVariables(cfg: Configuration): void {
     for (const key in process.env) {
-        if (key.startsWith(EnvironmentVariablePrefix)
-            && process.env.hasOwnProperty(key)) {
+        if (key.startsWith(EnvironmentVariablePrefix) && process.env.hasOwnProperty(key)) {
             const cleanKey = key.slice(EnvironmentVariablePrefix.length).split("_").join(".");
             if (cleanKey[0] !== cleanKey[0].toUpperCase()) {
                 _.update(cfg, cleanKey, () => process.env[key]);
@@ -953,19 +918,22 @@ export function validateConfiguration(cfg: Configuration): void {
  * is loaded from several locations with the following precedence from
  * highest to lowest.
  *
- * 0.  Recognized environment variables (see below)
- * 1.  The value of the ATOMIST_CONFIG environment variable, parsed as
+ * 1.  `ATOMIST_` environment variables, see [[resolveEnvironmentVariables]]
+ * 2.  Configuration returned from the post-processors.
+ * 3.  Recognized environment variables, see [[resolveWorkspaceIds]],
+ *     [[resolvePort]]
+ * 4.  The value of the ATOMIST_CONFIG environment variable, parsed as
  *     JSON and cast to AutomationServerOptions
- * 2.  The contents of the ATOMIST_CONFIG_PATH file as AutomationServerOptions
- * 3.  The contents of the user's client.config.json as UserConfig
+ * 5.  The contents of the ATOMIST_CONFIG_PATH file as AutomationServerOptions
+ * 6.  The contents of the user's client.config.json as UserConfig
  *     resolving user and per-module configuration into Configuration
- * 4.  The automation's index.js (or atomist.config.js) exported configuration as
- *     Configuration
- * 5.  ProductionDefaultConfiguration if ATOMIST_ENV or NODE_ENV is set
+ * 7.  The automation atomist.config.js or _all_ index.js files'
+ *     configurations exported as `configuration` from those files
+ * 8.  ProductionDefaultConfiguration if ATOMIST_ENV or NODE_ENV is set
  *     to "production" or TestingDefaultConfiguration if ATOMIST_ENV or
  *     NODE_ENV is set to "staging" or "testing", with ATOMIST_ENV
  *     taking precedence over NODE_ENV.
- * 6.  LocalDefaultConfiguration
+ * 9.  LocalDefaultConfiguration
  *
  * If any of the sources are missing, they are ignored.  Any truthy
  * configuration values specified by sources of higher precedence
@@ -976,11 +944,16 @@ export function validateConfiguration(cfg: Configuration): void {
  *
  * Placeholder of the form `${ENV_VARIABLE}` in string configuration
  * values will get resolved against the environment. The resolution
- * happens at the very end when all configs have been merged.
+ * happens after all of the above configuration sources have been
+ * merged.
  *
- * The configuration exported from the index.js (or atomist.config.js) is modified
- * to contain the final configuration values and returned from this
- * function.
+ * After all sources are merged and the resulting configuration
+ * processed for placeholders and environment variables, the
+ * configuration is validated using [[validateConfiguration]].
+ *
+ * The configuration exported from the index.js (or atomist.config.js)
+ * is modified to contain the final configuration values and returned
+ * from this function.
  *
  * @param cfgPath path to file exporting the configuration object, if
  *                not provided the package is searched for one
@@ -1001,28 +974,21 @@ export async function loadConfiguration(cfgPath?: string): Promise<Configuration
         resolveWorkspaceIds(cfg);
         resolvePort(cfg);
     } catch (e) {
-        logger.error(`Failed to load configuration: ${e.message}`);
+        e.message = `Failed to load configuration: ${e.message}`;
+        logger.error(e.message);
         if (e.stack) {
             logger.error(`Stack trace:\n${e.stack}`);
         }
-        return Promise.reject(e);
+        throw e;
     }
 
-    return invokePostProcessors(cfg)
-        .then(completeCfg => {
-            completeCfg.postProcessors = [];
+    const completeCfg = await invokePostProcessors(cfg);
+    completeCfg.postProcessors = [];
 
-            resolveEnvironmentVariables(completeCfg);
-            return completeCfg;
-        })
-        .then(completeCfg => {
-            return resolvePlaceholders(completeCfg)
-                .then(() => completeCfg);
-        })
-        .then(completeCfg => {
-            validateConfiguration(completeCfg);
-            return completeCfg;
-        });
+    resolveEnvironmentVariables(completeCfg);
+    await resolvePlaceholders(completeCfg);
+    validateConfiguration(completeCfg);
+    return completeCfg;
 }
 
 /**
