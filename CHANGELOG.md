@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Make output less verbose during development. [#603](https://github.com/atomist/automation-client/issues/603)
 -   Do not create typings dir if not creating types. [#609](https://github.com/atomist/automation-client/issues/609)
+-   Clean up tmp dirs on shutdown. [#614](https://github.com/atomist/automation-client/issues/614)
 
 ### Deprecated
 
