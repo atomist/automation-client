@@ -9,8 +9,6 @@
 import "source-map-support/register";
 import { printError } from "../lib/util/error";
 
-/* tslint:disable:no-console */
-
 async function main(): Promise<void> {
     try {
         const logging = require("../lib/util/logger");
@@ -24,6 +22,8 @@ async function main(): Promise<void> {
         process.exit(5);
     }
 }
+
+/* tslint:disable:no-console */
 
 main()
     .catch(e => {

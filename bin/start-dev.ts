@@ -36,9 +36,9 @@ async function main(): Promise<void> {
         const logger = logging.logger;
 
         watcher.on("ready", () => {
-            watcher.on("all", async (e, path) => {
+            watcher.on("all", async (e, filePath) => {
                 const start = Date.now();
-                logger.warn("Change to '%s' file detected. Attempting reload...", path);
+                logger.warn("Change to '%s' file detected. Attempting reload...", filePath);
 
                 Object.keys(require.cache).forEach(id => {
                     if (id.startsWith(indexPath) || id.startsWith(libPath)) {
@@ -54,9 +54,9 @@ async function main(): Promise<void> {
 
                     // Clean out previous handlers and install new ones
                     automationClient.automationServer.commandHandlers = [];
-                    newCfg.commands.forEach(c => automationClient.withCommandHandler(c));
+                    newCfg.commands.forEach(command => automationClient.withCommandHandler(command));
                     automationClient.automationServer.eventHandlers = [];
-                    newCfg.events.forEach(e => automationClient.withEventHandler(e));
+                    newCfg.events.forEach(event => automationClient.withEventHandler(event));
                     // Now drop reference to previous configuration
                     automationClient.configuration = newCfg;
 
@@ -100,6 +100,8 @@ ${jsonDiff.diffString(newReg, oldReg).trim()}`);
         process.exit(15);
     }
 }
+
+/* tslint:disable:no-console */
 
 main()
     .catch(e => {

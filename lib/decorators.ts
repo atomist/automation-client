@@ -63,7 +63,7 @@ export function Value(pathOrValue: string | BaseValue) {
  */
 export function CommandHandler(description: string, ...intent: string[]) {
     return (obj: any) => {
-        declareCommandHandler(obj, description, null, intent);
+        declareCommandHandler(obj, description, false, intent);
     };
 }
 
@@ -74,8 +74,7 @@ export function CommandHandler(description: string, ...intent: string[]) {
  * @return {(obj: any) => any}
  * @constructor
  */
-export function ConfigurableCommandHandler(description: string,
-                                           options: { intent?: string | string[], autoSubmit?: boolean }) {
+export function ConfigurableCommandHandler(description: string, options: { intent?: string | string[], autoSubmit?: boolean }) {
     const intent = options.intent ? toStringArray(options.intent) : [];
     const autoSubmit = options.autoSubmit ? options.autoSubmit : false;
     return (obj: any) => {
@@ -94,9 +93,7 @@ export function Parameters() {
     };
 }
 
-export function EventHandler(
-    description: string,
-    subscription?: string) {
+export function EventHandler(description: string, subscription?: string) {
     return (obj: object) => {
         declareEventHandler(obj, description, subscription);
     };
@@ -111,42 +108,40 @@ export function Tags(...tags: string[]) {
     };
 }
 
-export abstract class MappedParameters {
-    public static readonly GitHubOwner: string = "atomist://github/repository/owner";
-    public static readonly GitHubOwnerWithUser: string = "atomist://github/repository/owner?user=true";
-    public static readonly GitHubRepository: string = "atomist://github/repository";
-    public static readonly GitHubAllRepositories: string = "atomist://github/repository?all=true";
-    public static readonly GitHubRepositoryProvider: string = "atomist://github/repository/provider";
+export const MappedParameters = {
+    GitHubOwner: "atomist://github/repository/owner",
+    GitHubOwnerWithUser: "atomist://github/repository/owner?user=true",
+    GitHubRepository: "atomist://github/repository",
+    GitHubAllRepositories: "atomist://github/repository?all=true",
+    GitHubRepositoryProvider: "atomist://github/repository/provider",
 
-    public static readonly GitHubWebHookUrl: string = "atomist://github_webhook_url";
-    public static readonly GitHubUrl: string = "atomist://github_url";
-    public static readonly GitHubApiUrl: string = "atomist://github_api_url";
-    public static readonly GitHubUserLogin: string = "atomist://github/username";
+    GitHubWebHookUrl: "atomist://github_webhook_url",
+    GitHubUrl: "atomist://github_url",
+    GitHubApiUrl: "atomist://github_api_url",
+    GitHubUserLogin: "atomist://github/username",
 
-    /**
-     * @deprecated no alternative available
-     */
-    public static readonly GitHubDefaultRepositoryVisibility: string = "atomist://github/default_repo_visibility";
+    /** @deprecated no alternative available */
+    GitHubDefaultRepositoryVisibility: "atomist://github/default_repo_visibility",
 
-    public static readonly SlackChannel: string = "atomist://slack/channel";
-    public static readonly SlackChannelName: string = "atomist://slack/channel_name";
-    public static readonly SlackTeam: string = "atomist://slack/team";
-    public static readonly SlackUser: string = "atomist://slack/user";
-    public static readonly SlackUserName: string = "atomist://slack/user_name";
+    SlackChannel: "atomist://slack/channel",
+    SlackChannelName: "atomist://slack/channel_name",
+    SlackTeam: "atomist://slack/team",
+    SlackUser: "atomist://slack/user",
+    SlackUserName: "atomist://slack/user_name",
 
-    public static readonly AtomistWebhookUrlBase: string = "atomist://base_webhook_url";
-}
+    AtomistWebhookUrlBase: "atomist://base_webhook_url",
+};
 
-export abstract class Secrets {
-    public static readonly OrgToken: string = "github://org_token";
-    public static readonly UserToken: string = "github://user_token";
+export const Secrets = {
+    OrgToken: "github://org_token",
+    UserToken: "github://user_token",
 
-    public static userToken(scopes: string | string[]): string {
-        scopes = toStringArray(scopes);
+    userToken: (scopeOrScopes: string | string[]): string => {
+        const scopes = toStringArray(scopeOrScopes);
         if (scopes && scopes.length > 0) {
-            return `${this.UserToken}?scopes=${scopes.join(",")}`;
+            return `${Secrets.UserToken}?scopes=${scopes.join(",")}`;
         } else {
-            return this.UserToken;
+            return Secrets.UserToken;
         }
-    }
-}
+    },
+};

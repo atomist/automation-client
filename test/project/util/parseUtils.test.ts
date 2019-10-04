@@ -104,6 +104,7 @@ describe("parseUtils", () => {
         }
 
         const mg = Microgrammar.fromString<Person>(
+            // tslint:disable-next-line:no-invalid-template-strings
             "${name}:${age}",
             {
                 name: /[a-z]+/,
@@ -123,45 +124,39 @@ describe("parseUtils", () => {
             }).catch(done);
     });
 
-    it("updates matches from files: in memory", done => {
-        updateMatchesFromFiles(new InMemoryProject(), done);
+    it("updates matches from files: in memory", async () => {
+        await updateMatchesFromFiles(new InMemoryProject());
     });
 
-    it("updates matches from files: on disk", done => {
-        updateMatchesFromFiles(tempProject(), done);
+    it("updates matches from files: on disk", async () => {
+        await updateMatchesFromFiles(tempProject());
     });
 
-    function updateMatchesFromFiles(p: Project & ScriptedFlushable<Project>, done) {
+    async function updateMatchesFromFiles(p: Project & ScriptedFlushable<Project>): Promise<void> {
         const oldPackage = "com.foo.bar";
         const initialContent = `package ${oldPackage};\npublic class Thing {}`;
         const f = new InMemoryFile("src/main/java/com/foo/bar/Thing.java", initialContent);
-        p.addFileSync(f.path, f.getContentSync());
-        findFileMatches<{ name: string }>(p, AllJavaFiles, JavaPackageDeclaration)
-            .then(fileMatches => {
-                assert(fileMatches.length === 1);
-                assert(fileMatches[0].file.path === f.path);
-                assert(fileMatches[0].matches[0].name === oldPackage);
-                fileMatches[0].makeUpdatable();
-                const m: Match<{ name: string }> = fileMatches[0].matches[0];
+        await p.addFile(f.path, f.getContentSync());
+        const fileMatches = await findFileMatches<{ name: string }>(p, AllJavaFiles, JavaPackageDeclaration);
+        assert(fileMatches.length === 1);
+        assert(fileMatches[0].file.path === f.path);
+        assert(fileMatches[0].matches[0].name === oldPackage);
+        fileMatches[0].makeUpdatable();
+        const m: Match<{ name: string }> = fileMatches[0].matches[0];
 
-                assert(m.name === oldPackage, `Expected [${oldPackage}] got [${m.name}]`);
-                // Add x to package names. Yes, this makes no sense in Java
-                // but it's not meant to be domain meaningful
-                m.name = m.name + "x";
-                assert(m.name);
-                assert(m.name === oldPackage + "x");
+        assert(m.name === oldPackage, `Expected [${oldPackage}] got [${m.name}]`);
+        // Add x to package names. Yes, this makes no sense in Java
+        // but it's not meant to be domain meaningful
+        m.name = m.name + "x";
+        assert(m.name);
+        assert(m.name === oldPackage + "x");
 
-                // Check file persistence
-                assert(fileMatches[0].file.getContentSync() === initialContent);
-                return p
-                    .flush()
-                    .then(_ => {
-                        const updatedFile = p.findFileSync(f.path);
-                        assert(updatedFile.getContentSync() === initialContent.replace(oldPackage, oldPackage + "x"),
-                            `Content is [${updatedFile.getContentSync()}]`);
-                        done();
-                    });
-            }).catch(done);
+        // Check file persistence
+        assert(fileMatches[0].file.getContentSync() === initialContent);
+        await p.flush();
+        const updatedFile = p.findFileSync(f.path);
+        assert(updatedFile.getContentSync() === initialContent.replace(oldPackage, oldPackage + "x"),
+            `Content is [${updatedFile.getContentSync()}]`);
     }
 
     it("updates matches from files using callback", done => {
@@ -191,35 +186,32 @@ describe("parseUtils", () => {
             }).catch(done);
     });
 
-    function updateUniqueMatchFromFilesUsingCallback(p: Project, done) {
+    async function updateUniqueMatchFromFilesUsingCallback(p: Project): Promise<void> {
         const oldPackage = "com.foo.bar";
         const initialContent = `package ${oldPackage};\npublic class Thing {}`;
         const f = new InMemoryFile("src/main/java/com/foo/bar/Thing.java", initialContent);
-        p.addFileSync(f.path, f.getContentSync());
-        doWithUniqueMatch<{ name: string }>(p, AllJavaFiles, JavaPackageDeclaration, m => {
+        await p.addFile(f.path, f.getContentSync());
+        await doWithUniqueMatch<{ name: string }>(p, AllJavaFiles, JavaPackageDeclaration, m => {
             assert(m.name === oldPackage, `Expected [${oldPackage}] got [${m.name}]`);
             // Add x to package names. Yes, this makes no sense in Java
             // but it's not meant to be domain meaningful
             m.name = m.name + "x";
             assert(m.name);
             assert(m.name === oldPackage + "x");
-        })
-            .then(_ => {
-                // Check file persistence
-                const updatedFile = p.findFileSync(f.path);
-                assert(updatedFile.getContentSync() === initialContent.replace(oldPackage, oldPackage + "x"),
-                    `Content is [${updatedFile.getContentSync()}]`);
-                done();
-            }).catch(done);
+        });
+        // Check file persistence
+        const updatedFile = await p.findFile(f.path);
+        assert((await updatedFile.getContent()) === initialContent.replace(oldPackage, oldPackage + "x"),
+            `Content is [${updatedFile.getContentSync()}]`);
     }
 
-    it("updates unique match from files using callback: in memory", done =>
-        updateUniqueMatchFromFilesUsingCallback(new InMemoryProject(), done),
-    );
+    it("updates unique match from files using callback: in memory", async () => {
+        await updateUniqueMatchFromFilesUsingCallback(new InMemoryProject());
+    });
 
-    it("updates unique match from files using callback: on disk", done =>
-        updateUniqueMatchFromFilesUsingCallback(tempProject(), done),
-    );
+    it("updates unique match from files using callback: on disk", async () => {
+        await updateUniqueMatchFromFilesUsingCallback(tempProject());
+    });
 
     it("updates unique match from files using callback: fail with zero", done => {
         const t = new InMemoryProject();
@@ -251,7 +243,6 @@ describe("parseUtils", () => {
         })
             .catch(err => {
                 // Check file persistence
-                console.log(err);
                 const updatedFile = t.findFileSync(f1.path);
                 assert(updatedFile.getContentSync() === initialContent1);
                 done();
