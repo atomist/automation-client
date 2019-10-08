@@ -21,7 +21,6 @@ import {
     LocalDefaultConfiguration,
     mergeConfigs,
     ProductionDefaultConfiguration,
-    resolveConfigurationValue,
     resolveEnvironmentVariables,
     resolveModuleConfig,
     resolvePlaceholders,
@@ -39,14 +38,19 @@ import { DefaultStatsDClientFactory } from "../lib/spi/statsd/statsdClient";
 
 describe("configuration", () => {
 
+    const deletedEnvs: NodeJS.ProcessEnv = {};
     before(() => {
-        for (const key in process.env) {
-            if (process.env.hasOwnProperty(key) && key.startsWith("ATOMIST_")) {
+        Object.keys(process.env).forEach(key => {
+            if (key === "NODE_ENV" || key.startsWith("ATOMIST_")) {
+                deletedEnvs[key] = process.env[key];
                 delete process.env[key];
             }
-        }
-        delete process.env.NODE_ENV;
-        process.stdout.write(JSON.stringify(process.env));
+        });
+    });
+    after(() => {
+        Object.keys(deletedEnvs).forEach(key => {
+            process.env[key] = deletedEnvs[key];
+        });
     });
 
     // tslint:disable-next-line:no-var-requires
@@ -533,45 +537,6 @@ describe("configuration", () => {
             } else {
                 delete process.env.ATOMIST_WORKSPACES;
             }
-        });
-
-    });
-
-    describe("resolveConfigurationValue", () => {
-
-        it("should fall to the default", () => {
-            const c = resolveConfigurationValue(["NONSENSICAL_NONSENSE"], ["should.not.exist.at.all"], "here");
-            assert.equal(c, "here");
-        });
-
-        it("should not care if config does not exist if environment variable does", () => {
-            const c = resolveConfigurationValue(["HOME"], ["should.not.exist.at.all"], "no");
-            assert.equal(c, process.env.HOME);
-        });
-
-        it("should find nothing in the environment", () => {
-            const c = resolveConfigurationValue(["BLAH_BLAH_BLAH"], ["targetOwner"], "no");
-            assert.equal(c, "johnsonr");
-        });
-
-        it("should take environment over config", () => {
-            const c = resolveConfigurationValue(["HOME"], ["targetOwner"], "no");
-            assert.equal(c, process.env.HOME);
-        });
-
-        it("should take environment over config", () => {
-            const c = resolveConfigurationValue(["HOME"], ["targetOwner"], "no");
-            assert.equal(c, process.env.HOME);
-        });
-
-        it("should take first environment match", () => {
-            const c = resolveConfigurationValue(["HOME", "PATH"], ["targetOwner"], "no");
-            assert.equal(c, process.env.HOME);
-        });
-
-        it("should take first config match", () => {
-            const c = resolveConfigurationValue(["BLAH_BLAH_BLAH", "NO_NO_NO"], ["targetOwner", "repo"], "no");
-            assert.equal(c, "johnsonr");
         });
 
     });
