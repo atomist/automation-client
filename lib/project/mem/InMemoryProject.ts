@@ -15,7 +15,7 @@ import {
     AbstractProject,
     globMatchesWithin,
 } from "../support/AbstractProject";
-import { copyFiles } from "../support/projectUtils";
+import { copyFiles } from "../util/projectUtils";
 import { InMemoryFile } from "./InMemoryFile";
 
 /**
