@@ -15,7 +15,7 @@ import {
     Project,
 } from "../Project";
 import { AbstractProject } from "../support/AbstractProject";
-import { copyFiles } from "../support/projectUtils";
+import { copyFiles } from "../util/projectUtils";
 import {
     isLocalProject,
     LocalProject,
