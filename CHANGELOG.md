@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 -   Use host configuration in Express listen call. [#607](https://github.com/atomist/automation-client/issues/607)
+-   Consolidates ProjectUtils files. Resolves #229. [#617](https://github.com/atomist/automation-client/issues/617)
 
 ## [1.7.0](https://github.com/atomist/automation-client-ts/compare/1.6.2...1.7.0) - 2019-09-09
 
