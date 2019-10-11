@@ -15,12 +15,12 @@ describe("AbstractProject", () => {
 
         before(() => {
             DefaultFiles.splice(1, DefaultFiles.length);
-        })
+        });
 
         after(() => {
             DefaultFiles.splice(0, DefaultFiles.length);
             DefaultFiles.push(AllFiles, ...DefaultExcludes);
-        })
+        });
 
         it("should match ts pattern in nested folder", async () => {
             const patterns = [
@@ -41,7 +41,7 @@ describe("AbstractProject", () => {
 
             assert(matches.length > 1);
             assert(!matches.some(m => m.path.startsWith("node_modules")));
-            
+
         }).timeout(30000);
 
     });
