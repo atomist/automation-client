@@ -20,8 +20,8 @@
 import * as appRoot from "app-root-path";
 import * as cluster from "cluster";
 import * as exp from "express";
+import * as fg from "fast-glob";
 import * as fs from "fs-extra";
-import * as glob from "glob";
 import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as os from "os";
@@ -666,7 +666,7 @@ export async function loadAutomationConfig(configPath?: string): Promise<Configu
     let cfgPath = configPath;
     if (!cfgPath) {
         const cfgFile = "atomist.config.js";
-        const files = glob.sync(`${appRoot.path}/**/${cfgFile}`, { ignore: ["**/{.git,node_modules}/**"] });
+        const files = await fg(`${appRoot.path}/**/${cfgFile}`, { ignore: ["**/{.git,node_modules}/**"] });
         if (files.length === 1) {
             cfgPath = files[0];
         } else if (files.length > 1) {
@@ -697,7 +697,7 @@ export async function loadAutomationConfig(configPath?: string): Promise<Configu
  */
 export async function loadIndexConfig(): Promise<Configuration> {
     const cfgFile = "index.js";
-    const files = glob.sync(`${appRoot.path}/**/${cfgFile}`, { ignore: ["**/{.git,node_modules}/**"] });
+    const files = await fg(`${appRoot.path}/**/${cfgFile}`, { ignore: ["**/{.git,node_modules}/**"] });
 
     if (files.length > 0) {
         const cfgs = [];

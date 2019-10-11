@@ -1,4 +1,4 @@
-import { IOptions } from "minimatch";
+import { Options } from "micromatch";
 import { Stream } from "stream";
 import { RepoRef } from "../operations/common/RepoId";
 import { File } from "./File";
@@ -103,7 +103,7 @@ export interface ProjectAsync extends ProjectCore {
      *
      * Prefer getFiles()
      *
-     * @param {string[]} globPatterns glob patterns per minimatch
+     * @param {string[]} globPatterns glob patterns per micromatch
      * @return {FileStream}
      */
     streamFiles(...globPatterns: string[]): FileStream;
@@ -112,11 +112,11 @@ export interface ProjectAsync extends ProjectCore {
      * Stream file with full control over globs.  At least one glob
      * must be provided. No default exclusions will be used.
      *
-     * @param {string[]} globPatterns glob patterns per minimatch
+     * @param {string[]} globPatterns glob patterns per micromatch
      * @param opts for glob handling
      * @return {FileStream}
      */
-    streamFilesRaw(globPatterns: string[], opts: IOptions): FileStream;
+    streamFilesRaw(globPatterns: string[], opts: Options): FileStream;
 
     /**
      * The total number of files in this project or directory

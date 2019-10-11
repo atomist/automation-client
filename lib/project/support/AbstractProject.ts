@@ -1,5 +1,4 @@
 import * as micromatch from "micromatch";
-import { IOptions } from "minimatch";
 import { AbstractScriptedFlushable } from "../../internal/common/AbstractScriptedFlushable";
 import { RepoRef } from "../../operations/common/RepoId";
 import { logger } from "../../util/logger";
@@ -153,7 +152,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
 /**
  * Return the files that match these glob patterns, including negative globs
  */
-export function globMatchesWithin(files: File[], globPatterns?: string[], opts?: IOptions): File[] {
+export function globMatchesWithin(files: File[], globPatterns?: string[], opts?: micromatch.Options): File[] {
     if (!globPatterns || globPatterns.length === 0) {
         return files || [];
     }

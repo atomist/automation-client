@@ -10,8 +10,8 @@ import { Types } from "@graphql-codegen/plugin-helpers";
 import * as typescriptPlugin from "@graphql-codegen/typescript";
 import * as typescriptCompatibilityPlugin from "@graphql-codegen/typescript-compatibility";
 import * as typescriptOperationsPlugin from "@graphql-codegen/typescript-operations";
+import * as fg from "fast-glob";
 import * as fs from "fs-extra";
-import * as glob from "glob";
 import {
     parse,
     printSchema,
@@ -19,7 +19,6 @@ import {
 import { loadSchema } from "graphql-toolkit";
 import { RenameTypes } from "graphql-tools";
 import * as path from "path";
-import * as util from "util";
 
 /* tslint:disable:no-console */
 
@@ -95,7 +94,7 @@ async function main(): Promise<void> {
             config: {},
         };
 
-        const graphqlFiles = await util.promisify(glob)(graphQlGlob);
+        const graphqlFiles = await fg(graphQlGlob);
         const documents: Types.DocumentFile[] = [];
 
         if (graphqlFiles && graphqlFiles.length > 0) {
