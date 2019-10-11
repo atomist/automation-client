@@ -35,14 +35,11 @@ describe("projectUtils", () => {
             .then(done, done);
     });
 
-    it("exists: found", done => {
+    it("exists: found", async () => {
         const t = tempProject();
         t.addFileSync("Thing", "1");
-        fileExists(t, AllFiles, f => f.name === "Thing")
-            .then(yes => {
-                assert(yes);
-            })
-            .then(done, done);
+        const yes = await fileExists(t, AllFiles, f => f.name === "Thing");
+        assert(yes);
     });
 
     it("exists: found with promise", done => {
@@ -79,17 +76,14 @@ describe("projectUtils", () => {
         assert.strictEqual(count, 1);
     });
 
-    it("gatherFromFiles", done => {
+    it("gatherFromFiles", async () => {
         const t = tempProject();
         t.addFileSync("Thing", "1");
-        gatherFromFiles<string>(t, AllFiles, async f => {
+        const gathered = await gatherFromFiles<string>(t, AllFiles, async f => {
             return f.path;
-        })
-            .then(gathered => {
-                assert(gathered.length === 1);
-                assert(gathered[0] === "Thing");
-            })
-            .then(done, done);
+        });
+        assert.strictEqual(gathered.length, 1);
+        assert.strictEqual(gathered[0], "Thing");
     });
 
     it("fileIterator: take all", async () => {

@@ -3,6 +3,8 @@ import * as gs from "glob-stream";
 import * as fpath from "path";
 import * as stream from "stream";
 
+import * as globby from "globby";
+
 import {
     RepoRef,
     SimpleRepoId,
@@ -232,6 +234,20 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         } catch (e) {
             return undefined;
         }
+    }
+
+    protected async getFilesInternal(globPatterns: string[]): Promise<File[]> {
+        const optsToUse = {
+            // We can override these defaults...
+            nodir: true,
+            allowEmpty: true,
+            // ...but we force this one
+            cwd: this.baseDir,
+        };
+        // const paths = await glob.promise(`{${globPatterns.join(",")}}`, optsToUse);
+        const paths = await globby(globPatterns, optsToUse);
+        const files = paths.map(path => new NodeFsLocalFile(this.baseDir, path));
+        return files;
     }
 
     public streamFilesRaw(globPatterns: string[], opts: {}): FileStream {

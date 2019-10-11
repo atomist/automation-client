@@ -73,9 +73,18 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
             [];
         // Deliberately checking truthiness of promise
         if (!this.cachedFiles) {
-            this.cachedFiles = toPromise(this.streamFiles());
+            const globsToUse = [...DefaultFiles];
+            this.cachedFiles = this.getFilesInternal(globsToUse);
         }
         return globMatchesWithin(await this.cachedFiles, globPatternsToUse);
+    }
+
+    /**
+     * Subclasses can override this to optimize if they wish
+     * @return {Promise<File[]>}
+     */
+    protected getFilesInternal(globPatterns: string[]): Promise<File[]> {
+        return toPromise(this.streamFiles());
     }
 
     public async totalFileCount(): Promise<number> {
@@ -146,9 +155,9 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
  */
 export function globMatchesWithin(files: File[], globPatterns?: string[], opts?: IOptions): File[] {
     if (!globPatterns || globPatterns.length === 0) {
-        return files;
+        return files || [];
     }
-    const paths = files.map(f => f.path);
+    const paths = (files || []).map(f => f.path);
     const matchingPaths = multimatch(paths, globPatterns, opts);
     return files.filter(f => matchingPaths.includes(f.path));
 }
