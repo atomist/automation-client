@@ -35,7 +35,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
     }
 
     protected constructor(public id: RepoRef,
-                          private readonly shouldCache: boolean = false) {
+                          public shouldCache: boolean = false) {
         super();
     }
 
