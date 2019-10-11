@@ -150,7 +150,8 @@ function connect(registrationCallback: () => any,
             // Only attempt to reconnect if we aren't shutting down
             if (reconnect) {
                 register(registrationCallback, configuration, requestProcessor)
-                    .then(reg => connect(registrationCallback, reg, configuration, requestProcessor));
+                    .then(reg => connect(registrationCallback, reg, configuration, requestProcessor))
+                    .then(() => resolve(ws));
             }
         });
 
