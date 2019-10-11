@@ -1,3 +1,5 @@
+import { IOptions } from "minimatch";
+import * as multimatch from "multimatch";
 import { AbstractScriptedFlushable } from "../../internal/common/AbstractScriptedFlushable";
 import { RepoRef } from "../../operations/common/RepoId";
 import { logger } from "../../util/logger";
@@ -13,9 +15,6 @@ import {
     FileStream,
     Project,
 } from "../Project";
-
-import { IOptions } from "minimatch";
-import * as multimatch from "multimatch";
 import { toPromise } from "../util/projectUtils";
 
 /**
@@ -159,6 +158,6 @@ export function globMatchesWithin(files: File[], globPatterns?: string[], opts?:
         return files || [];
     }
     const paths = (files || []).map(f => f.path);
-    const matchingPaths = multimatch(paths, globPatterns, opts);
+    const matchingPaths = multimatch(paths, globPatterns, { matchBase: true, ...(opts || {})});
     return files.filter(f => matchingPaths.includes(f.path));
 }
