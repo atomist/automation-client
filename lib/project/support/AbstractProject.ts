@@ -1,5 +1,5 @@
+import * as micromatch from "micromatch";
 import { IOptions } from "minimatch";
-import * as multimatch from "multimatch";
 import { AbstractScriptedFlushable } from "../../internal/common/AbstractScriptedFlushable";
 import { RepoRef } from "../../operations/common/RepoId";
 import { logger } from "../../util/logger";
@@ -158,6 +158,7 @@ export function globMatchesWithin(files: File[], globPatterns?: string[], opts?:
         return files || [];
     }
     const paths = (files || []).map(f => f.path);
-    const matchingPaths = multimatch(paths, globPatterns, { matchBase: true, ...(opts || {})});
+
+    const matchingPaths = micromatch(paths, globPatterns,  opts);
     return files.filter(f => matchingPaths.includes(f.path));
 }
