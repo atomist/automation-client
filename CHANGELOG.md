@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Use host configuration in Express listen call. [#607](https://github.com/atomist/automation-client/issues/607)
 -   Consolidates ProjectUtils files. Resolves #229. [#617](https://github.com/atomist/automation-client/issues/617)
+-   Fix retry when WS closes during startup. [5af51f1](https://github.com/atomist/automation-client/commit/5af51f1df906d0f7e4a225e07bda37c4ae56aba7)
 
 ## [1.7.0](https://github.com/atomist/automation-client-ts/compare/1.6.2...1.7.0) - 2019-09-09
 
