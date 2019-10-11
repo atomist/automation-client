@@ -1,7 +1,5 @@
-
+import { Options } from "micromatch";
 import * as spigot from "stream-spigot";
-
-import { IOptions } from "minimatch";
 import { RepoRef } from "../../operations/common/RepoId";
 import {
     File,
@@ -155,7 +153,7 @@ export class InMemoryProject extends AbstractProject {
         return this.memFiles.some(f => f.path === path);
     }
 
-    public streamFilesRaw(globPatterns: string[], opts: IOptions): FileStream {
+    public streamFilesRaw(globPatterns: string[], opts: Options): FileStream {
         const matchingFiles = globMatchesWithin(this.memFiles, globPatterns, opts);
         return spigot.array({ objectMode: true },
             matchingFiles,

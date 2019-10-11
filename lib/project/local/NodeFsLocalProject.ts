@@ -1,9 +1,7 @@
+import * as fg from "fast-glob";
 import * as fs from "fs-extra";
-import * as gs from "glob-stream";
 import * as fpath from "path";
 import * as stream from "stream";
-
-import * as globby from "globby";
 
 import {
     RepoRef,
@@ -239,39 +237,34 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
     }
 
     protected async getFilesInternal(globPatterns: string[]): Promise<File[]> {
-        const optsToUse = {
-            // We can override these defaults...
-            nodir: true,
-            allowEmpty: true,
-            // ...but we force this one
+        const optsToUse: fg.Options = {
+            onlyFiles: true,
             cwd: this.baseDir,
         };
-        // const paths = await glob.promise(`{${globPatterns.join(",")}}`, optsToUse);
-        const paths = await globby(globPatterns, optsToUse);
+        const paths = await fg(globPatterns, optsToUse);
         const files = paths.map(path => new NodeFsLocalFile(this.baseDir, path));
         return files;
     }
 
-    public streamFilesRaw(globPatterns: string[], opts: {}): FileStream {
+    public streamFilesRaw(globPatterns: string[], opts: fg.Options = {}): FileStream {
         // Fight arrow function "this" issue
         const baseDir = this.baseDir;
         const toFileTransform = new stream.Transform({ objectMode: true });
 
         toFileTransform._transform = function(chunk: any, encoding: string, done: (e?: any) => void): void {
-            const f = new NodeFsLocalFile(baseDir, pathWithinArchive(baseDir, chunk.path));
+            const f = new NodeFsLocalFile(baseDir, chunk);
             this.push(f);
             done();
         };
 
-        const optsToUse = {
+        const optsToUse: fg.Options = {
             // We can override these defaults...
-            nodir: true,
-            allowEmpty: true,
+            onlyFiles: true,
             ...opts,
             // ...but we force this one
             cwd: this.baseDir,
         };
-        return gs(globPatterns, optsToUse)
+        return fg.stream(globPatterns, optsToUse)
             .pipe(toFileTransform);
     }
 
@@ -279,10 +272,6 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         return fpath.join(this.baseDir, path);
     }
 
-}
-
-function pathWithinArchive(baseDir: string, rawPath: string): string {
-    return rawPath.substr(baseDir.length);
 }
 
 // construct a useful exception

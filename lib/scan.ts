@@ -1,4 +1,5 @@
 import * as appRoot from "app-root-path";
+import * as fg from "fast-glob";
 import { Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
@@ -98,10 +99,9 @@ export function enableDefaultScanning(configuration: Configuration): Configurati
 }
 
 function scan(patterns: string[]): void {
-    const glob = require("glob");
+    const ignore = ["**/node_modules/**", "**/.git/**", "**/*Test.js", "**/*Tests.js"];
     patterns.forEach(pattern => {
-        const ignore = ["**/node_modules/**", "**/.git/**", "**/*Test.js", "**/*Tests.js"];
-        const files = glob.sync(pattern, { ignore });
+        const files = fg.sync(pattern, { ignore });
         files.forEach(safeRequire);
     });
 }

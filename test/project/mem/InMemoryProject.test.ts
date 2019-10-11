@@ -1,3 +1,4 @@
+import * as micromatch from "micromatch";
 import * as path from "path";
 import * as assert from "power-assert";
 
@@ -6,9 +7,6 @@ import { AllFiles } from "../../../lib/project/fileGlobs";
 import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import { toPromise } from "../../../lib/project/util/projectUtils";
-
-import * as minimatch from "minimatch";
-import multimatch = require("multimatch");
 
 /* tslint:disable:max-file-line-count */
 
@@ -57,23 +55,16 @@ describe("InMemoryProject", () => {
                 "github/workflows/yours.yaml"]);
         });
 
-        // TODO does this does NOT fail because of the git exclusion
         it("dot glob", async () => {
-            const p = InMemoryProject.of({
-                path: ".github/workflows/mine.yml",
-                content: "x",
-            }, {
-                path: ".github/workflows/yours.yaml",
-                content: "x",
-            });
+            const p = InMemoryProject.of(
+                { path: ".github/workflows/mine.yml", content: "x" },
+                { path: ".git/config", content: "x" },
+                { path: ".github/workflows/yours.yaml", content: "x" },
+            );
             const allFiles = await p.getFiles(".github/workflows/*.y{,a}ml");
-            // Why does this work?
-            assert(minimatch.match([".github/workflows/yours.yaml"], ".github/workflows/*.y{,a}ml"));
-            assert(multimatch([".github/workflows/yours.yaml"], ".github/workflows/*.y{,a}ml"));
-
-            assert.deepStrictEqual(allFiles.map(f => f.path), [
-                ".github/workflows/mine.yml",
-                ".github/workflows/yours.yaml"]);
+            assert(micromatch.match([".github/workflows/yours.yaml"], ".github/workflows/*.y{,a}ml"));
+            const e = [".github/workflows/mine.yml", ".github/workflows/yours.yaml"];
+            assert.deepStrictEqual(allFiles.map(f => f.path), e);
         });
 
         it("nested dot glob", async () => {
@@ -103,9 +94,9 @@ describe("InMemoryProject", () => {
                 { path: "config/exclude.ts", content: "{ node: true }" },
             );
             const paths = ["config/**", "!config/exclude.*"];
-            assert(minimatch.match(["config/this.js"], "config/**"));
-            assert(minimatch.match(["config/other.ts"], "config/**"));
-            assert(minimatch.match(["config/exclude.ts"], "!config/exclude.*"));
+            assert(micromatch.match(["config/this.js"], "config/**"));
+            assert(micromatch.match(["config/other.ts"], "config/**"));
+            assert(micromatch.match(["config/exclude.ts"], "!config/exclude.*"));
 
             const files = await p.getFiles(paths);
             assert.strictEqual(files.length, 2);
