@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Do not create typings dir if not creating types. [#609](https://github.com/atomist/automation-client/issues/609)
 -   Clean up tmp dirs on shutdown. [#614](https://github.com/atomist/automation-client/issues/614)
 -   Clean up configuration code and docs. [#615](https://github.com/atomist/automation-client/issues/615)
+-   Switch to globby for glob matching. [#618](https://github.com/atomist/automation-client/issues/618)
 
 ### Deprecated
 
