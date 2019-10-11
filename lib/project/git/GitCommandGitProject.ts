@@ -116,8 +116,9 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
                         public baseDir: string,
                         private readonly credentials: ProjectOperationCredentials,
                         release: ReleaseFunction,
-                        public provenance?: string) {
-        super(id, baseDir, release);
+                        public provenance?: string,
+                        shouldCache: boolean = false) {
+        super(id, baseDir, release, shouldCache);
         this.branch = (id.branch || id.sha) || "master";
         logger.debug(`Created GitProject`);
     }

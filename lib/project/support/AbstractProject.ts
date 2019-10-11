@@ -34,7 +34,8 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
         return !!this.id ? this.id.repo : undefined;
     }
 
-    protected constructor(public id: RepoRef) {
+    protected constructor(public id: RepoRef,
+                          private readonly shouldCache: boolean = false) {
         super();
     }
 
@@ -72,7 +73,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
             (typeof globPatterns === "string" ? [globPatterns] : globPatterns) :
             [];
         // Deliberately checking truthiness of promise
-        if (!this.cachedFiles) {
+        if (!this.cachedFiles || !this.shouldCache) {
             const globsToUse = [...DefaultFiles];
             this.cachedFiles = this.getFilesInternal(globsToUse);
         }
