@@ -243,6 +243,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
             // We can override these defaults...
             nodir: true,
             allowEmpty: true,
+            dot: true,
             // ...but we force this one
             cwd: this.baseDir,
         };

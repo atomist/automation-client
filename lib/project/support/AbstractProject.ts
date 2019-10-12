@@ -76,7 +76,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
             const globsToUse = [...DefaultFiles];
             this.cachedFiles = this.getFilesInternal(globsToUse);
         }
-        return globMatchesWithin(await this.cachedFiles, globPatternsToUse);
+        return globMatchesWithin(await this.cachedFiles, globPatternsToUse, { dot: true });
     }
 
     /**
