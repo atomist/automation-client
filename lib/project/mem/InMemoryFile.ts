@@ -22,6 +22,7 @@ export class InMemoryFile extends AbstractFile {
 
     public setContentSync(content: string): this {
         this.content = content;
+        this.invalidateCache();
         return this;
     }
 
