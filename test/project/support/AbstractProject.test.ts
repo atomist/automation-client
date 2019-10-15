@@ -42,7 +42,7 @@ describe("AbstractProject", () => {
             assert(matches.length > 1);
             assert(!matches.some(m => m.path.startsWith("node_modules")));
 
-        }).timeout(30000);
+        }).timeout(60000);
 
     });
 
