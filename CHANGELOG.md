@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Clean up tmp dirs on shutdown. [#614](https://github.com/atomist/automation-client/issues/614)
 -   Clean up configuration code and docs. [#615](https://github.com/atomist/automation-client/issues/615)
 -   Switch to globby for glob matching. [#618](https://github.com/atomist/automation-client/issues/618)
+-   Consolidate on micromatch and fast-glob. [#620](https://github.com/atomist/automation-client/issues/620)
 
 ### Deprecated
 
