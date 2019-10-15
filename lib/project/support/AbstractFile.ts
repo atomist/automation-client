@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import { AbstractScriptedFlushable } from "../../internal/common/AbstractScriptedFlushable";
 import { File } from "../File";
 
@@ -56,4 +57,8 @@ export abstract class AbstractFile extends AbstractScriptedFlushable<File> imple
 
     public abstract isBinary(): Promise<boolean>;
 
+    protected invalidateCache(): this {
+        _.keys(this.cache).forEach(k => delete this.cache[k]);
+        return this;
+    }
 }
