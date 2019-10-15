@@ -36,11 +36,12 @@ export class NodeFsLocalFile extends AbstractFile implements LocalFile {
 
     public setContent(content: string): Promise<this> {
         return fs.writeFile(this.realPath, content)
-            .then(_ => this);
+            .then(() => this.invalidateCache());
     }
 
     public setContentSync(content: string): this {
         fs.writeFileSync(this.realPath, content);
+        this.invalidateCache();
         return this;
     }
 
