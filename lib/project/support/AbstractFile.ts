@@ -59,5 +59,6 @@ export abstract class AbstractFile extends AbstractScriptedFlushable<File> imple
 
     protected invalidateCache(): this {
         _.keys(this.cache).forEach(k => delete this.cache[k]);
+        return this;
     }
 }
