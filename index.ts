@@ -109,12 +109,14 @@ export {
 } from "./lib/operations/common/gitHubRepoLoader";
 export {
     GitHubRepoRef,
+    isGitHubRepoRef,
 } from "./lib/operations/common/GitHubRepoRef";
 export {
     RemoteLocator,
 } from "./lib/operations/common/params/RemoteLocator";
 export { validationPatterns };
 export {
+    isTokenCredentials,
     ProjectOperationCredentials,
     TokenCredentials,
 } from "./lib/operations/common/ProjectOperationCredentials";
