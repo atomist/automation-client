@@ -115,6 +115,7 @@ export {
 } from "./lib/operations/common/params/RemoteLocator";
 export { validationPatterns };
 export {
+    isTokenCredentials,
     ProjectOperationCredentials,
     TokenCredentials,
 } from "./lib/operations/common/ProjectOperationCredentials";
