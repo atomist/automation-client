@@ -93,7 +93,7 @@
     "heavy": "^6.1.2",
     "helmet": "^3.18.0",
     "hot-shots": "^6.3.0",
-    "https-proxy-agent": "^2.2.1",
+    "https-proxy-agent": "^3.0.0",
     "isbinaryfile": "^4.0.0",
     "json-diff": "^0.5.4",
     "json-stringify-safe": "^5.0.1",
