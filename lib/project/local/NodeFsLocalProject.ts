@@ -247,7 +247,7 @@ export class NodeFsLocalProject extends AbstractProject implements LocalProject 
         return files;
     }
 
-    public streamFilesRaw(globPatterns: string[], opts: fg.Options = {}): FileStream {
+    public streamFilesRaw(globPatterns: string[], opts: fg.Options): FileStream {
         // Fight arrow function "this" issue
         const baseDir = this.baseDir;
         const toFileTransform = new stream.Transform({ objectMode: true });

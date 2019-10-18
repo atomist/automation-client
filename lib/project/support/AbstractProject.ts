@@ -1,3 +1,4 @@
+import { Options } from "fast-glob";
 import * as micromatch from "micromatch";
 import { AbstractScriptedFlushable } from "../../internal/common/AbstractScriptedFlushable";
 import { RepoRef } from "../../operations/common/RepoId";
@@ -59,7 +60,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
         return this.streamFilesRaw(globsToUse, { dot: true });
     }
 
-    public abstract streamFilesRaw(globPatterns: string[], opts: {}): FileStream;
+    public abstract streamFilesRaw(globPatterns: string[], opts: Options): FileStream;
 
     /**
      * Get files matching these patterns
