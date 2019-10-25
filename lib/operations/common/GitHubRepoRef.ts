@@ -42,6 +42,17 @@ const FullGitHubDotComBase = "https://api.github.com/";
  */
 export class GitHubRepoRef extends AbstractRemoteRepoRef {
 
+    /**
+     * Create a GitHubRepoRef instance.
+     * @param params Object with the following properties:
+     *                 owner: Repo owner
+     *                 repo: Repo name
+     *                 sha: Commit SHA to checkout
+     *                 rawApiBase: Full GitHub API base URL
+     *                 path: Path within the Git repository to use as project root
+     *                 branch: Branch to checkout
+     *                 rawRemoteBase: Full GitHub remote base URL
+     */
     public static from(params: { owner: string, repo: string, sha?: string, rawApiBase?: string, path?: string, branch?: string }): GitHubRepoRef {
         if (params.sha && !params.sha.match(GitShaRegExp.pattern)) {
             throw new Error("You provided an invalid SHA: " + params.sha);
@@ -50,13 +61,31 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
         return result;
     }
 
-    public readonly kind = "github";
+    public readonly kind: string = "github";
 
     public readonly apiBase: string;
 
-    constructor(owner: string, repo: string, sha?: string, rawApiBase = GitHubDotComBase, path?: string, branch?: string, remoteBase?: string) {
+    /**
+     * Create a GitHubRepoRef instance.  It may be easier to use [[GitHubRepoRef.from]].
+     * @param owner Repo owner
+     * @param repo Repo name
+     * @param sha Commit SHA to checkout
+     * @param rawApiBase Full GitHub API base URL
+     * @param path Path within the Git repository to use as project root
+     * @param branch Branch to checkout
+     * @param rawRemoteBase Full GitHub remote base URL
+     */
+    constructor(
+        owner: string,
+        repo: string,
+        sha?: string,
+        rawApiBase: string = GitHubDotComBase,
+        path?: string,
+        branch?: string,
+        rawRemoteBase?: string,
+    ) {
         super(rawApiBase === GitHubDotComBase || rawApiBase === FullGitHubDotComBase ? ProviderType.github_com : ProviderType.ghe,
-            remoteBase || apiBaseToRemoteBase(rawApiBase), rawApiBase, owner, repo, sha, path, branch);
+            rawRemoteBase || apiBaseToRemoteBase(rawApiBase), rawApiBase, owner, repo, sha, path, branch);
     }
 
     public createRemote(creds: ProjectOperationCredentials, description: string, visibility: string): Promise<ActionResult<this>> {
@@ -160,7 +189,7 @@ function headers(credentials: ProjectOperationCredentials): { headers: any } {
     };
 }
 
-function apiBaseToRemoteBase(rawApiBase: string) {
+function apiBaseToRemoteBase(rawApiBase: string): string {
     if (rawApiBase.includes("api.github.com")) {
         return "https://github.com";
     }

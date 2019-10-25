@@ -36,13 +36,15 @@ import {
  */
 export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
 
+    /** URL scheme from applied to both API and remote bases. */
     public readonly scheme: "http://" | "https://";
 
+    /** API URL without the scheme or trailing '/'. */
     public readonly apiBase: string;
 
     public readonly abstract kind: string;
 
-    /** Remote url not including scheme or trailing '/' */
+    /** Git remote URL not including scheme or trailing '/' */
     public readonly remoteBase: string;
 
     /**
@@ -74,11 +76,11 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
         this.remoteBase = remoteBase;
     }
 
-    get url() {
+    get url(): string {
         return `${this.scheme}${this.remoteBase}/${this.owner}/${this.repo}`;
     }
 
-    public cloneUrl(creds: ProjectOperationCredentials) {
+    public cloneUrl(creds: ProjectOperationCredentials): string {
         if (!!creds && isBasicAuthCredentials(creds)) {
             return `${this.scheme}${encodeURIComponent(creds.username)}:${encodeURIComponent(creds.password)}@` +
                 `${this.remoteBase}/${this.pathComponent}.git`;
@@ -103,7 +105,7 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
         return this.owner + "/" + this.repo;
     }
 
-    public abstract createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>>;
+    public abstract createRemote(creds: ProjectOperationCredentials, description: string, visibility: string): Promise<ActionResult<this>>;
 
     public abstract setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>>;
 
