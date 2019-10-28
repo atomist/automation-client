@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 -   Introduce caching to Project API. [#606](https://github.com/atomist/automation-client/issues/606)
+-   Add exports to index. [#624](https://github.com/atomist/automation-client/issues/624)
 
 ### Changed
 
