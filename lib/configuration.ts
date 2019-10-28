@@ -824,8 +824,10 @@ export function resolveEnvironmentVariables(cfg: Configuration): void {
  * Placeholders should be of form ${ENV_VAR}. Placeholders support default values
  * in case they aren't defined: ${ENV_VAR:default value}
  */
-export async function resolvePlaceholders(cfg: Configuration, replacer: (value: string) => Promise<string> = resolvePlaceholder): Promise<void> {
-    await resolvePlaceholdersRecursively(cfg, [], replacer);
+export async function resolvePlaceholders(cfg: Configuration,
+                                          replacer: (value: string) => Promise<string> = resolvePlaceholder,
+                                          visited: any[] = [cfg.sdm, cfg.local, cfg.events, cfg.commands, cfg.listeners]): Promise<void> {
+    await resolvePlaceholdersRecursively(cfg, visited, replacer);
 }
 
 async function resolvePlaceholdersRecursively(obj: any, visited: any[], replacer: (value: string) => Promise<string>): Promise<void> {
