@@ -9,5 +9,5 @@ export interface BasicAuthCredentials extends ProjectOperationCredentials {
 
 export function isBasicAuthCredentials(o: any): o is BasicAuthCredentials {
     const c = o as BasicAuthCredentials;
-    return !!c.username && !!c.password;
+    return !!c && !!c.username && !!c.password;
 }
