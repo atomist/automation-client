@@ -1,3 +1,4 @@
+import * as appRoot from "app-root-path";
 import * as cluster from "cluster";
 import * as fs from "fs-extra";
 import * as _ from "lodash";
@@ -5,13 +6,12 @@ import * as logform from "logform";
 import * as os from "os";
 import * as p from "path";
 import * as serializeError from "serialize-error";
+import * as trace from "stack-trace";
 import * as winston from "winston";
 import * as Transport from "winston-transport";
 import { Configuration } from "../configuration";
 import * as context from "../internal/util/cls";
 import { redactLog } from "./redact";
-import * as trace from "stack-trace";
-import * as appRoot from "app-root-path";
 
 const winstonLogger = winston.createLogger({
     level: "debug",
