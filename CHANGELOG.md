@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Introduce caching to Project API. [#606](https://github.com/atomist/automation-client/issues/606)
 -   Add exports to index. [#624](https://github.com/atomist/automation-client/issues/624)
+-   Add support for logging the callsite. [0121bce](https://github.com/atomist/automation-client/commit/0121bce726e300c9a1cd8cb2ded3b3a188b9fdd8)
 
 ### Changed
 
