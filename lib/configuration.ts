@@ -263,6 +263,8 @@ export interface AutomationServerOptions extends AutomationOptions {
     logging?: {
         /** Log level, default is "info" */
         level?: "silly" | "debug" | "verbose" | "info" | "warn" | "error";
+        /** Log the file name and line number of the JS file calling the log method */
+        callsite?: boolean,
         /**
          * Custom log configuration, useful if your logging solution
          * requires host, port, token, etc. configuration.
@@ -1135,6 +1137,7 @@ export const LocalDefaultConfiguration: Configuration = {
     },
     logging: {
         level: "info",
+        callsite: false,
         file: {
             enabled: true,
             level: "debug",

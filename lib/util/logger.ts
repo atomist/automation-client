@@ -10,6 +10,8 @@ import * as Transport from "winston-transport";
 import { Configuration } from "../configuration";
 import * as context from "../internal/util/cls";
 import { redactLog } from "./redact";
+import * as trace from "stack-trace";
+import * as appRoot from "app-root-path";
 
 const winstonLogger = winston.createLogger({
     level: "debug",
@@ -96,6 +98,7 @@ export interface LoggingConfiguration {
     };
     custom?: Transport[];
     redact?: boolean;
+    callsites?: boolean;
 }
 
 /**
@@ -173,7 +176,7 @@ export function configureLogging(config: LoggingConfiguration): void {
         if (config.console.enabled === true) {
             const ct = new winston.transports.Console({
                 level: validateLevel(config.console.level || "info"),
-                format: getFormat(config.console.format, config.redact),
+                format: getFormat(config.console.format, config.redact, config.callsites),
             });
 
             if (config.console.redirect === true) {
@@ -218,7 +221,7 @@ export function configureLogging(config: LoggingConfiguration): void {
                 tailable: true,
                 // zippedArchive: true, // see https://github.com/winstonjs/winston/issues/1128
                 format: winston.format.combine(
-                    getFormat(config.file.format, config.redact),
+                    getFormat(config.file.format, config.redact, config.callsites),
                     winston.format.uncolorize(),
                 ),
             });
@@ -270,6 +273,7 @@ export function clientLoggingConfiguration(configuration: Configuration): Loggin
             };
         }
         lc.custom = _.get(configuration, "logging.custom.transports");
+        lc.callsites = _.get(configuration, "logging.callsite");
     }
     lc.redact = configuration.redact.log;
     return lc;
@@ -281,6 +285,34 @@ function validateLevel(level: string): string {
         throw new Error(`Log level '${level}' is invalid. Only levels '${levels.join(", ")}' are allowed`);
     }
     return level;
+}
+
+export function callsite(logInfo: logform.TransformableInfo): logform.TransformableInfo {
+    const oldLimit = Error.stackTraceLimit;
+    try {
+        Error.stackTraceLimit = Infinity;
+        throw new Error();
+    } catch (e) {
+        const root = appRoot.path;
+        const callsites = trace.parse(e).map(l => ({
+            fileName: l.getFileName(),
+            lineNumber: l.getLineNumber(),
+        })).filter(cs => !!cs.fileName).reverse();
+        const callsite = callsites[callsites.findIndex(cs => cs.fileName.includes("node_modules/winston")) - 1];
+        if (!!callsite) {
+            return {
+                ...logInfo,
+                callsite: {
+                    ...callsite,
+                    fileName: callsite.fileName.split(root)[1].slice(1),
+                },
+            };
+        }
+    } finally {
+        Error.stackTraceLimit = oldLimit;
+    }
+
+    return logInfo;
 }
 
 /* tslint:disable:cyclomatic-complexity */
@@ -312,9 +344,14 @@ const clientFormat = info => {
         }
     }
 
+    let callsite;
+    if (!!info.callsite) {
+        callsite = ` [${c.colorize(info.level, info.callsite.fileName)}:${c.colorize(info.level, info.callsite.lineNumber || -1)}]`;
+    }
+
     const level = c.colorize(info.level, _.padEnd(info.level, 5));
 
-    let formatted = info.timestamp + (ctx ? " [" + ctx + "]" : "")
+    let formatted = info.timestamp + (!!callsite ? callsite : "") + (!!ctx ? " [" + ctx + "]" : "")
         + " [" + level + "] " + (info.message ? info.message : "");
 
     if (info.meta) {
@@ -375,12 +412,13 @@ function redirectConsoleLogging(): void {
 }
 /* tslint:enable:no-console */
 
-function getFormat(format: LoggingFormat, redact: boolean): logform.Format {
+function getFormat(format: LoggingFormat, redact: boolean, callsites: boolean): logform.Format {
     switch (format) {
         case LoggingFormat.Full:
             return winston.format.combine(
                 ...(redact ? [winston.format(redactLog)()] : []),
                 winston.format.timestamp(),
+                ...(callsites ? [winston.format(callsite)()] : []),
                 winston.format.splat(),
                 winston.format.printf(clientFormat),
             );
@@ -389,6 +427,7 @@ function getFormat(format: LoggingFormat, redact: boolean): logform.Format {
                 ...(redact ? [winston.format(redactLog)()] : []),
                 winston.format.colorize(),
                 winston.format.splat(),
+                ...(callsites ? [winston.format(callsite)()] : []),
                 winston.format.simple(),
             );
         case LoggingFormat.None:
@@ -396,6 +435,7 @@ function getFormat(format: LoggingFormat, redact: boolean): logform.Format {
             return winston.format.combine(
                 ...(redact ? [winston.format(redactLog)()] : []),
                 winston.format.splat(),
+                ...(callsites ? [winston.format(callsite)()] : []),
                 winston.format.printf(info => info.message),
             );
     }
