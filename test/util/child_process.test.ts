@@ -175,7 +175,8 @@ describe("child_promise", () => {
                 logCommand: true,
             };
             const result = await spawnPromise("node", ["-e", script], opts);
-            assert(output === `/--\n${result.cmdString} (PID ${result.pid})\n\\--\n`);
+            assert(output === `Spawned: ${result.cmdString} (PID ${result.pid})\n` +
+                `Child process close with code 0 and signal null: ${result.cmdString}\n`);
         });
 
     });

@@ -24,7 +24,10 @@ import * as spawn from "cross-spawn";
 import * as process from "process";
 import stripAnsi from "strip-ansi";
 import * as treeKill from "tree-kill";
-import { logger } from "./logger";
+import {
+    LeveledLogMethod,
+    logger,
+} from "./logger";
 
 export { spawn };
 
@@ -149,16 +152,29 @@ export async function spawnPromise(cmd: string, args: string[] = [], opts: Spawn
             logEncoding = optsToUse.encoding;
             optsToUse.encoding = "buffer";
         }
-        logger.debug(`Running: ${cmdString}`);
-        const childProcess = spawn(cmd, args, optsToUse);
-        logger.debug(`Spawned PID ${childProcess.pid}: ${cmdString}`);
-        if (optsToUse.log && optsToUse.logCommand) {
-            optsToUse.log.write(`/--\n${cmdString} (PID ${childProcess.pid})\n\\--\n`);
+
+        function pLog(data: string): void {
+            const formatted = (optsToUse.log && optsToUse.log.stripAnsi) ? stripAnsi(data) : data;
+            optsToUse.log.write(formatted);
         }
+
+        function commandLog(data: string, l: LeveledLogMethod = logger.debug): void {
+            if (optsToUse.log && optsToUse.logCommand) {
+                const terminated = (data.endsWith("\n")) ? data : data + "\n";
+                pLog(terminated);
+            } else {
+                l(data);
+            }
+        }
+
+        logger.debug(`Spawning: ${cmdString}`);
+        const childProcess = spawn(cmd, args, optsToUse);
+        commandLog(`Spawned: ${cmdString} (PID ${childProcess.pid})`);
+
         let timer: NodeJS.Timer;
         if (optsToUse.timeout) {
             timer = setTimeout(() => {
-                logger.warn(`Child process timeout expired, killing command: ${cmdString}`);
+                commandLog(`Child process timeout expired, killing command: ${cmdString}`, logger.warn);
                 killProcess(childProcess.pid, optsToUse.killSignal);
             }, optsToUse.timeout);
         }
@@ -166,11 +182,8 @@ export async function spawnPromise(cmd: string, args: string[] = [], opts: Spawn
         let stdout: string = "";
         if (optsToUse.log) {
             function logData(data: Buffer): void {
-                const dataString = data.toString(logEncoding);
-                const formatted = (optsToUse.log.stripAnsi) ? stripAnsi(dataString) : dataString;
-                optsToUse.log.write(formatted);
+                pLog(data.toString(logEncoding));
             }
-
             childProcess.stderr.on("data", logData);
             childProcess.stdout.on("data", logData);
             stderr = stdout = "See log\n";
@@ -185,7 +198,7 @@ export async function spawnPromise(cmd: string, args: string[] = [], opts: Spawn
         /* tslint:disable:no-null-keyword */
         childProcess.on("close", (code, signal) => {
             timer = clearTimer(timer);
-            logger.debug(`Child process close with code ${code} and signal ${signal}: ${cmdString}`);
+            commandLog(`Child process close with code ${code} and signal ${signal}: ${cmdString}`);
             resolve({
                 cmdString,
                 pid: childProcess.pid,
@@ -200,7 +213,7 @@ export async function spawnPromise(cmd: string, args: string[] = [], opts: Spawn
         childProcess.on("error", err => {
             timer = clearTimer(timer);
             err.message = `Failed to run command: ${cmdString}: ${err.message}`;
-            logger.error(err.message);
+            commandLog(err.message, logger.error);
             resolve({
                 cmdString,
                 pid: childProcess.pid,
