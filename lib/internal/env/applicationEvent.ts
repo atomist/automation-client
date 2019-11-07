@@ -1,5 +1,7 @@
 import * as appRoot from "app-root-path";
+import * as fs from "fs";
 import * as os from "os";
+import * as path from "path";
 import { Configuration } from "../../configuration";
 import { HttpMethod } from "../../spi/http/httpClient";
 import { logger } from "../../util/logger";
@@ -48,7 +50,10 @@ async function sendEvent(state: "stopping" | "started",
  */
 export async function registerApplicationEvents(workspaceId: string,
                                                 configuration: Configuration): Promise<void> {
-
+    const gitInfo = path.join(appRoot.path, "git-info.json");
+    if (!fs.existsSync(gitInfo)) {
+        return;
+    }
     // tslint:disable-next-line:no-var-requires
     const git = require(`${appRoot.path}/git-info.json`);
     const sha = git.sha;
