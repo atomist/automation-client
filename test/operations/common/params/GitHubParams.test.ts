@@ -1,4 +1,3 @@
-
 import * as assert from "power-assert";
 import { GitHubRepoRef } from "../../../../lib/operations/common/GitHubRepoRef";
 import { GitHubTargetsParams } from "../../../../lib/operations/common/params/GitHubTargetsParams";

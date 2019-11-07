@@ -14,21 +14,21 @@ import { GitHubNameRegExp } from "./validationPatterns";
  */
 export abstract class TargetsParams implements Credentialed, RemoteLocator {
 
-    public abstract owner;
+    public abstract owner: string;
 
     /**
-     * Repo name. May be a repo name or a regex.
+     * Repo name. May be a repo name or a string containing a regular expression.
      */
-    public abstract repo;
+    public abstract repo: string;
 
-    public abstract sha;
+    public abstract sha: string;
 
-    public abstract branch;
+    public abstract branch: string;
 
     public abstract credentials: ProjectOperationCredentials;
 
-    get usesRegex() {
-        return !!this.repo && !GitHubNameRegExp.pattern.test(this.repo);
+    get usesRegex(): boolean {
+        return !!this.repo && (!GitHubNameRegExp.pattern.test(this.repo) || !this.owner);
     }
 
     public abstract repoRef: RemoteRepoRef;
@@ -44,6 +44,9 @@ export abstract class TargetsParams implements Credentialed, RemoteLocator {
             return my.owner === rr.owner && my.repo === rr.repo;
         }
         if (this.usesRegex) {
+            if (this.owner && this.owner !== rr.owner) {
+                return false;
+            }
             return new RegExp(this.repo).test(rr.repo);
         }
         return false;

@@ -80,7 +80,7 @@ describe("editorHandler", () => {
                 this.targets.owner = "foo";
             }
         }
-        const proj = InMemoryProject.from(new SimpleRepoId("a", "b"));
+        const proj = InMemoryProject.from(new SimpleRepoId("foo", "b"));
         const h = editorHandler(params => {
             assert(!!params);
             assert(params.targets.owner === "foo");
