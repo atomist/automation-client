@@ -53,7 +53,7 @@ export function registerShutdownHook(cb: () => Promise<number>, priority: number
  */
 export async function executeShutdownHooks(cb: () => never): Promise<never> {
     if (shutdownHooks.length === 0) {
-        logger.info("Shutting down");
+        // logger.info("Shutting down");
         cb();
         throw new Error(`async-exit-hook callback returned but should not have`);
     }
