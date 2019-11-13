@@ -158,7 +158,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
             });
     }
 
-    private async getDefaultReviewers(creds: ProjectOperationCredentials, repoId: number, head: string, base: string): Promise<string[]> {
+    protected async getDefaultReviewers(creds: ProjectOperationCredentials, repoId: number, head: string, base: string): Promise<string[]> {
         const restApiPath = `/rest/default-reviewers/1.0/${this.apiBasePathComponent}${this.repo}/reviewers`;
         const url = `${this.scheme}${noTrailingSlash(this.remoteBase)}${restApiPath}`;
         const queryParams = `sourceRepoId=${repoId}&targetRepoId=${repoId}&sourceRefId=${head}&targetRefId=${base}`;
