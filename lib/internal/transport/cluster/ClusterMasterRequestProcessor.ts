@@ -338,6 +338,18 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
         });
 
         cluster.on("exit", (worker, code, signal) => {
+            const workerId = worker.id;
+            // Remove all inflight work for died worker
+            for (const [k, v] of this.events.entries()) {
+                if (v.worker === workerId) {
+                    this.events.delete(k);
+                }
+            }
+            for (const [k, v] of this.commands.entries()) {
+                if (v.worker === workerId) {
+                    this.commands.delete(k);
+                }
+            }
             if (this.replaceWorkers) {
                 logger.warn(`Worker '${worker.id}' exited with status '${code}' and signal '${signal}', replacing...`);
                 attachEvents(cluster.fork(), new Deferred());
