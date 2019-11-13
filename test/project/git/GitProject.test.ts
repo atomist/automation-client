@@ -43,7 +43,7 @@ describe("GitProject", () => {
         }
         assert(them[0].baseDir !== them[1].baseDir, "two simultaneous projects in " + them[0].baseDir);
         await clean();
-    }).timeout(5000);
+    }).timeout(10000);
 
     it("knows about the branch passed by the repo ref", () => {
         const p = tempProject(new GitHubRepoRef("owneryo", "repoyo", "branchyo"));
