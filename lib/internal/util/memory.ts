@@ -35,7 +35,7 @@ export function mtrace(): string {
         if (!!filename) {
             logger.debug("mtrace dump written to '%s'", filename);
         } else {
-            logger.warn('mtrace not supported');
+            logger.warn("mtrace not supported");
         }
         broadcast({ type: "atomist:gc" });
         broadcast({ type: "atomist:mtrace" });
