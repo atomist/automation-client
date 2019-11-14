@@ -12,7 +12,7 @@ export interface MasterMessage {
 }
 
 export interface MasterManagementMessage {
-    type: "atomist:gc" | "atomist:heapdump";
+    type: "atomist:gc" | "atomist:heapdump" | "atomist:mtrace";
 }
 
 export interface WorkerMessage {

@@ -26,6 +26,30 @@ export function initMemoryMonitoring(dataDirectory: string = `${appRoot.path}/he
  * Create a head dump that can be downloaded and used to profile head usage.
  * @returns {string}
  */
+export function mtrace(): string {
+    try {
+        logger.debug("Memory statistics '%j'", memoryUsage());
+        const mtrace = require("mtrace");
+        gc();
+        const filename = mtrace.mtrace();
+        if (!!filename) {
+            logger.debug("mtrace dump written to '%s'", filename);
+        } else {
+            logger.warn('mtrace not supported');
+        }
+        broadcast({ type: "atomist:gc" });
+        broadcast({ type: "atomist:mtrace" });
+        return name;
+    } catch (err) {
+        logger.error("Failed to initialise mtrace. Required 'mtrace' module is missing or can't be" +
+            " loaded. Please install with 'npm install --save mtrace'");
+    }
+}
+
+/**
+ * Create a head dump that can be downloaded and used to profile head usage.
+ * @returns {string}
+ */
 export function heapDump(): string {
     try {
         logger.debug("Memory statistics '%j'", memoryUsage());
@@ -35,9 +59,11 @@ export function heapDump(): string {
         if (!fs.existsSync(DataDirectory)) {
             fs.mkdirSync(DataDirectory);
         }
+        gc();
         heapdump.writeSnapshot(`${DataDirectory}/${name}`, (err, filename) => {
             logger.debug("Heap dump written to '%s'", filename);
         });
+        broadcast({ type: "atomist:gc" });
         broadcast({ type: "atomist:heapdump" });
         return name;
     } catch (err) {

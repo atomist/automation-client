@@ -25,6 +25,7 @@ import { info } from "../../util/info";
 import {
     gc,
     heapDump,
+    mtrace,
 } from "../../util/memory";
 import { metrics } from "../../util/metric";
 import { guid } from "../../util/string";
@@ -91,6 +92,13 @@ export class ExpressServer {
         this.exp.put(`${ApiBase}/memory/heapdump`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 heapDump();
+                res.sendStatus(201);
+            });
+
+        this.exp.options(`${ApiBase}/memory/mtrace`, cors());
+        this.exp.put(`${ApiBase}/memory/mtrace`, cors(), this.adminRoute, this.authenticate,
+            (req, res) => {
+                mtrace();
                 res.sendStatus(201);
             });
 
