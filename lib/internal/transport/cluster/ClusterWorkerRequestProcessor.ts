@@ -27,6 +27,7 @@ import { CommandInvocation } from "../../invoker/Payload";
 import {
     gc,
     heapDump,
+    mtrace,
 } from "../../util/memory";
 import { poll } from "../../util/poll";
 import {
@@ -80,6 +81,8 @@ export class ClusterWorkerRequestProcessor extends AbstractRequestProcessor {
                 gc();
             } else if (msg.type === "atomist:heapdump") {
                 heapDump();
+            } else if (msg.type === "atomist:mtrace") {
+                mtrace();
             } else if (msg.type === "atomist:shutdown") {
                 logger.debug("Received shutdown message");
                 this.shutdownInitiated = true;
