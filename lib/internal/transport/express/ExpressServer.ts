@@ -60,6 +60,9 @@ export class ExpressServer {
         this.exp.get(`${ApiBase}/health`, cors(),
             (req, res) => {
                 const h = health();
+                if (h.status !== HealthStatus.Up) {
+                    logger.warn(`Health status: ${JSON.stringify(h)}`);
+                }
                 res.status(h.status === HealthStatus.Up ? 200 : 500).json(h);
             });
 
