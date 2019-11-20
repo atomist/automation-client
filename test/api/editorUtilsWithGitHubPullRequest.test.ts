@@ -26,8 +26,9 @@ describe("editorUtils", () => {
 
     describe("GitHub pull requests", () => {
 
-        before(function() {
+        before(function(): void {
             if (!GitHubToken) {
+                // tslint:disable-next-line:no-invalid-this
                 this.skip();
             }
         });
@@ -62,14 +63,15 @@ describe("editorUtils", () => {
                 await cleanAfterTest(p, repo);
                 throw e;
             }
-        }).timeout(15000);
+        }).timeout(20000);
 
     });
 
     describe("branch commit", () => {
 
-        before(function() {
+        before(function(): void {
             if (!GitHubToken) {
+                // tslint:disable-next-line:no-invalid-this
                 this.skip();
             }
         });
