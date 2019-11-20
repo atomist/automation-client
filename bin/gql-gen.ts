@@ -20,8 +20,6 @@ import { loadSchema } from "graphql-toolkit";
 import { RenameTypes } from "graphql-tools";
 import * as path from "path";
 
-/* tslint:disable:no-console */
-
 /**
  * Figure out whether the lib directory is named lib or src.  lib is
  * preferred, meaning if it exists, it is returned and if neither it
@@ -97,7 +95,7 @@ async function main(): Promise<void> {
         const graphqlFiles = await fg(graphQlGlob);
         const documents: Types.DocumentFile[] = [];
 
-        if (graphqlFiles && graphqlFiles.length > 0) {
+        if (schema === customSchemaLocation || graphqlFiles.length > 0) {
             for (const graphqlFile of graphqlFiles) {
                 const content = (await fs.readFile(graphqlFile)).toString();
                 const document = parse(content);
@@ -116,12 +114,12 @@ async function main(): Promise<void> {
             // Write the new types.ts content back out
             await fs.writeFile(gqlGenOutput, `/* tslint:disable */\n\n${typesContent}`, "utf8");
         } else {
-            console.info("No GraphQL files found in project, skipping type generation.");
+            process.stdout.write("No custom schema or GraphQL queries/subscriptions found in project, skipping type generation.\n");
         }
         process.exit(0);
 
     } catch (e) {
-        console.error(`Generating GraphQL types failed: ${e.message}`);
+        process.stderr.write(`Generating GraphQL types failed: ${e.message}\n`);
         process.exit(1);
     }
     throw new Error("Should never get here, process.exit() called above");
@@ -129,6 +127,6 @@ async function main(): Promise<void> {
 
 main()
     .catch((err: Error) => {
-        console.error(`Unhandled exception: ${err.message}`);
+        process.stderr.write(`Unhandled exception: ${err.message}\n`);
         process.exit(101);
     });
