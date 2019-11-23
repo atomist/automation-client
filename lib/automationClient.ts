@@ -51,6 +51,7 @@ export class AutomationClient implements RequestProcessor {
     public httpServer: ExpressServer;
     public webSocketHandler: RequestProcessor;
     public httpHandler: RequestProcessor;
+    public requestProcessor: RequestProcessor;
 
     private readonly defaultListeners: AutomationEventListener[] = [
         new MetricEnabledAutomationEventListener(),
@@ -60,7 +61,7 @@ export class AutomationClient implements RequestProcessor {
     ];
 
     constructor(public configuration: Configuration,
-                public requestProcessor?: RequestProcessor) {
+                public requestProcessorMaker?: (automations: AutomationServer, configuration: Configuration, listeners: AutomationEventListener[]) => RequestProcessor) {
         this.automations = new BuildableAutomationServer(configuration);
         (global as any).__runningAutomationClient = this as AutomationClient;
     }
@@ -116,6 +117,13 @@ export class AutomationClient implements RequestProcessor {
 
         const clientSig = `${this.configuration.name}:${this.configuration.version}`;
         const clientConf = stringify(this.configuration, obfuscateJson);
+
+        if (!!this.requestProcessorMaker) {
+            this.requestProcessor = this.requestProcessorMaker(
+                this.automations,
+                this.configuration,
+                [...this.defaultListeners, ...this.configuration.listeners]);
+        }
 
         if (!this.configuration.cluster.enabled) {
             logger.info(`Starting Atomist automation client ${clientSig}`);
@@ -253,8 +261,9 @@ export class AutomationClient implements RequestProcessor {
     }
 }
 
-export function automationClient(configuration: Configuration): AutomationClient {
-    const client = new AutomationClient(configuration);
+export function automationClient(configuration: Configuration,
+                                 requestProcessorMaker?: (automations: AutomationServer, configuration: Configuration, listeners: AutomationEventListener[]) => RequestProcessor): AutomationClient {
+    const client = new AutomationClient(configuration, requestProcessorMaker);
     configuration.commands.forEach(c => {
         client.withCommandHandler(c);
     });
