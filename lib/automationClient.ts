@@ -235,7 +235,7 @@ export class AutomationClient implements RequestProcessor {
 
     private runHttp(handlerMaker: () => ExpressRequestProcessor): Promise<any> {
         if (!this.configuration.http.enabled) {
-            return;
+            return Promise.resolve();
         }
 
         this.httpHandler = handlerMaker();
