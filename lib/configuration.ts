@@ -961,18 +961,21 @@ export function validateConfiguration(cfg: Configuration): void {
  * is modified to contain the final configuration values and returned
  * from this function.
  *
- * @param cfgPath path to file exporting the configuration object, if
+ * @param base    path to file exporting the configuration object, if
  *                not provided the package is searched for one
  * @return merged configuration object
  */
-export async function loadConfiguration(cfgPath?: string): Promise<Configuration> {
+export async function loadConfiguration(base?: string | Promise<Configuration>): Promise<Configuration> {
     // Register the logger globally so that downstream modules can see it
     (global as any).__logger = logger;
+
+    const cfgPath = typeof base === "string" ? base : undefined;
+    const cfgBase = typeof base !== "string" ? base : undefined;
 
     let cfg: Configuration;
     try {
         const defCfg = defaultConfiguration();
-        const autoCfg = (await loadAutomationConfig(cfgPath)) || (await loadIndexConfig());
+        const autoCfg = (await cfgBase) || (await loadAutomationConfig(cfgPath)) || (await loadIndexConfig());
         const userCfg = loadUserConfiguration(defCfg.name, defCfg.version);
         const atmPathCfg = loadAtomistConfigPath();
         const atmCfg = loadAtomistConfig();
