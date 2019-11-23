@@ -31,7 +31,6 @@ import {
 } from "../RequestProcessor";
 import { WebSocketLifecycle } from "./WebSocketLifecycle";
 import {
-    sendMessage,
     WebSocketCommandMessageClient,
     WebSocketEventMessageClient,
 } from "./WebSocketMessageClient";
