@@ -87,7 +87,7 @@ export class AutomationClient implements RequestProcessor {
 
     public processCommand(command: CommandIncoming, callback?: (result: Promise<HandlerResult>) => void): void {
         if (this.requestProcessor) {
-            return this.httpHandler.processCommand(command, callback);
+            return this.requestProcessor.processCommand(command, callback);
         } else if (this.webSocketHandler) {
             return this.webSocketHandler.processCommand(command, callback);
         } else if (this.httpHandler) {
@@ -99,7 +99,7 @@ export class AutomationClient implements RequestProcessor {
 
     public processEvent(event: EventIncoming, callback?: (results: Promise<HandlerResult[]>) => void): void {
         if (this.requestProcessor) {
-            return this.httpHandler.processEvent(event, callback);
+            return this.requestProcessor.processEvent(event, callback);
         } else if (this.webSocketHandler) {
             return this.webSocketHandler.processEvent(event, callback);
         } else if (this.httpHandler) {
