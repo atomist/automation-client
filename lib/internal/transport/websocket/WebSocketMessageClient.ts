@@ -36,14 +36,13 @@ import {
 } from "../RequestProcessor";
 import { WebSocketLifecycle } from "./WebSocketLifecycle";
 
-export abstract class AbstractWebSocketMessageClient extends MessageClientSupport {
+export abstract class AbstractMessageClient extends MessageClientSupport {
 
-    constructor(private readonly ws: WebSocketLifecycle,
-                private readonly request: CommandIncoming | EventIncoming,
-                private readonly correlationId: string,
-                private readonly team: { id: string, name?: string },
-                private readonly source: Source,
-                private readonly configuration: Configuration) {
+    constructor(protected readonly request: CommandIncoming | EventIncoming,
+                protected readonly correlationId: string,
+                protected readonly team: { id: string, name?: string },
+                protected readonly source: Source,
+                protected readonly configuration: Configuration) {
         super();
     }
 
@@ -56,8 +55,7 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
                            destinations: Destination | Destination[],
                            options: MessageOptions = {}): Promise<any> {
         if (!!msg && (msg as HandlerResponse).content_type === "application/x-atomist-continuation+json") {
-            this.ws.send(msg);
-            return Promise.resolve(msg);
+            return this.sendResponse(msg).then(() => msg);
         }
 
         const ts = this.ts(options);
@@ -187,9 +185,10 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
             response.body = JSON.stringify(msg);
             response.id = (options.id ? options.id : guid());
         }
-        this.ws.send(response);
-        return Promise.resolve(response);
+        return this.sendResponse(response).then(() => response);
     }
+
+    protected abstract sendResponse(response: any): Promise<void>;
 
     private ts(options: MessageOptions): number {
         if (options.id) {
@@ -201,6 +200,21 @@ export abstract class AbstractWebSocketMessageClient extends MessageClientSuppor
         } else {
             return undefined;
         }
+    }
+}
+
+export class AbstractWebSocketMessageClient extends AbstractMessageClient {
+    constructor(protected readonly ws: WebSocketLifecycle,
+                protected readonly request: CommandIncoming | EventIncoming,
+                protected readonly correlationId: string,
+                protected readonly team: { id: string, name?: string },
+                protected readonly source: Source,
+                protected readonly configuration: Configuration) {
+        super(request, correlationId, team, source, configuration);
+    }
+
+    protected async sendResponse(response: any): Promise<void> {
+        this.ws.send(response);
     }
 }
 

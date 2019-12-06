@@ -25,6 +25,7 @@ import { info } from "../../util/info";
 import {
     gc,
     heapDump,
+    mtrace,
 } from "../../util/memory";
 import { metrics } from "../../util/metric";
 import { guid } from "../../util/string";
@@ -59,6 +60,9 @@ export class ExpressServer {
         this.exp.get(`${ApiBase}/health`, cors(),
             (req, res) => {
                 const h = health();
+                if (h.status !== HealthStatus.Up) {
+                    logger.warn(`Health status: ${JSON.stringify(h)}`);
+                }
                 res.status(h.status === HealthStatus.Up ? 200 : 500).json(h);
             });
 
@@ -91,6 +95,13 @@ export class ExpressServer {
         this.exp.put(`${ApiBase}/memory/heapdump`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 heapDump();
+                res.sendStatus(201);
+            });
+
+        this.exp.options(`${ApiBase}/memory/mtrace`, cors());
+        this.exp.put(`${ApiBase}/memory/mtrace`, cors(), this.adminRoute, this.authenticate,
+            (req, res) => {
+                mtrace();
                 res.sendStatus(201);
             });
 

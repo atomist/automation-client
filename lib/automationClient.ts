@@ -51,6 +51,7 @@ export class AutomationClient implements RequestProcessor {
     public httpServer: ExpressServer;
     public webSocketHandler: RequestProcessor;
     public httpHandler: RequestProcessor;
+    public requestProcessor: RequestProcessor;
 
     private readonly defaultListeners: AutomationEventListener[] = [
         new MetricEnabledAutomationEventListener(),
@@ -59,7 +60,8 @@ export class AutomationClient implements RequestProcessor {
         new StartupTimeMessageUatomationEventListener(),
     ];
 
-    constructor(public configuration: Configuration) {
+    constructor(public configuration: Configuration,
+                public requestProcessorMaker?: (automations: AutomationServer, configuration: Configuration, listeners: AutomationEventListener[]) => RequestProcessor) {
         this.automations = new BuildableAutomationServer(configuration);
         (global as any).__runningAutomationClient = this as AutomationClient;
     }
@@ -84,7 +86,9 @@ export class AutomationClient implements RequestProcessor {
     }
 
     public processCommand(command: CommandIncoming, callback?: (result: Promise<HandlerResult>) => void): void {
-        if (this.webSocketHandler) {
+        if (this.requestProcessor) {
+            return this.requestProcessor.processCommand(command, callback);
+        } else if (this.webSocketHandler) {
             return this.webSocketHandler.processCommand(command, callback);
         } else if (this.httpHandler) {
             return this.httpHandler.processCommand(command, callback);
@@ -94,7 +98,9 @@ export class AutomationClient implements RequestProcessor {
     }
 
     public processEvent(event: EventIncoming, callback?: (results: Promise<HandlerResult[]>) => void): void {
-        if (this.webSocketHandler) {
+        if (this.requestProcessor) {
+            return this.requestProcessor.processEvent(event, callback);
+        } else if (this.webSocketHandler) {
             return this.webSocketHandler.processEvent(event, callback);
         } else if (this.httpHandler) {
             return this.httpHandler.processEvent(event, callback);
@@ -111,6 +117,13 @@ export class AutomationClient implements RequestProcessor {
 
         const clientSig = `${this.configuration.name}:${this.configuration.version}`;
         const clientConf = stringify(this.configuration, obfuscateJson);
+
+        if (!!this.requestProcessorMaker) {
+            this.requestProcessor = this.requestProcessorMaker(
+                this.automations,
+                this.configuration,
+                [...this.defaultListeners, ...this.configuration.listeners]);
+        }
 
         if (!this.configuration.cluster.enabled) {
             logger.info(`Starting Atomist automation client ${clientSig}`);
@@ -235,7 +248,7 @@ export class AutomationClient implements RequestProcessor {
 
     private runHttp(handlerMaker: () => ExpressRequestProcessor): Promise<any> {
         if (!this.configuration.http.enabled) {
-            return;
+            return Promise.resolve();
         }
 
         this.httpHandler = handlerMaker();
@@ -248,8 +261,9 @@ export class AutomationClient implements RequestProcessor {
     }
 }
 
-export function automationClient(configuration: Configuration): AutomationClient {
-    const client = new AutomationClient(configuration);
+export function automationClient(configuration: Configuration,
+                                 requestProcessorMaker?: (automations: AutomationServer, configuration: Configuration, listeners: AutomationEventListener[]) => RequestProcessor): AutomationClient {
+    const client = new AutomationClient(configuration, requestProcessorMaker);
     configuration.commands.forEach(c => {
         client.withCommandHandler(c);
     });

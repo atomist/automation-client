@@ -29,7 +29,8 @@ async function main(): Promise<void> {
         const registration = prepareRegistration(cfg);
 
         const chokidar = require("chokidar");
-        const watcher = chokidar.watch(["index.js", "lib/*.js", "lib/**/*.js"], { ignored: "\.ts" });
+        const additionalFilesToWatch = (process.env.ATOMIST_WATCH_PATHS || "").split(",");
+        const watcher = chokidar.watch(["index.js", "lib/*.js", "lib/**/*.js", ...additionalFilesToWatch], { ignored: "\.ts" });
 
         const indexPath = path.join(appRoot.path, "index.js");
         const libPath = path.join(appRoot.path, "lib");

@@ -1,5 +1,5 @@
 import { AutomationClient } from "./automationClient";
-import { InMemoryEventStore } from "./internal/event/InMemoryEventStore";
+import { NoOpEventStore } from "./internal/event/NoOpEventStore";
 import { EventStore } from "./spi/event/EventStore";
 
 ////////////////////////////////////////////////////////
@@ -7,7 +7,7 @@ let es: EventStore;
 
 function initEventStore(): void {
     if (!es) {
-        es = new InMemoryEventStore();
+        es = new NoOpEventStore();
     }
 }
 
