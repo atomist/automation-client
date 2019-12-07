@@ -64,15 +64,17 @@ export function subscription(options: SubscriptionOptions): string {
     return s;
 }
 
+export type SubscriptionVariables = Record<string,
+    string | boolean | number | ParameterEnum | string[] | boolean[] | number[] |
+    (() => string | boolean | number | ParameterEnum | string[] | boolean[] | number[])>;
+
 export interface SubscriptionOptions {
     subscription?: string;
     path?: string;
     name?: string;
     fragmentDir?: string;
     inline?: boolean;
-    variables?: {
-        [name: string]: string | boolean | number | ParameterEnum;
-    };
+    variables?: SubscriptionVariables;
     operationName?: string;
     moduleDir?: string;
 }
@@ -232,9 +234,7 @@ export function prettyPrintErrors(errors: GraphQLError[], q?: string): string {
 }
 
 export function replaceParameters(q: string,
-                                  parameters: {
-                                      [name: string]: string | boolean | number | ParameterEnum | string[] | boolean[] | number[] | (() => string | boolean | number | ParameterEnum | string[] | boolean[] | number[]);
-                                  } = {},
+                                  parameters: SubscriptionVariables = {},
                                   options: {
                                       hash: boolean;
                                   } = { hash: true }): string {
