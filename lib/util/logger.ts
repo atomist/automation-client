@@ -99,7 +99,7 @@ export interface LoggingConfiguration {
     custom?: Transport[];
     redact?: boolean;
     callsites?: boolean;
-    color?: boolean,
+    color?: boolean;
 }
 
 /**
