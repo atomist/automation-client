@@ -233,7 +233,7 @@ export function prettyPrintErrors(errors: GraphQLError[], q?: string): string {
 
 export function replaceParameters(q: string,
                                   parameters: {
-                                      [name: string]: string | boolean | number | ParameterEnum | string[] | boolean[] | number[];
+                                      [name: string]: string | boolean | number | ParameterEnum | string[] | boolean[] | number[] | (() => string | boolean | number | ParameterEnum | string[] | boolean[] | number[]);
                                   } = {},
                                   options: {
                                       hash: boolean;
@@ -246,7 +246,10 @@ export function replaceParameters(q: string,
             q = q.replace(result[2], "");
             for (const key in parameters) {
                 if (parameters.hasOwnProperty(key)) {
-                    const value = parameters[key] as any;
+                    let value = parameters[key] as any;
+                    if (typeof value === "function") {
+                        value = value();
+                    }
                     if (!value) {
                         q = replace(q, `,?\\s*${key}: \\$${key}`, "");
                     } else if (value.value) {

@@ -46,7 +46,7 @@ describe("GraphQL", () => {
 }`;
 
     it("should successfully replace subscription parameters", () => {
-        const result = replaceParameters(subscription, { registration: ["test"], owner: "owner" }, { hash: false});
+        const result = replaceParameters(subscription, { registration: ["test"], owner: () => "owner" }, { hash: false});
         assert.deepStrictEqual(result, `subscription FulfillGoalOnRequested {
   SdmGoal(state: [requested], owner: "owner") {
     fulfillment(registration: ["test"]) @required {
