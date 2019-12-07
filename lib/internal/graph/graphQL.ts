@@ -233,8 +233,11 @@ export function prettyPrintErrors(errors: GraphQLError[], q?: string): string {
 
 export function replaceParameters(q: string,
                                   parameters: {
-                                      [name: string]: string | boolean | number | ParameterEnum;
-                                  } = {}): string {
+                                      [name: string]: string | boolean | number | ParameterEnum | string[] | boolean[] | number[];
+                                  } = {},
+                                  options: {
+                                      hash: boolean;
+                                  } = { hash: true }): string {
     if (Object.keys(parameters).length > 0) {
         const exp = OperationParameterExpression;
         if (exp.test(q)) {
@@ -245,10 +248,8 @@ export function replaceParameters(q: string,
                 if (parameters.hasOwnProperty(key)) {
                     const value = parameters[key] as any;
                     if (!value) {
-                        throw new Error(`The value of variable '${key}' is undefined`);
-                    }
-                    // If value is defined it is a enum value
-                    if (value.value) {
+                        q = replace(q, `,?\\s*${key}: \\$${key}`, "");
+                    } else if (value.value) {
                         if (Array.isArray(value.value)) {
                             q = replace(q, `\\$${key}`, `[${value.value.join(", ")}]`);
                         } else {
@@ -260,9 +261,13 @@ export function replaceParameters(q: string,
                 }
             }
 
-            // Calulate hash to suffix the subscriptionName
-            const hash = generateHash(q);
-            q = replaceOperationName(q, `${result[1]}_${hash}`);
+            q = q.replace(/\(\s*\)/g, "");
+
+            if (options.hash) {
+                // Calculate hash to suffix the subscriptionName
+                const hash = generateHash(q);
+                q = replaceOperationName(q, `${result[1]}_${hash}`);
+            }
         }
     }
     return q;
