@@ -52,7 +52,7 @@ describe("GraphQL", () => {
     fulfillment(registration: ["test"]) @required {
       registration
     }
-}`)
+}`);
     });
 
     it("should successfully replace and remove missing subscription parameters", () => {
@@ -62,7 +62,7 @@ describe("GraphQL", () => {
     fulfillment(registration: ["test"]) @required {
       registration
     }
-}`)
+}`);
     });
 
     it("should successfully remove missing subscription parameters", () => {
@@ -78,7 +78,7 @@ describe("GraphQL", () => {
     fulfillment @required {
       registration
     }
-}`)
+}`);
     });
 
 });
