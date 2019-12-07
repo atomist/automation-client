@@ -99,6 +99,7 @@ export interface LoggingConfiguration {
     custom?: Transport[];
     redact?: boolean;
     callsites?: boolean;
+    color?: boolean,
 }
 
 /**
@@ -112,6 +113,7 @@ export const NoLogging: LoggingConfiguration = {
         enabled: false,
     },
     redact: true,
+    color: true,
 };
 
 /**
@@ -128,6 +130,7 @@ export const PlainLogging: LoggingConfiguration = {
         enabled: false,
     },
     redact: true,
+    color: true,
 };
 
 /**
@@ -144,6 +147,7 @@ export const MinimalLogging: LoggingConfiguration = {
         enabled: false,
     },
     redact: true,
+    color: true,
 };
 
 /**
@@ -160,6 +164,7 @@ export const ClientLogging: LoggingConfiguration = {
         enabled: false,
     },
     redact: true,
+    color: true,
 };
 
 /**
@@ -176,7 +181,7 @@ export function configureLogging(config: LoggingConfiguration): void {
         if (config.console.enabled === true) {
             const ct = new winston.transports.Console({
                 level: validateLevel(config.console.level || "info"),
-                format: getFormat(config.console.format, config.redact, config.callsites),
+                format: getFormat(config.console.format, config.redact, config.callsites, config.color),
             });
 
             if (config.console.redirect === true) {
@@ -221,7 +226,7 @@ export function configureLogging(config: LoggingConfiguration): void {
                 tailable: true,
                 // zippedArchive: true, // see https://github.com/winstonjs/winston/issues/1128
                 format: winston.format.combine(
-                    getFormat(config.file.format, config.redact, config.callsites),
+                    getFormat(config.file.format, config.redact, config.callsites, config.color),
                     winston.format.uncolorize(),
                 ),
             });
@@ -274,6 +279,7 @@ export function clientLoggingConfiguration(configuration: Configuration): Loggin
         }
         lc.custom = _.get(configuration, "logging.custom.transports");
         lc.callsites = _.get(configuration, "logging.callsite");
+        lc.color = _.get(configuration, "logging.color");
     }
     lc.redact = configuration.redact.log;
     return lc;
@@ -412,7 +418,10 @@ function redirectConsoleLogging(): void {
 }
 /* tslint:enable:no-console */
 
-function getFormat(format: LoggingFormat, redact: boolean, callsites: boolean): logform.Format {
+function getFormat(format: LoggingFormat,
+                   redact: boolean,
+                   callsites: boolean,
+                   color: boolean): logform.Format {
     switch (format) {
         case LoggingFormat.Full:
             return winston.format.combine(
@@ -421,6 +430,7 @@ function getFormat(format: LoggingFormat, redact: boolean, callsites: boolean): 
                 ...(callsites ? [winston.format(callsite)()] : []),
                 winston.format.splat(),
                 winston.format.printf(clientFormat),
+                ...(color ? [] : [winston.format.uncolorize()]),
             );
         case LoggingFormat.Simple:
             return winston.format.combine(
@@ -429,6 +439,7 @@ function getFormat(format: LoggingFormat, redact: boolean, callsites: boolean): 
                 winston.format.splat(),
                 ...(callsites ? [winston.format(callsite)()] : []),
                 winston.format.simple(),
+                ...(color ? [] : [winston.format.uncolorize()]),
             );
         case LoggingFormat.None:
         default:
@@ -437,6 +448,7 @@ function getFormat(format: LoggingFormat, redact: boolean, callsites: boolean): 
                 winston.format.splat(),
                 ...(callsites ? [winston.format(callsite)()] : []),
                 winston.format.printf(info => info.message),
+                ...(color ? [] : [winston.format.uncolorize()]),
             );
     }
 }
