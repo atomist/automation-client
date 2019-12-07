@@ -3,7 +3,6 @@ import { HandleCommand } from "../../HandleCommand";
 import * as GraphQL from "../../internal/graph/graphQL";
 import {
     Choice,
-    Chooser,
     CommandHandlerMetadata,
     EventHandlerMetadata,
     MappedParameterDeclaration,
@@ -83,7 +82,10 @@ function metadataFromDecorator(h: any, params: any): CommandHandlerMetadata | Ev
             };
         case "event-handler":
             // Remove any linebreaks and spaces from those subscription
-            const subscription = GraphQL.inlineQuery(GraphQL.replaceOperationName(params.__subscription, h.__name));
+            const subscriptionOrFunction = params.__subscription;
+            const subscription = GraphQL.inlineQuery(GraphQL.replaceOperationName(
+                typeof subscriptionOrFunction === "string" ? subscriptionOrFunction : subscriptionOrFunction(),
+                h.__name));
             const subscriptionName = GraphQL.operationName(subscription);
 
             return {
@@ -127,7 +129,7 @@ function parametersFromInstance(r: any, prefix: string = ""): Parameter[] {
                 options = chooser.options;
             }
 
-            options = options.map(o => ( { value: o.value, description: o.description || o.value}));
+            options = options.map(o => ({ value: o.value, description: o.description || o.value }));
 
             const newChooser: Options = {
                 kind,

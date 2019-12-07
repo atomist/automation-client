@@ -230,7 +230,7 @@ function declareRug(obj: any, kind: RugKind, description: string) {
 }
 
 export function declareEventHandler(
-    obj: any, description: string, subscription: string) {
+    obj: any, description: string, subscription: string | (() => string)) {
     declareRug(obj, "event-handler", description);
     set_metadata(obj, "__subscription", subscription);
     registerEvent(obj);

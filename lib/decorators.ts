@@ -93,7 +93,7 @@ export function Parameters() {
     };
 }
 
-export function EventHandler(description: string, subscription?: string) {
+export function EventHandler(description: string, subscription?: string | (() => string)) {
     return (obj: object) => {
         declareEventHandler(obj, description, subscription);
     };
