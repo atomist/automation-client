@@ -109,6 +109,7 @@ describe("configuration", () => {
         logging: {
             level: "info",
             callsite: false,
+            color: true,
             file: {
                 enabled: true,
                 level: "debug",
