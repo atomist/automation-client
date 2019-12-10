@@ -9,7 +9,7 @@ import { DefaultWebSocketRequestProcessor } from "../../../../lib/internal/trans
 import { QueuingWebSocketLifecycle } from "../../../../lib/internal/transport/websocket/WebSocketLifecycle";
 import { CommandHandlerMetadata } from "../../../../lib/metadata/automationMetadata";
 import { AutomationServer } from "../../../../lib/server/AutomationServer";
-import { DefaultGraphClientFactory } from "../../../../lib/spi/graph/GraphClientFactory";
+import { defaultGraphClientFactory } from "../../../../lib/spi/graph/GraphClientFactory";
 
 describe("DefaultWebSocketRequestProcessor", () => {
 
@@ -63,7 +63,7 @@ describe("DefaultWebSocketRequestProcessor", () => {
                 ws: {
                     lifecycle: new QueuingWebSocketLifecycle(),
                 } as any,
-                graphql: { client: { factory: DefaultGraphClientFactory } },
+                graphql: { client: { factory: defaultGraphClientFactory() } },
             });
         listener.onRegistration({ url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
         listener.onConnect((new MockWebSocket() as any) as WebSocket);
@@ -143,7 +143,7 @@ function verifyCommandHandler(code: number, callback: (result) => void) {
             ws: {
                 lifecycle: new QueuingWebSocketLifecycle(),
             } as any,
-            graphql: { client: { factory: DefaultGraphClientFactory } },
+            graphql: { client: { factory: defaultGraphClientFactory() } },
         });
     listener.onRegistration({ url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
     listener.onConnect((new MockWebSocket() as any) as WebSocket);

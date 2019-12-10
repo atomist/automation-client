@@ -42,19 +42,19 @@ import { AutomationEventListener } from "./server/AutomationEventListener";
 import { AutomationMetadataProcessor } from "./spi/env/MetadataProcessor";
 import { SecretResolver } from "./spi/env/SecretResolver";
 import {
-    DefaultGraphClientFactory,
+    defaultGraphClientFactory,
     GraphClientFactory,
 } from "./spi/graph/GraphClientFactory";
 import {
-    DefaultHttpClientFactory,
+    defaultHttpClientFactory,
     HttpClientFactory,
 } from "./spi/http/httpClient";
 import {
-    DefaultWebSocketFactory,
+    defaultWebSocketFactory,
     WebSocketFactory,
 } from "./spi/http/wsClient";
 import {
-    DefaultStatsDClientFactory,
+    defaultStatsDClientFactory,
     StatsDClientFactory,
 } from "./spi/statsd/statsdClient";
 import { Maker } from "./util/constructionUtils";
@@ -441,6 +441,12 @@ export function configurationValue<T>(path: string = "", defaultValue?: T): T {
  */
 function loadDefaultConfiguration(): Configuration {
     const cfg = LocalDefaultConfiguration;
+
+    // Insert default factories
+    _.set(cfg, "http.client.factory", defaultHttpClientFactory());
+    _.set(cfg, "ws.client.factory", defaultWebSocketFactory());
+    _.set(cfg, "graphql.client.factory", defaultGraphClientFactory());
+    _.set(cfg, "statsd.client.factory", defaultStatsDClientFactory());
 
     let envSpecificCfg = {};
     const nodeEnv = process.env.ATOMIST_ENV || process.env.NODE_ENV;
@@ -1112,15 +1118,9 @@ export const LocalDefaultConfiguration: Configuration = {
             },
         },
         customizers: [],
-        client: {
-            factory: DefaultHttpClientFactory,
-        },
     },
     ws: {
         enabled: true,
-        client: {
-            factory: DefaultWebSocketFactory,
-        },
         termination: {
             graceful: false,
             gracePeriod: defaultGracePeriod,
@@ -1129,11 +1129,6 @@ export const LocalDefaultConfiguration: Configuration = {
         timeout: 30000,
         lifecycle: new QueuingWebSocketLifecycle(),
     } as any,
-    graphql: {
-        client: {
-            factory: DefaultGraphClientFactory,
-        },
-    },
     applicationEvents: {
         enabled: false,
     },
@@ -1155,9 +1150,6 @@ export const LocalDefaultConfiguration: Configuration = {
     },
     statsd: {
         enabled: false,
-        client: {
-            factory: DefaultStatsDClientFactory,
-        },
     },
     redact: {
         log: true,
