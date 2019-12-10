@@ -29,10 +29,10 @@ import {
     UserConfig,
 } from "../lib/configuration";
 import { QueuingWebSocketLifecycle } from "../lib/internal/transport/websocket/WebSocketLifecycle";
-import { DefaultGraphClientFactory } from "../lib/spi/graph/GraphClientFactory";
-import { DefaultHttpClientFactory } from "../lib/spi/http/httpClient";
-import { DefaultWebSocketFactory } from "../lib/spi/http/wsClient";
-import { DefaultStatsDClientFactory } from "../lib/spi/statsd/statsdClient";
+import { defaultGraphClientFactory } from "../lib/spi/graph/GraphClientFactory";
+import { defaultHttpClientFactory } from "../lib/spi/http/httpClient";
+import { defaultWebSocketFactory } from "../lib/spi/http/wsClient";
+import { defaultStatsDClientFactory } from "../lib/spi/statsd/statsdClient";
 
 /* tslint:disable:max-file-line-count */
 
@@ -82,7 +82,7 @@ describe("configuration", () => {
             },
             customizers: [],
             client: {
-                factory: DefaultHttpClientFactory,
+                factory: defaultHttpClientFactory(),
             },
         },
         ws: {
@@ -94,13 +94,13 @@ describe("configuration", () => {
             compress: false,
             timeout: 30000,
             client: {
-                factory: DefaultWebSocketFactory,
+                factory: defaultWebSocketFactory(),
             },
             lifecycle: new QueuingWebSocketLifecycle(),
         } as any,
         graphql: {
             client: {
-                factory: DefaultGraphClientFactory,
+                factory: defaultGraphClientFactory(),
             },
         },
         cluster: {
@@ -127,7 +127,7 @@ describe("configuration", () => {
         statsd: {
             enabled: false,
             client: {
-                factory: DefaultStatsDClientFactory,
+                factory: defaultStatsDClientFactory(),
             },
         },
         applicationEvents: {

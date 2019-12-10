@@ -139,4 +139,4 @@ class NodeStatsDClient implements StatsDClient {
     }
 }
 
-export const DefaultStatsDClientFactory = new HotShotStatsDClientFactory();
+export const defaultStatsDClientFactory = () => new HotShotStatsDClientFactory();

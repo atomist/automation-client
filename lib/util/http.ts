@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import { Configuration } from "../configuration";
 import { automationClientInstance } from "../globals";
 import {
-    DefaultHttpClientFactory,
+    defaultHttpClientFactory,
     HttpClient,
 } from "../spi/http/httpClient";
 
@@ -18,5 +18,5 @@ export function httpClient(url: string,
     if (!cfg && !!automationClientInstance()) {
         cfg = automationClientInstance().configuration;
     }
-    return _.get(cfg, "http.client.factory", DefaultHttpClientFactory).create(url);
+    return _.get(cfg, "http.client.factory", defaultHttpClientFactory()).create(url);
 }

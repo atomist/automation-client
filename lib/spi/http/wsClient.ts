@@ -34,4 +34,4 @@ export class WSWebSocketFactory implements WebSocketFactory {
     }
 }
 
-export const DefaultWebSocketFactory = new WSWebSocketFactory();
+export const defaultWebSocketFactory = () => new WSWebSocketFactory();

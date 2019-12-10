@@ -20,4 +20,4 @@ export interface GraphClientFactory {
 /**
  * Default GraphClientFactory to use
  */
-export const DefaultGraphClientFactory = new ApolloGraphClientFactory();
+export const defaultGraphClientFactory = () => new ApolloGraphClientFactory();

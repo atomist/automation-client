@@ -96,4 +96,4 @@ export const DefaultHttpClientOptions: HttpClientOptions = {
  * @see Configuration.http.client.factory
  * @type {HttpClientFactory}
  */
-export const DefaultHttpClientFactory = new AxiosHttpClientFactory();
+export const defaultHttpClientFactory = () => new AxiosHttpClientFactory();

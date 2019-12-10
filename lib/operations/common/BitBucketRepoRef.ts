@@ -7,7 +7,7 @@ import { configurationValue } from "../../configuration";
 import { encode } from "../../internal/util/base64";
 import { Configurable } from "../../project/git/Configurable";
 import {
-    DefaultHttpClientFactory,
+    defaultHttpClientFactory,
     HttpClientFactory,
     HttpMethod,
 } from "../../spi/http/httpClient";
@@ -37,7 +37,7 @@ export class BitBucketRepoRef extends AbstractRemoteRepoRef {
         const url = `${this.scheme}${this.apiBase}/repositories/${this.owner}/${this.repo}`;
 
         logger.debug("Making request to BitBucket '%s' to create repo", url);
-        return configurationValue<HttpClientFactory>("http.client.factory", DefaultHttpClientFactory).create(url).exchange(url, {
+        return configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory()).create(url).exchange(url, {
             method: HttpMethod.Post,
             headers: {
                 "Content-Type": "application/json",
@@ -67,7 +67,7 @@ export class BitBucketRepoRef extends AbstractRemoteRepoRef {
         const url = `${this.scheme}${this.apiBase}/repositories/${this.owner}/${this.repo}`;
         logger.debug(`Making request to '${url}' to delete repo`);
 
-        return configurationValue<HttpClientFactory>("http.client.factory", DefaultHttpClientFactory).create(url).exchange(url, {
+        return configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory()).create(url).exchange(url, {
             method: HttpMethod.Delete,
             headers: {
                 ...headers(creds),
@@ -99,7 +99,7 @@ export class BitBucketRepoRef extends AbstractRemoteRepoRef {
         const url = `${this.scheme}${this.apiBase}/repositories/${this.owner}/${this.repo}/pullrequests`;
         logger.debug(`Making request to '${url}' to raise PR`);
 
-        return configurationValue<HttpClientFactory>("http.client.factory", DefaultHttpClientFactory).create(url).exchange(url, {
+        return configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory()).create(url).exchange(url, {
             method: HttpMethod.Post,
             headers: {
                 "Content-Type": "application/json",

@@ -306,7 +306,7 @@ export {
 } from "./lib/graph/ApolloGraphClientFactory";
 export {
     GraphClientFactory,
-    DefaultGraphClientFactory,
+    defaultGraphClientFactory,
 } from "./lib/spi/graph/GraphClientFactory";
 export {
     AxiosHttpClient,
@@ -318,7 +318,7 @@ export {
 } from "./lib/spi/http/curlHttpClient";
 export {
     HttpClientFactory,
-    DefaultHttpClientFactory,
+    defaultHttpClientFactory,
     DefaultHttpClientOptions,
     HttpClient,
     HttpClientOptions,
@@ -328,10 +328,10 @@ export {
 export {
     WSWebSocketFactory,
     WebSocketFactory,
-    DefaultWebSocketFactory,
+    defaultWebSocketFactory,
 } from "./lib/spi/http/wsClient";
 export {
-    DefaultStatsDClientFactory,
+    defaultStatsDClientFactory,
     HotShotStatsDClientFactory,
     NodeStatsDClientFactory,
 } from "./lib/spi/statsd/statsdClient";
