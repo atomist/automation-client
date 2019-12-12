@@ -24,8 +24,13 @@ export class ApolloGraphClientFactory implements GraphClientFactory {
         if (graphClient) {
             return graphClient;
         } else {
+            const headers = {
+                Authorization: `Bearer ${configuration.apiKey}`,
+                "apollographql-client-name": `${configuration.name}/${workspaceId}`,
+                "apollographql-client-version": configuration.version,
+            };
             graphClient = new ApolloGraphClient(`${configuration.endpoints.graphql}/${workspaceId}`,
-                { Authorization: `Bearer ${configuration.apiKey}` }, this.configure(configuration));
+                headers, this.configure(configuration));
             this.graphClients.set<GraphClient>(workspaceId, graphClient);
             return graphClient;
         }
