@@ -52,8 +52,7 @@ async function main(): Promise<void> {
 
         // check if the project has a custom schema
         const customSchemaLocation = path.join(lib, "graphql", "schema.json");
-        const defaultSchemaLocation = path.join(cwd, "node_modules", "@atomist", "automation-client", "lib",
-            "graph", "schema.json");
+        const defaultSchemaLocation = path.resolve(__dirname, "..", "lib", "graph", "schema.json");
         const schema = (await fs.pathExists(customSchemaLocation)) ? customSchemaLocation : defaultSchemaLocation;
         const transform = new RenameTypes(name => {
             switch (name) {
@@ -115,9 +114,7 @@ async function main(): Promise<void> {
 
             // Write the new types.ts content back out
             await fs.writeFile(gqlGenOutput, `/* tslint:disable */\n\n${typesContent}`, "utf8");
-        } else {
-            console.info("No GraphQL files found in project, skipping type generation.");
-        }
+        } 
         process.exit(0);
 
     } catch (e) {
