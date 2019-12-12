@@ -114,7 +114,7 @@ async function main(): Promise<void> {
 
             // Write the new types.ts content back out
             await fs.writeFile(gqlGenOutput, `/* tslint:disable */\n\n${typesContent}`, "utf8");
-        } 
+        }
         process.exit(0);
 
     } catch (e) {
