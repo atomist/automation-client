@@ -60,8 +60,7 @@ export class AutomationClient implements RequestProcessor {
         new StartupTimeMessageUatomationEventListener(),
     ];
 
-    constructor(public configuration: Configuration,
-                public requestProcessorMaker?: (automations: AutomationServer, configuration: Configuration, listeners: AutomationEventListener[]) => RequestProcessor) {
+    constructor(public configuration: Configuration) {
         this.automations = new BuildableAutomationServer(configuration);
         (global as any).__runningAutomationClient = this as AutomationClient;
     }
@@ -118,8 +117,8 @@ export class AutomationClient implements RequestProcessor {
         const clientSig = `${this.configuration.name}:${this.configuration.version}`;
         const clientConf = stringify(this.configuration, obfuscateJson);
 
-        if (!!this.requestProcessorMaker) {
-            this.requestProcessor = this.requestProcessorMaker(
+        if (!!this.configuration.requestProcessorFactory) {
+            this.requestProcessor = this.configuration.requestProcessorFactory(
                 this.automations,
                 this.configuration,
                 [...this.defaultListeners, ...this.configuration.listeners]);
