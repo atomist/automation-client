@@ -32,6 +32,7 @@ import { GraphClientListener } from "./graph/ApolloGraphClient";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { ExpressServerOptions } from "./internal/transport/express/ExpressServer";
+import { RequestProcessor } from "./internal/transport/RequestProcessor";
 import { QueuingWebSocketLifecycle } from "./internal/transport/websocket/WebSocketLifecycle";
 import { config } from "./internal/util/config";
 import { defaultGracePeriod } from "./internal/util/shutdown";
@@ -40,6 +41,7 @@ import {
     obfuscateJson,
 } from "./internal/util/string";
 import { AutomationEventListener } from "./server/AutomationEventListener";
+import { AutomationServer } from "./server/AutomationServer";
 import { AutomationMetadataProcessor } from "./spi/env/MetadataProcessor";
 import { SecretResolver } from "./spi/env/SecretResolver";
 import {
@@ -230,6 +232,7 @@ export interface AutomationOptions extends AnyOptions {
      * promise so they can be asynchronous.
      */
     postProcessors?: ConfigurationPostProcessor[];
+    requestProcessorFactory?: (automations: AutomationServer, configuration: Configuration, listeners: AutomationEventListener[]) => RequestProcessor;
 }
 
 /**
