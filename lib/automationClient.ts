@@ -260,9 +260,8 @@ export class AutomationClient implements RequestProcessor {
     }
 }
 
-export function automationClient(configuration: Configuration,
-                                 requestProcessorMaker?: (automations: AutomationServer, configuration: Configuration, listeners: AutomationEventListener[]) => RequestProcessor): AutomationClient {
-    const client = new AutomationClient(configuration, requestProcessorMaker);
+export function automationClient(configuration: Configuration): AutomationClient {
+    const client = new AutomationClient(configuration);
     configuration.commands.forEach(c => {
         client.withCommandHandler(c);
     });
