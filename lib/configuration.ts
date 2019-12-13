@@ -28,6 +28,7 @@ import * as os from "os";
 import * as p from "path";
 import * as semver from "semver";
 import { automationClientInstance } from "./globals";
+import { GraphClientListener } from "./graph/ApolloGraphClient";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { ExpressServerOptions } from "./internal/transport/express/ExpressServer";
@@ -214,6 +215,7 @@ export interface AutomationOptions extends AnyOptions {
         client?: {
             factory: GraphClientFactory,
         },
+        listeners?: GraphClientListener[],
     };
     /** Atomist API endpoints */
     endpoints?: {

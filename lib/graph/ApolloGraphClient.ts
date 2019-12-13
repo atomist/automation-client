@@ -1,6 +1,6 @@
 import { InMemoryCache } from "apollo-cache-inmemory";
 import ApolloClient from "apollo-client";
-import { ApolloLink } from "apollo-link";
+import { ApolloLink, Operation } from "apollo-link";
 import { onError } from "apollo-link-error";
 import { createHttpLink } from "apollo-link-http";
 import axios from "axios";
@@ -25,6 +25,11 @@ import { logger } from "../util/logger";
 disableFragmentWarnings();
 
 /**
+ * Listen and mutate GraphQL operations before they are being executed
+ */
+export type GraphClientListener = (operation: Operation) => Operation;
+
+/**
  * Implementation of GraphClient using Apollo Client.
  */
 export class ApolloGraphClient implements GraphClient {
@@ -40,9 +45,10 @@ export class ApolloGraphClient implements GraphClient {
      * @param headers any special headers to use
      * @param fetch configured GlobalFetch instance to use for this GraphClient
      */
-    constructor(public endpoint: string,
-                headers: any = {},
-                fetch: WindowOrWorkerGlobalScope["fetch"] = buildAxiosFetch(axios.create(configureProxy({})))) {
+    constructor(public readonly endpoint: string,
+                private readonly headers: any = {},
+                private readonly fetch: WindowOrWorkerGlobalScope["fetch"] = buildAxiosFetch(axios.create(configureProxy({}))),
+                private readonly listeners: GraphClientListener[] = []) {
         const cache = new InMemoryCache({
             addTypename: false,
         });
@@ -66,6 +72,10 @@ export class ApolloGraphClient implements GraphClient {
             operation.setContext({
                 headers,
             });
+
+            for (const listener of this.listeners) {
+                operation = listener(operation);
+            }
 
             return forward(operation);
         });
