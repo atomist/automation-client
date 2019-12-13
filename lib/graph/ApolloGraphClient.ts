@@ -32,7 +32,7 @@ disableFragmentWarnings();
  */
 export interface GraphClientListener {
 
-    operationStarting(operation: Operation): Operation
+    operationStarting(operation: Operation): Operation;
 }
 
 /**
