@@ -1,6 +1,9 @@
 import { InMemoryCache } from "apollo-cache-inmemory";
 import ApolloClient from "apollo-client";
-import { ApolloLink, Operation } from "apollo-link";
+import {
+    ApolloLink,
+    Operation,
+} from "apollo-link";
 import { onError } from "apollo-link-error";
 import { createHttpLink } from "apollo-link-http";
 import axios from "axios";
@@ -27,7 +30,10 @@ disableFragmentWarnings();
 /**
  * Listen and mutate GraphQL operations before they are being executed
  */
-export type GraphClientListener = (operation: Operation) => Operation;
+export interface GraphClientListener {
+
+    operationStarting(operation: Operation): Operation
+}
 
 /**
  * Implementation of GraphClient using Apollo Client.
@@ -74,7 +80,7 @@ export class ApolloGraphClient implements GraphClient {
             });
 
             for (const listener of this.listeners) {
-                operation = listener(operation);
+                operation = listener.operationStarting(operation);
             }
 
             return forward(operation);
