@@ -300,6 +300,7 @@ export * from "./lib/operations/common/GitlabRepoRef";
 export * from "./lib/operations/generate/GitlabRepoCreationParameters";
 export {
     ApolloGraphClient,
+    GraphClientListener,
 } from "./lib/graph/ApolloGraphClient";
 export {
     ApolloGraphClientFactory,
