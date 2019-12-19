@@ -502,7 +502,7 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
         const workers = this.numWorkers;
         const maxConcurrent = this.maxConcurrentPerWorker;
 
-        const threshold = _.get(this.configuration, "ws.backoff.threshold") || (workers * maxConcurrent);
+        const threshold = Math.max(_.get(this.configuration, "ws.backoff.threshold") || (workers * maxConcurrent), 1);
         const interval = _.get(this.configuration, "ws.backoff.interval") || 2500;
         const duration = _.get(this.configuration, "ws.backoff.duration") || 5000;
         let factor = _.get(this.configuration, "ws.backoff.factor") || 0.5;
