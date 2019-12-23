@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import {
     HandleCommand,
     SelfDescribingHandleCommand,
@@ -42,6 +43,42 @@ export type OnCommand<P = undefined> =
     (ctx: HandlerContext, parameters: P) => Promise<HandlerResult> | Promise<any>;
 
 /**
+ * Given a regex used for an intent, add anchors to it if missing.  Additionally, wraps the new anchors in match groups along with the original
+ * intent for access later.
+ */
+export function addRegExIntentAnchors(intent: RegExp): string {
+    if (!(intent instanceof RegExp)) {
+        throw new Error(`Intent must be an instance of RegExp!`);
+    }
+
+    let regex = intent.source;
+    if (!regex.startsWith("^")) {
+        regex = "^([\\s\\S]+)?" + regex;
+    }
+    if (!regex.endsWith("$")) {
+        regex = regex + "([\\s\\S]+)?$";
+    }
+    return regex;
+}
+
+/**
+ * Parse command handler intent.  If the incoming intent is a RegExp convert it to a string pattern.  Otherwise, pass existing intent through.
+ */
+export function parseRegExIntent(intent: string | string[] | RegExp): string | string[] {
+    if (typeof intent === "string" && intent.length > 0) {
+        return intent;
+    } else if ((_.isArray(intent) && intent.every(i => typeof i === "string")) || (_.isArray(intent) && _.isEmpty(intent))) {
+        return intent;
+    } else if (intent instanceof RegExp) {
+        return addRegExIntentAnchors(intent);
+    } else if (intent === undefined || intent === null || (typeof intent === "string" && intent === "")) {
+        throw new Error(`Intent cannot be undefined, null, or empty!`);
+    } else {
+        throw new Error(`Unknown Intent type of ${typeof intent} supplied!`);
+    }
+}
+
+/**
  * Create a HandleCommand instance with the appropriate metadata wrapping
  * the given function
  */
@@ -49,11 +86,12 @@ export function commandHandlerFrom<P>(h: OnCommand<P>,
                                       factory: Maker<P>,
                                       name: string = h.name || `Command${generateHash(h.toString())}`,
                                       description: string = name,
-                                      intent: string | string[] = [],
+                                      intent: string | string[] | RegExp = [],
                                       tags: string | string[] = [],
                                       autoSubmit: boolean = false,
                                       question?: QuestionStyle): HandleCommand<P> & CommandHandlerMetadata {
-    const handler = new FunctionWrappingCommandHandler(name, description, h, factory, tags, intent, autoSubmit, question);
+    const updatedIntent = parseRegExIntent(intent);
+    const handler = new FunctionWrappingCommandHandler(name, description, h, factory, tags, updatedIntent, autoSubmit, question);
     registerCommand(handler);
     return handler;
 }

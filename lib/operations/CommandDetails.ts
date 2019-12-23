@@ -7,7 +7,7 @@ import { RepoLoader } from "./common/repoLoader";
 export interface CommandDetails<PARAMS = any> {
 
     description: string;
-    intent?: string | string[];
+    intent?: string | string[] | RegExp;
     tags?: string | string[];
     autoSubmit?: boolean;
 
