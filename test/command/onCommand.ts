@@ -55,4 +55,4 @@ describe("addRegExIntentAnchors", () => {
         assert(new RegExp(result));
         assert.strictEqual(result, "^Foo\\sBar$");
     });
-})
+});
