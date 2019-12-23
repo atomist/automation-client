@@ -1,6 +1,9 @@
 import * as _ from "lodash";
 import * as assert from "power-assert";
-import {addRegExIntentAnchors, parseRegExIntent} from "../../lib/onCommand";
+import {
+    addRegExIntentAnchors,
+    parseRegExIntent,
+} from "../../lib/onCommand";
 
 describe("parseIntent", () => {
     it("should pass string through unmodified", () => {
