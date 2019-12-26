@@ -2,6 +2,7 @@ import {
     Attachment,
     SlackMessage,
 } from "@atomist/slack-messages";
+// tslint:disable-next-line:import-blacklist
 import axios from "axios";
 import {
     CommandHandler,
@@ -34,7 +35,7 @@ export class SearchStackOverflow implements HandleCommand {
             .then(() => Promise.resolve({ code: 0 }));
     }
 
-    private handleResult(result, query: string): SlackMessage {
+    private handleResult(result: any, query: string): SlackMessage {
         const data = result.data;
         const msg: SlackMessage = {};
         msg.attachments = (data.items.map(i => {
