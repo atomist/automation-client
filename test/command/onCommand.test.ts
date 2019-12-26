@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import * as assert from "power-assert";
 import {
     addRegExIntentAnchors,
@@ -29,8 +28,8 @@ describe("parseIntent", () => {
     });
     it("should permit empty array input", () => {
         const result = parseRegExIntent([]);
-        assert(_.isArray(result));
-        assert(_.isEmpty(result));
+        assert(Array.isArray(result));
+        assert(result.length === 0);
     });
 });
 
@@ -41,21 +40,35 @@ describe("addRegExIntentAnchors", () => {
     it("should add both anchors when missing", () => {
         const result = addRegExIntentAnchors(/Foo\sBar/);
         assert(new RegExp(result));
-        assert.strictEqual(result, "^([\\s\\S]+)?Foo\\sBar([\\s\\S]+)?$");
+        assert.strictEqual(result, "^[\\s\\S]*Foo\\sBar[\\s\\S]*$");
     });
     it("should add prefix anchor when missing", () => {
         const result = addRegExIntentAnchors(/Foo\sBar$/);
         assert(new RegExp(result));
-        assert.strictEqual(result, "^([\\s\\S]+)?Foo\\sBar$");
+        assert.strictEqual(result, "^[\\s\\S]*Foo\\sBar$");
     });
     it("should add suffix anchor when missing", () => {
         const result = addRegExIntentAnchors(/^Foo\sBar/);
         assert(new RegExp(result));
-        assert.strictEqual(result, "^Foo\\sBar([\\s\\S]+)?$");
+        assert.strictEqual(result, "^Foo\\sBar[\\s\\S]*$");
     });
     it("should not modify regex that already contains anchors", () => {
         const result = addRegExIntentAnchors(/^Foo\sBar$/);
         assert(new RegExp(result));
         assert.strictEqual(result, "^Foo\\sBar$");
+    });
+    it("should return a regular expression that matches part of the input", () => {
+        const result = addRegExIntentAnchors(/Foo\sBar/);
+        const re = new RegExp(result);
+        [
+            "Foo Bar",
+            "Foo Bar Baz",
+            "Foo BarBaz",
+            "New Foo Bar",
+            "NewFoo Bar",
+            "New Foo Bar Baz",
+            "New\nFoo Bar\nBaz",
+            "Néw Foo Bar Båz",
+        ].forEach(i => assert(re.test(i)));
     });
 });
