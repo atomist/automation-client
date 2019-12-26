@@ -9,8 +9,13 @@ describe("exploratory tests for proper-locking", () => {
     it("should be able to release a lock", done => {
         lockfile.lock("docs")
             .then(release => {
-                release();
-                done();
+                release()
+                    .then(() => {
+                        done();
+                    })
+                    .catch(e => {
+                        assert.fail(e);
+                    });
             })
             .catch(err => {
                 done(err);
