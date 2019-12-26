@@ -129,7 +129,7 @@ ding dong ding
         assert(!!gp.findFileSync("flaskr/__init__.py"), "Should be able to find file under subdirectory");
         assert(await gp.isClean(), "We should be able to get git status for a subdirectory");
         await gp.release();
-    }).timeout(10000);
+    }).timeout(15000);
 
     it("can tell whether a branch exists", async () => {
         const p = tempProject();

@@ -1,5 +1,6 @@
 import * as os from "os";
 import * as path from "path";
+import * as lockfile from "proper-lockfile";
 import { increment } from "../../internal/util/metric";
 import { logger } from "../../util/logger";
 import {
@@ -36,38 +37,37 @@ const cache = new StableDirectoryManager({
  */
 export const CachingDirectoryManager: DirectoryManager = {
 
-    directoryFor(owner: string, repo: string, branch: string, opts: CloneOptions): Promise<CloneDirectoryInfo> {
+    async directoryFor(owner: string, repo: string, branch: string, opts: CloneOptions): Promise<CloneDirectoryInfo> {
+        const existing = await cache.directoryFor(owner, repo, branch, opts);
+        try {
+            const lockResult = await lockfile.lock(existing.path);
+            incrementReuse(owner, repo);
+            return {
+                ...existing,
+                release: () => {
+                    logger.debug("Releasing lock on '%s'", existing.path);
+                    return lockResult().then(existing.release);
+                },
+                invalidate: () => {
+                    logger.debug("Invalidating '%s'", existing.path);
+                    return cache.invalidate(existing)
+                        .then(() => {
+                            logger.debug("Invalidated. Now releasing lock");
+                            return lockResult().then(existing.release);
+                        });
+                },
+                provenance: (existing.provenance || "") + " successfully locked",
+            };
 
-        return cache.directoryFor(owner, repo, branch, opts).then(existing =>
-            pleaseLock(existing.path).then(lockResult => {
-                if (lockResult.success) {
-                    incrementReuse(owner, repo);
-                    return {
-                        ...existing,
-                        release: () => {
-                            logger.debug("Releasing lock on '%s'", existing.path);
-                            return lockResult.release().then(existing.release);
-                        },
-                        invalidate: () => {
-                            logger.debug("Invalidating '%s'", existing.path);
-                            return cache.invalidate(existing)
-                                .then(() => {
-                                    logger.debug("Invalidated. Now releasing lock");
-                                    return lockResult.release().then(existing.release);
-                                });
-                        },
-                        provenance: (existing.provenance || "") + " successfully locked",
-                    };
-                } else {
-                    logger.debug("Lock detected on '%s'", existing.path);
-                    incrementFallback(owner, repo);
-                    return TmpDirectoryManager.directoryFor(owner, repo, branch, opts).then(cdi =>
-                        ({
-                            ...cdi,
-                            provenance: `Tried '${existing.path}' but it was locked. ` + (cdi.provenance || ""),
-                        }));
-                }
-            }));
+        } catch {
+            logger.debug("Lock detected on '%s'", existing.path);
+            incrementFallback(owner, repo);
+            return TmpDirectoryManager.directoryFor(owner, repo, branch, opts).then(cdi =>
+                ({
+                    ...cdi,
+                    provenance: `Tried '${existing.path}' but it was locked. ` + (cdi.provenance || ""),
+                }));
+        }
     },
 };
 
@@ -86,50 +86,4 @@ function incrementFallback(owner: string, repo: string): void {
 
 function keyFor(owner: string, repo: string): string {
     return `${owner}/${repo}`;
-}
-
-/*
- * file locking. only used here
- */
-import lockfile = require("proper-lockfile");
-
-interface LockAcquired {
-    success: true;
-    release: () => Promise<void>;
-}
-
-interface NoLockForYou {
-    success: false;
-    error: Error;
-}
-
-// for testing
-export { pleaseLock, LockResult, LockAcquired, NoLockForYou };
-
-type LockResult = LockAcquired | NoLockForYou;
-
-function pleaseLock(lockPath: string): Promise<LockResult> {
-    return new Promise<LockResult>((resolve, reject) => {
-        lockfile.lock(lockPath, (error, releaseCallback) => {
-            if (error) {
-                if (error.code === "ELOCKED") {
-                    resolve({ success: false, error });
-                }
-                reject(error);
-            } else {
-                // make the release function return a promise too. Its callback accepts a possible error.
-                const release = () =>
-                    new Promise<void>((releaseResolve, releaseReject) => {
-                        releaseCallback(err => {
-                            if (err) {
-                                releaseReject(err);
-                            } else {
-                                releaseResolve();
-                            }
-                        });
-                    });
-                resolve({ success: true, release });
-            }
-        });
-    });
 }
