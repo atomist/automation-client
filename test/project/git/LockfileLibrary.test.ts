@@ -7,14 +7,14 @@ import {
 
 describe("exploratory tests for proper-locking", () => {
     it("should be able to release a lock", done => {
-        lockfile.lock("docs", (err, release) => {
-            if (err) {
-                done(err);
-            } else {
+        lockfile.lock("docs")
+            .then(release => {
                 release();
                 done();
-            }
-        });
+            })
+            .catch(err => {
+                done(err);
+            });
     });
 
     it("does not let you lock a file that does not exist, sadly", done => {

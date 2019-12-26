@@ -110,26 +110,26 @@ type LockResult = LockAcquired | NoLockForYou;
 
 function pleaseLock(lockPath: string): Promise<LockResult> {
     return new Promise<LockResult>((resolve, reject) => {
-        lockfile.lock(lockPath, (error, releaseCallback) => {
-            if (error) {
-                if (error.code === "ELOCKED") {
-                    resolve({ success: false, error });
-                }
-                reject(error);
-            } else {
+        lockfile.lock(lockPath)
+            .then(releaseCallback => {
                 // make the release function return a promise too. Its callback accepts a possible error.
                 const release = () =>
                     new Promise<void>((releaseResolve, releaseReject) => {
-                        releaseCallback(err => {
-                            if (err) {
-                                releaseReject(err);
-                            } else {
+                        releaseCallback()
+                            .then(() => {
                                 releaseResolve();
-                            }
+                            })
+                            .catch(err => {
+                                releaseReject(err);
+                            });
                         });
-                    });
                 resolve({ success: true, release });
-            }
-        });
+            })
+            .catch(error => {
+                if (error.code === "ELOCKED") {
+                    resolve({success: false, error});
+                }
+                reject(error);
+            });
     });
 }
