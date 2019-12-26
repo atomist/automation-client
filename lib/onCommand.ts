@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import {
     HandleCommand,
     SelfDescribingHandleCommand,
@@ -53,10 +52,10 @@ export function addRegExIntentAnchors(intent: RegExp): string {
 
     let regex = intent.source;
     if (!regex.startsWith("^")) {
-        regex = "^([\\s\\S]+)?" + regex;
+        regex = "^[\\s\\S]*" + regex;
     }
     if (!regex.endsWith("$")) {
-        regex = regex + "([\\s\\S]+)?$";
+        regex = regex + "[\\s\\S]*$";
     }
     return regex;
 }
@@ -67,7 +66,7 @@ export function addRegExIntentAnchors(intent: RegExp): string {
 export function parseRegExIntent(intent: string | string[] | RegExp): string | string[] {
     if (typeof intent === "string" && intent.length > 0) {
         return intent;
-    } else if ((_.isArray(intent) && intent.every(i => typeof i === "string")) || (_.isArray(intent) && _.isEmpty(intent))) {
+    } else if ((Array.isArray(intent) && (intent.length < 1 || intent.every(i => typeof i === "string")))) {
         return intent;
     } else if (intent instanceof RegExp) {
         return addRegExIntentAnchors(intent);
@@ -99,15 +98,12 @@ export function commandHandlerFrom<P>(h: OnCommand<P>,
 class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P> {
 
     public parameters: Parameter[];
-
-    // tslint:disable-next-line:variable-name
+    /* tslint:disable:variable-name */
     public mapped_parameters: MappedParameterDeclaration[];
-
     public secrets?: SecretDeclaration[];
     public values?: ValueDeclaration[];
     public intent?: string[];
     public tags?: Tag[];
-    // tslint:disable-next-line:variable-name
     public auto_submit: boolean;
     public question: "dialog" | "threaded" | "unthreaded" | "dialog_action";
 
@@ -115,12 +111,9 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
                 public description: string,
                 private readonly h: OnCommand<P>,
                 private readonly parametersFactory: Maker<P>,
-                // tslint:disable-next-line:variable-name
                 private readonly _tags: string | string[] = [],
-                // tslint:disable-next-line:variable-name
                 private readonly _intent: string | string[] = [],
                 private readonly autoSubmit: boolean = false,
-                // tslint:disable-next-line:variable-name
                 public _question?: QuestionStyle) {
         const newParamInstance = this.freshParametersInstance();
         const md = metadataFromInstance(newParamInstance) as CommandHandlerMetadata;
@@ -133,12 +126,13 @@ class FunctionWrappingCommandHandler<P> implements SelfDescribingHandleCommand<P
         this.auto_submit = autoSubmit;
         this.question = (!!_question ? _question.toString() : undefined) as any;
     }
+    /* tslint:enAble:variable-name */
 
     public freshParametersInstance(): P {
         return toFactory(this.parametersFactory)();
     }
 
-    public handle(ctx: HandlerContext, params: P) {
+    public handle(ctx: HandlerContext, params: P): Promise<HandlerResult> | Promise<any> {
         return this.h(ctx, params);
     }
 }
