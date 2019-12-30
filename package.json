@@ -20,8 +20,6 @@
   "bugs": {
     "url": "https://github.com/atomist/automation-client/issues"
   },
-  "main": "./index.js",
-  "types": "./index.d.ts",
   "dependencies": {
     "@atomist/microgrammar": "^1.2.1",
     "@atomist/slack-messages": "^1.1.1",

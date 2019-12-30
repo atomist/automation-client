@@ -282,7 +282,8 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
                         return undefined;
                     }
                 }
-                throw new Error(`Cannot resolve secret '${key}'`);
+                return undefined;
+                // throw new Error(`Cannot resolve secret '${key}'`);
             }
         }
 

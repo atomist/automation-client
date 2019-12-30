@@ -1,7 +1,5 @@
-import WebSocket = require("ws");
 import { Configuration } from "../../../configuration";
 import { automationClientInstance } from "../../../globals";
-import { ApolloGraphClientFactory } from "../../../graph/ApolloGraphClientFactory";
 import {
     AutomationContextAware,
     HandlerContext,
