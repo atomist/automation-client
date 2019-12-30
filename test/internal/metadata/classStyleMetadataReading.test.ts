@@ -1,6 +1,6 @@
 
 import * as assert from "power-assert";
-import { Configuration } from "../../../index";
+import { Configuration } from "../../../lib/configuration";
 import {
     CommandHandler,
     ConfigurableCommandHandler,
