@@ -31,7 +31,7 @@ export class SimpleRepoId implements RepoId {
  */
 export interface RepoRef extends RepoId {
 
-    /*
+    /**
      * Might contain a sha, might contain a ref (for backwards compatibility)
      * Providing a sha here and a branch in `branch` instead is encouraged.
      */
@@ -42,11 +42,30 @@ export interface RepoRef extends RepoId {
      */
     path?: string;
 
-    /*
+    /**
      * If this is populated, then `sha` should contain a sha (it may also contain the same branch name, for backwards compatibility)
      */
     branch?: string;
 
+}
+
+/**
+ * PR Reviewer types
+ */
+export enum PullRequestReviewerType {
+    "individual",
+    "team",
+}
+
+/**
+ * PR Reviewer interface
+ */
+export interface PullRequestReviewer {
+    /**
+     * Only some SCM systems support assigning groups as reviewers.
+     */
+    type: PullRequestReviewerType;
+    name: string;
 }
 
 /**
@@ -101,8 +120,21 @@ export interface RemoteRepoRef extends RepoRef {
     setUserConfig(credentials: ProjectOperationCredentials,
                   configurable: Configurable): Promise<ActionResult<any>>;
 
+    /**
+     * Raise a Pull Request
+     * @param {ProjectOperationCredentials} credentials
+     * @param {string} title
+     * @param {string} body
+     * @param {string} head
+     * @param {string} base
+     * @param {PullRequestReviewer[]} reviewers
+     */
     raisePullRequest(credentials: ProjectOperationCredentials,
-                     title: string, body: string, head: string, base: string): Promise<ActionResult<this>>;
+                     title: string,
+                     body: string,
+                     head: string,
+                     base: string,
+                     reviewers?: PullRequestReviewer[]): Promise<ActionResult<this>>;
 
     deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>>;
 
