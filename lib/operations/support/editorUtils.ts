@@ -158,7 +158,7 @@ export function raisePr(gp: GitProject, pr: PullRequest): Promise<EditResult> {
             if (pr.autoMerge) {
                 body = `${body}${needsLineBreaks ? "\n\n" : " "}${pr.autoMerge.mode} ${pr.autoMerge.method ? pr.autoMerge.method : ""}`.trim();
             }
-            return gp.raisePullRequest(pr.title, body, targetBranch)
+            return gp.raisePullRequest(pr.title, body, targetBranch, pr.reviewers)
                 .then(r => successfulEdit(gp, true));
         });
 }
