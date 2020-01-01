@@ -11,8 +11,6 @@ import {
     startWorker,
 } from "./internal/transport/cluster/ClusterWorkerRequestProcessor";
 import { EventStoringAutomationEventListener } from "./internal/transport/EventStoringAutomationEventListener";
-import { ExpressRequestProcessor } from "./internal/transport/express/ExpressRequestProcessor";
-import { ExpressServer } from "./internal/transport/express/ExpressServer";
 import { MetricEnabledAutomationEventListener } from "./internal/transport/MetricEnabledAutomationEventListener";
 import {
     CommandIncoming,
@@ -23,10 +21,7 @@ import {
     StartupMessageAutomationEventListener,
     StartupTimeMessageUatomationEventListener,
 } from "./internal/transport/showStartupMessages";
-import { DefaultWebSocketRequestProcessor } from "./internal/transport/websocket/DefaultWebSocketRequestProcessor";
 import { prepareRegistration } from "./internal/transport/websocket/payloads";
-import { WebSocketClient } from "./internal/transport/websocket/WebSocketClient";
-import { WebSocketRequestProcessor } from "./internal/transport/websocket/WebSocketRequestProcessor";
 import {
     setForceExitTimeout,
     terminationGracePeriod,
@@ -35,7 +30,6 @@ import { obfuscateJson } from "./internal/util/string";
 import { AutomationEventListener } from "./server/AutomationEventListener";
 import { AutomationServer } from "./server/AutomationServer";
 import { BuildableAutomationServer } from "./server/BuildableAutomationServer";
-import { StatsdAutomationEventListener } from "./spi/statsd/statsd";
 import { Maker } from "./util/constructionUtils";
 import {
     clientLoggingConfiguration,
@@ -47,8 +41,8 @@ import { addRedaction } from "./util/redact";
 export class AutomationClient implements RequestProcessor {
 
     public automations: BuildableAutomationServer;
-    public webSocketClient: WebSocketClient;
-    public httpServer: ExpressServer;
+    public webSocketClient: any;
+    public httpServer: any;
     public webSocketHandler: RequestProcessor;
     public httpHandler: RequestProcessor;
     public requestProcessor: RequestProcessor;
@@ -192,7 +186,8 @@ export class AutomationClient implements RequestProcessor {
 
     private configureStatsd(): void {
         if (this.configuration.statsd.enabled === true) {
-            this.defaultListeners.push(new StatsdAutomationEventListener(this.configuration));
+            const statsd = require("./spi/statsd/statsd");
+            this.defaultListeners.push(new statsd.StatsdAutomationEventListener(this.configuration));
         }
     }
 
@@ -207,8 +202,9 @@ export class AutomationClient implements RequestProcessor {
             [...this.defaultListeners, ...this.configuration.listeners]);
     }
 
-    private setupWebSocketRequestHandler(): WebSocketRequestProcessor {
-        return new DefaultWebSocketRequestProcessor(this.automations, this.configuration,
+    private setupWebSocketRequestHandler(): RequestProcessor {
+        const ws = require("./internal/transport/websocket/DefaultWebSocketRequestProcessor");
+        return new ws.DefaultWebSocketRequestProcessor(this.automations, this.configuration,
             [...this.defaultListeners, ...this.configuration.listeners]);
     }
 
@@ -223,35 +219,38 @@ export class AutomationClient implements RequestProcessor {
         return Promise.resolve();
     }
 
-    private setupExpressRequestHandler(): ExpressRequestProcessor {
-        return new ExpressRequestProcessor(this.automations, this.configuration,
+    private setupExpressRequestHandler(): RequestProcessor {
+        const exp = require("./internal/transport/express/ExpressRequestProcessor");
+        return new exp.ExpressRequestProcessor(this.automations, this.configuration,
             [...this.defaultListeners, ...this.configuration.listeners]);
     }
 
-    private runWs(handlerMaker: () => WebSocketRequestProcessor): Promise<void> {
+    private runWs(handlerMaker: () => RequestProcessor): Promise<void> {
         const payloadOptions: any = {};
         if (this.configuration.ws && this.configuration.ws.compress) {
             payloadOptions.accept_encoding = "gzip";
         }
 
         this.webSocketHandler = handlerMaker();
-        this.webSocketClient = new WebSocketClient(
+        const ws = require("./internal/transport/websocket/WebSocketClient");
+        this.webSocketClient = new ws.WebSocketClient(
             () => prepareRegistration(this.automations.automations,
                 payloadOptions,
                 this.configuration.metadata),
             this.configuration,
-            this.webSocketHandler as WebSocketRequestProcessor);
+            this.webSocketHandler as any);
 
         return this.webSocketClient.start();
     }
 
-    private runHttp(handlerMaker: () => ExpressRequestProcessor): Promise<any> {
+    private runHttp(handlerMaker: () => RequestProcessor): Promise<any> {
         if (!this.configuration.http.enabled) {
             return Promise.resolve();
         }
 
         this.httpHandler = handlerMaker();
-        this.httpServer = new ExpressServer(
+        const exp = require("./internal/transport/express/ExpressServer");
+        this.httpServer = new exp.ExpressServer(
             this.automations,
             this.configuration,
             this.httpHandler);
