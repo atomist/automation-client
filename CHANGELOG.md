@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Add ability to intercept GraphQL operations. [29df6df](https://github.com/atomist/automation-client/commit/29df6df638183800810985a4acb397385c043ef0)
 -   Enable RegExp for intents. [#637](https://github.com/atomist/automation-client/issues/637)
 
+### Changed
+
+-   Test errors with proper-lockfile 3.0.1. [#225](https://github.com/atomist/automation-client/issues/225)
+
 ## [1.8.0](https://github.com/atomist/automation-client-ts/compare/1.7.0...1.8.0) - 2019-12-06
 
 ### Added
