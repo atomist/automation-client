@@ -19,9 +19,11 @@ import {
     ActionResult,
     successOn,
 } from "../../action/ActionResult";
-import { automationClientInstance } from "../../globals";
+import {configurationValue} from "../../configuration";
 import { Configurable } from "../../project/git/Configurable";
 import {
+    defaultHttpClientFactory,
+    HttpClientFactory,
     HttpMethod,
     HttpResponse,
 } from "../../spi/http/httpClient";
@@ -102,8 +104,11 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
     }
 
     public setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>> {
-        const config = headers(credentials);
-        const httpClient = automationClientInstance().configuration.http.client.factory.create(`${this.scheme}${this.apiBase}`);
+        // Only permit one retry trying to lookup user info
+        const config = {...headers(credentials), retry: {retries: 1}};
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory())
+            .create(`${this.scheme}${this.apiBase}`);
+
         return Promise.all([
             httpClient.exchange<any>(`${this.scheme}${this.apiBase}/user`, config),
             httpClient.exchange<any>(`${this.scheme}${this.apiBase}/user/public_emails`, config),
@@ -128,8 +133,9 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
 
     public async getPr(credentials: ProjectOperationCredentials, head: string): Promise<any> {
         const config = headers(credentials);
-        const httpClient = automationClientInstance().configuration.http.client.factory.create(`${this.scheme}${this.apiBase}`);
         const url = `${this.scheme}${this.apiBase}/repos/${this.owner}/${this.repo}/pulls?state=open&head=${this.owner}:${head}`;
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory())
+            .create(url);
         return (await httpClient.exchange(url, config)).body;
     }
 
@@ -143,8 +149,10 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
     public async addReviewersToPullRequest(credentials: ProjectOperationCredentials,
                                            prNumber: string,
                                            reviewers: PullRequestReviewer[]): Promise<HttpResponse<any>> {
-        const httpClient = automationClientInstance().configuration.http.client.factory.create(`${this.scheme}${this.apiBase}`);
         const url = `${this.scheme}${this.apiBase}/repos/${this.owner}/${this.repo}`;
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory())
+            .create(url);
+
         return httpClient.exchange<any>(`${url}/pulls/${prNumber}/requested_reviewers`, {
             body: {
                 reviewers: reviewers.filter(r => r.type === PullRequestReviewerType.individual).map(i => i.name),
@@ -171,8 +179,9 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
                                   head: string,
                                   base: string,
                                   reviewers?: PullRequestReviewer[]): Promise<ActionResult<this>> {
-        const httpClient = automationClientInstance().configuration.http.client.factory.create(`${this.scheme}${this.apiBase}`);
         const url = `${this.scheme}${this.apiBase}/repos/${this.owner}/${this.repo}`;
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory())
+            .create(url);
 
         // Check if PR already exists on the branch
         const pr = await this.getPr(credentials, head);
@@ -235,7 +244,8 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
 
     public deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>> {
         const url = `${this.scheme}${this.apiBase}/repos/${this.owner}/${this.repo}`;
-        const httpClient = automationClientInstance().configuration.http.client.factory.create(`${this.scheme}${this.apiBase}`);
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory())
+            .create(url);
         return httpClient.exchange(url, {...headers(creds), method: HttpMethod.Delete})
             .then(() => successOn(this));
     }

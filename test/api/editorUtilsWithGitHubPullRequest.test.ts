@@ -48,7 +48,7 @@ describe("editorUtils", () => {
                 await cleanAfterTest(p, repo);
                 throw e;
             }
-        }).timeout(15000);
+        }).timeout(40000);
 
         it("creates PR with changes in simple editor", async () => {
             let p: GitProject;
@@ -63,7 +63,7 @@ describe("editorUtils", () => {
                 await cleanAfterTest(p, repo);
                 throw e;
             }
-        }).timeout(20000);
+        }).timeout(40000);
 
     });
 
@@ -80,7 +80,7 @@ describe("editorUtils", () => {
             return p.findFile("README.md")
                 .then(f => f.getContent()
                     .then(fileContent => f.setContent(fileContent + "\nmore stuff\n")),
-                    err => p.addFile("README.md", "stuff"))
+                    () => p.addFile("README.md", "stuff"))
                 .then(() => successfulEdit(p, true));
         };
 
@@ -90,7 +90,7 @@ describe("editorUtils", () => {
             try {
                 repo = await newRepo();
                 p = await GitCommandGitProject.cloned(Creds, new GitHubRepoRef(repo.owner, repo.repo));
-                const r = await editProjectUsingBranch(undefined, p, TinyChangeEditor, { branch: "hello", message: "thanks" });
+                await editProjectUsingBranch(undefined, p, TinyChangeEditor, { branch: "hello", message: "thanks" });
                 await editProjectUsingBranch(undefined, p, TinyChangeEditor, { branch: "hello", message: "thanks" });
                 await cleanAfterTest(p, repo);
             } catch (e) {
