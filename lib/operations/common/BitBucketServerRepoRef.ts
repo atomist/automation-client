@@ -1,12 +1,22 @@
-import {ActionResult, successOn} from "../../action/ActionResult";
-import {configurationValue} from "../../configuration";
-import {Configurable} from "../../project/git/Configurable";
-import {defaultHttpClientFactory, HttpClientFactory, HttpMethod} from "../../spi/http/httpClient";
-import {logger} from "../../util/logger";
-import {AbstractRemoteRepoRef} from "./AbstractRemoteRepoRef";
-import {isBasicAuthCredentials} from "./BasicAuthCredentials";
-import {ProjectOperationCredentials} from "./ProjectOperationCredentials";
-import {ProviderType, PullRequestReviewerType} from "./RepoId";
+import {
+    ActionResult,
+    successOn,
+} from "../../action/ActionResult";
+import { configurationValue } from "../../configuration";
+import { Configurable } from "../../project/git/Configurable";
+import {
+    defaultHttpClientFactory,
+    HttpClientFactory,
+    HttpMethod,
+} from "../../spi/http/httpClient";
+import { logger } from "../../util/logger";
+import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
+import { isBasicAuthCredentials } from "./BasicAuthCredentials";
+import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
+import {
+    ProviderType,
+    PullRequestReviewerType,
+} from "./RepoId";
 
 /**
  * RemoteRepoRef implementation for BitBucket server (not BitBucket Cloud)

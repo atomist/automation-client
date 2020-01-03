@@ -1,14 +1,24 @@
 import * as url from "url";
-import {ActionResult, successOn} from "../../action/ActionResult";
-import {automationClientInstance} from "../../globals";
-import {Configurable} from "../../project/git/Configurable";
-import {HttpMethod, HttpResponse} from "../../spi/http/httpClient";
-import {logger} from "../../util/logger";
-import {AbstractRemoteRepoRef} from "./AbstractRemoteRepoRef";
-import {GitlabPrivateTokenCredentials} from "./GitlabPrivateTokenCredentials";
-import {GitShaRegExp} from "./params/validationPatterns";
-import {ProjectOperationCredentials} from "./ProjectOperationCredentials";
-import {ProviderType, PullRequestReviewer, PullRequestReviewerType} from "./RepoId";
+import {
+    ActionResult,
+    successOn,
+} from "../../action/ActionResult";
+import { automationClientInstance } from "../../globals";
+import { Configurable } from "../../project/git/Configurable";
+import {
+    HttpMethod,
+    HttpResponse,
+} from "../../spi/http/httpClient";
+import { logger } from "../../util/logger";
+import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
+import { GitlabPrivateTokenCredentials } from "./GitlabPrivateTokenCredentials";
+import { GitShaRegExp } from "./params/validationPatterns";
+import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
+import {
+    ProviderType,
+    PullRequestReviewer,
+    PullRequestReviewerType,
+} from "./RepoId";
 
 export const GitlabDotComApiBase = "https://gitlab.com/api/v4";
 export const GitlabDotComRemoteUrl = "https://gitlab.com/";

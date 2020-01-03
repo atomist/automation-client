@@ -24,7 +24,8 @@ import {
     ProjectOperationCredentials,
 } from "./ProjectOperationCredentials";
 import {
-    ProviderType, PullRequestReviewer,
+    ProviderType,
+    PullRequestReviewer,
     RemoteRepoRef,
 } from "./RepoId";
 

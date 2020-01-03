@@ -2,9 +2,12 @@
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import * as assert from "power-assert";
-import {GitlabRepoRef} from "../../../lib/operations/common/GitlabRepoRef";
-import {ProviderType, PullRequestReviewerType} from "../../../lib/operations/common/RepoId";
-import {AxiosHttpClientFactory} from "../../../lib/spi/http/axiosHttpClient";
+import { GitlabRepoRef } from "../../../lib/operations/common/GitlabRepoRef";
+import {
+    ProviderType,
+    PullRequestReviewerType,
+} from "../../../lib/operations/common/RepoId";
+import { AxiosHttpClientFactory } from "../../../lib/spi/http/axiosHttpClient";
 
 describe("GitlabRepoRef", () => {
     before(() => {
