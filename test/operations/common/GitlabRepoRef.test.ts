@@ -161,9 +161,9 @@ describe("GitlabRepoRef", () => {
                     assert.strictEqual(mock.history.get.length, 3);
                     assert.strictEqual(mock.history.post.length, 2);
                     assert.strictEqual(mock.history.put.length, 1);
-                    assert.strictEqual(JSON.parse(mock.history.post[1].data as any).approvals_required, 2);
-                    assert.deepStrictEqual(JSON.parse(mock.history.put[0].data as any).approver_ids, [5]);
-                    assert.deepStrictEqual(JSON.parse(mock.history.put[0].data as any).approver_group_ids, [5]);
+                    assert.strictEqual(JSON.parse(mock.history.post[1].data).approvals_required, 2);
+                    assert.deepStrictEqual(JSON.parse(mock.history.put[0].data).approver_ids, [5]);
+                    assert.deepStrictEqual(JSON.parse(mock.history.put[0].data).approver_group_ids, [5]);
                 });
             });
             describe("Gitlab Version >= 12.3", () => {
@@ -193,9 +193,9 @@ describe("GitlabRepoRef", () => {
 
                     assert.strictEqual(mock.history.get.length, 3);
                     assert.strictEqual(mock.history.post.length, 2);
-                    assert.strictEqual(JSON.parse(mock.history.post[1].data as any).approvals_required, 2);
-                    assert.deepStrictEqual(JSON.parse(mock.history.post[1].data as any).user_ids, [5]);
-                    assert.deepStrictEqual(JSON.parse(mock.history.post[1].data as any).group_ids, [5]);
+                    assert.strictEqual(JSON.parse(mock.history.post[1].data).approvals_required, 2);
+                    assert.deepStrictEqual(JSON.parse(mock.history.post[1].data).user_ids, [5]);
+                    assert.deepStrictEqual(JSON.parse(mock.history.post[1].data).group_ids, [5]);
                 });
             });
         });
