@@ -3,7 +3,7 @@ import {
     ActionResult,
     successOn,
 } from "../../action/ActionResult";
-import {configurationValue} from "../../configuration";
+import { configurationValue } from "../../configuration";
 import { Configurable } from "../../project/git/Configurable";
 import {
     defaultHttpClientFactory,
