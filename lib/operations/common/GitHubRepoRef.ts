@@ -15,16 +15,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ActionResult, successOn} from "../../action/ActionResult";
-import {automationClientInstance} from "../../globals";
-import {Configurable} from "../../project/git/Configurable";
-import {HttpMethod, HttpResponse} from "../../spi/http/httpClient";
-import {createRepo} from "../../util/gitHub";
-import {logger} from "../../util/logger";
-import {AbstractRemoteRepoRef} from "./AbstractRemoteRepoRef";
-import {GitShaRegExp} from "./params/validationPatterns";
-import {isTokenCredentials, ProjectOperationCredentials} from "./ProjectOperationCredentials";
-import {ProviderType, PullRequestReviewer, PullRequestReviewerType, RepoRef} from "./RepoId";
+import {
+    ActionResult,
+    successOn,
+} from "../../action/ActionResult";
+import { automationClientInstance } from "../../globals";
+import { Configurable } from "../../project/git/Configurable";
+import {
+    HttpMethod,
+    HttpResponse,
+} from "../../spi/http/httpClient";
+import { createRepo } from "../../util/gitHub";
+import { logger } from "../../util/logger";
+import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
+import { GitShaRegExp } from "./params/validationPatterns";
+import {
+    isTokenCredentials,
+    ProjectOperationCredentials,
+} from "./ProjectOperationCredentials";
+import {
+    ProviderType,
+    PullRequestReviewer,
+    PullRequestReviewerType,
+    RepoRef,
+} from "./RepoId";
 
 export const GitHubDotComBase = "https://api.github.com";
 const FullGitHubDotComBase = "https://api.github.com/";

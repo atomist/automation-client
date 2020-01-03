@@ -3,9 +3,12 @@ import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import * as assert from "power-assert";
 
-import {beautifyPullRequestBody, GitHubRepoRef} from "../../../lib/operations/common/GitHubRepoRef";
-import {PullRequestReviewerType} from "../../../lib/operations/common/RepoId";
-import {AxiosHttpClientFactory} from "../../../lib/spi/http/axiosHttpClient";
+import {
+    beautifyPullRequestBody,
+    GitHubRepoRef,
+} from "../../../lib/operations/common/GitHubRepoRef";
+import { PullRequestReviewerType } from "../../../lib/operations/common/RepoId";
+import { AxiosHttpClientFactory } from "../../../lib/spi/http/axiosHttpClient";
 
 describe("GitHubRepoRef tests", () => {
     before(() => {

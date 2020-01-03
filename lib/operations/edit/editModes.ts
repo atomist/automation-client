@@ -1,6 +1,6 @@
 import { HandlerContext } from "../../HandlerContext";
 import { Project } from "../../project/Project";
-import {PullRequestReviewer} from "../common/RepoId";
+import { PullRequestReviewer } from "../common/RepoId";
 import {
     EditResult,
     ProjectEditor,

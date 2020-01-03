@@ -15,7 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {PullRequestReviewer, RemoteRepoRef} from "../../operations/common/RepoId";
+import {
+    PullRequestReviewer,
+    RemoteRepoRef,
+} from "../../operations/common/RepoId";
 import { LocalProject } from "../local/LocalProject";
 import { Configurable } from "./Configurable";
 import { GitStatus } from "./gitStatus";

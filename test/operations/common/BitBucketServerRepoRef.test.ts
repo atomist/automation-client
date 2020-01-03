@@ -2,9 +2,9 @@
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import * as assert from "power-assert";
-import {BasicAuthCredentials} from "../../../lib/operations/common/BasicAuthCredentials";
-import {BitBucketServerRepoRef} from "../../../lib/operations/common/BitBucketServerRepoRef";
-import {PullRequestReviewerType} from "../../../lib/operations/common/RepoId";
+import { BasicAuthCredentials } from "../../../lib/operations/common/BasicAuthCredentials";
+import { BitBucketServerRepoRef } from "../../../lib/operations/common/BitBucketServerRepoRef";
+import { PullRequestReviewerType } from "../../../lib/operations/common/RepoId";
 
 export const BitBucketServerUsername = "username";
 export const BitBucketServerPassword = "password";

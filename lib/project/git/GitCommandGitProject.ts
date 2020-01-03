@@ -19,7 +19,8 @@ import * as _ from "lodash";
 import promiseRetry = require("promise-retry");
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
 import {
-    isRemoteRepoRef, PullRequestReviewer,
+    isRemoteRepoRef,
+    PullRequestReviewer,
     RemoteRepoRef,
     RepoRef,
 } from "../../operations/common/RepoId";
