@@ -10,22 +10,6 @@ import {
 import { AxiosHttpClientFactory } from "../../../lib/spi/http/axiosHttpClient";
 
 describe("GitlabRepoRef", () => {
-    before(() => {
-        (global as any).__runningAutomationClient = {
-            configuration: {
-                http: {
-                    client: {
-                        factory: new AxiosHttpClientFactory(),
-                    },
-                },
-            },
-        };
-    });
-
-    after(() => {
-        delete (global as any).__runningAutomationClient;
-    });
-
     it("should set the base urls & provider type appropriately when not provided", () => {
         const gl = GitlabRepoRef.from({
             owner: "a-project",

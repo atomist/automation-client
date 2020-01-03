@@ -3,9 +3,11 @@ import {
     ActionResult,
     successOn,
 } from "../../action/ActionResult";
-import { automationClientInstance } from "../../globals";
+import {configurationValue} from "../../configuration";
 import { Configurable } from "../../project/git/Configurable";
 import {
+    defaultHttpClientFactory,
+    HttpClientFactory,
     HttpMethod,
     HttpResponse,
 } from "../../spi/http/httpClient";
@@ -57,7 +59,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
 
     public async createRemote(creds: ProjectOperationCredentials, description: string, visibility: string): Promise<ActionResult<this>> {
         const gitlabUrl = `${this.scheme}${this.apiBase}/projects`;
-        const httpClient = automationClientInstance().configuration.http.client.factory.create(gitlabUrl);
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory()).create(gitlabUrl);
         const namespace = await this.getNamespaceForOwner(this.owner, creds);
         return httpClient.exchange(gitlabUrl, {
             method: HttpMethod.Post,
@@ -86,7 +88,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
 
     public deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>> {
         const gitlabUrl = `${this.scheme}${this.apiBase}/project/${this.owner}%2f${this.repo}`;
-        const httpClient = automationClientInstance().configuration.http.client.factory.create(gitlabUrl);
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory()).create(gitlabUrl);
         logger.debug(`Making request to '${url}' to delete repo`);
         return httpClient.exchange(gitlabUrl, {
             method: HttpMethod.Delete,
@@ -118,7 +120,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
      */
     public async getGitlabVersion(credentials: ProjectOperationCredentials): Promise<{version: string, revision: string}> {
         const gitlabUrl = `${this.scheme}${this.apiBase}/version`;
-        const httpClient = automationClientInstance().configuration.http.client.factory.create(gitlabUrl);
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory()).create(gitlabUrl);
         logger.debug(`Making request to '${gitlabUrl}' to get Gitlab Version`);
         const result = await httpClient.exchange<{version: string, revision: string}>(gitlabUrl, {
             method: HttpMethod.Get,
@@ -138,7 +140,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
      */
     public async getGroupId(credentials: ProjectOperationCredentials, name: string): Promise<number> {
         const gitlabUrl = `${this.scheme}${this.apiBase}/groups/${encodeURI(name)}?with_projects=false`;
-        const httpClient = automationClientInstance().configuration.http.client.factory.create(gitlabUrl);
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory()).create(gitlabUrl);
         try {
             const result = await httpClient.exchange<any>(gitlabUrl, {
                 method: HttpMethod.Get,
@@ -168,7 +170,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
      */
     public async getUserId(credentials: ProjectOperationCredentials, name: string): Promise<number> {
         const gitlabUrl = `${this.scheme}${this.apiBase}/users?username=${encodeURI(name)}`;
-        const httpClient = automationClientInstance().configuration.http.client.factory.create(gitlabUrl);
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory()).create(gitlabUrl);
         const result = await httpClient.exchange<any>(gitlabUrl, {
             method: HttpMethod.Get,
             headers: {
@@ -224,7 +226,8 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
                                             projectId: number): Promise<void> {
         const gitlabVersion = await this.getGitlabVersion(credentials);
         const versionDetails = gitlabVersion.version.split(".").map(v => parseInt(v, undefined));
-        const httpClient = automationClientInstance().configuration.http.client.factory.create(this.apiBase);
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory())
+            .create(`${this.scheme}${this.apiBase}`);
 
         if (versionDetails[0] < 10 || (versionDetails[0] === 10 && versionDetails[1] < 6)) {
             /**
@@ -301,7 +304,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
         reviewers?: PullRequestReviewer[],
     ): Promise<ActionResult<this>> {
         const gitlabUrl = `${this.scheme}${this.apiBase}/projects/${this.owner}%2f${this.repo}/merge_requests`;
-        const httpClient = automationClientInstance().configuration.http.client.factory.create(gitlabUrl);
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory()).create(gitlabUrl);
         logger.debug(`Making request to '${gitlabUrl}' to raise PR`);
 
         let response: HttpResponse<any>;
@@ -341,7 +344,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
 
     private getNamespaceForOwner(owner: string, creds: ProjectOperationCredentials): Promise<number> {
         const gitlabUrl = `${this.scheme}${this.apiBase}/namespaces?search=${encodeURI(owner)}`;
-        const httpClient = automationClientInstance().configuration.http.client.factory.create(gitlabUrl);
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory()).create(gitlabUrl);
         return httpClient.exchange(gitlabUrl, {
             method: HttpMethod.Get,
             headers: {

@@ -8,25 +8,8 @@ import {
     GitHubRepoRef,
 } from "../../../lib/operations/common/GitHubRepoRef";
 import { PullRequestReviewerType } from "../../../lib/operations/common/RepoId";
-import { AxiosHttpClientFactory } from "../../../lib/spi/http/axiosHttpClient";
 
 describe("GitHubRepoRef tests", () => {
-    before(() => {
-        (global as any).__runningAutomationClient = {
-            configuration: {
-                http: {
-                    client: {
-                        factory: new AxiosHttpClientFactory(),
-                    },
-                },
-            },
-        };
-    });
-
-    after(() => {
-        delete (global as any).__runningAutomationClient;
-    });
-
     it("defaults apiBase correctly", () => {
         const gh = new GitHubRepoRef("owner", "repo");
         assert(gh.apiBase === "api.github.com");
