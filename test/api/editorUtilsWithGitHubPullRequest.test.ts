@@ -48,7 +48,7 @@ describe("editorUtils", () => {
                 await cleanAfterTest(p, repo);
                 throw e;
             }
-        }).timeout(40000);
+        }).timeout(15000);
 
         it("creates PR with changes in simple editor", async () => {
             let p: GitProject;
@@ -63,7 +63,7 @@ describe("editorUtils", () => {
                 await cleanAfterTest(p, repo);
                 throw e;
             }
-        }).timeout(40000);
+        }).timeout(20000);
 
     });
 
