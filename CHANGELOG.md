@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Test errors with proper-lockfile 3.0.1. [#225](https://github.com/atomist/automation-client/issues/225)
 
+### Removed
+
+-   Remove CachingDirectoryManager (and proper-lockfile usage). [#639](https://github.com/atomist/automation-client/issues/639)
+
 ## [1.8.0](https://github.com/atomist/automation-client-ts/compare/1.7.0...1.8.0) - 2019-12-06
 
 ### Added
