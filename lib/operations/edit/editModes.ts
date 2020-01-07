@@ -1,5 +1,6 @@
 import { HandlerContext } from "../../HandlerContext";
 import { Project } from "../../project/Project";
+import { PullRequestReviewer } from "../common/RepoId";
 import {
     EditResult,
     ProjectEditor,
@@ -105,7 +106,8 @@ export class PullRequest extends Commit {
                 public body: string = title,
                 public message: string = title,
                 public targetBranch?: string,
-                public autoMerge?: AutoMerge) {
+                public autoMerge?: AutoMerge,
+                public reviewers?: PullRequestReviewer[]) {
         super(branch, message, autoMerge);
     }
 }

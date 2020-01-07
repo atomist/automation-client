@@ -1,9 +1,5 @@
-import { BasicAuthCredentials } from "../../lib/operations/common/BasicAuthCredentials";
 import { BitBucketRepoRef } from "../../lib/operations/common/BitBucketRepoRef";
 import { GitCommandGitProject } from "../../lib/project/git/GitCommandGitProject";
-import { GitProject } from "../../lib/project/git/GitProject";
-import { TestRepositoryVisibility } from "../credentials";
-import { tempProject } from "../project/utils";
 import {
     BitBucketCredentials,
     doWithNewRemote,
@@ -12,8 +8,9 @@ import {
 
 describe("BitBucket support", () => {
 
-    before(function() {
+    before(function(): void {
         if (skipBitBucketTests()) {
+            // tslint:disable-next-line:no-invalid-this
             this.skip();
         }
     });
@@ -29,7 +26,7 @@ describe("BitBucket support", () => {
         return doWithNewRemote(bp => {
             bp.addFileSync("Thing", "1");
             return bp.commit("Added Thing1")
-                .then(ar => {
+                .then(() => {
                     return bp.createBranch("thing1")
                         .then(() => bp.push());
                 });
@@ -40,7 +37,7 @@ describe("BitBucket support", () => {
         return doWithNewRemote(bp => {
             bp.addFileSync("Thing", "1");
             return bp.commit("Added Thing1")
-                .then(ar => bp.createBranch("thing1"))
+                .then(() => bp.createBranch("thing1"))
                 .then(() => bp.push())
                 .then(() => bp.raisePullRequest("Add a thing", "Dr Seuss is fun"));
         });

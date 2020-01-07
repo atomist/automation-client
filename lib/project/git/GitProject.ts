@@ -15,7 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { RemoteRepoRef } from "../../operations/common/RepoId";
+import {
+    PullRequestReviewer,
+    RemoteRepoRef,
+} from "../../operations/common/RepoId";
 import { LocalProject } from "../local/LocalProject";
 import { Configurable } from "./Configurable";
 import { GitStatus } from "./gitStatus";
@@ -91,8 +94,9 @@ export interface GitProject extends LocalProject, Configurable {
      * @param title
      * @param body
      * @param targetBranch
+     * @param reviewers
      */
-    raisePullRequest(title: string, body: string, targetBranch?: string): Promise<this>;
+    raisePullRequest(title: string, body: string, targetBranch?: string, reviewers?: PullRequestReviewer[]): Promise<this>;
 
     /**
      * Commit to local git

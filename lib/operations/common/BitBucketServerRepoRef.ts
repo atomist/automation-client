@@ -13,7 +13,10 @@ import { logger } from "../../util/logger";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
 import { isBasicAuthCredentials } from "./BasicAuthCredentials";
 import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
-import { ProviderType } from "./RepoId";
+import {
+    ProviderType,
+    PullRequestReviewerType,
+} from "./RepoId";
 
 /**
  * RemoteRepoRef implementation for BitBucket server (not BitBucket Cloud)
@@ -107,11 +110,24 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
                                   title: string,
                                   body: string,
                                   head: string,
-                                  base: string): Promise<ActionResult<this>> {
+                                  base: string,
+                                  reviewers?: Array<{type: Exclude<PullRequestReviewerType, PullRequestReviewerType.team>, name: string}>,
+    ): Promise<ActionResult<this>> {
         const url = `${this.scheme}${this.apiBase}/${this.apiPathComponent}/pull-requests`;
         logger.debug(`Making request to '${url}' to raise PR`);
         const repoId = await this.getRepoId(creds);
-        const reviewers = await this.getDefaultReviewers(creds, repoId, head, base);
+
+        // Figure out reviewers
+        const allReviewers = await this.getDefaultReviewers(creds, repoId, head, base);
+        if (reviewers) {
+            if (reviewers.some(r => r.type !== PullRequestReviewerType.individual)) {
+                throw new Error(`Bitbucket only supports reviewer type of individual!  Found ` +
+                    JSON.stringify([...new Set(reviewers.map(r => PullRequestReviewerType[r.type]))]));
+            }
+            allReviewers.push(...reviewers.map(r => r.name));
+        }
+
+        // Build payload
         const data = {
             title,
             description: body,
@@ -121,7 +137,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
             toRef: {
                 id: base,
             },
-            reviewers: reviewers.map(r => { return {
+            reviewers: allReviewers.map(r => { return {
                     user: {
                         name: r,
                     },
@@ -167,7 +183,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
 
     private async getRepoId(creds: ProjectOperationCredentials): Promise<number> {
         const url = `${this.scheme}${this.apiBase}/${this.apiPathComponent}`;
-        const apiResponse =  await configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory()).create(url).exchange(url, {
+        const apiResponse = await configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory()).create(url).exchange(url, {
             method: HttpMethod.Get,
             headers: {
                 ...usernameColonPassword(creds),

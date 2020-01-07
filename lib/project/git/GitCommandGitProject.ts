@@ -20,6 +20,7 @@ import promiseRetry = require("promise-retry");
 import { ProjectOperationCredentials } from "../../operations/common/ProjectOperationCredentials";
 import {
     isRemoteRepoRef,
+    PullRequestReviewer,
     RemoteRepoRef,
     RepoRef,
 } from "../../operations/common/RepoId";
@@ -182,8 +183,13 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
      * Raise a PR after a push to this branch
      * @param title
      * @param body
+     * @param targetBranch
+     * @param reviewers
      */
-    public raisePullRequest(title: string, body: string = this.name, targetBranch: string = "master"): Promise<this> {
+    public raisePullRequest(title: string,
+                            body: string = this.name,
+                            targetBranch: string = "master",
+                            reviewers?: PullRequestReviewer[]): Promise<this> {
         if (!this.branch) {
             throw new Error("Cannot create a PR: no branch has been created");
         }
@@ -191,7 +197,7 @@ export class GitCommandGitProject extends NodeFsLocalProject implements GitProje
             throw new Error("No remote in " + JSON.stringify(this.id));
         }
 
-        return this.id.raisePullRequest(this.credentials, title, body, this.branch, targetBranch)
+        return this.id.raisePullRequest(this.credentials, title, body, this.branch, targetBranch, reviewers)
             .then(() => this);
     }
 

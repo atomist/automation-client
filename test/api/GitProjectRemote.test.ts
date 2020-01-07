@@ -1,8 +1,4 @@
-import axios from "axios";
-import * as assert from "power-assert";
-
 import {
-    GitHubDotComBase,
     GitHubRepoRef,
 } from "../../lib/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../lib/project/git/GitCommandGitProject";
@@ -20,13 +16,15 @@ import {
 
 describe("GitProject remote", () => {
 
-    before(function() {
+    before(function(): void {
         if (!GitHubToken) {
+            // tslint:disable-next-line:no-invalid-this
             this.skip();
         }
     });
 
-    it("add a file, init and commit, then push to new remote repo", async function() {
+    it("add a file, init and commit, then push to new remote repo", async function(): Promise<void> {
+        // tslint:disable-next-line:no-invalid-this
         this.retries(5);
 
         const repo = `test-repo-2-${new Date().getTime()}`;
@@ -48,7 +46,8 @@ describe("GitProject remote", () => {
         }
     }).timeout(16000);
 
-    it("add a file, then PR push to remote repo", async function() {
+    it("add a file, then PR push to remote repo", async function(): Promise<void> {
+        // tslint:disable-next-line:no-invalid-this
         this.retries(3);
 
         let repo: TestRepo;
