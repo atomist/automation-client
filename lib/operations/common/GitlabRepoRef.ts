@@ -209,7 +209,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
         } catch (err) {
             throw new Error(`Couldn't resolve ID(s) for supplied Merge Request approval groups. ` + err);
         }
-        return {users: userIds, groups: groupIds};
+        return { users: userIds, groups: groupIds };
     }
 
     /**

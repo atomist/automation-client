@@ -130,8 +130,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
                 throw new Error(`Bitbucket only supports reviewer type of individual!  Found ` +
                     JSON.stringify([...new Set(reviewers.map(r => PullRequestReviewerType[r.type]))]));
             }
-            const ids = reviewers.filter(r => r.type === PullRequestReviewerType.individual).map(fr => fr.name);
-            allReviewers.push(...ids);
+            allReviewers.push(...reviewers.map(r => r.name));
         }
 
         // Build payload
