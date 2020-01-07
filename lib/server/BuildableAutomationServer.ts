@@ -44,6 +44,7 @@ import {
     PassThroughMetadataProcessor,
 } from "../spi/env/MetadataProcessor";
 import { SecretResolver } from "../spi/env/SecretResolver";
+import { defaultGraphClientFactory } from "../spi/graph/GraphClientFactory";
 import {
     Maker,
     toFactory,
@@ -221,7 +222,8 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
     }
 
     private enrichContext(ctx: HandlerContext): HandlerContext {
-        ctx.graphClient = ctx.graphClient || this.opts.graphql.client.factory.create(ctx.workspaceId, this.opts);
+        ctx.graphClient = ctx.graphClient || this.opts?.graphql?.client?.factory?.create(ctx.workspaceId, this.opts)
+            || defaultGraphClientFactory().create(ctx.workspaceId, this.opts);
         return ctx;
     }
 
