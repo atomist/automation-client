@@ -322,7 +322,7 @@ export function callsite(logInfo: logform.TransformableInfo): logform.Transforma
 }
 
 /* tslint:disable:cyclomatic-complexity */
-const clientFormat = info => {
+export const clientFormat = info => {
     const c = winston.format.colorize();
     const executionContext = context.get();
     let ctx: string;
