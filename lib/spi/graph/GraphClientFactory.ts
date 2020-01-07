@@ -28,7 +28,7 @@ class LazyApolloGraphClientFactory implements GraphClientFactory {
 
     private factory: GraphClientFactory;
 
-    create(workspaceId: string, configuration: Configuration): GraphClient {
+    public create(workspaceId: string, configuration: Configuration): GraphClient {
         if (!this.factory) {
             const agcf = require("../../graph/ApolloGraphClientFactory");
             this.factory = new agcf.ApolloGraphClientFactory();
