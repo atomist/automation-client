@@ -4,12 +4,6 @@ import { Configuration } from "./configuration";
 import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { HandlerResult } from "./HandlerResult";
-import { registerApplicationEvents } from "./internal/env/applicationEvent";
-import { ClusterMasterRequestProcessor } from "./internal/transport/cluster/ClusterMasterRequestProcessor";
-import {
-    ClusterWorkerRequestProcessor,
-    startWorker,
-} from "./internal/transport/cluster/ClusterWorkerRequestProcessor";
 import { EventStoringAutomationEventListener } from "./internal/transport/EventStoringAutomationEventListener";
 import { MetricEnabledAutomationEventListener } from "./internal/transport/MetricEnabledAutomationEventListener";
 import {
@@ -142,10 +136,10 @@ export class AutomationClient implements RequestProcessor {
 
             this.webSocketHandler = this.setupWebSocketClusterRequestHandler();
 
-            return (this.webSocketHandler as ClusterMasterRequestProcessor).run()
+            return (this.webSocketHandler as any).run()
                 .then(() => {
                     return Promise.all([
-                        this.runWs(() => this.webSocketHandler as ClusterMasterRequestProcessor),
+                        this.runWs(() => this.webSocketHandler as any),
                         this.runHttp(() => this.setupExpressRequestHandler()),
                     ])
                         .then(() => this.setupApplicationEvents())
@@ -193,14 +187,16 @@ export class AutomationClient implements RequestProcessor {
         }
     }
 
-    private setupWebSocketClusterRequestHandler(): ClusterMasterRequestProcessor {
-        return new ClusterMasterRequestProcessor(this.automations, this.configuration,
+    private setupWebSocketClusterRequestHandler(): RequestProcessor {
+        const cmrp = require("./internal/transport/cluster/ClusterMasterRequestProcessor");
+        return new cmrp.ClusterMasterRequestProcessor(this.automations, this.configuration,
             [...this.defaultListeners, ...this.configuration.listeners],
             this.configuration.cluster.workers, this.configuration.cluster.maxConcurrentPerWorker);
     }
 
-    private setupWebSocketClusterWorkerRequestHandler(): ClusterWorkerRequestProcessor {
-        return startWorker(this.automations, this.configuration,
+    private setupWebSocketClusterWorkerRequestHandler(): RequestProcessor {
+        const cwrp = require("./internal/transport/cluster/ClusterWorkerRequestProcessor");
+        return cwrp.startWorker(this.automations, this.configuration,
             [...this.defaultListeners, ...this.configuration.listeners]);
     }
 
@@ -212,10 +208,11 @@ export class AutomationClient implements RequestProcessor {
 
     private setupApplicationEvents(): Promise<any> {
         if (this.configuration.applicationEvents.enabled) {
+            const rae = require("./internal/env/applicationEvent");
             if (this.configuration.applicationEvents.workspaceId) {
-                return registerApplicationEvents(this.configuration.applicationEvents.workspaceId, this.configuration);
+                return rae.registerApplicationEvents(this.configuration.applicationEvents.workspaceId, this.configuration);
             } else if (this.configuration.workspaceIds.length > 0) {
-                return registerApplicationEvents(this.configuration.workspaceIds[0], this.configuration);
+                return rae.registerApplicationEvents(this.configuration.workspaceIds[0], this.configuration);
             }
         }
         return Promise.resolve();

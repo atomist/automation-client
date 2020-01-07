@@ -2,7 +2,6 @@ import * as stringify from "json-stringify-safe";
 import * as _ from "lodash";
 import * as semver from "semver";
 import { Configuration } from "../configuration";
-import { ApolloGraphClient } from "../graph/ApolloGraphClient";
 import { HandleCommand } from "../HandleCommand";
 import {
     EventFired,
@@ -45,7 +44,6 @@ import {
     PassThroughMetadataProcessor,
 } from "../spi/env/MetadataProcessor";
 import { SecretResolver } from "../spi/env/SecretResolver";
-import { GraphClient } from "../spi/graph/GraphClient";
 import {
     Maker,
     toFactory,
@@ -73,8 +71,6 @@ interface EventHandlerRegistration {
  */
 export class BuildableAutomationServer extends AbstractAutomationServer {
 
-    private readonly graphClient: GraphClient;
-
     private readonly commandHandlers: CommandHandlerRegistration[] = [];
 
     private readonly eventHandlers: EventHandlerRegistration[] = [];
@@ -94,11 +90,6 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
 
         if (opts.metadataProcessor) {
             this.metadataProcessor = opts.metadataProcessor;
-        }
-
-        if (opts.endpoints && opts.endpoints.graphql && opts.workspaceIds && opts.workspaceIds.length > 0 && opts.apiKey) {
-            this.graphClient = new ApolloGraphClient(`${opts.endpoints.graphql}/${opts.workspaceIds[0]}`,
-                { Authorization: `Bearer ${opts.apiKey}` });
         }
     }
 
@@ -230,7 +221,7 @@ export class BuildableAutomationServer extends AbstractAutomationServer {
     }
 
     private enrichContext(ctx: HandlerContext): HandlerContext {
-        ctx.graphClient = ctx.graphClient || this.graphClient;
+        ctx.graphClient = ctx.graphClient || this.opts.graphql.client.factory.create(ctx.workspaceId, this.opts);
         return ctx;
     }
 
