@@ -1,5 +1,4 @@
 import { Configuration } from "../../configuration";
-import { ApolloGraphClientFactory } from "../../graph/ApolloGraphClientFactory";
 import { GraphClient } from "./GraphClient";
 
 /**
@@ -20,4 +19,7 @@ export interface GraphClientFactory {
 /**
  * Default GraphClientFactory to use
  */
-export const defaultGraphClientFactory = () => new ApolloGraphClientFactory();
+export const defaultGraphClientFactory = () => {
+    const agcf = require("../../graph/ApolloGraphClientFactory");
+    return new agcf.ApolloGraphClientFactory();
+};

@@ -33,7 +33,6 @@ import { HandleCommand } from "./HandleCommand";
 import { HandleEvent } from "./HandleEvent";
 import { ExpressServerOptions } from "./internal/transport/express/ExpressServer";
 import { RequestProcessor } from "./internal/transport/RequestProcessor";
-import { QueuingWebSocketLifecycle } from "./internal/transport/websocket/WebSocketLifecycle";
 import { config } from "./internal/util/config";
 import { defaultGracePeriod } from "./internal/util/shutdown";
 import {
@@ -1132,7 +1131,6 @@ export const LocalDefaultConfiguration: Configuration = {
         },
         compress: false,
         timeout: 30000,
-        lifecycle: new QueuingWebSocketLifecycle(),
     } as any,
     applicationEvents: {
         enabled: false,

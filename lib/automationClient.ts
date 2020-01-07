@@ -123,6 +123,8 @@ export class AutomationClient implements RequestProcessor {
             logger.debug(`Using automation client configuration: ${clientConf}`);
 
             if (this.configuration.ws.enabled) {
+                const wsl = require("./internal/transport/websocket/WebSocketLifecycle");
+                (this.configuration.ws as any).lifecycle = new wsl.QueuingWebSocketLifecycle();
                 return Promise.all([
                     this.runWs(() => this.setupWebSocketRequestHandler()),
                     this.runHttp(() => this.setupExpressRequestHandler()),
