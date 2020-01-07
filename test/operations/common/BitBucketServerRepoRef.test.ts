@@ -4,6 +4,7 @@ import MockAdapter from "axios-mock-adapter";
 import * as assert from "power-assert";
 import { BasicAuthCredentials } from "../../../lib/operations/common/BasicAuthCredentials";
 import { BitBucketServerRepoRef } from "../../../lib/operations/common/BitBucketServerRepoRef";
+import { PullRequestReviewerType } from "../../../lib/operations/common/RepoId";
 
 export const BitBucketServerUsername = "username";
 export const BitBucketServerPassword = "password";
@@ -66,14 +67,8 @@ describe("BitBucketServer support", () => {
 
     it("should create pr with default reviewers", async () => {
         const mock = new MockAdapter(axios);
-
-        mock.onGet("https://bitbucket.organisation.co.za/rest/api/1.0/projects/a-project/repos/test-app")
-            .reply(200, { id: 1 });
-
-        // tslint:disable-next-line:max-line-length
-        mock.onGet("https://bitbucket.organisation.co.za/rest/default-reviewers/1.0/projects/a-project/repos/test-app/reviewers?sourceRepoId=1&targetRepoId=1&sourceRefId=refs/heads/thing1&targetRefId=refs/heads/master")
-            .reply(200, [{ name: "johndoe" }]);
-
+        getRepo(mock);
+        getRepoDefaultReviewers(mock, ["johndoe"]);
         mock.onPost("https://bitbucket.organisation.co.za/rest/api/1.0/projects/a-project/repos/test-app/pull-requests")
             .reply(config => {
                 const postData = JSON.parse(config.data);
@@ -93,16 +88,73 @@ describe("BitBucketServer support", () => {
             "refs/heads/master");
     });
 
-    it("should create pr without default reviewers", async () => {
+    it("should create pr with default reviewers and merge manually supplied ones", async () => {
         const mock = new MockAdapter(axios);
 
-        mock.onGet("https://bitbucket.organisation.co.za/rest/api/1.0/projects/a-project/repos/test-app")
-            .reply(200, { id: 1 });
+        getRepo(mock);
+        getRepoDefaultReviewers(mock, ["johndoe"]);
+        mock.onPost("https://bitbucket.organisation.co.za/rest/api/1.0/projects/a-project/repos/test-app/pull-requests")
+            .reply(config => {
+                const postData = JSON.parse(config.data);
+                assert((postData.reviewers as any[]).length === 2);
+                assert((postData.reviewers as any[])[0].user.name === "johndoe");
+                assert((postData.reviewers as any[])[1].user.name === "janedoe");
+                return [201, {}];
+            });
 
-        // tslint:disable-next-line:max-line-length
-        mock.onGet("https://bitbucket.organisation.co.za/rest/default-reviewers/1.0/projects/a-project/repos/test-app/reviewers?sourceRepoId=1&targetRepoId=1&sourceRefId=refs/heads/thing1&targetRefId=refs/heads/master")
-            .reply(200, []);
+        const bitbucketServerRepoRef = new BitBucketServerRepoRef("https://bitbucket.organisation.co.za", "a-project", "test-app");
+        return bitbucketServerRepoRef.raisePullRequest(
+            BitBucketServerCredentials, "Add a thing",
+            "Mr Peanut Butter goes woof", "refs/heads/thing1",
+            "refs/heads/master",
+            [
+                {type: PullRequestReviewerType.individual, name: "janedoe"},
+                ],
+        );
+    });
 
+    it("should create pr with only manually supplied reviewers", async () => {
+        const mock = new MockAdapter(axios);
+        getRepo(mock);
+        getRepoDefaultReviewers(mock, []);
+        mock.onPost("https://bitbucket.organisation.co.za/rest/api/1.0/projects/a-project/repos/test-app/pull-requests")
+            .reply(config => {
+                const postData = JSON.parse(config.data);
+                assert((postData.reviewers as any[]).length === 1);
+                assert((postData.reviewers as any[])[0].user.name === "janedoe");
+                return [201, {}];
+            });
+
+        const bitbucketServerRepoRef = new BitBucketServerRepoRef("https://bitbucket.organisation.co.za", "a-project", "test-app");
+        return bitbucketServerRepoRef.raisePullRequest(
+            BitBucketServerCredentials, "Add a thing",
+            "Mr Peanut Butter goes woof", "refs/heads/thing1",
+            "refs/heads/master",
+            [{type: PullRequestReviewerType.individual, name: "janedoe"}],
+        );
+    });
+
+    it("should throw when team reviewers are supplied", async () => { // Bitbucket doesn't support team reviewers
+        const mock = new MockAdapter(axios);
+        getRepo(mock);
+        getRepoDefaultReviewers(mock, []);
+        const bitbucketServerRepoRef = new BitBucketServerRepoRef("https://bitbucket.organisation.co.za", "a-project", "test-app");
+        try {
+            await bitbucketServerRepoRef.raisePullRequest(
+                BitBucketServerCredentials, "Add a thing",
+                "Mr Peanut Butter goes woof", "refs/heads/thing1",
+                "refs/heads/master",
+                [{type: PullRequestReviewerType.team, name: "testgroup"},
+                    {type: PullRequestReviewerType.individual, name: "testperson"}] as any);
+        } catch (err) {
+            assert.strictEqual(err.message, "Bitbucket only supports reviewer type of individual!  Found [\"team\",\"individual\"]");
+        }
+    });
+
+    it("should create pr without default reviewers", async () => {
+        const mock = new MockAdapter(axios);
+        getRepo(mock);
+        getRepoDefaultReviewers(mock, []);
         mock.onPost("https://bitbucket.organisation.co.za/rest/api/1.0/projects/a-project/repos/test-app/pull-requests")
             .reply(config => {
                 const postData = JSON.parse(config.data);
@@ -121,3 +173,14 @@ describe("BitBucketServer support", () => {
             "refs/heads/master");
     });
 });
+
+function getRepo(mock: MockAdapter): void {
+    mock.onGet("https://bitbucket.organisation.co.za/rest/api/1.0/projects/a-project/repos/test-app")
+        .reply(200, { id: 1 });
+}
+
+function getRepoDefaultReviewers(mock: MockAdapter, users: string[]): void {
+    // tslint:disable-next-line:max-line-length
+    mock.onGet("https://bitbucket.organisation.co.za/rest/default-reviewers/1.0/projects/a-project/repos/test-app/reviewers?sourceRepoId=1&targetRepoId=1&sourceRefId=refs/heads/thing1&targetRefId=refs/heads/master")
+        .reply(200, users.map(u => ({name: u})));
+}

@@ -25,6 +25,7 @@ import {
 } from "./ProjectOperationCredentials";
 import {
     ProviderType,
+    PullRequestReviewer,
     RemoteRepoRef,
 } from "./RepoId";
 
@@ -110,7 +111,11 @@ export abstract class AbstractRemoteRepoRef implements RemoteRepoRef {
     public abstract setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>>;
 
     public abstract raisePullRequest(creds: ProjectOperationCredentials,
-                                     title: string, body: string, head: string, base: string): Promise<ActionResult<this>>;
+                                     title: string,
+                                     body: string,
+                                     head: string,
+                                     base: string,
+                                     reviewers?: PullRequestReviewer[]): Promise<ActionResult<this>>;
 
     public abstract deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>>;
 }

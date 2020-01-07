@@ -21,19 +21,19 @@ export const BitBucketDotComBase = "https://bitbucket.org/api/2.0";
 
 export class BitBucketRepoRef extends AbstractRemoteRepoRef {
 
-    public readonly kind = "bitbucket";
+    public readonly kind: string = "bitbucket";
 
     constructor(owner: string,
                 repo: string,
                 sha?: string,
-                public apiBase = BitBucketDotComBase,
+                apiBase: string = BitBucketDotComBase,
                 path?: string,
                 branch?: string,
                 remote?: string) {
         super(ProviderType.bitbucket_cloud, remote || "https://bitbucket.org", apiBase, owner, repo, sha, path, branch);
     }
 
-    public createRemote(creds: ProjectOperationCredentials, description: string, visibility): Promise<ActionResult<this>> {
+    public createRemote(creds: ProjectOperationCredentials, description: string, visibility: string): Promise<ActionResult<this>> {
         const url = `${this.scheme}${this.apiBase}/repositories/${this.owner}/${this.repo}`;
 
         logger.debug("Making request to BitBucket '%s' to create repo", url);

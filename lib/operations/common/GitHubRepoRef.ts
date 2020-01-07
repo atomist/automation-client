@@ -15,12 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import axios from "axios";
 import {
     ActionResult,
     successOn,
 } from "../../action/ActionResult";
+import { configurationValue } from "../../configuration";
 import { Configurable } from "../../project/git/Configurable";
+import {
+    defaultHttpClientFactory,
+    HttpClientFactory,
+    HttpMethod,
+    HttpResponse,
+} from "../../spi/http/httpClient";
 import { createRepo } from "../../util/gitHub";
 import { logger } from "../../util/logger";
 import { AbstractRemoteRepoRef } from "./AbstractRemoteRepoRef";
@@ -31,6 +37,8 @@ import {
 } from "./ProjectOperationCredentials";
 import {
     ProviderType,
+    PullRequestReviewer,
+    PullRequestReviewerType,
     RepoRef,
 } from "./RepoId";
 
@@ -57,8 +65,7 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
         if (params.sha && !params.sha.match(GitShaRegExp.pattern)) {
             throw new Error("You provided an invalid SHA: " + params.sha);
         }
-        const result = new GitHubRepoRef(params.owner, params.repo, params.sha, params.rawApiBase, params.path, params.branch);
-        return result;
+        return new GitHubRepoRef(params.owner, params.repo, params.sha, params.rawApiBase, params.path, params.branch);
     }
 
     public readonly kind: string = "github";
@@ -97,17 +104,21 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
     }
 
     public setUserConfig(credentials: ProjectOperationCredentials, project: Configurable): Promise<ActionResult<any>> {
-        const config = headers(credentials);
+        // Only permit one retry trying to lookup user info
+        const config = {...headers(credentials), retry: {retries: 1}};
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory())
+            .create(`${this.scheme}${this.apiBase}`);
+
         return Promise.all([
-            axios.get(`${this.scheme}${this.apiBase}/user`, config),
-            axios.get(`${this.scheme}${this.apiBase}/user/public_emails`, config),
+            httpClient.exchange<any>(`${this.scheme}${this.apiBase}/user`, config),
+            httpClient.exchange<any>(`${this.scheme}${this.apiBase}/user/public_emails`, config),
         ])
             .then(results => {
-                const name = results[0].data.name || results[0].data.login;
-                let email = results[0].data.email;
+                const name = results[0].body.name || results[0].body.login;
+                let email = results[0].body.email;
 
-                if (!email && results[1].data && results[1].data.length > 0) {
-                    email = results[1].data[0].email;
+                if (!email && results[1].body && results[1].body.length > 0) {
+                    email = results[1].body[0].email;
                 }
 
                 if (name && email) {
@@ -120,22 +131,72 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
             .then(successOn);
     }
 
-    public async raisePullRequest(credentials: ProjectOperationCredentials,
-                                  title: string, body: string, head: string, base: string): Promise<ActionResult<this>> {
-
-        const url = `${this.scheme}${this.apiBase}/repos/${this.owner}/${this.repo}`;
+    public async getPr(credentials: ProjectOperationCredentials, head: string): Promise<any> {
         const config = headers(credentials);
+        const url = `${this.scheme}${this.apiBase}/repos/${this.owner}/${this.repo}/pulls?state=open&head=${this.owner}:${head}`;
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory())
+            .create(url);
+        return (await httpClient.exchange(url, config)).body;
+    }
+
+    /**
+     * Used to assign reviewers to existing Pull Requests
+     * https://developer.github.com/v3/pulls/review_requests/#create-a-review-request
+     * @param {ProjectOperationCredentials} credentials
+     * @param {string} prNumber
+     * @param {PullRequestReviewer[]} reviewers
+     */
+    public async addReviewersToPullRequest(credentials: ProjectOperationCredentials,
+                                           prNumber: string,
+                                           reviewers: PullRequestReviewer[]): Promise<HttpResponse<any>> {
+        const url = `${this.scheme}${this.apiBase}/repos/${this.owner}/${this.repo}`;
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory())
+            .create(url);
+
+        return httpClient.exchange<any>(`${url}/pulls/${prNumber}/requested_reviewers`, {
+            body: {
+                reviewers: reviewers.filter(r => r.type === PullRequestReviewerType.individual).map(i => i.name),
+                team_reviewers: reviewers.filter(r => r.type === PullRequestReviewerType.team).map(t => t.name),
+            },
+            method: HttpMethod.Post,
+            ...headers(credentials),
+        });
+    }
+
+    /**
+     * Used to create a new Pull Request
+     * https://developer.github.com/v3/pulls/#create-a-pull-request
+     * @param {ProjectOperationCredentials} credentials
+     * @param {string} title
+     * @param {string} body
+     * @param {string} head Source branch
+     * @param {string} base Target branch
+     * @param {PullRequestReviewer[]} reviewers
+     */
+    public async raisePullRequest(credentials: ProjectOperationCredentials,
+                                  title: string,
+                                  body: string,
+                                  head: string,
+                                  base: string,
+                                  reviewers?: PullRequestReviewer[]): Promise<ActionResult<this>> {
+        const url = `${this.scheme}${this.apiBase}/repos/${this.owner}/${this.repo}`;
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory())
+            .create(url);
 
         // Check if PR already exists on the branch
-        const pr = (await axios.get(`${url}/pulls?state=open&head=${this.owner}:${head}`, config)).data;
+        const pr = await this.getPr(credentials, head);
         if (!!pr && pr.length > 0) {
             try {
-                await axios.patch(`${url}/pulls/${pr[0].number}`, {
-                    title,
-                }, config);
-                await axios.post(`${url}/issues/${pr[0].number}/comments`, {
+                await httpClient.exchange(`${url}/pulls/${pr[0].number}`, {
+                    body: {title},
+                    method: HttpMethod.Patch,
+                    ...headers(credentials),
+                });
+                await httpClient.exchange(`${url}/issues/${pr[0].number}/comments`, {
                     body: beautifyPullRequestBody(body),
-                }, config);
+                    method: HttpMethod.Post,
+                    ...headers(credentials),
+                });
                 return {
                     target: this,
                     success: true,
@@ -145,30 +206,48 @@ export class GitHubRepoRef extends AbstractRemoteRepoRef {
                 throw e;
             }
         } else {
-            return axios.post(`${url}/pulls`, {
-                title,
-                body: beautifyPullRequestBody(body),
-                head,
-                base,
-            }, config)
-                .then(axiosResponse => {
-                    return {
-                        target: this,
-                        success: true,
-                        axiosResponse,
-                    };
-                })
-                .catch(err => {
-                    logger.error(`Error attempting to raise PR. ${url}  ${err}`);
-                    return Promise.reject(err);
+            try {
+                await httpClient.exchange(`${url}/pulls`, {
+                    body: {
+                        title,
+                        body: beautifyPullRequestBody(body),
+                        head,
+                        base,
+                    },
+                    method: HttpMethod.Post,
+                    ...headers(credentials),
                 });
+            } catch (e) {
+                logger.error(`Error Attempting to Raise PR.  ${url} ${e}`);
+                throw e;
+            }
+
+            try {
+                if (reviewers) {
+                    /**
+                     * If there are reviewers retrieve the PR that was created and update the required reviewers
+                     */
+                    const thisPr = await this.getPr(credentials, head);
+                    await this.addReviewersToPullRequest(credentials, thisPr[0].number, reviewers);
+                }
+            } catch (e) {
+                logger.error(`Error Attempting to Assign Reviewer(s) to PR.  ${url} ${e}`);
+                throw e;
+            }
+
+            return {
+                target: this,
+                success: true,
+            };
         }
     }
 
     public deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>> {
         const url = `${this.scheme}${this.apiBase}/repos/${this.owner}/${this.repo}`;
-        return axios.delete(url, headers(creds))
-            .then(r => successOn(this));
+        const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory())
+            .create(url);
+        return httpClient.exchange(url, {...headers(creds), method: HttpMethod.Delete})
+            .then(() => successOn(this));
     }
 
 }
