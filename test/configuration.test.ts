@@ -96,7 +96,6 @@ describe("configuration", () => {
             client: {
                 factory: defaultWebSocketFactory(),
             },
-            lifecycle: new QueuingWebSocketLifecycle(),
         } as any,
         graphql: {
             client: {
