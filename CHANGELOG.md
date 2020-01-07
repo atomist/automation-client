@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Atm-gql-gen fails if node_modules is not in $PWD (e.g. using lerna + hoisted packages). [#629](https://github.com/atomist/automation-client/issues/629)
 -   Add ability to intercept GraphQL operations. [29df6df](https://github.com/atomist/automation-client/commit/29df6df638183800810985a4acb397385c043ef0)
 -   Enable RegExp for intents. [#637](https://github.com/atomist/automation-client/issues/637)
+-   Support adding reviewers to PRs on Creation. [#641](https://github.com/atomist/automation-client/issues/641)
 
 ### Changed
 
