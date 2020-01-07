@@ -1,5 +1,6 @@
 import { HandlerContext } from "../../../lib/HandlerContext";
 import { CommandInvocation } from "../../../lib/internal/invoker/Payload";
+import { guid } from "../../../lib/internal/util/string";
 import { BuildableAutomationServer } from "../../../lib/server/BuildableAutomationServer";
 import { addAtomistSpringAgent } from "../metadata/addAtomistSpringAgent";
 
@@ -7,6 +8,7 @@ describe("function style command handler invocation", () => {
 
     it("should successfully invoke", done => {
         const ctx: HandlerContext = {
+            workspaceId: guid(),
             messageClient: {
                 respond(x) {
                     console.log(x);
