@@ -19,7 +19,20 @@ export interface GraphClientFactory {
 /**
  * Default GraphClientFactory to use
  */
-export const defaultGraphClientFactory = () => {
-    const agcf = require("../../graph/ApolloGraphClientFactory");
-    return new agcf.ApolloGraphClientFactory();
-};
+export const defaultGraphClientFactory = () => new LazyApolloGraphClientFactory();
+
+/**
+ * Lazy wrapper around the ApolloGraphClientFactory to prevent eager loading
+ */
+class LazyApolloGraphClientFactory implements GraphClientFactory {
+
+    private factory: GraphClientFactory;
+
+    create(workspaceId: string, configuration: Configuration): GraphClient {
+        if (!this.factory) {
+            const agcf = require("../../graph/ApolloGraphClientFactory");
+            this.factory = new agcf.ApolloGraphClientFactory();
+        }
+        return this.factory.create(workspaceId, configuration);
+    }
+}
