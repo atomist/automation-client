@@ -30,10 +30,10 @@ export class ApolloGraphClientFactory implements GraphClientFactory {
                 "apollographql-client-version": configuration.version,
             };
             graphClient = new ApolloGraphClient(
-                `${configuration.endpoints.graphql}/${workspaceId}`,
+                `${configuration.endpoints?.graphql}/${workspaceId}`,
                 headers,
                 this.configure(configuration),
-                configuration.graphql.listeners);
+                configuration.graphql?.listeners || []);
             this.graphClients.set<GraphClient>(workspaceId, graphClient);
             return graphClient;
         }
