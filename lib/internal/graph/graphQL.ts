@@ -364,7 +364,7 @@ function locateAndLoadGraphql(
                 // End of remove for next major release
                 // throw new Error(`No matching ${subfolder} graphql operation found for name '${options.name}'`);
             } else {
-                throw new Error(`More then 1 matching ${subfolder} graphql operation found for name '${options.name}'`);
+                throw new Error(`More then 1 matching ${subfolder} graphql operation [${queries.join(", ")}] found for name '${options.name}'`);
             }
         } else {
             throw new Error(`No graphql folder found anywhere above directory '${cwd}'. Consider specifying a path`);
