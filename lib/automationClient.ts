@@ -98,7 +98,10 @@ export class AutomationClient implements RequestProcessor {
 
     public run(): Promise<void> {
         this.configureRedactions();
-        configureLogging(clientLoggingConfiguration(this.configuration));
+        const logingConfiguration = clientLoggingConfiguration(this.configuration);
+        if (!!logingConfiguration) {
+            configureLogging(logingConfiguration);
+        }
         this.configureShutdown();
         this.configureStatsd();
 
