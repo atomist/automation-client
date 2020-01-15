@@ -39,10 +39,10 @@ export const LoggingBannerContributor =
     cfg => {
         const loggingConfig = clientLoggingConfiguration(_.cloneDeep(cfg));
         const rows = [`  ${chalk.gray("Logging")}`];
-        if (loggingConfig.console.enabled) {
+        if (loggingConfig?.console?.enabled) {
             rows.push(`    ${chalk.gray("Console")} ${loggingConfig.console.level}`);
         }
-        if (loggingConfig.file.enabled) {
+        if (loggingConfig?.file?.enabled) {
             rows.push(`    ${chalk.gray("File")} ${loggingConfig.file.level}  ${chalk.gray("Location")} ${loggingConfig.file.filename}`);
         }
         return rows.join("\n");

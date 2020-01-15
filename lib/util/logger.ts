@@ -253,34 +253,35 @@ export function configureLogging(config: LoggingConfiguration): void {
  * @param configuration
  */
 export function clientLoggingConfiguration(configuration: Configuration): LoggingConfiguration {
+    if (!configuration.logging) {
+        return undefined;
+    }
     const lc: LoggingConfiguration = {
         ...ClientLogging,
     };
-    if (configuration.logging) {
-        if (configuration.logging.level) {
-            lc.console = {
-                enabled: true,
-                level: configuration.logging.level,
-                format: LoggingFormat.Full,
-            };
-        }
-        if (_.get(configuration, "logging.file.enabled") === true) {
-            let filename = p.join(".", "log", `${configuration.name.replace(/@/g, "").replace(/\//g, "_")}.log`);
-            if (configuration.logging.file.name) {
-                filename = configuration.logging.file.name;
-            }
-
-            lc.file = {
-                enabled: true,
-                level: configuration.logging.file.level || configuration.logging.level,
-                filename,
-                format: LoggingFormat.Full,
-            };
-        }
-        lc.custom = _.get(configuration, "logging.custom.transports");
-        lc.callsites = _.get(configuration, "logging.callsite");
-        lc.color = _.get(configuration, "logging.color");
+    if (configuration.logging.level) {
+        lc.console = {
+            enabled: true,
+            level: configuration.logging.level,
+            format: LoggingFormat.Full,
+        };
     }
+    if (_.get(configuration, "logging.file.enabled") === true) {
+        let filename = p.join(".", "log", `${configuration.name.replace(/@/g, "").replace(/\//g, "_")}.log`);
+        if (configuration.logging.file.name) {
+            filename = configuration.logging.file.name;
+        }
+
+        lc.file = {
+            enabled: true,
+            level: configuration.logging.file.level || configuration.logging.level,
+            filename,
+            format: LoggingFormat.Full,
+        };
+    }
+    lc.custom = _.get(configuration, "logging.custom.transports");
+    lc.callsites = _.get(configuration, "logging.callsite");
+    lc.color = _.get(configuration, "logging.color");
     lc.redact = configuration.redact.log;
     return lc;
 }
@@ -416,6 +417,7 @@ function redirectConsoleLogging(): void {
         winstonLogger.warn(message, ...optionalParams);
     };
 }
+
 /* tslint:enable:no-console */
 
 function getFormat(format: LoggingFormat,
