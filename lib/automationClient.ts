@@ -115,13 +115,15 @@ export class AutomationClient implements RequestProcessor {
                 [...this.defaultListeners, ...this.configuration.listeners]);
         }
 
+        if (this.configuration.ws.enabled) {
+            const wsl = require("./internal/transport/websocket/WebSocketLifecycle");
+            (this.configuration.ws as any).lifecycle = new wsl.QueuingWebSocketLifecycle();
+        }
+
         if (!this.configuration.cluster.enabled) {
             logger.info(`Starting Atomist automation client ${clientSig}`);
             logger.debug(`Using automation client configuration: ${clientConf}`);
-
             if (this.configuration.ws.enabled) {
-                const wsl = require("./internal/transport/websocket/WebSocketLifecycle");
-                (this.configuration.ws as any).lifecycle = new wsl.QueuingWebSocketLifecycle();
                 return Promise.all([
                     this.runWs(() => this.setupWebSocketRequestHandler()),
                     this.runHttp(() => this.setupExpressRequestHandler()),
@@ -136,9 +138,7 @@ export class AutomationClient implements RequestProcessor {
         } else if (cluster.isMaster) {
             logger.info(`Starting Atomist automation client master ${clientSig}`);
             logger.debug(`Using automation client configuration: ${clientConf}`);
-
             this.webSocketHandler = this.setupWebSocketClusterRequestHandler();
-
             return (this.webSocketHandler as any).run()
                 .then(() => {
                     return Promise.all([
