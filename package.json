@@ -159,7 +159,7 @@
     "clean:test": "rimraf .nyc_output coverage",
     "compile": "run-s compile:ts",
     "compile:ts": "tsc --project .",
-    "doc": "typedoc --mode modules --excludeExternals --ignoreCompilerErrors --exclude \"**/*.d.ts\" --out doc index.ts lib",
+    "doc": "typedoc --mode modules --excludeExternals --ignoreCompilerErrors --exclude \"**/*.d.ts\" --out doc lib",
     "lint": "tslint --config tslint.json --format verbose --project .",
     "lint:fix": "npm run lint -- --fix",
     "test": "mocha --require espower-typescript/guess \"test/**/*.test.ts\"",
@@ -168,8 +168,7 @@
     "test:benchmark": "run-s test:benchmark:run test:benchmark:process",
     "test:benchmark:process": "node --prof-process isolate-*-v8.log > profile.txt",
     "test:benchmark:run": "mocha --prof --require espower-typescript/guess \"test/**/*.benchmark.ts\"",
-    "test:one": "mocha --require espower-typescript/guess \"test/**/${TEST:-*.test.ts}\"",
-    "typedoc": "npm run doc"
+    "test:one": "mocha --require espower-typescript/guess \"test/**/${TEST:-*.test.ts}\""
   },
   "bin": {
     "atm-command": "./bin/command.js",
