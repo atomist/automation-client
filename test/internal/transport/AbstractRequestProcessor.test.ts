@@ -28,18 +28,16 @@ import { Factory } from "../../../lib/util/constructionUtils";
 
 class ConcreteRequestProcessor extends AbstractRequestProcessor {
 
-    public invokeCommandPlease(ci: CommandInvocation,
-                               ctx: HandlerContext & AutomationContextAware,
-                               command: CommandIncoming,
-                               callback: (result: Promise<HandlerResult>) => void): void {
-        this.invokeCommand(ci, ctx, command, callback);
+    public async invokeCommandPlease(ci: CommandInvocation,
+                                     ctx: HandlerContext & AutomationContextAware,
+                                     command: CommandIncoming): Promise<HandlerResult> {
+        return this.invokeCommand(ci, ctx, command);
     }
 
-    public invokeEventPlease(ci: EventFired<any>,
-                             ctx: HandlerContext & AutomationContextAware,
-                             command: EventIncoming,
-                             callback: (result: Promise<HandlerResult[]>) => void): void {
-        this.invokeEvent(ci, ctx, command, callback);
+    public async invokeEventPlease(ci: EventFired,
+                                   ctx: HandlerContext & AutomationContextAware,
+                                   command: EventIncoming): Promise<HandlerResult[]> {
+        return this.invokeEvent(ci, ctx, command);
     }
 
     protected sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {
@@ -62,11 +60,11 @@ describe("the processCommand method", () => {
         // this is fine
     };
 
-    function invokeSomething(doThis: (ctx: HandlerContext) => void = nothing,
-                             handlerResult: HandlerResult & any = {
-            code: 0,
-            more: "stand up and say wooo",
-        }): Promise<HandlerResult> {
+    async function invokeSomething(doThis: (ctx: HandlerContext) => void = nothing,
+                                   handlerResult: HandlerResult & any = {
+                                       code: 0,
+                                       more: "stand up and say wooo",
+                                   }): Promise<HandlerResult> {
         const automationServerOpts: AutomationServerOptions = { name: "Fred", version: "8.10.5" };
         const automationServer: BuildableAutomationServer = new BuildableAutomationServer(automationServerOpts);
         const factory: Factory<HandleCommand> = () => {
@@ -122,23 +120,17 @@ describe("the processCommand method", () => {
             dispose: dispose(context),
         };
 
-        return new Promise((resolve, reject) =>
-            new ConcreteRequestProcessor(automationServer, {}).invokeCommandPlease(
-                commandInvocation,
-                context,
-                command, resultPromise => {
-                    return resultPromise
-                        .then(resolve)
-                        .catch(reject);
-                },
-            ));
+        return new ConcreteRequestProcessor(automationServer, {}).invokeCommandPlease(
+            commandInvocation,
+            context,
+            command);
     }
 
     it("should call a command", async () => {
         await invokeSomething();
     });
 
-    it("should release resources allocated during a command", done => {
+    it("should release resources allocated during a command", async () => {
         let watchMe = "begin";
         const allocateResource = (ctx: HandlerContext) => {
             ctx.lifecycle.registerDisposable(
@@ -148,27 +140,21 @@ describe("the processCommand method", () => {
                 }, "set watchMe to changed",
             );
         };
-        invokeSomething(allocateResource)
-            .then(() => {
-                assert(watchMe === "changed", watchMe);
-            })
-            .then(done, done);
+        await invokeSomething(allocateResource);
+        assert(watchMe === "changed", watchMe);
     });
 
-    it("should release resources when the command failed", done => {
+    it("should release resources when the command failed", async () => {
         let watchMe = "begin";
         const allocateResource = (ctx: HandlerContext) => {
             ctx.lifecycle.registerDisposable(() => {
-                watchMe = "changed";
-                return Promise.resolve();
-            }, "set watchMe to changed",
+                    watchMe = "changed";
+                    return Promise.resolve();
+                }, "set watchMe to changed",
             );
         };
-        invokeSomething(allocateResource, { code: 1, more: "I did this on purpose" })
-            .then(() => {
-                assert(watchMe === "changed", watchMe);
-            })
-            .then(done, done);
+        await invokeSomething(allocateResource, { code: 1, more: "I did this on purpose" });
+        assert(watchMe === "changed", watchMe);
     });
 
 });
@@ -178,11 +164,11 @@ describe("the processEvent method", () => {
         // no really
     };
 
-    function invokeSomething(doThis: (ctx: HandlerContext) => void = nothing,
-                             handlerResult: HandlerResult & any = {
-            code: 0,
-            more: "stand up and say wooo",
-        }): Promise<HandlerResult> {
+    async function invokeSomething(doThis: (ctx: HandlerContext) => void = nothing,
+                                   handlerResult: HandlerResult & any = {
+                                       code: 0,
+                                       more: "stand up and say wooo",
+                                   }): Promise<HandlerResult[]> {
         const automationServerOpts: AutomationServerOptions = { name: "Fred", version: "8.10.5" };
         const automationServer: BuildableAutomationServer = new BuildableAutomationServer(automationServerOpts);
         const factory: Factory<HandleEvent<any>> = () => {
@@ -238,57 +224,44 @@ describe("the processEvent method", () => {
             dispose: dispose(context),
         };
 
-        return new Promise((resolve, reject) =>
-            new ConcreteRequestProcessor(automationServer, {}).invokeEventPlease(
-                invocation,
-                context,
-                incoming, resultPromise => {
-                    return resultPromise
-                        .then(result => resolve(result[0]))
-                        .catch(reject);
-                },
-            ));
+        return new ConcreteRequestProcessor(automationServer, {}).invokeEventPlease(
+            invocation,
+            context,
+            incoming);
     }
 
-    it("should call an event handler", done => {
+    it("should call an event handler", async () => {
         let called = false;
-        invokeSomething(() => {
+        await invokeSomething(() => {
             called = true;
-        }).then(() => {
-            assert(called);
-        }).then(done, done);
+        });
+        assert(called);
     });
 
-    it("should release resources allocated during an event", done => {
+    it("should release resources allocated during an event", async () => {
         let watchMe = "begin";
         const allocateResource = (ctx: HandlerContext) => {
             ctx.lifecycle.registerDisposable(() => {
-                watchMe = "changed";
-                return Promise.resolve();
-            }, "set watchMe to changed",
+                    watchMe = "changed";
+                    return Promise.resolve();
+                }, "set watchMe to changed",
             );
         };
-        invokeSomething(allocateResource)
-            .then(() => {
-                assert(watchMe === "changed", watchMe);
-            })
-            .then(done, done);
+        await invokeSomething(allocateResource);
+        assert(watchMe === "changed", watchMe);
     });
 
-    it("should release resources when the event failed", done => {
+    it("should release resources when the event failed", async () => {
         let watchMe = "begin";
         const allocateResource = (ctx: HandlerContext) => {
             ctx.lifecycle.registerDisposable(() => {
-                watchMe = "changed";
-                return Promise.resolve();
-            }, "set watchMe to changed",
+                    watchMe = "changed";
+                    return Promise.resolve();
+                }, "set watchMe to changed",
             );
         };
-        invokeSomething(allocateResource, { code: 1, more: "I did this on purpose" })
-            .then(() => {
-                assert(watchMe === "changed", watchMe);
-            })
-            .then(done, done);
+        await invokeSomething(allocateResource, { code: 1, more: "I did this on purpose" });
+        assert(watchMe === "changed", watchMe);
     });
 
 });

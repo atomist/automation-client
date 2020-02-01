@@ -72,25 +72,25 @@ export class AutomationClient implements RequestProcessor {
         return this;
     }
 
-    public processCommand(command: CommandIncoming, callback?: (result: Promise<HandlerResult>) => void): void {
+    public processCommand(command: CommandIncoming): Promise<HandlerResult> {
         if (this.requestProcessor) {
-            return this.requestProcessor.processCommand(command, callback);
+            return this.requestProcessor.processCommand(command);
         } else if (this.webSocketHandler) {
-            return this.webSocketHandler.processCommand(command, callback);
+            return this.webSocketHandler.processCommand(command);
         } else if (this.httpHandler) {
-            return this.httpHandler.processCommand(command, callback);
+            return this.httpHandler.processCommand(command);
         } else {
             throw new Error("No request processor available");
         }
     }
 
-    public processEvent(event: EventIncoming, callback?: (results: Promise<HandlerResult[]>) => void): void {
+    public processEvent(event: EventIncoming): Promise<HandlerResult[]> {
         if (this.requestProcessor) {
-            return this.requestProcessor.processEvent(event, callback);
+            return this.requestProcessor.processEvent(event);
         } else if (this.webSocketHandler) {
-            return this.webSocketHandler.processEvent(event, callback);
+            return this.webSocketHandler.processEvent(event);
         } else if (this.httpHandler) {
-            return this.httpHandler.processEvent(event, callback);
+            return this.httpHandler.processEvent(event);
         } else {
             throw new Error("No request processor available");
         }

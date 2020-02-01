@@ -56,12 +56,12 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         this.initGc();
     }
 
-    public registrationSuccessful(handler: RequestProcessor): void {
+    public async registrationSuccessful(handler: RequestProcessor): Promise<void> {
         this.increment("counter.registration");
         this.event("event.registration", `New registration for ${this.registrationName}`);
     }
 
-    public contextCreated(ctx: HandlerContext): void {
+    public async contextCreated(ctx: HandlerContext): Promise<void> {
         const context = (ctx as any as AutomationContextAware).context;
         const graphClient = ctx.graphClient;
 
@@ -111,23 +111,22 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         }
     }
 
-    public commandIncoming(payload: CommandIncoming): void {
+    public async commandIncoming(payload: CommandIncoming): Promise<void> {
         const tags = [
             `atomist_operation_type:command`,
         ];
         this.increment("counter.operation", tags);
     }
 
-    public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<any> {
+    public async commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<any> {
         const tags = [
             `atomist_operation_type:command`,
         ];
         this.increment("counter.operation.success", tags);
         this.timing("timer.operation", ctx, tags);
-        return Promise.resolve();
     }
 
-    public commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): Promise<any> {
+    public async commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): Promise<any> {
         const tags = [
             `atomist_operation:${payload.name}`,
             `atomist_operation_type:command`,
@@ -135,26 +134,24 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         this.increment("counter.operation.failure", tags);
         this.timing("timer.operation", ctx, tags);
         this.event("event.operation.failure", "Unsuccessfully invoked command", tags);
-        return Promise.resolve();
     }
 
-    public eventIncoming(payload: EventIncoming): void {
+    public async eventIncoming(payload: EventIncoming): Promise<void> {
         const tags = [
             `atomist_operation_type:event`,
         ];
         this.increment("counter.operation", tags);
     }
 
-    public eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): Promise<any> {
+    public async eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): Promise<any> {
         const tags = [
             `atomist_operation_type:event`,
         ];
         this.increment("counter.operation.success", tags);
         this.timing("timer.operation", ctx, tags);
-        return Promise.resolve();
     }
 
-    public eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): Promise<any> {
+    public async eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): Promise<any> {
         const tags = [
             `atomist_operation:${payload.extensions.operationName}`,
             `atomist_operation_type:event`,
@@ -162,13 +159,12 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         this.increment("counter.operation.failure", tags);
         this.timing("timer.operation", ctx, tags);
         this.event("event.operation.failure", "Unsuccessfully invoked event", tags);
-        return Promise.resolve();
     }
 
-    public messageSent(message: any,
-                       dests: Destination | Destination[],
-                       options: MessageOptions,
-                       ctx: HandlerContext & AutomationContextAware): Promise<void> {
+    public async messageSent(message: any,
+                             dests: Destination | Destination[],
+                             options: MessageOptions,
+                             ctx: HandlerContext & AutomationContextAware): Promise<void> {
 
         let type: string;
         const destinations = Array.isArray(dests) ? dests : [dests];
@@ -187,7 +183,6 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
         this.increment("counter.message", [
             `atomist_message_type:${type}`,
         ]);
-        return Promise.resolve();
     }
 
     /** Do-nothing callback */

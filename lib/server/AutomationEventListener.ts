@@ -24,7 +24,7 @@ export interface AutomationEventListener {
      * WebSocket registration was successful
      * @param handler
      */
-    registrationSuccessful(handler: RequestProcessor): void;
+    registrationSuccessful(handler: RequestProcessor): Promise<void>;
 
     /**
      * Client startup successful
@@ -37,20 +37,20 @@ export interface AutomationEventListener {
      * This gets invoked for every incoming command and event invocation
      * @param context
      */
-    contextCreated(context: HandlerContext): void;
+    contextCreated(context: HandlerContext): Promise<void>;
 
     /**
      * Raw incoming command payload
      * @param payload
      */
-    commandIncoming(payload: CommandIncoming): void;
+    commandIncoming(payload: CommandIncoming): Promise<void>;
 
     /**
      * Converted command invocation and created HandlerContext
      * @param payload
      * @param ctx
      */
-    commandStarting(payload: CommandInvocation, ctx: HandlerContext): void;
+    commandStarting(payload: CommandInvocation, ctx: HandlerContext): Promise<void>;
 
     /**
      * Command execution successful
@@ -72,14 +72,14 @@ export interface AutomationEventListener {
      * Raw incoming event payload
      * @param payload
      */
-    eventIncoming(payload: EventIncoming): void;
+    eventIncoming(payload: EventIncoming): Promise<void>;
 
     /**
      * Converted event invocation and created HandlerContext
      * @param payload
      * @param ctx
      */
-    eventStarting(payload: EventFired<any>, ctx: HandlerContext): void;
+    eventStarting(payload: EventFired<any>, ctx: HandlerContext): Promise<void>;
 
     /**
      * Event execution successful
@@ -125,65 +125,65 @@ export interface AutomationEventListener {
 
 export class AutomationEventListenerSupport implements AutomationEventListener {
 
-    public registrationSuccessful(handler: RequestProcessor) {
+    public async registrationSuccessful(handler: RequestProcessor): Promise<void> {
         // This is intentionally left empty
     }
 
-    public startupSuccessful(client: AutomationClient): Promise<void> {
-        return Promise.resolve();
-    }
-
-    public contextCreated(context: HandlerContext) {
+    public async startupSuccessful(client: AutomationClient): Promise<void> {
         // This is intentionally left empty
     }
 
-    public commandIncoming(payload: CommandIncoming) {
+    public async contextCreated(context: HandlerContext): Promise<void> {
         // This is intentionally left empty
     }
 
-    public commandStarting(payload: CommandInvocation, ctx: HandlerContext) {
+    public async commandIncoming(payload: CommandIncoming): Promise<void> {
         // This is intentionally left empty
     }
 
-    public commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<void> {
-        return Promise.resolve();
-    }
-
-    public commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): Promise<void> {
-        return Promise.resolve();
-    }
-
-    public eventIncoming(payload: EventIncoming) {
+    public async commandStarting(payload: CommandInvocation, ctx: HandlerContext): Promise<void> {
         // This is intentionally left empty
     }
 
-    public eventStarting(payload: EventFired<any>, ctx: HandlerContext) {
+    public async commandSuccessful(payload: CommandInvocation, ctx: HandlerContext, result: HandlerResult): Promise<void> {
         // This is intentionally left empty
     }
 
-    public eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): Promise<void> {
-        return Promise.resolve();
+    public async commandFailed(payload: CommandInvocation, ctx: HandlerContext, err: any): Promise<void> {
+        // This is intentionally left empty
     }
 
-    public eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): Promise<void> {
-        return Promise.resolve();
+    public async eventIncoming(payload: EventIncoming): Promise<void> {
+        // This is intentionally left empty
     }
 
-    public messageSending(message: any,
-                          destinations: Destination | Destination[],
-                          options: MessageOptions,
-                          ctx: HandlerContext): Promise<{ message: any, destinations: Destination | Destination[], options: MessageOptions }> {
-        return Promise.resolve({
+    public async eventStarting(payload: EventFired<any>, ctx: HandlerContext): Promise<void> {
+        // This is intentionally left empty
+    }
+
+    public async eventSuccessful(payload: EventFired<any>, ctx: HandlerContext, result: HandlerResult[]): Promise<void> {
+        // This is intentionally left empty
+    }
+
+    public async eventFailed(payload: EventFired<any>, ctx: HandlerContext, err: any): Promise<void> {
+        // This is intentionally left empty
+    }
+
+    public async messageSending(message: any,
+                                destinations: Destination | Destination[],
+                                options: MessageOptions,
+                                ctx: HandlerContext): Promise<{ message: any, destinations: Destination | Destination[], options: MessageOptions }> {
+        return {
             message,
             destinations,
             options,
-        });
+        };
     }
 
-    public messageSent(message: any,
-                       destinations: Destination | Destination[],
-                       options: MessageOptions,
-                       ctx: HandlerContext): Promise<void> {
-        return Promise.resolve();
+    public async messageSent(message: any,
+                             destinations: Destination | Destination[],
+                             options: MessageOptions,
+                             ctx: HandlerContext): Promise<void> {
+        // This is intentionally left empty
     }
 }

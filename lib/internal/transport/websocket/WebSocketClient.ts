@@ -81,10 +81,10 @@ function connect(registrationCallback: () => any,
             resolve(ws);
 
             // Install ping/pong timer and shutdown hooks
-            timer = setInterval(() => {
+            timer = setInterval(async () => {
                 if (pong + 1 < ping) {
                     reset();
-                    ws.terminate();
+                    await ws.terminate();
                     logger.error("Missing ping/pong from the server. Closing WebSocket");
                 } else {
                     sendMessage({ ping }, ws, false);

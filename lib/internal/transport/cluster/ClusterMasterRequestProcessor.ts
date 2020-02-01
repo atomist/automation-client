@@ -361,10 +361,9 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
         return Promise.all(promises);
     }
 
-    protected invokeCommand(ci: CommandInvocation,
-                            ctx: HandlerContext & AutomationContextAware,
-                            command: CommandIncoming,
-                            callback: (result: Promise<HandlerResult>) => void): void {
+    protected async invokeCommand(ci: CommandInvocation,
+                                  ctx: HandlerContext & AutomationContextAware,
+                                  command: CommandIncoming): Promise<HandlerResult> {
         const message: MasterMessage = {
             type: "atomist:command",
             registration: this.registration,
@@ -375,15 +374,14 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
         logger.debug(`Queuing incoming command handler request '${command.command}'`);
         const dispatched = new Dispatched(new Deferred<HandlerResult>(), ctx);
         this.messages.push({ message, dispatched, ts: Date.now() });
-        callback(dispatched.result.promise);
 
         this.startMessage();
+        return dispatched.result.promise;
     }
 
     protected invokeEvent(ef: EventFired<any>,
                           ctx: HandlerContext & AutomationContextAware,
-                          event: EventIncoming,
-                          callback: (results: Promise<HandlerResult[]>) => void): void {
+                          event: EventIncoming): Promise<HandlerResult[]> {
         const message: MasterMessage = {
             type: "atomist:event",
             registration: this.registration,
@@ -394,9 +392,8 @@ export class ClusterMasterRequestProcessor extends AbstractRequestProcessor impl
         logger.debug(`Queuing incoming event subscription '${event.extensions.operationName}'`);
         const dispatched = new Dispatched(new Deferred<HandlerResult[]>(), ctx);
         this.messages.push({ message, dispatched, ts: Date.now() });
-        callback(dispatched.result.promise);
-
         this.startMessage();
+        return dispatched.result.promise;
     }
 
     protected async sendStatusMessage(payload: any, ctx: HandlerContext & AutomationContextAware): Promise<any> {

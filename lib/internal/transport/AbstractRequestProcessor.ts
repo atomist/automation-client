@@ -48,17 +48,16 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 protected listeners: AutomationEventListener[] = []) {
     }
 
-    public processCommand(command: CommandIncoming,
-                          // tslint:disable-next-line:no-empty
-                          callback: (result: Promise<HandlerResult>) => void = () => {
-                          }) {
+    public async processCommand(command: CommandIncoming): Promise<HandlerResult> {
         // setup context
         const ses = namespace.create();
         const cls = this.setupNamespace(command, this.automations);
-        ses.run(() => {
+        return ses.run(async () => {
             namespace.set(cls);
 
-            this.listeners.forEach(l => l.commandIncoming(command));
+            for (const l of this.listeners) {
+                await l.commandIncoming(command);
+            }
 
             const np = namespace.get();
             const ci: CommandInvocation = {
@@ -85,24 +84,27 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 dispose: dispose(ctx),
             };
 
-            this.listeners.forEach(l => l.contextCreated(ctx));
-            this.listeners.forEach(l => l.commandStarting(ci, ctx));
+            for (const l of this.listeners) {
+                await l.contextCreated(ctx);
+            }
+            for (const l of this.listeners) {
+                await l.commandStarting(ci, ctx);
+            }
 
-            this.invokeCommand(ci, ctx, command, callback);
+            return this.invokeCommand(ci, ctx, command);
         });
     }
 
-    public processEvent(event: EventIncoming,
-                        // tslint:disable-next-line:no-empty
-                        callback: (results: Promise<HandlerResult[]>) => void = () => {
-                        }) {
+    public async processEvent(event: EventIncoming): Promise<HandlerResult[]> {
         // setup context
         const ses = namespace.create();
         const cls = this.setupNamespace(event, this.automations);
-        ses.run(() => {
+        return ses.run(async () => {
             namespace.set(cls);
 
-            this.listeners.forEach(l => l.eventIncoming(event));
+            for (const l of this.listeners) {
+                await l.eventIncoming(event);
+            }
 
             const np = namespace.get();
             const ef: EventFired<any> = {
@@ -129,10 +131,14 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 dispose: dispose(ctx),
             };
 
-            this.listeners.forEach(l => l.contextCreated(ctx));
-            this.listeners.forEach(l => l.eventStarting(ef, ctx));
+            for (const l of this.listeners) {
+                await l.contextCreated(ctx);
+            }
+            for (const l of this.listeners) {
+                await l.eventStarting(ef, ctx);
+            }
 
-            this.invokeEvent(ef, ctx, event, callback);
+            return this.invokeEvent(ef, ctx, event);
         });
     }
 
@@ -182,70 +188,65 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         return this.sendStatusMessage(response, ctx);
     }
 
-    protected invokeCommand(ci: CommandInvocation,
-                            ctx: HandlerContext & AutomationContextAware,
-                            command: CommandIncoming,
-                            callback: (result: Promise<HandlerResult>) => void) {
+    protected async invokeCommand(ci: CommandInvocation,
+                                  ctx: HandlerContext & AutomationContextAware,
+                                  command: CommandIncoming): Promise<HandlerResult> {
 
-        const finalize = (result: HandlerResult) => {
-            this.sendCommandStatus(result.code === 0, result.code, command, ctx)
-                .catch(err =>
-                    logger.warn("Unable to send status for command '%s': %s", command.command, err.message))
-                .then(() => {
-                    callback(Promise.resolve(result));
-                    logger.debug(`Finished invocation of command '%s': %s`,
-                        command.command, stringify(result, possibleAxiosObjectReplacer));
-                    this.clearNamespace();
-                });
+        const finalize = async (result: HandlerResult) => {
+            try {
+                await this.sendCommandStatus(result.code === 0, result.code, command, ctx);
+                logger.debug(`Finished invocation of command '%s': %s`,
+                    command.command, stringify(result, possibleAxiosObjectReplacer));
+                this.clearNamespace();
+            } catch (e) {
+                logger.warn("Unable to send status for command '%s': %s", command.command, e.message);
+            }
         };
 
         logger.debug("Incoming command invocation '%s'", stringify(command, replacer));
         try {
-            this.automations.invokeCommand(ci, ctx)
-                .then(result => {
-                    if (!result || !result.hasOwnProperty("code")) {
-                        return {
-                            ...defaultResult(ctx),
-                            ...result,
-                        };
-                    } else {
-                        return result;
-                    }
-                })
-                .then(result => ctx.lifecycle ? ctx.lifecycle.dispose().then(() => result) : result)
-                .then(result => {
-                    if (result.code === 0) {
-                        result = {
-                            ...defaultResult(ctx),
-                            ...result,
-                        };
-                        this.listeners.map(l => () => l.commandSuccessful(ci, ctx, result))
-                            .reduce((p, f) => p.then(f), Promise.resolve())
-                            .then(() => finalize(result));
-                    } else {
-                        result = {
-                            ...defaultErrorResult(ctx),
-                            ...result,
-                        };
-                        this.listeners.map(l => () => l.commandFailed(ci, ctx, result))
-                            .reduce((p, f) => p.then(f), Promise.resolve())
-                            .then(() => finalize(result));
-                    }
-                })
-                .catch(err => {
-                    this.handleCommandError(err, command, ci, ctx, callback);
-                });
+            let result = await this.automations.invokeCommand(ci, ctx);
+
+            if (!result || !result.hasOwnProperty("code")) {
+                result = {
+                    ...defaultResult(ctx),
+                    ...result,
+                };
+            }
+
+            if (!!ctx.lifecycle) {
+                await ctx.lifecycle.dispose();
+            }
+            if (result.code === 0) {
+                result = {
+                    ...defaultResult(ctx),
+                    ...result,
+                };
+                for (const l of this.listeners) {
+                    await l.commandSuccessful(ci, ctx, result);
+                }
+                await finalize(result);
+            } else {
+                result = {
+                    ...defaultErrorResult(ctx),
+                    ...result,
+                };
+                for (const l of this.listeners) {
+                    await l.commandFailed(ci, ctx, result);
+                }
+                await finalize(result);
+            }
+            return result;
         } catch (err) {
-            this.handleCommandError(err, command, ci, ctx, callback);
+            return this.handleCommandError(err, command, ci, ctx);
         }
     }
 
-    protected invokeEvent(ef: EventFired<any>,
-                          ctx: HandlerContext & AutomationContextAware,
-                          event: EventIncoming,
-                          callback: (results: Promise<HandlerResult[]>) => void) {
+    protected async invokeEvent(ef: EventFired,
+                                ctx: HandlerContext & AutomationContextAware,
+                                event: EventIncoming): Promise<HandlerResult[]> {
 
-        const finalize = (results: HandlerResult[]) => {
+        const finalize = async (results: HandlerResult[]) => {
             let noncircularResults = results;
             try {
                 JSON.stringify(noncircularResults);
@@ -254,47 +255,41 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                 noncircularResults = results.map(r => ({ code: r.code, message: stringify(r.message) }));
                 logger.error("Substituting for circular object: %j", noncircularResults);
             }
-
-            this.sendEventStatus(!noncircularResults.some(r => r.code !== 0), ef, event, ctx)
-                .catch(err =>
-                    logger.warn("Unable to send status for event subscription'%s': %s",
-                        event.extensions.operationName, err.message))
-                .then(() => {
-                    callback(Promise.resolve(noncircularResults));
-                    logger.debug(`Finished invocation of event subscription '%s': %s`,
-                        event.extensions.operationName, stringify(noncircularResults, possibleAxiosObjectReplacer));
-                    this.clearNamespace();
-                });
+            try {
+                await this.sendEventStatus(!noncircularResults.some(r => r.code !== 0), ef, event, ctx);
+                logger.debug(`Finished invocation of event subscription '%s': %s`,
+                    event.extensions.operationName, stringify(noncircularResults, possibleAxiosObjectReplacer));
+                this.clearNamespace();
+            } catch (e) {
+                logger.warn("Unable to send status for event subscription'%s': %s",
+                    event.extensions.operationName, e.message);
+            }
         };
 
         logger.debug("Incoming event subscription '%s'", stringify(event, replacer));
         try {
-            this.automations.onEvent(ef, ctx)
-                .then(result => {
-                    if (!result || result.length === 0) {
-                        return [defaultResult(ctx)];
-                    } else {
-                        return result;
-                    }
-                })
-                .then(result => ctx.lifecycle ? ctx.lifecycle.dispose().then(() => result) : result)
-                .then(result => {
+            let result = await this.automations.onEvent(ef, ctx);
+            if (!result || result.length === 0) {
+                result = [defaultResult(ctx)];
+            }
 
-                    if (!result.some(r => r.code !== 0)) {
-                        this.listeners.map(l => () => l.eventSuccessful(ef, ctx, result))
-                            .reduce((p, f) => p.then(f), Promise.resolve())
-                            .then(() => finalize(result));
-                    } else {
-                        this.listeners.map(l => () => l.eventFailed(ef, ctx, result))
-                            .reduce((p, f) => p.then(f), Promise.resolve())
-                            .then(() => finalize(result));
-                    }
-                })
-                .catch(err => {
-                    this.handleEventError(err, event, ef, ctx, callback);
-                });
+            if (!!ctx.lifecycle) {
+                await ctx.lifecycle.dispose();
+            }
+            if (!result.some(r => r.code !== 0)) {
+                for (const l of this.listeners) {
+                    await l.eventSuccessful(ef, ctx, result);
+                }
+                await finalize(result);
+            } else {
+                for (const l of this.listeners) {
+                    await l.eventFailed(ef, ctx, result);
+                }
+                await finalize(result);
+            }
+            return result;
         } catch (err) {
-            this.handleEventError(err, event, ef, ctx, callback);
+            return this.handleEventError(err, event, ef, ctx);
         }
     }
 
@@ -322,14 +317,14 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
 
     protected clearNamespace() {
         namespace.set({
-            correlationId: null,
-            workspaceId: null,
-            workspaceName: null,
-            operation: null,
-            name: null,
-            version: null,
-            invocationId: null,
-            ts: null,
+            correlationId: undefined,
+            workspaceId: undefined,
+            workspaceName: undefined,
+            operation: undefined,
+            name: undefined,
+            version: undefined,
+            invocationId: undefined,
+            ts: undefined,
         });
     }
 
@@ -342,63 +337,53 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
     protected abstract createMessageClient(event: EventIncoming | CommandIncoming,
                                            context: AutomationContextAware): MessageClient;
 
-    private handleCommandError(err: any,
-                               command: CommandIncoming,
-                               ci: CommandInvocation,
-                               ctx: HandlerContext & AutomationContextAware,
-                               callback: (error: any) => void) {
+    private async handleCommandError(err: any,
+                                     command: CommandIncoming,
+                                     ci: CommandInvocation,
+                                     ctx: HandlerContext & AutomationContextAware): Promise<HandlerResult> {
         const result = {
             ...defaultErrorResult(ctx),
             ...failure(err),
         };
 
-        this.listeners.map(l => () => l.commandFailed(ci, ctx, err))
-            .reduce((p, f) => p.then(f), Promise.resolve())
-            .then(() => {
-                return this.sendCommandStatus(false, result.code, command, ctx)
-                    .then(() => {
-                        if (callback) {
-                            callback(Promise.resolve(result));
-                        }
-                        if (err instanceof Error) {
-                            logger.error(`Failed invocation of command '%s': %s`, command.command, err.message);
-                            logger.error(err.stack);
-                        } else {
-                            logger.error(`Failed invocation of command '%s'`, command.command);
-                        }
-                        this.clearNamespace();
-                    })
-                    .catch(error => logger.warn("Unable to send status for command: " + stringify(command)));
-            });
+        for (const l of this.listeners) {
+            await l.commandFailed(ci, ctx, err);
+        }
+
+        await this.sendCommandStatus(false, result.code, command, ctx);
+        if (err instanceof Error) {
+            logger.error(`Failed invocation of command '%s': %s`, command.command, err.message);
+            logger.error(err.stack);
+        } else {
+            logger.error(`Failed invocation of command '%s'`, command.command);
+        }
+        this.clearNamespace();
+        return result;
     }
 
-    private handleEventError(err: any, event: EventIncoming, ef: EventFired<any>,
-                             ctx: HandlerContext & AutomationContextAware, callback: (error: any) => void) {
+    private async handleEventError(err: any,
+                                   event: EventIncoming,
+                                   ef: EventFired,
+                                   ctx: HandlerContext & AutomationContextAware): Promise<HandlerResult[]> {
         const result = {
             ...defaultErrorResult(ctx),
             ...failure(err),
         };
 
-        this.listeners.map(l => () => l.eventFailed(ef, ctx, err))
-            .reduce((p, f) => p.then(f), Promise.resolve())
-            .then(() => {
-                return this.sendEventStatus(false, ef, event, ctx)
-                    .then(() => {
-                        if (callback) {
-                            callback(Promise.resolve(result));
-                        }
-                        if (err instanceof Error) {
-                            logger.error(`Failed invocation of event subscription '%s': %s`,
-                                event.extensions.operationName, err.message);
-                            logger.error(err.stack);
-                        } else {
-                            logger.error(`Failed invocation of event subscription '%s'`,
-                                event.extensions.operationName);
-                        }
-                        this.clearNamespace();
-                    })
-                    .catch(error => logger.warn("Unable to send status for event subscription: " + stringify(event)));
-            });
+        for (const l of this.listeners) {
+            await l.eventFailed(ef, ctx, err);
+        }
+        await this.sendEventStatus(false, ef, event, ctx);
+        if (err instanceof Error) {
+            logger.error(`Failed invocation of event subscription '%s': %s`,
+                event.extensions.operationName, err.message);
+            logger.error(err.stack);
+        } else {
+            logger.error(`Failed invocation of event subscription '%s'`,
+                event.extensions.operationName);
+        }
+        this.clearNamespace();
+        return [result];
     }
 }
 

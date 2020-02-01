@@ -7,11 +7,11 @@ import {
 
 export class EventStoringAutomationEventListener extends AutomationEventListenerSupport {
 
-    public commandIncoming(payload: CommandIncoming) {
+    public async commandIncoming(payload: CommandIncoming) {
         eventStore().recordCommand(payload);
     }
 
-    public eventIncoming(payload: EventIncoming) {
+    public async eventIncoming(payload: EventIncoming) {
         eventStore().recordEvent(payload);
     }
 }

@@ -48,10 +48,10 @@ class Namespace {
     constructor(public readonly context = {}) {
     }
 
-    public run(fn: () => void): void {
+    public run<T>(fn: () => T): T {
         const id = asyncHooks.executionAsyncId();
         this.context[id] = {};
-        fn();
+        return fn();
     }
 
     public set(key: string, val: any): void {

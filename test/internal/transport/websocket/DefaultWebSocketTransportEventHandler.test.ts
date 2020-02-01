@@ -13,7 +13,7 @@ import { defaultGraphClientFactory } from "../../../../lib/spi/graph/GraphClient
 
 describe("DefaultWebSocketRequestProcessor", () => {
 
-    it("check event received and processed", done => {
+    it("check event received and processed", async () => {
         class MockAutomationServer implements AutomationServer {
 
             public automations: Automations = {
@@ -67,7 +67,7 @@ describe("DefaultWebSocketRequestProcessor", () => {
             });
         listener.onRegistration({ url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
         listener.onConnect((new MockWebSocket() as any) as WebSocket);
-        listener.processEvent({
+        await listener.processEvent({
             data: {
                 Foo: {
                     bar: 27,
@@ -79,20 +79,20 @@ describe("DefaultWebSocketRequestProcessor", () => {
                 team_id: "x-team",
                 correlation_id: "555",
             },
-        }, result => done());
+        });
 
     }).timeout(5000);
 
-    it("check successful command received and processed", done => {
-        verifyCommandHandler(0, result => done());
+    it("check successful command received and processed", async () => {
+        await verifyCommandHandler(0);
     }).timeout(5000);
 
-    it("check unsuccessful command received and processed", done => {
-        verifyCommandHandler(1, result => done());
+    it("check unsuccessful command received and processed", async () => {
+        await verifyCommandHandler(1);
     }).timeout(5000);
 });
 
-function verifyCommandHandler(code: number, callback: (result) => void) {
+function verifyCommandHandler(code: number): Promise<HandlerResult> {
     class MockAutomationServer implements AutomationServer {
 
         public automations: Automations = {
@@ -147,7 +147,7 @@ function verifyCommandHandler(code: number, callback: (result) => void) {
         });
     listener.onRegistration({ url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
     listener.onConnect((new MockWebSocket() as any) as WebSocket);
-    listener.processCommand({
+    return listener.processCommand({
         secrets: [],
         mapped_parameters: [],
         command: "FooOp",
@@ -167,6 +167,6 @@ function verifyCommandHandler(code: number, callback: (result) => void) {
                 },
             },
         },
-    }, callback);
+    });
 
 }

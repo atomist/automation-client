@@ -189,10 +189,9 @@ export class ExpressServer {
                                                 handle: (req, res, result) => any) {
 
         exp.post(url, cors(), this.authenticate,
-            (req, res) => {
-                this.handler.processCommand(req.body, result => {
-                    result.then(r => handle(req, res, r));
-                });
+            async (req, res) => {
+                const r = await this.handler.processCommand(req.body);
+                handle(req, res, r);
             });
     }
 
@@ -202,10 +201,9 @@ export class ExpressServer {
                                               handle: (req, res, result) => any) {
 
         exp.post(url, cors(), this.authenticate,
-            (req, res) => {
-                this.handler.processEvent(req.body, result => {
-                    result.then(r => handle(req, res, r));
-                });
+            async (req, res) => {
+                const r = this.handler.processEvent(req.body);
+                handle(req, res, r);
             });
     }
 
