@@ -143,9 +143,9 @@ export class ApolloGraphClient implements GraphClient {
         return this.executeMutation<T, Q>(m, options.variables, options.options);
     }
 
-    private executeQuery<T, Q>(q: string,
-                               variables?: Q,
-                               queryOptions?: any): Promise<T> {
+    private async executeQuery<T, Q>(q: string,
+                                     variables?: Q,
+                                     queryOptions?: any): Promise<T> {
         const log = !queryOptions ||
             (queryOptions && queryOptions.log === undefined) ||
             (queryOptions && queryOptions.log === true);
@@ -156,27 +156,25 @@ export class ApolloGraphClient implements GraphClient {
         }
         const query = gql(q);
 
-        return this.client.query<T>({
+        const result = await this.client.query<T>({
             query,
             variables,
             errorPolicy: "all",
             ...queryOptions,
-        })
-            .then(result => {
-                if (log) {
-                    // The following statement is needed for debugging; we can always disable that later
-                    logger.debug("Query returned data: %s", stringify(result, replacer));
-                }
-                if (!!result.errors) {
-                    throw new Error(JSON.stringify(result.errors));
-                }
-                return result.data;
-            });
+        });
+        if (log) {
+            // The following statement is needed for debugging; we can always disable that later
+            logger.debug("Query returned data: %s", stringify(result, replacer));
+        }
+        if (!!result.errors) {
+            throw new Error(JSON.stringify(result.errors));
+        }
+        return result.data;
     }
 
-    private executeMutation<T, Q>(m: string,
-                                  variables?: Q,
-                                  mutationOptions?: any): Promise<any> {
+    private async executeMutation<T, Q>(m: string,
+                                        variables?: Q,
+                                        mutationOptions?: any): Promise<any> {
         const log = !mutationOptions ||
             (mutationOptions && mutationOptions.log === undefined) ||
             (mutationOptions && mutationOptions.log === true);
@@ -188,22 +186,20 @@ export class ApolloGraphClient implements GraphClient {
 
         const mutation = gql(m);
 
-        return this.client.mutate<T>({
+        const result = await this.client.mutate<T>({
             mutation,
             variables,
             errorPolicy: "all",
             ...mutationOptions,
-        })
-            .then(response => {
-                if (log) {
-                    // The following statement is needed for debugging; we can always disable that later
-                    logger.debug("Mutation returned data: %s", stringify(response, replacer));
-                }
-                if (!!response.errors) {
-                    throw new Error(JSON.stringify(response.errors));
-                }
-                return response.data;
-            });
+        });
+        if (log) {
+            // The following statement is needed for debugging; we can always disable that later
+            logger.debug("Mutation returned data: %s", stringify(result, replacer));
+        }
+        if (!!result.errors) {
+            throw new Error(JSON.stringify(result.errors));
+        }
+        return result.data;
     }
 
 }
