@@ -165,7 +165,10 @@ export class ApolloGraphClient implements GraphClient {
             .then(result => {
                 if (log) {
                     // The following statement is needed for debugging; we can always disable that later
-                    logger.debug("Query returned data: %s", stringify(result.data, replacer));
+                    logger.debug("Query returned data: %s", stringify(result, replacer));
+                }
+                if (!!result.errors) {
+                    throw new Error(JSON.stringify(result.errors));
                 }
                 return result.data;
             });
@@ -194,7 +197,10 @@ export class ApolloGraphClient implements GraphClient {
             .then(response => {
                 if (log) {
                     // The following statement is needed for debugging; we can always disable that later
-                    logger.debug("Mutation returned data: %s", stringify(response.data, replacer));
+                    logger.debug("Mutation returned data: %s", stringify(response, replacer));
+                }
+                if (!!response.errors) {
+                    throw new Error(JSON.stringify(response.errors));
                 }
                 return response.data;
             });
