@@ -88,7 +88,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                         .catch(err => {
                             this.statsd.increment("counter.graphql.mutation.failure", 1, 1, tags, this.callback);
                             this.statsd.timing("timer.graphql.mutation", Date.now() - start, 1, tags, this.callback);
-                            return err;
+                            throw err;
                         });
                 },
                 query: (optionsOrName: QueryOptions<any> | string) => {
@@ -104,7 +104,7 @@ export class StatsdAutomationEventListener extends AutomationEventListenerSuppor
                         .catch(err => {
                             this.statsd.increment("counter.graphql.query.failure", 1, 1, tags, this.callback);
                             this.statsd.timing("timer.graphql.query", Date.now() - start, 1, tags, this.callback);
-                            return err;
+                            throw err;
                         });
                 },
             };
