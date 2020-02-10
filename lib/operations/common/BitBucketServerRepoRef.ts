@@ -74,12 +74,9 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
                 response,
             }))
             .catch(error => {
-                logger.error("Error attempting to create repository %j: %s", this, error);
-                return {
-                    success: false,
-                    target: this,
-                    error,
-                };
+                error.message = `Error attempting to create repository ${JSON.stringify(this)}}: ${error.message}`;
+                logger.error(error.message);
+                throw error;
             });
     }
 
@@ -99,12 +96,9 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
                 response,
             }))
             .catch(error => {
-                logger.error(`Error attempting to delete repository: ${error}`);
-                return {
-                    success: false,
-                    target: this,
-                    error,
-                };
+                error.message = `Error attempting to delete repository: ${error.message}`;
+                logger.error(error.message);
+                throw error;
             });
     }
 
@@ -117,7 +111,7 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
                                   body: string,
                                   head: string,
                                   base: string,
-                                  reviewers?: Array<{type: Exclude<PullRequestReviewerType, PullRequestReviewerType.team>, name: string}>,
+                                  reviewers?: Array<{ type: Exclude<PullRequestReviewerType, PullRequestReviewerType.team>, name: string }>,
     ): Promise<ActionResult<this>> {
         const url = `${this.scheme}${this.apiBase}/${this.apiPathComponent}/pull-requests`;
         logger.debug(`Making request to '${url}' to raise PR`);
@@ -143,7 +137,8 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
             toRef: {
                 id: base,
             },
-            reviewers: allReviewers.map(r => { return {
+            reviewers: allReviewers.map(r => {
+                return {
                     user: {
                         name: r,
                     },
@@ -165,12 +160,9 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
                 response,
             }))
             .catch(error => {
-                logger.error(`Error attempting to raise PR`);
-                return {
-                    success: false,
-                    target: this,
-                    error,
-                };
+                error.message = `Error attempting to raise PR: ${error.message}`;
+                logger.error(error.message);
+                throw error;
             });
     }
 
@@ -182,11 +174,11 @@ export class BitBucketServerRepoRef extends AbstractRemoteRepoRef {
         const urlWithQueryParams = `${url}?${queryParams}`;
         const apiResponse = await configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory())
             .create(url).exchange(urlWithQueryParams, {
-            method: HttpMethod.Get,
-            headers: {
-                ...usernameColonPassword(creds),
-            },
-        });
+                method: HttpMethod.Get,
+                headers: {
+                    ...usernameColonPassword(creds),
+                },
+            });
         return ((apiResponse as any).body as any[]).map(reviewer => reviewer.name as string);
     }
 

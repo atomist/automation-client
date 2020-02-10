@@ -7,7 +7,6 @@ import {
     ProviderType,
     PullRequestReviewerType,
 } from "../../../lib/operations/common/RepoId";
-import { AxiosHttpClientFactory } from "../../../lib/spi/http/axiosHttpClient";
 
 describe("GitlabRepoRef", () => {
     it("should set the base urls & provider type appropriately when not provided", () => {
@@ -45,8 +44,8 @@ describe("GitlabRepoRef", () => {
         it("should resolve user id", async () => {
             const mock = new MockAdapter(axios);
             mock.onGet(`https://gitlab.com/api/v4/users?username=johndoe`)
-                .reply(200, [{id: 5, name: "John Doe", username: "johndoe"}]);
-            const result = await GitlabRepoRef.from({owner: "a", repo: "a"}).getUserId({}, "johndoe");
+                .reply(200, [{ id: 5, name: "John Doe", username: "johndoe" }]);
+            const result = await GitlabRepoRef.from({ owner: "a", repo: "a" }).getUserId({}, "johndoe");
             assert.strictEqual(result, 5);
         });
         it("should throw for unresolvable user", async () => {
@@ -54,7 +53,7 @@ describe("GitlabRepoRef", () => {
             mock.onGet(`https://gitlab.com/api/v4/users?username=johndoe`)
                 .reply(200, []);
             try {
-                await GitlabRepoRef.from({owner: "a", repo: "a"}).getUserId({}, "johndoe");
+                await GitlabRepoRef.from({ owner: "a", repo: "a" }).getUserId({}, "johndoe");
             } catch (err) {
                 assert.strictEqual(err.message, `Failed retrieve Gitlab user id for johndoe; does user exist?`);
             }
@@ -62,16 +61,16 @@ describe("GitlabRepoRef", () => {
         it("should resolve group id", async () => {
             const mock = new MockAdapter(axios);
             mock.onGet(`https://gitlab.com/api/v4/groups/test-group?with_projects=false`)
-                .reply(200, {id: 5});
-            const result = await GitlabRepoRef.from({owner: "a", repo: "a"}).getGroupId({}, "test-group");
+                .reply(200, { id: 5 });
+            const result = await GitlabRepoRef.from({ owner: "a", repo: "a" }).getGroupId({}, "test-group");
             assert.strictEqual(result, 5);
         });
         it("should throw for unresolvable group id", async () => {
             const mock = new MockAdapter(axios);
             mock.onGet(`https://gitlab.com/api/v4/groups/test-group?with_projects=false`)
-                .reply(404, [{message: "404 Group Not Found"}]);
+                .reply(404, [{ message: "404 Group Not Found" }]);
             try {
-                await GitlabRepoRef.from({owner: "a", repo: "a"}).getGroupId({}, "test-group");
+                await GitlabRepoRef.from({ owner: "a", repo: "a" }).getGroupId({}, "test-group");
             } catch (err) {
                 assert.strictEqual(err.message, `Failed to resolve ID for group test-group.  Does it exist?`);
             }
@@ -83,8 +82,8 @@ describe("GitlabRepoRef", () => {
             mock.onPost("https://gitlab.com/api/v4/projects/a-project%2ftest-project/merge_requests")
                 .reply(200, {});
 
-            const repoRef = GitlabRepoRef.from({ owner: "a-project", repo: "test-project"});
-            await repoRef.raisePullRequest({token: "fake"},
+            const repoRef = GitlabRepoRef.from({ owner: "a-project", repo: "test-project" });
+            await repoRef.raisePullRequest({ token: "fake" },
                 "Test Merge Request",
                 "This is a test",
                 "test-branch",
@@ -104,17 +103,18 @@ describe("GitlabRepoRef", () => {
                     mock.onPost("https://gitlab.com/api/v4/projects/a-project%2ftest-project/merge_requests")
                         .reply(200, {});
                     mock.onGet("https://gitlab.com/api/v4/version")
-                        .reply(200, {version: "10.5.0", revision: "doesntmatter"});
-                    const repoRef = GitlabRepoRef.from({ owner: "a-project", repo: "test-project"});
+                        .reply(200, { version: "10.5.0", revision: "doesntmatter" });
+                    const repoRef = GitlabRepoRef.from({ owner: "a-project", repo: "test-project" });
                     try {
-                        await repoRef.raisePullRequest({token: "fake"},
+                        await repoRef.raisePullRequest({ token: "fake" },
                             "Test Merge Request",
                             "This is a test",
                             "test-branch",
                             "master",
-                            [{type: PullRequestReviewerType.individual, name: "fakeuser"}]);
+                            [{ type: PullRequestReviewerType.individual, name: "fakeuser" }]);
                     } catch (err) {
-                        assert.strictEqual(err.message, "Failed to add reviewers to Merge Request. Error: Cannot set merge request approvers, Gitlab version 10.5.0 not supported!");
+                        assert.strictEqual(err.message, "Failed to add reviewers to Merge Request: " +
+                            "Cannot set merge request approvers, Gitlab version 10.5.0 not supported!");
                     }
                 });
             });
@@ -122,27 +122,27 @@ describe("GitlabRepoRef", () => {
                 it("should create mr using approvers api", async () => {
                     const mock = new MockAdapter(axios);
                     mock.onPost("https://gitlab.com/api/v4/projects/a-project%2ftest-project/merge_requests")
-                        .reply(200, {iid: 5, project_id: 5});
+                        .reply(200, { iid: 5, project_id: 5 });
                     mock.onGet("https://gitlab.com/api/v4/version")
-                        .reply(200, {version: "11.1.0", revision: "doesntmatter"});
+                        .reply(200, { version: "11.1.0", revision: "doesntmatter" });
                     mock.onPut("https://gitlab.com/api/v4/projects/5/merge_requests/5/approvers")
                         .reply(200, {});
                     mock.onPost("https://gitlab.com/api/v4/projects/5/merge_requests/5/approvals")
                         .reply(200, {});
                     mock.onGet(`https://gitlab.com/api/v4/users?username=fakeuser`)
-                        .reply(200, [{id: 5, name: "John Doe", username: "fakeuser"}]);
+                        .reply(200, [{ id: 5, name: "John Doe", username: "fakeuser" }]);
                     mock.onGet(`https://gitlab.com/api/v4/groups/fakegroup?with_projects=false`)
-                        .reply(200, {id: 5});
+                        .reply(200, { id: 5 });
 
-                    const repoRef = GitlabRepoRef.from({owner: "a-project", repo: "test-project"});
-                    await repoRef.raisePullRequest({token: "fake"},
+                    const repoRef = GitlabRepoRef.from({ owner: "a-project", repo: "test-project" });
+                    await repoRef.raisePullRequest({ token: "fake" },
                         "Test Merge Request",
                         "This is a test",
                         "test-branch",
                         "master",
                         [
-                            {type: PullRequestReviewerType.individual, name: "fakeuser"},
-                            {type: PullRequestReviewerType.team, name: "fakegroup"},
+                            { type: PullRequestReviewerType.individual, name: "fakeuser" },
+                            { type: PullRequestReviewerType.team, name: "fakegroup" },
                         ]);
 
                     assert.strictEqual(mock.history.get.length, 3);
@@ -157,25 +157,25 @@ describe("GitlabRepoRef", () => {
                 it("should use the approval rules API", async () => {
                     const mock = new MockAdapter(axios);
                     mock.onPost("https://gitlab.com/api/v4/projects/a-project%2ftest-project/merge_requests")
-                        .reply(200, {iid: 5, project_id: 5});
+                        .reply(200, { iid: 5, project_id: 5 });
                     mock.onGet("https://gitlab.com/api/v4/version")
-                        .reply(200, {version: "12.6.0", revision: "doesntmatter"});
+                        .reply(200, { version: "12.6.0", revision: "doesntmatter" });
                     mock.onGet(`https://gitlab.com/api/v4/users?username=fakeuser`)
-                        .reply(200, [{id: 5, name: "John Doe", username: "fakeuser"}]);
+                        .reply(200, [{ id: 5, name: "John Doe", username: "fakeuser" }]);
                     mock.onGet(`https://gitlab.com/api/v4/groups/fakegroup?with_projects=false`)
-                        .reply(200, {id: 5});
+                        .reply(200, { id: 5 });
                     mock.onPost("https://gitlab.com/api/v4/projects/5/merge_requests/5/approval_rules")
                         .reply(200, {});
 
-                    const repoRef = GitlabRepoRef.from({owner: "a-project", repo: "test-project"});
-                    await repoRef.raisePullRequest({token: "fake"},
+                    const repoRef = GitlabRepoRef.from({ owner: "a-project", repo: "test-project" });
+                    await repoRef.raisePullRequest({ token: "fake" },
                         "Test Merge Request",
                         "This is a test",
                         "test-branch",
                         "master",
                         [
-                            {type: PullRequestReviewerType.individual, name: "fakeuser"},
-                            {type: PullRequestReviewerType.team, name: "fakegroup"},
+                            { type: PullRequestReviewerType.individual, name: "fakeuser" },
+                            { type: PullRequestReviewerType.team, name: "fakegroup" },
                         ]);
 
                     assert.strictEqual(mock.history.get.length, 3);

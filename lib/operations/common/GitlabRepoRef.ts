@@ -118,11 +118,11 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
      * @param {ProjectOperationCredentials} credentials
      * @returns {version: string, revision: string} Revision info
      */
-    public async getGitlabVersion(credentials: ProjectOperationCredentials): Promise<{version: string, revision: string}> {
+    public async getGitlabVersion(credentials: ProjectOperationCredentials): Promise<{ version: string, revision: string }> {
         const gitlabUrl = `${this.scheme}${this.apiBase}/version`;
         const httpClient = configurationValue<HttpClientFactory>("http.client.factory", defaultHttpClientFactory()).create(gitlabUrl);
         logger.debug(`Making request to '${gitlabUrl}' to get Gitlab Version`);
-        const result = await httpClient.exchange<{version: string, revision: string}>(gitlabUrl, {
+        const result = await httpClient.exchange<{ version: string, revision: string }>(gitlabUrl, {
             method: HttpMethod.Get,
             headers: {
                 "Private-Token": (credentials as GitlabPrivateTokenCredentials).privateToken,
@@ -192,7 +192,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
      * @returns {users: number[], groups: number[]} The user and group ids requested for MR approval
      */
     private async resolveApprovers(credentials: ProjectOperationCredentials,
-                                   reviewers: PullRequestReviewer[]): Promise<{users: number[], groups: number[]}> {
+                                   reviewers: PullRequestReviewer[]): Promise<{ users: number[], groups: number[] }> {
 
         let userIds: number[];
         let groupIds: number[];
@@ -332,7 +332,7 @@ export class GitlabRepoRef extends AbstractRemoteRepoRef {
             try {
                 await this.addApproversToMergeRequest(credentials, reviewers, response.body.iid, response.body.project_id);
             } catch (err) {
-                throw new Error(`Failed to add reviewers to Merge Request. ${err}`);
+                throw new Error(`Failed to add reviewers to Merge Request: ${err.message}`);
             }
         }
 

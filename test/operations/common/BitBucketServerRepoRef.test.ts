@@ -5,6 +5,7 @@ import * as assert from "power-assert";
 import { BasicAuthCredentials } from "../../../lib/operations/common/BasicAuthCredentials";
 import { BitBucketServerRepoRef } from "../../../lib/operations/common/BitBucketServerRepoRef";
 import { PullRequestReviewerType } from "../../../lib/operations/common/RepoId";
+import * as httpClient from "../../../lib/spi/http/httpClient";
 
 export const BitBucketServerUsername = "username";
 export const BitBucketServerPassword = "password";
@@ -14,6 +15,27 @@ export const BitBucketServerCredentials: BasicAuthCredentials = {
 };
 
 describe("BitBucketServer support", () => {
+
+    let origDefaultRetryOptions: any;
+    before(() => {
+        origDefaultRetryOptions = Object.getOwnPropertyDescriptor(httpClient, "DefaultHttpClientOptions");
+        Object.defineProperty(httpClient, "DefaultHttpClientOptions", {
+            value: {
+                method: httpClient.HttpMethod.Get,
+                headers: {},
+                retry: {
+                    retries: 0,
+                    factor: 1,
+                    minTimeout: 10,
+                    maxTimeout: 10,
+                    randomize: false,
+                },
+            },
+        });
+    });
+    after(() => {
+        Object.defineProperty(httpClient, "DefaultHttpClientOptions", origDefaultRetryOptions);
+    });
 
     describe("should return correct clone url", () => {
         it("for project", () => {
@@ -108,8 +130,8 @@ describe("BitBucketServer support", () => {
             "Mr Peanut Butter goes woof", "refs/heads/thing1",
             "refs/heads/master",
             [
-                {type: PullRequestReviewerType.individual, name: "janedoe"},
-                ],
+                { type: PullRequestReviewerType.individual, name: "janedoe" },
+            ],
         );
     });
 
@@ -130,7 +152,7 @@ describe("BitBucketServer support", () => {
             BitBucketServerCredentials, "Add a thing",
             "Mr Peanut Butter goes woof", "refs/heads/thing1",
             "refs/heads/master",
-            [{type: PullRequestReviewerType.individual, name: "janedoe"}],
+            [{ type: PullRequestReviewerType.individual, name: "janedoe" }],
         );
     });
 
@@ -144,8 +166,8 @@ describe("BitBucketServer support", () => {
                 BitBucketServerCredentials, "Add a thing",
                 "Mr Peanut Butter goes woof", "refs/heads/thing1",
                 "refs/heads/master",
-                [{type: PullRequestReviewerType.team, name: "testgroup"},
-                    {type: PullRequestReviewerType.individual, name: "testperson"}] as any);
+                [{ type: PullRequestReviewerType.team, name: "testgroup" },
+                { type: PullRequestReviewerType.individual, name: "testperson" }] as any);
         } catch (err) {
             assert.strictEqual(err.message, "Bitbucket only supports reviewer type of individual!  Found [\"team\",\"individual\"]");
         }
@@ -172,6 +194,29 @@ describe("BitBucketServer support", () => {
             "Mr Peanut Butter goes woof", "refs/heads/thing1",
             "refs/heads/master");
     });
+
+    it("should throw when creating PR fails", async () => {
+        const mock = new MockAdapter(axios);
+        getRepo(mock);
+        getRepoDefaultReviewers(mock, []);
+        mock.onPost("https://bitbucket.organisation.co.za/rest/api/1.0/projects/a-project/repos/test-app/pull-requests")
+            .reply(() => {
+                return [403, {}];
+            });
+        const bitbucketServerRepoRef = new BitBucketServerRepoRef("https://bitbucket.organisation.co.za", "a-project", "test-app");
+        let thrown = false;
+        try {
+            await bitbucketServerRepoRef.raisePullRequest(
+                BitBucketServerCredentials, "Add a thing",
+                "Mr Peanut Butter goes woof", "refs/heads/thing1",
+                "refs/heads/master");
+        } catch (err) {
+            thrown = true;
+            assert.strictEqual(err.message, "Error attempting to raise PR: Request failed with status code 403");
+        }
+        assert(thrown, "no error thrown");
+    });
+
 });
 
 function getRepo(mock: MockAdapter): void {
@@ -182,5 +227,5 @@ function getRepo(mock: MockAdapter): void {
 function getRepoDefaultReviewers(mock: MockAdapter, users: string[]): void {
     // tslint:disable-next-line:max-line-length
     mock.onGet("https://bitbucket.organisation.co.za/rest/default-reviewers/1.0/projects/a-project/repos/test-app/reviewers?sourceRepoId=1&targetRepoId=1&sourceRefId=refs/heads/thing1&targetRefId=refs/heads/master")
-        .reply(200, users.map(u => ({name: u})));
+        .reply(200, users.map(u => ({ name: u })));
 }
