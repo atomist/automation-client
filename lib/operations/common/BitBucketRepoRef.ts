@@ -56,12 +56,9 @@ export class BitBucketRepoRef extends AbstractRemoteRepoRef {
                 };
             })
             .catch(error => {
-                logger.error("Error attempting to create repository %j: %s", this, error);
-                return {
-                    target: this,
-                    success: false,
-                    error,
-                };
+                error.message = `Error attempting to create repository ${JSON.stringify(this)}: ${error.message}`;
+                logger.error(error.message);
+                throw error;
             });
 
     }
@@ -84,12 +81,9 @@ export class BitBucketRepoRef extends AbstractRemoteRepoRef {
                 };
             })
             .catch(error => {
-                logger.error("Error attempting to delete repository: " + error);
-                return {
-                    target: this,
-                    success: false,
-                    error,
-                };
+                error.message = `Error attempting to delete repository: ${error.message}`;
+                logger.error(error.message);
+                throw error;
             });
     }
 
@@ -134,12 +128,9 @@ export class BitBucketRepoRef extends AbstractRemoteRepoRef {
                 };
             })
             .catch(error => {
-                logger.error(`Error attempting to raise PR. ${url} ${error}`);
-                return {
-                    target: this,
-                    success: false,
-                    error,
-                };
+                error.message = `Error attempting to raise PR ${url}: ${error}`;
+                logger.error(error.message);
+                throw error;
             });
     }
 }
