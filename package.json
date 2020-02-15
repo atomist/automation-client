@@ -1,4 +1,4 @@
-{
+{ 
   "name": "@atomist/automation-client",
   "version": "2.0.0",
   "description": "Atomist API for software low-level client",
