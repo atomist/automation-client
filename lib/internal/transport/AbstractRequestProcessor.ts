@@ -141,7 +141,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
                              request: CommandIncoming,
                              ctx: HandlerContext & AutomationContextAware): Promise<any> {
         if (code === -1) {
-            return;
+            return Promise.resolve();
         }
 
         const source = _.cloneDeep(request.source);
