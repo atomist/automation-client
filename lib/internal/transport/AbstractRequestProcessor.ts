@@ -143,7 +143,7 @@ export abstract class AbstractRequestProcessor implements RequestProcessor {
         if (code === -1) {
             return;
         }
-        
+
         const source = _.cloneDeep(request.source);
         if (source && source.slack) {
             delete source.slack.user;
