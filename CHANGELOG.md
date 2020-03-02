@@ -5,7 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.8.1...HEAD)
+## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.8.2...HEAD)
+
+## [1.8.2](https://github.com/atomist/automation-client-ts/compare/1.8.1...1.8.2) - 2020-03-02
+
+### Fixed
+
+-   Npm audit fix. [1b9a798](https://github.com/atomist/automation-client/commit/1b9a79885f8ffd61342a337dd0d2ad3f3809aebe)
+-   Update schema. [70fcbee](https://github.com/atomist/automation-client/commit/70fcbee1001bd58964b600534b5765e3eac4cba5)
+-   Pin fast-glob to 3.1.1. [bb37198](https://github.com/atomist/automation-client/commit/bb37198ce8c93abd025a94e4080e6f20eea2a7f4)
 
 ## [1.8.1](https://github.com/atomist/automation-client-ts/compare/1.8.0...1.8.1) - 2020-03-02
 
