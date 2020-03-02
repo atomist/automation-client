@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.8.0...HEAD)
+## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.8.1...HEAD)
+
+## [1.8.1](https://github.com/atomist/automation-client-ts/compare/1.8.0...1.8.1) - 2020-03-02
+
+### Fixed
+
+-   The BitBucket repo refs should throw errors on failure. [#646](https://github.com/atomist/automation-client/issues/646)
 
 ## [1.8.0](https://github.com/atomist/automation-client-ts/compare/1.7.0...1.8.0) - 2019-12-06
 
