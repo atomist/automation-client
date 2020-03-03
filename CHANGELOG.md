@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.8.2...HEAD)
 
+### Added
+
+-   Allow to disable color output. [ab7caa4](https://github.com/atomist/automation-client/commit/ab7caa4158668b0fe9616902910aff7366807e98)
+
 ## [1.8.2](https://github.com/atomist/automation-client-ts/compare/1.8.1...1.8.2) - 2020-03-02
 
 ### Fixed
@@ -16,10 +20,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Pin fast-glob to 3.1.1. [bb37198](https://github.com/atomist/automation-client/commit/bb37198ce8c93abd025a94e4080e6f20eea2a7f4)
 
 ## [1.8.1](https://github.com/atomist/automation-client-ts/compare/1.8.0...1.8.1) - 2020-03-02
-
-### Fixed
-
--   The BitBucket repo refs should throw errors on failure. [#646](https://github.com/atomist/automation-client/issues/646)
 
 ### Added
 
@@ -38,6 +38,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 -   Remove CachingDirectoryManager (and proper-lockfile usage). [#639](https://github.com/atomist/automation-client/issues/639)
+
+### Fixed
+
+-   The BitBucket repo refs should throw errors on failure. [#646](https://github.com/atomist/automation-client/issues/646)
 
 ## [1.8.0](https://github.com/atomist/automation-client-ts/compare/1.7.0...1.8.0) - 2019-12-06
 
