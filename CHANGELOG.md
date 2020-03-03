@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 -   Allow to disable color output. [ab7caa4](https://github.com/atomist/automation-client/commit/ab7caa4158668b0fe9616902910aff7366807e98)
+-   Add ability to intercept GraphQL operations. [faff645](https://github.com/atomist/automation-client/commit/faff64599c79776e808b68da5125b420dae2b339)
 
 ## [1.8.2](https://github.com/atomist/automation-client-ts/compare/1.8.1...1.8.2) - 2020-03-02
 
