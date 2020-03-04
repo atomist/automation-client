@@ -313,7 +313,7 @@ function inlineFragments(q: string, name: string, moduleDir: string, fragmentDir
             const fragment = fragments.find(f => f.name === result[1]);
             if (fragment) {
                 q = replace(q, result[0], fragment.body);
-            } 
+            }
         }
     }
     return q;
