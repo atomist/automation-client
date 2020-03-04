@@ -313,9 +313,7 @@ function inlineFragments(q: string, name: string, moduleDir: string, fragmentDir
             const fragment = fragments.find(f => f.name === result[1]);
             if (fragment) {
                 q = replace(q, result[0], fragment.body);
-            } else {
-                throw new Error(`Fragment '${result[1]}' can't be found in '${fragmentDir}'`);
-            }
+            } 
         }
     }
     return q;
