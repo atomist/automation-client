@@ -1,4 +1,7 @@
-import { InMemoryCache } from "apollo-cache-inmemory";
+import {
+    InMemoryCache,
+    IntrospectionFragmentMatcher,
+} from "apollo-cache-inmemory";
 import ApolloClient from "apollo-client";
 import {
     ApolloLink,
@@ -55,8 +58,18 @@ export class ApolloGraphClient implements GraphClient {
                 private readonly headers: any = {},
                 private readonly fetch: WindowOrWorkerGlobalScope["fetch"] = buildAxiosFetch(axios.create(configureProxy({}))),
                 private readonly listeners: GraphClientListener[] = []) {
+
+        const fragmentMatcher = new IntrospectionFragmentMatcher({
+            introspectionQueryResultData: {
+                __schema: {
+                    types: [], // no types provided
+                },
+            },
+        });
+
         const cache = new InMemoryCache({
-            addTypename: false,
+            addTypename: true,
+            fragmentMatcher,
         });
 
         const httpLink = createHttpLink({
