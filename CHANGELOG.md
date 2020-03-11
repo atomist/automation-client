@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Add ability to intercept GraphQL operations. [29df6df](https://github.com/atomist/automation-client/commit/29df6df638183800810985a4acb397385c043ef0)
 -   Enable RegExp for intents. [#637](https://github.com/atomist/automation-client/issues/637)
 -   Support adding reviewers to PRs on Creation. [#641](https://github.com/atomist/automation-client/issues/641)
+-   Add SlackChannelType. [7c72628](https://github.com/atomist/automation-client/commit/7c72628117959516537463f9a9d3eac0c6eaf000)
 
 ### Changed
 
