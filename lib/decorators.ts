@@ -125,12 +125,18 @@ export const MappedParameters = {
 
     SlackChannel: "atomist://slack/channel",
     SlackChannelName: "atomist://slack/channel_name",
+    SlackChannelType: "atomist://slack/channel_type",
     SlackTeam: "atomist://slack/team",
     SlackUser: "atomist://slack/user",
     SlackUserName: "atomist://slack/user_name",
 
     AtomistWebhookUrlBase: "atomist://base_webhook_url",
 };
+
+export enum SlackChannelType {
+    Channel = "channel",
+    User = "user",
+}
 
 export const Secrets = {
     OrgToken: "github://org_token",
