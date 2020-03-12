@@ -5,18 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.8.0...HEAD)
+## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.9.0...HEAD)
+
+### Added
+
+-   Add SlackChannelType. [7c72628](https://github.com/atomist/automation-client/commit/7c72628117959516537463f9a9d3eac0c6eaf000)
+
+## [1.9.0](https://github.com/atomist/automation-client-ts/compare/1.8.2...1.9.0) - 2020-03-03
 
 ### Added
 
 -   Dynamic goals. [#631](https://github.com/atomist/automation-client/pull/631)
--   Allow to disable color output. [63d5f29](https://github.com/atomist/automation-client/commit/63d5f29d792a82cec0e00b4cb0ea9dbca71f516d)
 -   Add Apollo client identification headers to ApolloGraphClient. [#633](https://github.com/atomist/automation-client/issues/633)
 -   Atm-gql-gen fails if node_modules is not in $PWD (e.g. using lerna + hoisted packages). [#629](https://github.com/atomist/automation-client/issues/629)
--   Add ability to intercept GraphQL operations. [29df6df](https://github.com/atomist/automation-client/commit/29df6df638183800810985a4acb397385c043ef0)
 -   Enable RegExp for intents. [#637](https://github.com/atomist/automation-client/issues/637)
 -   Support adding reviewers to PRs on Creation. [#641](https://github.com/atomist/automation-client/issues/641)
--   Add SlackChannelType. [7c72628](https://github.com/atomist/automation-client/commit/7c72628117959516537463f9a9d3eac0c6eaf000)
+-   Allow to disable color output. [63d5f29](https://github.com/atomist/automation-client/commit/63d5f29d792a82cec0e00b4cb0ea9dbca71f516d)
+-   Add ability to intercept GraphQL operations. [29df6df](https://github.com/atomist/automation-client/commit/29df6df638183800810985a4acb397385c043ef0)
 
 ### Changed
 
@@ -25,6 +30,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 -   Remove CachingDirectoryManager (and proper-lockfile usage). [#639](https://github.com/atomist/automation-client/issues/639)
+
+## [1.8.2](https://github.com/atomist/automation-client-ts/compare/1.8.1...1.8.2) - 2020-03-02
+
+### Fixed
+
+-   Npm audit fix. [1b9a798](https://github.com/atomist/automation-client/commit/1b9a79885f8ffd61342a337dd0d2ad3f3809aebe)
+-   Update schema. [70fcbee](https://github.com/atomist/automation-client/commit/70fcbee1001bd58964b600534b5765e3eac4cba5)
+-   Pin fast-glob to 3.1.1. [bb37198](https://github.com/atomist/automation-client/commit/bb37198ce8c93abd025a94e4080e6f20eea2a7f4)
+
+## [1.8.1](https://github.com/atomist/automation-client-ts/compare/1.8.0...1.8.1) - 2020-03-02
+
+### Fixed
+
+-   The BitBucket repo refs should throw errors on failure. [#646](https://github.com/atomist/automation-client/issues/646)
 
 ## [1.8.0](https://github.com/atomist/automation-client-ts/compare/1.7.0...1.8.0) - 2019-12-06
 
