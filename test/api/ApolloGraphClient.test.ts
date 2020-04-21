@@ -18,7 +18,7 @@ describe("graph/ApolloGraphClient", () => {
     describe("ApolloGraphClient", () => {
 
         let headers: any;
-        before(function() {
+        before(function(this: any): void {
             if (AtomistApiKey) {
                 headers = { Authorization: `Bearer ${AtomistApiKey}` };
             } else {
@@ -48,7 +48,7 @@ describe("graph/ApolloGraphClient", () => {
             });
         }).timeout(5000);
 
-        it("should run repos query and clone repo", async function() {
+        it("should run repos query and clone repo", async function(this: any): Promise<void> {
             if (!GitHubToken) {
                 this.skip();
             }
@@ -70,10 +70,12 @@ describe("graph/ApolloGraphClient", () => {
                 const gitHead = p.findFileSync(".git/HEAD");
                 assert(gitHead);
                 assert(gitHead.path === ".git/HEAD");
-                await p.release();
             } catch (e) {
-                await p.release();
                 throw e;
+            } finally {
+                if (p && p.release) {
+                    p.release();
+                }
             }
         }).timeout(10000);
 
