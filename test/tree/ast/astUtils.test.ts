@@ -4,6 +4,7 @@ import { InMemoryFile } from "../../../lib/project/mem/InMemoryFile";
 import { InMemoryProject } from "../../../lib/project/mem/InMemoryProject";
 import {
     doWithAllMatches,
+    fileMatches,
     gather,
     gatherWithLocation,
     literalValues,
@@ -349,6 +350,132 @@ describe("astUtils", () => {
                     assert.strictEqual(f2.getContentSync(), "const x = 10;");
                     done();
                 }).catch(done);
+        });
+
+    });
+
+    describe("fileMatches", () => {
+
+        it("should find a matching file", async () => {
+            const f = `export async function foo(a: string, b: boolean, c: number): Promise<number> { return c; }\n`;
+            const x = `function x(y: number): number { return y; }`;
+            const p = InMemoryProject.of(
+                { path: "index.ts", content: `export * from "./lib/d-boon";\nexport * from "./lib/mike-watt";\n` },
+                { path: "lib/d-boon.ts", content: f },
+                { path: "lib/mike-watt.ts", content: x },
+            );
+            const ms = await fileMatches(p, {
+                globPatterns: "**/*.ts",
+                pathExpression: `//FunctionDeclaration[/Identifier[@value='foo']]`,
+                parseWith: TypeScriptES6FileParser,
+            });
+            assert(ms.length === 1);
+            assert(ms[0].file.path === "lib/d-boon.ts");
+            assert(ms[0].matches.length === 1);
+            assert(ms[0].matches[0].$name === "FunctionDeclaration");
+            assert(ms[0].matches[0].$value === "export async function foo(a: string, b: boolean, c: number): Promise<number> { return c; }");
+        });
+
+        it("should find a matching file from one member of union", async () => {
+            const f = `export async function foo(a: string, b: boolean, c: number): Promise<number> { return c; }\n`;
+            const x = `function x(y: number): number { return y; }`;
+            const p = InMemoryProject.of(
+                { path: "index.ts", content: `export * from "./lib/d-boon";\nexport * from "./lib/mike-watt";\n` },
+                { path: "lib/d-boon.ts", content: f },
+                { path: "lib/mike-watt.ts", content: x },
+            );
+            const ms = await fileMatches(p, {
+                globPatterns: "**/*.ts",
+                pathExpression: `//FunctionDeclaration[/Identifier[@value='foo']] | //FunctionDeclaration[/Identifier[@value='bar']]`,
+                parseWith: TypeScriptES6FileParser,
+            });
+            assert(ms.length === 1);
+            assert(ms[0].file.path === "lib/d-boon.ts");
+            assert(ms[0].matches.length === 1);
+            assert(ms[0].matches[0].$name === "FunctionDeclaration");
+            assert(ms[0].matches[0].$value === "export async function foo(a: string, b: boolean, c: number): Promise<number> { return c; }");
+        });
+
+        it("should find all union matching files", async () => {
+            const f = `export async function foo(a: string, b: boolean, c: number): Promise<number> { return c; }\n`;
+            const x = `function x(y: number): number { return y; }`;
+            const g = `function g(x: string): string { return x; }\n` +
+                `function h(y: number): number { return y; }\n`;
+            const p = InMemoryProject.of(
+                { path: "index.ts", content: `export * from "./lib/d-boon";\nexport * from "./lib/mike-watt";\n` },
+                { path: "lib/d-boon.ts", content: f },
+                { path: "lib/mike-watt.ts", content: x },
+                { path: "lib/george-hurley.ts", content: g },
+            );
+            const ms = await fileMatches(p, {
+                globPatterns: "**/*.ts",
+                pathExpression: `//FunctionDeclaration[/Identifier[@value='foo']] | //FunctionDeclaration[/Identifier[@value='x']]`,
+                parseWith: TypeScriptES6FileParser,
+            });
+            assert(ms.length === 2);
+            assert(ms[0].file.path === "lib/d-boon.ts");
+            assert(ms[0].matches.length === 1);
+            assert(ms[0].matches[0].$name === "FunctionDeclaration");
+            assert(ms[0].matches[0].$value === "export async function foo(a: string, b: boolean, c: number): Promise<number> { return c; }");
+            assert(ms[1].file.path === "lib/mike-watt.ts");
+            assert(ms[1].matches.length === 1);
+            assert(ms[1].matches[0].$name === "FunctionDeclaration");
+            assert(ms[1].matches[0].$value === "function x(y: number): number { return y; }");
+        });
+
+        it("should find all matches in a file", async () => {
+            const f = `export async function foo(a: string, b: boolean, c: number): Promise<number> { return c; }\n`;
+            const x = `function x(y: number): number { return y; }`;
+            const g = `function g(x: string): string { return x; }\n` +
+                `function h(y: number): number { return y; }\n`;
+            const p = InMemoryProject.of(
+                { path: "index.ts", content: `export * from "./lib/d-boon";\nexport * from "./lib/mike-watt";\n` },
+                { path: "lib/d-boon.ts", content: f },
+                { path: "lib/mike-watt.ts", content: x },
+                { path: "lib/george-hurley.ts", content: g },
+            );
+            const ms = await fileMatches(p, {
+                globPatterns: "**/*.ts",
+                pathExpression: `//FunctionDeclaration[/Identifier[@value='g']] | //FunctionDeclaration[/Identifier[@value='h']]`,
+                parseWith: TypeScriptES6FileParser,
+            });
+            assert(ms.length === 1);
+            assert(ms[0].file.path === "lib/george-hurley.ts");
+            assert(ms[0].matches.length === 2);
+            assert(ms[0].matches[0].$name === "FunctionDeclaration");
+            assert(ms[0].matches[0].$value === "function g(x: string): string { return x; }");
+            assert(ms[0].matches[1].$name === "FunctionDeclaration");
+            assert(ms[0].matches[1].$value === "function h(y: number): number { return y; }");
+        });
+
+        it("should find union all matches in all files", async () => {
+            const f = `export async function foo(a: string, b: boolean, c: number): Promise<number> { return c; }\n`;
+            const x = `function x(y: number): number { return y; }`;
+            const g = `function g(x: string): string { return x; }\n` +
+                `function h(y: number): number { return y; }\n`;
+            const p = InMemoryProject.of(
+                { path: "index.ts", content: `export * from "./lib/d-boon";\nexport * from "./lib/mike-watt";\n` },
+                { path: "lib/d-boon.ts", content: f },
+                { path: "lib/mike-watt.ts", content: x },
+                { path: "lib/george-hurley.ts", content: g },
+            );
+            const ms = await fileMatches(p, {
+                globPatterns: "**/*.ts",
+                pathExpression: `//FunctionDeclaration[/Identifier[@value='x']] | ` +
+                    `//FunctionDeclaration[/Identifier[@value='g']] | //FunctionDeclaration[/Identifier[@value='h']]`,
+                parseWith: TypeScriptES6FileParser,
+            });
+            assert(ms.length === 2);
+            assert(ms[0].file.path === "lib/mike-watt.ts");
+            assert(ms[0].matches.length === 1);
+            assert(ms[0].matches[0].$name === "FunctionDeclaration");
+            assert(ms[0].matches[0].$value === "function x(y: number): number { return y; }");
+            assert(ms[1].file.path === "lib/george-hurley.ts");
+            assert(ms[1].matches.length === 2);
+            assert(ms[1].matches[0].$name === "FunctionDeclaration");
+            assert(ms[1].matches[0].$value === "function g(x: string): string { return x; }");
+            assert(ms[1].matches[1].$name === "FunctionDeclaration");
+            assert(ms[1].matches[1].$value === "function h(y: number): number { return y; }");
         });
 
     });
