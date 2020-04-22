@@ -258,8 +258,7 @@ export async function fileMatches(p: ProjectAsync,
     const valuesToCheckFor = literalValues(parsed);
     const files = await gatherFromFiles(p, peqo.globPatterns, file => parseFile(parser, parsed,
         peqo.functionRegistry, p, file, valuesToCheckFor, undefined, peqo.cacheAst !== false));
-    const all = await Promise.all(files);
-    return all.filter(x => !!x);
+    return files.filter(x => !!x);
 }
 
 /**
@@ -296,7 +295,7 @@ async function parseFile(parser: FileParser,
     // First, apply optimizations
     if (valuesToCheckFor.length > 0) {
         const content = await file.getContent();
-        if (valuesToCheckFor.some(literal => !content.includes(literal))) {
+        if (valuesToCheckFor.every(literal => !content.includes(literal))) {
             return undefined;
         }
     }
