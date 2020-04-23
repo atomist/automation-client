@@ -261,6 +261,53 @@ export async function fileMatches(p: ProjectAsync,
     return files.filter(x => !!x);
 }
 
+export interface PathExpressionFileHits {
+    fileHits: FileHit[];
+    pathExpression: string;
+}
+
+/**
+ * Iterate over provided path expression query options and return
+ * [[FileHit]]s for each path expression.
+ * @param p project
+ * @param peqos Array of query options
+ * @return hits for each file for each query option
+ */
+export async function pathExpressionFileMatches(p: ProjectAsync, peqos: PathExpressionQueryOptions[]): Promise<PathExpressionFileHits[]> {
+    const pefhs: PathExpressionFileHits[] = [];
+    const fileCache: Record<string, File> = {};
+    for (const peqo of peqos) {
+        const parsed: PathExpression = toPathExpression(peqo.pathExpression);
+        const parser = findParser(parsed, peqo.parseWith);
+        if (!parser) {
+            throw new Error(`Cannot find parser for path expression [${peqo.pathExpression}]: Using ${peqo.parseWith}`);
+        }
+        const matchFiles = await p.getFiles(peqo.globPatterns);
+        const checkFiles = matchFiles.map(f => {
+            if (!fileCache[f.path]) {
+                fileCache[f.path] = f;
+            }
+            return fileCache[f.path];
+        });
+        const valuesToCheckFor = literalValues(parsed);
+        const files: FileHit[] = [];
+        for (const file of checkFiles) {
+            const hit = await parseFile(parser, parsed, peqo.functionRegistry, p, file,
+                valuesToCheckFor, undefined, peqo.cacheAst !== false);
+            if (hit) {
+                files.push(hit);
+            }
+        }
+        if (files.length > 0) {
+            pefhs.push({
+                pathExpression: stringify(parsed),
+                fileHits: files,
+            });
+        }
+    }
+    return pefhs;
+}
+
 /**
  * Generator style iteration over file matches
  * @param p project

@@ -10,6 +10,7 @@ import {
     literalValues,
     matches,
     matchIterator,
+    pathExpressionFileMatches,
     zapAllMatches,
 } from "../../../lib/tree/ast/astUtils";
 import {
@@ -506,6 +507,52 @@ describe("astUtils", () => {
                                 [//annotation[@value='@SpringBootApplication']]
                                 /identifier[@value='foo'] | //foo`);
             assert.deepStrictEqual(literalValues(pex), ["@SpringBootApplication", "foo"]);
+        });
+
+    });
+
+    describe("pathExpressionFileMatches", () => {
+
+        it("should find matches across path expressions", async () => {
+            const f = `export async function foo(a: string, b: boolean, c: number): Promise<number> { return c; }\n`;
+            const x = `function x(y: number): number { return y; }`;
+            const g = `function g(x: string): string { return x; }\n` +
+                `function h(y: number): number { return y; }\n`;
+            const p = InMemoryProject.of(
+                { path: "index.ts", content: `export * from "./lib/d-boon";\nexport * from "./lib/mike-watt";\n` },
+                { path: "lib/d-boon.ts", content: f },
+                { path: "lib/mike-watt.ts", content: x },
+                { path: "lib/george-hurley.ts", content: g },
+            );
+            const os = [
+                {
+                    globPatterns: "**/*.ts",
+                    pathExpression: `//FunctionDeclaration[/Identifier[@value='x']]`,
+                    parseWith: TypeScriptES6FileParser,
+                },
+                {
+                    globPatterns: "lib/*.ts",
+                    pathExpression: `//FunctionDeclaration[/Identifier[@value='g']] | //FunctionDeclaration[/Identifier[@value='h']]`,
+                    parseWith: TypeScriptES6FileParser,
+                },
+            ];
+            const ms = await pathExpressionFileMatches(p, os);
+            assert(ms.length === 2);
+            assert(ms[0].pathExpression === "descendant-or-self::FunctionDeclaration[child::Identifier[@value='x']]");
+            assert(ms[0].fileHits.length === 1);
+            assert(ms[0].fileHits[0].file.path === "lib/mike-watt.ts");
+            assert(ms[0].fileHits[0].matches.length === 1);
+            assert(ms[0].fileHits[0].matches[0].$name === "FunctionDeclaration");
+            assert(ms[0].fileHits[0].matches[0].$value === "function x(y: number): number { return y; }");
+            assert(ms[1].pathExpression === "descendant-or-self::FunctionDeclaration[child::Identifier[@value='g']] | " +
+                "descendant-or-self::FunctionDeclaration[child::Identifier[@value='h']]");
+            assert(ms[1].fileHits.length === 1);
+            assert(ms[1].fileHits[0].file.path === "lib/george-hurley.ts");
+            assert(ms[1].fileHits[0].matches.length === 2);
+            assert(ms[1].fileHits[0].matches[0].$name === "FunctionDeclaration");
+            assert(ms[1].fileHits[0].matches[0].$value === "function g(x: string): string { return x; }");
+            assert(ms[1].fileHits[0].matches[1].$name === "FunctionDeclaration");
+            assert(ms[1].fileHits[0].matches[1].$value === "function h(y: number): number { return y; }");
         });
 
     });
