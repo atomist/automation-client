@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.8.2...HEAD)
 
+### Added
+
+-   Add pathExpressionFileMatches astUtil function. [d25af81](https://github.com/atomist/automation-client/commit/d25af81ed49eb11e60543b84652509005d954796)
+
 ## [1.8.2](https://github.com/atomist/automation-client-ts/compare/1.8.1...1.8.2) - 2020-03-02
 
 ### Fixed
