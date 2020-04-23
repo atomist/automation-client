@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Add pathExpressionFileMatches astUtil function. [d25af81](https://github.com/atomist/automation-client/commit/d25af81ed49eb11e60543b84652509005d954796)
 
+### Fixed
+
+-   Union path expressions not working with fileMatches. [#653](https://github.com/atomist/automation-client/issues/653)
+
 ## [1.8.2](https://github.com/atomist/automation-client-ts/compare/1.8.1...1.8.2) - 2020-03-02
 
 ### Fixed
