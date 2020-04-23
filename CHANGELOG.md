@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 -   Add SlackChannelType. [7c72628](https://github.com/atomist/automation-client/commit/7c72628117959516537463f9a9d3eac0c6eaf000)
+-   Add pathExpressionFileMatches astUtil function. [d25af81](https://github.com/atomist/automation-client/commit/d25af81ed49eb11e60543b84652509005d954796)
+
+### Fixed
+
+-   Union path expressions not working with fileMatches. [#653](https://github.com/atomist/automation-client/issues/653)
 
 ## [1.9.0](https://github.com/atomist/automation-client-ts/compare/1.8.2...1.9.0) - 2020-03-03
 
