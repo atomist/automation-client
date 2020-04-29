@@ -64,7 +64,7 @@ BSD 3-Clause "New" or "Revised" License - [https://opensource.org/licenses/BSD-3
 | Name | Version | Publisher | Repository |
 |------|---------|-----------|------------|
 |`boom`|`7.3.0`||[https://github.com/hapijs/boom](https://github.com/hapijs/boom)|
-|`diff`|`4.0.1`||[https://github.com/kpdecker/jsdiff](https://github.com/kpdecker/jsdiff)|
+|`diff`|`4.0.2`||[https://github.com/kpdecker/jsdiff](https://github.com/kpdecker/jsdiff)|
 |`flat`|`4.1.0`|Hugh Kennedy|[https://github.com/hughsk/flat](https://github.com/hughsk/flat)|
 |`heavy`|`6.1.2`||[https://github.com/hapijs/heavy](https://github.com/hapijs/heavy)|
 |`hoek`|`6.1.3`||[https://github.com/hapijs/hoek](https://github.com/hapijs/hoek)|
@@ -297,7 +297,7 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 |`apollo-utilities`|`1.3.2`|James Baxley|[https://github.com/apollographql/apollo-client](https://github.com/apollographql/apollo-client)|
 |`apollo`|`2.19.0`|Apollo GraphQL|[https://github.com/apollographql/apollo-tooling](https://github.com/apollographql/apollo-tooling)|
 |`app-root-path`|`2.2.1`|Chris Morrell|[https://github.com/inxilpro/node-app-root-path](https://github.com/inxilpro/node-app-root-path)|
-|`arg`|`4.1.2`|Josh Junon|[https://github.com/zeit/arg](https://github.com/zeit/arg)|
+|`arg`|`4.1.3`|Josh Junon|[https://github.com/zeit/arg](https://github.com/zeit/arg)|
 |`argparse`|`1.0.10`||[https://github.com/nodeca/argparse](https://github.com/nodeca/argparse)|
 |`array-filter`|`1.0.0`|Julian Gruber|[https://github.com/juliangruber/array-filter](https://github.com/juliangruber/array-filter)|
 |`array-flatten`|`1.1.1`|Blake Embrey|[https://github.com/blakeembrey/array-flatten](https://github.com/blakeembrey/array-flatten)|
@@ -306,7 +306,6 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 |`astral-regex`|`1.0.0`|Kevin Mårtensson|[https://github.com/kevva/astral-regex](https://github.com/kevva/astral-regex)|
 |`async-exit-hook`|`2.0.1`|Tapani Moilanen|[https://github.com/tapppi/async-exit-hook](https://github.com/tapppi/async-exit-hook)|
 |`async-limiter`|`1.0.1`|Samuel Reed|[https://github.com/strml/async-limiter](https://github.com/strml/async-limiter)|
-|`async`|`1.5.2`|Caolan McMahon|[https://github.com/caolan/async](https://github.com/caolan/async)|
 |`async`|`2.6.3`|Caolan McMahon|[https://github.com/caolan/async](https://github.com/caolan/async)|
 |`asyncro`|`3.0.0`|Jason Miller|[https://github.com/developit/asyncro](https://github.com/developit/asyncro)|
 |`atob-lite`|`2.0.0`|Hugh Kennedy|[https://github.com/hughsk/atob-lite](https://github.com/hughsk/atob-lite)|
@@ -561,8 +560,8 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 |`mime`|`1.6.0`|Robert Kieffer|[https://github.com/broofa/node-mime](https://github.com/broofa/node-mime)|
 |`mimic-fn`|`1.2.0`|Sindre Sorhus|[https://github.com/sindresorhus/mimic-fn](https://github.com/sindresorhus/mimic-fn)|
 |`minimist`|`0.0.10`|James Halliday|[https://github.com/substack/minimist](https://github.com/substack/minimist)|
-|`minimist`|`0.0.8`|James Halliday|[https://github.com/substack/minimist](https://github.com/substack/minimist)|
-|`mkdirp`|`0.5.1`|James Halliday|[https://github.com/substack/node-mkdirp](https://github.com/substack/node-mkdirp)|
+|`minimist`|`1.2.5`|James Halliday|[https://github.com/substack/minimist](https://github.com/substack/minimist)|
+|`mkdirp`|`0.5.5`|James Halliday|[https://github.com/substack/node-mkdirp](https://github.com/substack/node-mkdirp)|
 |`moment`|`2.24.0`|Iskren Ivov Chernev|[https://github.com/moment/moment](https://github.com/moment/moment)|
 |`ms`|`2.0.0`||[https://github.com/zeit/ms](https://github.com/zeit/ms)|
 |`ms`|`2.1.1`||[https://github.com/zeit/ms](https://github.com/zeit/ms)|
@@ -621,7 +620,7 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 |`pause`|`0.0.1`|TJ Holowaychuk||
 |`picomatch`|`2.0.7`|Jon Schlinkert|[https://github.com/micromatch/picomatch](https://github.com/micromatch/picomatch)|
 |`pify`|`4.0.1`|Sindre Sorhus|[https://github.com/sindresorhus/pify](https://github.com/sindresorhus/pify)|
-|`portfinder`|`1.0.24`|Charlie Robbins|[https://github.com/indexzero/node-portfinder](https://github.com/indexzero/node-portfinder)|
+|`portfinder`|`1.0.26`|Charlie Robbins|[https://github.com/http-party/node-portfinder](https://github.com/http-party/node-portfinder)|
 |`power-assert-context-formatter`|`1.2.0`|Takuto Wada|[https://github.com/twada/power-assert-runtime](https://github.com/twada/power-assert-runtime)|
 |`power-assert-context-reducer-ast`|`1.2.0`|Takuto Wada|[https://github.com/twada/power-assert-runtime](https://github.com/twada/power-assert-runtime)|
 |`power-assert-context-traversal`|`1.2.0`|Takuto Wada|[https://github.com/twada/power-assert-runtime](https://github.com/twada/power-assert-runtime)|
@@ -678,6 +677,7 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 |`slice-ansi`|`2.1.0`||[https://github.com/chalk/slice-ansi](https://github.com/chalk/slice-ansi)|
 |`snake-case`|`2.1.0`|Blake Embrey|[https://github.com/blakeembrey/snake-case](https://github.com/blakeembrey/snake-case)|
 |`source-map-support`|`0.5.13`||[https://github.com/evanw/node-source-map-support](https://github.com/evanw/node-source-map-support)|
+|`source-map-support`|`0.5.19`||[https://github.com/evanw/node-source-map-support](https://github.com/evanw/node-source-map-support)|
 |`stack-trace`|`0.0.10`|Felix Geisendörfer|[https://github.com/felixge/node-stack-trace](https://github.com/felixge/node-stack-trace)|
 |`statuses`|`1.5.0`||[https://github.com/jshttp/statuses](https://github.com/jshttp/statuses)|
 |`stream-spigot`|`3.0.6`|Bryce B. Baril|[https://github.com/brycebaril/node-stream-spigot](https://github.com/brycebaril/node-stream-spigot)|
@@ -711,7 +711,7 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 |`treeify`|`1.1.0`|Luke Plaster|[https://github.com/notatestuser/treeify](https://github.com/notatestuser/treeify)|
 |`triple-beam`|`1.3.0`|Charlie Robbins|[https://github.com/winstonjs/triple-beam](https://github.com/winstonjs/triple-beam)|
 |`ts-invariant`|`0.4.4`|Ben Newman|[https://github.com/apollographql/invariant-packages](https://github.com/apollographql/invariant-packages)|
-|`ts-node`|`8.5.4`|Blake Embrey|[https://github.com/TypeStrong/ts-node](https://github.com/TypeStrong/ts-node)|
+|`ts-node`|`8.9.1`|Blake Embrey|[https://github.com/TypeStrong/ts-node](https://github.com/TypeStrong/ts-node)|
 |`type-fest`|`0.3.1`|Sindre Sorhus|[https://github.com/sindresorhus/type-fest](https://github.com/sindresorhus/type-fest)|
 |`type-is`|`1.6.18`||[https://github.com/jshttp/type-is](https://github.com/jshttp/type-is)|
 |`type-name`|`2.0.2`|Takuto Wada|[https://github.com/twada/type-name](https://github.com/twada/type-name)|
