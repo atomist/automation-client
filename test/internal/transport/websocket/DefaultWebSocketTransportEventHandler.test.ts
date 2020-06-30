@@ -12,10 +12,8 @@ import { AutomationServer } from "../../../../lib/server/AutomationServer";
 import { defaultGraphClientFactory } from "../../../../lib/spi/graph/GraphClientFactory";
 
 describe("DefaultWebSocketRequestProcessor", () => {
-
     it("check event received and processed", done => {
         class MockAutomationServer implements AutomationServer {
-
             public automations: Automations = {
                 name: "boo",
                 version: "1.0.0",
@@ -56,31 +54,32 @@ describe("DefaultWebSocketRequestProcessor", () => {
         }
 
         const automations = new MockAutomationServer();
-        const listener = new DefaultWebSocketRequestProcessor(automations,
-            {
-                token: "xxx",
-                endpoints: { api: "http://foo.com", graphql: "http://bar.com" },
-                ws: {
-                    lifecycle: new QueuingWebSocketLifecycle(),
-                } as any,
-                graphql: { client: { factory: defaultGraphClientFactory() } },
-            });
-        listener.onRegistration({ url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
+        const listener = new DefaultWebSocketRequestProcessor(automations, {
+            token: "xxx",
+            endpoints: { api: "http://foo.com", graphql: "http://bar.com" },
+            ws: {
+                lifecycle: new QueuingWebSocketLifecycle(),
+            } as any,
+            graphql: { client: { factory: defaultGraphClientFactory() } },
+        });
+        listener.onRegistration({ url: "http://bla.com", name: "goo", version: "1.0.0" });
         listener.onConnect((new MockWebSocket() as any) as WebSocket);
-        listener.processEvent({
-            data: {
-                Foo: {
-                    bar: 27,
+        listener.processEvent(
+            {
+                data: {
+                    Foo: {
+                        bar: 27,
+                    },
+                },
+                secrets: [],
+                extensions: {
+                    operationName: "FooOp",
+                    team_id: "x-team",
+                    correlation_id: "555",
                 },
             },
-            secrets: [],
-            extensions: {
-                operationName: "FooOp",
-                team_id: "x-team",
-                correlation_id: "555",
-            },
-        }, result => done());
-
+            result => done(),
+        );
     }).timeout(5000);
 
     it("check successful command received and processed", done => {
@@ -94,7 +93,6 @@ describe("DefaultWebSocketRequestProcessor", () => {
 
 function verifyCommandHandler(code: number, callback: (result) => void) {
     class MockAutomationServer implements AutomationServer {
-
         public automations: Automations = {
             name: "foo",
             version: "1.0.0",
@@ -136,37 +134,36 @@ function verifyCommandHandler(code: number, callback: (result) => void) {
     }
 
     const automations = new MockAutomationServer();
-    const listener = new DefaultWebSocketRequestProcessor(automations,
-        {
-            token: "xxx",
-            endpoints: { api: "http://foo.com", graphql: "http://bar.com" },
-            ws: {
-                lifecycle: new QueuingWebSocketLifecycle(),
-            } as any,
-            graphql: { client: { factory: defaultGraphClientFactory() } },
-        });
-    listener.onRegistration({ url: "http://bla.com", jwt: "123456789", name: "goo", version: "1.0.0" });
+    const listener = new DefaultWebSocketRequestProcessor(automations, {
+        token: "xxx",
+        endpoints: { api: "http://foo.com", graphql: "http://bar.com" },
+        ws: {
+            lifecycle: new QueuingWebSocketLifecycle(),
+        } as any,
+        graphql: { client: { factory: defaultGraphClientFactory() } },
+    });
+    listener.onRegistration({ url: "http://bla.com", name: "goo", version: "1.0.0" });
     listener.onConnect((new MockWebSocket() as any) as WebSocket);
-    listener.processCommand({
-        secrets: [],
-        mapped_parameters: [],
-        command: "FooOp",
-        parameters: [
-            { name: "foo", value: "bar" },
-        ],
-        correlation_id: "555",
-        team: {
-            id: "x-team",
-            name: "atomista",
-        },
-        source: {
-            user_agent: "slack",
-            slack: {
-                team: {
-                    id: "x-team",
+    listener.processCommand(
+        {
+            secrets: [],
+            mapped_parameters: [],
+            command: "FooOp",
+            parameters: [{ name: "foo", value: "bar" }],
+            correlation_id: "555",
+            team: {
+                id: "x-team",
+                name: "atomista",
+            },
+            source: {
+                user_agent: "slack",
+                slack: {
+                    team: {
+                        id: "x-team",
+                    },
                 },
             },
         },
-    }, callback);
-
+        callback,
+    );
 }

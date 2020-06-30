@@ -74,7 +74,10 @@ export function CommandHandler(description: string, ...intent: string[]) {
  * @return {(obj: any) => any}
  * @constructor
  */
-export function ConfigurableCommandHandler(description: string, options: { intent?: string | string[], autoSubmit?: boolean }) {
+export function ConfigurableCommandHandler(
+    description: string,
+    options: { intent?: string | string[]; autoSubmit?: boolean },
+) {
     const intent = options.intent ? toStringArray(options.intent) : [];
     const autoSubmit = options.autoSubmit ? options.autoSubmit : false;
     return (obj: any) => {
@@ -119,9 +122,6 @@ export const MappedParameters = {
     GitHubUrl: "atomist://github_url",
     GitHubApiUrl: "atomist://github_api_url",
     GitHubUserLogin: "atomist://github/username",
-
-    /** @deprecated no alternative available */
-    GitHubDefaultRepositoryVisibility: "atomist://github/default_repo_visibility",
 
     SlackChannel: "atomist://slack/channel",
     SlackChannelName: "atomist://slack/channel_name",

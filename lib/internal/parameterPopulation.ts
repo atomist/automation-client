@@ -2,9 +2,9 @@ import * as _ from "lodash";
 import { Configuration } from "../configuration";
 import {
     AutomationMetadata,
-    Chooser,
     CommandHandlerMetadata,
     FreeChoices,
+    Options,
     ParameterType,
 } from "../metadata/automationMetadata";
 import { Arg } from "./invoker/Payload";
@@ -16,7 +16,7 @@ import { Arg } from "./invoker/Payload";
  * @param hm handler metadata
  * @param args string args
  */
-export function populateParameters(instanceToPopulate: any, hm: CommandHandlerMetadata, args: Arg[]) {
+export function populateParameters(instanceToPopulate: any, hm: CommandHandlerMetadata, args: Arg[]): void {
     (args || []).forEach(arg => {
         if (arg.value !== undefined) {
             const parameter = hm.parameters.find(p => p.name === arg.name);
@@ -27,7 +27,7 @@ export function populateParameters(instanceToPopulate: any, hm: CommandHandlerMe
     });
 }
 
-export function populateValues(instanceToPopulate: any, am: AutomationMetadata, configuration: Configuration) {
+export function populateValues(instanceToPopulate: any, am: AutomationMetadata, configuration: Configuration): void {
     (am.values || []).forEach(v => {
         let configValue;
         if (!v.path || v.path.length === 0) {
@@ -36,16 +36,18 @@ export function populateValues(instanceToPopulate: any, am: AutomationMetadata, 
             configValue = _.get(configuration, v.path);
         }
         if (!configValue && v.required) {
-            throw new Error(`Required @Value '${v.path}' in '${
-                instanceToPopulate.constructor.name}' is not available in configuration`);
+            throw new Error(
+                `Required @Value '${v.path}' in '${instanceToPopulate.constructor.name}' is not available in configuration`,
+            );
         } else {
-            _.update(instanceToPopulate, v.name, () => computeValue(
-                { name: v.name, type: v.type as any as ParameterType }, configValue));
+            _.update(instanceToPopulate, v.name, () =>
+                computeValue({ name: v.name, type: (v.type as any) as ParameterType }, configValue),
+            );
         }
     });
 }
 
-function computeValue(parameter: { name: string, type?: ParameterType }, value: any) {
+function computeValue(parameter: { name: string; type?: ParameterType }, value: any): any {
     let newValue = value;
     // Convert type if necessary
     switch (parameter.type) {
@@ -71,19 +73,16 @@ function computeValue(parameter: { name: string, type?: ParameterType }, value: 
             }
             break;
         default:
-            /* tslint:disable:deprecation */
-            // It's a Chooser
-            const chooser = parameter.type as Chooser;
-            if (chooser.pickOne) {
+            const options = parameter.type as Options;
+            if (options.kind === "single") {
                 if (typeof value !== "string") {
-                    throw new Error(`Parameter '${parameter.name}' has invalid value, but should be string`);
+                    throw new Error(`Parameter '${parameter.name}' has invalid value, it should be string`);
                 }
             } else {
                 if (typeof value.value === "string") {
                     throw new Error(`Parameter '${parameter.name}' has string value, but should be array`);
                 }
             }
-            /* tslint:enable:deprecation */
             break;
     }
     return newValue;

@@ -1,6 +1,6 @@
 import * as logform from "logform";
 
-const redactions: Array<{ redacted: RegExp, replacement: string }> = [];
+const redactions: Array<{ redacted: RegExp; replacement: string }> = [];
 
 /**
  * Prepare the logging to exclude something.
@@ -14,11 +14,6 @@ export function addRedaction(redacted: RegExp, suggestedReplacement?: string): v
     const replacement = suggestedReplacement || "[REDACTED]";
     redactions.push({ redacted, replacement });
 }
-
-/**
- * @deprecated use addRedaction
- */
-export const addLogRedaction = addRedaction;
 
 export function redact(message: string): string {
     let output = message;
