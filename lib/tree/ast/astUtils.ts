@@ -13,32 +13,15 @@ import * as _ from "lodash";
 import { logger } from "../../util/logger";
 
 import { Predicate } from "@atomist/tree-path/lib/path/pathExpression";
-import {
-    AttributeEqualityPredicate,
-    NestedPathExpressionPredicate,
-} from "@atomist/tree-path/lib/path/predicates";
+import { AttributeEqualityPredicate, NestedPathExpressionPredicate } from "@atomist/tree-path/lib/path/predicates";
 import { File } from "../../project/File";
 import { retrieveOrCompute } from "../../project/HasCache";
-import {
-    Project,
-    ProjectAsync,
-} from "../../project/Project";
-import {
-    fileIterator,
-    gatherFromFiles,
-    GlobOptions,
-} from "../../project/util/projectUtils";
+import { Project, ProjectAsync } from "../../project/Project";
+import { fileIterator, gatherFromFiles, GlobOptions } from "../../project/util/projectUtils";
 import { toSourceLocation } from "../../project/util/sourceLocationUtils";
 import { LocatedTreeNode } from "../LocatedTreeNode";
-import {
-    FileHit,
-    MatchResult,
-    NodeReplacementOptions,
-} from "./FileHits";
-import {
-    FileParser,
-    isFileParser,
-} from "./FileParser";
+import { FileHit, MatchResult, NodeReplacementOptions } from "./FileHits";
+import { FileParser, isFileParser } from "./FileParser";
 import { FileParserRegistry } from "./FileParserRegistry";
 
 /**
@@ -51,7 +34,6 @@ export type MatchTesterMaker = (f: File) => Promise<MatchTester>;
  * Options for performing a path expression query against a project
  */
 export interface PathExpressionQueryOptions {
-
     /**
      * Parser or parsers to use to parse files
      */
@@ -100,32 +82,11 @@ export type MatchTester = (n: LocatedTreeNode) => boolean;
 /**
  * Integrate path expressions with project operations to find all matches
  * @param p project
- * @param parseWith parser or parsers to use to parse files
- * @param globPatterns file glob patterns
- * @param pathExpression path expression string or parsed
- * @param functionRegistry registry to look for path expression functions in
- * @return {Promise<MatchResult[]>} matches
- * @type T match type to mix in
- * @deprecated use matches
- */
-export async function findMatches<T>(p: ProjectAsync,
-                                     parseWith: FileParser | FileParserRegistry,
-                                     globPatterns: GlobOptions,
-                                     pathExpression: string | PathExpression,
-                                     functionRegistry?: FunctionRegistry): Promise<Array<MatchResult & T>> {
-    const fileHits = await fileMatches(p, { parseWith, globPatterns, pathExpression, functionRegistry });
-    return _.flatten(fileHits.map(f => f.matches as any));
-}
-
-/**
- * Integrate path expressions with project operations to find all matches
- * @param p project
  * @param peqo query options
  * @return {Promise<MatchResult[]>} matches
  * @type T match type to mix in
  */
-export async function matches<T>(p: ProjectAsync,
-                                 peqo: PathExpressionQueryOptions): Promise<Array<MatchResult & T>> {
+export async function matches<T>(p: ProjectAsync, peqo: PathExpressionQueryOptions): Promise<Array<MatchResult & T>> {
     const fileHits = await fileMatches(p, peqo);
     return _.flatten(fileHits.map(f => f.matches as any));
 }
@@ -137,8 +98,7 @@ export async function matches<T>(p: ProjectAsync,
  * @param opts options for query
  * @type T match type to mix in
  */
-export async function* matchIterator<T>(p: Project,
-                                        opts: PathExpressionQueryOptions): AsyncIterable<MatchResult & T> {
+export async function* matchIterator<T>(p: Project, opts: PathExpressionQueryOptions): AsyncIterable<MatchResult & T> {
     const fileHits = fileHitIterator(p, opts);
     for await (const fileHit of fileHits) {
         try {
@@ -158,44 +118,21 @@ export async function* matchIterator<T>(p: Project,
  * Choose what to return based on each match with the mapper function.
  * Returns all of the values returned by the mapper (except undefined).
  * @param p project
- * @param parserOrRegistry parser or parsers to use to parse files
- * @param globPatterns file glob patterns
- * @param mapper mapping function from match result to result
- * @param pathExpression path expression string or parsed
- * @param functionRegistry registry to look for path expression functions in
- * @return {Promise<MatchResult[]>} matches
- * @deprecated use gather
- */
-export async function gatherFromMatches<T>(p: ProjectAsync,
-                                           parserOrRegistry: FileParser | FileParserRegistry,
-                                           globPatterns: GlobOptions,
-                                           pathExpression: string | PathExpression,
-                                           mapper: (m: MatchResult) => T,
-                                           functionRegistry?: FunctionRegistry): Promise<T[]> {
-    return gather(p, { parseWith: parserOrRegistry, globPatterns, pathExpression, mapper, functionRegistry });
-}
-
-/**
- * Integrate path expressions with project operations to gather mapped values from all matches.
- * Choose the files with globPatterns; choose the portions of code to match with the pathExpression.
- * Choose what to return based on each match with the mapper function.
- * Returns all of the values returned by the mapper (except undefined).
- * @param p project
  * @param peqo options
  * @return {Promise<MatchResult[]>} matches
  */
-export async function gather<T>(p: ProjectAsync,
-                                peqo: PathExpressionQueryOptions & { mapper: (m: MatchResult) => T }): Promise<T[]> {
+export async function gather<T>(
+    p: ProjectAsync,
+    peqo: PathExpressionQueryOptions & { mapper: (m: MatchResult) => T },
+): Promise<T[]> {
     const fileHits = await fileMatches(p, peqo);
-    return _.flatten(
-        fileHits.map(f => f.matches.map(peqo.mapper).filter(x => !!x)));
+    return _.flatten(fileHits.map(f => f.matches.map(peqo.mapper).filter(x => !!x)));
 }
 
 /**
  * A match within a project, including location information
  */
 export interface Gathered<T> {
-
     readonly value: T;
 
     readonly file: File;
@@ -209,8 +146,10 @@ export interface Gathered<T> {
 /**
  * Like gather but keep location
  */
-export async function gatherWithLocation<T>(p: ProjectAsync,
-                                            peqo: PathExpressionQueryOptions & { mapper: (m: MatchResult) => T }): Promise<Array<Gathered<T>>> {
+export async function gatherWithLocation<T>(
+    p: ProjectAsync,
+    peqo: PathExpressionQueryOptions & { mapper: (m: MatchResult) => T },
+): Promise<Array<Gathered<T>>> {
     const fileHits = await fileMatches(p, peqo);
     const result: Array<Gathered<T>> = [];
     for (const fileHit of fileHits) {
@@ -226,38 +165,19 @@ export async function gatherWithLocation<T>(p: ProjectAsync,
  * Integrate path expressions with project operations to find all matches
  * and their files
  * @param p project
- * @param parseWith parser or parsers to use to parse files
- * @param globPatterns file glob patterns
- * @param pathExpression path expression string or parsed
- * @param functionRegistry registry to look for path expression functions in
- * @return hits for each file
- * @deprecated use fileMatches
- */
-export async function findFileMatches(p: ProjectAsync,
-                                      parseWith: FileParser | FileParserRegistry,
-                                      globPatterns: GlobOptions,
-                                      pathExpression: string | PathExpression,
-                                      functionRegistry?: FunctionRegistry): Promise<FileHit[]> {
-    return fileMatches(p, { parseWith, globPatterns, pathExpression, functionRegistry });
-}
-
-/**
- * Integrate path expressions with project operations to find all matches
- * and their files
- * @param p project
  * @param peqo query options
  * @return hits for each file
  */
-export async function fileMatches(p: ProjectAsync,
-                                  peqo: PathExpressionQueryOptions): Promise<FileHit[]> {
+export async function fileMatches(p: ProjectAsync, peqo: PathExpressionQueryOptions): Promise<FileHit[]> {
     const parsed: PathExpression = toPathExpression(peqo.pathExpression);
     const parser = findParser(parsed, peqo.parseWith);
     if (!parser) {
         throw new Error(`Cannot find parser for path expression [${peqo.pathExpression}]: Using ${peqo.parseWith}`);
     }
     const valuesToCheckFor = literalValues(parsed);
-    const files = await gatherFromFiles(p, peqo.globPatterns, file => parseFile(parser, parsed,
-        peqo.functionRegistry, p, file, valuesToCheckFor, undefined, peqo.cacheAst !== false));
+    const files = await gatherFromFiles(p, peqo.globPatterns, file =>
+        parseFile(parser, parsed, peqo.functionRegistry, p, file, valuesToCheckFor, undefined, peqo.cacheAst !== false),
+    );
     return files.filter(x => !!x);
 }
 
@@ -273,7 +193,10 @@ export interface PathExpressionFileHits {
  * @param peqos Array of query options
  * @return hits for each file for each query option
  */
-export async function pathExpressionFileMatches(p: ProjectAsync, peqos: PathExpressionQueryOptions[]): Promise<PathExpressionFileHits[]> {
+export async function pathExpressionFileMatches(
+    p: ProjectAsync,
+    peqos: PathExpressionQueryOptions[],
+): Promise<PathExpressionFileHits[]> {
     const pefhs: PathExpressionFileHits[] = [];
     const fileCache: Record<string, File> = {};
     for (const peqo of peqos) {
@@ -292,8 +215,16 @@ export async function pathExpressionFileMatches(p: ProjectAsync, peqos: PathExpr
         const valuesToCheckFor = literalValues(parsed);
         const files: FileHit[] = [];
         for (const file of checkFiles) {
-            const hit = await parseFile(parser, parsed, peqo.functionRegistry, p, file,
-                valuesToCheckFor, undefined, peqo.cacheAst !== false);
+            const hit = await parseFile(
+                parser,
+                parsed,
+                peqo.functionRegistry,
+                p,
+                file,
+                valuesToCheckFor,
+                undefined,
+                peqo.cacheAst !== false,
+            );
             if (hit) {
                 files.push(hit);
             }
@@ -313,8 +244,7 @@ export async function pathExpressionFileMatches(p: ProjectAsync, peqos: PathExpr
  * @param p project
  * @param opts options for query
  */
-export async function* fileHitIterator(p: Project,
-                                       opts: PathExpressionQueryOptions): AsyncIterable<FileHit> {
+export async function* fileHitIterator(p: Project, opts: PathExpressionQueryOptions): AsyncIterable<FileHit> {
     const parsed: PathExpression = toPathExpression(opts.pathExpression);
     const parser = findParser(parsed, opts.parseWith);
     if (!parser) {
@@ -322,23 +252,32 @@ export async function* fileHitIterator(p: Project,
     }
     const valuesToCheckFor = literalValues(parsed);
     for await (const file of fileIterator(p, opts.globPatterns, opts.fileFilter)) {
-        const fileHit = await parseFile(parser, parsed, opts.functionRegistry, p, file, valuesToCheckFor,
+        const fileHit = await parseFile(
+            parser,
+            parsed,
+            opts.functionRegistry,
+            p,
+            file,
+            valuesToCheckFor,
             opts.testWith,
-            opts.cacheAst !== false);
+            opts.cacheAst !== false,
+        );
         if (!!fileHit) {
             yield fileHit;
         }
     }
 }
 
-async function parseFile(parser: FileParser,
-                         pex: PathExpression,
-                         functionRegistry: FunctionRegistry,
-                         p: ProjectAsync,
-                         file: File,
-                         valuesToCheckFor: string[],
-                         matchTester: MatchTesterMaker,
-                         cacheAst: boolean): Promise<FileHit> {
+async function parseFile(
+    parser: FileParser,
+    pex: PathExpression,
+    functionRegistry: FunctionRegistry,
+    p: ProjectAsync,
+    file: File,
+    valuesToCheckFor: string[],
+    matchTester: MatchTesterMaker,
+    cacheAst: boolean,
+): Promise<FileHit> {
     // First, apply optimizations
     if (valuesToCheckFor.length > 0) {
         const content = await file.getContent();
@@ -346,7 +285,7 @@ async function parseFile(parser: FileParser,
             return undefined;
         }
     }
-    if (!!parser.couldBeMatchesInThisFile && !await parser.couldBeMatchesInThisFile(pex, file)) {
+    if (!!parser.couldBeMatchesInThisFile && !(await parser.couldBeMatchesInThisFile(pex, file))) {
         // Skip parsing as we know there can never be matches
         return undefined;
     }
@@ -354,14 +293,23 @@ async function parseFile(parser: FileParser,
     // If we get here, we need to parse the file
     try {
         // Use a cached AST if appropriate
-        const topLevelProduction = await retrieveOrCompute(file, `ast_${parser.rootName}`, async f => {
-            const prod = await parser.toAst(f);
-            defineDynamicProperties(prod);
-            return prod;
-        }, cacheAst);
+        const topLevelProduction = await retrieveOrCompute(
+            file,
+            `ast_${parser.rootName}`,
+            async f => {
+                const prod = await parser.toAst(f);
+                defineDynamicProperties(prod);
+                return prod;
+            },
+            cacheAst,
+        );
 
-        logger.debug("Successfully parsed file '%s' to AST with root node named '%s'. Will execute '%s'",
-            file.path, topLevelProduction.$name, stringify(pex));
+        logger.debug(
+            "Successfully parsed file '%s' to AST with root node named '%s'. Will execute '%s'",
+            file.path,
+            topLevelProduction.$name,
+            stringify(pex),
+        );
         const fileNode = {
             path: file.path,
             name: file.name,
@@ -371,15 +319,12 @@ async function parseFile(parser: FileParser,
         const r = evaluateExpression(fileNode, pex, functionRegistry);
         if (isSuccessResult(r)) {
             logger.debug("%d matches in file '%s'", r.length, file.path);
-            return fillInSourceLocations(file, r)
-                .then(locatedNodes => {
-                    if (matchTester) {
-                        return matchTester(file)
-                            .then(test => new FileHit(p, file, fileNode,
-                                locatedNodes.filter(test)));
-                    }
-                    return new FileHit(p, file, fileNode, locatedNodes);
-                });
+            return fillInSourceLocations(file, r).then(locatedNodes => {
+                if (matchTester) {
+                    return matchTester(file).then(test => new FileHit(p, file, fileNode, locatedNodes.filter(test)));
+                }
+                return new FileHit(p, file, fileNode, locatedNodes);
+            });
         } else {
             logger.debug("No matches in file '%s'", file.path);
             return undefined;
@@ -402,13 +347,12 @@ function fillInSourceLocations(f: File, nodes: TreeNode[]): Promise<LocatedTreeN
         // In this case, let's not read the file content and leave source locations undefined
         return Promise.resolve(nodes as LocatedTreeNode[]);
     }
-    return f.getContent()
-        .then(content => {
-            nodes.forEach(n => {
-                (n as LocatedTreeNode).sourceLocation = toSourceLocation(f, content, n.$offset);
-            });
-            return nodes as LocatedTreeNode[];
+    return f.getContent().then(content => {
+        nodes.forEach(n => {
+            (n as LocatedTreeNode).sourceLocation = toSourceLocation(f, content, n.$offset);
         });
+        return nodes as LocatedTreeNode[];
+    });
 }
 
 /**
@@ -421,14 +365,19 @@ function fillInSourceLocations(f: File, nodes: TreeNode[]): Promise<LocatedTreeN
  * @param functionRegistry registry to look for path expression functions in
  * @return {Promise<TreeNode[]>} hit record for each matching file
  */
-export function findValues(p: ProjectAsync,
-                           parserOrRegistry: FileParser | FileParserRegistry,
-                           globPatterns: GlobOptions,
-                           pathExpression: string | PathExpression,
-                           functionRegistry?: FunctionRegistry): Promise<string[]> {
-    return fileMatches(p, { parseWith: parserOrRegistry, globPatterns, pathExpression, functionRegistry })
-        .then(fileHits => _.flatten(fileHits.map(f => f.matches))
-            .map(m => m.$value));
+export function findValues(
+    p: ProjectAsync,
+    parserOrRegistry: FileParser | FileParserRegistry,
+    globPatterns: GlobOptions,
+    pathExpression: string | PathExpression,
+    functionRegistry?: FunctionRegistry,
+): Promise<string[]> {
+    return fileMatches(p, {
+        parseWith: parserOrRegistry,
+        globPatterns,
+        pathExpression,
+        functionRegistry,
+    }).then(fileHits => _.flatten(fileHits.map(f => f.matches)).map(m => m.$value));
 }
 
 /**
@@ -441,13 +390,14 @@ export function findValues(p: ProjectAsync,
  * @param opts options for handling whitespace
  * @return {Promise<TreeNode[]>} hit record for each matching file
  */
-export function zapAllMatches<P extends ProjectAsync = ProjectAsync>(p: P,
-                                                                     parserOrRegistry: FileParser | FileParserRegistry,
-                                                                     globPatterns: GlobOptions,
-                                                                     pathExpression: string | PathExpression,
-                                                                     opts: NodeReplacementOptions = {}): Promise<P> {
-    return doWithAllMatches(p, parserOrRegistry, globPatterns, pathExpression,
-        m => m.zap(opts));
+export function zapAllMatches<P extends ProjectAsync = ProjectAsync>(
+    p: P,
+    parserOrRegistry: FileParser | FileParserRegistry,
+    globPatterns: GlobOptions,
+    pathExpression: string | PathExpression,
+    opts: NodeReplacementOptions = {},
+): Promise<P> {
+    return doWithAllMatches(p, parserOrRegistry, globPatterns, pathExpression, m => m.zap(opts));
 }
 
 /**
@@ -460,11 +410,13 @@ export function zapAllMatches<P extends ProjectAsync = ProjectAsync>(p: P,
  * @param action what to do with matches
  * @return {Promise<TreeNode[]>} hit record for each matching file
  */
-export async function doWithAllMatches<P extends ProjectAsync = ProjectAsync>(p: P,
-                                                                              parserOrRegistry: FileParser | FileParserRegistry,
-                                                                              globPatterns: GlobOptions,
-                                                                              pathExpression: string | PathExpression,
-                                                                              action: (m: MatchResult) => void): Promise<P> {
+export async function doWithAllMatches<P extends ProjectAsync = ProjectAsync>(
+    p: P,
+    parserOrRegistry: FileParser | FileParserRegistry,
+    globPatterns: GlobOptions,
+    pathExpression: string | PathExpression,
+    action: (m: MatchResult) => void,
+): Promise<P> {
     const fileHits = await fileMatches(p, { parseWith: parserOrRegistry, globPatterns, pathExpression });
     fileHits.forEach(fh => applyActionToMatches(fh, action));
     return (p as any).flush();
@@ -498,22 +450,27 @@ export function literalValues(pex: PathExpression): string[] {
     return _.uniq(
         allPredicates(pex)
             .filter(isAttributeEqualityPredicate)
-            .map(p => p.value));
+            .map(p => p.value),
+    );
 }
 
 function allPredicates(pe: PathExpression): Predicate[] {
     if (isUnionPathExpression(pe)) {
         return _.flatten(pe.unions.map(allPredicates));
     }
-    return _.flatten(pe.locationSteps.map(s => {
-        return _.flatten(s.predicates.map(p => {
-            if (isNestedPredicate(p)) {
-                return allPredicates(p.pathExpression);
-            } else {
-                return [p];
-            }
-        }));
-    }));
+    return _.flatten(
+        pe.locationSteps.map(s => {
+            return _.flatten(
+                s.predicates.map(p => {
+                    if (isNestedPredicate(p)) {
+                        return allPredicates(p.pathExpression);
+                    } else {
+                        return [p];
+                    }
+                }),
+            );
+        }),
+    );
 }
 
 function isAttributeEqualityPredicate(p: Predicate): p is AttributeEqualityPredicate {
