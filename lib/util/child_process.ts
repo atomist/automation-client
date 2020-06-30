@@ -15,19 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-    SpawnOptions,
-    SpawnSyncOptions,
-    SpawnSyncReturns,
-} from "child_process";
+import { SpawnOptions, SpawnSyncOptions, SpawnSyncReturns } from "child_process";
 import * as spawn from "cross-spawn";
 import * as process from "process";
 import stripAnsi from "strip-ansi";
 import * as treeKill from "tree-kill";
-import {
-    LeveledLogMethod,
-    logger,
-} from "./logger";
+import { LeveledLogMethod, logger } from "./logger";
 
 export { spawn };
 
@@ -39,8 +32,9 @@ export { spawn };
  * @param opts Standard child_process.SpawnOptions.
  */
 export function childProcessString(cmd: string, args: string[] = [], opts: SpawnOptions = {}): string {
-    return (opts.cwd ? opts.cwd : process.cwd()) + " ==> " + cmd +
-        (args.length > 0 ? " '" + args.join("' '") + "'" : "");
+    return (
+        (opts.cwd ? opts.cwd : process.cwd()) + " ==> " + cmd + (args.length > 0 ? " '" + args.join("' '") + "'" : "")
+    );
 }
 
 /**
@@ -52,7 +46,7 @@ export function childProcessString(cmd: string, args: string[] = [], opts: Spawn
  * @param signal optional signal name or number, Node.js default is used if not provided
  */
 export function killProcess(pid: number, signal?: string | number): void {
-    const sig = (signal) ? `signal ${signal}` : "default signal";
+    const sig = signal ? `signal ${signal}` : "default signal";
     logger.debug(`Calling tree-kill on child process ${pid} with ${sig}`);
     treeKill(pid, signal);
 }
@@ -101,6 +95,18 @@ export interface SpawnPromiseOptions extends SpawnSyncOptions {
 }
 
 /**
+ * Interface package for spawnPromise arguments.
+ */
+export interface SpawnPromiseCommand {
+    /** Executable able to be run by cross-spawn. */
+    command: string;
+    /** Arguments to command */
+    args?: string[];
+    /** Options to customize how command is run. */
+    options?: SpawnPromiseOptions;
+}
+
+/**
  * Safely clear a timer that may be undefined.
  *
  * @param timer A timer that may not be set.
@@ -134,7 +140,11 @@ export interface SpawnPromiseReturns extends SpawnSyncReturns<string> {
  *         its execution result.  If an error occurs, the `error` property
  *         of [[SpawnPromiseReturns]] will be populated.
  */
-export async function spawnPromise(cmd: string, args: string[] = [], opts: SpawnPromiseOptions = {}): Promise<SpawnPromiseReturns> {
+export async function spawnPromise(
+    cmd: string,
+    args: string[] = [],
+    opts: SpawnPromiseOptions = {},
+): Promise<SpawnPromiseReturns> {
     return new Promise<SpawnPromiseReturns>((resolve, reject) => {
         const optsToUse: SpawnPromiseOptions = {
             logCommand: true,
@@ -154,13 +164,13 @@ export async function spawnPromise(cmd: string, args: string[] = [], opts: Spawn
         }
 
         function pLog(data: string): void {
-            const formatted = (optsToUse.log && optsToUse.log.stripAnsi) ? stripAnsi(data) : data;
+            const formatted = optsToUse.log && optsToUse.log.stripAnsi ? stripAnsi(data) : data;
             optsToUse.log.write(formatted);
         }
 
         function commandLog(data: string, l: LeveledLogMethod = logger.debug): void {
             if (optsToUse.log && optsToUse.logCommand) {
-                const terminated = (data.endsWith("\n")) ? data : data + "\n";
+                const terminated = data.endsWith("\n") ? data : data + "\n";
                 pLog(terminated);
             } else {
                 l(data);
@@ -188,8 +198,8 @@ export async function spawnPromise(cmd: string, args: string[] = [], opts: Spawn
             childProcess.stdout.on("data", logData);
             stderr = stdout = "See log\n";
         } else {
-            childProcess.stderr.on("data", (data: string) => stderr += data);
-            childProcess.stdout.on("data", (data: string) => stdout += data);
+            childProcess.stderr.on("data", (data: string) => (stderr += data));
+            childProcess.stdout.on("data", (data: string) => (stdout += data));
         }
         childProcess.on("exit", (code, signal) => {
             timer = clearTimer(timer);
@@ -291,7 +301,11 @@ export class ExecPromiseError extends Error implements ExecPromiseResult {
  *         with a non-zero status, and killed with a signal, the
  *         Promise is rejected with an [[ExecPromiseError]].
  */
-export async function execPromise(cmd: string, args: string[] = [], opts: SpawnSyncOptions = {}): Promise<ExecPromiseResult> {
+export async function execPromise(
+    cmd: string,
+    args: string[] = [],
+    opts: SpawnSyncOptions = {},
+): Promise<ExecPromiseResult> {
     opts.stdio = ["pipe", "pipe", "pipe"];
     if (!opts.encoding) {
         opts.encoding = "utf8";

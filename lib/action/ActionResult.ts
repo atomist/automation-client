@@ -22,7 +22,6 @@
  * the target.
  */
 export interface ActionResult<T = undefined> {
-
     /** Target on which we ran the action, if there is one. */
     readonly target: T;
 
@@ -39,15 +38,6 @@ export interface ActionResult<T = undefined> {
 /** Test if an object is an ActionResult */
 export function isActionResult(a: any): a is ActionResult {
     return a.target !== undefined && a.success !== undefined;
-}
-
-/**
- * @deprecated
- * Convenient implementation of ActionResult
- */
-export class SimpleActionResult<T> implements ActionResult<T> {
-
-    constructor(public readonly target: T, public readonly success: boolean) { }
 }
 
 /**
@@ -76,6 +66,6 @@ export function failureOn<T>(t: T, err: Error, f?: any /* function */): ActionRe
         success: false,
         target: t,
         error: err,
-        errorStep: (f && f.name) ? f.name : undefined,
+        errorStep: f && f.name ? f.name : undefined,
     };
 }

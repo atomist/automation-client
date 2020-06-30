@@ -6,27 +6,9 @@ export interface Option {
 export type Choice = Option;
 
 /**
- * Represents a choice of exactly one or some strings from a fixed list of choices
- * @deprecated use Options
- */
-export interface Chooser {
-
-    /**
-     * @deprecated use Options.kind
-     */
-    pickOne?: boolean;
-
-    /**
-     * @deprecated use Options.options
-     */
-    choices?: Choice[];
-}
-
-/**
  * Represents a selection of exactly one or some strings from a fixed list of options
  */
 export interface Options {
-
     /**
      * Whether the user must select exactly one option. In this case,
      * binds to string. Otherwise binds to string[]
@@ -46,8 +28,7 @@ export interface Options {
  */
 export const FreeChoices = "freeChoices";
 
-// tslint:disable-next-line:deprecation
-export type ParameterType = "string" | "number" | "boolean" | Chooser | Options | "freeChoices";
+export type ParameterType = "string" | "number" | "boolean" | Options | "freeChoices";
 
 /**
  * Parameter to a command handler.
@@ -55,7 +36,6 @@ export type ParameterType = "string" | "number" | "boolean" | Chooser | Options 
  * but different types can narrow the required input.
  */
 export interface Parameter {
-
     name: string;
     description?: string;
 
@@ -104,7 +84,6 @@ export interface Tag {
  * Common metadata to all automations
  */
 export interface AutomationMetadata {
-
     name: string;
     description: string;
     expose?: boolean;
@@ -113,7 +92,6 @@ export interface AutomationMetadata {
 }
 
 export interface ValueDeclaration {
-
     name: string;
     path: string;
     required: boolean;
@@ -121,33 +99,26 @@ export interface ValueDeclaration {
 }
 
 export interface MappedParameterDeclaration {
-
     name: string;
     uri: string;
     required: boolean;
 }
 
 export interface SecretDeclaration {
-
     name: string;
     uri: string;
 }
 
 export interface SecretsMetadata {
-
     secrets?: SecretDeclaration[];
-
 }
 
 export interface EventHandlerMetadata extends AutomationMetadata, SecretsMetadata {
-
     subscriptionName: string;
     subscription: string;
-
 }
 
 export interface ParameterMetadata extends SecretsMetadata {
-
     parameters?: Parameter[];
     mapped_parameters?: MappedParameterDeclaration[];
 }
@@ -158,7 +129,6 @@ export interface ParameterMetadata extends SecretsMetadata {
  * or REST
  */
 export interface CommandHandlerMetadata extends AutomationMetadata, ParameterMetadata {
-
     intent?: string[];
     auto_submit?: boolean;
     question?: "dialog" | "threaded" | "unthreaded" | "dialog_action";
