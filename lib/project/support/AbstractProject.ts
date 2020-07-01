@@ -3,25 +3,15 @@ import * as micromatch from "micromatch";
 import { AbstractScriptedFlushable } from "../../internal/common/AbstractScriptedFlushable";
 import { RepoRef } from "../../operations/common/RepoId";
 import { logger } from "../../util/logger";
-import {
-    File,
-    FileNonBlocking,
-} from "../File";
-import {
-    DefaultExcludes,
-    DefaultFiles,
-} from "../fileGlobs";
-import {
-    FileStream,
-    Project,
-} from "../Project";
+import { File, FileNonBlocking } from "../File";
+import { DefaultExcludes, DefaultFiles } from "../fileGlobs";
+import { FileStream, Project } from "../Project";
 import { toPromise } from "../util/projectUtils";
 
 /**
  * Support for implementations of Project interface
  */
 export abstract class AbstractProject extends AbstractScriptedFlushable<Project> implements Project {
-
     /**
      * Cached paths
      */
@@ -33,8 +23,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
         return !!this.id ? this.id.repo : undefined;
     }
 
-    protected constructor(public id: RepoRef,
-                          public shouldCache: boolean = false) {
+    protected constructor(public id: RepoRef, public shouldCache: boolean = false) {
         super();
     }
 
@@ -68,9 +57,11 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
      * @return {Promise<File[]>}
      */
     public async getFiles(globPatterns: string | string[] = []): Promise<File[]> {
-        const globPatternsToUse = globPatterns ?
-            (typeof globPatterns === "string" ? [globPatterns] : globPatterns) :
-            [];
+        const globPatternsToUse = globPatterns
+            ? typeof globPatterns === "string"
+                ? [globPatterns]
+                : globPatterns
+            : [];
         // Deliberately checking truthiness of promise
         if (!this.cachedFiles || !this.shouldCache) {
             const globsToUse = [...DefaultFiles];
@@ -100,12 +91,12 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
     }
 
     public moveFile(oldPath: string, newPath: string): Promise<this> {
-        return this.findFile(oldPath)
-            .then(f =>
-                f.setPath(newPath).then(() => this),
-            )
-            // Not an error if no such file
-            .catch(err => this);
+        return (
+            this.findFile(oldPath)
+                .then(f => f.setPath(newPath).then(() => this))
+                // Not an error if no such file
+                .catch(err => this)
+        );
     }
 
     public abstract makeExecutable(path: string): Promise<this>;
@@ -126,8 +117,7 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
 
     // TODO set permissions
     public add(f: File): Promise<this> {
-        return f.getContent()
-            .then(content => this.addFile(f.path, content));
+        return f.getContent().then(content => this.addFile(f.path, content));
     }
 
     public abstract addFile(path: string, content: string): Promise<this>;
@@ -147,7 +137,6 @@ export abstract class AbstractProject extends AbstractScriptedFlushable<Project>
     protected invalidateCache(): void {
         this.cachedFiles = undefined;
     }
-
 }
 
 /**
@@ -159,6 +148,6 @@ export function globMatchesWithin(files: File[], globPatterns?: string[], opts?:
     }
     const paths = (files || []).map(f => f.path);
 
-    const matchingPaths = micromatch(paths, globPatterns,  opts);
+    const matchingPaths = micromatch(paths, globPatterns, opts);
     return files.filter(f => matchingPaths.includes(f.path));
 }

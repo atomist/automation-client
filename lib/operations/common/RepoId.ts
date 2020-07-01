@@ -6,7 +6,6 @@ import { ProjectOperationCredentials } from "./ProjectOperationCredentials";
  * Identifies a git repo
  */
 export interface RepoId {
-
     owner: string;
 
     repo: string;
@@ -15,22 +14,20 @@ export interface RepoId {
      * Entire url of the repo. Can be a file URL if this is local.
      */
     url: string;
-
 }
 
 export class SimpleRepoId implements RepoId {
-
-    constructor(public readonly owner: string,
-                public readonly repo: string,
-                public readonly url: string = `${owner}/${repo}`) {
-    }
+    constructor(
+        public readonly owner: string,
+        public readonly repo: string,
+        public readonly url: string = `${owner}/${repo}`,
+    ) {}
 }
 
 /**
  * Identifies a version of a git repo containing a potential project
  */
 export interface RepoRef extends RepoId {
-
     /**
      * Might contain a sha, might contain a ref (for backwards compatibility)
      * Providing a sha here and a branch in `branch` instead is encouraged.
@@ -46,7 +43,6 @@ export interface RepoRef extends RepoId {
      * If this is populated, then `sha` should contain a sha (it may also contain the same branch name, for backwards compatibility)
      */
     branch?: string;
-
 }
 
 /**
@@ -92,9 +88,6 @@ export enum ProviderType {
  * raising a pull request or equivalent
  */
 export interface RemoteRepoRef extends RepoRef {
-
-    /** @deprecated use providerType */
-    readonly kind: string;
     /** Base root remote clone */
     readonly remoteBase: string;
     /** SCM provider of remote repo */
@@ -107,9 +100,11 @@ export interface RemoteRepoRef extends RepoRef {
      */
     cloneUrl(creds: ProjectOperationCredentials): string;
 
-    createRemote(creds: ProjectOperationCredentials,
-                 description: string,
-                 visibility: "private" | "public"): Promise<ActionResult<this>>;
+    createRemote(
+        creds: ProjectOperationCredentials,
+        description: string,
+        visibility: "private" | "public",
+    ): Promise<ActionResult<this>>;
 
     /**
      * Configure the local remote based on information from remote
@@ -117,8 +112,7 @@ export interface RemoteRepoRef extends RepoRef {
      * @param {Configurable} configurable
      * @return {Promise<ActionResult<any>>}
      */
-    setUserConfig(credentials: ProjectOperationCredentials,
-                  configurable: Configurable): Promise<ActionResult<any>>;
+    setUserConfig(credentials: ProjectOperationCredentials, configurable: Configurable): Promise<ActionResult<any>>;
 
     /**
      * Raise a Pull Request
@@ -129,15 +123,16 @@ export interface RemoteRepoRef extends RepoRef {
      * @param {string} base
      * @param {PullRequestReviewer[]} reviewers
      */
-    raisePullRequest(credentials: ProjectOperationCredentials,
-                     title: string,
-                     body: string,
-                     head: string,
-                     base: string,
-                     reviewers?: PullRequestReviewer[]): Promise<ActionResult<this>>;
+    raisePullRequest(
+        credentials: ProjectOperationCredentials,
+        title: string,
+        body: string,
+        head: string,
+        base: string,
+        reviewers?: PullRequestReviewer[],
+    ): Promise<ActionResult<this>>;
 
     deleteRemote(creds: ProjectOperationCredentials): Promise<ActionResult<this>>;
-
 }
 
 export function isRemoteRepoRef(r: RepoRef): r is RemoteRepoRef {
@@ -150,7 +145,6 @@ export function isRemoteRepoRef(r: RepoRef): r is RemoteRepoRef {
  * A RepoRef can be both Remote and Local
  */
 export interface LocalRepoRef extends RepoRef {
-
     baseDir: string;
 }
 
