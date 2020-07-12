@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Union path expressions not working with fileMatches. [#653](https://github.com/atomist/automation-client/issues/653)
 -   Fix execution of shutdown hooks. [381f0ec](https://github.com/atomist/automation-client/commit/381f0ec91d40f91b1407fda9c0b8e9fd9035feb3)
+-   Update lodash to fix security issue. [075ea4f](https://github.com/atomist/automation-client/commit/075ea4f864658345a8713752ce384babe1d3e137)
 
 ## [1.9.0](https://github.com/atomist/automation-client-ts/compare/1.8.2...1.9.0) - 2020-03-03
 
