@@ -3,22 +3,13 @@ import { ApolloGraphClient } from "../../lib/graph/ApolloGraphClient";
 import { GitHubRepoRef } from "../../lib/operations/common/GitHubRepoRef";
 import { GitCommandGitProject } from "../../lib/project/git/GitCommandGitProject";
 import { GitProject } from "../../lib/project/git/GitProject";
-import {
-    ReposQuery,
-    ReposQueryVariables,
-} from "../../lib/schema/schema";
-import {
-    AtomistApiKey,
-    GitHubToken,
-    SlackTeamId,
-} from "./apiUtils";
+import { ReposQuery, ReposQueryVariables } from "../../lib/schema/schema";
+import { AtomistApiKey, GitHubToken, SlackTeamId } from "./apiUtils";
 
 describe("graph/ApolloGraphClient", () => {
-
     describe("ApolloGraphClient", () => {
-
         let headers: any;
-        before(function() {
+        before(function b(this: Mocha.Context): void {
             if (AtomistApiKey) {
                 headers = { Authorization: `Bearer ${AtomistApiKey}` };
             } else {
@@ -28,7 +19,6 @@ describe("graph/ApolloGraphClient", () => {
 
         it("should run repos query", async () => {
             const agc = new ApolloGraphClient(`https://automation.atomist.com/graphql/team/${SlackTeamId}`, headers);
-            let start = Date.now();
             const result = await agc.query<ReposQuery, ReposQueryVariables>({
                 name: "Repos",
                 variables: { teamId: SlackTeamId, offset: 0 },
@@ -41,20 +31,22 @@ describe("graph/ApolloGraphClient", () => {
             const repo1 = org.repo[0];
             assert(repo1.name);
             assert(repo1.owner);
-            start = Date.now();
             await agc.query<ReposQuery, ReposQueryVariables>({
                 name: "Repos",
                 variables: { teamId: SlackTeamId, offset: 0 },
             });
         }).timeout(5000);
 
-        it("should run repos query and clone repo", async function() {
+        it("should run repos query and clone repo", async function i(this: Mocha.Context): Promise<void> {
             if (!GitHubToken) {
                 this.skip();
             }
             let p: GitProject;
             try {
-                const agc = new ApolloGraphClient(`https://automation.atomist.com/graphql/team/${SlackTeamId}`, headers);
+                const agc = new ApolloGraphClient(
+                    `https://automation.atomist.com/graphql/team/${SlackTeamId}`,
+                    headers,
+                );
                 const result = await agc.query<ReposQuery, ReposQueryVariables>({
                     name: "Repos",
                     variables: { teamId: SlackTeamId, offset: 0 },
@@ -64,15 +56,26 @@ describe("graph/ApolloGraphClient", () => {
                 });
                 const org = result.ChatTeam[0].orgs[0];
                 assert(org.repo.length > 0);
-                const repo1 = org.repo[0];
-                p = await GitCommandGitProject.cloned({ token: GitHubToken },
-                    new GitHubRepoRef(repo1.owner, repo1.name));
+                let ri = 0;
+                while (!p && ri < org.repo.length) {
+                    const r = org.repo[ri++];
+                    try {
+                        p = await GitCommandGitProject.cloned(
+                            { token: GitHubToken },
+                            new GitHubRepoRef(r.owner, r.name),
+                        );
+                    } catch (e) {
+                        // ignore
+                    }
+                }
                 const gitHead = p.findFileSync(".git/HEAD");
                 assert(gitHead);
                 assert(gitHead.path === ".git/HEAD");
                 await p.release();
             } catch (e) {
-                await p.release();
+                if (p) {
+                    await p.release();
+                }
                 throw e;
             }
         }).timeout(10000);
@@ -91,6 +94,5 @@ describe("graph/ApolloGraphClient", () => {
             assert.equal((result as any).setChatUserPreference[0].name, "test");
             assert.equal((result as any).setChatUserPreference[0].value, `{"disable_for_test":true}`);
         }).timeout(5000);
-
     });
 });

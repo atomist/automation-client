@@ -1,19 +1,3 @@
-/*
- * Copyright © 2019 Atomist, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 // tslint:disable-next-line:import-blacklist
 import axios from "axios";
 import * as _ from "lodash";
@@ -42,8 +26,7 @@ export async function getOwnerByToken(): Promise<string> {
             Authorization: `token ${GitHubToken}`,
         },
     };
-    return axios.get(`${GitHubDotComBase}/user`, config)
-        .then(response => response.data.login);
+    return axios.get(`${GitHubDotComBase}/user`, config).then(response => response.data.login);
 }
 
 export interface TestRepo {
@@ -67,22 +50,31 @@ export async function newRepo(): Promise<TestRepo> {
     const url = `${GitHubDotComBase}/user/repos`;
     // logger.debug("Visibility is " + TestRepositoryVisibility);
     return getOwnerByToken()
-        .then(owner => axios.post(url, {
-            name,
-            description,
-            private: TestRepositoryVisibility === "private",
-            auto_init: true,
-        }, config)
-            .then(() => promiseRetry((retry, count) => {
-                const repoUrl = `${GitHubDotComBase}/repos/${owner}/${name}`;
-                return axios.get(repoUrl, config)
-                    .catch(retry);
-            }))
-            .then(() => ({ owner, repo: name })))
+        .then(owner =>
+            axios
+                .post(
+                    url,
+                    {
+                        name,
+                        description,
+                        private: TestRepositoryVisibility === "private",
+                        auto_init: true,
+                    },
+                    config,
+                )
+                .then(() =>
+                    promiseRetry((retry, count) => {
+                        const repoUrl = `${GitHubDotComBase}/repos/${owner}/${name}`;
+                        return axios.get(repoUrl, config).catch(retry);
+                    }),
+                )
+                .then(() => ({ owner, repo: name })),
+        )
         .catch(error => {
             if (error.response.status === 422) {
-                throw new Error("Could not create repository. GitHub says: " +
-                    _.get(error, "response.data.message", "nothing"));
+                throw new Error(
+                    "Could not create repository. GitHub says: " + _.get(error, "response.data.message", "nothing"),
+                );
             } else {
                 throw new Error("Could not create repo: " + error.message);
             }
@@ -96,10 +88,9 @@ export async function deleteRepoIfExists(repo: TestRepo): Promise<any> {
         },
     };
     const url = `${GitHubDotComBase}/repos/${repo.owner}/${repo.repo}`;
-    return axios.delete(url, config)
-        .catch(err => {
-            logger.error(`error deleting ${repo.owner}/${repo.repo}, ignoring. ${err.response.status}`);
-        });
+    return axios.delete(url, config).catch(err => {
+        logger.error(`error deleting ${repo.owner}/${repo.repo}, ignoring. ${err.response.status}`);
+    });
 }
 
 export async function cleanAfterTest(p: LocalProject, r: TestRepo): Promise<void> {
@@ -120,12 +111,11 @@ export async function cleanAfterTest(p: LocalProject, r: TestRepo): Promise<void
 }
 
 export function deleteOrIgnore(rr: RemoteRepoRef, creds: ProjectOperationCredentials): Promise<ActionResult<any>> {
-    return rr.deleteRemote(creds)
-        .catch(err => {
-            // tslint:disable-next-line:no-console
-            console.log(`cleanup: deleting ${JSON.stringify(rr)} failed with ${err}. oh well`);
-            return undefined;
-        });
+    return rr.deleteRemote(creds).catch(err => {
+        // tslint:disable-next-line:no-console
+        console.log(`cleanup: deleting ${JSON.stringify(rr)} failed with ${err}. oh well`);
+        return undefined;
+    });
 }
 
 export function tempRepoName(): string {
