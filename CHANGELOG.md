@@ -5,9 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased](https://github.com/atomist/automation-client-ts/compare/1.9.0...HEAD)
+## [Unreleased](https://github.com/atomist/automation-client/compare/1.9.1...HEAD)
 
-## [1.9.0](https://github.com/atomist/automation-client-ts/compare/1.8.2...1.9.0) - 2020-03-03
+## [1.9.1](https://github.com/atomist/automation-client/compare/1.9.0...1.9.1) - 2020-07-13
+
+### Fixed
+
+-   Update tmp-promise to fix shutdown. [6866d10](https://github.com/atomist/automation-client/commit/6866d10afb8ee42b4ca5ea8b94df4a8180b196c5)
+-   Update lodash to fix security issue. [6d1456c](https://github.com/atomist/automation-client/commit/6d1456ca63caddbbba81d67eba680704571b74fb)
+
+## [1.9.0](https://github.com/atomist/automation-client/compare/1.8.2...1.9.0) - 2020-03-03
 
 ### Added
 
@@ -27,7 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Remove CachingDirectoryManager (and proper-lockfile usage). [#639](https://github.com/atomist/automation-client/issues/639)
 
-## [1.8.2](https://github.com/atomist/automation-client-ts/compare/1.8.1...1.8.2) - 2020-03-02
+## [1.8.2](https://github.com/atomist/automation-client/compare/1.8.1...1.8.2) - 2020-03-02
 
 ### Fixed
 
@@ -35,13 +42,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Update schema. [70fcbee](https://github.com/atomist/automation-client/commit/70fcbee1001bd58964b600534b5765e3eac4cba5)
 -   Pin fast-glob to 3.1.1. [bb37198](https://github.com/atomist/automation-client/commit/bb37198ce8c93abd025a94e4080e6f20eea2a7f4)
 
-## [1.8.1](https://github.com/atomist/automation-client-ts/compare/1.8.0...1.8.1) - 2020-03-02
+## [1.8.1](https://github.com/atomist/automation-client/compare/1.8.0...1.8.1) - 2020-03-02
 
 ### Fixed
 
 -   The BitBucket repo refs should throw errors on failure. [#646](https://github.com/atomist/automation-client/issues/646)
 
-## [1.8.0](https://github.com/atomist/automation-client-ts/compare/1.7.0...1.8.0) - 2019-12-06
+## [1.8.0](https://github.com/atomist/automation-client/compare/1.7.0...1.8.0) - 2019-12-06
 
 ### Added
 
@@ -70,7 +77,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Invalidate file cache on content change. [#622](https://github.com/atomist/automation-client/issues/622)
 -   TargetsParams.test should filter by owner if set along with a regex. [#304](https://github.com/atomist/automation-client/issues/304)
 
-## [1.7.0](https://github.com/atomist/automation-client-ts/compare/1.6.2...1.7.0) - 2019-09-09
+## [1.7.0](https://github.com/atomist/automation-client/compare/1.6.2...1.7.0) - 2019-09-09
 
 ### Added
 
@@ -89,30 +96,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   `promptFor` not sending continuation message in cluster mode. [#592](https://github.com/atomist/automation-client/issues/592)
 -   Fix threaded messages for responses. [b782039](https://github.com/atomist/automation-client/commit/b7820393301f3707dfb21b0b323fc1c3a944864e)
 
-## [1.6.2](https://github.com/atomist/automation-client-ts/compare/1.6.1...1.6.2) - 2019-07-11
+## [1.6.2](https://github.com/atomist/automation-client/compare/1.6.1...1.6.2) - 2019-07-11
 
 ### Added
 
 -   Add support for configuration profiles. [144fb03](https://github.com/atomist/automation-client/commit/144fb033b98292784cae30317fc0ba72dfe74dbb)
 -   Update lodash, lodash.merge and lodash.template to fix security vulnerability. [dcf21d8](https://github.com/atomist/automation-client/commit/dcf21d8d8ade37f192231f9d5bee28131c110c8a)
 
-## [1.6.1](https://github.com/atomist/automation-client-ts/compare/1.6.0...1.6.1) - 2019-07-08
+## [1.6.1](https://github.com/atomist/automation-client/compare/1.6.0...1.6.1) - 2019-07-08
 
 ### Added
 
--   Add x-request-id to apollo requests. [caef74a](https://github.com/atomist/automation-client-ts/compare/2015a1ef062c4c5d3954b002d46e101da643b7e8...caef74a92e47207849d76c88d7c0a4c95b67f5bd)
+-   Add x-request-id to apollo requests. [caef74a](https://github.com/atomist/automation-client/compare/2015a1ef062c4c5d3954b002d46e101da643b7e8...caef74a92e47207849d76c88d7c0a4c95b67f5bd)
 
 ### Fixed
 
 -   Use major version for durable registrations. [46a9200](https://github.com/atomist/automation-client/commit/46a920020ed613c7a7a6c24e995d946e4abc2754)
 
-## [1.6.0](https://github.com/atomist/automation-client-ts/compare/1.5.3...1.6.0) - 2019-07-04
+## [1.6.0](https://github.com/atomist/automation-client/compare/1.5.3...1.6.0) - 2019-07-04
 
 ### Added
 
 -   Add statsd metric to indicate WS backoff. [d0701de](https://github.com/atomist/automation-client/commit/d0701de2fecb730e1ca659913acac771c4ec3b0b)
 
-## [1.5.3](https://github.com/atomist/automation-client-ts/compare/1.5.2...1.5.3) - 2019-06-04
+## [1.5.3](https://github.com/atomist/automation-client/compare/1.5.2...1.5.3) - 2019-06-04
 
 ### Changed
 
@@ -123,14 +130,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Deprecate `atomist://github/default_repo_visibility` mapped parameter. [#559](https://github.com/atomist/automation-client/issues/559)
 
-## [1.5.2](https://github.com/atomist/automation-client-ts/compare/1.5.1...1.5.2) - 2019-05-30
+## [1.5.2](https://github.com/atomist/automation-client/compare/1.5.1...1.5.2) - 2019-05-30
 
 ### Fixed
 
 -   Ensure query params are passed when retrieving default reviewers. [#556](https://github.com/atomist/automation-client/issues/556)
 -   Improve behavior when immediate shutdown requested. [7055ec1](https://github.com/atomist/automation-client/commit/7055ec155f9f1aefd0254fc64509543495538391)
 
-## [1.5.1](https://github.com/atomist/automation-client-ts/compare/1.5.0...1.5.1) - 2019-05-29
+## [1.5.1](https://github.com/atomist/automation-client/compare/1.5.0...1.5.1) - 2019-05-29
 
 ### Changed
 
@@ -140,7 +147,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Allow for normal exit with async hooks. [#553](https://github.com/atomist/automation-client/issues/553)
 
-## [1.5.0](https://github.com/atomist/automation-client-ts/compare/1.4.0...1.5.0) - 2019-05-27
+## [1.5.0](https://github.com/atomist/automation-client/compare/1.4.0...1.5.0) - 2019-05-27
 
 ### Added
 
@@ -169,7 +176,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Rework cluster shutdown. [#549](https://github.com/atomist/automation-client/issues/549)
 -   Improve cluster shutdown behavior. [#550](https://github.com/atomist/automation-client/issues/550)
 
-## [1.4.0](https://github.com/atomist/automation-client-ts/compare/1.3.0...1.4.0) - 2019-04-15
+## [1.4.0](https://github.com/atomist/automation-client/compare/1.3.0...1.4.0) - 2019-04-15
 
 ### Added
 
@@ -192,7 +199,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Handle empty parameter list on incoming command. [#490](https://github.com/atomist/automation-client/issues/490)
 
-## [1.3.0](https://github.com/atomist/automation-client-ts/compare/1.2.0...1.3.0) - 2019-03-14
+## [1.3.0](https://github.com/atomist/automation-client/compare/1.2.0...1.3.0) - 2019-03-14
 
 ### Added
 
@@ -233,7 +240,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   WebSocket can be destroyed before message sent. [#483](https://github.com/atomist/automation-client/issues/483)
 -   Disable TSLint on generated types. [#485](https://github.com/atomist/automation-client/issues/485)
 
-## [1.2.0](https://github.com/atomist/automation-client-ts/compare/1.1.0...1.2.0) - 2018-12-27
+## [1.2.0](https://github.com/atomist/automation-client/compare/1.1.0...1.2.0) - 2018-12-27
 
 ### Added
 
@@ -257,7 +264,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Fix defaulting of targetBranch when raising PR. [6c80f10](https://github.com/atomist/automation-client/commit/6c80f10c5656b8b9d1c838808d65d20020297e54)
 -   Logging setting can cause startup hangs. [#435](https://github.com/atomist/automation-client/issues/435)
 
-## [1.1.0](https://github.com/atomist/automation-client-ts/compare/1.0.1...1.1.0) - 2018-12-08
+## [1.1.0](https://github.com/atomist/automation-client/compare/1.0.1...1.1.0) - 2018-12-08
 
 ### Added
 
@@ -286,13 +293,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Namespace our in process messages. [d0cf724](https://github.com/atomist/automation-client/commit/d0cf724245cd60dddb15de115a2f809481815297)
 
-## [1.0.1](https://github.com/atomist/automation-client-ts/compare/1.0.0-RC.2...1.0.1) - 2018-11-09
+## [1.0.1](https://github.com/atomist/automation-client/compare/1.0.0-RC.2...1.0.1) - 2018-11-09
 
 ### Added
 
 -   Fingerprint api docs added. [#396](https://github.com/atomist/automation-client/issues/396)
 
-## [1.0.0-RC.2](https://github.com/atomist/automation-client-ts/compare/1.0.0-RC.1...1.0.0-RC.2) - 2018-10-30
+## [1.0.0-RC.2](https://github.com/atomist/automation-client/compare/1.0.0-RC.1...1.0.0-RC.2) - 2018-10-30
 
 ### Changed
 
@@ -302,7 +309,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Delete out-of-date documentation. [#394](https://github.com/atomist/automation-client/issues/394)
 
-## [1.0.0-RC.1](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.5a...1.0.0-RC.1) - 2018-10-15
+## [1.0.0-RC.1](https://github.com/atomist/automation-client/compare/1.0.0-M.5a...1.0.0-RC.1) - 2018-10-15
 
 ### Added
 
@@ -320,83 +327,83 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Error when creating pull request under GitCommandGitProject. [#387](https://github.com/atomist/automation-client/issues/387)
 
-## [1.0.0-M.5a](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.5...1.0.0-M.5a) - 2018-09-28
+## [1.0.0-M.5a](https://github.com/atomist/automation-client/compare/1.0.0-M.5...1.0.0-M.5a) - 2018-09-28
 
 ### Changed
 
--   Upgrade axios to 0.19.0-beta.1. [#386](https://github.com/atomist/automation-client-ts/issues/386)
+-   Upgrade axios to 0.19.0-beta.1. [#386](https://github.com/atomist/automation-client/issues/386)
 
-## [1.0.0-M.5](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.4...1.0.0-M.5) - 2018-09-26
+## [1.0.0-M.5](https://github.com/atomist/automation-client/compare/1.0.0-M.4...1.0.0-M.5) - 2018-09-26
 
 ### Added
 
--   Export cross-spawn as spawn. [#382](https://github.com/atomist/automation-client-ts/pull/382)
+-   Export cross-spawn as spawn. [#382](https://github.com/atomist/automation-client/pull/382)
 
 ### Changed
 
--   Use os.homedir() and 127.0.0.1. [#381](https://github.com/atomist/automation-client-ts/pull/381)
+-   Use os.homedir() and 127.0.0.1. [#381](https://github.com/atomist/automation-client/pull/381)
 
 ### Fixed
 
--   Make killing processes more cross-platform. [#385](https://github.com/atomist/automation-client-ts/pull/385)
+-   Make killing processes more cross-platform. [#385](https://github.com/atomist/automation-client/pull/385)
 
-## [1.0.0-M.4](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.3...1.0.0-M.4) - 2018-09-16
+## [1.0.0-M.4](https://github.com/atomist/automation-client/compare/1.0.0-M.3...1.0.0-M.4) - 2018-09-16
 
 ### Added
 
--   Add depth for cloning the master branch. [#9ed45d8](https://github.com/atomist/automation-client-ts/commit/9ed45d8baa91572eec2424987f22368a6101f69b)
--   Add startupSuccessful event. [#9768eaf](https://github.com/atomist/automation-client-ts/commit/9768eafeb185e9b4acb58bf9e0fafb2e23125c8e)
--   Print stack before munching error. [#365](https://github.com/atomist/automation-client-ts/issues/365)
--   Augment and organize export in index. [#378](https://github.com/atomist/automation-client-ts/issues/378)
+-   Add depth for cloning the master branch. [#9ed45d8](https://github.com/atomist/automation-client/commit/9ed45d8baa91572eec2424987f22368a6101f69b)
+-   Add startupSuccessful event. [#9768eaf](https://github.com/atomist/automation-client/commit/9768eafeb185e9b4acb58bf9e0fafb2e23125c8e)
+-   Print stack before munching error. [#365](https://github.com/atomist/automation-client/issues/365)
+-   Augment and organize export in index. [#378](https://github.com/atomist/automation-client/issues/378)
 
 ### Changed
 
--   Set all execute bits in makeExecutable. [#345](https://github.com/atomist/automation-client-ts/issues/345)
--   Don't default sha to master when cloning repos. [#4410c0b](https://github.com/atomist/automation-client-ts/commit/4410c0b45544536766d061ded92bc2e530caa677)
--   Keep the branch from the RepoRef. [#366](https://github.com/atomist/automation-client-ts/issues/366)
--   **BREAKING** `~/.atomist/client-config.json` should take precedence over `atomist-config.ts`. [#371](https://github.com/atomist/automation-client-ts/issues/371)
--   **BREAKING** Update to Winston 3 and make logging configuration explicit. [#370](https://github.com/atomist/automation-client-ts/issues/370)
--   Upgrade tree-path library. [#375](https://github.com/atomist/automation-client-ts/issues/375)
--   **BREAKING** Make running git commands safer. [#374](https://github.com/atomist/automation-client-ts/issues/374)
--   Change location of schema.json. [#c6ee2b4](https://github.com/atomist/automation-client-ts/commit/c6ee2b4843a193002319796f5b1815d3cfb83454)
--   Replace continuation-local-storage with async hooks for better tracking across async/await calls. [#377](https://github.com/atomist/automation-client-ts/issues/377)
--   **BREAKING** Update to more-standard node project format. [#328](https://github.com/atomist/automation-client-ts/issues/328)
+-   Set all execute bits in makeExecutable. [#345](https://github.com/atomist/automation-client/issues/345)
+-   Don't default sha to master when cloning repos. [#4410c0b](https://github.com/atomist/automation-client/commit/4410c0b45544536766d061ded92bc2e530caa677)
+-   Keep the branch from the RepoRef. [#366](https://github.com/atomist/automation-client/issues/366)
+-   **BREAKING** `~/.atomist/client-config.json` should take precedence over `atomist-config.ts`. [#371](https://github.com/atomist/automation-client/issues/371)
+-   **BREAKING** Update to Winston 3 and make logging configuration explicit. [#370](https://github.com/atomist/automation-client/issues/370)
+-   Upgrade tree-path library. [#375](https://github.com/atomist/automation-client/issues/375)
+-   **BREAKING** Make running git commands safer. [#374](https://github.com/atomist/automation-client/issues/374)
+-   Change location of schema.json. [#c6ee2b4](https://github.com/atomist/automation-client/commit/c6ee2b4843a193002319796f5b1815d3cfb83454)
+-   Replace continuation-local-storage with async hooks for better tracking across async/await calls. [#377](https://github.com/atomist/automation-client/issues/377)
+-   **BREAKING** Update to more-standard node project format. [#328](https://github.com/atomist/automation-client/issues/328)
 
 ### Fixed
 
--   Make sure Apollo propagates the GraphQL errors. [#448f89a](https://github.com/atomist/automation-client-ts/commit/448f89aa8bf9c8bcf226f29882dad26267fe665e)
--   No such file or directory `~/.atomist/log`. [#361](https://github.com/atomist/automation-client-ts/issues/361)
--   Running multiple local SDMs causes port collisions. [#364](https://github.com/atomist/automation-client-ts/issues/364)
--   Resolve exec promise when process stdio is closed. [#70145f2](https://github.com/atomist/automation-client-ts/commit/70145f2b2d7a5d0b2fa689f5d561f88416781ec8)
+-   Make sure Apollo propagates the GraphQL errors. [#448f89a](https://github.com/atomist/automation-client/commit/448f89aa8bf9c8bcf226f29882dad26267fe665e)
+-   No such file or directory `~/.atomist/log`. [#361](https://github.com/atomist/automation-client/issues/361)
+-   Running multiple local SDMs causes port collisions. [#364](https://github.com/atomist/automation-client/issues/364)
+-   Resolve exec promise when process stdio is closed. [#70145f2](https://github.com/atomist/automation-client/commit/70145f2b2d7a5d0b2fa689f5d561f88416781ec8)
 
-## [1.0.0-M.3](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.2...1.0.0-M.3) - 2018-09-04
+## [1.0.0-M.3](https://github.com/atomist/automation-client/compare/1.0.0-M.2...1.0.0-M.3) - 2018-09-04
 
 ### Added
 
--   On startup, tell people how to get an API key. [#348](https://github.com/atomist/automation-client-ts/issues/348)
--   Add ConfigurationPostProcessor type. [#4dfbb0f](https://github.com/atomist/automation-client-ts/commit/4dfbb0f0cffae9fc45748c558d05d497361bd8c9)
--   Add generic return type to ConfigurationPostProcessor. [#a564fce](https://github.com/atomist/automation-client-ts/commit/a564fce96107017001e4d47afc9dd229c36ba34a)
--   Add support for marking branch commits to auto merge. [#4c8f677](https://github.com/atomist/automation-client-ts/commit/4c8f677d2857f301abedd65d7fe9fe5eb37da56f)
--   Cleanup own tmp directories. [#0de0100](https://github.com/atomist/automation-client-ts/commit/0de0100a7f26d296df808e128d2e785060e4de62)
+-   On startup, tell people how to get an API key. [#348](https://github.com/atomist/automation-client/issues/348)
+-   Add ConfigurationPostProcessor type. [#4dfbb0f](https://github.com/atomist/automation-client/commit/4dfbb0f0cffae9fc45748c558d05d497361bd8c9)
+-   Add generic return type to ConfigurationPostProcessor. [#a564fce](https://github.com/atomist/automation-client/commit/a564fce96107017001e4d47afc9dd229c36ba34a)
+-   Add support for marking branch commits to auto merge. [#4c8f677](https://github.com/atomist/automation-client/commit/4c8f677d2857f301abedd65d7fe9fe5eb37da56f)
+-   Cleanup own tmp directories. [#0de0100](https://github.com/atomist/automation-client/commit/0de0100a7f26d296df808e128d2e785060e4de62)
 -   projectUtils.gatherFromMatches to build up data based on pieces of code
 
 ### Changed
 
--   Support author as string or object. [#346](https://github.com/atomist/automation-client-ts/issues/346)
--   If no event handlers are found, return 404 not 500. [#347](https://github.com/atomist/automation-client-ts/issues/347)
--   Do not show links in startup if not registered. [#da0c942](https://github.com/atomist/automation-client-ts/commit/da0c9425b5493588f39a1565d964dc7b17ca67c5)
+-   Support author as string or object. [#346](https://github.com/atomist/automation-client/issues/346)
+-   If no event handlers are found, return 404 not 500. [#347](https://github.com/atomist/automation-client/issues/347)
+-   Do not show links in startup if not registered. [#da0c942](https://github.com/atomist/automation-client/commit/da0c9425b5493588f39a1565d964dc7b17ca67c5)
 -   Log under user home directory.
--   Remove dimensions on metrics. [#349](https://github.com/atomist/automation-client-ts/issues/349)
--   **BREAKING** Pull up id to RepoId and remove unused code. [#351](https://github.com/atomist/automation-client-ts/issues/351)
--   Export all of MessageClient. [#352](https://github.com/atomist/automation-client-ts/issues/352)
--   **BREAKING** Remove all deprecations. [#350](https://github.com/atomist/automation-client-ts/issues/350)
+-   Remove dimensions on metrics. [#349](https://github.com/atomist/automation-client/issues/349)
+-   **BREAKING** Pull up id to RepoId and remove unused code. [#351](https://github.com/atomist/automation-client/issues/351)
+-   Export all of MessageClient. [#352](https://github.com/atomist/automation-client/issues/352)
+-   **BREAKING** Remove all deprecations. [#350](https://github.com/atomist/automation-client/issues/350)
 -   renamed saveFromFiles to gatherFromFiles, deprecating the old function.
 
 ### Fixed
 
--   Fail when tests fail, remove team/token. [#354](https://github.com/atomist/automation-client-ts/issues/354)
+-   Fail when tests fail, remove team/token. [#354](https://github.com/atomist/automation-client/issues/354)
 
-## [1.0.0-M.2](https://github.com/atomist/automation-client-ts/compare/1.0.0-M.1...1.0.0-M.2) - 2018-08-27
+## [1.0.0-M.2](https://github.com/atomist/automation-client/compare/1.0.0-M.1...1.0.0-M.2) - 2018-08-27
 
 ### Changed
 
@@ -406,82 +413,82 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Properly read client package.json.
 
-## [1.0.0-M.1](https://github.com/atomist/automation-client-ts/compare/0.21.8...1.0.0-M.1) - 2018-08-27
+## [1.0.0-M.1](https://github.com/atomist/automation-client/compare/0.21.8...1.0.0-M.1) - 2018-08-27
 
 ### Changed
 
 -   Prepare for 1.0.0 release.
 
-## [0.21.8](https://github.com/atomist/automation-client-ts/compare/0.21.7...0.21.8) - 2018-08-24
+## [0.21.8](https://github.com/atomist/automation-client/compare/0.21.7...0.21.8) - 2018-08-24
 
-## [0.21.7](https://github.com/atomist/automation-client-ts/compare/0.21.6...0.21.7) - 2018-08-23
+## [0.21.7](https://github.com/atomist/automation-client/compare/0.21.6...0.21.7) - 2018-08-23
 
-## [0.21.6](https://github.com/atomist/automation-client-ts/compare/0.21.5...0.21.6) - 2018-08-23
+## [0.21.6](https://github.com/atomist/automation-client/compare/0.21.5...0.21.6) - 2018-08-23
 
 ### Fixed
 
--   Immediately shut down when no hooks are registered. [#c010ce1](https://github.com/atomist/automation-client-ts/commit/c010ce1ed2f5a888d7c7b605461e53093d35c58f)
+-   Immediately shut down when no hooks are registered. [#c010ce1](https://github.com/atomist/automation-client/commit/c010ce1ed2f5a888d7c7b605461e53093d35c58f)
 
-## [0.21.5](https://github.com/atomist/automation-client-ts/compare/0.21.4...0.21.5) - 2018-08-23
+## [0.21.5](https://github.com/atomist/automation-client/compare/0.21.4...0.21.5) - 2018-08-23
 
-## [0.21.4](https://github.com/atomist/automation-client-ts/compare/0.21.3...0.21.4) - 2018-08-21
+## [0.21.4](https://github.com/atomist/automation-client/compare/0.21.3...0.21.4) - 2018-08-21
 
-## [0.21.3](https://github.com/atomist/automation-client-ts/compare/0.21.2...0.21.3) - 2018-08-21
+## [0.21.3](https://github.com/atomist/automation-client/compare/0.21.2...0.21.3) - 2018-08-21
 
 ### Added
 
--   Expose ChildProcess on ChildProcessResult to allow it to be killed. [#342](https://github.com/atomist/automation-client-ts/issues/342)
--   Add support for proxy authentication. [#343](https://github.com/atomist/automation-client-ts/issues/343)
+-   Expose ChildProcess on ChildProcessResult to allow it to be killed. [#342](https://github.com/atomist/automation-client/issues/342)
+-   Add support for proxy authentication. [#343](https://github.com/atomist/automation-client/issues/343)
 
-## [0.21.2](https://github.com/atomist/automation-client-ts/compare/0.21.1...0.21.2) - 2018-08-21
+## [0.21.2](https://github.com/atomist/automation-client/compare/0.21.1...0.21.2) - 2018-08-21
 
 ### Fixed
 
--   Get rid of deprecation warnings when installing cli. [#340](https://github.com/atomist/automation-client-ts/issues/340)
+-   Get rid of deprecation warnings when installing cli. [#340](https://github.com/atomist/automation-client/issues/340)
 
-## [0.21.1](https://github.com/atomist/automation-client-ts/compare/0.21.0...0.21.1) - 2018-08-18
+## [0.21.1](https://github.com/atomist/automation-client/compare/0.21.0...0.21.1) - 2018-08-18
 
-## [0.21.0](https://github.com/atomist/automation-client-ts/compare/0.20.4...0.21.0) - 2018-08-17
+## [0.21.0](https://github.com/atomist/automation-client/compare/0.20.4...0.21.0) - 2018-08-17
 
 ### Changed
 
--   Install scripts in bin. [#339](https://github.com/atomist/automation-client-ts/issues/339)
+-   Install scripts in bin. [#339](https://github.com/atomist/automation-client/issues/339)
 
-## [0.20.4](https://github.com/atomist/automation-client-ts/compare/0.20.3...0.20.4) - 2018-08-17
+## [0.20.4](https://github.com/atomist/automation-client/compare/0.20.3...0.20.4) - 2018-08-17
 
 ### Deprecated
 
--   Move scripts to bin directory. [#338](https://github.com/atomist/automation-client-ts/issues/338)
+-   Move scripts to bin directory. [#338](https://github.com/atomist/automation-client/issues/338)
 
-## [0.20.3](https://github.com/atomist/automation-client-ts/compare/0.20.2...0.20.3) - 2018-08-16
+## [0.20.3](https://github.com/atomist/automation-client/compare/0.20.2...0.20.3) - 2018-08-16
 
 ### Changed
 
--   Use cross-spawn to better support Windows. [#337](https://github.com/atomist/automation-client-ts/issues/337)
+-   Use cross-spawn to better support Windows. [#337](https://github.com/atomist/automation-client/issues/337)
 
-## [0.20.2](https://github.com/atomist/automation-client-ts/compare/0.20.1...0.20.2) - 2018-08-16
+## [0.20.2](https://github.com/atomist/automation-client/compare/0.20.1...0.20.2) - 2018-08-16
 
 ### Fixed
 
 -   Fix start.gql-gen.ts script for MS Windows.
 
-## [0.20.1](https://github.com/atomist/automation-client-ts/compare/0.20.0...0.20.1) - 2018-08-10
+## [0.20.1](https://github.com/atomist/automation-client/compare/0.20.0...0.20.1) - 2018-08-10
 
 ### Added
 
--   Add git-info and gql-gen scripts. [#1ac65e6](https://github.com/atomist/automation-client-ts/commit/1ac65e68679e63ecf470f57f3014e96abb0630f1)
+-   Add git-info and gql-gen scripts. [#1ac65e6](https://github.com/atomist/automation-client/commit/1ac65e68679e63ecf470f57f3014e96abb0630f1)
 
 ### Changed
 
--   Move types to dependencies. [#f9b3331](https://github.com/atomist/automation-client-ts/commit/f9b3331fbc8e53362d535e045a17993a6e3bf178)
+-   Move types to dependencies. [#f9b3331](https://github.com/atomist/automation-client/commit/f9b3331fbc8e53362d535e045a17993a6e3bf178)
 
-## [0.20.0](https://github.com/atomist/automation-client-ts/compare/0.19.7...0.20.0) - 2018-08-09
+## [0.20.0](https://github.com/atomist/automation-client/compare/0.19.7...0.20.0) - 2018-08-09
 
 ### Fixed
 
 -   Allow local-sdm "new sdm" command to run from any directory.
 
-## [0.19.7](https://github.com/atomist/automation-client-ts/compare/0.19.6...0.19.7) - 2018-08-09
+## [0.19.7](https://github.com/atomist/automation-client/compare/0.19.6...0.19.7) - 2018-08-09
 
 ### Added
 
@@ -489,9 +496,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
--   **BREAKING** Feedback on graphClient.executeQueryFromFile versus graphClient.query. [#334](https://github.com/atomist/automation-client-ts/issues/334)
+-   **BREAKING** Feedback on graphClient.executeQueryFromFile versus graphClient.query. [#334](https://github.com/atomist/automation-client/issues/334)
 
-## [0.19.6](https://github.com/atomist/automation-client-ts/compare/0.19.5...0.19.6) - 2018-08-07
+## [0.19.6](https://github.com/atomist/automation-client/compare/0.19.5...0.19.6) - 2018-08-07
 
 ### Changed
 
@@ -501,87 +508,87 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Reference to slalom
 
-## [0.19.5](https://github.com/atomist/automation-client-ts/compare/0.19.4...0.19.5) - 2018-08-06
+## [0.19.5](https://github.com/atomist/automation-client/compare/0.19.4...0.19.5) - 2018-08-06
 
 ### Fixed
 
 -   Logging initialization when `ATOMIST_DISABLE_LOGGING` is true
 
-## [0.19.4](https://github.com/atomist/automation-client-ts/compare/0.19.3...0.19.4) - 2018-08-02
+## [0.19.4](https://github.com/atomist/automation-client/compare/0.19.3...0.19.4) - 2018-08-02
 
 ### Changed
 
 -   Updated schema.
 
-## [0.19.3](https://github.com/atomist/automation-client-ts/compare/0.19.2...0.19.3) - 2018-08-02
+## [0.19.3](https://github.com/atomist/automation-client/compare/0.19.2...0.19.3) - 2018-08-02
 
 ### Fixed
 
 -   More workspace/team ID fixes
 
-## [0.19.2](https://github.com/atomist/automation-client-ts/compare/0.19.1...0.19.2) - 2018-08-02
+## [0.19.2](https://github.com/atomist/automation-client/compare/0.19.1...0.19.2) - 2018-08-02
 
 ### Changed
 
 -   Configuration workspaceIds will be set to teamIds if no workspaceIds are set.
 
-## [0.19.1](https://github.com/atomist/automation-client-ts/compare/0.19.0...0.19.1) - 2018-08-01
+## [0.19.1](https://github.com/atomist/automation-client/compare/0.19.0...0.19.1) - 2018-08-01
 
 ### Fixed
 
 -   Restore start.command.ts.
 
-## [0.19.0](https://github.com/atomist/automation-client-ts/compare/0.18.1...0.19.0) - 2018-07-31
+## [0.19.0](https://github.com/atomist/automation-client/compare/0.18.1...0.19.0) - 2018-07-31
 
 ### Added
 
--   **BREAKING** Initial support for apiKeys. [#329](https://github.com/atomist/automation-client-ts/issues/329)
+-   **BREAKING** Initial support for apiKeys. [#329](https://github.com/atomist/automation-client/issues/329)
 
 ### Deprecated
 
--   **BREAKING** Initial support for apiKeys. [#329](https://github.com/atomist/automation-client-ts/issues/329)
+-   **BREAKING** Initial support for apiKeys. [#329](https://github.com/atomist/automation-client/issues/329)
 
-## [0.18.1](https://github.com/atomist/automation-client-ts/compare/0.18.0...0.18.1) - 2018-07-31
+## [0.18.1](https://github.com/atomist/automation-client/compare/0.18.0...0.18.1) - 2018-07-31
 
-## [0.18.0](https://github.com/atomist/automation-client-ts/compare/0.17.1...0.18.0) - 2018-07-26
+## [0.18.0](https://github.com/atomist/automation-client/compare/0.17.1...0.18.0) - 2018-07-26
 
 ### Added
 
--   Allow to set timeout on spawned commands. [#312](https://github.com/atomist/automation-client-ts/issues/312)
--   Add command to install kube utilities. [#311](https://github.com/atomist/automation-client-ts/issues/311)
--   HTTP client and factory abstraction. [#321](https://github.com/atomist/automation-client-ts/issues/321)
+-   Allow to set timeout on spawned commands. [#312](https://github.com/atomist/automation-client/issues/312)
+-   Add command to install kube utilities. [#311](https://github.com/atomist/automation-client/issues/311)
+-   HTTP client and factory abstraction. [#321](https://github.com/atomist/automation-client/issues/321)
 
 ### Changed
 
--   Open up configuration. [#320](https://github.com/atomist/automation-client-ts/issues/320)
+-   Open up configuration. [#320](https://github.com/atomist/automation-client/issues/320)
 
 ### Deprecated
 
--   Migrate atomist CLI to its own package. [#315](https://github.com/atomist/automation-client-ts/issues/315)
--   Replace run.ts with start.command.ts. [#325](https://github.com/atomist/automation-client-ts/issues/325)
+-   Migrate atomist CLI to its own package. [#315](https://github.com/atomist/automation-client/issues/315)
+-   Replace run.ts with start.command.ts. [#325](https://github.com/atomist/automation-client/issues/325)
 
 ### Removed
 
--   Remove dependency to config module. [#317](https://github.com/atomist/automation-client-ts/issues/317)
--   **BREAKING** `Project` no longer extends `AbstractScriptedFlushable`. This is no longer necessary given async/await. [#318](https://github.com/atomist/automation-client-ts/issues/318)
+-   Remove dependency to config module. [#317](https://github.com/atomist/automation-client/issues/317)
+-   **BREAKING** `Project` no longer extends `AbstractScriptedFlushable`. This is no longer necessary given async/await. [#318](https://github.com/atomist/automation-client/issues/318)
 
 ### Fixed
 
--   Github's email setting "Block command line pushes that expose my email" breaks `@atomist generate`. [#322](https://github.com/atomist/automation-client-ts/issues/322)
+-   Github's email setting "Block command line pushes that expose my email" breaks `@atomist generate`. [#322](https://github.com/atomist/automation-client/issues/322)
 
-## [0.17.1](https://github.com/atomist/automation-client-ts/compare/0.17.0...0.17.1) - 2018-06-04
+## [0.17.1](https://github.com/atomist/automation-client/compare/0.17.0...0.17.1) - 2018-06-04
 
 ### Deprecated
 
 -   Ingester and IngesterBuilder are deprecated in favor of GraphQL SDM definitions.
 
-## [0.17.0](https://github.com/atomist/automation-client-ts/compare/0.16.0...0.17.0) - 2018-06-04
+## [0.17.0](https://github.com/atomist/automation-client/compare/0.16.0...0.17.0) - 2018-06-04
 
 ### Fixed
 
--   Checking out a branch sets the branch. [#293](https://github.com/atomist/automation-client-ts/issues/293)
+-   Checking out a branch sets the branch. [#293](https://github.com/atomist/automation-client/issues/293)
 
-## [0.16.0](https://github.com/atomist/automation-client-ts/compare/0.15.1...0.16.0) - 2018-05-15
+## [0.16.0](https://github.com/atomist/automation-client/compare/0.15.1...0.16.0) - 2018-05-15
 
 ### Added
 
@@ -602,7 +609,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Default @Value handling.
 
-## [0.15.1](https://github.com/atomist/automation-client-ts/compare/0.15.0...0.15.1) - 2018-05-09
+## [0.15.1](https://github.com/atomist/automation-client/compare/0.15.0...0.15.1) - 2018-05-09
 
 ### Changed
 
@@ -614,7 +621,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Make sure teamIds and groups are set in configuration.
 -   Put SDM configuration under "sdm".
 
-## [0.15.0](https://github.com/atomist/automation-client-ts/compare/0.14.1...0.15.0) - 2018-05-07
+## [0.15.0](https://github.com/atomist/automation-client/compare/0.14.1...0.15.0) - 2018-05-07
 
 ### Added
 
@@ -629,7 +636,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Support arbitrary top-level configuration.
 -   **BREAKING** moved `automationClientInstance()` to `globals.ts`.
 
-## [0.14.1](https://github.com/atomist/automation-client-ts/compare/0.14.0...0.14.1) - 2018-04-30
+## [0.14.1](https://github.com/atomist/automation-client/compare/0.14.0...0.14.1) - 2018-04-30
 
 ### Added
 
@@ -639,7 +646,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Upgrade to TypeScript 2.8.3.
 
-## [0.14.0](https://github.com/atomist/automation-client-ts/compare/0.13.1...0.14.0) - 2018-04-27
+## [0.14.0](https://github.com/atomist/automation-client/compare/0.13.1...0.14.0) - 2018-04-27
 
 ### Added
 
@@ -660,16 +667,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Call listeners on workers in cluster mode.
 -   Fix team vs chatTeam usage.
--   Add enums to ingester. [#276](https://github.com/atomist/automation-client-ts/issues/276)
+-   Add enums to ingester. [#276](https://github.com/atomist/automation-client/issues/276)
 
-## [0.13.1](https://github.com/atomist/automation-client-ts/compare/0.13.0...0.13.1) - 2018-04-12
+## [0.13.1](https://github.com/atomist/automation-client/compare/0.13.0...0.13.1) - 2018-04-12
 
 ### Fixed
 
--   Fix running node on MS Windows. [#271](https://github.com/atomist/automation-client-ts/issues/271)
+-   Fix running node on MS Windows. [#271](https://github.com/atomist/automation-client/issues/271)
 -   Ensure gql-fetch works in clients.
 
-## [0.13.0](https://github.com/atomist/automation-client-ts/compare/0.12.1...0.13.0) - 2018-04-10
+## [0.13.0](https://github.com/atomist/automation-client/compare/0.12.1...0.13.0) - 2018-04-10
 
 ### Added
 
@@ -684,13 +691,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   statsd reporting in workers.
 
-## [0.12.1](https://github.com/atomist/automation-client-ts/compare/0.12.0...0.12.1) - 2018-04-03
+## [0.12.1](https://github.com/atomist/automation-client/compare/0.12.0...0.12.1) - 2018-04-03
 
 ### Fixed
 
 -   Removed removed scripts from package "bin".
 
-## [0.12.0](https://github.com/atomist/automation-client-ts/compare/0.11.2...0.12.0) - 2018-04-03
+## [0.12.0](https://github.com/atomist/automation-client/compare/0.11.2...0.12.0) - 2018-04-03
 
 ### Added
 
@@ -701,7 +708,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Remove previously deprecated command-line utilities now superseded.
 
-## [0.11.2](https://github.com/atomist/automation-client-ts/compare/0.11.1...0.11.2) - 2018-03-28
+## [0.11.2](https://github.com/atomist/automation-client/compare/0.11.1...0.11.2) - 2018-03-28
 
 ### Added
 
@@ -715,21 +722,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Silent `atomist config` crash.
 
-## [0.11.1](https://github.com/atomist/automation-client-ts/compare/0.11.0...0.11.1) - 2018-03-26
+## [0.11.1](https://github.com/atomist/automation-client/compare/0.11.0...0.11.1) - 2018-03-26
 
 ### Fixed
 
 -   Do not immediately exit client.
 
-## [0.11.0](https://github.com/atomist/automation-client-ts/compare/0.10.0...0.11.0) - 2018-03-26
+## [0.11.0](https://github.com/atomist/automation-client/compare/0.10.0...0.11.0) - 2018-03-26
 
 ### Changed
 
--   Improved configuration error messages. [#253](https://github.com/atomist/automation-client-ts/issues/253)
--   Provide user configuration if reporting it is valid. [#251](https://github.com/atomist/automation-client-ts/issues/251)
--   Error and exit if any provided configuration is invalid. [#254](https://github.com/atomist/automation-client-ts/issues/254)
+-   Improved configuration error messages. [#253](https://github.com/atomist/automation-client/issues/253)
+-   Provide user configuration if reporting it is valid. [#251](https://github.com/atomist/automation-client/issues/251)
+-   Error and exit if any provided configuration is invalid. [#254](https://github.com/atomist/automation-client/issues/254)
 
-## [0.10.0](https://github.com/atomist/automation-client-ts/compare/0.9.0...0.10.0) - 2018-03-26
+## [0.10.0](https://github.com/atomist/automation-client/compare/0.9.0...0.10.0) - 2018-03-26
 
 ### Added
 
@@ -740,7 +747,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Better worker shutdown behavior.
 -   Cleaner logs.
 
-## [0.9.0](https://github.com/atomist/automation-client-ts/compare/0.8.0...0.9.0) - 2018-03-21
+## [0.9.0](https://github.com/atomist/automation-client/compare/0.8.0...0.9.0) - 2018-03-21
 
 ### Added
 
@@ -755,7 +762,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Export combineEditResults.
 
-## [0.8.0](https://github.com/atomist/automation-client-ts/compare/0.7.0...0.8.0) - 2018-03-19
+## [0.8.0](https://github.com/atomist/automation-client/compare/0.7.0...0.8.0) - 2018-03-19
 
 ### Added
 
@@ -775,7 +782,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   \--version command-line option.
 
-## [0.7.0](https://github.com/atomist/automation-client-ts/compare/0.6.6...0.7.0) - 2018-03-07
+## [0.7.0](https://github.com/atomist/automation-client/compare/0.6.6...0.7.0) - 2018-03-07
 
 ### Added
 
@@ -784,9 +791,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Deprecated
 
--   config --slack-team command-line option, use --team instead. [#234](https://github.com/atomist/automation-client-ts/issues/234)
+-   config --slack-team command-line option, use --team instead. [#234](https://github.com/atomist/automation-client/issues/234)
 
-## [0.6.6](https://github.com/atomist/automation-client-ts/compare/0.6.5...0.6.6) - 2018-01-31
+## [0.6.6](https://github.com/atomist/automation-client/compare/0.6.5...0.6.6) - 2018-01-31
 
 ### Changed
 
@@ -794,17 +801,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
--   Make config command-line options optional. [#208](https://github.com/atomist/automation-client-ts/issues/208)
--   Git branch regular expression. [#211](https://github.com/atomist/automation-client-ts/issues/211)
+-   Make config command-line options optional. [#208](https://github.com/atomist/automation-client/issues/208)
+-   Git branch regular expression. [#211](https://github.com/atomist/automation-client/issues/211)
 -   Properly shutdown and restart cluster workers.
 
-## [0.6.5](https://github.com/atomist/automation-client-ts/compare/0.6.4...0.6.5) - 2018-01-24
+## [0.6.5](https://github.com/atomist/automation-client/compare/0.6.4...0.6.5) - 2018-01-24
 
 ### Changed
 
 -   Make seed repository parameters visible to users.
 
-## [0.6.4](https://github.com/atomist/automation-client-ts/compare/0.6.3...0.6.4) - 2018-01-23
+## [0.6.4](https://github.com/atomist/automation-client/compare/0.6.3...0.6.4) - 2018-01-23
 
 ### Changed
 
@@ -814,7 +821,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   `setChatUserPreference` mutation.
 
-## [0.6.3](https://github.com/atomist/automation-client-ts/compare/0.6.2...0.6.3) - 2018-01-16
+## [0.6.3](https://github.com/atomist/automation-client/compare/0.6.2...0.6.3) - 2018-01-16
 
 ### Added
 
@@ -824,7 +831,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Some log statements.
 
-## [0.6.2](https://github.com/atomist/automation-client-ts/compare/0.6.1...0.6.2) - 2018-01-15
+## [0.6.2](https://github.com/atomist/automation-client/compare/0.6.1...0.6.2) - 2018-01-15
 
 ### Added
 
@@ -835,14 +842,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Migrate from `update_only` to `post_mode` when creating Slack messages.
 -   Further decouple GitHub operations from project creation.
 
-## [0.6.1](https://github.com/atomist/automation-client-ts/compare/0.6.0...0.6.1) - 2018-01-12
+## [0.6.1](https://github.com/atomist/automation-client/compare/0.6.0...0.6.1) - 2018-01-12
 
 ### Fixed
 
 -   Slack message timestamp and TTL.
 -   Connecting via proxy.
 
-## [0.6.0](https://github.com/atomist/automation-client-ts/compare/0.5.2...0.6.0) - 2018-01-11
+## [0.6.0](https://github.com/atomist/automation-client/compare/0.5.2...0.6.0) - 2018-01-11
 
 ### Added
 
@@ -856,7 +863,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Allow GraphQL glob pattern to return no files when generation code.
 -   Update to latest GraphQL data model.
 
-## [0.5.2](https://github.com/atomist/automation-client-ts/compare/0.5.0...0.5.2) - 2017-12-04
+## [0.5.2](https://github.com/atomist/automation-client/compare/0.5.0...0.5.2) - 2017-12-04
 
 ### Added
 
@@ -874,7 +881,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   keep newlines in commit messages.
 
-## [0.5.0](https://github.com/atomist/automation-client-ts/compare/0.4.0...0.5.0) - 2017-12-07
+## [0.5.0](https://github.com/atomist/automation-client/compare/0.4.0...0.5.0) - 2017-12-07
 
 ### Added
 
@@ -901,7 +908,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Issues with deleting files and directories in an InMemoryProject.
 -   Ensure GitHub sees a token in a clone URL as a token.
 
-## [0.4.0](https://github.com/atomist/automation-client-ts/compare/0.3.5...0.4.0) - 2017-11-28
+## [0.4.0](https://github.com/atomist/automation-client/compare/0.3.5...0.4.0) - 2017-11-28
 
 ### Added
 
@@ -918,14 +925,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   **Breaking** Removed Spring and Java related generators and.
 -   **Breaking** Removed embedded dashboard web ui.
 
-## [0.3.5](https://github.com/atomist/automation-client-ts/compare/0.3.4...0.3.5) - 2017-11-22
+## [0.3.5](https://github.com/atomist/automation-client/compare/0.3.4...0.3.5) - 2017-11-22
 
 ### Changed
 
 -   Moved `@types/continuation-local-storage` to dependencies since it.
 -   Added more types to default exports in index.ts.
 
-## [0.3.4](https://github.com/atomist/automation-client-ts/compare/0.3.3...0.3.4) - 2017-11-22
+## [0.3.4](https://github.com/atomist/automation-client/compare/0.3.3...0.3.4) - 2017-11-22
 
 ### Added
 
@@ -943,7 +950,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Bug where a `SimpleProjectEditor` that did not return an `EditResult`.
 -   Add missing team ID to BuildableAutomationServer GraphQL endpoint.
 
-## [0.3.3](https://github.com/atomist/automation-client-ts/compare/0.3.2...0.3.3) - 2017-11-20
+## [0.3.3](https://github.com/atomist/automation-client/compare/0.3.2...0.3.3) - 2017-11-20
 
 ### Added
 
@@ -958,7 +965,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Added "repo" scope to GitHub personal access token created by config command.
 -   @Parameter() will default to empty options, so you don't have to pass {}.
 
-## [0.3.2](https://github.com/atomist/automation-client-ts/compare/0.3.1...0.3.2) - 2017-11-13
+## [0.3.2](https://github.com/atomist/automation-client/compare/0.3.1...0.3.2) - 2017-11-13
 
 ### Added
 
@@ -976,13 +983,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Make tests more reliable.
 
-## [0.3.1](https://github.com/atomist/automation-client-ts/compare/0.3.0...0.3.1) - 2017-11-13
+## [0.3.1](https://github.com/atomist/automation-client/compare/0.3.0...0.3.1) - 2017-11-13
 
 ### Added
 
 -   Reintroduced exports for backwards compatibility to 0.2.7.
 
-## [0.3.0](https://github.com/atomist/automation-client-ts/compare/0.2.8...0.3.0) - 2017-11-13
+## [0.3.0](https://github.com/atomist/automation-client/compare/0.2.8...0.3.0) - 2017-11-13
 
 ### Added
 
@@ -999,17 +1006,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Fixed #86: Preserved empty directories when caching in memory project. Ability to cache a projcect in memory.
 -   Fix #79: Check permissions from seed project. (#83)
 
-## [0.2.8](https://github.com/atomist/automation-client-ts/compare/0.2.5...0.2.7) - 2017-11-07
+## [0.2.8](https://github.com/atomist/automation-client/compare/0.2.5...0.2.7) - 2017-11-07
 
-## [0.2.7](https://github.com/atomist/automation-client-ts/compare/0.2.5...0.2.8) - 2017-11-07
+## [0.2.7](https://github.com/atomist/automation-client/compare/0.2.5...0.2.8) - 2017-11-07
 
-## [0.2.5](https://github.com/atomist/automation-client-ts/compare/0.2.4...0.2.5) - 2017-10-26
+## [0.2.5](https://github.com/atomist/automation-client/compare/0.2.4...0.2.5) - 2017-10-26
 
 ### Fixed
 
 -   Much closer to backward compatible with 0.2.3 project operations than 0.2.4.
 
-## [0.2.4](https://github.com/atomist/automation-client-ts/compare/0.2.3...0.2.4) - 2017-10-26
+## [0.2.4](https://github.com/atomist/automation-client/compare/0.2.3...0.2.4) - 2017-10-26
 
 ### Changed
 
@@ -1022,14 +1029,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Various generator issues.
 -   Handler metadata inheritance.
 
-## [0.2.3](https://github.com/atomist/automation-client-ts/compare/0.2.2...0.2.3) - 2017-10-24
+## [0.2.3](https://github.com/atomist/automation-client/compare/0.2.2...0.2.3) - 2017-10-24
 
 ### Changed
 
 -   Generator and editor refactoring.
 -   Update command page.
 
-## [0.2.2](https://github.com/atomist/automation-client-ts/compare/0.2.1...0.2.2) - 2017-10-24
+## [0.2.2](https://github.com/atomist/automation-client/compare/0.2.1...0.2.2) - 2017-10-24
 
 ### Added
 
@@ -1041,9 +1048,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
--   Create client config in proper directory on win32. [#44](https://github.com/atomist/automation-client-ts/issues/44),
+-   Create client config in proper directory on win32. [#44](https://github.com/atomist/automation-client/issues/44),
 
-## [0.2.1](https://github.com/atomist/automation-client-ts/compare/0.2.0...0.2.1) - 2017-10-23
+## [0.2.1](https://github.com/atomist/automation-client/compare/0.2.0...0.2.1) - 2017-10-23
 
 ### Added
 
@@ -1057,19 +1064,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
--   RepoId included in InMemory project. [#33](https://github.com/atomist/automation-client-ts/issues/33)
--   Can continue after failed attempt to load a repo. [#30](https://github.com/atomist/automation-client-ts/issues/30)
--   Updated docs after removal of RunOrDefer. [#24](https://github.com/atomist/automation-client-ts/issues/24)
--   Documentation for editors and generators. [#32](https://github.com/atomist/automation-client-ts/issues/32)
+-   RepoId included in InMemory project. [#33](https://github.com/atomist/automation-client/issues/33)
+-   Can continue after failed attempt to load a repo. [#30](https://github.com/atomist/automation-client/issues/30)
+-   Updated docs after removal of RunOrDefer. [#24](https://github.com/atomist/automation-client/issues/24)
+-   Documentation for editors and generators. [#32](https://github.com/atomist/automation-client/issues/32)
 
-## [0.2.0](https://github.com/atomist/automation-client-ts/compare/0.1.50...0.2.0) - 2017-10-18
+## [0.2.0](https://github.com/atomist/automation-client/compare/0.1.50...0.2.0) - 2017-10-18
 
 ### Changed
 
 -   Make atomist-setup script quieter and more robust.
 -   Align generators with ProjectEditor.
 
-## [0.1.50](https://github.com/atomist/automation-client-ts/compare/0.1.49...0.1.50) - 2017-10-19
+## [0.1.50](https://github.com/atomist/automation-client/compare/0.1.49...0.1.50) - 2017-10-19
 
 ### Added
 
@@ -1084,26 +1091,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Issue with SpringBootSeed.
 
-## [0.1.49](https://github.com/atomist/automation-client-ts/compare/0.1.48...0.1.49) - 2017-10-18
+## [0.1.49](https://github.com/atomist/automation-client/compare/0.1.48...0.1.49) - 2017-10-18
 
 ### Changed
 
 -   Moved moveFile from AbstractProject to Project.
 -   Exec npm start in atomist-setup script.
 
-## [0.1.48](https://github.com/atomist/automation-client-ts/compare/0.1.47...0.1.48) - 2017-10-18
+## [0.1.48](https://github.com/atomist/automation-client/compare/0.1.47...0.1.48) - 2017-10-18
 
 ### Changed
 
 -   Spring and Java inference improvements.
 
-## [0.1.47](https://github.com/atomist/automation-client-ts/compare/0.1.46...0.1.47) - 2017-10-18
+## [0.1.47](https://github.com/atomist/automation-client/compare/0.1.46...0.1.47) - 2017-10-18
 
 ### Changed
 
 -   Update tree-path dependency.
 
-## [0.1.46](https://github.com/atomist/automation-client-ts/compare/0.1.44...0.1.46) - 2017-10-18
+## [0.1.46](https://github.com/atomist/automation-client/compare/0.1.44...0.1.46) - 2017-10-18
 
 ### Added
 
@@ -1116,7 +1123,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Improve error messages.
 -   Various project operation improvements.
 
-## [0.1.44](https://github.com/atomist/automation-client-ts/compare/0.1.43...0.1.44) - 2017-10-16
+## [0.1.44](https://github.com/atomist/automation-client/compare/0.1.43...0.1.44) - 2017-10-16
 
 ### Added
 
@@ -1128,7 +1135,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Cleaned up dependencies.
 -   Dashboard improvements.
 
-## [0.1.43](https://github.com/atomist/automation-client-ts/compare/0.1.42...0.1.43) - 2017-10-11
+## [0.1.43](https://github.com/atomist/automation-client/compare/0.1.42...0.1.43) - 2017-10-11
 
 ### Added
 
@@ -1142,13 +1149,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Tree and path expression support moved to own module.
 
-## [0.1.37](https://github.com/atomist/automation-client-ts/compare/0.1.36...0.1.37) - 2017-10-02
+## [0.1.37](https://github.com/atomist/automation-client/compare/0.1.36...0.1.37) - 2017-10-02
 
 ### Added
 
 -   File replace and replaceAll.
 
-## [0.1.0](https://github.com/atomist/automation-client-ts/tree/0.1.0) - 2017-09-19
+## [0.1.0](https://github.com/atomist/automation-client/tree/0.1.0) - 2017-09-19
 
 ### Added
 
