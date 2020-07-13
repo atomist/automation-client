@@ -258,8 +258,54 @@ export async function fileMatches(p: ProjectAsync,
     const valuesToCheckFor = literalValues(parsed);
     const files = await gatherFromFiles(p, peqo.globPatterns, file => parseFile(parser, parsed,
         peqo.functionRegistry, p, file, valuesToCheckFor, undefined, peqo.cacheAst !== false));
-    const all = await Promise.all(files);
-    return all.filter(x => !!x);
+    return files.filter(x => !!x);
+}
+
+export interface PathExpressionFileHits {
+    fileHits: FileHit[];
+    pathExpression: string;
+}
+
+/**
+ * Iterate over provided path expression query options and return
+ * [[FileHit]]s for each path expression.
+ * @param p project
+ * @param peqos Array of query options
+ * @return hits for each file for each query option
+ */
+export async function pathExpressionFileMatches(p: ProjectAsync, peqos: PathExpressionQueryOptions[]): Promise<PathExpressionFileHits[]> {
+    const pefhs: PathExpressionFileHits[] = [];
+    const fileCache: Record<string, File> = {};
+    for (const peqo of peqos) {
+        const parsed: PathExpression = toPathExpression(peqo.pathExpression);
+        const parser = findParser(parsed, peqo.parseWith);
+        if (!parser) {
+            throw new Error(`Cannot find parser for path expression [${peqo.pathExpression}]: Using ${peqo.parseWith}`);
+        }
+        const matchFiles = await p.getFiles(peqo.globPatterns);
+        const checkFiles = matchFiles.map(f => {
+            if (!fileCache[f.path]) {
+                fileCache[f.path] = f;
+            }
+            return fileCache[f.path];
+        });
+        const valuesToCheckFor = literalValues(parsed);
+        const files: FileHit[] = [];
+        for (const file of checkFiles) {
+            const hit = await parseFile(parser, parsed, peqo.functionRegistry, p, file,
+                valuesToCheckFor, undefined, peqo.cacheAst !== false);
+            if (hit) {
+                files.push(hit);
+            }
+        }
+        if (files.length > 0) {
+            pefhs.push({
+                pathExpression: stringify(parsed),
+                fileHits: files,
+            });
+        }
+    }
+    return pefhs;
 }
 
 /**
@@ -296,7 +342,7 @@ async function parseFile(parser: FileParser,
     // First, apply optimizations
     if (valuesToCheckFor.length > 0) {
         const content = await file.getContent();
-        if (valuesToCheckFor.some(literal => !content.includes(literal))) {
+        if (valuesToCheckFor.every(literal => !content.includes(literal))) {
             return undefined;
         }
     }
