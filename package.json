@@ -141,7 +141,6 @@
     "statsd-client": "^0.4.4",
     "supervisor": "^0.12.0",
     "ts-node": "^8.9.1",
-    "tslint": "^6.1.2",
     "typedoc": "^0.17.6"
   },
   "directories": {
@@ -149,7 +148,7 @@
   },
   "scripts": {
     "autotest": "supervisor --watch index.ts,lib,test --extensions ts --no-restart-on exit --quiet --exec npm -- test",
-    "build": "run-s clean compile test lint doc",
+    "build": "run-s clean compile test doc",
     "clean": "run-p clean:compile clean:test clean:doc clean:run",
     "clean:compile": "rimraf git-info.json build \"index.{d.ts,js}{,.map}\" \"{lib,test}/**/*.{d.ts,js}{,.map}\" lib/typings/types.ts",
     "clean:dist": "run-s clean clean:npm",
@@ -160,8 +159,6 @@
     "compile": "run-s compile:ts",
     "compile:ts": "tsc --project .",
     "doc": "typedoc --mode modules --excludeExternals --ignoreCompilerErrors --exclude \"**/*.d.ts\" --out doc lib",
-    "lint": "tslint --config tslint.json --format verbose --project .",
-    "lint:fix": "npm run lint -- --fix",
     "test": "mocha --require espower-typescript/guess \"test/**/*.test.ts\"",
     "test:api": "mocha --require espower-typescript/guess \"test/api/**/*.test.ts\"",
     "test:bitbucket-api": "mocha --require espower-typescript/guess \"test/bitbucket-api/**/*.test.ts\"",
