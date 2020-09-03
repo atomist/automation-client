@@ -15,9 +15,8 @@ import {
 
 describe("BitBucket generator end to end", () => {
 
-    before(function(): void {
+    before(function b(this: Mocha.Context): void {
         if (skipBitBucketTests()) {
-            // tslint:disable-next-line:no-invalid-this
             this.skip();
         }
     });
@@ -28,8 +27,7 @@ describe("BitBucket generator end to end", () => {
         }
     });
 
-    it("should create a new BitBucket repo using generate function", async () => {
-        // tslint:disable-next-line:no-invalid-this
+    it("should create a new BitBucket repo using generate function", async function t(this: Mocha.Context): Promise<void> {
         this.retries(3);
         const repoName = tempRepoName();
         const targetRepo = new BitBucketRepoRef(BitBucketUser, repoName);
