@@ -185,6 +185,12 @@ export abstract class AbstractMessageClient extends MessageClientSupport {
             response.body = JSON.stringify(msg);
             response.id = (options.id ? options.id : guid());
         }
+
+        // Prevent empty messages from being sent
+        if (!response.content_type && !response.body) {
+            return Promise.resolve();
+        }
+
         return this.sendResponse(response).then(() => response);
     }
 
