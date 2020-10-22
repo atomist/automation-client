@@ -63,7 +63,7 @@ describe("editorUtils", () => {
                 await cleanAfterTest(p, repo);
                 throw e;
             }
-        }).timeout(20000);
+        }).timeout(40000);
 
     });
 

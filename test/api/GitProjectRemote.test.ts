@@ -66,6 +66,6 @@ describe("GitProject remote", () => {
             await cleanAfterTest(gp, repo);
             throw e;
         }
-    }).timeout(20000);
+    }).timeout(40000);
 
 });
