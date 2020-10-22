@@ -66,7 +66,7 @@ describe("generator end to end", () => {
             }
             throw e;
         }
-    }).timeout(20000);
+    }).timeout(40000);
 
     it("should refuse to create a new GitHub repo using existing repo name", async () => {
         const clonedSeed = await GitCommandGitProject.cloned(Creds, new GitHubRepoRef(SeedRepoOwner, SeedRepoName));
