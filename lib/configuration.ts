@@ -680,8 +680,13 @@ export async function loadAutomationConfig(configPath?: string): Promise<Configu
     let cfgPath = configPath;
     if (!cfgPath) {
         const cfgFile = "atomist.config.js";
-        const files = await fg(`${appRoot.path}/**/${cfgFile}`,
-            { ignore: [`${appRoot.path}/**/{.git,node_modules}/**`] });
+        const files = await fg(
+            `**/${cfgFile}`,
+            {
+                ignore: [`**/{.git,node_modules}/**`],
+                cwd: appRoot.path,
+                absolute: true,
+            });
         if (files.length === 1) {
             cfgPath = files[0];
         } else if (files.length > 1) {
@@ -712,8 +717,13 @@ export async function loadAutomationConfig(configPath?: string): Promise<Configu
  */
 export async function loadIndexConfig(): Promise<Configuration> {
     const cfgFile = "index.js";
-    const files = await fg(`${appRoot.path}/**/${cfgFile}`,
-        { ignore: [`${appRoot.path}/**/{.git,node_modules}/**`] });
+    const files = await fg(
+        `**/${cfgFile}`,
+        {
+            ignore: [`**/{.git,node_modules}/**`],
+            cwd: appRoot.path,
+            absolute: true,
+        });
 
     if (files.length > 0) {
         const cfgs = [];
