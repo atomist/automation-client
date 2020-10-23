@@ -46,7 +46,7 @@ describe("GitProject remote", () => {
         }
     }).timeout(16000);
 
-    it("add a file, then PR push to remote repo", async function(): Promise<void> {
+    it.skip("add a file, then PR push to remote repo", async function(): Promise<void> {
         // tslint:disable-next-line:no-invalid-this
         this.retries(3);
 

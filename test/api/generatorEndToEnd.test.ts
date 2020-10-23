@@ -33,7 +33,7 @@ describe("generator end to end", () => {
 
     const noEd = (p: Project) => Promise.resolve(p);
 
-    it("should create a new GitHub repo using generate function", async function(): Promise<void> {
+    it.skip("should create a new GitHub repo using generate function", async function(): Promise<void> {
         // tslint:disable-next-line:no-invalid-this
         this.retries(3);
 
