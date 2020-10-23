@@ -50,7 +50,7 @@ describe("editorUtils", () => {
             }
         }).timeout(15000);
 
-        it("creates PR with changes in simple editor", async () => {
+        it.skip("creates PR with changes in simple editor", async () => {
             let p: GitProject;
             let repo: TestRepo;
             try {
