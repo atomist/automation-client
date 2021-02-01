@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client/compare/2.0.0...HEAD)
 
+### Removed
+
+-   Remove sending of application events. [5c69883](https://github.com/atomist/automation-client/commit/5c6988381c062fd8039b11c51603c6608e262b4c)
+
 ### Fixed
 
 -   Fix globbing of client config. [#657](https://github.com/atomist/automation-client/issues/657)
