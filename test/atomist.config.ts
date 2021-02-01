@@ -117,10 +117,6 @@ export const configuration: Configuration = {
         graphql: `${host}/graphql/team`,
         api: `${host}/registration`,
     },
-    applicationEvents: {
-        enabled: true,
-        workspaceId: "T1L0VDKJP",
-    },
     cluster: {
         enabled: false,
         // workers: 4,

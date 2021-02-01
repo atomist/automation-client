@@ -129,9 +129,6 @@ describe("configuration", () => {
                 factory: defaultStatsDClientFactory(),
             },
         },
-        applicationEvents: {
-            enabled: false,
-        },
         commands: undefined,
         events: undefined,
         ingesters: [],
@@ -432,8 +429,6 @@ describe("configuration", () => {
             assert.equal(c.http.auth.basic.password, "test");
             assert.equal(c.http.auth.bearer.enabled, true);
             assert.equal(c.http.auth.bearer.adminOrg, "atomisthq");
-            assert.equal(c.applicationEvents.enabled, true);
-            assert.equal(c.applicationEvents.workspaceId, "T1L0VDKJP");
             assert.equal(c.cluster.enabled, false);
         });
 

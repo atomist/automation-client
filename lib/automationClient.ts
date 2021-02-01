@@ -128,11 +128,9 @@ export class AutomationClient implements RequestProcessor {
                     this.runWs(() => this.setupWebSocketRequestHandler()),
                     this.runHttp(() => this.setupExpressRequestHandler()),
                 ])
-                    .then(() => this.setupApplicationEvents())
                     .then(() => this.raiseStartupEvent());
             } else {
                 return this.runHttp(() => this.setupExpressRequestHandler())
-                    .then(() => this.setupApplicationEvents())
                     .then(() => this.raiseStartupEvent());
             }
         } else if (cluster.isMaster) {
@@ -145,7 +143,6 @@ export class AutomationClient implements RequestProcessor {
                         this.runWs(() => this.webSocketHandler as any),
                         this.runHttp(() => this.setupExpressRequestHandler()),
                     ])
-                        .then(() => this.setupApplicationEvents())
                         .then(() => this.raiseStartupEvent());
                 });
         } else if (cluster.isWorker) {
@@ -207,18 +204,6 @@ export class AutomationClient implements RequestProcessor {
         const ws = require("./internal/transport/websocket/DefaultWebSocketRequestProcessor");
         return new ws.DefaultWebSocketRequestProcessor(this.automations, this.configuration,
             [...this.defaultListeners, ...this.configuration.listeners]);
-    }
-
-    private setupApplicationEvents(): Promise<any> {
-        if (this.configuration.applicationEvents.enabled) {
-            const rae = require("./internal/env/applicationEvent");
-            if (this.configuration.applicationEvents.workspaceId) {
-                return rae.registerApplicationEvents(this.configuration.applicationEvents.workspaceId, this.configuration);
-            } else if (this.configuration.workspaceIds.length > 0) {
-                return rae.registerApplicationEvents(this.configuration.workspaceIds[0], this.configuration);
-            }
-        }
-        return Promise.resolve();
     }
 
     private setupExpressRequestHandler(): RequestProcessor {

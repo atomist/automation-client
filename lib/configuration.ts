@@ -248,11 +248,6 @@ export interface AutomationServerOptions extends AutomationOptions {
     application?: string;
     /** keywords useful for discovery */
     keywords?: string[];
-    /** Whether and where to send application start and stop events to Atomist. */
-    applicationEvents?: {
-        enabled?: boolean;
-        workspaceId?: string;
-    };
     /**
      * Whether and how many workers to start up.  If enabled is true
      * and workers is false, a number of workers equal to the number
@@ -1142,9 +1137,6 @@ export const LocalDefaultConfiguration: Configuration = {
         compress: false,
         timeout: 30000,
     } as any,
-    applicationEvents: {
-        enabled: false,
-    },
     cluster: {
         enabled: false,
     },
@@ -1199,9 +1191,6 @@ export const ProductionDefaultConfiguration: Partial<Configuration> = {
         },
         compress: true,
     },
-    applicationEvents: {
-        enabled: true,
-    },
     cluster: {
         enabled: true,
     },
@@ -1237,9 +1226,6 @@ export const TestingDefaultConfiguration: Partial<Configuration> = {
             graceful: true,
         },
         compress: true,
-    },
-    applicationEvents: {
-        enabled: true,
     },
     cluster: {
         enabled: true,
