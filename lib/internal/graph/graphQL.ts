@@ -299,14 +299,14 @@ function inlineFragments(q: string, name: string, moduleDir: string, fragmentDir
             const content = fs.readFileSync(p.join(fragmentDir, f)).toString();
             const graphql = gql(content);
             return {
-                name: (graphql.definitions[0]).name.value,
-                kind: (graphql.definitions[0]).kind,
+                name: (graphql.definitions[0] as any).name?.value,
+                kind: graphql.definitions[0].kind,
                 body: content.slice(content.indexOf("{") + 1, content.lastIndexOf("}") - 1),
             };
         }).filter(f => f.kind === "FragmentDefinition");
 
         FragmentExpression.lastIndex = 0;
-        let result;
+        let result: RegExpExecArray;
 
         // tslint:disable-next-line:no-conditional-assignment
         while (result = FragmentExpression.exec(q)) {
@@ -329,7 +329,6 @@ function locateAndLoadGraphql(
 ): string {
 
     let path = options.path;
-    const name = options.name;
     // Read subscription from file if given
     if (options.path) {
         if (!path.endsWith(".graphql")) {
@@ -346,7 +345,7 @@ function locateAndLoadGraphql(
             const queries = fs.readdirSync(queryDir).filter(f => f.endsWith(".graphql")).filter(f => {
                 const content = fs.readFileSync(p.join(queryDir, f)).toString();
                 const graphql = gql(content);
-                return (graphql.definitions[0]).name.value === options.name;
+                return (graphql.definitions[0] as any).name?.value === options.name;
             });
             if (queries.length === 1) {
                 path = p.join(queryDir, queries[0]);
