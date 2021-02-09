@@ -40,6 +40,8 @@ export class ExpressServer {
 
     private readonly exp: express.Express;
 
+    private readonly apiBase: string;
+
     constructor(private readonly automations: AutomationServer,
                 private readonly configuration: Configuration,
                 private readonly handler: RequestProcessor) {
@@ -55,9 +57,11 @@ export class ExpressServer {
         const cors = require("cors");
         this.setupAuthentication();
 
+        this.apiBase = this.configuration.http?.base?.length > 0 ? `/${this.configuration.http?.base}` : "";
+
         // Set up routes
-        this.exp.options(`${ApiBase}/health`, cors());
-        this.exp.get(`${ApiBase}/health`, cors(),
+        this.exp.options(`${this.apiBase}/health`, cors());
+        this.exp.get(`${this.apiBase}/health`, cors(),
             (req, res) => {
                 const h = health();
                 if (h.status !== HealthStatus.Up) {
@@ -66,77 +70,77 @@ export class ExpressServer {
                 res.status(h.status === HealthStatus.Up ? 200 : 500).json(h);
             });
 
-        this.exp.options(`${ApiBase}/info`, cors());
-        this.exp.get(`${ApiBase}/info`, cors(), this.adminRoute, this.authenticate,
+        this.exp.options(`${this.apiBase}/info`, cors());
+        this.exp.get(`${this.apiBase}/info`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 res.json(info(automations.automations));
             });
 
-        this.exp.options(`${ApiBase}/registration`, cors());
-        this.exp.get(`${ApiBase}/registration`, cors(), this.adminRoute, this.authenticate,
+        this.exp.options(`${this.apiBase}/registration`, cors());
+        this.exp.get(`${this.apiBase}/registration`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 res.json(prepareRegistration(automations.automations));
             });
 
-        this.exp.options(`${ApiBase}/metrics`, cors());
-        this.exp.get(`${ApiBase}/metrics`, cors(), this.adminRoute, this.authenticate,
+        this.exp.options(`${this.apiBase}/metrics`, cors());
+        this.exp.get(`${this.apiBase}/metrics`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 res.json(metrics());
             });
 
-        this.exp.options(`${ApiBase}/memory/gc`, cors());
-        this.exp.put(`${ApiBase}/memory/gc`, cors(), this.adminRoute, this.authenticate,
+        this.exp.options(`${this.apiBase}/memory/gc`, cors());
+        this.exp.put(`${this.apiBase}/memory/gc`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 gc();
                 res.sendStatus(201);
             });
 
-        this.exp.options(`${ApiBase}/memory/heapdump`, cors());
-        this.exp.put(`${ApiBase}/memory/heapdump`, cors(), this.adminRoute, this.authenticate,
+        this.exp.options(`${this.apiBase}/memory/heapdump`, cors());
+        this.exp.put(`${this.apiBase}/memory/heapdump`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 heapDump();
                 res.sendStatus(201);
             });
 
-        this.exp.options(`${ApiBase}/memory/mtrace`, cors());
-        this.exp.put(`${ApiBase}/memory/mtrace`, cors(), this.adminRoute, this.authenticate,
+        this.exp.options(`${this.apiBase}/memory/mtrace`, cors());
+        this.exp.put(`${this.apiBase}/memory/mtrace`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 mtrace();
                 res.sendStatus(201);
             });
 
-        this.exp.options(`${ApiBase}/log/events`, cors());
-        this.exp.get(`${ApiBase}/log/events`, cors(), this.adminRoute, this.authenticate,
+        this.exp.options(`${this.apiBase}/log/events`, cors());
+        this.exp.get(`${this.apiBase}/log/events`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 res.json(globals.eventStore().events(req.query.from));
             });
 
-        this.exp.options(`${ApiBase}/log/commands`, cors());
-        this.exp.get(`${ApiBase}/log/commands`, cors(), this.adminRoute, this.authenticate,
+        this.exp.options(`${this.apiBase}/log/commands`, cors());
+        this.exp.get(`${this.apiBase}/log/commands`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 res.json(globals.eventStore().commands(req.query.from));
             });
 
-        this.exp.options(`${ApiBase}/log/messages`, cors());
-        this.exp.get(`${ApiBase}/log/messages`, cors(), this.adminRoute, this.authenticate,
+        this.exp.options(`${this.apiBase}/log/messages`, cors());
+        this.exp.get(`${this.apiBase}/log/messages`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 res.json(globals.eventStore().messages(req.query.from));
             });
 
-        this.exp.options(`${ApiBase}/series/events`, cors());
-        this.exp.get(`${ApiBase}/series/events`, cors(), this.adminRoute, this.authenticate,
+        this.exp.options(`${this.apiBase}/series/events`, cors());
+        this.exp.get(`${this.apiBase}/series/events`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 res.json(globals.eventStore().eventSeries());
             });
 
-        this.exp.options(`${ApiBase}/series/commands`, cors());
-        this.exp.get(`${ApiBase}/series/commands`, cors(), this.adminRoute, this.authenticate,
+        this.exp.options(`${this.apiBase}/series/commands`, cors());
+        this.exp.get(`${this.apiBase}/series/commands`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
                 res.json(globals.eventStore().commandSeries());
             });
 
         this.exposeCommandHandlerInvocationRoute(this.exp,
-            `${ApiBase}/command`, cors,
+            `${this.apiBase}/command`, cors,
             (req, res, result) => {
                 if (result.redirect && !req.get("x-atomist-no-redirect")) {
                     res.redirect(result.redirect);
@@ -146,7 +150,7 @@ export class ExpressServer {
             });
 
         this.exposeEventHandlerInvocationRoute(this.exp,
-            `${ApiBase}/event`, cors,
+            `${this.apiBase}/event`, cors,
             (req, res, result) => {
                 const results = Array.isArray(result) ? result : [result];
                 const code = noEventHandlersWereFound(result) ? 404 :
@@ -171,10 +175,10 @@ export class ExpressServer {
         return portPromise
             .then(port => {
                 this.configuration.http.port = port;
-                const hostname = this.configuration.http.host || "0.0.0.0";
+                const hostname = this.configuration.http?.host || "0.0.0.0";
                 this.exp.listen(port, hostname, () => {
                     logger.debug(
-                        `Atomist automation client api running at 'http://${hostname}:${port}'`);
+                        `Atomist automation client api running at 'http://${hostname}:${port}${this.apiBase}'`);
                     return true;
                 }).on("error", err => {
                     logger.error(`Failed to start automation client api: ${err.message}`);
@@ -323,12 +327,11 @@ export class ExpressServer {
     }
 }
 
-const ApiBase = "";
-
 export interface ExpressServerOptions {
 
     port: number;
     host?: string;
+    base?: string;
     customizers?: ExpressCustomizer[];
     auth?: {
         basic?: {
