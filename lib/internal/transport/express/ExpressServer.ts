@@ -1,4 +1,4 @@
-import * as GitHubApi from "@octokit/rest";
+import { Octokit } from "@octokit/rest";
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as passport from "passport";
@@ -112,19 +112,19 @@ export class ExpressServer {
         this.exp.options(`${this.apiBase}/log/events`, cors());
         this.exp.get(`${this.apiBase}/log/events`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
-                res.json(globals.eventStore().events(req.query.from));
+                res.json(globals.eventStore().events(req.query.from as unknown as number));
             });
 
         this.exp.options(`${this.apiBase}/log/commands`, cors());
         this.exp.get(`${this.apiBase}/log/commands`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
-                res.json(globals.eventStore().commands(req.query.from));
+                res.json(globals.eventStore().commands(req.query.from as unknown as number));
             });
 
         this.exp.options(`${this.apiBase}/log/messages`, cors());
         this.exp.get(`${this.apiBase}/log/messages`, cors(), this.adminRoute, this.authenticate,
             (req, res) => {
-                res.json(globals.eventStore().messages(req.query.from));
+                res.json(globals.eventStore().messages(req.query.from as unknown as number));
             });
 
         this.exp.options(`${this.apiBase}/series/events`, cors());
@@ -242,7 +242,7 @@ export class ExpressServer {
                     passReqToCallback: true,
                 } as bearer.IStrategyOptions,
                 (req, token, done) => {
-                    const api = new GitHubApi();
+                    const api = new Octokit();
                     api.authenticate({ type: "token", token });
                     api.users.getAuthenticated({})
                         .then(user => {

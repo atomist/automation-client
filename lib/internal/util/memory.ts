@@ -26,7 +26,7 @@ export function initMemoryMonitoring(dataDirectory: string = `${appRoot.path}/he
  * Create a head dump that can be downloaded and used to profile head usage.
  * @returns {string}
  */
-export function mtrace(): string {
+export function mtrace(): void {
     try {
         logger.debug("Memory statistics '%j'", memoryUsage());
         const mtrace = require("mtrace");
@@ -39,7 +39,7 @@ export function mtrace(): string {
         }
         broadcast({ type: "atomist:gc" });
         broadcast({ type: "atomist:mtrace" });
-        return name;
+        return;
     } catch (err) {
         logger.error("Failed to initialise mtrace. Required 'mtrace' module is missing or can't be" +
             " loaded. Please install with 'npm install --save mtrace'");
