@@ -1,0 +1,974 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>&quot;util/logger&quot; | @atomist/automation-client</title>
+	<meta name="description" content="Documentation for @atomist/automation-client">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@atomist/automation-client</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="_util_logger_.html">&quot;util/logger&quot;</a>
+				</li>
+			</ul>
+			<h1>Module &quot;util/logger&quot;</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Enumerations</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-enum tsd-parent-kind-module"><a href="../enums/_util_logger_.loggingformat.html" class="tsd-kind-icon">Logging<wbr>Format</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Interfaces</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_util_logger_.leveledlogmethod.html" class="tsd-kind-icon">Leveled<wbr>Log<wbr>Method</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_util_logger_.logmethod.html" class="tsd-kind-icon">Log<wbr>Method</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_util_logger_.logger.html" class="tsd-kind-icon">Logger</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_util_logger_.loggingconfiguration.html" class="tsd-kind-icon">Logging<wbr>Configuration</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Type aliases</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="_util_logger_.html#logcallback" class="tsd-kind-icon">Log<wbr>Callback</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Variables</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="_util_logger_.html#logger-1" class="tsd-kind-icon">logger</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported"><a href="_util_logger_.html#winstonlogger" class="tsd-kind-icon">winston<wbr>Logger</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_util_logger_.html#callsite" class="tsd-kind-icon">callsite</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_util_logger_.html#clientformat" class="tsd-kind-icon">client<wbr>Format</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_util_logger_.html#clientloggingconfiguration" class="tsd-kind-icon">client<wbr>Logging<wbr>Configuration</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_util_logger_.html#configurelogging" class="tsd-kind-icon">configure<wbr>Logging</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-not-exported"><a href="_util_logger_.html#getformat" class="tsd-kind-icon">get<wbr>Format</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-not-exported"><a href="_util_logger_.html#redirectconsolelogging" class="tsd-kind-icon">redirect<wbr>Console<wbr>Logging</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-not-exported"><a href="_util_logger_.html#unredirectconsolelogging" class="tsd-kind-icon">un<wbr>Redirect<wbr>Console<wbr>Logging</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-not-exported"><a href="_util_logger_.html#validatelevel" class="tsd-kind-icon">validate<wbr>Level</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Object literals</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-object-literal tsd-parent-kind-module"><a href="_util_logger_.html#clientlogging" class="tsd-kind-icon">Client<wbr>Logging</a></li>
+								<li class="tsd-kind-object-literal tsd-parent-kind-module tsd-is-not-exported"><a href="_util_logger_.html#globalconsolemethods" class="tsd-kind-icon">Global<wbr>Console<wbr>Methods</a></li>
+								<li class="tsd-kind-object-literal tsd-parent-kind-module"><a href="_util_logger_.html#minimallogging" class="tsd-kind-icon">Minimal<wbr>Logging</a></li>
+								<li class="tsd-kind-object-literal tsd-parent-kind-module"><a href="_util_logger_.html#nologging" class="tsd-kind-icon">No<wbr>Logging</a></li>
+								<li class="tsd-kind-object-literal tsd-parent-kind-module"><a href="_util_logger_.html#plainlogging" class="tsd-kind-icon">Plain<wbr>Logging</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Type aliases</h2>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="logcallback" class="tsd-anchor"></a>
+					<h3>Log<wbr>Callback</h3>
+					<div class="tsd-signature tsd-kind-icon">Log<wbr>Callback<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, level<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, msg<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, meta<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L488">lib/util/logger.ts:488</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-signature">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, level<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, msg<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, meta<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5><span class="tsd-flag ts-flagOptional">Optional</span> error: <span class="tsd-signature-type">any</span></h5>
+											</li>
+											<li>
+												<h5><span class="tsd-flag ts-flagOptional">Optional</span> level: <span class="tsd-signature-type">string</span></h5>
+											</li>
+											<li>
+												<h5><span class="tsd-flag ts-flagOptional">Optional</span> msg: <span class="tsd-signature-type">string</span></h5>
+											</li>
+											<li>
+												<h5><span class="tsd-flag ts-flagOptional">Optional</span> meta: <span class="tsd-signature-type">any</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="logger-1" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> logger</h3>
+					<div class="tsd-signature tsd-kind-icon">logger<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_util_logger_.logger.html" class="tsd-signature-type">Logger</a><span class="tsd-signature-symbol"> = winstonLogger</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L27">lib/util/logger.ts:27</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Global logger instance
+								By default all logging to this logger will be suppressed.
+							Call configureLogging to set up console and file transports.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+					<a name="winstonlogger" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> winston<wbr>Logger</h3>
+					<div class="tsd-signature tsd-kind-icon">winston<wbr>Logger<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Logger</span><span class="tsd-signature-symbol"> = winston.createLogger({level: &quot;debug&quot;,exitOnError: false,silent: true,})</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L16">lib/util/logger.ts:16</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="callsite" class="tsd-anchor"></a>
+					<h3>callsite</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">callsite<span class="tsd-signature-symbol">(</span>logInfo<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TransformableInfo</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TransformableInfo</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L297">lib/util/logger.ts:297</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>logInfo: <span class="tsd-signature-type">TransformableInfo</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">TransformableInfo</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="clientformat" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> client<wbr>Format</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">client<wbr>Format<span class="tsd-signature-symbol">(</span>info<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L326">lib/util/logger.ts:326</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>info: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="clientloggingconfiguration" class="tsd-anchor"></a>
+					<h3>client<wbr>Logging<wbr>Configuration</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">client<wbr>Logging<wbr>Configuration<span class="tsd-signature-symbol">(</span>configuration<span class="tsd-signature-symbol">: </span><a href="../interfaces/_configuration_.configuration.html" class="tsd-signature-type">Configuration</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_util_logger_.loggingconfiguration.html" class="tsd-signature-type">LoggingConfiguration</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L255">lib/util/logger.ts:255</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Configure the logging sub-system based on the provided Configuration object</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>configuration: <a href="../interfaces/_configuration_.configuration.html" class="tsd-signature-type">Configuration</a></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_util_logger_.loggingconfiguration.html" class="tsd-signature-type">LoggingConfiguration</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="configurelogging" class="tsd-anchor"></a>
+					<h3>configure<wbr>Logging</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">configure<wbr>Logging<span class="tsd-signature-symbol">(</span>config<span class="tsd-signature-symbol">: </span><a href="../interfaces/_util_logger_.loggingconfiguration.html" class="tsd-signature-type">LoggingConfiguration</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L175">lib/util/logger.ts:175</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Configure the logging sub-system with the provided LoggingConfiguration
+									It is safe to call this method several times to re-configure the logger.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>config: <a href="../interfaces/_util_logger_.loggingconfiguration.html" class="tsd-signature-type">LoggingConfiguration</a></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+					<a name="getformat" class="tsd-anchor"></a>
+					<h3>get<wbr>Format</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Format<span class="tsd-signature-symbol">(</span>format<span class="tsd-signature-symbol">: </span><a href="../enums/_util_logger_.loggingformat.html" class="tsd-signature-type">LoggingFormat</a>, redact<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, callsites<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, color<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Format</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L423">lib/util/logger.ts:423</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>format: <a href="../enums/_util_logger_.loggingformat.html" class="tsd-signature-type">LoggingFormat</a></h5>
+								</li>
+								<li>
+									<h5>redact: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+								<li>
+									<h5>callsites: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+								<li>
+									<h5>color: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Format</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+					<a name="redirectconsolelogging" class="tsd-anchor"></a>
+					<h3>redirect<wbr>Console<wbr>Logging</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">redirect<wbr>Console<wbr>Logging<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L403">lib/util/logger.ts:403</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+					<a name="unredirectconsolelogging" class="tsd-anchor"></a>
+					<h3>un<wbr>Redirect<wbr>Console<wbr>Logging</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">un<wbr>Redirect<wbr>Console<wbr>Logging<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L395">lib/util/logger.ts:395</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+					<a name="validatelevel" class="tsd-anchor"></a>
+					<h3>validate<wbr>Level</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">validate<wbr>Level<span class="tsd-signature-symbol">(</span>level<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L289">lib/util/logger.ts:289</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>level: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Object literals</h2>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-module">
+					<a name="clientlogging" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Client<wbr>Logging</h3>
+					<div class="tsd-signature tsd-kind-icon">Client<wbr>Logging<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L156">lib/util/logger.ts:156</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Default logging configuration for running automation clients</p>
+						</div>
+					</div>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="clientlogging.color" class="tsd-anchor"></a>
+						<h3>color</h3>
+						<div class="tsd-signature tsd-kind-icon">color<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L167">lib/util/logger.ts:167</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="clientlogging.redact" class="tsd-anchor"></a>
+						<h3>redact</h3>
+						<div class="tsd-signature tsd-kind-icon">redact<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L166">lib/util/logger.ts:166</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
+						<a name="clientlogging.console" class="tsd-anchor"></a>
+						<h3>console</h3>
+						<div class="tsd-signature tsd-kind-icon">console<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L157">lib/util/logger.ts:157</a></li>
+							</ul>
+						</aside>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="clientlogging.console.enabled" class="tsd-anchor"></a>
+							<h3>enabled</h3>
+							<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L158">lib/util/logger.ts:158</a></li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="clientlogging.console.format" class="tsd-anchor"></a>
+							<h3>format</h3>
+							<div class="tsd-signature tsd-kind-icon">format<span class="tsd-signature-symbol">:</span> <a href="../enums/_util_logger_.loggingformat.html#full" class="tsd-signature-type">Full</a><span class="tsd-signature-symbol"> = LoggingFormat.Full</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L160">lib/util/logger.ts:160</a></li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="clientlogging.console.level" class="tsd-anchor"></a>
+							<h3>level</h3>
+							<div class="tsd-signature tsd-kind-icon">level<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = process.env.ATOMIST_CONFIG_LOGGING_LEVEL ? process.env.ATOMIST_CONFIG_LOGGING_LEVEL : &quot;info&quot;</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L159">lib/util/logger.ts:159</a></li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="clientlogging.console.redirect" class="tsd-anchor"></a>
+							<h3>redirect</h3>
+							<div class="tsd-signature tsd-kind-icon">redirect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L161">lib/util/logger.ts:161</a></li>
+								</ul>
+							</aside>
+						</section>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
+						<a name="clientlogging.file" class="tsd-anchor"></a>
+						<h3>file</h3>
+						<div class="tsd-signature tsd-kind-icon">file<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L163">lib/util/logger.ts:163</a></li>
+							</ul>
+						</aside>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="clientlogging.file.enabled-1" class="tsd-anchor"></a>
+							<h3>enabled</h3>
+							<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> = false</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L164">lib/util/logger.ts:164</a></li>
+								</ul>
+							</aside>
+						</section>
+					</section>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-module tsd-is-not-exported">
+					<a name="globalconsolemethods" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Global<wbr>Console<wbr>Methods</h3>
+					<div class="tsd-signature tsd-kind-icon">Global<wbr>Console<wbr>Methods<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L31">lib/util/logger.ts:31</a></li>
+						</ul>
+					</aside>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
+						<a name="globalconsolemethods.debug" class="tsd-anchor"></a>
+						<h3>debug</h3>
+						<div class="tsd-signature tsd-kind-icon">debug<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">debug</span><span class="tsd-signature-symbol"> = console.debug</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L35">lib/util/logger.ts:35</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
+						<a name="globalconsolemethods.error" class="tsd-anchor"></a>
+						<h3>error</h3>
+						<div class="tsd-signature tsd-kind-icon">error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">error</span><span class="tsd-signature-symbol"> = console.error</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L32">lib/util/logger.ts:32</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
+						<a name="globalconsolemethods.info" class="tsd-anchor"></a>
+						<h3>info</h3>
+						<div class="tsd-signature tsd-kind-icon">info<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">info</span><span class="tsd-signature-symbol"> = console.info</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L34">lib/util/logger.ts:34</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
+						<a name="globalconsolemethods.log" class="tsd-anchor"></a>
+						<h3>log</h3>
+						<div class="tsd-signature tsd-kind-icon">log<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">log</span><span class="tsd-signature-symbol"> = console.log</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L36">lib/util/logger.ts:36</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
+						<a name="globalconsolemethods.trace" class="tsd-anchor"></a>
+						<h3>trace</h3>
+						<div class="tsd-signature tsd-kind-icon">trace<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">trace</span><span class="tsd-signature-symbol"> = console.trace</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L37">lib/util/logger.ts:37</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
+						<a name="globalconsolemethods.warn" class="tsd-anchor"></a>
+						<h3>warn</h3>
+						<div class="tsd-signature tsd-kind-icon">warn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">warn</span><span class="tsd-signature-symbol"> = console.warn</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L33">lib/util/logger.ts:33</a></li>
+							</ul>
+						</aside>
+					</section>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-module">
+					<a name="minimallogging" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Minimal<wbr>Logging</h3>
+					<div class="tsd-signature tsd-kind-icon">Minimal<wbr>Logging<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L139">lib/util/logger.ts:139</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>CLI-style logging configuration</p>
+						</div>
+					</div>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="minimallogging.color-1" class="tsd-anchor"></a>
+						<h3>color</h3>
+						<div class="tsd-signature tsd-kind-icon">color<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L150">lib/util/logger.ts:150</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="minimallogging.redact-1" class="tsd-anchor"></a>
+						<h3>redact</h3>
+						<div class="tsd-signature tsd-kind-icon">redact<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L149">lib/util/logger.ts:149</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
+						<a name="minimallogging.console-1" class="tsd-anchor"></a>
+						<h3>console</h3>
+						<div class="tsd-signature tsd-kind-icon">console<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L140">lib/util/logger.ts:140</a></li>
+							</ul>
+						</aside>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="minimallogging.console-1.enabled-2" class="tsd-anchor"></a>
+							<h3>enabled</h3>
+							<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L141">lib/util/logger.ts:141</a></li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="minimallogging.console-1.format-1" class="tsd-anchor"></a>
+							<h3>format</h3>
+							<div class="tsd-signature tsd-kind-icon">format<span class="tsd-signature-symbol">:</span> <a href="../enums/_util_logger_.loggingformat.html#simple" class="tsd-signature-type">Simple</a><span class="tsd-signature-symbol"> = LoggingFormat.Simple</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L143">lib/util/logger.ts:143</a></li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="minimallogging.console-1.level-1" class="tsd-anchor"></a>
+							<h3>level</h3>
+							<div class="tsd-signature tsd-kind-icon">level<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;info&quot;</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L142">lib/util/logger.ts:142</a></li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="minimallogging.console-1.redirect-1" class="tsd-anchor"></a>
+							<h3>redirect</h3>
+							<div class="tsd-signature tsd-kind-icon">redirect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> = false</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L144">lib/util/logger.ts:144</a></li>
+								</ul>
+							</aside>
+						</section>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
+						<a name="minimallogging.file-1" class="tsd-anchor"></a>
+						<h3>file</h3>
+						<div class="tsd-signature tsd-kind-icon">file<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L146">lib/util/logger.ts:146</a></li>
+							</ul>
+						</aside>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="minimallogging.file-1.enabled-3" class="tsd-anchor"></a>
+							<h3>enabled</h3>
+							<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> = false</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L147">lib/util/logger.ts:147</a></li>
+								</ul>
+							</aside>
+						</section>
+					</section>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-module">
+					<a name="nologging" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> No<wbr>Logging</h3>
+					<div class="tsd-signature tsd-kind-icon">No<wbr>Logging<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L108">lib/util/logger.ts:108</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Logging configuration suppress all logger logging</p>
+						</div>
+					</div>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="nologging.color-2" class="tsd-anchor"></a>
+						<h3>color</h3>
+						<div class="tsd-signature tsd-kind-icon">color<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L116">lib/util/logger.ts:116</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="nologging.redact-2" class="tsd-anchor"></a>
+						<h3>redact</h3>
+						<div class="tsd-signature tsd-kind-icon">redact<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L115">lib/util/logger.ts:115</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
+						<a name="nologging.console-2" class="tsd-anchor"></a>
+						<h3>console</h3>
+						<div class="tsd-signature tsd-kind-icon">console<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L109">lib/util/logger.ts:109</a></li>
+							</ul>
+						</aside>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="nologging.console-2.enabled-4" class="tsd-anchor"></a>
+							<h3>enabled</h3>
+							<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> = false</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L110">lib/util/logger.ts:110</a></li>
+								</ul>
+							</aside>
+						</section>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
+						<a name="nologging.file-2" class="tsd-anchor"></a>
+						<h3>file</h3>
+						<div class="tsd-signature tsd-kind-icon">file<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L112">lib/util/logger.ts:112</a></li>
+							</ul>
+						</aside>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="nologging.file-2.enabled-5" class="tsd-anchor"></a>
+							<h3>enabled</h3>
+							<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> = false</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L113">lib/util/logger.ts:113</a></li>
+								</ul>
+							</aside>
+						</section>
+					</section>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-module">
+					<a name="plainlogging" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Plain<wbr>Logging</h3>
+					<div class="tsd-signature tsd-kind-icon">Plain<wbr>Logging<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L122">lib/util/logger.ts:122</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Logging configuration to simply pass through log message to the console</p>
+						</div>
+					</div>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="plainlogging.color-3" class="tsd-anchor"></a>
+						<h3>color</h3>
+						<div class="tsd-signature tsd-kind-icon">color<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L133">lib/util/logger.ts:133</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="plainlogging.redact-3" class="tsd-anchor"></a>
+						<h3>redact</h3>
+						<div class="tsd-signature tsd-kind-icon">redact<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L132">lib/util/logger.ts:132</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
+						<a name="plainlogging.console-3" class="tsd-anchor"></a>
+						<h3>console</h3>
+						<div class="tsd-signature tsd-kind-icon">console<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L123">lib/util/logger.ts:123</a></li>
+							</ul>
+						</aside>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="plainlogging.console-3.enabled-6" class="tsd-anchor"></a>
+							<h3>enabled</h3>
+							<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L124">lib/util/logger.ts:124</a></li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="plainlogging.console-3.format-2" class="tsd-anchor"></a>
+							<h3>format</h3>
+							<div class="tsd-signature tsd-kind-icon">format<span class="tsd-signature-symbol">:</span> <a href="../enums/_util_logger_.loggingformat.html#none" class="tsd-signature-type">None</a><span class="tsd-signature-symbol"> = LoggingFormat.None</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L126">lib/util/logger.ts:126</a></li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="plainlogging.console-3.level-2" class="tsd-anchor"></a>
+							<h3>level</h3>
+							<div class="tsd-signature tsd-kind-icon">level<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;info&quot;</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L125">lib/util/logger.ts:125</a></li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="plainlogging.console-3.redirect-2" class="tsd-anchor"></a>
+							<h3>redirect</h3>
+							<div class="tsd-signature tsd-kind-icon">redirect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> = false</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L127">lib/util/logger.ts:127</a></li>
+								</ul>
+							</aside>
+						</section>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
+						<a name="plainlogging.file-3" class="tsd-anchor"></a>
+						<h3>file</h3>
+						<div class="tsd-signature tsd-kind-icon">file<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L129">lib/util/logger.ts:129</a></li>
+							</ul>
+						</aside>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="plainlogging.file-3.enabled-7" class="tsd-anchor"></a>
+							<h3>enabled</h3>
+							<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> = false</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/util/logger.ts#L130">lib/util/logger.ts:130</a></li>
+								</ul>
+							</aside>
+						</section>
+					</section>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="_util_logger_.html">&quot;util/logger&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-enum tsd-parent-kind-module">
+						<a href="../enums/_util_logger_.loggingformat.html" class="tsd-kind-icon">Logging<wbr>Format</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_util_logger_.leveledlogmethod.html" class="tsd-kind-icon">Leveled<wbr>Log<wbr>Method</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_util_logger_.logmethod.html" class="tsd-kind-icon">Log<wbr>Method</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_util_logger_.logger.html" class="tsd-kind-icon">Logger</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_util_logger_.loggingconfiguration.html" class="tsd-kind-icon">Logging<wbr>Configuration</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="_util_logger_.html#logcallback" class="tsd-kind-icon">Log<wbr>Callback</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="_util_logger_.html#logger-1" class="tsd-kind-icon">logger</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_util_logger_.html#winstonlogger" class="tsd-kind-icon">winston<wbr>Logger</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_util_logger_.html#callsite" class="tsd-kind-icon">callsite</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_util_logger_.html#clientformat" class="tsd-kind-icon">client<wbr>Format</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_util_logger_.html#clientloggingconfiguration" class="tsd-kind-icon">client<wbr>Logging<wbr>Configuration</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_util_logger_.html#configurelogging" class="tsd-kind-icon">configure<wbr>Logging</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_util_logger_.html#getformat" class="tsd-kind-icon">get<wbr>Format</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_util_logger_.html#redirectconsolelogging" class="tsd-kind-icon">redirect<wbr>Console<wbr>Logging</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_util_logger_.html#unredirectconsolelogging" class="tsd-kind-icon">un<wbr>Redirect<wbr>Console<wbr>Logging</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_util_logger_.html#validatelevel" class="tsd-kind-icon">validate<wbr>Level</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
+						<a href="_util_logger_.html#clientlogging" class="tsd-kind-icon">Client<wbr>Logging</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_util_logger_.html#globalconsolemethods" class="tsd-kind-icon">Global<wbr>Console<wbr>Methods</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
+						<a href="_util_logger_.html#minimallogging" class="tsd-kind-icon">Minimal<wbr>Logging</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
+						<a href="_util_logger_.html#nologging" class="tsd-kind-icon">No<wbr>Logging</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
+						<a href="_util_logger_.html#plainlogging" class="tsd-kind-icon">Plain<wbr>Logging</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,806 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>&quot;spi/message/MessageClient&quot; | @atomist/automation-client</title>
+	<meta name="description" content="Documentation for @atomist/automation-client">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@atomist/automation-client</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="_spi_message_messageclient_.html">&quot;spi/message/MessageClient&quot;</a>
+				</li>
+			</ul>
+			<h1>Module &quot;spi/message/MessageClient&quot;</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Classes</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_spi_message_messageclient_.customeventdestination.html" class="tsd-kind-icon">Custom<wbr>Event<wbr>Destination</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_spi_message_messageclient_.slackdestination.html" class="tsd-kind-icon">Slack<wbr>Destination</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_spi_message_messageclient_.sourcedestination.html" class="tsd-kind-icon">Source<wbr>Destination</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_spi_message_messageclient_.webdestination.html" class="tsd-kind-icon">Web<wbr>Destination</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Interfaces</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_spi_message_messageclient_.actionconfirmation.html" class="tsd-kind-icon">Action<wbr>Confirmation</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_spi_message_messageclient_.buttonspecification.html" class="tsd-kind-icon">Button<wbr>Specification</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_spi_message_messageclient_.commandreference.html" class="tsd-kind-icon">Command<wbr>Reference</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_spi_message_messageclient_.commandreferencingaction.html" class="tsd-kind-icon">Command<wbr>Referencing<wbr>Action</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_spi_message_messageclient_.destination.html" class="tsd-kind-icon">Destination</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_spi_message_messageclient_.menuspecification.html" class="tsd-kind-icon">Menu<wbr>Specification</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_spi_message_messageclient_.messageclient.html" class="tsd-kind-icon">Message<wbr>Client</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_spi_message_messageclient_.messageoptions.html" class="tsd-kind-icon">Message<wbr>Options</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_spi_message_messageclient_.optiongroup.html" class="tsd-kind-icon">Option<wbr>Group</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_spi_message_messageclient_.selectoption.html" class="tsd-kind-icon">Select<wbr>Option</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_spi_message_messageclient_.slackfilemessage.html" class="tsd-kind-icon">Slack<wbr>File<wbr>Message</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_spi_message_messageclient_.slackmessageclient.html" class="tsd-kind-icon">Slack<wbr>Message<wbr>Client</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Type aliases</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="_spi_message_messageclient_.html#datasource" class="tsd-kind-icon">Data<wbr>Source</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="_spi_message_messageclient_.html#requiredmessageoptions" class="tsd-kind-icon">Required<wbr>Message<wbr>Options</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_spi_message_messageclient_.html#addressevent" class="tsd-kind-icon">address<wbr>Event</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_spi_message_messageclient_.html#addressslackchannels" class="tsd-kind-icon">address<wbr>Slack<wbr>Channels</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_spi_message_messageclient_.html#addressslackchannelsfromcontext" class="tsd-kind-icon">address<wbr>Slack<wbr>Channels<wbr>From<wbr>Context</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_spi_message_messageclient_.html#addressslackusers" class="tsd-kind-icon">address<wbr>Slack<wbr>Users</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_spi_message_messageclient_.html#addressslackusersfromcontext" class="tsd-kind-icon">address<wbr>Slack<wbr>Users<wbr>From<wbr>Context</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_spi_message_messageclient_.html#addressweb" class="tsd-kind-icon">address<wbr>Web</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_spi_message_messageclient_.html#buttonforcommand" class="tsd-kind-icon">button<wbr>For<wbr>Command</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-not-exported"><a href="_spi_message_messageclient_.html#chatbuttonfrom" class="tsd-kind-icon">chat<wbr>Button<wbr>From</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-not-exported"><a href="_spi_message_messageclient_.html#chatmenufrom" class="tsd-kind-icon">chat<wbr>Menu<wbr>From</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_spi_message_messageclient_.html#commandname" class="tsd-kind-icon">command<wbr>Name</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_spi_message_messageclient_.html#isfilemessage" class="tsd-kind-icon">is<wbr>File<wbr>Message</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_spi_message_messageclient_.html#isslackmessage" class="tsd-kind-icon">is<wbr>Slack<wbr>Message</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_spi_message_messageclient_.html#menuforcommand" class="tsd-kind-icon">menu<wbr>For<wbr>Command</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_spi_message_messageclient_.html#mergeparameters" class="tsd-kind-icon">merge<wbr>Parameters</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Object literals</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-object-literal tsd-parent-kind-module"><a href="_spi_message_messageclient_.html#messagemimetypes" class="tsd-kind-icon">Message<wbr>Mime<wbr>Types</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Type aliases</h2>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="datasource" class="tsd-anchor"></a>
+					<h3>Data<wbr>Source</h3>
+					<div class="tsd-signature tsd-kind-icon">Data<wbr>Source<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"static"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"users"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"channels"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"conversations"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"external"</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L510">lib/spi/message/MessageClient.ts:510</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="requiredmessageoptions" class="tsd-anchor"></a>
+					<h3>Required<wbr>Message<wbr>Options</h3>
+					<div class="tsd-signature tsd-kind-icon">Required<wbr>Message<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_spi_message_messageclient_.messageoptions.html" class="tsd-signature-type">MessageOptions</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">"id"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"thread"</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L268">lib/spi/message/MessageClient.ts:268</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="addressevent" class="tsd-anchor"></a>
+					<h3>address<wbr>Event</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">address<wbr>Event<span class="tsd-signature-symbol">(</span>rootType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_spi_message_messageclient_.customeventdestination.html" class="tsd-signature-type">CustomEventDestination</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L251">lib/spi/message/MessageClient.ts:251</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Helper wrapping the constructor for CustomEventDestination.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>rootType: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/_spi_message_messageclient_.customeventdestination.html" class="tsd-signature-type">CustomEventDestination</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="addressslackchannels" class="tsd-anchor"></a>
+					<h3>address<wbr>Slack<wbr>Channels</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">address<wbr>Slack<wbr>Channels<span class="tsd-signature-symbol">(</span>team<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, <span class="tsd-signature-symbol">...</span>channels<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_spi_message_messageclient_.slackdestination.html" class="tsd-signature-type">SlackDestination</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L211">lib/spi/message/MessageClient.ts:211</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Shortcut for creating a SlackDestination which addresses the given
+									channels.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>team: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Slack workspace ID to create Destination for.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>channels: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Slack channel names to send messages to.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/_spi_message_messageclient_.slackdestination.html" class="tsd-signature-type">SlackDestination</a></h4>
+							<p>MessageClient Destination to pass to <code>send</code>.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="addressslackchannelsfromcontext" class="tsd-anchor"></a>
+					<h3>address<wbr>Slack<wbr>Channels<wbr>From<wbr>Context</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">address<wbr>Slack<wbr>Channels<wbr>From<wbr>Context<span class="tsd-signature-symbol">(</span>ctx<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a>, <span class="tsd-signature-symbol">...</span>channels<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/_spi_message_messageclient_.slackdestination.html" class="tsd-signature-type">SlackDestination</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L225">lib/spi/message/MessageClient.ts:225</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Shortcut for creating a SlackDestination which addresses the given
+									channels in all Slack teams connected to the context.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ctx: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Handler context as passed to the Handler handle method.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>channels: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Slack channel names to send messages to.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/_spi_message_messageclient_.slackdestination.html" class="tsd-signature-type">SlackDestination</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>MessageClient Destination to pass to <code>send</code>.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="addressslackusers" class="tsd-anchor"></a>
+					<h3>address<wbr>Slack<wbr>Users</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">address<wbr>Slack<wbr>Users<span class="tsd-signature-symbol">(</span>team<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, <span class="tsd-signature-symbol">...</span>users<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_spi_message_messageclient_.slackdestination.html" class="tsd-signature-type">SlackDestination</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L182">lib/spi/message/MessageClient.ts:182</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Shortcut for creating a SlackDestination which addresses the given
+									users.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>team: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Slack workspace ID to create Destination for.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>users: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Slack user names to send message to.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/_spi_message_messageclient_.slackdestination.html" class="tsd-signature-type">SlackDestination</a></h4>
+							<p>MessageClient Destination to pass to <code>send</code>.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="addressslackusersfromcontext" class="tsd-anchor"></a>
+					<h3>address<wbr>Slack<wbr>Users<wbr>From<wbr>Context</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">address<wbr>Slack<wbr>Users<wbr>From<wbr>Context<span class="tsd-signature-symbol">(</span>ctx<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a>, <span class="tsd-signature-symbol">...</span>users<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/_spi_message_messageclient_.slackdestination.html" class="tsd-signature-type">SlackDestination</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L196">lib/spi/message/MessageClient.ts:196</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Shortcut for creating a SlackDestination which addresses the given
+									users in all Slack teams connected to the context.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ctx: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Handler context as passed to the Handler handle method.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>users: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Slack user names to send message to.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/_spi_message_messageclient_.slackdestination.html" class="tsd-signature-type">SlackDestination</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>MessageClient Destination to pass to <code>send</code>.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="addressweb" class="tsd-anchor"></a>
+					<h3>address<wbr>Web</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">address<wbr>Web<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_spi_message_messageclient_.webdestination.html" class="tsd-signature-type">WebDestination</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L111">lib/spi/message/MessageClient.ts:111</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/_spi_message_messageclient_.webdestination.html" class="tsd-signature-type">WebDestination</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="buttonforcommand" class="tsd-anchor"></a>
+					<h3>button<wbr>For<wbr>Command</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">button<wbr>For<wbr>Command<span class="tsd-signature-symbol">(</span>buttonSpec<span class="tsd-signature-symbol">: </span><a href="../interfaces/_spi_message_messageclient_.buttonspecification.html" class="tsd-signature-type">ButtonSpecification</a>, command<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_handlecommand_.handlecommand.html" class="tsd-signature-type">HandleCommand</a>, parameters<span class="tsd-signature-symbol">?: </span><a href="_metadata_automationmetadata_.html#parametertype" class="tsd-signature-type">ParameterType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Action</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L355">lib/spi/message/MessageClient.ts:355</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create a slack button that invokes a command handler.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>buttonSpec: <a href="../interfaces/_spi_message_messageclient_.buttonspecification.html" class="tsd-signature-type">ButtonSpecification</a></h5>
+								</li>
+								<li>
+									<h5>command: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_handlecommand_.handlecommand.html" class="tsd-signature-type">HandleCommand</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> parameters: <a href="_metadata_automationmetadata_.html#parametertype" class="tsd-signature-type">ParameterType</a><span class="tsd-signature-symbol"> = {}</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Action</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+					<a name="chatbuttonfrom" class="tsd-anchor"></a>
+					<h3>chat<wbr>Button<wbr>From</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">chat<wbr>Button<wbr>From<span class="tsd-signature-symbol">(</span>action<span class="tsd-signature-symbol">: </span><a href="../interfaces/_spi_message_messageclient_.buttonspecification.html" class="tsd-signature-type">ButtonSpecification</a>, command<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Action</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L434">lib/spi/message/MessageClient.ts:434</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>action: <a href="../interfaces/_spi_message_messageclient_.buttonspecification.html" class="tsd-signature-type">ButtonSpecification</a></h5>
+								</li>
+								<li>
+									<h5>command: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Action</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+					<a name="chatmenufrom" class="tsd-anchor"></a>
+					<h3>chat<wbr>Menu<wbr>From</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">chat<wbr>Menu<wbr>From<span class="tsd-signature-symbol">(</span>action<span class="tsd-signature-symbol">: </span><a href="../interfaces/_spi_message_messageclient_.menuspecification.html" class="tsd-signature-type">MenuSpecification</a>, command<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Action</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L449">lib/spi/message/MessageClient.ts:449</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>action: <a href="../interfaces/_spi_message_messageclient_.menuspecification.html" class="tsd-signature-type">MenuSpecification</a></h5>
+								</li>
+								<li>
+									<h5>command: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Action</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="commandname" class="tsd-anchor"></a>
+					<h3>command<wbr>Name</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">command<wbr>Name<span class="tsd-signature-symbol">(</span>command<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L406">lib/spi/message/MessageClient.ts:406</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Extract command name from the argument.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>command: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="isfilemessage" class="tsd-anchor"></a>
+					<h3>is<wbr>File<wbr>Message</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>File<wbr>Message<span class="tsd-signature-symbol">(</span>object<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">SlackFileMessage</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L399">lib/spi/message/MessageClient.ts:399</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Check if the object is a valid Slack file message, i.e., a snippet.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>object: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">SlackFileMessage</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="isslackmessage" class="tsd-anchor"></a>
+					<h3>is<wbr>Slack<wbr>Message</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Slack<wbr>Message<span class="tsd-signature-symbol">(</span>object<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">SlackMessage</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L392">lib/spi/message/MessageClient.ts:392</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Check if the object is a valid Slack message.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>object: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">SlackMessage</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="menuforcommand" class="tsd-anchor"></a>
+					<h3>menu<wbr>For<wbr>Command</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">menu<wbr>For<wbr>Command<span class="tsd-signature-symbol">(</span>selectSpec<span class="tsd-signature-symbol">: </span><a href="../interfaces/_spi_message_messageclient_.menuspecification.html" class="tsd-signature-type">MenuSpecification</a>, command<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_handlecommand_.handlecommand.html" class="tsd-signature-type">HandleCommand</a>, parameterName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, parameters<span class="tsd-signature-symbol">?: </span><a href="_metadata_automationmetadata_.html#parametertype" class="tsd-signature-type">ParameterType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Action</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L373">lib/spi/message/MessageClient.ts:373</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create a Slack menu that invokes a command handler.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>selectSpec: <a href="../interfaces/_spi_message_messageclient_.menuspecification.html" class="tsd-signature-type">MenuSpecification</a></h5>
+								</li>
+								<li>
+									<h5>command: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_handlecommand_.handlecommand.html" class="tsd-signature-type">HandleCommand</a></h5>
+								</li>
+								<li>
+									<h5>parameterName: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> parameters: <a href="_metadata_automationmetadata_.html#parametertype" class="tsd-signature-type">ParameterType</a><span class="tsd-signature-symbol"> = {}</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Action</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="mergeparameters" class="tsd-anchor"></a>
+					<h3>merge<wbr>Parameters</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">merge<wbr>Parameters<span class="tsd-signature-symbol">(</span>command<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, parameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L425">lib/spi/message/MessageClient.ts:425</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Merge the provided parameters into any parameters provided as
+									command object instance variables.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>command: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>parameters: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Object literals</h2>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-module">
+					<a name="messagemimetypes" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Message<wbr>Mime<wbr>Types</h3>
+					<div class="tsd-signature tsd-kind-icon">Message<wbr>Mime<wbr>Types<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L311">lib/spi/message/MessageClient.ts:311</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Valid MessageClient types.</p>
+						</div>
+					</div>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="messagemimetypes.application_json" class="tsd-anchor"></a>
+						<h3>APPLICATION_<wbr>JSON</h3>
+						<div class="tsd-signature tsd-kind-icon">APPLICATION_<wbr>JSON<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;application/json&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L315">lib/spi/message/MessageClient.ts:315</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="messagemimetypes.plain_text" class="tsd-anchor"></a>
+						<h3>PLAIN_<wbr>TEXT</h3>
+						<div class="tsd-signature tsd-kind-icon">PLAIN_<wbr>TEXT<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;text/plain&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L314">lib/spi/message/MessageClient.ts:314</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="messagemimetypes.slack_file_json" class="tsd-anchor"></a>
+						<h3>SLACK_<wbr>FILE_<wbr>JSON</h3>
+						<div class="tsd-signature tsd-kind-icon">SLACK_<wbr>FILE_<wbr>JSON<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;application/x-atomist-slack-file+json&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L313">lib/spi/message/MessageClient.ts:313</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="messagemimetypes.slack_json" class="tsd-anchor"></a>
+						<h3>SLACK_<wbr>JSON</h3>
+						<div class="tsd-signature tsd-kind-icon">SLACK_<wbr>JSON<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;application/x-atomist-slack+json&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/message/MessageClient.ts#L312">lib/spi/message/MessageClient.ts:312</a></li>
+							</ul>
+						</aside>
+					</section>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="_spi_message_messageclient_.html">&quot;spi/message/<wbr>Message<wbr>Client&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_spi_message_messageclient_.customeventdestination.html" class="tsd-kind-icon">Custom<wbr>Event<wbr>Destination</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_spi_message_messageclient_.slackdestination.html" class="tsd-kind-icon">Slack<wbr>Destination</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_spi_message_messageclient_.sourcedestination.html" class="tsd-kind-icon">Source<wbr>Destination</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_spi_message_messageclient_.webdestination.html" class="tsd-kind-icon">Web<wbr>Destination</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_spi_message_messageclient_.actionconfirmation.html" class="tsd-kind-icon">Action<wbr>Confirmation</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_spi_message_messageclient_.buttonspecification.html" class="tsd-kind-icon">Button<wbr>Specification</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_spi_message_messageclient_.commandreference.html" class="tsd-kind-icon">Command<wbr>Reference</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_spi_message_messageclient_.commandreferencingaction.html" class="tsd-kind-icon">Command<wbr>Referencing<wbr>Action</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_spi_message_messageclient_.destination.html" class="tsd-kind-icon">Destination</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_spi_message_messageclient_.menuspecification.html" class="tsd-kind-icon">Menu<wbr>Specification</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_spi_message_messageclient_.messageclient.html" class="tsd-kind-icon">Message<wbr>Client</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_spi_message_messageclient_.messageoptions.html" class="tsd-kind-icon">Message<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_spi_message_messageclient_.optiongroup.html" class="tsd-kind-icon">Option<wbr>Group</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_spi_message_messageclient_.selectoption.html" class="tsd-kind-icon">Select<wbr>Option</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_spi_message_messageclient_.slackfilemessage.html" class="tsd-kind-icon">Slack<wbr>File<wbr>Message</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_spi_message_messageclient_.slackmessageclient.html" class="tsd-kind-icon">Slack<wbr>Message<wbr>Client</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="_spi_message_messageclient_.html#datasource" class="tsd-kind-icon">Data<wbr>Source</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="_spi_message_messageclient_.html#requiredmessageoptions" class="tsd-kind-icon">Required<wbr>Message<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_spi_message_messageclient_.html#addressevent" class="tsd-kind-icon">address<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_spi_message_messageclient_.html#addressslackchannels" class="tsd-kind-icon">address<wbr>Slack<wbr>Channels</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_spi_message_messageclient_.html#addressslackchannelsfromcontext" class="tsd-kind-icon">address<wbr>Slack<wbr>Channels<wbr>From<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_spi_message_messageclient_.html#addressslackusers" class="tsd-kind-icon">address<wbr>Slack<wbr>Users</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_spi_message_messageclient_.html#addressslackusersfromcontext" class="tsd-kind-icon">address<wbr>Slack<wbr>Users<wbr>From<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_spi_message_messageclient_.html#addressweb" class="tsd-kind-icon">address<wbr>Web</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_spi_message_messageclient_.html#buttonforcommand" class="tsd-kind-icon">button<wbr>For<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_spi_message_messageclient_.html#chatbuttonfrom" class="tsd-kind-icon">chat<wbr>Button<wbr>From</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_spi_message_messageclient_.html#chatmenufrom" class="tsd-kind-icon">chat<wbr>Menu<wbr>From</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_spi_message_messageclient_.html#commandname" class="tsd-kind-icon">command<wbr>Name</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_spi_message_messageclient_.html#isfilemessage" class="tsd-kind-icon">is<wbr>File<wbr>Message</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_spi_message_messageclient_.html#isslackmessage" class="tsd-kind-icon">is<wbr>Slack<wbr>Message</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_spi_message_messageclient_.html#menuforcommand" class="tsd-kind-icon">menu<wbr>For<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_spi_message_messageclient_.html#mergeparameters" class="tsd-kind-icon">merge<wbr>Parameters</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
+						<a href="_spi_message_messageclient_.html#messagemimetypes" class="tsd-kind-icon">Message<wbr>Mime<wbr>Types</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,786 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>ExpressRequestProcessor | @atomist/automation-client</title>
+	<meta name="description" content="Documentation for @atomist/automation-client">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@atomist/automation-client</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="../modules/_internal_transport_express_expressrequestprocessor_.html">&quot;internal/transport/express/ExpressRequestProcessor&quot;</a>
+				</li>
+				<li>
+					<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html">ExpressRequestProcessor</a>
+				</li>
+			</ul>
+			<h1>Class ExpressRequestProcessor</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>RequestProcessor implementation used by the Express infrastructure to process
+						inbound events via HTTP REST apis.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html" class="tsd-signature-type">AbstractRequestProcessor</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">ExpressRequestProcessor</span>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../interfaces/_internal_transport_requestprocessor_.requestprocessor.html" class="tsd-signature-type">RequestProcessor</a></li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section tsd-is-private-protected">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-protected"><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#automations" class="tsd-kind-icon">automations</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-protected"><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#configuration" class="tsd-kind-icon">configuration</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#graphclientfactory" class="tsd-kind-icon">graph<wbr>Client<wbr>Factory</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-protected"><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#listeners" class="tsd-kind-icon">listeners</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#clearnamespace" class="tsd-kind-icon">clear<wbr>Namespace</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#createandwrapmessageclient" class="tsd-kind-icon">create<wbr>And<wbr>Wrap<wbr>Message<wbr>Client</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected"><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#creategraphclient" class="tsd-kind-icon">create<wbr>Graph<wbr>Client</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected"><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#createmessageclient" class="tsd-kind-icon">create<wbr>Message<wbr>Client</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#invokecommand" class="tsd-kind-icon">invoke<wbr>Command</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#invokeevent" class="tsd-kind-icon">invoke<wbr>Event</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#processcommand" class="tsd-kind-icon">process<wbr>Command</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#processevent" class="tsd-kind-icon">process<wbr>Event</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#sendcommandstatus" class="tsd-kind-icon">send<wbr>Command<wbr>Status</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#sendeventstatus" class="tsd-kind-icon">send<wbr>Event<wbr>Status</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected"><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#sendstatusmessage" class="tsd-kind-icon">send<wbr>Status<wbr>Message</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#setupnamespace" class="tsd-kind-icon">setup<wbr>Namespace</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Express<wbr>Request<wbr>Processor<span class="tsd-signature-symbol">(</span>automations<span class="tsd-signature-symbol">: </span><a href="../interfaces/_server_automationserver_.automationserver.html" class="tsd-signature-type">AutomationServer</a>, configuration<span class="tsd-signature-symbol">: </span><a href="../interfaces/_configuration_.configuration.html" class="tsd-signature-type">Configuration</a>, listeners<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html" class="tsd-signature-type">AutomationEventListener</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html" class="tsd-signature-type">ExpressRequestProcessor</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html">AbstractRequestProcessor</a>.<a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html#constructor">constructor</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/internal/transport/express/ExpressRequestProcessor.ts#L37">lib/internal/transport/express/ExpressRequestProcessor.ts:37</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>automations: <a href="../interfaces/_server_automationserver_.automationserver.html" class="tsd-signature-type">AutomationServer</a></h5>
+								</li>
+								<li>
+									<h5>configuration: <a href="../interfaces/_configuration_.configuration.html" class="tsd-signature-type">Configuration</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> listeners: <a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html" class="tsd-signature-type">AutomationEventListener</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html" class="tsd-signature-type">ExpressRequestProcessor</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-private-protected">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+					<a name="automations" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> automations</h3>
+					<div class="tsd-signature tsd-kind-icon">automations<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_server_automationserver_.automationserver.html" class="tsd-signature-type">AutomationServer</a></div>
+					<aside class="tsd-sources">
+						<p>Overrides <a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html">AbstractRequestProcessor</a>.<a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html#automations">automations</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/internal/transport/express/ExpressRequestProcessor.ts#L39">lib/internal/transport/express/ExpressRequestProcessor.ts:39</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+					<a name="configuration" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> configuration</h3>
+					<div class="tsd-signature tsd-kind-icon">configuration<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_configuration_.configuration.html" class="tsd-signature-type">Configuration</a></div>
+					<aside class="tsd-sources">
+						<p>Overrides <a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html">AbstractRequestProcessor</a>.<a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html#configuration">configuration</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/internal/transport/express/ExpressRequestProcessor.ts#L40">lib/internal/transport/express/ExpressRequestProcessor.ts:40</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="graphclientfactory" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> graph<wbr>Client<wbr>Factory</h3>
+					<div class="tsd-signature tsd-kind-icon">graph<wbr>Client<wbr>Factory<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_spi_graph_graphclientfactory_.graphclientfactory.html" class="tsd-signature-type">GraphClientFactory</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/internal/transport/express/ExpressRequestProcessor.ts#L37">lib/internal/transport/express/ExpressRequestProcessor.ts:37</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+					<a name="listeners" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> listeners</h3>
+					<div class="tsd-signature tsd-kind-icon">listeners<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html" class="tsd-signature-type">AutomationEventListener</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<p>Overrides <a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html">AbstractRequestProcessor</a>.<a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html#listeners">listeners</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/internal/transport/express/ExpressRequestProcessor.ts#L41">lib/internal/transport/express/ExpressRequestProcessor.ts:41</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a name="clearnamespace" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> clear<wbr>Namespace</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">clear<wbr>Namespace<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html">AbstractRequestProcessor</a>.<a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html#clearnamespace">clearNamespace</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/internal/transport/AbstractRequestProcessor.ts#L327">lib/internal/transport/AbstractRequestProcessor.ts:327</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a name="createandwrapmessageclient" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> create<wbr>And<wbr>Wrap<wbr>Message<wbr>Client</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>And<wbr>Wrap<wbr>Message<wbr>Client<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><a href="../interfaces/_internal_transport_requestprocessor_.eventincoming.html" class="tsd-signature-type">EventIncoming</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_internal_transport_requestprocessor_.commandincoming.html" class="tsd-signature-type">CommandIncoming</a>, context<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_spi_message_messageclient_.messageclient.html" class="tsd-signature-type">MessageClient</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_spi_message_messageclient_.slackmessageclient.html" class="tsd-signature-type">SlackMessageClient</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html">AbstractRequestProcessor</a>.<a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html#createandwrapmessageclient">createAndWrapMessageClient</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/internal/transport/AbstractRequestProcessor.ts#L305">lib/internal/transport/AbstractRequestProcessor.ts:305</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>event: <a href="../interfaces/_internal_transport_requestprocessor_.eventincoming.html" class="tsd-signature-type">EventIncoming</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_internal_transport_requestprocessor_.commandincoming.html" class="tsd-signature-type">CommandIncoming</a></h5>
+								</li>
+								<li>
+									<h5>context: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_spi_message_messageclient_.messageclient.html" class="tsd-signature-type">MessageClient</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_spi_message_messageclient_.slackmessageclient.html" class="tsd-signature-type">SlackMessageClient</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+					<a name="creategraphclient" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> create<wbr>Graph<wbr>Client</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Graph<wbr>Client<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><a href="../interfaces/_internal_transport_requestprocessor_.eventincoming.html" class="tsd-signature-type">EventIncoming</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_internal_transport_requestprocessor_.commandincoming.html" class="tsd-signature-type">CommandIncoming</a>, context<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_spi_graph_graphclient_.graphclient.html" class="tsd-signature-type">GraphClient</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html">AbstractRequestProcessor</a>.<a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html#creategraphclient">createGraphClient</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/internal/transport/express/ExpressRequestProcessor.ts#L50">lib/internal/transport/express/ExpressRequestProcessor.ts:50</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>event: <a href="../interfaces/_internal_transport_requestprocessor_.eventincoming.html" class="tsd-signature-type">EventIncoming</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_internal_transport_requestprocessor_.commandincoming.html" class="tsd-signature-type">CommandIncoming</a></h5>
+								</li>
+								<li>
+									<h5>context: <a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_spi_graph_graphclient_.graphclient.html" class="tsd-signature-type">GraphClient</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+					<a name="createmessageclient" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> create<wbr>Message<wbr>Client</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Message<wbr>Client<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><a href="../interfaces/_internal_transport_requestprocessor_.eventincoming.html" class="tsd-signature-type">EventIncoming</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_internal_transport_requestprocessor_.commandincoming.html" class="tsd-signature-type">CommandIncoming</a>, context<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_spi_message_messageclient_.messageclient.html" class="tsd-signature-type">MessageClient</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html">AbstractRequestProcessor</a>.<a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html#createmessageclient">createMessageClient</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/internal/transport/express/ExpressRequestProcessor.ts#L59">lib/internal/transport/express/ExpressRequestProcessor.ts:59</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>event: <a href="../interfaces/_internal_transport_requestprocessor_.eventincoming.html" class="tsd-signature-type">EventIncoming</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_internal_transport_requestprocessor_.commandincoming.html" class="tsd-signature-type">CommandIncoming</a></h5>
+								</li>
+								<li>
+									<h5>context: <a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_spi_message_messageclient_.messageclient.html" class="tsd-signature-type">MessageClient</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a name="invokecommand" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> invoke<wbr>Command</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">invoke<wbr>Command<span class="tsd-signature-symbol">(</span>ci<span class="tsd-signature-symbol">: </span><a href="../interfaces/_internal_invoker_payload_.commandinvocation.html" class="tsd-signature-type">CommandInvocation</a>, ctx<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a>, command<span class="tsd-signature-symbol">: </span><a href="../interfaces/_internal_transport_requestprocessor_.commandincoming.html" class="tsd-signature-type">CommandIncoming</a>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html">AbstractRequestProcessor</a>.<a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html#invokecommand">invokeCommand</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/internal/transport/AbstractRequestProcessor.ts#L189">lib/internal/transport/AbstractRequestProcessor.ts:189</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ci: <a href="../interfaces/_internal_invoker_payload_.commandinvocation.html" class="tsd-signature-type">CommandInvocation</a></h5>
+								</li>
+								<li>
+									<h5>ctx: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a></h5>
+								</li>
+								<li>
+									<h5>command: <a href="../interfaces/_internal_transport_requestprocessor_.commandincoming.html" class="tsd-signature-type">CommandIncoming</a></h5>
+								</li>
+								<li>
+									<h5>callback: <span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-signature">
+											<ul class="tsd-signatures tsd-kind-type-literal">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>result: <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">&gt;</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a name="invokeevent" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> invoke<wbr>Event</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">invoke<wbr>Event<span class="tsd-signature-symbol">(</span>ef<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handleevent_.eventfired.html" class="tsd-signature-type">EventFired</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>, ctx<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a>, event<span class="tsd-signature-symbol">: </span><a href="../interfaces/_internal_transport_requestprocessor_.eventincoming.html" class="tsd-signature-type">EventIncoming</a>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>results<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html">AbstractRequestProcessor</a>.<a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html#invokeevent">invokeEvent</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/internal/transport/AbstractRequestProcessor.ts#L247">lib/internal/transport/AbstractRequestProcessor.ts:247</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ef: <a href="../interfaces/_handleevent_.eventfired.html" class="tsd-signature-type">EventFired</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>ctx: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a></h5>
+								</li>
+								<li>
+									<h5>event: <a href="../interfaces/_internal_transport_requestprocessor_.eventincoming.html" class="tsd-signature-type">EventIncoming</a></h5>
+								</li>
+								<li>
+									<h5>callback: <span class="tsd-signature-symbol">(</span>results<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-signature">
+											<ul class="tsd-signatures tsd-kind-type-literal">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>results<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>results: <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="processcommand" class="tsd-anchor"></a>
+					<h3>process<wbr>Command</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">process<wbr>Command<span class="tsd-signature-symbol">(</span>command<span class="tsd-signature-symbol">: </span><a href="../interfaces/_internal_transport_requestprocessor_.commandincoming.html" class="tsd-signature-type">CommandIncoming</a>, callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html">AbstractRequestProcessor</a>.<a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html#processcommand">processCommand</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/internal/transport/AbstractRequestProcessor.ts#L51">lib/internal/transport/AbstractRequestProcessor.ts:51</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>command: <a href="../interfaces/_internal_transport_requestprocessor_.commandincoming.html" class="tsd-signature-type">CommandIncoming</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> callback: <span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> = () &#x3D;&gt; {}</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-signature">
+											<ul class="tsd-signatures tsd-kind-type-literal">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>result: <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">&gt;</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="processevent" class="tsd-anchor"></a>
+					<h3>process<wbr>Event</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">process<wbr>Event<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><a href="../interfaces/_internal_transport_requestprocessor_.eventincoming.html" class="tsd-signature-type">EventIncoming</a>, callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">(</span>results<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html">AbstractRequestProcessor</a>.<a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html#processevent">processEvent</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/internal/transport/AbstractRequestProcessor.ts#L95">lib/internal/transport/AbstractRequestProcessor.ts:95</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>event: <a href="../interfaces/_internal_transport_requestprocessor_.eventincoming.html" class="tsd-signature-type">EventIncoming</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> callback: <span class="tsd-signature-symbol">(</span>results<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> = () &#x3D;&gt; {}</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-signature">
+											<ul class="tsd-signatures tsd-kind-type-literal">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>results<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>results: <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="sendcommandstatus" class="tsd-anchor"></a>
+					<h3>send<wbr>Command<wbr>Status</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">send<wbr>Command<wbr>Status<span class="tsd-signature-symbol">(</span>success<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, code<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, request<span class="tsd-signature-symbol">: </span><a href="../interfaces/_internal_transport_requestprocessor_.commandincoming.html" class="tsd-signature-type">CommandIncoming</a>, ctx<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html">AbstractRequestProcessor</a>.<a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html#sendcommandstatus">sendCommandStatus</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/internal/transport/AbstractRequestProcessor.ts#L139">lib/internal/transport/AbstractRequestProcessor.ts:139</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>success: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+								<li>
+									<h5>code: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>request: <a href="../interfaces/_internal_transport_requestprocessor_.commandincoming.html" class="tsd-signature-type">CommandIncoming</a></h5>
+								</li>
+								<li>
+									<h5>ctx: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="sendeventstatus" class="tsd-anchor"></a>
+					<h3>send<wbr>Event<wbr>Status</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">send<wbr>Event<wbr>Status<span class="tsd-signature-symbol">(</span>success<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, request<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handleevent_.eventfired.html" class="tsd-signature-type">EventFired</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>, event<span class="tsd-signature-symbol">: </span><a href="../interfaces/_internal_transport_requestprocessor_.eventincoming.html" class="tsd-signature-type">EventIncoming</a>, ctx<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html">AbstractRequestProcessor</a>.<a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html#sendeventstatus">sendEventStatus</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/internal/transport/AbstractRequestProcessor.ts#L168">lib/internal/transport/AbstractRequestProcessor.ts:168</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>success: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+								<li>
+									<h5>request: <a href="../interfaces/_handleevent_.eventfired.html" class="tsd-signature-type">EventFired</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>event: <a href="../interfaces/_internal_transport_requestprocessor_.eventincoming.html" class="tsd-signature-type">EventIncoming</a></h5>
+								</li>
+								<li>
+									<h5>ctx: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+					<a name="sendstatusmessage" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> send<wbr>Status<wbr>Message</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">send<wbr>Status<wbr>Message<span class="tsd-signature-symbol">(</span>payload<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, ctx<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html">AbstractRequestProcessor</a>.<a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html#sendstatusmessage">sendStatusMessage</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/internal/transport/express/ExpressRequestProcessor.ts#L46">lib/internal/transport/express/ExpressRequestProcessor.ts:46</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>payload: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>ctx: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a name="setupnamespace" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> setup<wbr>Namespace</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">setup<wbr>Namespace<span class="tsd-signature-symbol">(</span>request<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, automations<span class="tsd-signature-symbol">: </span><a href="../interfaces/_server_automationserver_.automationserver.html" class="tsd-signature-type">AutomationServer</a>, invocationId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, ts<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>correlationId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>invocationId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>operation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>ts<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>version<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>workspaceId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>workspaceName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html">AbstractRequestProcessor</a>.<a href="_internal_transport_abstractrequestprocessor_.abstractrequestprocessor.html#setupnamespace">setupNamespace</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/internal/transport/AbstractRequestProcessor.ts#L311">lib/internal/transport/AbstractRequestProcessor.ts:311</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>request: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>automations: <a href="../interfaces/_server_automationserver_.automationserver.html" class="tsd-signature-type">AutomationServer</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> invocationId: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = guid()</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> ts: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = Date.now()</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{ </span>correlationId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>invocationId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>operation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>ts<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>version<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>workspaceId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>workspaceName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter">
+									<h5>correlation<wbr>Id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li class="tsd-parameter">
+									<h5>invocation<wbr>Id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li class="tsd-parameter">
+									<h5>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li class="tsd-parameter">
+									<h5>operation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li class="tsd-parameter">
+									<h5>ts<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li class="tsd-parameter">
+									<h5>version<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li class="tsd-parameter">
+									<h5>workspace<wbr>Id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li class="tsd-parameter">
+									<h5>workspace<wbr>Name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="../modules/_internal_transport_express_expressrequestprocessor_.html">&quot;internal/transport/express/<wbr>Express<wbr>Request<wbr>Processor&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_internal_transport_express_expressrequestprocessor_.expressmessageclient.html" class="tsd-kind-icon">Express<wbr>Message<wbr>Client</a>
+					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-module">
+						<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html" class="tsd-kind-icon">Express<wbr>Request<wbr>Processor</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+								<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#automations" class="tsd-kind-icon">automations</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+								<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#configuration" class="tsd-kind-icon">configuration</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#graphclientfactory" class="tsd-kind-icon">graph<wbr>Client<wbr>Factory</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+								<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#listeners" class="tsd-kind-icon">listeners</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#clearnamespace" class="tsd-kind-icon">clear<wbr>Namespace</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#createandwrapmessageclient" class="tsd-kind-icon">create<wbr>And<wbr>Wrap<wbr>Message<wbr>Client</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+								<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#creategraphclient" class="tsd-kind-icon">create<wbr>Graph<wbr>Client</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+								<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#createmessageclient" class="tsd-kind-icon">create<wbr>Message<wbr>Client</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#invokecommand" class="tsd-kind-icon">invoke<wbr>Command</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#invokeevent" class="tsd-kind-icon">invoke<wbr>Event</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#processcommand" class="tsd-kind-icon">process<wbr>Command</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#processevent" class="tsd-kind-icon">process<wbr>Event</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#sendcommandstatus" class="tsd-kind-icon">send<wbr>Command<wbr>Status</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#sendeventstatus" class="tsd-kind-icon">send<wbr>Event<wbr>Status</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+								<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#sendstatusmessage" class="tsd-kind-icon">send<wbr>Status<wbr>Message</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="_internal_transport_express_expressrequestprocessor_.expressrequestprocessor.html#setupnamespace" class="tsd-kind-icon">setup<wbr>Namespace</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

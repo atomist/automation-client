@@ -1,0 +1,950 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>StatsdAutomationEventListener | @atomist/automation-client</title>
+	<meta name="description" content="Documentation for @atomist/automation-client">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@atomist/automation-client</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="../modules/_spi_statsd_statsd_.html">&quot;spi/statsd/statsd&quot;</a>
+				</li>
+				<li>
+					<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html">StatsdAutomationEventListener</a>
+				</li>
+			</ul>
+			<h1>Class StatsdAutomationEventListener</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<a href="_server_automationeventlistener_.automationeventlistenersupport.html" class="tsd-signature-type">AutomationEventListenerSupport</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">StatsdAutomationEventListener</span>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html" class="tsd-signature-type">AutomationEventListener</a></li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#configuration" class="tsd-kind-icon">configuration</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#heavy" class="tsd-kind-icon">heavy</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#registrationname" class="tsd-kind-icon">registration<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#statsd" class="tsd-kind-icon">statsd</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#timer" class="tsd-kind-icon">timer</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#callback" class="tsd-kind-icon">callback</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#close" class="tsd-kind-icon">close</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#commandfailed" class="tsd-kind-icon">command<wbr>Failed</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#commandincoming" class="tsd-kind-icon">command<wbr>Incoming</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#commandstarting" class="tsd-kind-icon">command<wbr>Starting</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#commandsuccessful" class="tsd-kind-icon">command<wbr>Successful</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#contextcreated" class="tsd-kind-icon">context<wbr>Created</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#event" class="tsd-kind-icon">event</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#eventfailed" class="tsd-kind-icon">event<wbr>Failed</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#eventincoming" class="tsd-kind-icon">event<wbr>Incoming</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#eventstarting" class="tsd-kind-icon">event<wbr>Starting</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#eventsuccessful" class="tsd-kind-icon">event<wbr>Successful</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#increment" class="tsd-kind-icon">increment</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#initgc" class="tsd-kind-icon">init<wbr>Gc</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#initstatsd" class="tsd-kind-icon">init<wbr>Statsd</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#messagesending" class="tsd-kind-icon">message<wbr>Sending</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#messagesent" class="tsd-kind-icon">message<wbr>Sent</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#registrationsuccessful" class="tsd-kind-icon">registration<wbr>Successful</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#startupsuccessful" class="tsd-kind-icon">startup<wbr>Successful</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#submiteventloopdelay" class="tsd-kind-icon">submit<wbr>Event<wbr>Loop<wbr>Delay</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#submitheapstats" class="tsd-kind-icon">submit<wbr>Heap<wbr>Stats</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#timing" class="tsd-kind-icon">timing</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Statsd<wbr>Automation<wbr>Event<wbr>Listener<span class="tsd-signature-symbol">(</span>configuration<span class="tsd-signature-symbol">: </span><a href="../interfaces/_configuration_.configuration.html" class="tsd-signature-type">Configuration</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_spi_statsd_statsd_.statsdautomationeventlistener.html" class="tsd-signature-type">StatsdAutomationEventListener</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L50">lib/spi/statsd/statsd.ts:50</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>configuration: <a href="../interfaces/_configuration_.configuration.html" class="tsd-signature-type">Configuration</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_spi_statsd_statsd_.statsdautomationeventlistener.html" class="tsd-signature-type">StatsdAutomationEventListener</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="configuration" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> configuration</h3>
+					<div class="tsd-signature tsd-kind-icon">configuration<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_configuration_.configuration.html" class="tsd-signature-type">Configuration</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L52">lib/spi/statsd/statsd.ts:52</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="heavy" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> heavy</h3>
+					<div class="tsd-signature tsd-kind-icon">heavy<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Heavy</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L50">lib/spi/statsd/statsd.ts:50</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="registrationname" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> registration<wbr>Name</h3>
+					<div class="tsd-signature tsd-kind-icon">registration<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L49">lib/spi/statsd/statsd.ts:49</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="statsd" class="tsd-anchor"></a>
+					<h3>statsd</h3>
+					<div class="tsd-signature tsd-kind-icon">statsd<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_spi_statsd_statsdclient_.statsdclient.html" class="tsd-signature-type">StatsDClient</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L47">lib/spi/statsd/statsd.ts:47</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="timer" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> timer</h3>
+					<div class="tsd-signature tsd-kind-icon">timer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Timer</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L48">lib/spi/statsd/statsd.ts:48</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="callback" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> callback</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">callback<span class="tsd-signature-symbol">(</span>err<span class="tsd-signature-symbol">: </span><a href="_util_child_process_.execpromiseerror.html#error" class="tsd-signature-type">Error</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L194">lib/spi/statsd/statsd.ts:194</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Do-nothing callback</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>err: <a href="_util_child_process_.execpromiseerror.html#error" class="tsd-signature-type">Error</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="close" class="tsd-anchor"></a>
+					<h3>close</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">close<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L253">lib/spi/statsd/statsd.ts:253</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="commandfailed" class="tsd-anchor"></a>
+					<h3>command<wbr>Failed</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">command<wbr>Failed<span class="tsd-signature-symbol">(</span>payload<span class="tsd-signature-symbol">: </span><a href="../interfaces/_internal_invoker_payload_.commandinvocation.html" class="tsd-signature-type">CommandInvocation</a>, ctx<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a>, err<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html">AutomationEventListener</a>.<a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html#commandfailed">commandFailed</a></p>
+								<p>Overrides <a href="_server_automationeventlistener_.automationeventlistenersupport.html">AutomationEventListenerSupport</a>.<a href="_server_automationeventlistener_.automationeventlistenersupport.html#commandfailed">commandFailed</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L130">lib/spi/statsd/statsd.ts:130</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>payload: <a href="../interfaces/_internal_invoker_payload_.commandinvocation.html" class="tsd-signature-type">CommandInvocation</a></h5>
+								</li>
+								<li>
+									<h5>ctx: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a></h5>
+								</li>
+								<li>
+									<h5>err: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="commandincoming" class="tsd-anchor"></a>
+					<h3>command<wbr>Incoming</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">command<wbr>Incoming<span class="tsd-signature-symbol">(</span>payload<span class="tsd-signature-symbol">: </span><a href="../interfaces/_internal_transport_requestprocessor_.commandincoming.html" class="tsd-signature-type">CommandIncoming</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html">AutomationEventListener</a>.<a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html#commandincoming">commandIncoming</a></p>
+								<p>Overrides <a href="_server_automationeventlistener_.automationeventlistenersupport.html">AutomationEventListenerSupport</a>.<a href="_server_automationeventlistener_.automationeventlistenersupport.html#commandincoming">commandIncoming</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L114">lib/spi/statsd/statsd.ts:114</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>payload: <a href="../interfaces/_internal_transport_requestprocessor_.commandincoming.html" class="tsd-signature-type">CommandIncoming</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="commandstarting" class="tsd-anchor"></a>
+					<h3>command<wbr>Starting</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">command<wbr>Starting<span class="tsd-signature-symbol">(</span>payload<span class="tsd-signature-symbol">: </span><a href="../interfaces/_internal_invoker_payload_.commandinvocation.html" class="tsd-signature-type">CommandInvocation</a>, ctx<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html">AutomationEventListener</a>.<a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html#commandstarting">commandStarting</a></p>
+								<p>Inherited from <a href="_server_automationeventlistener_.automationeventlistenersupport.html">AutomationEventListenerSupport</a>.<a href="_server_automationeventlistener_.automationeventlistenersupport.html#commandstarting">commandStarting</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/server/AutomationEventListener.ts#L144">lib/server/AutomationEventListener.ts:144</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>payload: <a href="../interfaces/_internal_invoker_payload_.commandinvocation.html" class="tsd-signature-type">CommandInvocation</a></h5>
+								</li>
+								<li>
+									<h5>ctx: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="commandsuccessful" class="tsd-anchor"></a>
+					<h3>command<wbr>Successful</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">command<wbr>Successful<span class="tsd-signature-symbol">(</span>payload<span class="tsd-signature-symbol">: </span><a href="../interfaces/_internal_invoker_payload_.commandinvocation.html" class="tsd-signature-type">CommandInvocation</a>, ctx<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a>, result<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html">AutomationEventListener</a>.<a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html#commandsuccessful">commandSuccessful</a></p>
+								<p>Overrides <a href="_server_automationeventlistener_.automationeventlistenersupport.html">AutomationEventListenerSupport</a>.<a href="_server_automationeventlistener_.automationeventlistenersupport.html#commandsuccessful">commandSuccessful</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L121">lib/spi/statsd/statsd.ts:121</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>payload: <a href="../interfaces/_internal_invoker_payload_.commandinvocation.html" class="tsd-signature-type">CommandInvocation</a></h5>
+								</li>
+								<li>
+									<h5>ctx: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a></h5>
+								</li>
+								<li>
+									<h5>result: <a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="contextcreated" class="tsd-anchor"></a>
+					<h3>context<wbr>Created</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">context<wbr>Created<span class="tsd-signature-symbol">(</span>ctx<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html">AutomationEventListener</a>.<a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html#contextcreated">contextCreated</a></p>
+								<p>Overrides <a href="_server_automationeventlistener_.automationeventlistenersupport.html">AutomationEventListenerSupport</a>.<a href="_server_automationeventlistener_.automationeventlistenersupport.html#contextcreated">contextCreated</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L64">lib/spi/statsd/statsd.ts:64</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ctx: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="event" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> event</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">event<span class="tsd-signature-symbol">(</span>title<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, text<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, tags<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L207">lib/spi/statsd/statsd.ts:207</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>title: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> text: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> tags: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="eventfailed" class="tsd-anchor"></a>
+					<h3>event<wbr>Failed</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">event<wbr>Failed<span class="tsd-signature-symbol">(</span>payload<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handleevent_.eventfired.html" class="tsd-signature-type">EventFired</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>, ctx<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a>, err<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html">AutomationEventListener</a>.<a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html#eventfailed">eventFailed</a></p>
+								<p>Overrides <a href="_server_automationeventlistener_.automationeventlistenersupport.html">AutomationEventListenerSupport</a>.<a href="_server_automationeventlistener_.automationeventlistenersupport.html#eventfailed">eventFailed</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L157">lib/spi/statsd/statsd.ts:157</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>payload: <a href="../interfaces/_handleevent_.eventfired.html" class="tsd-signature-type">EventFired</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>ctx: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a></h5>
+								</li>
+								<li>
+									<h5>err: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="eventincoming" class="tsd-anchor"></a>
+					<h3>event<wbr>Incoming</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">event<wbr>Incoming<span class="tsd-signature-symbol">(</span>payload<span class="tsd-signature-symbol">: </span><a href="../interfaces/_internal_transport_requestprocessor_.eventincoming.html" class="tsd-signature-type">EventIncoming</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html">AutomationEventListener</a>.<a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html#eventincoming">eventIncoming</a></p>
+								<p>Overrides <a href="_server_automationeventlistener_.automationeventlistenersupport.html">AutomationEventListenerSupport</a>.<a href="_server_automationeventlistener_.automationeventlistenersupport.html#eventincoming">eventIncoming</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L141">lib/spi/statsd/statsd.ts:141</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>payload: <a href="../interfaces/_internal_transport_requestprocessor_.eventincoming.html" class="tsd-signature-type">EventIncoming</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="eventstarting" class="tsd-anchor"></a>
+					<h3>event<wbr>Starting</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">event<wbr>Starting<span class="tsd-signature-symbol">(</span>payload<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handleevent_.eventfired.html" class="tsd-signature-type">EventFired</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>, ctx<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html">AutomationEventListener</a>.<a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html#eventstarting">eventStarting</a></p>
+								<p>Inherited from <a href="_server_automationeventlistener_.automationeventlistenersupport.html">AutomationEventListenerSupport</a>.<a href="_server_automationeventlistener_.automationeventlistenersupport.html#eventstarting">eventStarting</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/server/AutomationEventListener.ts#L160">lib/server/AutomationEventListener.ts:160</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>payload: <a href="../interfaces/_handleevent_.eventfired.html" class="tsd-signature-type">EventFired</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>ctx: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="eventsuccessful" class="tsd-anchor"></a>
+					<h3>event<wbr>Successful</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">event<wbr>Successful<span class="tsd-signature-symbol">(</span>payload<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handleevent_.eventfired.html" class="tsd-signature-type">EventFired</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>, ctx<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a>, result<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html">AutomationEventListener</a>.<a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html#eventsuccessful">eventSuccessful</a></p>
+								<p>Overrides <a href="_server_automationeventlistener_.automationeventlistenersupport.html">AutomationEventListenerSupport</a>.<a href="_server_automationeventlistener_.automationeventlistenersupport.html#eventsuccessful">eventSuccessful</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L148">lib/spi/statsd/statsd.ts:148</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>payload: <a href="../interfaces/_handleevent_.eventfired.html" class="tsd-signature-type">EventFired</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>ctx: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a></h5>
+								</li>
+								<li>
+									<h5>result: <a href="../interfaces/_handlerresult_.handlerresult.html" class="tsd-signature-type">HandlerResult</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="increment" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> increment</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">increment<span class="tsd-signature-symbol">(</span>stat<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, tags<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L198">lib/spi/statsd/statsd.ts:198</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>stat: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> tags: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="initgc" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> init<wbr>Gc</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">init<wbr>Gc<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L284">lib/spi/statsd/statsd.ts:284</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="initstatsd" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> init<wbr>Statsd</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">init<wbr>Statsd<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L229">lib/spi/statsd/statsd.ts:229</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="messagesending" class="tsd-anchor"></a>
+					<h3>message<wbr>Sending</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">message<wbr>Sending<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, destinations<span class="tsd-signature-symbol">: </span><a href="../interfaces/_spi_message_messageclient_.destination.html" class="tsd-signature-type">Destination</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_spi_message_messageclient_.destination.html" class="tsd-signature-type">Destination</a><span class="tsd-signature-symbol">[]</span>, options<span class="tsd-signature-symbol">: </span><a href="../interfaces/_spi_message_messageclient_.messageoptions.html" class="tsd-signature-type">MessageOptions</a>, ctx<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>destinations<span class="tsd-signature-symbol">: </span><a href="../interfaces/_spi_message_messageclient_.destination.html" class="tsd-signature-type">Destination</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_spi_message_messageclient_.destination.html" class="tsd-signature-type">Destination</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>options<span class="tsd-signature-symbol">: </span><a href="../interfaces/_spi_message_messageclient_.messageoptions.html" class="tsd-signature-type">MessageOptions</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html">AutomationEventListener</a>.<a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html#messagesending">messageSending</a></p>
+								<p>Inherited from <a href="_server_automationeventlistener_.automationeventlistenersupport.html">AutomationEventListenerSupport</a>.<a href="_server_automationeventlistener_.automationeventlistenersupport.html#messagesending">messageSending</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/server/AutomationEventListener.ts#L172">lib/server/AutomationEventListener.ts:172</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>message: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>destinations: <a href="../interfaces/_spi_message_messageclient_.destination.html" class="tsd-signature-type">Destination</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_spi_message_messageclient_.destination.html" class="tsd-signature-type">Destination</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5>options: <a href="../interfaces/_spi_message_messageclient_.messageoptions.html" class="tsd-signature-type">MessageOptions</a></h5>
+								</li>
+								<li>
+									<h5>ctx: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>destinations<span class="tsd-signature-symbol">: </span><a href="../interfaces/_spi_message_messageclient_.destination.html" class="tsd-signature-type">Destination</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_spi_message_messageclient_.destination.html" class="tsd-signature-type">Destination</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>options<span class="tsd-signature-symbol">: </span><a href="../interfaces/_spi_message_messageclient_.messageoptions.html" class="tsd-signature-type">MessageOptions</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="messagesent" class="tsd-anchor"></a>
+					<h3>message<wbr>Sent</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">message<wbr>Sent<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, dests<span class="tsd-signature-symbol">: </span><a href="../interfaces/_spi_message_messageclient_.destination.html" class="tsd-signature-type">Destination</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_spi_message_messageclient_.destination.html" class="tsd-signature-type">Destination</a><span class="tsd-signature-symbol">[]</span>, options<span class="tsd-signature-symbol">: </span><a href="../interfaces/_spi_message_messageclient_.messageoptions.html" class="tsd-signature-type">MessageOptions</a>, ctx<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="_server_automationeventlistener_.automationeventlistenersupport.html">AutomationEventListenerSupport</a>.<a href="_server_automationeventlistener_.automationeventlistenersupport.html#messagesent">messageSent</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L168">lib/spi/statsd/statsd.ts:168</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>message: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>dests: <a href="../interfaces/_spi_message_messageclient_.destination.html" class="tsd-signature-type">Destination</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_spi_message_messageclient_.destination.html" class="tsd-signature-type">Destination</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5>options: <a href="../interfaces/_spi_message_messageclient_.messageoptions.html" class="tsd-signature-type">MessageOptions</a></h5>
+								</li>
+								<li>
+									<h5>ctx: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_handlercontext_.automationcontextaware.html" class="tsd-signature-type">AutomationContextAware</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="registrationsuccessful" class="tsd-anchor"></a>
+					<h3>registration<wbr>Successful</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">registration<wbr>Successful<span class="tsd-signature-symbol">(</span>handler<span class="tsd-signature-symbol">: </span><a href="../interfaces/_internal_transport_requestprocessor_.requestprocessor.html" class="tsd-signature-type">RequestProcessor</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html">AutomationEventListener</a>.<a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html#registrationsuccessful">registrationSuccessful</a></p>
+								<p>Overrides <a href="_server_automationeventlistener_.automationeventlistenersupport.html">AutomationEventListenerSupport</a>.<a href="_server_automationeventlistener_.automationeventlistenersupport.html#registrationsuccessful">registrationSuccessful</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L59">lib/spi/statsd/statsd.ts:59</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>handler: <a href="../interfaces/_internal_transport_requestprocessor_.requestprocessor.html" class="tsd-signature-type">RequestProcessor</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="startupsuccessful" class="tsd-anchor"></a>
+					<h3>startup<wbr>Successful</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">startup<wbr>Successful<span class="tsd-signature-symbol">(</span>client<span class="tsd-signature-symbol">: </span><a href="_automationclient_.automationclient.html" class="tsd-signature-type">AutomationClient</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html">AutomationEventListener</a>.<a href="../interfaces/_server_automationeventlistener_.automationeventlistener.html#startupsuccessful">startupSuccessful</a></p>
+								<p>Inherited from <a href="_server_automationeventlistener_.automationeventlistenersupport.html">AutomationEventListenerSupport</a>.<a href="_server_automationeventlistener_.automationeventlistenersupport.html#startupsuccessful">startupSuccessful</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/server/AutomationEventListener.ts#L132">lib/server/AutomationEventListener.ts:132</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>client: <a href="_automationclient_.automationclient.html" class="tsd-signature-type">AutomationClient</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="submiteventloopdelay" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> submit<wbr>Event<wbr>Loop<wbr>Delay</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">submit<wbr>Event<wbr>Loop<wbr>Delay<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L273">lib/spi/statsd/statsd.ts:273</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="submitheapstats" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> submit<wbr>Heap<wbr>Stats</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">submit<wbr>Heap<wbr>Stats<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L263">lib/spi/statsd/statsd.ts:263</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="timing" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> timing</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">timing<span class="tsd-signature-symbol">(</span>stat<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, ctx<span class="tsd-signature-symbol">: </span><a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a>, tags<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/atomist/automation-client/blob/9764ced/lib/spi/statsd/statsd.ts#L216">lib/spi/statsd/statsd.ts:216</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>stat: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5>ctx: <a href="../interfaces/_handlercontext_.handlercontext.html" class="tsd-signature-type">HandlerContext</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> tags: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="../modules/_spi_statsd_statsd_.html">&quot;spi/statsd/statsd&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-module">
+						<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html" class="tsd-kind-icon">Statsd<wbr>Automation<wbr>Event<wbr>Listener</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#configuration" class="tsd-kind-icon">configuration</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#heavy" class="tsd-kind-icon">heavy</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#registrationname" class="tsd-kind-icon">registration<wbr>Name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#statsd" class="tsd-kind-icon">statsd</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#timer" class="tsd-kind-icon">timer</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#callback" class="tsd-kind-icon">callback</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#close" class="tsd-kind-icon">close</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#commandfailed" class="tsd-kind-icon">command<wbr>Failed</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#commandincoming" class="tsd-kind-icon">command<wbr>Incoming</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#commandstarting" class="tsd-kind-icon">command<wbr>Starting</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#commandsuccessful" class="tsd-kind-icon">command<wbr>Successful</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#contextcreated" class="tsd-kind-icon">context<wbr>Created</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#event" class="tsd-kind-icon">event</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#eventfailed" class="tsd-kind-icon">event<wbr>Failed</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#eventincoming" class="tsd-kind-icon">event<wbr>Incoming</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#eventstarting" class="tsd-kind-icon">event<wbr>Starting</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#eventsuccessful" class="tsd-kind-icon">event<wbr>Successful</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#increment" class="tsd-kind-icon">increment</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#initgc" class="tsd-kind-icon">init<wbr>Gc</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#initstatsd" class="tsd-kind-icon">init<wbr>Statsd</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#messagesending" class="tsd-kind-icon">message<wbr>Sending</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#messagesent" class="tsd-kind-icon">message<wbr>Sent</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#registrationsuccessful" class="tsd-kind-icon">registration<wbr>Successful</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#startupsuccessful" class="tsd-kind-icon">startup<wbr>Successful</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#submiteventloopdelay" class="tsd-kind-icon">submit<wbr>Event<wbr>Loop<wbr>Delay</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#submitheapstats" class="tsd-kind-icon">submit<wbr>Heap<wbr>Stats</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_spi_statsd_statsd_.statsdautomationeventlistener.html#timing" class="tsd-kind-icon">timing</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_spi_statsd_statsd_.html#timer" class="tsd-kind-icon">Timer</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_spi_statsd_statsd_.html#gctypes" class="tsd-kind-icon">Gc<wbr>Types</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
