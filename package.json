@@ -1,6 +1,6 @@
 {
   "name": "@atomist/automation-client",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Atomist API for software low-level client",
   "author": {
     "name": "Atomist",
@@ -168,11 +168,11 @@
     "test:one": "mocha --require espower-typescript/guess \"test/**/${TEST:-*.test.ts}\""
   },
   "bin": {
-    "atm-command": "./bin/command.js",
-    "atm-git-info": "./bin/git-info.js",
-    "atm-gql-gen": "./bin/gql-gen.js",
-    "atm-start": "./bin/start.js",
-    "atm-start-dev": "./bin/start-dev.js"
+    "atm-command": "bin/command.js",
+    "atm-git-info": "bin/git-info.js",
+    "atm-gql-gen": "bin/gql-gen.js",
+    "atm-start": "bin/start.js",
+    "atm-start-dev": "bin/start-dev.js"
   },
   "engines": {
     "node": ">=10.3.0",
