@@ -5,9 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased](https://github.com/atomist/automation-client/compare/1.9.2...HEAD)
-
-## [1.9.2](https://github.com/atomist/automation-client/compare/2.0.0...1.9.2) - 2021-02-10
+## [Unreleased](https://github.com/atomist/automation-client/compare/2.0.0...HEAD)
 
 ### Added
 
@@ -37,6 +35,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Union path expressions not working with fileMatches. [#653](https://github.com/atomist/automation-client/issues/653)
 -   Fix execution of shutdown hooks. [381f0ec](https://github.com/atomist/automation-client/commit/381f0ec91d40f91b1407fda9c0b8e9fd9035feb3)
 -   Update lodash to fix security issue. [075ea4f](https://github.com/atomist/automation-client/commit/075ea4f864658345a8713752ce384babe1d3e137)
+
+## [1.9.2](https://github.com/atomist/automation-client/compare/1.9.1...1.9.2) - 2021-02-10
+
+### Fixed
+
+-   Updated dependencies to address security issues.
 
 ## [1.9.1](https://github.com/atomist/automation-client/compare/1.9.0...1.9.1) - 2020-07-13
 
