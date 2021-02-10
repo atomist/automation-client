@@ -1,6 +1,6 @@
 {
   "name": "@atomist/automation-client",
-  "version": "1.9.2",
+  "version": "1.9.3",
   "description": "Atomist API for software low-level client",
   "author": {
     "name": "Atomist",
@@ -171,11 +171,11 @@
     "typedoc": "npm run doc"
   },
   "bin": {
-    "atm-command": "./bin/command.js",
-    "atm-git-info": "./bin/git-info.js",
-    "atm-gql-gen": "./bin/gql-gen.js",
-    "atm-start": "./bin/start.js",
-    "atm-start-dev": "./bin/start-dev.js"
+    "atm-command": "bin/command.js",
+    "atm-git-info": "bin/git-info.js",
+    "atm-gql-gen": "bin/gql-gen.js",
+    "atm-start": "bin/start.js",
+    "atm-start-dev": "bin/start-dev.js"
   },
   "engines": {
     "node": ">=8.2.0",
