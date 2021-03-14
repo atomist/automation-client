@@ -894,7 +894,7 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 |`dreamopt`|`0.6.0`|Andrey Tarantsov|[https://github.com/andreyvit/dreamopt.js](https://github.com/andreyvit/dreamopt.js)|
 
 #### WTFPL
-Do What The F*ck You Want To Public License - [http://sam.zoy.org/wtfpl/COPYING](http://sam.zoy.org/wtfpl/COPYING)
+Do What The F*ck You Want To Public License - [http://www.wtfpl.net/about/](http://www.wtfpl.net/about/)
 
 | Name | Version | Publisher | Repository |
 |------|---------|-----------|------------|
