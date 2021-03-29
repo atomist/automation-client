@@ -44,7 +44,7 @@
     "@types/json-stringify-safe": "^5.0.0",
     "@types/lodash": "^4.14.168",
     "@types/micromatch": "^3.1.1",
-    "@types/node": "^12.20.6",
+    "@types/node": "^12.20.7",
     "@types/node-statsd": "^0.1.2",
     "@types/passport": "^1.0.6",
     "@types/passport-http": "^0.3.8",
@@ -141,7 +141,7 @@
     "statsd-client": "^0.4.5",
     "supervisor": "^0.12.0",
     "ts-node": "^9.1.1",
-    "typedoc": "^0.20.33"
+    "typedoc": "^0.20.34"
   },
   "directories": {
     "test": "test"
