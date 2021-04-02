@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client/compare/2.1.0...HEAD)
 
+### Added
+
+-   Update for new GitHub token format. [dc7f6c7](https://github.com/atomist/automation-client/commit/dc7f6c7ee636bda6e3e530d723dcca763764b084)
+
+### Fixed
+
+-   Update for new GitHub token format. [dc7f6c7](https://github.com/atomist/automation-client/commit/dc7f6c7ee636bda6e3e530d723dcca763764b084)
+
 ## [2.1.0](https://github.com/atomist/automation-client/compare/2.0.0...2.1.0) - 2021-02-10
 
 ### Added
