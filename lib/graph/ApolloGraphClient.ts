@@ -35,7 +35,7 @@ disableFragmentWarnings();
  *
  * Note: registration order of various listener instances is important
  */
-export interface GraphClientListener {
+export interface GraphClientListener<Q> {
 
     /**
      * Hook to process the Apollo-Link Operation
@@ -45,12 +45,12 @@ export interface GraphClientListener {
     /**
      * Hook to process QueryOptions before running the operation
      */
-    onQuery?<Q>(options: QueryOptions<Q> ): Promise<QueryOptions<Q>>;
+    onQuery?(options: QueryOptions<Q> ): Promise<QueryOptions<Q>>;
 
     /**
      * Hook to process MutationOptions before running the operation
      */
-    onMutation?<Q>(options: MutationOptions<Q>): Promise<MutationOptions<Q>>;
+    onMutation?(options: MutationOptions<Q>): Promise<MutationOptions<Q>>;
 }
 
 /**
