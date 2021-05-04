@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/automation-client/compare/2.1.1...HEAD)
 
+### Added
+
+-   Add onQuery and onMutation hooks. [c6031db](https://github.com/atomist/automation-client/commit/c6031db2610260525a1e308f8bfb735735c3eb68)
+
 ## [2.1.1](https://github.com/atomist/automation-client/compare/2.1.0...2.1.1) - 2021-04-02
 
 ### Fixed
