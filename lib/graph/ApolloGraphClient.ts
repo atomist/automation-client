@@ -35,7 +35,11 @@ disableFragmentWarnings();
  */
 export interface GraphClientListener {
 
-    operationStarting(operation: Operation): Operation;
+    operationStarting?(operation: Operation): Operation;
+
+    onQuery?<Q>(options: QueryOptions<Q> ): Promise<QueryOptions<Q>>;
+
+    onMutation?<Q>(options: MutationOptions<Q>): Promise<MutationOptions<Q>>;
 }
 
 /**
@@ -92,7 +96,7 @@ export class ApolloGraphClient implements GraphClient {
                 headers,
             });
 
-            for (const listener of this.listeners) {
+            for (const listener of this.listeners.filter(l => l.operationStarting)) {
                 operation = listener.operationStarting(operation);
             }
 
@@ -126,11 +130,14 @@ export class ApolloGraphClient implements GraphClient {
         });
     }
 
-    public query<T, Q>(options: QueryOptions<Q> | string): Promise<T> {
+    public async query<T, Q>(options: QueryOptions<Q> | string): Promise<T> {
         if (typeof options === "string") {
             options = {
                 name: options,
             };
+        }
+        for (const listener of this.listeners.filter(l => l.onQuery)) {
+            options = await listener.onQuery(options);
         }
         const q = internalGraphql.query({
             query: options.query,
@@ -141,11 +148,14 @@ export class ApolloGraphClient implements GraphClient {
         return this.executeQuery<T, Q>(q, options.variables, options.options);
     }
 
-    public mutate<T, Q>(options: MutationOptions<Q> | string): Promise<T> {
+    public async mutate<T, Q>(options: MutationOptions<Q> | string): Promise<T> {
         if (typeof options === "string") {
             options = {
                 name: options,
             };
+        }
+        for (const listener of this.listeners.filter(l => l.onMutation)) {
+            options = await listener.onMutation(options);
         }
         const m = internalGraphql.mutate({
             mutation: options.mutation,
