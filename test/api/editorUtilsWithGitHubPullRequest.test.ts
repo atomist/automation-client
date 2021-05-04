@@ -35,7 +35,7 @@ describe("editorUtils", () => {
 
         const EditorThatChangesProject = toEditor(p => p.addFile("thing", "thing"));
 
-        it("creates branch with changes in simple editor", async () => {
+        it.skip("creates branch with changes in simple editor", async () => {
             let p: GitProject;
             let repo: TestRepo;
             try {
@@ -84,7 +84,7 @@ describe("editorUtils", () => {
                 .then(() => successfulEdit(p, true));
         };
 
-        it("can edit a project on an existing branch", async () => {
+        it.skip("can edit a project on an existing branch", async () => {
             let p: GitProject;
             let repo: TestRepo;
             try {

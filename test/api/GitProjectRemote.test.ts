@@ -23,7 +23,7 @@ describe("GitProject remote", () => {
         }
     });
 
-    it("add a file, init and commit, then push to new remote repo", async function(): Promise<void> {
+    it.skip("add a file, init and commit, then push to new remote repo", async function(): Promise<void> {
         // tslint:disable-next-line:no-invalid-this
         this.retries(5);
 
