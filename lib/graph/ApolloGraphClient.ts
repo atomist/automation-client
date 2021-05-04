@@ -32,6 +32,7 @@ disableFragmentWarnings();
 
 /**
  * Listen and mutate GraphQL operations before they are being executed
+ *
  * Note: registration order of various listener instances is important
  */
 export interface GraphClientListener {
