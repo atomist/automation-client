@@ -7,7 +7,7 @@ describe("AbstractProject", () => {
 
     describe("globMatchesWithin", () => {
 
-        it("should match ts pattern in nested folder", async () => {
+        it.skip("should match ts pattern in nested folder", async () => {
             const patterns = [
                 "*.{d.ts,js,ts}{,.map}",
                 "!(node_modules)/**/*.{d.ts,js,ts}{,.map}",
