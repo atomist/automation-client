@@ -235,5 +235,4 @@ export class ApolloGraphClient implements GraphClient {
         }
         return result.data;
     }
-
 }
