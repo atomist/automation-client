@@ -35,7 +35,7 @@ disableFragmentWarnings();
  *
  * Note: registration order of various listener instances is important
  */
-export interface GraphClientListener<Q> {
+export interface GraphClientListener<Q = any> {
 
     /**
      * Hook to process the Apollo-Link Operation
