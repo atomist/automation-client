@@ -1,6 +1,6 @@
 {
   "name": "@atomist/automation-client",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "Atomist API for software low-level client",
   "author": {
     "name": "Atomist",
