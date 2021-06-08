@@ -125,7 +125,7 @@
     "uuid": "^3.4.0",
     "winston": "^3.3.3",
     "winston-transport": "^4.4.0",
-    "ws": "^7.4.5"
+    "ws": "^7.4.6"
   },
   "peerDependencies": {
     "gc-stats": "^1.4.0"
