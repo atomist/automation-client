@@ -30,7 +30,7 @@ export class WebSocketClient {
 
     public start(): Promise<void> {
 
-        const connection = register(this.registrationCallback, this.configuration, this.requestProcessor, 5)
+        const connection = register(this.registrationCallback, this.configuration, this.requestProcessor, this.configuration.ws?.retries?.initial || 5)
             .then(registration =>
                 connect(this.registrationCallback, registration, this.configuration, this.requestProcessor));
         return connection.then(() => {
@@ -149,7 +149,7 @@ function connect(registrationCallback: () => any,
             reset();
             // Only attempt to reconnect if we aren't shutting down
             if (reconnect) {
-                register(registrationCallback, configuration, requestProcessor)
+                register(registrationCallback, configuration, requestProcessor, configuration?.ws.retries?.reconnect || 100)
                     .then(reg => connect(registrationCallback, reg, configuration, requestProcessor))
                     .then(() => resolve(ws));
             }

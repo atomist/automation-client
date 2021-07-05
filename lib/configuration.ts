@@ -191,6 +191,13 @@ export interface AutomationOptions extends AnyOptions {
         compress?: boolean;
         /** timeout in milliseconds */
         timeout?: number;
+        /** number of retries for the WS connection */
+        retries?: {
+            /** number of retries of initial WS connection attempts (defaults to 5) */
+            initial?: number;
+            /** number of retries of WS connection attempts when the connection was dropped (defaults to 100) */
+            reconnect?: number;
+        };
         /** Configure backoff behavior on the WS connection */
         backoff?: {
             /**
