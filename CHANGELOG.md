@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 *   Expose WS retry options in configuration. [9a1894c](https://github.com/atomist/automation-client/commit/9a1894cf404388abb6964999bae9c1f090640bb8)
+*   Expose WS retry to client configuration. [#674](https://github.com/atomist/automation-client/issues/674)
 
 ## [2.2.0](https://github.com/atomist/automation-client/compare/2.1.1...2.2.0) - 2021-05-10
 
