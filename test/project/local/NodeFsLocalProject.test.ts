@@ -227,7 +227,7 @@ describe("NodeFsLocalProject", () => {
                     done();
                 })
                 .on("error", done);
-        });
+        }).timeout(20000);
 
         it("streamFiles excludes glob non-matches", done => {
             let count = 0;
