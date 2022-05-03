@@ -43,6 +43,7 @@ import {
     logger,
 } from "./util/logger";
 import { addRedaction } from "./util/redact";
+import * as os from "os";
 
 export class AutomationClient implements RequestProcessor {
 
@@ -248,6 +249,21 @@ export class AutomationClient implements RequestProcessor {
 
     private runHttp(handlerMaker: () => ExpressRequestProcessor): Promise<any> {
         if (!this.configuration.http.enabled) {
+            return Promise.resolve();
+        }
+
+        if (this.configuration.http.cluster.enabled && cluster.isMaster) {
+            for (let i = 0; i < (this.configuration.http.cluster.workers || os.cpus().length); i++) {
+                cluster.fork();
+            }
+
+            cluster.on("disconnect", worker => {
+                logger.warn(`Worker '${worker.id}' disconnected`);
+            });
+
+            cluster.on("online", worker => {
+                logger.debug(`Worker '${worker.id}' connected`);
+            });
             return Promise.resolve();
         }
 

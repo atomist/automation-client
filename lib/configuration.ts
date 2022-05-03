@@ -162,6 +162,10 @@ export interface AutomationOptions extends AnyOptions {
         client?: {
             factory?: HttpClientFactory,
         },
+        cluster?: {
+            enabled: boolean,
+            workers: number,
+        }
     } & Partial<ExpressServerOptions>;
     /** websocket configuration */
     ws?: {
