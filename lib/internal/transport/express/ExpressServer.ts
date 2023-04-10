@@ -45,8 +45,7 @@ export class ExpressServer {
                 private readonly handler: RequestProcessor) {
 
         this.exp = express();
-
-        this.exp.use(bodyParser.json());
+        this.exp.use(bodyParser.json(this.configuration.http.bodyParser?.options));
         this.exp.use(require("helmet")());
 
         this.exp.use(passport.initialize());
@@ -330,6 +329,9 @@ export interface ExpressServerOptions {
     port: number;
     host?: string;
     customizers?: ExpressCustomizer[];
+    bodyParser?: {
+        options?: bodyParser.Options
+    },
     auth?: {
         basic?: {
             enabled?: boolean;
